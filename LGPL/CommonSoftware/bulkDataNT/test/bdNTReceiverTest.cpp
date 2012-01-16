@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverTest.cpp,v 1.16 2011/12/23 10:57:32 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverTest.cpp,v 1.17 2012/01/16 10:42:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@ public:
 	*/
 		//std::cout << std::endl;
 
-		usleep(20000);
+		if (cbDealy>0) usleep(cbDealy);
 		return 0;
 	}
 
@@ -64,12 +64,18 @@ public:
 		return 0;
 	}
 
+	static unsigned long cbDealy;
 };
 
+
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d sleep delay in cbReceive] [-w end_test_wait_period]" << endl;
 	exit(1);
 }
+
+
+unsigned long TestCB::cbDealy = 0;
+
 
 int main(int argc, char *argv[])
 {
@@ -81,25 +87,34 @@ int main(int argc, char *argv[])
 	list<char *> flows;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:w:");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:w:d:");
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
 			case 's':
+			{
 				streamName = get_opts.opt_arg();
 				break;
-
+			}
 			case 'w':
+			{
 				sleepPeriod = atoi(get_opts.opt_arg());
 				break;
-
+			}
 			case 'f':
+			{
 				ACE_Tokenizer tok(get_opts.opt_arg());
 				tok.delimiter(',');
 				for(char *p = tok.next(); p; p = tok.next())
 					flows.push_back(p);
 
 				break;
+			}
+			case 'd':
+			{
+				TestCB::cbDealy = atoi(get_opts.opt_arg());
+				break;
+			}
 		}
 
 	}
