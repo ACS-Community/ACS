@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.36 2012/01/12 14:28:51 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.37 2012/01/16 08:19:31 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -96,7 +96,7 @@ bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration bu
 bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c  nddscpp nddsc nddscore
 
 bulkDataNTSender_OBJECTS    = bulkDataNTSenderStream bulkDataNTSenderFlow bulkDataNTDDSPublisher \
-							  bulkDataNTWriterListener
+							  bulkDataNTWriterListener bulkDataNTSenderFlowCallback
 bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
 
 bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
