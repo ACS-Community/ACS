@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.11 2011/12/14 15:08:28 tstaig Exp $"
+* "@$Id: acsRequest.cpp,v 1.12 2012/01/16 10:45:00 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -592,8 +592,8 @@ void ACSServiceRequestChainContext::addRequest(const char *iservice, const char 
     desc->setFromXMLAttributes(atts);
     ACSServiceRequest *request = new ACSServiceRequest(context, DAEMON, request_type, desc);
     switch (request_type) {
-    case START_SERVICE: appendRequest(request); break;
-    case STOP_SERVICE: prependRequest(request); break;
+    case START_SERVICE: appendRequestOrdered(request); break;
+    case STOP_SERVICE: prependRequestOrdered(request); break;
     }
 }
 

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.7 2009/09/29 15:30:59 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.8 2012/01/16 10:45:00 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,15 +66,16 @@ struct ACSService {
     bool autorestart;      // Should ACS service automatically restart
 };
 
+// start=up (dependency) order
 enum ACSServiceType {
     NAMING_SERVICE = 0,
-    NOTIFICATION_SERVICE,
-    CDB,
-    MANAGER,
-    ACS_LOG_SERVICE,
-    LOGGING_SERVICE,
     INTERFACE_REPOSITORY,
+    CDB,
+    NOTIFICATION_SERVICE,
+    LOGGING_SERVICE,
+    ACS_LOG_SERVICE,
     ALARM_SERVICE,
+    MANAGER,
     UNKNOWN
 };
 
@@ -82,95 +83,95 @@ enum ACSServiceType {
 #define ACS_SERVICE_INSTANCES 10
 
 const ACSService acsServices[] = {
-    {
-      "naming_service",
-      "acsNamingService",
-      "Naming Service Imp",
-      "NamingServiceImp",
-      "2981",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNamingServiceImp",
-      "corbaloc::%s:%s/NameService",
-      &ACSPorts::getNamingServicePort,
-      NULL,
-      false
-    }, {
-      "notification_service",
-      "acsNotifyService",
-      "Notification Service Imp",
-      "NotificationServiceImp",
-      "2982",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNotificationServiceImp",
-      "corbaloc::%s:%s/%s",
-      NULL,
-      &ACSPorts::getNotifyServicePort,
-      true
-    }, {
-      "cdb",
-      "acsConfigurationDatabase",
-      "CDB Imp",
-      "ConfigurationDatabaseImp",
-      "2983",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonConfigurationDatabaseImp",
-      "corbaloc::%s:%s/CDB",
-      &ACSPorts::getCDBPort,
-      NULL,
-      false
-    }, {
-      "manager",
-      "acsManager",
-      "Manager Imp",
-      "ManagerImp",
-      "2984",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonManagerImp",
-      "corbaloc::%s:%s/Manager",
-      &ACSPorts::getManagerPort,
-      NULL,
-      false
-    }, {
-      "acs_log",
-      "acsACSLogService",
-      "ACS Log Service Imp",
-      "ACSLogServiceImp",
-      "2985",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonACSLogServiceImp",
-      "corbaloc::%s:%s/ACSLogSvc",
-      &ACSPorts::getLogPort,
-      NULL,
-      false
-    }, {
-      "logging_service",
-      "acsLoggingService",
-      "Logging Service Imp",
-      "LoggingServiceImp",
-      "2986",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonLoggingServiceImp",
-      "corbaloc::%s:%s/Log",
-      &ACSPorts::getLoggingServicePort,
-      NULL,
-      true
-    }, {
-      "interface_repository",
-      "acsInterfaceRepository",
-      "Interface Repository Imp",
-      "InterfaceRepositoryImp",
-      "2987",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonInterfaceRepositoryImp",
-      "corbaloc::%s:%s/InterfaceRepository",
-      &ACSPorts::getIRPort,
-      NULL,
-      false
-    }, {
-      "alarm_service",
-      "acsAlarmService",
-      "Alarm Service Imp",
-      "AlarmServiceImp",
-      "2988",
-      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonAlarmServiceImp",
-      "corbaloc::%s:%s/AcsAlarmService",
-      &ACSPorts::getAlarmServicePort,
-      NULL,
-      false
-    }, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false }
+		{
+				"naming_service",
+				"acsNamingService",
+				"Naming Service Imp",
+				"NamingServiceImp",
+				"2981",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNamingServiceImp",
+				"corbaloc::%s:%s/NameService",
+				&ACSPorts::getNamingServicePort,
+				NULL,
+				false
+		}, {
+				"interface_repository",
+				"acsInterfaceRepository",
+				"Interface Repository Imp",
+				"InterfaceRepositoryImp",
+				"2987",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonInterfaceRepositoryImp",
+				"corbaloc::%s:%s/InterfaceRepository",
+				&ACSPorts::getIRPort,
+				NULL,
+				false
+		}, {
+				"cdb",
+				"acsConfigurationDatabase",
+				"CDB Imp",
+				"ConfigurationDatabaseImp",
+				"2983",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonConfigurationDatabaseImp",
+				"corbaloc::%s:%s/CDB",
+				&ACSPorts::getCDBPort,
+				NULL,
+				false
+		}, {
+				"notification_service",
+				"acsNotifyService",
+				"Notification Service Imp",
+				"NotificationServiceImp",
+				"2982",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNotificationServiceImp",
+				"corbaloc::%s:%s/%s",
+				NULL,
+				&ACSPorts::getNotifyServicePort,
+				true
+		}, {
+				"logging_service",
+				"acsLoggingService",
+				"Logging Service Imp",
+				"LoggingServiceImp",
+				"2986",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonLoggingServiceImp",
+				"corbaloc::%s:%s/Log",
+				&ACSPorts::getLoggingServicePort,
+				NULL,
+				true
+		}, {
+				"acs_log",
+				"acsACSLogService",
+				"ACS Log Service Imp",
+				"ACSLogServiceImp",
+				"2985",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonACSLogServiceImp",
+				"corbaloc::%s:%s/ACSLogSvc",
+				&ACSPorts::getLogPort,
+				NULL,
+				false
+		}, {
+				"alarm_service",
+				"acsAlarmService",
+				"Alarm Service Imp",
+				"AlarmServiceImp",
+				"2988",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonAlarmServiceImp",
+				"corbaloc::%s:%s/AcsAlarmService",
+				&ACSPorts::getAlarmServicePort,
+				NULL,
+				false
+		}, {
+				"manager",
+				"acsManager",
+				"Manager Imp",
+				"ManagerImp",
+				"2984",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonManagerImp",
+				"corbaloc::%s:%s/Manager",
+				&ACSPorts::getManagerPort,
+				NULL,
+				false
+		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false }
 };
 
 enum ACSServiceRequestType {
@@ -229,7 +230,8 @@ template <class R> class ChainedRequest : public Request {
 template <class R> class RequestChainContext {
   private:
     RequestProcessorThread *rpt;
-    std::deque<R*> requests;
+    typedef std::deque<R*> Queue;
+    Queue requests;
     R *curreq;
     bool inprocess;
   protected:
@@ -246,7 +248,21 @@ template <class R> class RequestChainContext {
     }
     RequestProcessorThread *getRequestProcessor() { return rpt; }
     void appendRequest(R *request) { requests.push_back(request); }
+    void appendRequestOrdered(R *request) {
+        ACSServiceType thisType = request->getDescription()->getACSService();
+        typename Queue::iterator it = requests.begin();
+        while (it != requests.end() && (*it)->getDescription()->getACSService() <= thisType)
+        	it++;
+        requests.insert(it, request);
+    }
     void prependRequest(R *request) { requests.push_front(request); }
+    void prependRequestOrdered(R *request) {
+        ACSServiceType thisType = request->getDescription()->getACSService();
+        typename Queue::iterator it = requests.begin();
+        while (it != requests.end() && (*it)->getDescription()->getACSService() > thisType)
+                it++;
+        requests.insert(it, request);
+    }
     void proceed(R *lastreq = NULL);
 };
 
@@ -334,3 +350,4 @@ class ACSServiceRequestChainContext : public RequestChainContext<ACSServiceReque
 
 
 #endif
+
