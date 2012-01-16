@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderImplTest.cpp,v 1.3 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bdNTSenderImplTest.cpp,v 1.4 2012/01/16 11:48:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,8 +41,8 @@ void bdNTSenderImplTest::startSend()
     ACS_TRACE("bdNTSenderImplTest::startSend");
     unsigned char parm[]="Test Parameter";
 
-    getSenderStream()->getFlow("0")->startSend(parm, 14);
-    getSenderStream()->getFlow("1")->startSend(parm, 14);
+    getSenderStream("Name7")->getFlow("Name3")->startSend(parm, 14);
+    getSenderStream("Name7")->getFlow("Name5")->startSend(parm, 14);
 }
 
 void bdNTSenderImplTest::paceData ()
@@ -51,19 +51,19 @@ void bdNTSenderImplTest::paceData ()
 	unsigned char *data= new unsigned char[65000];
 	for (unsigned int i=0; i<65000; i++)
 		data[i]=i;
-	getSenderStream()->getFlow("0")->sendData(data, 65000);
+	getSenderStream("Name7")->getFlow("Name3")->sendData(data, 65000);
 
 	for (unsigned int i=0; i<65000; i++)
 		data[i]=i%10;
-	getSenderStream()->getFlow("1")->sendData(data, 65000);
+	getSenderStream("Name7")->getFlow("Name1")->sendData(data, 65000);
 
 }
 
 void bdNTSenderImplTest::stopSend()
 {
     ACS_TRACE("bdNTSenderImplTest::stopSend");
-    getSenderStream()->getFlow("0")->stopSend();
-    getSenderStream()->getFlow("1")->stopSend();
+    getSenderStream("Name7")->getFlow("Name3")->stopSend();
+    getSenderStream("Name7")->getFlow("Name1")->stopSend();
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
