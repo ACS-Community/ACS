@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bdNTTEST1.cpp,v 1.2 2012/01/04 10:43:44 bjeram Exp $"
+ * "@(#) $Id: bdNTTEST1.cpp,v 1.3 2012/01/16 11:49:38 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -74,13 +74,13 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-/*	bulkdata::BulkDataReceiver_var receiver2 = client.get_object<bulkdata::BulkDataReceiver>(argv[3], 0, true);
+	bulkdata::BulkDataReceiver_var receiver2 = client.get_object<bulkdata::BulkDataReceiver>(argv[3], 0, true);
 	if (CORBA::is_nil (receiver2.in ()))
 	{
 		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataReceiverTEST_2 Component."));
 		return -1;
 	}
-*/
+
 
 	bulkdata::BulkDataSender_var sender = client.get_object<bulkdata::BulkDataSender>(argv[1], 0, true);
 	if (CORBA::is_nil (sender.in ()))
@@ -90,13 +90,14 @@ int main(int argc, char *argv[])
 	}
 
 	receiver1->openReceiver();
-//	receiver2->openReceiver();
+	receiver2->openReceiver();
 
-printf("going to call connect\n");
+
 
 	sender->connect(receiver1.in()); //!! the receiver does not matter
 
-getchar();
+	sleep(4);
+//getchar();
 
 	//start_time = ACE_OS::gettimeofday(); // for performances test
 	sender->startSend();
@@ -108,12 +109,13 @@ getchar();
 	//dtime = elapsed_time.sec() + ( elapsed_time.usec() / 1000000. );
 	//cout << "dtime: " << dtime << endl;
 
-	getchar();
+//	getchar();
+	sleep(2);
 
 	sender->disconnect();
 
 	receiver1->closeReceiver();
-	//receiver2->closeReceiver();
+	receiver2->closeReceiver();
 	}
 
     catch (AVConnectErrorEx & ex)
