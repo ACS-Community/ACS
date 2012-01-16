@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.18 2012/01/04 11:33:53 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.19 2012/01/16 13:56:04 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -161,6 +161,13 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 {
 	ACS_TRACE(__PRETTY_FUNCTION__);
 
+	// check if initialize has been called
+	if( parser_m == 0 && defaultFlowsCount_m == -1 ) {
+		acsErrTypeLifeCycle::LifeCycleExImpl lcEx = acsErrTypeLifeCycle::LifeCycleExImpl(__FILE__,__LINE__,__PRETTY_FUNCTION__);
+		lcEx.log(LM_DEBUG);
+		throw lcEx.getacsErrTypeLifeCycleEx();
+	}
+
 	try {
 
 		// With the old config mechanism only one stream, namely "DefaultStream", is allowed
@@ -210,6 +217,13 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 {
 	std::map<std::string, BulkDataConfigurationParser::ReceiverCfg>::iterator it;
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
+
+	// check if initialize has been called
+	if( parser_m == 0 && defaultFlowsCount_m == -1 ) {
+		acsErrTypeLifeCycle::LifeCycleExImpl lcEx = acsErrTypeLifeCycle::LifeCycleExImpl(__FILE__,__LINE__,__PRETTY_FUNCTION__);
+		lcEx.log(LM_DEBUG);
+		throw lcEx.getacsErrTypeLifeCycleEx();
+	}
 
 	// double-check that the stream is already opened
 	if( receiverStreams_m.find(stream_name) != receiverStreams_m.end() ) {

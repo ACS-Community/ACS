@@ -155,6 +155,13 @@ void BulkDataNTSenderImpl::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
 {
 	ACS_TRACE("BulkDataNTSenderImpl::connect - deprecated");
 
+	// check if initialize has been called
+	if( parser_m == 0 && defaultFlowsCount_m == -1 ) {
+		acsErrTypeLifeCycle::LifeCycleExImpl lcEx = acsErrTypeLifeCycle::LifeCycleExImpl(__FILE__,__LINE__,__PRETTY_FUNCTION__);
+		lcEx.log(LM_DEBUG);
+		throw lcEx.getacsErrTypeLifeCycleEx();
+	}
+
 	// Here we currently open all senders, new methods might be added later to the IDL interface
 	openSenders();
 }//connect
