@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.33 2012/01/12 10:01:36 rtobar Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.34 2012/01/17 11:11:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,8 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 
   try
   {
+	  // first let's try to set debug level from env. var - it is set just once
+	  DDSConfiguration::setDebugLevelFromEnvVar();
 	  //RTI logging
 	  NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 			  NDDS_CONFIG_LOG_CATEGORY_API,  (NDDS_Config_LogVerbosity)(configuration_m.DDSLogVerbosity)); //TBD: should be done just once
