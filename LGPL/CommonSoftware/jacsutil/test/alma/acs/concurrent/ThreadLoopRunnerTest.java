@@ -3,7 +3,6 @@ package alma.acs.concurrent;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -91,18 +90,18 @@ public class ThreadLoopRunnerTest extends TestCase
 				sw.reset();
 				
 				// wait till the last execution of the action is over
-				int expectedDuration = (expectedInvocationsPerCycle - 1)* delayMillis + actionWaitMillis;
+				int expectedDurationMillis = (expectedInvocationsPerCycle - 1)* delayMillis + actionWaitMillis;
 				if (delayMode == ScheduleDelayMode.FIXED_DELAY) {
-					expectedDuration += (expectedInvocationsPerCycle - 1) * actionWaitMillis;
+					expectedDurationMillis += (expectedInvocationsPerCycle - 1) * actionWaitMillis;
 				}
-				int timeoutMillis = expectedDuration + allowedThreadJitterMillis;
+				int timeoutMillis = expectedDurationMillis + allowedThreadJitterMillis;
 				boolean awaitRet = sync.await(timeoutMillis, TimeUnit.MILLISECONDS);
 				int actualDuration = (int) sw.getLapTimeMillis();
 				int actualInvocations = myAction.getCount();
 				assertTrue("Timed out after " + timeoutMillis + " ms", awaitRet);
 				assertEquals(expectedInvocationsPerCycle, actualInvocations);
-				assertTrue("Tasks were run faster (" + actualDuration + ") than expected (" + expectedDuration + ")", 
-						actualDuration > expectedDuration - allowedThreadJitterMillis);
+				assertTrue("Tasks were run faster (" + actualDuration + ") than expected (" + expectedDurationMillis + ")", 
+						actualDuration > expectedDurationMillis - allowedThreadJitterMillis);
 				
 				assertTrue(threadLoopRunner.isLoopRunning());
 				assertFalse(threadLoopRunner.isDisabled());
@@ -144,7 +143,7 @@ public class ThreadLoopRunnerTest extends TestCase
 			// setting delay mode before running loop is fine
 			threadLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_RATE);
 			threadLoopRunner.runLoop();
-			// setting delay mode before running loop must give exception
+			// setting delay mode while running loop must give exception
 			try {
 				threadLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_DELAY);
 				fail("Expected IllegalStateException");
@@ -155,17 +154,27 @@ public class ThreadLoopRunnerTest extends TestCase
 			Thread.sleep(100);
 			// task runs for 1 second, so it should still be running now.
 			assertTrue(threadLoopRunner.isTaskRunning());
-			// changing the delay while the task is running should wait for the task to finish, and then restart the loop
+			// changing the delay time while the task is running should stop the loop, return immediately, 
+			// and later restart the loop.
 			StopWatch sw = new StopWatch();
 			delayMillis = 200;
 			threadLoopRunner.setDelayTime(delayMillis, TimeUnit.MILLISECONDS);
-			assertTrue("Our 1-second- task should have blocked the setDelayTime call for at least 800 ms", 
-					sw.getLapTimeMillis() >= 800);
-			assertTrue(threadLoopRunner.isLoopRunning());
+			assertTrue("Calling setDelayTime should return very quickly, certainly in less than 100 ms.", 
+					sw.getLapTimeMillis() <= 100);
+
+			// task loop should be stopped right after call to setDelayTime
+			assertFalse(threadLoopRunner.isLoopRunning());
+			// when task has finished (should be the case after actionWaitMillis and all the calls above),
+			// the task loop should be running again, with the new delay time 200  ms.
+			Thread.sleep(actionWaitMillis);
+//			assertTrue(threadLoopRunner.isLoopRunning());
 			assertEquals(delayMillis, threadLoopRunner.getDelayTimeMillis());
-			// verify after 10 repetitions that the new shorter delay time was applied
+			
+			// verify after 10 repetitions that the new shorter delay time was actually applied
 			sync = new CountDownLatch(10);
 			myAction.reset(sync);
+			logger.info("Now waiting for the loop to execute 10 times:");
+			
 			assertTrue("Got timeout, after just " + myAction.getCount() + " task executions", 
 					sync.await((actionWaitMillis + delayMillis) * 10 + 100, TimeUnit.MILLISECONDS));
 		}
