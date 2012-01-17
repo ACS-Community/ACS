@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.26 2012/01/12 09:33:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.27 2012/01/17 11:10:12 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -36,8 +36,8 @@
 namespace AcsBulkdata
 {
 
-///DDS configuration class at this moment it is common for all configuration classes but can be later split
-// ... if needed
+///DDS configuration class at this moment it is common for all configuration classes
+//  ... but can be later split if needed
 class DDSConfiguration
 {
 	friend class BulkDataNTDDS;
@@ -72,6 +72,16 @@ public:
 	 * Default qos_profile to use for receiver flows
 	 */
 	static const char* const DEFAULT_RECEIVER_FLOW_PROFILE;
+
+	/// BulkData NT debug level. The value is read from env. variable BULKDATA_NT_DEBUG
+	/// now it effects the whole BD running in a single process, but
+	/// if needed can be later re-factor that can be set per stream/flow
+	static short debugLevel;
+
+	/**
+	 * It tries to read BULKDATA_NT_DEBUG and if it is there set the value of debugLevel
+	 */
+	static void setDebugLevelFromEnvVar();
 
 protected:
 	std::string libraryQos;  /// QoS configuration library

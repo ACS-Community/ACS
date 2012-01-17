@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.13 2012/01/12 09:33:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.14 2012/01/17 11:10:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,6 +25,7 @@
 
 #include "bulkDataNTConfiguration.h"
 #include <ndds_config_c.h>
+#include <logging.h>
 
 using namespace AcsBulkdata;
 
@@ -36,6 +37,8 @@ const char* const DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE= "SenderFlowDefa
 const char* const DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE = "ReceiverStreamDefaultQosProfile";
 const char* const DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE = "ReceiverFlowDefaultQosProfile";
 
+short DDSConfiguration::debugLevel = -1;
+
 const char* const StreamConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
 
 DDSConfiguration::DDSConfiguration()
@@ -44,6 +47,24 @@ DDSConfiguration::DDSConfiguration()
 	ignoreUserProfileQoS = true;
 	ignoreUserProfileQoS = true;
 }
+
+void DDSConfiguration::setDebugLevelFromEnvVar()
+{
+	if (debugLevel<0) //we read and set debug level jsut once
+	{
+		char *bulkDataNtDebug = getenv("BULKDATA_NT_DEBUG");
+		if (bulkDataNtDebug && *bulkDataNtDebug)
+		{
+			debugLevel = atoi(bulkDataNtDebug);
+			//TBD we can set here also DDSLogVerbosity
+			ACS_SHORT_LOG((LM_INFO, "BulkDataNT debug level read from env. var. BULKDATA_NT_DEBUG and set to %d", debugLevel));
+		}
+		else
+		{
+			debugLevel=0;
+		}
+	}
+}//setDebugLevelFromEnvVar
 
 StreamConfiguration::StreamConfiguration()
 {
