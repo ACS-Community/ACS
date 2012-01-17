@@ -18,6 +18,10 @@
 
 #ifdef __GNUC__
 
+#ifdef __CYGWIN__
+#define LOKI_EXPORT_SPEC __declspec(dllexport)
+#define LOKI_IMPORT_SPEC __declspec(dllimport)
+#else
 #ifdef _HAVE_GCC_VISIBILITY
 #define LOKI_EXPORT_SPEC __attribute__ ((visibility("default")))
 #define LOKI_IMPORT_SPEC 
@@ -25,6 +29,7 @@
 #define LOKI_EXPORT_SPEC
 #define LOKI_IMPORT_SPEC 
 #endif
+#endif //__CYGWIN__
 
 #else
 
@@ -47,9 +52,7 @@
 
 #ifdef LOKI_MAKE_DLL
 #define LOKI_EXPORT LOKI_EXPORT_SPEC
-#endif
-
-#ifdef LOKI_DLL
+#else
 #define LOKI_EXPORT LOKI_IMPORT_SPEC
 #endif
 

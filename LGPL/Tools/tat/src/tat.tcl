@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.112 2011/10/11 13:21:16 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.113 2012/01/17 11:57:11 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -2850,6 +2850,11 @@ global gv
         if {![catch {set env(LD_LIBRARY_PATH) $libPath:$env(LD_LIBRARY_PATH)}]} {
             tatPuts "Redefined LD_LIBRARY_PATH to: $env(LD_LIBRARY_PATH)"
         }
+        if { $env(OSYSTEM) == $env(CYGWIN_VER) } {
+            if {![catch {set env(PATH) $libPath:$env(PATH)}]} {
+                tatPuts "Redefined PATH to: $env(PATH)"
+            }
+        }
     } elseif {[file exists ../lib]} {
         error "Non-directory ../lib already exists."
     } else {
@@ -2865,6 +2870,11 @@ global gv
 	    if {![catch {set env(LD_LIBRARY_PATH) $libPath:$env(LD_LIBRARY_PATH)}]} {
 	        tatPuts "Redefined LD_LIBRARY_PATH to: $env(LD_LIBRARY_PATH)"
 	    }
+       if { $env(OSYSTEM) == $env(CYGWIN_VER) } {
+           if {![catch {set env(PATH) $libPath:$env(PATH)}]} {
+               tatPuts "Redefined PATH to: $env(PATH)"
+           }
+       }
         }
     }
     if {[info exists env(PYTHONPATH)]} {

@@ -52,6 +52,9 @@ SUBSYSTEM = "gui"
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
 endif
+ifeq ($(os),$(CYGWIN_VER))
+    MAKE_FLAGS = "NOCCS=1"
+endif
 
 
 SHELL=/bin/ksh

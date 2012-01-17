@@ -22,7 +22,11 @@
 #  Build done when necessary before running the tests.
 
 # Suffix of executable applicaions
+ifeq ($(OSYSTEM),$(CYGWIN_VER))
+EXEEXT =.exe
+else
 EXEEXT =
+endif
 
 # For version number LOG4CPP_VER
 include common.Makefile

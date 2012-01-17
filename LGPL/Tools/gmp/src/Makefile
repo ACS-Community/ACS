@@ -21,7 +21,11 @@ ifeq ($(ARCH_RET), 1)
    BUILD_PLATFORM_FLAGS=
 else
   ifndef GMP_OPTIMIZE
-     BUILD_PLATFORM_FLAGS=--build=pentium3-pc-linux-gnu
+    ifeq ($(OS), $(CYGWIN_VER))
+      BUILD_PLATFORM_FLAGS=--build=pentium3-pc-cygwin
+    else
+      BUILD_PLATFORM_FLAGS=--build=pentium3-pc-linux-gnu
+    endif
   endif
 endif
 ##############################################

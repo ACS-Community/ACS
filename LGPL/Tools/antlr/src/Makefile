@@ -21,7 +21,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.7 2011/11/28 16:22:27 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/01/17 11:57:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -107,6 +107,7 @@ man :
 install : install_all
 	@echo " . . . installing antlr C++ library and include files . . . "
 	@cd antlr-${ANTLR_VER_2}; make SUBDIRS="antlr lib" install
+	@sed -i "s/  cygwin|mingw|msys)/  mingw|msys)/" ${INSTALL_ROOT}/bin/antlr
 	@echo " . . . 'install' done . . . "
 
 .PHONY:unpack
