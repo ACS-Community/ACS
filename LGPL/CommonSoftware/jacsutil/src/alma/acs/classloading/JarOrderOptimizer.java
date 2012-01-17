@@ -108,7 +108,7 @@ public class JarOrderOptimizer implements Comparator<File>
 	/**
 	 * key = (String) jarname, value = (Integer) position.
 	 */
-	private Map<String, Integer> topJarMap;
+	private final Map<String, Integer> topJarMap;
 	
 	JarOrderOptimizer(boolean verbose) {
 		this.verbose = verbose;
@@ -116,14 +116,14 @@ public class JarOrderOptimizer implements Comparator<File>
 		topJarMap = new HashMap<String, Integer>();
 		int i = 0;
 		for (i = 0; i < orderedAcsJarNames.length; i++) {
-			topJarMap.put(orderedAcsJarNames[i], new Integer(i));
+			topJarMap.put(orderedAcsJarNames[i], i);
 		}
 		String applJarPath = System.getProperty(PROPERTY_APPLICATION_TOPJARS);
 		if (applJarPath != null) {
 			String[] applJarNames = parseJarNames(applJarPath);
 			for (int j=0; j < applJarNames.length; j++) {
 				if (!topJarMap.containsKey(applJarNames[j])) {
-					topJarMap.put(applJarNames[j], new Integer(i+j));
+					topJarMap.put(applJarNames[j], (i+j));
 				}
 			}
 		}
@@ -162,7 +162,7 @@ public class JarOrderOptimizer implements Comparator<File>
 			if (i2 != null) {
 				ret = 1;
 			}
-			else { // both not in list -- need to find some sorting criterium, why not alphabetically				
+			else { // both not in list -- need to find some sorting criterion, why not alphabetically
 				return n1.compareTo(n2);
 			}
 		}
