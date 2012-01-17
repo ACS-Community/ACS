@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.42 2012/01/12 12:01:31 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.43 2012/01/17 11:25:03 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -24,6 +24,7 @@
  */
 
 #include "bulkDataNTReaderListener.h"
+#include "bulkDataNTConfiguration.h"
 #include "ACS_BD_Errors.h"
 #include <ACS_DDS_Errors.h>
 #include <ACSErrTypeCommon.h>
@@ -140,8 +141,12 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     {
                       if (dataLength_m==0) // we get the first data frame
                         {
-                          std::cout << " *************************   New sendData @ " << topicName_m << " *******************************" << std::endl;
-                          start_time = ACE_OS::gettimeofday();
+                    	  if (DDSConfiguration::debugLevel>0)
+                    	  {
+                    		  // the message can cause perfomance penality for small data sizes
+                    		  std::cout << " *************************   New sendData @ " << topicName_m << " *******************************" << std::endl;
+                    		  start_time = ACE_OS::gettimeofday();
+                    	  }//if
                           totalFrames_m = message.restDataLength+1;
                           frameCounter_m = 0;
                         }//if
@@ -167,15 +172,19 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                         }
                       else //message.restDataLength==0 what means we got the last frame
                         {
-                          ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
-                          cout <<	topicName_m << " Received all data from sendData: " << dataLength_m << " Bytes in ";
-                          cout <<(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
-                          cout << "secs. => Rate: ";
-                          cout << ((dataLength_m/(1024.0*1024.0))/(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ))) << "MBytes/sec" << endl;
+                    	  if (DDSConfiguration::debugLevel>0)
+                    	  {
+                    		  // the messages can cause perfomance penality for small data sizes
+                    		  ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
+                    		  cout <<	topicName_m << " Received all data from sendData: " << dataLength_m << " Bytes in ";
+                    		  cout <<(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
+                    		  cout << "secs. => Rate: ";
+                    		  cout << ((dataLength_m/(1024.0*1024.0))/(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ))) << "MBytes/sec" << endl;
 
-                          DDS::SampleLostStatus s;
-                          reader->get_sample_lost_status(s);
-                          cerr << topicName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
+                    		  DDS::SampleLostStatus s;
+                    		  reader->get_sample_lost_status(s);
+                    		  cerr << topicName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
+                    	  }
                           dataLength_m = 0;
                         }
 
