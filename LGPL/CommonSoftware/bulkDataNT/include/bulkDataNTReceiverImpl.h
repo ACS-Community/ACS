@@ -109,7 +109,37 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void openReceiver();
 
+    /**
+     *
+     * @param stream_name
+     */
     virtual void openReceiverStream(const char *stream_name);
+
+    /**
+     *
+     * @param stream_name
+     * @param stream_cfg
+     * @todo to be implemented
+     */
+    void openReceiverStreamCfg (const char * stream_name,  const char * stream_cfg);
+
+    /**
+     *
+     * @param stream_name
+     * @param flow_name
+     * @todo to be implemented
+     */
+    void openReceiverFlow (const char * stream_name, const char * flow_name);
+
+    /**
+     *
+     * @param stream_name
+     * @param flow_name
+     * @param flow_cfg
+     * @todo to be implemented
+     */
+    void openReceiverFlowCfg (const char * stream_name, const char * flow_name, const char * flow_cfg);
+
 
     /**
      *  @throw ACSBulkDataError::AVReceiverConfigErrorEx

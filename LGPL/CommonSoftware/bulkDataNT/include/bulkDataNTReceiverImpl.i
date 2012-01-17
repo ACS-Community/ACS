@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.19 2012/01/16 13:56:04 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.20 2012/01/17 10:27:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -282,6 +282,25 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 	}
 
 }
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::openReceiverStreamCfg (const char * stream_name,  const char * stream_cfg)
+{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::openReceiverStreamCfg NOT implemented yet."));
+}
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::openReceiverFlow (const char * stream_name, const char * flow_name)
+{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::openReceiverFlow NOT implemented yet."));
+}
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::openReceiverFlowCfg (const char * stream_name, const char * flow_name, const char * flow_cfg)
+{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::openReceiverFlowCfg NOT implemented yet."));
+}
+
 
 template<class TCallback>
 AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createReceiverStream(const char *stream_name) {
