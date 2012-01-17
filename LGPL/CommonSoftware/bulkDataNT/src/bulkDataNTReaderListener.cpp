@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.43 2012/01/17 11:25:03 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.44 2012/01/17 13:09:16 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -114,7 +114,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
               {
               case ACSBulkData::BD_PARAM:
                 {
-                  cout << topicName_m << " startSend: parameter size: " << message.data.length() << endl;
+                  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "startSend has been received on: %s with paramter size: %d", topicName_m.c_str(), message.data.length()));
                   if (currentState_m==StartState || currentState_m==StopState)
                     {
                       dataLength_m = 0;
@@ -144,7 +144,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     	  if (DDSConfiguration::debugLevel>0)
                     	  {
                     		  // the message can cause perfomance penality for small data sizes
-                    		  std::cout << " *************************   New sendData @ " << topicName_m << " *******************************" << std::endl;
+                    		  ACS_SHORT_LOG((LM_DEBUG, "New sendData has arrived for: %s", topicName_m.c_str()));
                     		  start_time = ACE_OS::gettimeofday();
                     	  }//if
                           totalFrames_m = message.restDataLength+1;
@@ -176,14 +176,17 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     	  {
                     		  // the messages can cause perfomance penality for small data sizes
                     		  ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
-                    		  cout <<	topicName_m << " Received all data from sendData: " << dataLength_m << " Bytes in ";
-                    		  cout <<(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
-                    		  cout << "secs. => Rate: ";
-                    		  cout << ((dataLength_m/(1024.0*1024.0))/(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ))) << "MBytes/sec" << endl;
+                    		  double deltaTime = (elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
+                    		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "All data from sendData has been received: %ld (Bytes) on: %s in %f sec. Receiver Data Rate: %f MBytes/sec",
+                    				  dataLength_m, topicName_m.c_str(), deltaTime,
+                    				  ((dataLength_m/(1024.0*1024.0))/deltaTime)
+                    				  ));
 
                     		  DDS::SampleLostStatus s;
                     		  reader->get_sample_lost_status(s);
-                    		  cerr << topicName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
+                    		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Lost samples at the end of sendData on: %s: total_count: %d total_count_change: %d ",
+                    				  topicName_m.c_str(), s.total_count, s.total_count_change
+                    				  ))
                     	  }
                           dataLength_m = 0;
                         }
@@ -220,8 +223,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   if (currentState_m==DataRcvState)
                     {
                       currentState_m = StopState;
-                      cout <<	topicName_m << " Received sendStop" << endl;
-                      cout << "===============================================================" << endl;
+                      ACS_SHORT_LOG((LM_DEBUG, "sendStop has been received for: %s", topicName_m.c_str()));
                       if (frameCounter_m==0)
                         {
                           ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
