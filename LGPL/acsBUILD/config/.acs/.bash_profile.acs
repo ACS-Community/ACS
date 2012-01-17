@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.117 2012/01/09 14:45:40 tstaig Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.118 2012/01/17 22:02:18 tstaig Exp $"
 #
 #
 #
@@ -1421,10 +1421,10 @@ export ACS_INSTANCE
 export OSYSTEM
 export PATH_SEP
 export ACS_TMP
+export CYGWIN_VER
 
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
-	export CYGWIN_VER
 	export LOGNAME=`logname`
 	export CYGWIN_ROOT=`cygpath -m /`
 fi
