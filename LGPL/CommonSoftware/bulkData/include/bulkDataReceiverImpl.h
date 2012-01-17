@@ -109,7 +109,25 @@ class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void openReceiver() ;
 
-    virtual void openReceiverStream(const char * stream_name);
+    void openReceiverStream(const char * stream_name)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::openReceiverStream NOT implemented. The method is implemented just in bulkDataNT!"));
+    }
+
+    void openReceiverStreamCfg (const char * stream_name,  const char * stream_cfg)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::openReceiverStreamCfg NOT implemented. The method is implemented just in bulkDataNT!"));
+    }
+
+    void openReceiverFlow (const char * stream_name, const char * flow_name)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::openReceiverFlow NOT implemented. The method is implemented just in bulkDataNT!"));
+    }
+
+    void openReceiverFlowCfg (const char * stream_name, const char * flow_name, const char * flow_cfg)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::openReceiverFlowCfg NOT implemented. The method is implemented just in bulkDataNT!"));
+    }
 
     /**
      *  @throw ACSBulkDataError::AVReceiverConfigErrorEx

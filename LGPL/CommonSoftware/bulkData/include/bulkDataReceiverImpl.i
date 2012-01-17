@@ -72,13 +72,6 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 }
 
 template<class TCallback>
-void BulkDataReceiverImpl<TCallback>::openReceiverStream(const char * stream_name)
-{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::openReceiverStream NOT implemented"));
-}
-
-
-template<class TCallback>
 bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverConfig()
 {
     ACS_TRACE("BulkDataReceiverImpl::getReceiverConfig");
