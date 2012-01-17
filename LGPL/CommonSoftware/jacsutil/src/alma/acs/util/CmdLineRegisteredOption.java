@@ -46,9 +46,31 @@ public class CmdLineRegisteredOption extends CmdLineOption
 		m_minValuesCount = minValuesCount;
 	}
 	
+	/**
+	 * @return The minimal number of required arguments, as passed in the constructor.
+	 */
 	public int getMinValueCount()
 	{
 		return m_minValuesCount;
+	}
+
+	/**
+	 * Returns <code>super.equals(obj)</code> because the minimum number required arguments
+	 * should not be part of the CmdLineRegisteredOption identity (only the name gets used).
+	 * We override this method anyway, to document this fact.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+	
+	/** 
+	 * hashCode should only depend on option name, thus calling <code>super.hashCode()</code>.
+	 * We override this method to document this fact.
+	 */
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

@@ -55,6 +55,7 @@ public class CmdLineOption
 	/**
 	 * @see java.lang.Object#equals(Object)
 	 */
+	@Override
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
@@ -70,6 +71,7 @@ public class CmdLineOption
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode()
 	{
 		return name.hashCode();
