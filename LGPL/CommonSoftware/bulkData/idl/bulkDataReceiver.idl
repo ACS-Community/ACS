@@ -64,9 +64,52 @@ module bulkdata
 	void openReceiver()
 	    raises (ACSBulkDataError::AVOpenReceiverErrorEx);
 	    
+	/**
+	 * Opens/creates a stream with name stream_name. 
+     * The stream has to be defined in the CDB under alma/<stream_name>.
+     * If you want to create a stream with different configuration plase use openReceiverStreamCfg.
+     * This method is implemented jsut for new bulk data based on DDS (BulkDataNT)
+     * @param stream_name name of stream that should be created
+	 * @todo throw better exception(s) 
+	 */
 	void openReceiverStream(in string stream_name)
-        raises (ACSBulkDataError::AVOpenReceiverErrorEx);
-	    
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	
+	/**
+	 * Opens/creates a stream with name stream_name using CDB configuration stream_cfg 
+	 * There should be a stream configuration in the CDB under alma/<stream_cfg>.
+     * This method is implemented just for new bulk data based on DDS (BulkDataNT)
+	 * @param stream_name name of stream that should be created
+	 * @param stream_cfg name of stream configuration in CDB
+     * @todo throw better exception(s)
+	 */
+	void openReceiverStreamCfg(in string stream_name, in string stream_cfg)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	
+	/**
+	 * Opens/creats a flow with name flown_name on already existing stream with name stream_name.
+	 * The flow has to be defined in the CDB under alma/<stream_name> in<stream_name>.xml file
+     * If you want to create a flow with different configuration plase use openReceiverFlowCfg.
+     * This method is implemented just for new bulk data based on DDS (BulkDataNT)
+	 * @param stream_name name of the stream where the flow shoudl be created
+     * @param flow_name name of flow that we want to create
+     * @todo throw better exceptions
+	 */
+	void openReceiverFlow(in string stream_name, in string flow_name)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	
+	/**
+	 * Opens/creats a flow with name flown_name using CDB configuration flow_cfg on already existing stream with name stream_name.
+     * There should be a flow configuration in the CDB under alma/<stream_cfg> in<stream_name>.xml file
+	 * This method is implemented just for new bulk data based on DDS (BulkDataNT)
+	 * @param stream_name name of the stream where the flow shoudl be created
+	 * @param flow_name name of flow that we want to create
+     * @param flow_cfg  name of flow configuration in CDB.
+	 * @todo throw better exceptions
+	 */
+	void openReceiverFlowCfg(in string stream_name, in string flow_name, in string flow_cfg)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+
 
 	/** This property is the Receiver Steam End Point.
 	 */
