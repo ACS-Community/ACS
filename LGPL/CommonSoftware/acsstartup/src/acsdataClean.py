@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.8 2012/01/04 00:06:26 tstaig Exp $
+# @(#) $Id: acsdataClean.py,v 1.9 2012/01/17 16:15:19 hsommer Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -47,7 +47,7 @@ import socket
 from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.8 2012/01/04 00:06:26 tstaig Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.9 2012/01/17 16:15:19 hsommer Exp $"
 #------------------------------------------------------------------------------
 
 ################################################################################################
@@ -71,6 +71,7 @@ def cleanDirectory(dir):
           'ACS_INSTANCE.9'       : '',
           'USED_CONTAINER_PORTS' : '',
           '.acs_command_history' : '',
+          'ifr_cache.0'         : '',
           'ifr_cache.1'         : '',
           'ifr_cache.2'         : '',
           'ifr_cache.3'         : '',
