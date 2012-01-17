@@ -30,7 +30,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -38,7 +37,8 @@ import java.util.logging.Logger;
  * It is similar to the loop in C++ class ACS::Thread.
  * <p>
  * The code of the task to be executed gets passed to the constructor as a {@link Runnable} object.
- * The time between executions is given in the constructor and can later be changed through {@link #setDelayTime(long, TimeUnit)}.
+ * The time between executions is given in the constructor and can later be changed through 
+ * {@link #setDelayTime(long, TimeUnit)}.
  * <p> 
  * If the task takes some time to execute, you should consider implementing a soft cancel option. To do this,
  * extend {@link #CancelableRunnable} instead of simply implementing <code>Runnable</code>.
@@ -62,15 +62,43 @@ import java.util.logging.Logger;
 public class ThreadLoopRunner
 {
 	private final Logger logger;
-	private final ScheduledExecutorService runner;
-	private final TaskWrapper taskWrapper;
-	private final AtomicBoolean isDefunct;
 	
-	public static enum ScheduleDelayMode {FIXED_RATE, FIXED_DELAY};
+	/**
+	 * The single-threaded executor that backs our ThreadLoopRunner.
+	 */
+	private final ScheduledExecutorService runner;
+	
+	/**
+	 * Wraps the user-supplied task, to enable this class to synchronize
+	 * with the task execution that otherwise is delegated to standard JDK {@link #runner}.
+	 */
+	private final TaskWrapper taskWrapper;
+	
+	public static enum ScheduleDelayMode {FIXED_RATE, FIXED_DELAY}
 	private volatile ScheduleDelayMode delayMode;
 	
-	private volatile ScheduledFuture<?> loop;
+	/**
+	 * Delay time in ns.
+	 */
 	private volatile long delayTimeNanos;
+	
+	/**
+	 * The task loop. Must be protected by {@link #loopLock}.
+	 */
+	private volatile ScheduledFuture<?> loop;
+	
+	/**
+	 * A flag set by {@link #shutdown(long, TimeUnit)} and used by other methods
+	 * to throw <code>IllegalStateException</code> during or after shutdown.
+	 * It can be queried by {@link #isDisabled()}.
+	 */
+	private final AtomicBoolean isDefunct;
+	
+	/**
+	 * A lock to synchronize on changes of the task loop ({@link #loop}).
+	 */
+	private final ReentrantLock loopLock = new ReentrantLock();
+	
 
 
 	/**
@@ -89,12 +117,16 @@ public class ThreadLoopRunner
 		
 		this.runner = new ScheduledThreadPoolExecutor(1, tf);
 		
-		this.taskWrapper = new TaskWrapper(task);
+		this.taskWrapper = new TaskWrapper(task, loopLock, logger);
 		this.delayMode = ScheduleDelayMode.FIXED_RATE;
 		isDefunct = new AtomicBoolean(false);
 		setDelayTime(delayTime, unit);
 	}
 
+	/**
+	 * @return The delay time in ms, as set in the constructor or changed afterwards 
+	 * in {@link #setDelayTime(long, TimeUnit)}.
+	 */
 	public long getDelayTimeMillis() {
 		return TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS);
 	}
@@ -102,43 +134,48 @@ public class ThreadLoopRunner
 	/**
 	 * Sets the time between calls to the loop action object,
 	 * where the time for the task itself is included or not,
-	 * depending on the set {@link ScheduleDelayMode}.
+	 * depending on the chosen {@link ScheduleDelayMode}.
 	 * <p>
-	 * If this method is called while the thread loop is already running, 
-	 * it will wait for the current task to finish and then reschedule the actions
-	 * at the new rate. If the currently running task fails to finish after 10 seconds,
-	 * a warning is logged and <code>false</code> is returned.
+	 * If this method is called while the thread loop is already running,
+	 * the task will be run again right after the currently running task
+	 * has finished; only after that run we'll get into the proper delay timing.
 	 * <p>
-	 * Note that it is a limitation in the underlying {@link ScheduledThreadPoolExecutor}
-	 * that the delay time cannot be changed without stopping and restarting the loop.
+	 * Implementation note: If this method is called while the thread loop is already running, 
+	 * it will stop the loop, apply the new value, and then re-start the loop. 
+	 * It is a limitation in the underlying {@link ScheduledThreadPoolExecutor}
+	 * that the delay time cannot be changed without stopping and restarting the loop (= repetitive task).
 	 * If this becomes a problem, we could use the concurrent lib classes in a more customized way.
 	 * 
 	 * @param delayTime new delay time
 	 * @param unit
 	 * @see #setDelayMode(ScheduleDelayMode)
 	 */
-	public synchronized boolean setDelayTime(long delayTime, TimeUnit unit) {
+	public void setDelayTime(final long delayTime, final TimeUnit unit) {
+
 		if (isDefunct.get()) {
 			throw new IllegalStateException("object defunct");
 		}
-		boolean ret = true;
 		
-		delayTimeNanos = TimeUnit.NANOSECONDS.convert(delayTime, unit);
-		if (isLoopRunning()) {
-			try {
-				ret = suspendLoopAndWait(10, TimeUnit.SECONDS);
-				if (!ret) {
-					logger.log(Level.WARNING, "Timed out after 10 seconds waiting for currently running task to finish");
-				}
-			} catch (InterruptedException ex) {
-				ret = false;
-				logger.log(Level.WARNING, "Interrupted while waiting for currently running task to finish", ex);
+		loopLock.lock();
+		try {
+			// store the value
+			delayTimeNanos = TimeUnit.NANOSECONDS.convert(delayTime, unit);
+			if (isLoopRunning()) {
+				// stop the loop, and schedule restarting it after the currently running task (if any) has finished
+				suspendLoop();
+				taskWrapper.restartLoopAfterCurrentTaskFinished(new Runnable() {
+					@Override
+					public void run() {
+						logger.finer("Will restart the loop now, which was stopped to change the delay time.");
+						// @TODO: here we could sleep a bit to keep the intended delay rate/length, if needed.
+						runLoop();
+					}
+				});
 			}
-			// @TODO ? interrupt thread if ret==false ?
-
-			runLoop();
 		}
-		return ret;
+		finally {
+			loopLock.unlock();
+		}
 	}
 
 
@@ -169,7 +206,7 @@ public class ThreadLoopRunner
 	 *           Note that the C++ implementation uses equivalent of FIXED_RATE.
 	 * @throws IllegalStateException if called when the loop is running, or after shutdown.
 	 */
-	public synchronized void setDelayMode(ScheduleDelayMode delayMode) {
+	public void setDelayMode(ScheduleDelayMode delayMode) {
 		if (isDefunct.get()) {
 			throw new IllegalStateException("object already disabled");
 		}
@@ -190,22 +227,33 @@ public class ThreadLoopRunner
 	 *                   or after shutdown
 	 * @see #isLoopRunning()
 	 */
-	public synchronized void runLoop() {
+	public void runLoop() {
+		
 		if (isDefunct.get()) {
 			throw new IllegalStateException("object already disabled");
 		}
-		if (isLoopRunning()) {
-			throw new IllegalStateException("Loop is already running");
-		}
-		if (isTaskRunning()) {
-			throw new IllegalStateException("The task's run method is still being executed");
-		}
 
-		if (delayMode == ScheduleDelayMode.FIXED_RATE) {
-			loop = runner.scheduleAtFixedRate(taskWrapper, 0, delayTimeNanos, TimeUnit.NANOSECONDS);
-		}
-		else {
-			loop = runner.scheduleWithFixedDelay(taskWrapper, 0, delayTimeNanos, TimeUnit.NANOSECONDS);
+		loopLock.lock();
+		
+		try {
+			if (isLoopRunning()) {
+				throw new IllegalStateException("Loop is already running");
+			}
+			
+			if (isTaskRunning()) {
+				throw new IllegalStateException("The task's run method is still being executed");
+			}
+			
+			if (delayMode == ScheduleDelayMode.FIXED_RATE) {
+				loop = runner.scheduleAtFixedRate(taskWrapper, 0, delayTimeNanos, TimeUnit.NANOSECONDS);
+				logger.fine("Started task loop with FIXED_RATE=" + TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS) + " ms.");
+			}
+			else {
+				loop = runner.scheduleWithFixedDelay(taskWrapper, 0, delayTimeNanos, TimeUnit.NANOSECONDS);
+				logger.fine("Started task loop with FIXED_DELAY=" + TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS) + " ms.");
+			}
+		} finally {
+			loopLock.unlock();
 		}
 	}
 
@@ -213,8 +261,13 @@ public class ThreadLoopRunner
 	/**
 	 * @return <code>true</code> if the loop is running, regardless of whether the task is currently being executed.
 	 */
-	public synchronized boolean isLoopRunning() {
-		return (loop != null);
+	public boolean isLoopRunning() {
+		loopLock.lock();
+		try {
+			return (loop != null);
+		} finally {
+			loopLock.unlock();
+		}
 	}
 	
 	/**
@@ -239,19 +292,36 @@ public class ThreadLoopRunner
 	 * as a {@link CancelableRunnable}.
 	 * Note also that this call returns quickly, without waiting for a possibly running action to finish.
 	 * <p>
-	 * The loop can be started again later via {@link #runLoop()}.
+	 * The loop can be started again later via {@link #runLoop()}, once the running task has finished.
 	 * Suspending and restarting the loop does not lead to the creation of a new Thread.
 	 * 
 	 * @throws IllegalStateException if called after shutdown. 
 	 * @see #suspendLoopAndWait(long, TimeUnit)
 	 */
-	public synchronized void suspendLoop() {
+	public void suspendLoop() {
 		if (isDefunct.get()) {
 			throw new IllegalStateException("object already disabled");
 		}
-		if (loop != null) {
-			loop.cancel(false);
-			loop = null;
+		
+		loopLock.lock();
+		try {
+			if (isLoopRunning()) {
+				if (loop.cancel(false)) {
+					logger.finer("Suspended the task loop.");
+				}
+				else {
+					logger.fine("Failed to suspend the loop (without having attempted to cancel a running task, if any).");
+				}
+				loop = null;
+				// also remove special post-run task, if any
+				this.taskWrapper.restartLoopAfterCurrentTaskFinished(null);
+			}
+			else {
+				logger.fine("Loop was not running, nothing to suspend.");
+			}
+		}
+		finally {
+			loopLock.unlock();
 		}
 	}
 	
@@ -264,12 +334,13 @@ public class ThreadLoopRunner
 	 * 
 	 * @param timeout
 	 * @param unit
-	 * @return true if all went fine within the given time, otherwise false.
+	 * @return true if all went fine within the given time, 
+	 *         otherwise false (in which case the loop is still canceled)
 	 * @throws InterruptedException 
 	 *            if the calling thread is interrupted while waiting for the <code>run</code> method to finish.
 	 * @throws IllegalStateException if called after shutdown. 
 	 */
-	public synchronized boolean suspendLoopAndWait(long timeout, TimeUnit unit) throws InterruptedException {
+	public boolean suspendLoopAndWait(long timeout, TimeUnit unit) throws InterruptedException {
 		suspendLoop();
 		return taskWrapper.awaitTaskFinish(timeout, unit);
 	}
@@ -280,7 +351,7 @@ public class ThreadLoopRunner
 	 * or otherwise letting the currently running loop action finish.
 	 * <p>
 	 * The <code>ThreadLoopRunner</code> cannot be used any more after this method has been called.
-	 * (Then {@link #isDisabled() will return <code>true</code>, other methods will throw IllegalStateException.)
+	 * (Then {@link #isDisabled()} will return <code>true</code>, other methods will throw IllegalStateException.)
 	 * <p>
 	 * The <code>timeout</code> refers to how long this method waits for the task to terminate.
 	 * If it terminates before the given timeout, then <code>true</code> is returned, otherwise <code>false</code>
@@ -293,23 +364,31 @@ public class ThreadLoopRunner
 	 * @throws InterruptedException
 	 * @throws IllegalStateException if called after shutdown. 
 	 */
-	public synchronized boolean shutdown(long timeout, TimeUnit unit) throws InterruptedException {
+	public boolean shutdown(long timeout, TimeUnit unit) throws InterruptedException {
 		if (isDefunct.getAndSet(true)) {
 			throw new IllegalStateException("object already disabled");
 		}
 		
-		if (loop != null) {
-			// cancel current loop action
-			taskWrapper.attemptCancelTask();
-			// prevent further actions from being scheduled
-			loop.cancel(false);
-			loop = null;
-			runner.shutdown();
-			return runner.awaitTermination(timeout, unit);
+		loopLock.lock();
+		try {
+			if (isLoopRunning()) {
+				// cancel current loop action
+				taskWrapper.attemptCancelTask();
+				// prevent further actions from being scheduled
+				loop.cancel(false);
+				loop = null;
+				runner.shutdown();
+				logger.finer("Task loop has been shut down, will wait for it to fully terminate.");
+			}
+			else {
+				logger.finer("Nothing to shut down, task loop was not running.");
+				return true;
+			}
+		} finally {
+			loopLock.unlock();
 		}
-		else {
-			return true;
-		}
+		// this waiting we should do outside of loopLock
+		return runner.awaitTermination(timeout, unit);
 	}
 
 
@@ -348,26 +427,66 @@ public class ThreadLoopRunner
 	 */
 	private static class TaskWrapper implements Runnable {
 		
+		private final Logger logger;
+		
+//		/**
+//		 * Counter for how many times the task has been run, including an ongoing run if any.
+//		 * Could be useful for debugging
+//		 */
+//		private static final AtomicLong runCount = new AtomicLong(0);
+
+		/**
+		 * The delegate Runnable that gets called from inside our run method.
+		 */
 		private final Runnable delegate;
+		
+		/**
+		 * A lock to synchronize on a single task execution.
+		 */
 		private final ReentrantLock runLock;
+		
+		/**
+		 * A lock to synchronize on changes of the task loop.
+		 */
+		private final ReentrantLock loopLock;
+		
 		private volatile boolean isRunning;
 		
-		TaskWrapper(Runnable delegate) {
+		/**
+		 * Access must be protected by loopLock.
+		 */
+		private volatile Runnable restartLoopRunnable;
+		
+		TaskWrapper(Runnable delegate, ReentrantLock loopLock, Logger logger) {
+			this.logger = logger;
 			this.delegate = delegate;
 			runLock = new ReentrantLock();
+			this.loopLock = loopLock;
 			isRunning = false;
 		}
-		
+
 		@Override
 		public void run() {
 			runLock.lock();
-			isRunning = true;
 			try {
+//				runCount.incrementAndGet();
+				isRunning = true;
 				delegate.run();
 			}
 			finally {
-				isRunning = false;
 				runLock.unlock();
+				isRunning = false;
+			}
+			
+			// execute special post-run-task, if any.
+			loopLock.lock();
+			try {
+				if (restartLoopRunnable != null) {
+					restartLoopRunnable.run();
+					restartLoopRunnable = null;
+				}
+			} finally {
+				loopLock.unlock();
 			}
 		}
 		
@@ -406,6 +525,15 @@ public class ThreadLoopRunner
 			}
 			return gotIt;
 		}
+		
+		/**
+		 * Allows to restart the loop from inside TaskWrapper#run.
+		 */
+		void restartLoopAfterCurrentTaskFinished(Runnable restartLoopRunnable) {
+			loopLock.lock();
+			this.restartLoopRunnable = restartLoopRunnable;
+			loopLock.unlock();
+		}
 	}
-
+	
 }
