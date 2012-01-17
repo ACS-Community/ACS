@@ -88,10 +88,13 @@ public class TestBlobber extends BlobberImpl {
 		MonitorDAO monitorDAO = null;
 		if (useDatabase) {
 			try {
-				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
-						.asSubclass(MonitorDAO.class);
-				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
-				monitorDAO = ctor.newInstance(containerServices);
+				// TODO If "useDatabase==true" is ever needed, then use alma.acs.monitoring.blobber.BlobberPluginAlmaImpl#getMonitorDAOs().
+				// For now we just throw an exception to document that the code is broken.
+				throw new RuntimeException("Currently not supported.");
+//				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
+//						.asSubclass(MonitorDAO.class);
+//				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
+//				monitorDAO = ctor.newInstance(containerServices);
 			} catch (Exception ex) {
 				// @TODO refactor to throw a checked exception
 				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
@@ -110,18 +113,19 @@ public class TestBlobber extends BlobberImpl {
 	/**
 	 * @TODO Check if tests really benefit from setting collector intervals. If not, remove this method.
 	 * @param collectorIntervalSeconds	new interval in seconds, must be greater than zero.
+	 * @return true if call succeeded, false if timeout occurred.
 	 * @see ThreadLoopRunner#setDelayTime(long, TimeUnit)
 	 */
-	protected boolean setCollectorIntervalSeconds(long collectorIntervalSeconds) {
+	protected void setCollectorIntervalSeconds(long collectorIntervalSeconds) {
 		if (collectorIntervalSeconds <= 0) {
 			throw new IllegalArgumentException("collectorIntervalSeconds must be > 0.");
 		}
 		long oldCollectorIntervalSeconds = blobberLoopRunner.getDelayTimeMillis() / 1000;
 		myWorker.notifyCollectorIntervalChange(collectorIntervalSeconds);
-		boolean success = blobberLoopRunner.setDelayTime(collectorIntervalSeconds, TimeUnit.SECONDS);
-		this.m_logger.fine("Changing collector interval from " + oldCollectorIntervalSeconds + " s to " + collectorIntervalSeconds + " s " +
-				(success ? "succeeded." : "failed.") );
-		return success;
+		
+		blobberLoopRunner.setDelayTime(collectorIntervalSeconds, TimeUnit.SECONDS);
+		
+		this.m_logger.fine("Changed collector interval from " + oldCollectorIntervalSeconds + " s to " + collectorIntervalSeconds + " s.");
 	}
 	
 	

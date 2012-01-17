@@ -112,16 +112,14 @@ public class TestBlobber extends BlobberImpl {
 	 * @param collectorIntervalSeconds	new interval in seconds, must be greater than zero.
 	 * @see ThreadLoopRunner#setDelayTime(long, TimeUnit)
 	 */
-	protected boolean setCollectorIntervalSeconds(long collectorIntervalSeconds) {
+	protected void setCollectorIntervalSeconds(long collectorIntervalSeconds) {
 		if (collectorIntervalSeconds <= 0) {
 			throw new IllegalArgumentException("collectorIntervalSeconds must be > 0.");
 		}
 		long oldCollectorIntervalSeconds = blobberLoopRunner.getDelayTimeMillis() / 1000;
 		myWorker.notifyCollectorIntervalChange(collectorIntervalSeconds);
-		boolean success = blobberLoopRunner.setDelayTime(collectorIntervalSeconds, TimeUnit.SECONDS);
-		this.m_logger.fine("Changing collector interval from " + oldCollectorIntervalSeconds + " s to " + collectorIntervalSeconds + " s " +
-				(success ? "succeeded." : "failed.") );
-		return success;
+		blobberLoopRunner.setDelayTime(collectorIntervalSeconds, TimeUnit.SECONDS);
+		this.m_logger.fine("Changed collector interval from " + oldCollectorIntervalSeconds + " s to " + collectorIntervalSeconds + " s.");
 	}
 	
 	
