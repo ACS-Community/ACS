@@ -211,7 +211,7 @@ public class AcsFileFinderTest extends TestCase
 		        * it returns an empty String if two newlines appear in a row.
 		        */
 		        while (( className = input.readLine()) != null){
-		          className.trim();
+		          className = className.trim();
 		          String jarFound = classToJarMap.get(className);
 		          if (jarFound == null && !className.startsWith("java")) System.out.println("Can't find jar for "+className);
 		          if (jarFound != null && !jarsFound.contains(jarFound)) 
