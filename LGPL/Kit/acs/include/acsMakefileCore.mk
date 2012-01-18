@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.10 2012/01/13 18:54:47 tstaig Exp $
+# $Id: acsMakefileCore.mk,v 1.11 2012/01/18 22:55:04 javarias Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -99,7 +99,7 @@ $(foreach logts,$(ACSLOGTSDEF), \
 	$(eval $(call acsMakeLibraryDependencies,,$(logts)LTS,$(logts),,,logging)) )
 else
 $(foreach logts,$(ACSLOGTSDEF), \
-	$(eval $(call acsMakeLibraryDependencies,,$(logts)LTS,$(logts),,,)) )
+	$(eval $(call acsMakeLibraryDependencies,,$(logts)LTS,$(logts),,,logging)) )
 endif
 endif
 
