@@ -59,7 +59,7 @@ public class ServicesDaemonTest extends TestCase
 	
 	private ServicesDaemon daemon;
 	private String host;
-	private short instanceNumber = (short) ACSPorts.getBasePort();
+	private short instanceNumber = (short) 4; //ACSPorts.getBasePort();
 
 	public ServicesDaemonTest() throws Exception {
 		super(namePrefix);
@@ -197,9 +197,8 @@ public class ServicesDaemonTest extends TestCase
 	/**
 	 * Creates a {@link DaemonCallbackImpl} object and registers it with the ORB.
 	 */
-	private DaemonSequenceCallback createDaemonSequenceCallback() throws AcsJContainerEx, AcsJUnexpectedExceptionEx {
-		DaemonSequenceCallbackImpl daemonSequenceCallbackImpl = new DaemonSequenceCallbackImpl(logger);
-		DaemonSequenceCallback daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(acsCorba.activateOffShoot(daemonSequenceCallbackImpl, acsCorba.getRootPOA()));
+	private DaemonSequenceCallback activateDaemonSequenceCallback(DaemonSequenceCallbackImpl callbackImpl) throws AcsJContainerEx, AcsJUnexpectedExceptionEx {
+		DaemonSequenceCallback daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(acsCorba.activateOffShoot(callbackImpl, acsCorba.getRootPOA()));
 		return daemonSequenceCallback;
 	}
 
@@ -469,9 +468,21 @@ public class ServicesDaemonTest extends TestCase
 		assertEquals(xmlExpected, xmlSrvDef);
 		
 		// Run these services
-		DaemonSequenceCallback daemonSequenceCallback = createDaemonSequenceCallback();
-		// @TODO : start and stop this
-//		daemon.start_services(xmlSrvDef, false, daemonSequenceCallback);
+		DaemonSequenceCallbackImpl daemonSequenceCallbackImpl = new DaemonSequenceCallbackImpl(logger);
+		DaemonSequenceCallback daemonSequenceCallback = activateDaemonSequenceCallback(daemonSequenceCallbackImpl);
+		daemonSequenceCallbackImpl.prepareWaitForDone();
+		
+		StopWatch sw = new StopWatch(logger);
+		daemon.start_services(xmlSrvDef, false, daemonSequenceCallback);
+		assertTrue("The services did not start in 2 minutes",daemonSequenceCallbackImpl.waitForDone(2, TimeUnit.MINUTES));
+		sw.logLapTime("call start_services");
+		
+		// Stop the services
+		daemonSequenceCallbackImpl.prepareWaitForDone();
+		sw = new StopWatch(logger);
+		daemon.stop_services(xmlSrvDef,daemonSequenceCallback);
+		assertTrue("The services did not stop in 2 minutes",daemonSequenceCallbackImpl.waitForDone(2, TimeUnit.MINUTES));
+		sw.logLapTime("call stop_services");
 	}
 
 }
