@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.45 2012/01/18 21:42:00 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.46 2012/01/18 21:50:02 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -170,7 +170,7 @@ clean : clean_all
 	$(RM) *~ ../*~
 	$(RM) ../doc/doc ../doc/api ../doc/idl
 	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
-	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.2 lxml-2.2.6
+	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.2 lxml-2.2.6 suds-0.4
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
