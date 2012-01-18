@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.27 2012/01/17 11:10:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.28 2012/01/18 14:41:17 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -78,12 +78,17 @@ public:
 	/// if needed can be later re-factor that can be set per stream/flow
 	static short debugLevel;
 
+protected:
 	/**
 	 * It tries to read BULKDATA_NT_DEBUG and if it is there set the value of debugLevel
 	 */
 	static void setDebugLevelFromEnvVar();
 
-protected:
+	/**
+	 * sets DDSLogVerbosity depend on the debug level
+	 */
+	static void setDDSLogVerbosity();
+
 	std::string libraryQos;  /// QoS configuration library
 	std::string profileQos;  /// QoS configuration profile in the library that should be used
 
@@ -92,6 +97,8 @@ protected:
 	// QoS that follow can be hardcoded, but is more flexible in this way.
 	bool ignoreUserProfileQoS; //when true USER_QOS_PROFILES.xml in current folder would not be loaded
 	bool ignoreEnvironmentProfileQoS; //when true NDDS_QOS_PROFILES will be ignored
+
+	static unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
 };
 
 
@@ -104,8 +111,6 @@ public:
 	StreamConfiguration();
 
 	static const char* const DEFAULT_QoS_FILE;
-
-	unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
 
 protected:
 	void fillUrlProfileQoS(const char* envVar, const char *dilim="");

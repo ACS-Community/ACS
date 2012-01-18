@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.14 2012/01/17 11:10:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.15 2012/01/18 14:41:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,7 +24,7 @@
 */
 
 #include "bulkDataNTConfiguration.h"
-#include <ndds_config_c.h>
+#include <ndds_config_cpp.h>
 #include <logging.h>
 
 using namespace AcsBulkdata;
@@ -39,6 +39,8 @@ const char* const DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE = "ReceiverFlo
 
 short DDSConfiguration::debugLevel = -1;
 
+unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
+
 const char* const StreamConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
 
 DDSConfiguration::DDSConfiguration()
@@ -46,6 +48,7 @@ DDSConfiguration::DDSConfiguration()
 	libraryQos=DDSConfiguration::DEFAULT_LIBRARY;
 	ignoreUserProfileQoS = true;
 	ignoreUserProfileQoS = true;
+	DDSConfiguration::setDebugLevelFromEnvVar();
 }
 
 void DDSConfiguration::setDebugLevelFromEnvVar()
@@ -56,7 +59,7 @@ void DDSConfiguration::setDebugLevelFromEnvVar()
 		if (bulkDataNtDebug && *bulkDataNtDebug)
 		{
 			debugLevel = atoi(bulkDataNtDebug);
-			//TBD we can set here also DDSLogVerbosity
+			DDSConfiguration::setDDSLogVerbosity();
 			ACS_SHORT_LOG((LM_INFO, "BulkDataNT debug level read from env. var. BULKDATA_NT_DEBUG and set to %d", debugLevel));
 		}
 		else
@@ -66,11 +69,29 @@ void DDSConfiguration::setDebugLevelFromEnvVar()
 	}
 }//setDebugLevelFromEnvVar
 
+void DDSConfiguration::setDDSLogVerbosity()
+{
+	//RTI logging
+	switch (DDSConfiguration::debugLevel)
+	{
+	case 2:
+		DDSConfiguration::DDSLogVerbosity = NDDS_CONFIG_LOG_VERBOSITY_STATUS_LOCAL;
+		break;
+	case 3:
+		DDSConfiguration::DDSLogVerbosity = NDDS_CONFIG_LOG_VERBOSITY_STATUS_REMOTE;
+		break;
+	case 4:
+		DDSConfiguration::DDSLogVerbosity = NDDS_CONFIG_LOG_VERBOSITY_STATUS_ALL;
+		break;
+	}
+	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
+			NDDS_CONFIG_LOG_CATEGORY_API,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
+
+}//setDDSLogVerbosity
+
 StreamConfiguration::StreamConfiguration()
 {
 	char *envVarValue;
-
-	DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
 
 	urlProfileQoS = "[";
 
