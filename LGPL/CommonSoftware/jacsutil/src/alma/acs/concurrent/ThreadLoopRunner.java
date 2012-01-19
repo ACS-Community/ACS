@@ -98,6 +98,11 @@ public class ThreadLoopRunner
 	 * A lock to synchronize on changes of the task loop ({@link #loop}).
 	 */
 	private final ReentrantLock loopLock = new ReentrantLock();
+
+	/**
+	 * Used to make logs and thread names more readable. May be null.
+	 */
+	private final String loopName;
 	
 
 
@@ -111,11 +116,29 @@ public class ThreadLoopRunner
 	 * @param unit
 	 * @param tf ThreadFactory from which the loop thread will be created.
 	 * @param logger Logger used by this class.
+	 * @deprecated (since ACS 10.1) Use the variant with additional name parameter.
 	 */
 	public ThreadLoopRunner(Runnable task, long delayTime, TimeUnit unit, ThreadFactory tf, Logger logger) {
+		this(task, delayTime, unit, tf, logger, null);
+	}
+
+	/**
+	 * Creates a <code>ThreadLoopRunner</code> that can repeatedly execute <code>task</code>.
+	 * The mode defaults to {@link ScheduleDelayMode#FIXED_RATE} unless being changed 
+	 * via {@link #setDelayMode(ScheduleDelayMode)}.
+	 * 
+	 * @param task user-supplied {@link Runnable}, or better subtype {@link ThreadLoopRunner.CancelableRunnable}.
+	 * @param delayTime 
+	 * @param unit
+	 * @param tf ThreadFactory from which the loop thread will be created.
+	 * @param logger Logger used by this class.
+	 * @param name Facilitates debugging, by using a meaningful name for logs and threads.
+	 */
+	public ThreadLoopRunner(Runnable task, long delayTime, TimeUnit unit, final ThreadFactory tf, Logger logger, String name) {
 		this.logger = logger;
+		this.loopName = ( (name != null && !name.trim().isEmpty()) ? name.trim() : null );
 		
-		this.runner = new ScheduledThreadPoolExecutor(1, tf);
+		this.runner = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory(tf, loopName));
 		
 		this.taskWrapper = new TaskWrapper(task, loopLock, logger);
 		this.delayMode = ScheduleDelayMode.FIXED_RATE;
@@ -153,7 +176,7 @@ public class ThreadLoopRunner
 	public void setDelayTime(final long delayTime, final TimeUnit unit) {
 
 		if (isDefunct.get()) {
-			throw new IllegalStateException("object defunct");
+			throw new IllegalStateException("["+ loopName + "] already disabled");
 		}
 		
 		loopLock.lock();
@@ -166,7 +189,7 @@ public class ThreadLoopRunner
 				taskWrapper.restartLoopAfterCurrentTaskFinished(new Runnable() {
 					@Override
 					public void run() {
-						logger.finer("Will restart the loop now, which was stopped to change the delay time.");
+						logger.finer("["+ loopName + "] will restart the loop now, which was stopped to change the delay time.");
 						// @TODO: here we could sleep a bit to keep the intended delay rate/length, if needed.
 						runLoop();
 					}
@@ -208,7 +231,7 @@ public class ThreadLoopRunner
 	 */
 	public void setDelayMode(ScheduleDelayMode delayMode) {
 		if (isDefunct.get()) {
-			throw new IllegalStateException("object already disabled");
+			throw new IllegalStateException("["+ loopName + "] already disabled");
 		}
 		if (delayMode == null) {
 			throw new IllegalArgumentException("delayMode must not be null");
@@ -230,7 +253,7 @@ public class ThreadLoopRunner
 	public void runLoop() {
 		
 		if (isDefunct.get()) {
-			throw new IllegalStateException("object already disabled");
+			throw new IllegalStateException("["+ loopName + "] already disabled");
 		}
 
 		loopLock.lock();
@@ -246,11 +269,11 @@ public class ThreadLoopRunner
 			
 			if (delayMode == ScheduleDelayMode.FIXED_RATE) {
 				loop = runner.scheduleAtFixedRate(taskWrapper, 0, delayTimeNanos, TimeUnit.NANOSECONDS);
-				logger.fine("Started task loop with FIXED_RATE=" + TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS) + " ms.");
+				logger.finer("["+ loopName + "] started task loop with FIXED_RATE=" + TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS) + " ms.");
 			}
 			else {
 				loop = runner.scheduleWithFixedDelay(taskWrapper, 0, delayTimeNanos, TimeUnit.NANOSECONDS);
-				logger.fine("Started task loop with FIXED_DELAY=" + TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS) + " ms.");
+				logger.finer("["+ loopName + "] started task loop with FIXED_DELAY=" + TimeUnit.MILLISECONDS.convert(delayTimeNanos, TimeUnit.NANOSECONDS) + " ms.");
 			}
 		} finally {
 			loopLock.unlock();
@@ -300,24 +323,24 @@ public class ThreadLoopRunner
 	 */
 	public void suspendLoop() {
 		if (isDefunct.get()) {
-			throw new IllegalStateException("object already disabled");
+			throw new IllegalStateException("["+ loopName + "] already disabled");
 		}
 		
 		loopLock.lock();
 		try {
 			if (isLoopRunning()) {
 				if (loop.cancel(false)) {
-					logger.finer("Suspended the task loop.");
+					logger.finer("["+ loopName + "] suspended the task loop.");
 				}
 				else {
-					logger.fine("Failed to suspend the loop (without having attempted to cancel a running task, if any).");
+					logger.fine("["+ loopName + "] failed to suspend the loop (without having attempted to cancel a running task, if any).");
 				}
 				loop = null;
 				// also remove special post-run task, if any
 				this.taskWrapper.restartLoopAfterCurrentTaskFinished(null);
 			}
 			else {
-				logger.fine("Loop was not running, nothing to suspend.");
+				logger.fine("["+ loopName + "] loop was not running, nothing to suspend.");
 			}
 		}
 		finally {
@@ -366,7 +389,7 @@ public class ThreadLoopRunner
 	 */
 	public boolean shutdown(long timeout, TimeUnit unit) throws InterruptedException {
 		if (isDefunct.getAndSet(true)) {
-			throw new IllegalStateException("object already disabled");
+			throw new IllegalStateException("["+ loopName + "] already disabled");
 		}
 		
 		loopLock.lock();
@@ -378,10 +401,10 @@ public class ThreadLoopRunner
 				loop.cancel(false);
 				loop = null;
 				runner.shutdown();
-				logger.finer("Task loop has been shut down, will wait for it to fully terminate.");
+				logger.finer("["+ loopName + "] task loop has been shut down, will wait for it to fully terminate.");
 			}
 			else {
-				logger.finer("Nothing to shut down, task loop was not running.");
+				logger.finer("["+ loopName + "] nothing to shut down, task loop was not running.");
 				return true;
 			}
 		} finally {
