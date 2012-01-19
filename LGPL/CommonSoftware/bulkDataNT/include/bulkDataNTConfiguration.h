@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.29 2012/01/19 11:41:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.30 2012/01/19 13:56:24 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -175,7 +175,10 @@ public:
     void setEnableMulticast(bool enableMulticast);
 
     std::string getMulticastAddress() const;
-    void setMulticastAddress(char* multicastAddress);
+    void setMulticastAddress(std::string multicastAddress);
+
+    /// default multicast address for receiver flow
+    static const char* const DEFAULT_MULTICAST_ADDRESS;
 protected:
     double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
     bool enableMulticast; /// is multicast enabled, otherwise unicast

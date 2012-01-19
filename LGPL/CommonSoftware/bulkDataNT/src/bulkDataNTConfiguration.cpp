@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.16 2012/01/19 11:41:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.17 2012/01/19 13:56:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,8 @@ short DDSConfiguration::debugLevel = -1;
 unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
 
 const char* const StreamConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
+
+const char* const ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS="225.3.2.1";
 
 DDSConfiguration::DDSConfiguration()
 {
@@ -154,7 +156,7 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 	profileQos=DEFAULT_RECEIVER_FLOW_PROFILE;
 	cbReceiveProcessTimeout = 0.01; //secs
 	enableMulticast = true;
-	multicastAddress = "225.3.2.1";
+	multicastAddress = DEFAULT_MULTICAST_ADDRESS;
 }//ReceiverFlowConfiguration
 
 SenderFlowConfiguration::SenderFlowConfiguration()
@@ -209,7 +211,7 @@ void ReceiverFlowConfiguration::setEnableMulticast(bool enableMulticast)
     this->enableMulticast = enableMulticast;
 }
 
-void ReceiverFlowConfiguration::setMulticastAddress(char *multicastAddress)
+void ReceiverFlowConfiguration::setMulticastAddress(std::string multicastAddress)
 {
     this->multicastAddress = multicastAddress;
 }
