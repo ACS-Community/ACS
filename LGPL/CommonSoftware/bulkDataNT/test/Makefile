@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.17 2011/11/30 15:48:22 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.18 2012/01/19 09:14:30 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -246,10 +246,10 @@ test:
 endif
 
 clean : clean_all 
+	@rm -rf tmp
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
-	@rm -rf tmp
 	@rm -rf tatlogs
 	@echo " . . . clean_dist done"
 
