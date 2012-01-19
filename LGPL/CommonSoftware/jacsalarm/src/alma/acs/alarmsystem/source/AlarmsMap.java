@@ -81,7 +81,7 @@ public class AlarmsMap {
 	}
 	
 	/**
-	 * The thread to delete the alarms older then the time interval.
+	 * The thread to delete the alarms older than the time interval.
 	 * <P>
 	 * This thread is scheduled by the ThreadLoopRunner.
 	 * 
@@ -140,7 +140,7 @@ public class AlarmsMap {
 	 */
 	public AlarmsMap(ThreadFactory threadFactory, Logger logger) {
 		this.logger=logger;
-		loopRunner=new ThreadLoopRunner(new AlarmsMapRunnable(), ALARM_ACTIVITY_TIME, TimeUnit.SECONDS, threadFactory, logger);
+		loopRunner = new ThreadLoopRunner(new AlarmsMapRunnable(), ALARM_ACTIVITY_TIME, TimeUnit.SECONDS, threadFactory, logger, "alarm_timer");
 	}
 	
 	/**
