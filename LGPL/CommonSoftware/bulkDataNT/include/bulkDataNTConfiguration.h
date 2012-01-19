@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.30 2012/01/19 13:56:24 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.31 2012/01/19 14:13:00 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -133,6 +133,9 @@ public:
     double getSendFrameTimeout() const;
     void setACKsTimeout(double acKsTimeout);
     void setSendFrameTimeout(double frameTimeout);
+
+    static double DEFAULT_SENDFRAME_TIMEOUT;
+    static double DEFAULT_ACKs_TIMEOUT;
 protected:
     double sendFrameTimeout;
 	double ACKsTimeout;
@@ -179,6 +182,12 @@ public:
 
     /// default multicast address for receiver flow
     static const char* const DEFAULT_MULTICAST_ADDRESS;
+
+    /// default cbReceiveProcessTimeout value
+    static double DEFAULT_CBRECEIVE_PROCESS_TIMEOUT;
+
+    /// default enableMulticast value
+    static bool DEFAULT_ENABLE_MULTICAST;
 protected:
     double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
     bool enableMulticast; /// is multicast enabled, otherwise unicast
