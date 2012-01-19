@@ -64,6 +64,10 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSDREnableProblem" shortDescription="Problem to enable DDS DR" description="Problem to enable DDS data reader">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSParticipantCreateProblem" shortDescription="Problem to create DDS participant" description="Problem to create DDS participant">
         <Member name="DomainID" type="long" description="Domain ID" />
     </ErrorCode>
