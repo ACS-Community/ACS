@@ -71,10 +71,6 @@ Default QoS Profile for BulkDataNT.
         
         <qos_profile name="SenderFlowDefaultQosProfile">
             <publisher_qos>
-                <entity_factory>
-                    <autoenable_created_entities>false</autoenable_created_entities>
-                    <!-- MUST be set to false that DW is created disabled!!!! -->
-                </entity_factory>
             </publisher_qos>
             <datawriter_qos>
                 <reliability>
