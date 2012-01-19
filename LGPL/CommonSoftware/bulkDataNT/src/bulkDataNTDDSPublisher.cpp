@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.26 2012/01/12 09:33:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.27 2012/01/19 15:35:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,6 +55,8 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::PublisherQos pub_qos;
+	DDS::ReturnCode_t ret;
 
 	DDS::Publisher *pub = participant_m->create_publisher_with_profile(
 			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
@@ -65,6 +67,33 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 		throw ex;
 	}//if
 
+	ret = pub->get_qos(pub_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSGetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("pub->get_qos()");
+		throw ex;
+	}//if
+
+	/// dw has to be created disabled
+	pub_qos.entity_factory.autoenable_created_entities=DDS_BOOLEAN_FALSE;
+
+	ret = pub->set_qos(pub_qos);
+		if (ret!=DDS::RETCODE_OK)
+		{
+			DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			ex.setDDSTypeCode(ret);
+			ex.setQoS("pub->set_qos()");
+			throw ex;
+		}//if
+
+	ret = pub->enable();
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSPublisherEnableProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+	}
 	return pub;
 }//createDDSParticipant
 
@@ -150,7 +179,7 @@ void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
 	ret = dataWriter_m->get_qos(dwQoS);
 	if (ret!=DDS::RETCODE_OK)
 	{
-		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		DDSQoSGetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
 		ex.setQoS("dataWriter_m->get_qos()");
 		throw ex;

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.35 2012/01/18 11:50:13 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.36 2012/01/19 15:34:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -205,6 +205,9 @@ void BulkDataNTStream::createDDSParticipant()
 		ex.setQoS("get_participant_qos_from_profile");
 		throw ex;
 	}//if
+
+	// we make sure that what participant creates is created disabled
+	participant_qos.entity_factory.autoenable_created_entities=DDS_BOOLEAN_FALSE;
 
 	participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
 	if (participant_m==NULL)

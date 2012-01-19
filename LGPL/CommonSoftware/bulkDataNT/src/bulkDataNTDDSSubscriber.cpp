@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.17 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.18 2012/01/19 15:34:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,6 +54,7 @@ BulkDataNTDDSSubscriber::~BulkDataNTDDSSubscriber()
 DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReturnCode_t ret;
 
 	if (participant_m==NULL)
 	{
@@ -69,6 +70,14 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 		DDSSubscriberCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}
+
+	ret = sub->enable();
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSSubscriberEnableProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+	}
+
 	return sub;
 }//createDDSSubscriber
 

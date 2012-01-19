@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.12 2011/08/24 14:15:07 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.13 2012/01/19 15:34:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,6 +81,14 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 		ex.setTopic(topicName);
 		throw ex;
 	}//if
+
+	ret = topic->enable();
+	if ( ret != DDS::RETCODE_OK )
+	{
+		DDSTopicEnableProblemExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		throw ex;
+	}
 
 	ACS_SHORT_LOG((LM_DEBUG, "Created DDS topic: %s", topicName));
 	return topic;
