@@ -56,6 +56,10 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSSubscriberEnableProblem" shortDescription="Problem to enable DDS Subscriber" description="Problem to enable DDS Subscriber">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSDRCreateProblem" shortDescription="Problem to create DDS data reader" description="Problem to create DDS data reader">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
