@@ -8,12 +8,21 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSQoSGetProblem" shortDescription="Problem to sgt DDS QoS" description="Problem to get DDS QoS">
+        <Member name="QoS" type="string" description="QoS name" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSTopicCreateProblem" shortDescription="Problem to create DDS topic" description="Problem to create DDS topic">
         <Member name="Topic" type="string" description="Topic name" />
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
     <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="Problem to create DDS publisher">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSPublisherEnableProblem" shortDescription="Problem to enable DDS Publisher" description="Problem to enable DDS publisher">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
