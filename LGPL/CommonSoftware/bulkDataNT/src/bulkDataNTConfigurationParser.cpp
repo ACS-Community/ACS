@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.26 2012/01/12 09:33:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.27 2012/01/19 13:58:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -344,6 +344,8 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 						senderCfg.flowsCfgMap[flowName.get()]->setACKsTimeout(getDoubleFromAttribute(streamChildNode, "ACKsTimeoutSec", 1.0));
 					}else {
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveProcessTimeoutSec", 0.010));
+						receiverCfg.flowsCfgMap[flowName.get()]->setEnableMulticast(getBooleanFromAttribute(streamChildNode, "enableMulticast", true));
+						receiverCfg.flowsCfgMap[flowName.get()]->setMulticastAddress(getStringFromAttribute(streamChildNode, "multicastAddress", ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS));
 					}
 
 				} catch(CDBProblemExImpl &ex) {
@@ -465,6 +467,19 @@ bool BulkDataConfigurationParser::getBooleanFromAttribute(DOMNode *node, const c
 
 	return returnVal;
 }
+
+
+std::string BulkDataConfigurationParser::getStringFromAttribute(xercesc::DOMNode *node, const char * attribute, std::string defaultVal)
+{
+	std::string returnVal;
+	const XMLCh* sft = getAttrValue(node, attribute);
+	if ( sft == 0 )
+		returnVal = defaultVal;
+	else
+		returnVal = (char*)sft;
+
+	return returnVal;
+}//getStringFromAttribute
 
 const XMLCh* BulkDataConfigurationParser::getAttrValue(DOMNode *node, const char* name) {
 

@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.10 2012/01/04 11:33:53 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.11 2012/01/19 13:58:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -117,6 +117,8 @@ namespace AcsBulkdata
 		const XMLCh* getAttrValue(xercesc::DOMNode *node, const char * name);
 
 		double getDoubleFromAttribute(xercesc::DOMNode *node, const char * attribute, double defaultVal);
+
+		std::string getStringFromAttribute(xercesc::DOMNode *node, const char * attribute, std::string defaultVal);
 
 		bool getBooleanFromAttribute(xercesc::DOMNode *node, const char * attribute, bool defaultVal);
 
