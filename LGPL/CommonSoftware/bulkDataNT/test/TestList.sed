@@ -13,3 +13,5 @@ s/component with handle [0-9]\+/component with handle XXX/g
 s/unacknowledged_sample_count ([0-9]) before waiting: [0-9]/unacknowledged_sample_count (X) before waiting: Y/g
 s/ActualProcessTime="[0-9]*\.[0-9]*"/ActualProcessTime="X.YZ"/g
 s/Transfer rate: [0-9,.]*/Transfer rate: XY.Z/g
+s/Receiver Data Rate: [0-9,.]*/Receiver Data Rate: XY.Z/g
+s/in [0-9,.]* sec/in xy.z sec/g
