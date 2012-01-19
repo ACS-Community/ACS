@@ -18,6 +18,10 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSTopicEnableProblem" shortDescription="Problem to enable DDS Topic" description="Problem to enable DDS Topic">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="Problem to create DDS publisher">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
