@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.20 2012/01/17 10:27:03 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.21 2012/01/19 13:18:27 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -177,7 +177,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 				return;
 
 			ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream 'DefaultStream' with '%d' flows", defaultFlowsCount_m));
-			AcsBulkdata::BulkDataNTReceiverStream<TCallback>* stream = createDefaultReceiverStream();
+			AcsBulkdata::BulkDataNTReceiverStream<TCallback>* stream = createDefaultReceiverStream(0);
 			receiverStreams_m["DefaultStream"] = stream;
 			return;
 		}
@@ -193,7 +193,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 				continue;
 
 			ACS_SHORT_LOG((LM_INFO,"BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream '%s' with configuration from CDB", *it));
-			AcsBulkdata::BulkDataNTReceiverStream<TCallback>* stream = createReceiverStream(*it);
+			AcsBulkdata::BulkDataNTReceiverStream<TCallback>* stream = createReceiverStream(*it, *it);
 			receiverStreams_m[*it] = stream;
 		}
 	} catch(StreamCreateProblemExImpl &ex) {
@@ -215,6 +215,15 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_name)
 {
+	ACS_TRACE(__PRETTY_FUNCTION__);
+	this->openReceiverStreamCfg(stream_name, stream_name);
+}
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::openReceiverStreamCfg (const char * stream_name,  const char * stream_cfg)
+{
+	ACS_TRACE(__PRETTY_FUNCTION__);
+
 	std::map<std::string, BulkDataConfigurationParser::ReceiverCfg>::iterator it;
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
 
@@ -240,7 +249,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 				return;
 
 			ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream 'DefaultStream' with '%d' flows", defaultFlowsCount_m));
-			AcsBulkdata::BulkDataNTReceiverStream<TCallback>* stream = createDefaultReceiverStream();
+			AcsBulkdata::BulkDataNTReceiverStream<TCallback>* stream = createDefaultReceiverStream(stream_cfg);
 			receiverStreams_m["DefaultStream"] = stream;
 			return;
 		}
@@ -258,7 +267,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 
 		if( isConfigured ) {
 			ACS_SHORT_LOG((LM_INFO, "BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream '%s' with configuration from CDB", stream_name));
-			stream = createReceiverStream(stream_name);
+			stream = createReceiverStream(stream_name, stream_cfg);
 		}
 		else {
 			ACS_SHORT_LOG((LM_NOTICE, "BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream '%s' with default configuration", stream_name));
@@ -284,54 +293,87 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 }
 
 template<class TCallback>
-void BulkDataNTReceiverImpl<TCallback>::openReceiverStreamCfg (const char * stream_name,  const char * stream_cfg)
-{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::openReceiverStreamCfg NOT implemented yet."));
-}
-
-template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::openReceiverFlow (const char * stream_name, const char * flow_name)
 {
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::openReceiverFlow NOT implemented yet."));
+	ACS_TRACE(__PRETTY_FUNCTION__);
 }
 
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::openReceiverFlowCfg (const char * stream_name, const char * flow_name, const char * flow_cfg)
 {
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::openReceiverFlowCfg NOT implemented yet."));
+	ACS_TRACE(__PRETTY_FUNCTION__);
 }
 
-
 template<class TCallback>
-AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createReceiverStream(const char *stream_name) {
+AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createReceiverStream(const char *stream_name, const char *stream_cfg) {
 
-	// Create the stream with the configuration pointed out by the iterator
+	// Check that the configuration exists. If not, then fail miserably
+	AcsBulkdata::ReceiverStreamConfiguration *cfg = parser_m->getReceiverStreamConfiguration(stream_cfg);
+	if( cfg == 0 )
+		throw StreamCreateProblemExImpl(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+
+	// Create the stream with the configuration object
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
-	stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>(stream_name, *parser_m->getReceiverStreamConfiguration(stream_name));
+	stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>(stream_name, *cfg);
 
-	// Create also all the necessary flows that have been configured in the CDB
-	std::set<const char *> flowNames = parser_m->getAllReceiverFlowNames(stream_name);
+	// Create also all the necessary flows that have been configured in the CDB *for the given configuration name*
+	std::set<const char *> flowNames = parser_m->getAllReceiverFlowNames(stream_cfg);
 	std::set<const char *>::iterator it;
 	for(it = flowNames.begin(); it != flowNames.end(); it++) {
 		const char * flowName = *it;
-		stream->createFlow(flowName, *parser_m->getReceiverFlowConfiguration(stream_name, flowName));
+		AcsBulkdata::ReceiverFlowConfiguration *fCfg = parser_m->getReceiverFlowConfiguration(stream_cfg, flowName);
+		if( cfg == 0 )
+			throw FlowCreateProblemExImpl(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+
+		stream->createFlow(flowName, *fCfg);
 	}
 
 	return stream;
 }
 
 template<class TCallback>
-AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createDefaultReceiverStream() {
+AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createDefaultReceiverStream(const char *stream_cfg) {
+
+	// Check that the configuration exists (if given)
+	// Anyway; this only makes sense if we're using the new configuration parser; otherwise it doesn't
+	// and we should throw an exception
+	AcsBulkdata::ReceiverStreamConfiguration *cfg = 0;
+	if( stream_cfg != 0 ) {
+		if( parser_m == 0 ) {
+			StreamCreateProblemExImpl ex = StreamCreateProblemExImpl(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			ex.setStreamName("DefaultStream");
+			ex.setMemberValue("reason", "Tried to create 'DefaultStream' with a given configuration, but using the old configuration mechanism");
+			throw ex;
+		}
+		cfg = parser_m->getReceiverStreamConfiguration(stream_cfg);
+	}
 
 	// Create the default stream
+	// If a configuration has been given, use it to get the flows to be created
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
-	stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream");
+	if( cfg != 0 ) {
+		stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream", *cfg);
 
-	// Add the specified of flows
-	for(int i=0; i < defaultFlowsCount_m; i++) {
-		std::stringstream s("Flow");
-		s << i;
-		stream->createFlow(s.str().c_str());
+		std::set<const char *> flowNames = parser_m->getAllReceiverFlowNames(stream_cfg);
+		std::set<const char *>::iterator it;
+		for(it = flowNames.begin(); it != flowNames.end(); it++) {
+			const char * flowName = *it;
+			AcsBulkdata::ReceiverFlowConfiguration *fCfg = parser_m->getReceiverFlowConfiguration(stream_cfg, flowName);
+			if( cfg == 0 )
+				throw FlowCreateProblemExImpl(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+
+			stream->createFlow(flowName, *fCfg);
+		}
+	}
+	else {
+		stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream");
+
+		// Add the specified of flows
+		for(int i=0; i < defaultFlowsCount_m; i++) {
+			std::stringstream s("Flow");
+			s << i;
+			stream->createFlow(s.str().c_str());
+		}
 	}
 
 	return stream;

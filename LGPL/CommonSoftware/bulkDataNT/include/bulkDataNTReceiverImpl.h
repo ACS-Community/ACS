@@ -210,9 +210,9 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     // Used to store the number of flows to create, as specified with the old config mechanism
     int defaultFlowsCount_m;
 
-    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createReceiverStream(const char *stream_name);
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createReceiverStream(const char *stream_name, const char *stream_cfg);
 
-    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createDefaultReceiverStream();
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createDefaultReceiverStream(const char *stream_cfg);
 
     void closeStream(typename StreamMap::iterator &it);
 };
