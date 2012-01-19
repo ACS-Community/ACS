@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.28 2012/01/18 14:41:17 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.29 2012/01/19 11:41:33 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -170,8 +170,16 @@ public:
 
 	double getCbReceiveProcessTimeout() const;
     void setCbReceiveProcessTimeout(double cbReceiveProcessTimeout);
+
+    bool isEnableMulticast() const;
+    void setEnableMulticast(bool enableMulticast);
+
+    std::string getMulticastAddress() const;
+    void setMulticastAddress(char* multicastAddress);
 protected:
     double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
+    bool enableMulticast; /// is multicast enabled, otherwise unicast
+    std::string multicastAddress; /// mutlicas address, used only if multicast is anbel (enableMulticast==true)
 };
 
 /** A Receiver stream configuration. It consists in a seres

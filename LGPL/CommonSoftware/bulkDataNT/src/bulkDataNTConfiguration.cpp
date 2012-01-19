@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.15 2012/01/18 14:41:17 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.16 2012/01/19 11:41:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -153,6 +153,8 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 {
 	profileQos=DEFAULT_RECEIVER_FLOW_PROFILE;
 	cbReceiveProcessTimeout = 0.01; //secs
+	enableMulticast = true;
+	multicastAddress = "225.3.2.1";
 }//ReceiverFlowConfiguration
 
 SenderFlowConfiguration::SenderFlowConfiguration()
@@ -191,6 +193,28 @@ void ReceiverFlowConfiguration::setCbReceiveProcessTimeout(double cbReceiveProce
 {
     this->cbReceiveProcessTimeout = cbReceiveProcessTimeout;
 }
+
+std::string ReceiverFlowConfiguration::getMulticastAddress() const
+{
+    return multicastAddress;
+}
+
+bool ReceiverFlowConfiguration::isEnableMulticast() const
+{
+    return enableMulticast;
+}
+
+void ReceiverFlowConfiguration::setEnableMulticast(bool enableMulticast)
+{
+    this->enableMulticast = enableMulticast;
+}
+
+void ReceiverFlowConfiguration::setMulticastAddress(char *multicastAddress)
+{
+    this->multicastAddress = multicastAddress;
+}
+
+
 
 
 
