@@ -23,8 +23,6 @@ package alma.acs.alarmsystem.source;
 
 import java.util.Collection;
 import java.util.Properties;
-import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -117,8 +115,8 @@ public class AlarmSourceImpl implements AlarmSource {
 	 * To limit the effect of oscillations, publishing of inactive alarms 
 	 * is delayed of <code>ALARM_OSCILLATION_TIME</code> (in seconds)
 	 * <P>
-	 * If during this time interval, the alarm is activated again then 
-	 * it will not be deactivated.
+	 * If during this time interval the alarm is activated again then 
+	 * its temporary deactivation will be skipped.
 	 * <P>
 	 * Visibility is public for testing purposes.
 	 */
@@ -158,19 +156,19 @@ public class AlarmSourceImpl implements AlarmSource {
 	private volatile boolean queuing=false;
 	
 	/**
-	 * The loop to limit the oscillation
+	 * The loop to limit clear-raise oscillations, by only clearing alarms that have been inactive for a certain time.
 	 */
 	private final ThreadLoopRunner oscillationLoop;
 	
 	/**
 	 * The alarms to clean are initially stored in alarmToClean.
-	 * <P> In fact the deletion of alarms is delayed of {@link AlarmSourceImpl#ALARM_OSCILLATION_TIME}
+	 * <P> In fact the deletion of alarms is delayed by {@link AlarmSourceImpl#ALARM_OSCILLATION_TIME}
 	 * to limit the effect of oscillation.
 	 * <P> 
 	 * The key is the ID of the alarm; the value is the time when the alarm
 	 * has been sent.
 	 */
-	private final ConcurrentHashMap<String, Long>alarmsToClean=new ConcurrentHashMap<String, Long>();
+	private final ConcurrentHashMap<String, Long> alarmsToClean = new ConcurrentHashMap<String, Long>();
 	
 	/**
 	 * The executor to schedule the threads for flushing the queue
@@ -202,12 +200,13 @@ public class AlarmSourceImpl implements AlarmSource {
 		alarmSender=new AlarmSender(containerServices);
 		// The pool size is 1 because we can have only one thread at a time
 		scheduledExecutor= Executors.newScheduledThreadPool(1,containerServices.getThreadFactory());
-		oscillationLoop=new ThreadLoopRunner(
+		oscillationLoop = new ThreadLoopRunner(
 				new OscillationTask(), 
 				ALARM_OSCILLATION_TIME, 
 				TimeUnit.SECONDS, 
 				containerServices.getThreadFactory(), 
-				containerServices.getLogger());
+				containerServices.getLogger(),
+				"alarm_osci");
 		
 	}
 
@@ -263,6 +262,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	private void internalAlarmClear(String id) {
 		if (id==null || id.isEmpty()) {
 			containerServices.getLogger().warning("Invalid alarm ID received "+id);
+			// @TODO (hso): should we return or throw an exception? Otherwise we'll get NPE in the following line.
 		}
 		String[] alarmMembers=id.split(":");
 		if (alarmMembers.length!=3) {
