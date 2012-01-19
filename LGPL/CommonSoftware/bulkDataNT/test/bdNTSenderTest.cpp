@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderTest.cpp,v 1.12 2012/01/13 15:22:09 bjeram Exp $"
+* "@(#) $Id: bdNTSenderTest.cpp,v 1.13 2012/01/19 09:23:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	unsigned int dataSize=65000;
 	ACE_Time_Value start_time, elapsed_time;
 
-	LoggingProxy m_logger(10, 0, 31, 0);
+	LoggingProxy m_logger(0, 0, 31, 0);
 
 	LoggingProxy::init (&m_logger);
     ACS_CHECK_LOGGER;
@@ -56,60 +56,66 @@ int main(int argc, char *argv[])
     	}
     }//while
 
+    try{
+    	BulkDataNTSenderStream senderStream1("DefaultStream");
 
-	BulkDataNTSenderStream senderStream1("DefaultStream");
+    	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
+    	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01");
 
-	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
-	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01");
+    	sleep(1); //here we should wait for at least one receiver
+    	//std::cout << "press a key to start.." << std::endl;
+    	//getchar();
 
-	sleep(1); //here we should wait for at least one receiver
-	//std::cout << "press a key to start.." << std::endl;
-	//getchar();
+    	unsigned char parm[]="123";
 
-	unsigned char parm[]="123";
+    	flow0->startSend(parm, 3);
 
-	flow0->startSend(parm, 3);
+    	// for test purpose we do not invoke startSend
+    	//	strcpy(parm, "abc");
+    	//	flow1->startSend(parm, 3);
 
-// for test purpose we do not invoke startSend
-//	strcpy(parm, "abc");
-//	flow1->startSend(parm, 3);
+    	//unsigned char data[]="Hello wrold !!!!";
+    	unsigned char *data= new unsigned char[dataSize];
+    	for (unsigned int i=0; i<dataSize; i++)
+    		data[i]=i;
 
-	//unsigned char data[]="Hello wrold !!!!";
-	unsigned char *data= new unsigned char[dataSize];
-	for (unsigned int i=0; i<dataSize; i++)
-			data[i]=i;
+    	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
+    	start_time = ACE_OS::gettimeofday();
+    	flow0->sendData(data, dataSize);
+    	elapsed_time = ACE_OS::gettimeofday() - start_time;
+    	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
 
-	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
-	start_time = ACE_OS::gettimeofday();
-	flow0->sendData(data, dataSize);
-	elapsed_time = ACE_OS::gettimeofday() - start_time;
-	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
+    	flow1->sendData(data, dataSize);
 
-	flow1->sendData(data, dataSize);
+    	for (unsigned int i=0; i<dataSize; i++)
+    		data[i]=i%10;
+    	flow0->sendData(data, dataSize);
+    	flow1->sendData(data, dataSize);
 
-	for (unsigned int i=0; i<dataSize; i++)
-				data[i]=i%10;
-	flow0->sendData(data, dataSize);
-	flow1->sendData(data, dataSize);
+    	sleep(2);
 
-	sleep(2);
-	//std::cout << "press a key to send stop.." << std::endl;
-	//getchar();
-	flow0->stopSend();
-	flow1->stopSend();
+    	flow0->stopSend();
+    	flow1->stopSend();
 
-	if (sleepPeriod>0)
-	{
-		sleep(sleepPeriod);
-	}
-	else
-	{
-		std::cout << "press a key to exit.." << std::endl;
-		getchar();
-	}
 
-	delete flow0;
+    	if (sleepPeriod>0)
+    	{
+    		sleep(sleepPeriod);
+    	}
+    	else
+    	{
+    		std::cout << "press a key to exit.." << std::endl;
+    		getchar();
+    	}
+
+    	delete flow0;
+    }
+    catch(ACSErr::ACSbaseExImpl &ex)
+    {
+    	ex.log();
+    }
+
 	m_logger.flush();
 // flow1 will be deleted when senderStream1 is deleted
 
