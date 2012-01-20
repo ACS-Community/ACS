@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2010/10/26 18:23:15 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.9 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = acsThreadBase.h acsThread.h acsThreadManager.h acsThreadManager.i
+INCLUDES        = acsThreadBase.h acsThread.h acsThreadManager.h acsThreadManager.i acsThreadExport.h
 
 #
 # Libraries (public and local)
@@ -63,8 +63,8 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 acsThread_OBJECTS   = acsThread acsThreadBase
 acsThread_LIBS  = logging acsthreadErrType ACSErrTypeCommon
+acsThread_CFLAGS  = -DACS_THREAD_BUILD_DLL
 
-acsthreadErrTypeStubs_LIBS := acserr
 #
 # Scripts (public and local)
 # ----------------------------

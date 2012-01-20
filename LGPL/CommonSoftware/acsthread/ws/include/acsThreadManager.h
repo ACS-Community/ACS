@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.19 2008/10/13 23:15:12 bjeram Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.20 2012/01/20 23:18:16 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -22,6 +22,7 @@
 #include "acsThread.h"
 #include "loggingLoggable.h"
 #include <ACSErrTypeCommon.h>
+#include "acsThreadExport.h"
 
 namespace ACS
 {
@@ -224,7 +225,7 @@ namespace ACS
 	/**
 	 * Thread Manager TSS used for sending thread manager pointer to thread objects
 	 */
-	static ACE_TSS<ThreadManagerTSS> threadManagerTSS;
+	static ACE_TSS<ThreadManagerTSS> acsThread_EXPORT threadManagerTSS;
 
     };//class ThreadManager
 

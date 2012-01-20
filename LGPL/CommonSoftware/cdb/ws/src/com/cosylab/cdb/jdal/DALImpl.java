@@ -188,7 +188,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-root")) {
 				if (i < args.length - 1) {
-					m_root = args[++i] + "/CDB";
+					m_root = args[++i] + File.separator + "CDB";
 				}
 			}
 			else if (args[i].equals("-n")) {

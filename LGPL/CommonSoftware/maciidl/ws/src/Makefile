@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.10 2010/10/26 19:32:27 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.11 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -59,8 +59,6 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
-maciErrTypeStubs_LIBS := acserr
-maciStubs_LIBS := maciErrType ACSErrTypeCommon
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -132,6 +130,7 @@ CDB_SCHEMAS = Container Components Component HierarchicalComponent Manager Loggi
 IDL_FILES = maci
 IDL_TAO_FLAGS =
 USER_IDL =
+maciStubs_LIBS = logging_idlStubs ACSErrTypeCommon maciErrTypeStubs acscommonStubs
 
 #
 # ACS Error definition files.

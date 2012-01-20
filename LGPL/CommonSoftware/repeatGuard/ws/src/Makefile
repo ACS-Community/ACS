@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2007/07/23 11:05:59 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.7 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -20,7 +20,7 @@
 #
 # user definable C-compilation flags
 USER_CFLAGS =  -Wall
-USER_LIB = -lACE -lTAO -lTAO_DynamicAny -lTAO_PortableServer 
+USER_LIB =
 
 #
 # additional include and library search paths
@@ -66,6 +66,7 @@ RepeatGuard_OBJECTS   = RepeatGuard
 RepeatGuard_LIBS      = acsutil acsThread
 
 RepeatGuardLogger_OBJECTS   = RepeatGuardLogger
+RepeatGuardLogger_LIBS   = RepeatGuard
 
 #
 # Scripts (public and local)

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdb.cpp,v 1.32 2011/10/28 15:05:05 hsommer Exp $"
+* "@(#) $Id: cdb.cpp,v 1.33 2012/01/20 23:18:16 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <cdbIMDB.h>
 #include <cdbDALaccess.h>
 #include <cdbINIReader.h>
-#include <Null_Mutex.h>
+#include <ace/Null_Mutex.h>
 
  using namespace cdb;
 
@@ -274,7 +274,14 @@ cdb_EXPORT void cdb::registerTable( const char* name, TableFactory pTf )
 // REVISION HISTORY:
 //
 //   $Log: cdb.cpp,v $
-//   Revision 1.32  2011/10/28 15:05:05  hsommer
+//   Revision 1.33  2012/01/20 23:18:16  tstaig
+//   Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+//   ACS on Windows under Cygwin. This commit corresponds to the folowing
+//   CommonSoftware modules:
+//   acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard
+//   loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb
+//
+//   Revision 1.32  2011/10/28 15:05:11  hsommer
 //   Manually fixed "no LGPL license text" issue reported by addCopyright.py
 //
 //   Revision 1.31  2006/09/25 08:36:59  cparedes

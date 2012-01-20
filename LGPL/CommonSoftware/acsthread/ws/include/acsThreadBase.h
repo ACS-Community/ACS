@@ -20,7 +20,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.35 2010/12/22 16:00:18 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.36 2012/01/20 23:18:16 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -48,6 +48,7 @@
 #include <loggingLoggable.h>
 
 #include "acsthreadErrType.h"
+#include "acsThreadExport.h"
 
 namespace ACS {
 
@@ -115,7 +116,7 @@ namespace ACS {
 	 * @see ThreadBase#check
 	 * @see ThreadBase#isResponsive
 	 */
-	static TimeInterval defaultResponseTime;
+	static TimeInterval acsThread_EXPORT defaultResponseTime;
 
 	/**
 	 * Default default sleep time in 100ns unit.
@@ -125,16 +126,16 @@ namespace ACS {
 	 * in the thread to define the time the thread shall sleep between
 	 * two iterations of the loop.
 	 */
-	static TimeInterval defaultSleepTime;
+	static TimeInterval acsThread_EXPORT defaultSleepTime;
 
 	/// Pointer to NULL ThreadBase object.
-	static ThreadBase * NullThreadBase;
+	static ThreadBase * acsThread_EXPORT NullThreadBase;
 
 	/// External thread initialization function.
-	static InitThreadFunc InitThread;
+	static InitThreadFunc acsThread_EXPORT InitThread;
 
 	/// External thread cleanup function.
-	static DoneThreadFunc DoneThread;
+	static DoneThreadFunc acsThread_EXPORT DoneThread;
 
       public:
 

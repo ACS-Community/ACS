@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAOProxy.cpp,v 1.8 2010/06/08 08:06:38 bjeram Exp $"
+ * "@(#) $Id: cdbDAOProxy.cpp,v 1.9 2012/01/20 23:18:16 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 #include <ace/SString.h>
 #include <sstream>
-#include <Tokenizer_T.h>
+#include <ace/Tokenizer_T.h>
 
 #include "cdbErrType.h"
 #include <ACSErrTypeCommon.h>

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -40,7 +40,6 @@
 # additional include and library search paths
 #USER_INC = 
 #USER_LIB = -lmaciClient -lacslogStubs -lACSLogTypeExample -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client 
-ACSLOGTSDEF=ACSLogTypeExample
 
 
 #
@@ -54,7 +53,7 @@ ACSLOGTSDEF=ACSLogTypeExample
 # -----------------------------
 EXECUTABLES     = testLTSClient
 EXECUTABLES_L   = 
-testLTSClient_LDFLAGS = -lmaciClient -lacslogStubs -lACSLogTypeExampleLTS -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client
+testLTSClient_LIBS = maciClient acslogStubs ACSLogTypeExampleLTS maci baci cdb logging acscomponent recovery acserr acsutil expat
 ACSLOGTSDEF=ACSLogTypeExample
 
 #

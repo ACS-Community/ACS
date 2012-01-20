@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2010/08/17 07:24:29 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.7 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -151,7 +151,7 @@ install : install_all
 	@rm -f CreateHsqldbTables.sql
 	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
 	@acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
-	@ant generate
+	@CLASSPATH="$(shell vltMakeJavaClasspath)" ant generate
 	@touch .done_generating_classes
 
 ../lib/$(POJOS_JAR): .done_generating_classes

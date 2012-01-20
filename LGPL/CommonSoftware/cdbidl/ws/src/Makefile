@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.6 2011/10/25 15:09:31 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.7 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -62,10 +62,6 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
-
-cdbDALStubs_LIBS := cdbErrType cdbErrTypeStubs acscomponentStubs
-cdbErrTypeStubs_LIBS := acserr
-cdbjDALStubs_LIBS := cdbDALStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -140,6 +136,8 @@ ACSERRDEF = cdbErrType
 IDL_FILES = cdbDAL cdbjDAL
 IDL_TAO_FLAGS =
 USER_IDL =
+cdbDALStubs_LIBS = cdbErrTypeStubs acscomponentStubs
+cdbjDALStubs_LIBS = cdbDALStubs
 #
 # Jarfiles and their directories
 #

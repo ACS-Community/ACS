@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2010/10/26 19:38:44 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/01/20 23:18:16 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -59,10 +59,6 @@ INCLUDES        =
 LIBRARIES       =
 LIBRARIES_L     =
 
-
-baciErrTypePropertyStubs_LIBS := acserr
-baciErrTypeDevIOStubs_LIBS := acserr
-baciStubs_LIBS := acscomponentStubs acscommonStubs acserr
 #
 # <brief description of lllll library>
 lllll_OBJECTS   =
@@ -121,6 +117,7 @@ ACSERRDEF = baciErrTypeProperty baciErrTypeDevIO
 IDL_FILES = baci
 IDL_TAO_FLAGS = 
 USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/
+baciStubs_LIBS = acscomponentStubs acscommonStubs acserrStubs
 #
 # Jarfiles and their directories
 #

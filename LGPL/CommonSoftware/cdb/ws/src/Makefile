@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.49 2008/08/14 07:16:04 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.50 2012/01/20 23:18:16 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -47,7 +47,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -llogging -lacscomponentStubs -lexpat
+USER_LIB =
 #USER_INC =
 
 # Program to build
@@ -103,7 +103,8 @@ LIBRARIES_L     =
 # GCH: CCS database not used any more for the time being
 # cdb_OBJECTS   = cdbCCS cdbField cdb cdbIMDB cdbINIReader cdbDALaccess cdbDAOImpl
 cdb_OBJECTS   = cdbField cdb cdbIMDB cdbINIReader cdbDALaccess cdbDAOImpl cdbDAONode cdbDAOProxy
-cdb_LIBS      = cdbDALStubs ACSErrTypeCommon ACSErrTypeCORBA cdbErrType
+cdb_LIBS      = cdbDALStubs ACSErrTypeCommon ACSErrTypeCORBA cdbErrType acscomponentStubs logging expat
+cdb_CFLAGS    = -DCDB_BUILD_DLL
 
 #
 # Scripts (public and local)
