@@ -262,7 +262,7 @@ public class PluginBuilder {
 		jacorbFileOfJars=System.getProperty(jacorbFolderPropertyName);
 		// Get the folder of jars
 		String jarFolders = System.getProperty(AcsSystemClassLoader.PROPERTY_JARDIRS);
-		String[] temp=jarFolders.split(":");
+		String[] temp=jarFolders.split(File.pathSeparator);
 		
 		jarDirs.add(jacorbFileOfJars+"/lib");
 		for (String str: temp) {

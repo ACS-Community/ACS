@@ -32,14 +32,14 @@
 //#define _ALL_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsutilFindFile.cpp,v 1.5 2011/10/12 08:37:06 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsutilFindFile.cpp,v 1.6 2012/01/20 22:07:43 tstaig Exp $"; 
 static void *use_rcsId = ((void)(void)&use_rcsId,(void *) &rcsId);
 
 /* 
  * System Headers
  */
 #include <stdlib.h>
-#include <OS_NS_string.h>
+#include <ace/OS_NS_string.h>
 #include <unistd.h>
 //#include <sys/types.h>
 #include <sys/stat.h>

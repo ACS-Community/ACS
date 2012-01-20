@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingRemoteSyslog.h,v 1.35 2009/01/26 06:45:26 cparedes Exp $"
+* "@(#) $Id: loggingRemoteSyslog.h,v 1.36 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -92,7 +92,7 @@ public:
     } facilityPair;
     
     /// Facility name to int value mapping table.
-    static facilityPair m_facilityNames[];
+    static facilityPair logging_EXPORT m_facilityNames[];
 
     /// Constructor
     /// facility has to be already shifted left by 3 bits.
@@ -147,6 +147,15 @@ public:
 // REVISION HISTORY:
 //
 // $Log: loggingRemoteSyslog.h,v $
+// Revision 1.36  2012/01/20 22:07:44  tstaig
+// Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+// ACS on Windows under Cygwin. This commit corresponds to the folowing
+// CommonSoftware modules:
+// jacsutil acsEclipseUtils xmljbind xmlpybind acserridl acsidlcommon acsutil
+// acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS
+// Along with adding dependencies for some libraries in acsdaemon and acstime
+// modules so they would be built correctly.
+//
 // Revision 1.35  2009/01/26 06:45:26  cparedes
 // Changing from int to ssize_t
 //

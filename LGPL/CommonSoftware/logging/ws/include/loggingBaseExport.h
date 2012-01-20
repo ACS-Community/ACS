@@ -1,0 +1,38 @@
+
+// -*- C++ -*-
+// generate_export_file.pl, v1.0 Matej Sekoranja (adpated from ACE)
+// Definition for Win32 Export directives.
+// This file is generated automatically by generateExportFile.pl
+// ------------------------------
+#ifndef LOGGINGBASE_EXPORT_H
+#define LOGGINGBASE_EXPORT_H
+
+#include <acsutil.h>
+
+#if defined (ACS_HAS_STATIC_LIBS) && !defined (LOGGINGBASE_HAS_DLL)
+#  define LOGGINGBASE_HAS_DLL 0
+#endif /* ACS_HAS_STATIC_LIBS && LOGGINGBASE_HAS_DLL */
+
+#if !defined (LOGGINGBASE_HAS_DLL)
+#  define LOGGINGBASE_HAS_DLL 1
+#endif /* ! LOGGINGBASE_HAS_DLL */
+
+#if defined (LOGGINGBASE_HAS_DLL) && (LOGGINGBASE_HAS_DLL == 1)
+#  if defined (LOGGINGBASE_BUILD_DLL)
+#    define loggingBase_EXPORT ACS_DLL_EXPORT
+#    define LOGGINGBASE_SINGLETON_DECLARATION(T) ACE_EXPORT_SINGLETON_DECLARATION (T)
+#    define LOGGINGBASE_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK) ACE_EXPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
+#  else /* LOGGINGBASE_BUILD_DLL */
+#    define loggingBase_EXPORT ACS_DLL_IMPORT
+#    define LOGGINGBASE_SINGLETON_DECLARATION(T) ACE_IMPORT_SINGLETON_DECLARATION (T)
+#    define LOGGINGBASE_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK) ACE_IMPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
+#  endif /* LOGGINGBASE_BUILD_DLL */
+#else /* LOGGINGBASE_HAS_DLL == 1 */
+#  define loggingBase_EXPORT
+#  define LOGGINGBASE_SINGLETON_DECLARATION(T)
+#  define LOGGINGBASE_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
+#endif /* LOGGINGBASE_HAS_DLL == 1 */
+
+#endif /* LOGGINGBASE_EXPORT_H */
+
+// End of auto generated file.

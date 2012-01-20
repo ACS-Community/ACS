@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ACSPorts.py,v 1.8 2011/10/28 14:50:11 hsommer Exp $"
+# "@(#) $Id: ACSPorts.py,v 1.9 2012/01/20 22:07:44 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@ TODO:
 - nada
 '''
 #------------------------------------------------------------------------------
-__revision__ = "$Id: ACSPorts.py,v 1.8 2011/10/28 14:50:11 hsommer Exp $"
+__revision__ = "$Id: ACSPorts.py,v 1.9 2012/01/20 22:07:44 tstaig Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os      import environ
 from socket  import getfqdn, gethostbyname
@@ -202,7 +202,10 @@ def getIP():
     
     #determine the local hosts IP address in string format
     localhost = ""
-    localhost = str(gethostbyname(getfqdn()))
+    if (environ['OSYSTEM'] == environ['CYGWIN_VER']):
+        localhost = str(gethostbyname(getfqdn().split(".")[0]))
+    else:
+        localhost = str(gethostbyname(getfqdn()))
     #if what's above failed for some reason...
     if (localhost == None) or (localhost == ""):
         #take the HOST environment variable

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsQoStimeout.h,v 1.7 2006/02/10 20:41:03 sharring Exp $"
+* "@(#) $Id: acsQoStimeout.h,v 1.8 2012/01/20 22:07:43 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,6 +36,7 @@
 
 #include "tao/Messaging/Messaging.h"
 #include "acsQoSErrType.h" // error stuff
+#include "acsQoSExport.h"
 
 namespace acsQoS
 {
@@ -160,8 +161,8 @@ class Timeout
 
 		CORBA::PolicyList previousPolicy_m;    // here we'll store previously set timeout
     
-		static CORBA::ORB_var orb_m;
-		static bool initialized_m;
+		static acsQoS_EXPORT CORBA::ORB_var orb_m;
+		static acsQoS_EXPORT bool initialized_m;
 };//class Timeout
 
 };//namespace acsQoS 

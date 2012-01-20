@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.25 2008/01/23 09:45:08 bjeram Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.26 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,8 +39,8 @@
 #include "loggingBaseLog.h"
 #include "loggingHandler.h"
 #include <ace/Thread_Mutex.h>
-#include <Singleton.h>
-#include <Thread_Manager.h>   // it is here just that we can print ID of the thread !!!
+#include <ace/Singleton.h>
+#include <ace/Thread_Manager.h>   // it is here just that we can print ID of the thread !!!
 
 namespace Logging 
 {
@@ -59,7 +59,11 @@ namespace Logging
 	///Logger smart pointer
 #ifndef MAKE_VXWORKS
 	typedef Loki::SmartPtr<Logger, 
+#ifdef __CYGWIN__
+			       Logging::RefCounted,
+#else
 			       Loki::RefCountedMTAdj<Loki::ObjectLevelLockable>::RefCountedMT,
+#endif
 			       Loki::AllowConversion,
 			       Loki::NoCheck,
 			       Loki::DefaultSPStorage> LoggerSmartPtr;
@@ -329,12 +333,12 @@ namespace Logging
 	 * mutex which guards the loggers lost making this class completely
 	 * thread-safe
 	 */
-	static ACE_Thread_Mutex loggersMutex_m;
+	static ACE_Thread_Mutex loggingBase_EXPORT loggersMutex_m;
 
 	/**
 	 * External function that configures logger.
 	 */
-	static ConfigureLoggerFunction configureLoggerFunction_m;
+	static ConfigureLoggerFunction loggingBase_EXPORT configureLoggerFunction_m;
 
     };
     //------------------------------------------------------------------------------

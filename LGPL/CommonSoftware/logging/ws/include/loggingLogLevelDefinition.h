@@ -31,6 +31,7 @@
 #endif
 
 #include "logging_idlC.h"
+#include "loggingExport.h"
 #include <string>
 #include <ace/Log_Msg_Callback.h>
 #include <ace/Log_Priority.h>
@@ -47,7 +48,7 @@ class LogLevelDefinition {
     std::string getName();
   private:
 
-    static ACE_Log_Priority m_LogEntryCast[];
+    static ACE_Log_Priority logging_EXPORT m_LogEntryCast[];
     int m_value;
     std::string m_name;
 };

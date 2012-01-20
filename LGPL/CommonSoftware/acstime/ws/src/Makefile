@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.28 2010/10/26 20:45:07 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.29 2012/01/20 22:07:43 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -89,7 +89,7 @@ _acstimeSWIG_OBJECTS   = $(shell if [ $(shell uname) = Linux ]; then echo 'acsti
 			 acstimeTimeUtil \
 			 acstimeDurationHelper acstimeEpochHelper \
 			 acstimeC acstimeS
-_acstimeSWIG_LIBS      = baci ACSTimeError maciErrType
+_acstimeSWIG_LIBS      = baci ACSTimeError maciErrType python2.6
 
 
 

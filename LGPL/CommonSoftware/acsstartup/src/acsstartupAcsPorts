@@ -86,7 +86,11 @@ if [ "$ACS_HOST" ]
 then
     python -c "import socket; import os;  print str(socket.gethostbyname(os.environ['ACS_HOST']))"
 else
-    python -c "import socket; print str(socket.gethostbyname(socket.getfqdn()))"
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        python -c "import socket; print str(socket.gethostbyname(socket.getfqdn()))"
+    else
+        python -c "import socket; print str(socket.gethostbyname(socket.getfqdn().split('.')[0]))"
+    fi
 fi
 }
 #############################################################

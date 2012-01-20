@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.57 2011/09/06 14:20:59 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.58 2012/01/20 22:07:43 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -23,7 +23,7 @@
 #    None
 #------------------------------------------------------------------------
 
-USER_LIB = -lacsutil -lACE -lTAO -lTAO_PortableServer
+USER_LIB =
 
 #
 # Scripts (public and local)

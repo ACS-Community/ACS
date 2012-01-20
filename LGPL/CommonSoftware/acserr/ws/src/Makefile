@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.89 2011/08/30 16:49:42 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.90 2012/01/20 22:07:43 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -48,7 +48,7 @@ DEBUG=on
 
 #
 # additional include and library search paths
-USER_LIB = -lTAO -lACE 
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -76,7 +76,7 @@ xxxxx_LIBS      =
 # Includes (.h) files (public only)
 # ---------------------------------
 INCLUDES        = acserr.h acserrExceptionManager.h acserrLegacy.h acserrACSbaseExImpl.h \
-		 acserrHandlers.h acserrHandlersErr.h ErrorSystemErrType.h
+		 acserrHandlers.h acserrHandlersErr.h ErrorSystemErrType.h acserrGenExport.h
 
  
 #
@@ -89,11 +89,10 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 acserr_OBJECTS = acserr acserrExceptionManager \
 		 acserrLegacy acserrACSbaseExImpl \
-		 acserrHandlersErrC acserrHandlersErrS  acserrHandlersErr acserrHandlers ErrorSystemErrType
-acserr_LIBS = logging loki acsutil
+		 acserrHandlersErr acserrHandlers ErrorSystemErrType
+acserr_LIBS = logging loki acsutil acserrStubs acserrHandlersErrStubs
+acserr_CFLAGS = -DACSERRGEN_BUILD_DLL
 
-ErrorSystemErrTypeStubs_LIBS := acserrStubs
-acserrHandlersErrStubs_LIBS := acserrStubs
 #
 # Scripts (public and local)
 # ----------------------------
@@ -116,6 +115,8 @@ CSOURCENAMES = \
 # IDL FILES
 #
 IDL_FILES = acserrHandlersErr ErrorSystemErrType
+ErrorSystemErrTypeStubs_LIBS = acserrStubs
+acserrHandlersErrStubs_LIBS = acserrStubs
 
 
 XSDBIND = ACSError

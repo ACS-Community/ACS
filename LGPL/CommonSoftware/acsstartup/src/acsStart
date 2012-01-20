@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.48 2011/06/03 15:36:44 tstaig Exp $"
+# "@(#) $Id: acsStart,v 1.49 2012/01/20 22:07:43 tstaig Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -156,7 +156,7 @@ fi
 ### ---------- End of Command Line Parsing -------------
 
 #warn them if they're using the typical NRAO /etc/hosts file
-if [ `getIP` = "127.0.0.1" ]
+if [ "`getIP`" = "127.0.0.1" ]
 then
     echo "WARNING: this script has detected that your PC is incorrectly configured"
     echo "         for CORBA communications. The IP address (i.e., $HOST)"

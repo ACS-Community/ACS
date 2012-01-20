@@ -1,6 +1,9 @@
 #! /bin/bash
-
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+HOST=`hostname`
+else
 HOST=`hostname -s`
+fi
 
 . acsstartupAcsInstance
 

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.26 2009/10/02 19:10:02 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.27 2012/01/20 22:07:44 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lacsutil -lACE  -lTAO -lTAO_PortableServer -lTAO_CosProperty
+#USER_LIB =
 #
 # MODULE CODE DESCRIPTION:
 # ------------------------
@@ -60,12 +60,17 @@ EXECUTABLES_L   = testLLU testTmp testFindFile testPorts testAnyAide testTimeSta
 #
 # <brief description of xxxxx program>
 testLLU_OBJECTS   = testLLU	
+testLLU_LIBS = acsutil	
 testTmp_OBJECTS   = testTmp
+testTmp_LIBS = acsuti
 testPorts_OBJECTS = testPorts
+testPorts_LIBS = acsuti
 testFindFile_OBJECTS = testFindFile
+testFindFile_LIBS = acsuti
 testAnyAide_OBJECTS = testAnyAide
-testAnyAide_LIBS    = baciStubs acscommonStubs acscomponentStubs acserrStubs
+testAnyAide_LIBS    = baciStubs acscommonStubs acscomponentStubs acserrStubs acsutil
 testTimeStamp_OBJECTS = testTimeStamp
+testTimeStamp_LIBS = acsuti
 
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =

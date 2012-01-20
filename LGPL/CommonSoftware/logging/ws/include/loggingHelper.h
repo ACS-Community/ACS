@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHelper.h,v 1.36 2003/10/15 20:17:26 dfugate Exp $"
+* "@(#) $Id: loggingHelper.h,v 1.37 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -33,7 +33,6 @@
 #endif
 
 #include <acsutil.h>
-#include <loggingExport.h>
 
 #include <orbsvcs/CosNamingC.h>
 
@@ -41,10 +40,10 @@
  * LoggingHelper class is a class helping to handle commonly used operations.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingHelper.h,v 1.36 2003/10/15 20:17:26 dfugate Exp $"
+ * @version "@(#) $Id: loggingHelper.h,v 1.37 2012/01/20 22:07:44 tstaig Exp $"
  */
 
-class logging_EXPORT LoggingHelper
+class LoggingHelper
 {
 
 public:
@@ -96,6 +95,15 @@ private:
 // REVISION HISTORY:
 //
 // $Log: loggingHelper.h,v $
+// Revision 1.37  2012/01/20 22:07:44  tstaig
+// Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+// ACS on Windows under Cygwin. This commit corresponds to the folowing
+// CommonSoftware modules:
+// jacsutil acsEclipseUtils xmljbind xmlpybind acserridl acsidlcommon acsutil
+// acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS
+// Along with adding dependencies for some libraries in acsdaemon and acstime
+// modules so they would be built correctly.
+//
 // Revision 1.36  2003/10/15 20:17:26  dfugate
 // Naming Service port is now dynamic.
 //

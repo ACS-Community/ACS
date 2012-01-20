@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.7 2011/10/25 15:25:08 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/01/20 22:07:44 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -81,8 +81,6 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 lllll_OBJECTS   =
 
-logging_idlStubs_LIBS := TAO_DsLogAdmin_Skel
-
 #
 # Scripts (public and local)
 # ----------------------------
@@ -135,6 +133,7 @@ CDB_SCHEMAS =
 IDL_FILES = logging_idl
 IDL_TAO_FLAGS = 
 USER_IDL = -I$(ACE_ROOT)/TAO
+logging_idlStubs_LIBS = TAO_DsLogAdmin TAO_DsLogAdmin_Serv TAO_DsLogAdmin_Skel
 #
 # Jarfiles and their directories
 #

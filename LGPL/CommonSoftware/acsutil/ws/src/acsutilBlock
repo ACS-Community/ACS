@@ -154,7 +154,11 @@ do
   #cares about it
   if [ "$CL_PID" != "" ]
   then
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+      pidExists=`ps h -p $CL_PID |grep -v PID`
+    else
       pidExists=`ps h --pid $CL_PID`
+    fi
   else
       pidExists="sure"
   fi

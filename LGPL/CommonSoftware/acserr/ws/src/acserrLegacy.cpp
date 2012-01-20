@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.20 2011/04/18 21:47:10 javarias Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.21 2012/01/20 22:07:43 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,7 @@
 #include "acserrHandlers.h"
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.20 2011/04/18 21:47:10 javarias Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.21 2012/01/20 22:07:43 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -551,7 +551,7 @@ char* ACSError::getDescription (ACSErr::ACSErrType et, ACSErr::ErrorCode ec)
 
 bool ACSError::init ()
 {
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	struct sigaction sigSegVAction;
 #endif
     orb = CORBA::ORB::_nil();
@@ -561,7 +561,7 @@ bool ACSError::init ()
     m_oldUnexpected = std::set_unexpected(acserrUnspecifiedExHandler);
     m_oldTerminate = std::set_terminate(acserrUncaughtExHandler);
 
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
     std::memset(&sigSegVAction, 0, sizeof(struct sigaction));
 
     sigSegVAction.sa_sigaction = acserrSigSegvHandler;
@@ -580,7 +580,7 @@ bool ACSError::init ()
 
 bool ACSError::init (CORBA::ORB_ptr _orb)
 {
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	struct sigaction sigSegVAction;
 #endif //!MAKE_VXWORKS
 
@@ -588,7 +588,7 @@ bool ACSError::init (CORBA::ORB_ptr _orb)
     m_oldUnexpected = std::set_unexpected(acserrUnspecifiedExHandler);
     m_oldTerminate = std::set_terminate(acserrUncaughtExHandler);
 
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
     std::memset(&sigSegVAction, 0, sizeof(struct sigaction));
 
     sigSegVAction.sa_sigaction = acserrSigSegvHandler;

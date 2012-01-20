@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.55 2011/03/25 23:42:28 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.56 2012/01/20 22:07:44 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosNotification -lacsutil -llog4cpp
+#USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -85,8 +85,7 @@ testAnyLog_OBJECTS = testAnyLog
 testAnyLog_LIBS   = logging
 
 testAUD_ARR_OBJECTS = testAUD_ARR
-testAUD_ARR_LIBS = logging
-testAUD_ARR_LDFLAGS = -lmaciClient
+testAUD_ARR_LIBS = logging maciClient
 
 testLog4cpp_OBJECTS = testLog4cpp
 testLog4cpp_LIBS   = logging maciClient acserr

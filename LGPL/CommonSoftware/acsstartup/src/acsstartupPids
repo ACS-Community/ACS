@@ -23,7 +23,16 @@ local PID
 TCP=$1
 
 #this little command picks off the process ID if it exists...
-PID=`netstat -t -p -e -e -l -n 2> /dev/null| grep ":$TCP " | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+  #Windows PID
+  PID=`netstat -p tcp -o -a -n 2> /dev/nul |grep "TCP \+[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:$TCP" |awk '{printf("%s\n",$5)}' |sort -u |awk '{printf("%s",$1)}'`
+  #Cygwin PID
+  if [ "x$PID" != "x" ]; then
+     PID=`ps h |sed s/I/" "/ |awk '{printf("%s %s\n", $1, $4)}' |grep "[0-9]* $PID" |awk '{printf("%s",$1)}'`
+  fi
+else
+  PID=`netstat -t -p -e -e -l -n 2> /dev/null| grep ":$TCP " | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+fi
 
 #sanity check
 if [ "$PID" = "" ]
@@ -385,7 +394,11 @@ INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #Check manager's port
 if MANAGER_PID=`getManagerPid 2>/dev/null`
 then
-    if [ "`ps h --pid $MANAGER_PID`" = "" ] 
+    PID=`ps h -p $MANAGER_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Manager 'ghost' existed in $INSTANCE_DIR!"
 	rm -f  $INSTANCE_DIR/$ACS_MANAGER_OUT
@@ -416,7 +429,11 @@ INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #Check naming service port
 if TEMP_PID=`getNamingServicePid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Naming Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
@@ -430,7 +447,11 @@ fi
 #Check notify service port
 if TEMP_PID=`getNotifyServicePid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Notify Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
@@ -445,7 +466,11 @@ fi
 #Check logging service port
 if TEMP_PID=`getLoggingServicePid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Logging Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
@@ -459,7 +484,11 @@ fi
 #Check IFR port
 if TEMP_PID=`getIRPid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Interface Repository 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_IR_PIDFILE
@@ -473,7 +502,11 @@ fi
 #Check logging notify service
 if TEMP_PID=`getLoggingNotifyServicePid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Logging Notify Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
@@ -488,7 +521,11 @@ fi
 #Check archive notify service
 if TEMP_PID=`getArchiveNotifyServicePid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Archiving Notify Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
@@ -503,7 +540,11 @@ fi
 #Check log port
 if TEMP_PID=`getLogPid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "Log Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_LOG_SERVICE_PIDFILE
@@ -517,7 +558,11 @@ fi
 #Check CDB port
 if TEMP_PID=`getCDBPid 2>/dev/null`
 then
-    if [ "`ps h --pid $TEMP_PID`" = "" ] 
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
     then
 	ACS_LOG_ERROR "acsstartupPids" "CDB 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_CDB_PIDFILE

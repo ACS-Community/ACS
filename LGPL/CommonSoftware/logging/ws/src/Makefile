@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.72 2011/07/18 16:38:20 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.73 2012/01/20 22:07:44 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -44,10 +44,7 @@ USER_CFLAGS =
 ## -lACE commented out because it makes the container crash on exit
 ## Seems a problem with singletons, being investigated.
 ##
-USER_LIB =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
-			-lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
-			-lTAO_CosTrading -lTAO_DynamicAny \
-			-lTAO_CosNotification -lTAO_CosNotification_Serv
+USER_LIB =
 
 #USER_INC =
 
@@ -74,11 +71,11 @@ loggingService_OBJECTS = loggingService loggingACSLogFactory_i \
                          loggingACSStructuredPushSupplierXml loggingACSLog_i \
                          loggingHelper  loggingAcsLogServiceImpl 
 
-loggingService_LIBS = logging logging_idlStubs
+loggingService_LIBS = logging logging_idlStubs TAO_CosNotification_Serv
 #loggingService_LDFLAGS= -ggdb
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
-loggingClient_LIBS = logging
+loggingClient_LIBS = logging TAO_CosNotification_Serv
 #loggingClient_LDFLAGS= -ggdb
 
 # <brief description of xxxxx program>
@@ -96,7 +93,7 @@ $(PROG)_LIBS               = $(TESTLIBS) C++ CCS
 #
 # Includes (.h) files (public and local)
 # ---------------------------------
-INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParser.h \
+INCLUDES        = 	logging.h loggingExport.h loggingBaseExport.h loggingXMLElement.h loggingXMLParser.h \
 		  	loggingClient.h loggingLocalSyslog.h loggingRemoteSyslog.h loggingLocalFile.h \
 			loggingCacheLogger.h \
 			loggingBaseLog.h loggingHandler.h loggingLogger.h loggingLoggable.h \
@@ -131,8 +128,9 @@ baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
 ##
 ##baselogging_LDFLAGS =   -lTAO_PortableServer
 ##baselogging_LIBS =    loki acsutil
-baselogging_LIBS =    acsutil
-baselogging_LDFLAGS = -lACE -lTAO -lTAO_PortableServer -lloki -ggdb
+baselogging_LIBS =    acsutil loki
+baselogging_LDFLAGS = -ggdb
+baselogging_CFLAGS  = -DLOGGINGBASE_BUILD_DLL
 logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 						loggingLoggingTSSStorage loggingLogLevelDefinition \
@@ -143,8 +141,9 @@ logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
 						loggingLog4cpp
 						
-logging_LIBS    =	baselogging log4cpp pthread rt
-logging_LDFLAGS =	-lacsutil -lacscommonStubs -llogging_idlStubs
+logging_LIBS    =	logging_idlStubs acsutil acscommonStubs baselogging log4cpp pthread rt
+logging_LDFLAGS =	-gdb
+logging_CFLAGS  = -DLOGGING_BUILD_DLL
 
 #log4cpplogging_OBJECTS 	:= 	loggingACSLoggingEvent loggingXmlLayout \
 #							loggingStdoutlayout loggingACSCategory \

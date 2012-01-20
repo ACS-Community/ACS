@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.10 2010/10/26 18:22:10 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.11 2012/01/20 22:07:43 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -23,7 +23,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO_Messaging
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -50,7 +50,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = acsQoS.h acsQoStimeout.h
+INCLUDES        = acsQoS.h acsQoStimeout.h acsQoSExport.h
 
 #
 # Libraries (public and local)
@@ -61,9 +61,9 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 acsQoS_OBJECTS   = acsQoS acsQoStimeout
-acsQoS_LIBS = acsQoSErrType
+acsQoS_LIBS = acsQoSErrType TAO_Messaging
+acsQoS_CFLAGS = -DACSQOS_BUILD_DLL
 
-acsQoSErrTypeStubs_LIBS := acserr
 #
 # Scripts (public and local)
 # ----------------------------

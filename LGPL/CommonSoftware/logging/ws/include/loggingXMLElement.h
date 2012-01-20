@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLElement.h,v 1.36 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: loggingXMLElement.h,v 1.37 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include <loggingExport.h>
 #include <ace/SString.h>
 #include <ace/Hash_Map_Manager.h>
-#include <Thread_Mutex.h>
+#include <ace/Thread_Mutex.h>
 
 namespace loggingXMLParser {
 
@@ -131,6 +131,15 @@ private:
 // REVISION HISTORY:
 //
 // $Log: loggingXMLElement.h,v $
+// Revision 1.37  2012/01/20 22:07:44  tstaig
+// Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+// ACS on Windows under Cygwin. This commit corresponds to the folowing
+// CommonSoftware modules:
+// jacsutil acsEclipseUtils xmljbind xmlpybind acserridl acsidlcommon acsutil
+// acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS
+// Along with adding dependencies for some libraries in acsdaemon and acstime
+// modules so they would be built correctly.
+//
 // Revision 1.36  2006/09/01 02:20:55  cparedes
 // small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //

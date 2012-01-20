@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilTimeStamp.h,v 1.1 2005/12/12 19:12:29 dfugate Exp $"
+* "@(#) $Id: acsutilTimeStamp.h,v 1.2 2012/01/20 22:07:43 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,8 +36,8 @@
 #endif
 
 #include <acscommonC.h>
-#include <SString.h>
-#include <OS_NS_time.h>
+#include <ace/SString.h>
+#include <ace/OS_NS_time.h>
 
 /**
  * DESCRIPTION: Time stamp representation.

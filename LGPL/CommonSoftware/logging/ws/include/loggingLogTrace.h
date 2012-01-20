@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogTrace.h,v 1.5 2011/09/14 11:31:09 bjeram Exp $"
+* "@(#) $Id: loggingLogTrace.h,v 1.6 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,7 @@
 
 #include <string>
 #include "loggingLogger.h"
-#include <OS_NS_time.h>
+#include <ace/OS_NS_time.h>
 
 namespace Logging 
 {

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.12 2011/04/18 21:47:10 javarias Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.13 2012/01/20 22:07:43 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,11 +11,11 @@
 #include "vltPort.h"
 #include "acserrHandlers.h"
 #include <cstring>
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 #include <execinfo.h>
 #endif
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.12 2011/04/18 21:47:10 javarias Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.13 2012/01/20 22:07:43 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #ifndef MAKE_VXWORKS
@@ -37,7 +37,7 @@ class UnspecException {
  * helper function that adds back trace info to the exception
  * and releases the array of strings that contains the back trace
  */
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 
 void addBackTrace2Exception(ACSErr::ACSbaseExImpl &ex, char **backTraceString, size_t backTraceSize)
 {
@@ -60,7 +60,7 @@ void addBackTrace2Exception(ACSErr::ACSbaseExImpl &ex, char **backTraceString, s
 */
 void acserrUnspecifiedExHandler()
 {
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	void *backTrace[ACSErrmaxBackTraceDepth];
 	size_t backTraceSize;
 	char **backTraceString;
@@ -77,7 +77,7 @@ void acserrUnspecifiedExHandler()
 	{
 	UnspecifiedACSBasedExceptionExImpl ex(_ex, __FILE__, __LINE__,
 					      "acserrUnspecifiedExHandler", ACSErr::Emergency);
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
 
@@ -88,7 +88,7 @@ void acserrUnspecifiedExHandler()
 	UnspecifiedCORBAExceptionExImpl ex(__FILE__, __LINE__,
 					   "acserrUnspecifiedExHandler", ACSErr::Emergency);
 	ex.setCORBAExName(ce._name());
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
 
@@ -99,7 +99,7 @@ void acserrUnspecifiedExHandler()
         UnspecifiedSTDExceptionExImpl ex(__FILE__, __LINE__,
             "acserrUnspecifiedExHandler", ACSErr::Emergency);
         ex.setWhat(stdex.what());
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
         addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
         throw UnspecException(ex); // pass to the acserrUncaughtExHandler
@@ -108,7 +108,7 @@ void acserrUnspecifiedExHandler()
 	{
 	UnspecifiedUnknownExceptionExImpl ex(__FILE__, __LINE__,
 					     "acserrUnspecifiedExHandler", ACSErr::Emergency);
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
 	throw UnspecException(ex); // pass to the acserrUncaughtExHandler where it be loged
@@ -118,7 +118,7 @@ void acserrUnspecifiedExHandler()
 
 void acserrUncaughtExHandler()
 {
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	void *backTrace[ACSErrmaxBackTraceDepth];
 	size_t backTraceSize;
 	char **backTraceString;
@@ -137,7 +137,7 @@ void acserrUncaughtExHandler()
 	{
 	UncaughtUnspecifiedExceptionExImpl ex(_ex.unspecEx,
 					      __FILE__, __LINE__, "acserrUncaughtExHandler", ACSErr::Emergency);
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	// here we already have back trace from acserrUnspecifiedExHandler, but we have to free backTraceString
 	free(backTraceString);
 #endif
@@ -148,7 +148,7 @@ void acserrUncaughtExHandler()
 	{
 	UncaughtACSBasedExceptionExImpl ex(_ex, __FILE__, __LINE__,
 					   "acserrUncaughtExHandler", ACSErr::Emergency);
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
 	ex.log();
@@ -158,7 +158,7 @@ void acserrUncaughtExHandler()
 	UncaughtCORBAExceptionExImpl ex(__FILE__, __LINE__,
 					"acserrUncaughtExHandler", ACSErr::Emergency);
 	ex.setCORBAExName(ce._name());
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
   	ex.log();
@@ -168,7 +168,7 @@ void acserrUncaughtExHandler()
       UncaughtSTDExceptionExImpl ex(__FILE__, __LINE__,
                                     "acserrUncaughtExHandler", ACSErr::Emergency);
       ex.setWhat(stdex.what());
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
       addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
 
@@ -178,7 +178,7 @@ void acserrUncaughtExHandler()
 	{
 	UncaughtUnknownExceptionExImpl ex(__FILE__, __LINE__,
 					  "acserrUncaughtExHandler", ACSErr::Emergency);
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
 #endif
   	ex.log();
@@ -186,7 +186,7 @@ void acserrUncaughtExHandler()
 }//acserrTerminate
 
 
-#ifndef MAKE_VXWORKS
+#if !defined (MAKE_VXWORKS) && !defined(__CYGWIN__)
 
 void acserrSigSegvHandler(int signal, siginfo_t* info, void* data)
 {

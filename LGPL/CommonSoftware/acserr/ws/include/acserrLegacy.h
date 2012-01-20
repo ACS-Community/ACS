@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.h,v 1.11 2007/05/14 14:12:32 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.h,v 1.12 2012/01/20 22:07:43 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,7 @@
 #endif
 
 #include <logging.h>
-#include <Thread_Manager.h> 
+#include <ace/Thread_Manager.h> 
 #include <sstream>
 #include <acserrS.h>
 #include <acscommonC.h>

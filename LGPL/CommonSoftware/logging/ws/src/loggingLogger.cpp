@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.21 2008/01/23 09:45:08 bjeram Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.22 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,9 +26,9 @@
 #include "loggingLogger.h"
 #include <functional>
 #include <iostream>
-#include <Recursive_Thread_Mutex.h>
+#include <ace/Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.21 2008/01/23 09:45:08 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.22 2012/01/20 22:07:44 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function

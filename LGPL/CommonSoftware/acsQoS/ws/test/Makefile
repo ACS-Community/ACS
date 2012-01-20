@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2006/02/10 20:41:03 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.7 2012/01/20 22:07:43 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lACE -lTAO -lTAO_PortableServer -lTAO_Valuetype -llogging -lacserr -lTAO_Messaging
+#USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -44,7 +44,7 @@ timeoutTestClient_OBJECTS = timeoutTestClient
 timeoutTestClient_LIBS = timeoutTestStubs acsQoS acsQoSErrType
 
 timeoutTestServer_OBJECTS  = timeoutTestServer timeoutTestImpl
-timeoutTestServer_LIBS = timeoutTestStubs
+timeoutTestServer_LIBS = timeoutTestStubs logging
 
 #
 # special compilation flags for single c sources

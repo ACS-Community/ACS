@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.h,v 1.10 2011/04/26 20:19:22 javarias Exp $"
+* "@(#) $Id: loggingLogSvcHandler.h,v 1.11 2012/01/20 22:07:44 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,6 +30,7 @@
 #endif
 
 #include "loggingHandler.h"
+#include "loggingExport.h"
 #include <stdarg.h>
 #include <ace/Log_Priority.h>
 
@@ -112,7 +113,7 @@ namespace Logging {
 	 * Maximum size of a formatted log message passed to
 	 * unformatted2formatted.
 	 */
-	static const int MAX_MESSAGE_SIZE = 1000;
+	static const int logging_EXPORT MAX_MESSAGE_SIZE = 1000;
 	
 	/**
 	 * Method used to convert unformatted printf-style messages

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.69 2010/03/15 11:57:26 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.70 2012/01/20 22:07:43 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -46,7 +46,7 @@ USER_CFLAGS = -I../src
 
 #
 # additional include and library search paths
-USER_LIB = -lACE -lTAO -lacserr  -lTAO_IFR_Client -lTAO_PortableServer -llogging -lTAO_DynamicAny
+#USER_LIB =
 
 # MODULE CODE DESCRIPTION:
 # ------------------------
@@ -209,6 +209,9 @@ CSOURCENAMES = \
 #
 
 IDL_FILES =  acserrTest ACSErrOldTypeTest acserrOldTest
+acserrTestStubs_LIBS = ACSErrTypeTestStubs
+ACSErrOldTypeTestStubs_LIBS = acserrStubs
+acserrOldTestStubs_LIBS = acserrStubs ACSErrOldTypeTestStubs
 
 #
 # Jarfiles and their directories

@@ -33,7 +33,11 @@ fi
 #first need to figure out $ACS_TMP
 if [ "$ACS_TMP" = "" ]
 then 
+  if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+    export ACS_TMP=$ACSDATA/tmp/`hostname`
+  else
     export ACS_TMP=$ACSDATA/tmp/`hostname -s`
+  fi
 fi
 INSTANCE_DIR=$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
 
