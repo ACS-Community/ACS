@@ -94,6 +94,7 @@ public class AlarmSender {
 				init();
 			} catch (Throwable t) {
 				containerServices.getLogger().log(AcsLogLevel.ERROR,"Error initializing the alarm service structs",t);
+				// @TODO (hso): return? exception? Otherwise NPE from source.push below
 			}
 		}
 		try {

@@ -114,6 +114,7 @@ public class AlarmQueue extends ConcurrentHashMap<String,AlarmQueue.AlarmToQueue
 	}
 	
 	/**
+	 * Stores the alarm, overwriting any previous settings for the same triplet.
 	 * 
 	 * @param faultFamily The fault family
 	 * @param faultMember The fault member
