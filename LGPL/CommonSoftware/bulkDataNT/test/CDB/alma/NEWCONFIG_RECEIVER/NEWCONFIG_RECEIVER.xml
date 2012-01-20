@@ -19,7 +19,7 @@
 				</datareader_qos>
 			</DDSReceiverFlowQoS>
 		</ReceiverFlow>
-		<ReceiverFlow Name="Name5" cbReceiveProcessTimeoutSec="0.02">
+		<ReceiverFlow Name="Name5" cbReceiveProcessTimeoutSec="0.02" enableMulticast="true" multicastAddress="225.3.3.3">
 			<DDSReceiverFlowQoS>
 				<datareader_qos name="name3">
 				</datareader_qos>
