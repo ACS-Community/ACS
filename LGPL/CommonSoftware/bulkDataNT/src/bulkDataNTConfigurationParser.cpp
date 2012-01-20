@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.28 2012/01/19 14:13:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.29 2012/01/20 11:53:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -476,7 +476,7 @@ std::string BulkDataConfigurationParser::getStringFromAttribute(xercesc::DOMNode
 	if ( sft == 0 )
 		returnVal = defaultVal;
 	else
-		returnVal = (char*)sft;
+		returnVal = XMLString::transcode(sft);
 
 	return returnVal;
 }//getStringFromAttribute
