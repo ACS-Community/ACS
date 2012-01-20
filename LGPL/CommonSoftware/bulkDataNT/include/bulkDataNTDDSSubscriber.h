@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.9 2011/08/23 15:41:45 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.10 2012/01/20 11:54:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,7 +51,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg);
+	BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const ReceiverFlowConfiguration &cfg);
 
 	/**
 	 * Destructor
@@ -65,6 +65,9 @@ protected:
 	DDS::Subscriber *subscriber_m;
 	DDS::Subscriber* createDDSSubscriber();
 	void destroyDDSSubscriber();
+
+	bool enalbeMulticast_m; /// read from ReceiverFlowConfiguration
+	std::string mutlicastAddress_m; /// read from ReceiverFlowConfiguration
 
 	/// disable default - empty constructor
 	BulkDataNTDDSSubscriber();
