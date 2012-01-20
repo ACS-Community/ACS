@@ -395,13 +395,13 @@ public class ThreadLoopRunner
 		loopLock.lock();
 		try {
 			if (isLoopRunning()) {
-				// cancel current loop action
-				taskWrapper.attemptCancelTask();
 				// prevent further actions from being scheduled
 				loop.cancel(false);
 				loop = null;
+				// cancel current loop action
+				taskWrapper.attemptCancelTask();
 				runner.shutdown();
-				logger.finer("["+ loopName + "] task loop has been shut down, will wait for it to fully terminate.");
+				logger.finest("["+ loopName + "] task loop has been shut down, will wait for it to fully terminate.");
 			}
 			else {
 				logger.finer("["+ loopName + "] nothing to shut down, task loop was not running.");
@@ -410,8 +410,17 @@ public class ThreadLoopRunner
 		} finally {
 			loopLock.unlock();
 		}
-		// this waiting we should do outside of loopLock
-		return runner.awaitTermination(timeout, unit);
+		// We wait outside of loopLock do avoid deadlocks if the run method also needs loopLock before terminating.
+		boolean ret = runner.awaitTermination(timeout, unit);
+		logger.finer("["+ loopName + "] task " + (ret ? "finished" : "failed to finish") + " within the specified " + timeout + " " + unit.toString().toLowerCase());
+		
+		// The runner's worker thread#isAlive still returns true right after this shutdown. 
+		// We wait a tiny bit, to avoid "Forcibly terminating surviving thread" complaints 
+		// from ContainerService's ThreadFactory during component shutdown.
+		// Alternatively we could try to synchronize with ThreadPoolExecutor.terminated() callback.
+		Thread.currentThread().sleep(2);
+		
+		return ret;
 	}
 
 
@@ -452,12 +461,6 @@ public class ThreadLoopRunner
 		
 		private final Logger logger;
 		
-//		/**
-//		 * Counter for how many times the task has been run, including an ongoing run if any.
-//		 * Could be useful for debugging
-//		 */
-//		private static final AtomicLong runCount = new AtomicLong(0);
-
 		/**
 		 * The delegate Runnable that gets called from inside our run method.
 		 */
@@ -492,7 +495,6 @@ public class ThreadLoopRunner
 		public void run() {
 			runLock.lock();
 			try {
-//				runCount.incrementAndGet();
 				isRunning = true;
 				delegate.run();
 			}
