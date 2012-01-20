@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.13 2012/01/19 15:34:39 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.14 2012/01/20 08:49:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,6 +55,7 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 
+	topicName_m = topicName;
 	//TBD: check if topic already exists find_topic ??
 	//TBD: type name could be a parameter of the method or class member
 
@@ -69,7 +70,7 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 		throw ex;
 	}
 
-	DDS::Topic *topic =  participant_m->create_topic_with_profile(topicName,
+	DDS::Topic *topic =  participant_m->create_topic_with_profile(topicName_m,
 			type_name,
 			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
 			NULL,
@@ -78,7 +79,7 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 	if (topic==0)
 	{
 		DDSTopicCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		ex.setTopic(topicName);
+		ex.setTopic(topicName_m);
 		throw ex;
 	}//if
 
@@ -90,7 +91,7 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 		throw ex;
 	}
 
-	ACS_SHORT_LOG((LM_DEBUG, "Created DDS topic: %s", topicName));
+	ACS_SHORT_LOG((LM_DEBUG, "Created DDS topic: %s", topicName_m));
 	return topic;
 }//createDDSTopic
 
