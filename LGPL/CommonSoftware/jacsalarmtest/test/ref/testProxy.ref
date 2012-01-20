@@ -15,6 +15,10 @@
 1 - ----------T--:--:----- ALERT [testPushAlarm#testPushAlarm] Alarm sent: &lt;TestFamily,TestMember,1&gt; Alarm for test
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] about to log out from manager
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] logged out from manager
+1 - ----------T--:--:----- FINER [testPushAlarm#testPushAlarm] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [testPushAlarm#testPushAlarm] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [testPushAlarm#testPushAlarm] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [testPushAlarm#testPushAlarm] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [testPushAlarm#testPushAlarm] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testAlarmsCollection#testAlarmsCollection' and updated logger names
@@ -26,6 +30,8 @@
 1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] manager narrow successful
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] Manager login done ...
+1 - ----------T--:--:----- FINER [testAlarmsCollection#testAlarmsCollection] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [testAlarmsCollection#testAlarmsCollection] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [testAlarmsCollection#testAlarmsCollection] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [testAlarmsCollection#testAlarmsCollection] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] Alarm source of UNDEFINED connected to the logging
@@ -34,6 +40,10 @@
 1 - ----------T--:--:----- ALERT [testAlarmsCollection#testAlarmsCollection] Alarm sent: &lt;TestFamily - 3,TestMember - 3,2&gt; Description of Al3
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] about to log out from manager
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] logged out from manager
+1 - ----------T--:--:----- FINER [testAlarmsCollection#testAlarmsCollection] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [testAlarmsCollection#testAlarmsCollection] [alarm_timer] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] Thread shut down
 1 - 
 1 - 

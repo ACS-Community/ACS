@@ -9,10 +9,16 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] Manager login done ...
+1 - ----------T--:--:----- FINER [FactoryTest#testNoALarmBranch] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [FactoryTest#testNoALarmBranch] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [FactoryTest#testNoALarmBranch] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [FactoryTest#testNoALarmBranch] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [FactoryTest#testNoALarmBranch] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINER [FactoryTest#testNoALarmBranch] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testACSAS' and updated logger names
@@ -24,10 +30,16 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] Manager login done ...
+1 - ----------T--:--:----- FINER [FactoryTest#testACSAS] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [FactoryTest#testACSAS] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [FactoryTest#testACSAS] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [FactoryTest#testACSAS] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] logged out from manager
+1 - ----------T--:--:----- FINER [FactoryTest#testACSAS] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [FactoryTest#testACSAS] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testCERNAS' and updated logger names
@@ -39,11 +51,17 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] Manager login done ...
+1 - ----------T--:--:----- FINER [FactoryTest#testCERNAS] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [FactoryTest#testCERNAS] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [FactoryTest#testCERNAS] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [FactoryTest#testCERNAS] Alarm system type: CERN
 1 - ----------T--:--:----- DEBUG [FactoryTest#testCERNAS] cmw-mom/acs-jms initialized
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] logged out from manager
+1 - ----------T--:--:----- FINER [FactoryTest#testCERNAS] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [FactoryTest#testCERNAS] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testWrongImplementationProp' and updated logger names
@@ -55,11 +73,17 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] Manager login done ...
+1 - ----------T--:--:----- FINER [FactoryTest#testWrongImplementationProp] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [FactoryTest#testWrongImplementationProp] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [FactoryTest#testWrongImplementationProp] Alarm system type: CERN
 1 - ----------T--:--:----- DEBUG [FactoryTest#testWrongImplementationProp] cmw-mom/acs-jms initialized
 1 - ----------T--:--:----- DEBUG [FactoryTest#testWrongImplementationProp] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] logged out from manager
+1 - ----------T--:--:----- FINER [FactoryTest#testWrongImplementationProp] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [FactoryTest#testWrongImplementationProp] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testFaultStateCreation' and updated logger names
@@ -71,10 +95,16 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] Manager login done ...
+1 - ----------T--:--:----- FINER [FactoryTest#testFaultStateCreation] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [FactoryTest#testFaultStateCreation] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [FactoryTest#testFaultStateCreation] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [FactoryTest#testFaultStateCreation] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] logged out from manager
+1 - ----------T--:--:----- FINER [FactoryTest#testFaultStateCreation] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [FactoryTest#testFaultStateCreation] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testAlarmSourceCreation' and updated logger names
@@ -86,11 +116,17 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] Manager login done ...
+1 - ----------T--:--:----- FINER [FactoryTest#testAlarmSourceCreation] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [FactoryTest#testAlarmSourceCreation] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [FactoryTest#testAlarmSourceCreation] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [FactoryTest#testAlarmSourceCreation] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] Alarm source of SourceName connected to the logging
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] logged out from manager
+1 - ----------T--:--:----- FINER [FactoryTest#testAlarmSourceCreation] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] [alarm_osci] task loop has been shut down, will wait for it to fully terminate
+1 - ----------T--:--:----- FINER [FactoryTest#testAlarmSourceCreation] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] [alarm_timer] task loop has been shut down, will wait for it to fully terminate
 1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] Thread shut down
 1 - 
 1 - 
