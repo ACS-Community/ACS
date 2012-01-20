@@ -70,6 +70,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"logkit.jar",
 		"acscomponent.jar",
 		"acsCallbacksSupport.jar",
+		"jbaci.jar",
 		
 		"jManager.jar",
 		"jmanagerErrType.jar",
