@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.19 2012/01/19 15:53:55 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.20 2012/01/20 11:56:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,10 +33,12 @@ using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
 
-BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg) :
-		BulkDataNTDDS(p, ddsCfg)
+BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const ReceiverFlowConfiguration &cfg) :
+		BulkDataNTDDS(p, cfg)
 {
 	subscriber_m = createDDSSubscriber();
+	enalbeMulticast_m = cfg.isEnableMulticast();
+	mutlicastAddress_m = cfg.getMulticastAddress();
 }
 
 BulkDataNTDDSSubscriber::~BulkDataNTDDSSubscriber()
@@ -121,6 +123,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
+	DDS::DataReaderQos dr_qos;
 
 	if (subscriber_m==NULL || topic==NULL || listener==NULL)
 	{
@@ -138,36 +141,46 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 		DDSDRCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}//if
-/*
-	if (noOfReaders==1)
-			{
-				//multicast
-				struct DDS_TransportMulticastSettings_t* multicast_locator = NULL;
-				// DDS_TransportMulticastSettingsSeq_ensure_length(&, 1, 1);
-				dr_qos.multicast.value.ensure_length(1,1);
-				// DDS_TransportMulticastSettingsSeq_get_reference(&qos.multicast.value,0);
-				multicast_locator = &dr_qos.multicast.value[0];
 
-				string mcasta="225.3.2.1";
-				DDS_String_replace(&multicast_locator->receive_address,	mcasta.c_str()	);
-				cout << "going to listen on multicast address: " << mcasta << endl;
+	ret =dr->get_qos(dr_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSGetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("dr->get_qos()");
+		throw ex;
+	}//if
 
+	if (enalbeMulticast_m)
+	{
+		dr_qos.multicast.value.ensure_length(1,1); // ? should we read the length and increase for one ?
+		dr_qos.multicast.value[0].receive_address = DDS_String_dup(mutlicastAddress_m.c_str());
 
-				dr_qos.resource_limits.initial_samples *= 1;//multicast_reader_count;
-				if (dr_qos.resource_limits.initial_samples >
-					dr_qos.resource_limits.max_samples) {
-					dr_qos.resource_limits.max_samples =
-							dr_qos.resource_limits.initial_samples;
-				}
-				dr_qos.reader_resource_limits.max_samples_per_remote_writer =
-						dr_qos.resource_limits.initial_samples;
-			}
-			else
-			{
-				dr_qos.unicast.value.ensure_length(1,1);
-			}
+		if (mutlicastAddress_m.compare(ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS))
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on multicast address: %s which is different from default: %s. Please make sure that the same multicast address is used for all receivers!",
+					topicName_m.c_str(), mutlicastAddress_m.c_str(), ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS));
+		}
+		else
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on multicast address: %s.", topicName_m.c_str(), mutlicastAddress_m.c_str()));
+		}
+	}
+	else
+	{
+		//TBD if we add support for setting unicast addreess
+		//dr_qos.unicast.value.ensure_length(1,1);
+	}
 
-*/
+	ret =dr->set_qos(dr_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("dr->set_qos()");
+		throw ex;
+	}//if
+
 	ret = dr->enable();
 	if (ret!=DDS::RETCODE_OK)
 	{
