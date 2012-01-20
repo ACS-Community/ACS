@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.9 2011/08/23 15:41:45 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.10 2012/01/20 08:48:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,6 +98,8 @@ protected:
 	DDS::DomainParticipant* participant_m;
 
 	const DDSConfiguration ddsCfg_m;
+
+	std::string topicName_m; /// name of topic (it is set when createDDSTopic
 
 //	DDS::Publisher* pub;
 //	DDS::Topic* topic; // should be  an array just temporary
