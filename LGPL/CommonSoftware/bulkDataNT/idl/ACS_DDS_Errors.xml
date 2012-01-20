@@ -64,6 +64,10 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSDRDestroyProblem" shortDescription="Problem to destroy DDS data reader" description="Problem to destroy DDS data reader">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSDREnableProblem" shortDescription="Problem to enable DDS DR" description="Problem to enable DDS data reader">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
