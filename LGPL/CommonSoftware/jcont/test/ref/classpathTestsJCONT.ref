@@ -38,16 +38,21 @@
 1 -     <_ minLogLevel="6" minLogLevelLocal="6" Name="jacorb@testContainer"/>
 1 - </LoggingConfig> with env vars having precedence over CDB
 1 - ----------T--:--:--.--- FINE [testContainer] Set ORB level roundtrip timeout to 30.0 seconds.
+1 - ----------T--:--:--.--- FINER [testContainer] [alarm_osci] started task loop with FIXED_DELAY=1000 ms.
+1 - ----------T--:--:--.--- FINER [testContainer] [alarm_timer] started task loop with FIXED_DELAY=30000 ms.
 1 - ----------T--:--:--.--- DEBUG [testContainer] Alarm system type: ACS
-1 - ----------T--:--:--.--- WARNING [testContainer] Error initializing the BACI framework, container will run withouth the BACI Framework initialized
 1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- FINER [testContainer] asynchronously calling ClientLogManager#initRemoteLogging()...
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
 1 - ----------T--:--:--.--- FINER [testContainer] done ClientLogManager#initRemoteLogging
-1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'testContainer' exited with code: 0.
-1 - === Done running a Java container with prioritized jar files only
 1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
 1 - ----------T--:--:--.--- WARNING [testContainer] Failed to graceful shutdown the BACI framework
+1 - ----------T--:--:--.--- FINER [testContainer] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:--.--- FINEST [testContainer] [alarm_osci] task loop has been shut down, will wait for it to fully terminate.
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
 1 - ----------T--:--:--.--- FINER [testContainer] RETURN
+1 - ----------T--:--:--.--- FINEST [testContainer] [alarm_timer] task loop has been shut down, will wait for it to fully terminate.
+1 - ----------T--:--:--.--- FINER [testContainer] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'testContainer' exited with code: 0.
+1 - === Done running a Java container with prioritized jar files only
