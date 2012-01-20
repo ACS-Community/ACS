@@ -6,9 +6,13 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] manager reference not yet available in method loginToManager; will try to find the manager first...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppend] [alarm_osci] started task loop with FIXED_DELAY=1000 ms.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppend] [alarm_timer] started task loop with FIXED_DELAY=30000 ms.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] logged out from manager.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppend] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppend] [alarm_timer] task finished within the specified 1 seconds
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] -------------------------------
@@ -17,9 +21,13 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] manager reference not yet available in method loginToManager; will try to find the manager first...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] [alarm_osci] started task loop with FIXED_DELAY=1000 ms.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] [alarm_timer] started task loop with FIXED_DELAY=30000 ms.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] logged out from manager.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] [alarm_timer] task finished within the specified 1 seconds
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testCopy' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testCopy] -------------------------------
@@ -28,9 +36,13 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] manager reference not yet available in method loginToManager; will try to find the manager first...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testCopy] [alarm_osci] started task loop with FIXED_DELAY=1000 ms.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testCopy] [alarm_timer] started task loop with FIXED_DELAY=30000 ms.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] logged out from manager.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testCopy] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testCopy] [alarm_timer] task finished within the specified 1 seconds
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testClear' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testClear] -------------------------------
@@ -39,9 +51,13 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] manager reference not yet available in method loginToManager; will try to find the manager first...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testClear] [alarm_osci] started task loop with FIXED_DELAY=1000 ms.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testClear] [alarm_timer] started task loop with FIXED_DELAY=30000 ms.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testClear] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] logged out from manager.
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testClear] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:--.--- FINER [alma.acs.jlog.test.ErrorLogFileTest#testClear] [alarm_timer] task finished within the specified 1 seconds
 1 - 
 1 - 
 1 - OK (4 tests)
