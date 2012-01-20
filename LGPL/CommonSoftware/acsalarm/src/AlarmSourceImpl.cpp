@@ -147,8 +147,7 @@ void AlarmSourceImpl::terminateAllAlarms()
 			std::istringstream iss(fcStr);
 			int fcInt;
 			iss>>fcInt;
-
-			internalAlarmSender(fmStr,fmStr,fcInt,props,false);
+			internalAlarmSender(ffStr,fmStr,fcInt,props,false);
 		}
 		m_activatedAlarms.clear();
 	}
