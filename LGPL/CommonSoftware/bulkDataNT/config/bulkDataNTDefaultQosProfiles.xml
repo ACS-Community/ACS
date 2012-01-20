@@ -172,14 +172,6 @@ Default QoS Profile for BulkDataNT.
                         </max_heartbeat_response_delay>
                     </rtps_reliable_reader>
                 </protocol>
-                    
-                <multicast>
-                    <value>
-                        <element>
-                            <receive_address>225.3.2.1</receive_address>        
-                        </element>
-                    </value>
-                </multicast>
             </datareader_qos>
         </qos_profile>
     </qos_library>
