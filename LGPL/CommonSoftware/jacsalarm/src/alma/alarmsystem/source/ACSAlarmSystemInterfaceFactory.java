@@ -114,7 +114,6 @@ public class ACSAlarmSystemInterfaceFactory {
 		if (logger==null || dal==null) {
 			throw new IllegalArgumentException("Invalid DAL or Logger from ContainerServicesBase");
 		}
-		ACSAlarmSystemInterfaceFactory.logger = logger;
 		
 		useACSAlarmSystem = retrieveImplementationType(dal);
 		if (logger!=null) {
