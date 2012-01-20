@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.20 2012/01/20 11:56:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.21 2012/01/20 14:51:07 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -124,6 +124,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 	DDS::DataReaderQos dr_qos;
+	DDS::DataReader *temporary_dr, *dr;
 
 	if (subscriber_m==NULL || topic==NULL || listener==NULL)
 	{
@@ -132,22 +133,27 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 		throw ex;
 	}
 
-	DDS::DataReader *dr = subscriber_m->create_datareader_with_profile(topic,
-			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
-			listener,
-			DDS::STATUS_MASK_ALL);
-	if(dr==NULL)
+	// !!! because we can (re)set multicast QoS after DR is created (even enabled), we have to use a bit dirty trick:
+	// we create a temporary DR (temporary_dr) using QoS from profile, read the QoS from DR, set the multicast address
+	// and create new DR
+	temporary_dr = subscriber_m->create_datareader_with_profile(topic,
+									ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
+									listener,
+									DDS::STATUS_MASK_ALL);
+	if(temporary_dr==NULL)
 	{
-		DDSDRCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		NullPointerExImpl npex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		npex.setVariable("temporary_dr");
+		DDSDRCreateProblemExImpl ex(npex, __FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}//if
 
-	ret =dr->get_qos(dr_qos);
+	ret =temporary_dr->get_qos(dr_qos);
 	if (ret!=DDS::RETCODE_OK)
 	{
 		DDSQoSGetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
-		ex.setQoS("dr->get_qos()");
+		ex.setQoS("temporary_dr->get_qos()");
 		throw ex;
 	}//if
 
@@ -172,14 +178,24 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 		//dr_qos.unicast.value.ensure_length(1,1);
 	}
 
-	ret =dr->set_qos(dr_qos);
-	if (ret!=DDS::RETCODE_OK)
+	// here we do not need the temporary DR
+	ret = subscriber_m->delete_datareader(temporary_dr);
+	if (ret!= DDS::RETCODE_OK)
 	{
-		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		ex.setDDSTypeCode(ret);
-		ex.setQoS("dr->set_qos()");
+		DDSDRDestroyProblemExImpl ddex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ddex.setDDSTypeCode(ret);
+		DDSDRCreateProblemExImpl ex(ddex, __FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
-	}//if
+	}
+
+	dr =subscriber_m->create_datareader(topic, dr_qos, listener,DDS::STATUS_MASK_ALL);
+	if(dr==NULL)
+	{
+		NullPointerExImpl npex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		npex.setVariable("dr");
+		DDSDRCreateProblemExImpl ex(npex, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		throw ex;
+	}//if);
 
 	ret = dr->enable();
 	if (ret!=DDS::RETCODE_OK)
