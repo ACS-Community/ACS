@@ -23,14 +23,15 @@ package alma.acs.alarmsystem.source;
 
 import java.util.Collection;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import alma.acs.alarmsystem.source.AlarmQueue.AlarmToQueue;
+import alma.acs.concurrent.NamedThreadFactory;
 import alma.acs.concurrent.ThreadLoopRunner;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
@@ -40,10 +41,10 @@ import alma.acs.container.ContainerServicesBase;
  * The implementation of {@link AlarmSource}.
  * <P>
  * Flushing of queued alarms is done by a thread to avoid blocking 
- * the caller if there are too many queued alarm.
+ * the caller if there are too many queued alarms.
  * There is possible critical race if the user executes a sequence
  * of queueAlarms()/flushAlarms(), it happens if the queueAlarms()
- * is called when the the thread has not yet finished flushing
+ * is called when the thread has not yet finished flushing
  * the alarms.
  * This is avoided by copying the alarms in {@link AlarmSourceImpl#queue}
  * in a temporary immutable vector. 
@@ -54,10 +55,9 @@ import alma.acs.container.ContainerServicesBase;
 public class AlarmSourceImpl implements AlarmSource {
 	
 	/**
-	 * The task to flush the queue of alarms 
-	 * 
+	 * The task to flush the queue of alarms.
+	 * @see AlarmSourceImpl#queuing
 	 * @author acaproni
-	 *
 	 */
 	private class QueueFlusherTask implements Runnable {
 		// The local copy of the alarms to flush
@@ -81,7 +81,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	}
 	
 	/**
-	 * The loop to clear alarms every second.
+	 * The loop to clear alarms on the alarm service, run every second.
 	 * <P>
 	 * The alarms to clear are inserted in {@link AlarmSourceImpl#alarmsToClean} and must be
 	 * cleared if they are in the queue for more then {@link AlarmSourceImpl#ALARM_OSCILLATION_TIME}
@@ -113,7 +113,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	
 	/**
 	 * To limit the effect of oscillations, publishing of inactive alarms 
-	 * is delayed of <code>ALARM_OSCILLATION_TIME</code> (in seconds)
+	 * is delayed by <code>ALARM_OSCILLATION_TIME</code> (in seconds)
 	 * <P>
 	 * If during this time interval the alarm is activated again then 
 	 * its temporary deactivation will be skipped.
@@ -133,14 +133,24 @@ public class AlarmSourceImpl implements AlarmSource {
 	private final ContainerServicesBase containerServices;
 	
 	/**
-	 * The alarms sent or terminated
+	 * The alarms sent or terminated.
+	 * Using this queue should avoid sending the same information (raise or clear) several times in a row.
+	 * Note that this is different from the purpose of {@link #alarmsToClean} which limits the alternation
+	 * between raise and clear.
 	 */
 	private final AlarmsMap alarms;
 
 	/**
-	 * The queue of alarms to be sent when the queuing will be disabled
+	 * The queue of alarms to be sent when the queuing will be disabled`.
+	 * @see #queuing
 	 */
 	private final AlarmQueue queue = new AlarmQueue();
+	
+	/**
+	 * When <code>true</code> the alarms are queued instead of being sent 
+	 * immediately.
+	 */
+	private volatile boolean queuing=false;
 	
 	/**
 	 * Enable/disable the sending of alarms.
@@ -150,23 +160,18 @@ public class AlarmSourceImpl implements AlarmSource {
 	private volatile boolean enabled=true;
 	
 	/**
-	 * When <code>true</code> the alarm are queued instead of being sent 
-	 * immediately.
-	 */
-	private volatile boolean queuing=false;
-	
-	/**
 	 * The loop to limit clear-raise oscillations, by only clearing alarms that have been inactive for a certain time.
+	 * @see #alarmsToClean
 	 */
 	private final ThreadLoopRunner oscillationLoop;
 	
 	/**
-	 * The alarms to clean are initially stored in alarmToClean.
+	 * The alarms to clean are initially stored in alarmsToClean.
 	 * <P> In fact the deletion of alarms is delayed by {@link AlarmSourceImpl#ALARM_OSCILLATION_TIME}
 	 * to limit the effect of oscillation.
 	 * <P> 
-	 * The key is the ID of the alarm; the value is the time when the alarm
-	 * has been sent.
+	 * The key is the ID of the alarm; the value is the system time at which the alarm
+	 * was cleared by the user.
 	 */
 	private final ConcurrentHashMap<String, Long> alarmsToClean = new ConcurrentHashMap<String, Long>();
 	
@@ -179,12 +184,12 @@ public class AlarmSourceImpl implements AlarmSource {
 	private final ScheduledExecutorService scheduledExecutor;
 	
 	/**
-	 * The future for the thread to flush the que of alarms
+	 * The future for the thread to flush the queue of alarms
 	 * after a given time interval.
 	 * <P>
 	 * Only one thread can be scheduled by AlarmSource#queueAlarms(long, TimeUnit) 
 	 */
-	private ScheduledFuture<Void> flusherFuture;
+	private ScheduledFuture<?> flusherFuture;
 	
 	/**
 	 * Constructor 
@@ -198,8 +203,11 @@ public class AlarmSourceImpl implements AlarmSource {
 		this.containerServices=containerServices;
 		alarms=new AlarmsMap(containerServices.getThreadFactory(),containerServices.getLogger());
 		alarmSender=new AlarmSender(containerServices);
+		
+		// Allocating this optional executor here is cheap enough, because no thread is created, see ThreadPoolExecutor#prestartAllCoreThreads()
 		// The pool size is 1 because we can have only one thread at a time
-		scheduledExecutor= Executors.newScheduledThreadPool(1,containerServices.getThreadFactory());
+		scheduledExecutor = Executors.newScheduledThreadPool(1, containerServices.getThreadFactory());
+		
 		oscillationLoop = new ThreadLoopRunner(
 				new OscillationTask(), 
 				ALARM_OSCILLATION_TIME, 
@@ -261,9 +269,9 @@ public class AlarmSourceImpl implements AlarmSource {
 	 */
 	private void internalAlarmClear(String id) {
 		if (id==null || id.isEmpty()) {
-			containerServices.getLogger().warning("Invalid alarm ID received "+id);
-			// @TODO (hso): should we return or throw an exception? Otherwise we'll get NPE in the following line.
+			throw new IllegalArgumentException("Invalid alarm ID received "+id);
 		}
+		
 		String[] alarmMembers=id.split(":");
 		if (alarmMembers.length!=3) {
 			containerServices.getLogger().warning("Invalid alarm ID received "+id);
@@ -304,22 +312,34 @@ public class AlarmSourceImpl implements AlarmSource {
 	@Override
 	public synchronized void queueAlarms(long delayTime, TimeUnit unit) {
 		queuing=true;
+		
+		// try to change the target run time, if the task hasn't been started.
 		if (flusherFuture!=null && !flusherFuture.isDone()) {
 			flusherFuture.cancel(false);
 		}
-		flusherFuture = scheduledExecutor.schedule(new Callable<Void>() {
-			public Void call() throws Exception {
+		flusherFuture = scheduledExecutor.schedule(new Runnable() {
+			public void run() {
 				flushAlarms();
-				return null;
 			}
 		}, delayTime, unit);
 	}
 
 	@Override
 	public void queueAlarms() {
-		queuing=true;
+		queuing = true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This method gets called both directly for flushing alarms immediately, and also 
+	 * delayed (new thread from {@link #queueAlarms(long, TimeUnit)}).
+	 * <p>
+	 * Implementation note: this method is synchronized and calls {@link #setAlarm(String, String, int, Properties, boolean)}
+	 * asynchronously in order to not block access to this class for too long.
+	 * 
+	 * @see alma.acs.alarmsystem.source.AlarmSource#flushAlarms()
+	 */
 	@Override
 	public synchronized void flushAlarms() {
 		queuing=false;
@@ -328,15 +348,16 @@ public class AlarmSourceImpl implements AlarmSource {
 		}
 		AlarmToQueue[] temp;
 		synchronized (queue) {
+			if (queue.isEmpty()) {
+				return;
+			}
 			temp = new AlarmToQueue[queue.size()];
 			queue.values().toArray(temp);
-			queue.clear();	
+			queue.clear();
 		}
-		Thread thread=containerServices.getThreadFactory().newThread(new QueueFlusherTask(temp));
-		thread.setName("AlarmQueueFlusher");
-		thread.setDaemon(true);
-		thread.start();
 		
+		ThreadFactory tf = new NamedThreadFactory(containerServices.getThreadFactory(), "AlarmQueueFlusher");
+		tf.newThread(new QueueFlusherTask(temp)).start();
 	}
 
 	@Override
@@ -366,7 +387,8 @@ public class AlarmSourceImpl implements AlarmSource {
 	}
 	
 	/**
-	 * Start the threads
+	 * Start the threads.
+	 * @see #tearDown()
 	 */
 	public void start() {
 		oscillationLoop.setDelayMode(ScheduleDelayMode.FIXED_DELAY);
@@ -376,13 +398,21 @@ public class AlarmSourceImpl implements AlarmSource {
 	
 	@Override
 	public void tearDown() {
-		enabled=false;
-		scheduledExecutor.shutdownNow();
-		alarmsToClean.clear();
+		enabled = false;
 		
+		// take care of alarms that the user queued on purpose
+		scheduledExecutor.shutdown();
+		flushAlarms();
+		
+		// take care of alarms that should be cleared but whose clearing got delayed
+		for (String key : alarmsToClean.keySet()) {
+			internalAlarmClear(key);
+		}
+		alarmsToClean.clear();
+
 		boolean oscillationLoopShutdownOK;
 		try {
-			oscillationLoopShutdownOK = oscillationLoop.shutdown(2, TimeUnit.SECONDS);
+			oscillationLoopShutdownOK = oscillationLoop.shutdown(1, TimeUnit.SECONDS);
 		} catch (InterruptedException ie) {
 			oscillationLoopShutdownOK = false;
 		}
@@ -392,6 +422,5 @@ public class AlarmSourceImpl implements AlarmSource {
 		
 		alarmSender.close();
 		alarms.shutdown();
-		queue.clear();
 	}
 }
