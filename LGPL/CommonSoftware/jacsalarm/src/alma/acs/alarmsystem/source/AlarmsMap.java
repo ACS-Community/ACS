@@ -174,7 +174,7 @@ public class AlarmsMap {
 	}
 	
 	/**
-	 * An alarms has been cleared and must be added to the map.
+	 * An alarm has been cleared and must be added to the map.
 	 * 
 	 * @param alarmID The ID of the alarm
 	 * @return <code>true</code> if the alarm with the give ID was already present 
@@ -200,14 +200,13 @@ public class AlarmsMap {
 	 */
 	public void shutdown() {
 		try {
-			if (loopRunner.shutdown(ALARM_ACTIVITY_TIME+1, TimeUnit.SECONDS)) {
+			if (loopRunner.shutdown(1, TimeUnit.SECONDS)) {
 				logger.finest("Thread shut down");
 			} else {
 				logger.warning("Failed to cleanly shut down the AlarmsMap thread");
 			}
 		} catch (InterruptedException ie) {
-			logger.warning("AlarmsMap thread interrupetd while shutting down");
-			Thread.currentThread().interrupt();
+			logger.warning("AlarmsMap thread interrupted while shutting down.");
 		}
 		alarms.clear();
 	}
