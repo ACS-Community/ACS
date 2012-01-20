@@ -47,7 +47,6 @@
 1 - ----------T--:--:--.--- FINER [testContainer] done ClientLogManager#initRemoteLogging
 1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
-1 - ----------T--:--:--.--- WARNING [testContainer] Failed to graceful shutdown the BACI framework
 1 - ----------T--:--:--.--- FINER [testContainer] [alarm_osci] task finished within the specified 1 seconds
 1 - ----------T--:--:--.--- FINEST [testContainer] [alarm_osci] task loop has been shut down, will wait for it to fully terminate.
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
