@@ -1,9 +1,14 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.5 2007/07/16 15:51:25 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/01/21 22:48:11 tstaig Exp $"
 #
 # $Log: Makefile,v $
+# Revision 1.6  2012/01/21 22:48:11  tstaig
+# Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+# ACS on Windows under Cygwin. This commit corresponds to several CommonSoftware
+# modules.
+#
 # Revision 1.5  2007/07/16 15:51:25  hsommer
 # DEBUG=on to include .java in IDL-generated jar
 #
@@ -41,30 +46,7 @@ USER_CFLAGS =
 #
 # additional include and library search paths
 USER_INC =
-USER_LIB = -lACE \
-	-lTAO \
-	-lTAO_DsLogAdmin \
-	-lTAO_CosNaming \
-	-lTAO_IORTable \
-	-lTAO_PortableServer \
-	-lTAO_Svc_Utils \
-	-lTAO_CosTrading \
-	-lTAO_CosNotification \
-	-lTAO_DynamicAny \
-	-lTAO_IFR_Client \
-	-lTAO_CosProperty \
-	-lacsutil \
-	-lcdb \
-	-llogging \
-	-lacscomponent \
-	-lbaci \
-	-lmaci \
-	-lmaciErrType \
-	-lmaciClient \
-	-lacserr \
-	-lm \
-	-lloki \
-	-lacstime
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -102,11 +84,11 @@ LIBRARIES = acstestcompTimingExplorer acstestcompErrorExplorer
 # <brief description of acstestcomp library>
 acstestcompTimingExplorer_OBJECTS =  acstestcompTimingExplorerImpl
 acstestcompTimingExplorer_LDFLAGS =
-acstestcompTimingExplorer_LIBS    = acstestcompStubs 
+acstestcompTimingExplorer_LIBS    = acstestcompStubs logging acsThread acscomponent archiveevents
 
 acstestcompErrorExplorer_OBJECTS =  acstestcompErrorExplorerImpl
 acstestcompErrorExplorer_LDFLAGS =
-acstestcompErrorExplorer_LIBS    = acstestcompStubs 
+acstestcompErrorExplorer_LIBS    = acstestcompStubs baci
 
 #
 # Scripts (public and local)
@@ -160,6 +142,7 @@ CDB_SCHEMAS = ErrorExplorer
 IDL_FILES = acstestcomp
 IDL_TAO_FLAGS =
 USER_IDL =
+acstestcompStubs_LIBS = acscomponentStubs baciStubs acserrStubs
 
 #
 #

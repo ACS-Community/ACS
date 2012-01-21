@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.109 2008/03/03 14:54:30 rcirami Exp $" 
+# "@(#) $Id: Makefile,v 1.110 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -46,7 +46,7 @@ CPPUNIT_VER = 1.10.2
 CPPUNIT_TAR = 1.10.2
 
 USER_CFLAGS =
-USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_CosProperty -lTAO_IFR_Client -lloki -lbaciErrTypeProperty -lbaciErrTypeDevIO -lmaciErrType
+USER_LIB =
 
 # Program to build
 # Can be overwritten in the call
@@ -81,35 +81,36 @@ $(PROG)_LDFLAGS            =
 $(PROG)_LIBS               = C++ CCS
 
 baciTestServer_OBJECTS          = baciTestServer baciTestClassImpl baciTestC baciTestS
-baciTestServer_LIBS             = baciTestUtils acsContainerServices maciStubs ACSErrTypeCommon
+baciTestServer_LIBS             = baciTestUtils acsContainerServices maciStubs ACSErrTypeCommon baci
 baciTestClient_OBJECTS          = baciTestClient baciTestC
-baciTestClient_LIBS             = baciTestUtils
+baciTestClient_LIBS             = baciTestUtils baci
 baciTestActions_OBJECTS         = baciTestActions baciTestC
-baciTestActions_LIBS            = baciTestUtils
+baciTestActions_LIBS            = baciTestUtils baci
 baciTestDescriptor_OBJECTS      = baciTestDescriptor baciTestC
-baciTestDescriptor_LIBS         = baciTestUtils
+baciTestDescriptor_LIBS         = baciTestUtils baci
 baciTestPropertySync_OBJECTS    = baciTestPropertySync baciTestC
-baciTestPropertySync_LIBS       = baciTestUtils
+baciTestPropertySync_LIBS       = baciTestUtils baci
 baciTestMonitor_OBJECTS         = baciTestMonitor baciTestC
-baciTestMonitor_LIBS            = baciTestUtils
+baciTestMonitor_LIBS            = baciTestUtils baci
 baciTestTurningOnOffMonitoring_OBJECTS =  baciTestTurningOnOffMonitoring baciTestC
-baciTestTurningOnOffMonitoring_LIBS   = baciTestUtils
+baciTestTurningOnOffMonitoring_LIBS   = baciTestUtils baci
 baciTestErrSys_OBJECTS          = baciTestErrSys baciTestC
-baciTestErrSys_LIBS             = baciTestUtils
+baciTestErrSys_LIBS             = baciTestUtils baci
 
 baciTestThreads_OBJECTS         = baciTestThreads
+baciTestThreads_LIBS            = baci
 
 baciTestValue_OBJECTS = baciTestValue
-baciTestValue_LIBS    = dl cppunit C++ baciTestStubs
+baciTestValue_LIBS    = dl cppunit C++ baciTestStubs baci
 
 baciTestCosProperty_OBJECTS	= baciTestCosProperty baciTestC
-baciTestCosProperty_LIBS	= baciTestUtils
+baciTestCosProperty_LIBS	= baciTestUtils baci
 
 baciTestAlarmServer_OBJECTS     = baciTestAlarmServer baciTestAlarmClassImpl baciTestC baciTestS
-baciTestAlarmServer_LIBS        = baciTestUtils acsContainerServices maciStubs ACSErrTypeCommon
+baciTestAlarmServer_LIBS        = baciTestUtils acsContainerServices maciStubs ACSErrTypeCommon baci
 
 baciTestAlarmClient_OBJECTS     = baciTestAlarmClient baciTestC
-baciTestAlarmClient_LIBS        = baciTestUtils
+baciTestAlarmClient_LIBS        = baciTestUtils baci
 
 #
 # Includes (.h) files (public and local)
@@ -124,7 +125,9 @@ LIBRARIES       = acsexmplPropTest
 LIBRARIES_L     = baciTestUtils
 
 baciTestUtils_OBJECTS	= baciTestUtils
-acsexmplPropTest_OBJECTS = baciTestClassImpl baciTestC baciTestS
+baciTestUtils_LIBS = logging
+acsexmplPropTest_OBJECTS = baciTestClassImpl baciTestUtils
+acsexmplPropTest_LIBS = baciTestStubs baci
 
 #
 # Scripts (public and local)
@@ -194,6 +197,7 @@ CSOURCENAMES = \
 # IDL FILES
 #
 IDL_FILES = baciTest
+baciTestStubs_LIBS = baciStubs
 
 #
 #>>>>> END OF standard rules

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.7 2011/03/10 14:46:54 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -36,29 +36,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = 	-lACE \
-		-lTAO \
-		-lTAO_DsLogAdmin \
-		-lTAO_CosNaming \
-		-lTAO_IORTable \
-		-lTAO_PortableServer \
-		-lTAO_Svc_Utils \
-		-lTAO_CosTrading \
-        -lTAO_CosNotification \
-		-lTAO_DynamicAny \
-		-lTAO_IFR_Client \
-        -lTAO_CosProperty \
-		-lacsutil \
-		-lcdb \
-		-llogging \
-	    -lacscomponent \
-		-lbaci \
-		-lmaci \
-		-lmaciClient \
-		-lacserr \
-		-lm \
-        -lloki \
-        -lACSErrTypeCommon
+USER_LIB =
 
 #
 # Jarfiles: We must distinguish between component implementation classes and other classes.
@@ -118,7 +96,7 @@ LIBRARIES =	contLogTestImpl
 LIBRARIES_L     =
 
 contLogTestImpl_OBJECTS = contLogTestImpl
-contLogTestImpl_LIBS    = contLogTest_IFStubs ACSErrTypeCommon
+contLogTestImpl_LIBS    = contLogTest_IFStubs ACSErrTypeCommon acscomponent
 #                  
 # Scripts (public and local)
 # ----------------------------
@@ -192,6 +170,7 @@ CSOURCENAMES = \
 IDL_FILES = contLogTest_IF
 IDL_TAO_FLAGS =
 USER_IDL =
+contLogTest_IFStubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs
 
 #>>>>> END OF standard rules
 

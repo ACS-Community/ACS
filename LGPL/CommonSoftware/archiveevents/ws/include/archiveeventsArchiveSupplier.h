@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: archiveeventsArchiveSupplier.h,v 1.9 2009/05/22 16:21:26 javarias Exp $"
+ * "@(#) $Id: archiveeventsArchiveSupplier.h,v 1.10 2012/01/21 22:48:11 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -41,6 +41,7 @@
 #include <basencSupplier.h>
 #include <ACSErrTypeCORBA.h>
 #include <acsncErrType.h>
+#include <archiveeventsExport.h>
 
 /**
  * Class designed to send structured events out which will eventually
@@ -181,6 +182,12 @@ class ArchiveSupplier : public BaseSupplier
  * Typedef defining a singleton ArchiveSupplier object. Users must use this
  * instead of creating instances of ArchiveSupplier on their own!.
  */
+#ifdef __CYGWIN__
+template class ARCHIVEEVENTS_Export Loki::SingletonHolder<ArchiveSupplier,
+               Loki::CreateUsingNew,
+               Loki::PhoenixSingleton,
+               Loki::SingleThreaded>;
+#endif
 typedef Loki::SingletonHolder<ArchiveSupplier, 
 			      Loki::CreateUsingNew, 
 			      Loki::PhoenixSingleton, 

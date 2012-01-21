@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciComponentStateManager.h,v 1.4 2008/10/09 07:05:37 cparedes Exp $"
+ * "@(#) $Id: maciComponentStateManager.h,v 1.5 2012/01/21 22:48:11 tstaig Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
  */
  
  #include <acsComponentStateManager.h>
- #include <Functor_String.h>
+ #include <ace/Functor_String.h>
  
  #include <acsErrTypeLifeCycle.h>
  

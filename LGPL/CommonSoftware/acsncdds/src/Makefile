@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.17 2010/06/15 22:02:16 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.18 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -22,31 +22,7 @@
 
 #
 # additional include and library search paths
-USER_LIB = -lACE \
-			  -lTAO \
-			  -lTAO_DsLogAdmin \
-			  -lTAO_CosNaming \
-			  -lTAO_IORTable \
-			  -lTAO_PortableServer \
-			  -lTAO_Svc_Utils \
-			  -lTAO_CosTrading \
-			  -lTAO_CosNotification \
-			  -lTAO_DynamicAny \
-			  -lTAO_IFR_Client \
-			  -lTAO_CosProperty \
-			  -lacsutil \
-			  -lcdb \
-			  -llogging \
-			  -lacscomponent \
-			  -lbaci \
-			  -lmaci \
-			  -lmaciClient \
-			  -lacserr \
-			  -lm \
-			  -lloki \
-			  -lACSErrTypeCommon \
-			  -lOpenDDS_Dcps \
-			  -lSimpleTcp
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -76,7 +52,7 @@ LIBRARIES_L     =
 #
 # Library that provides all the core functionality of DDS Notification Channel in ACS
 acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl acsddsncCDBPropertiesImpl
-acsddsnc_LIBS	  = OpenDDS_Dcps SimpleTcp ACE
+acsddsnc_LIBS	  = OpenDDS_Dcps SimpleTcp maci
 
 #
 # Scripts (public and local)

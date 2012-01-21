@@ -21,19 +21,14 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.69 2011/10/10 22:45:01 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.70 2012/01/21 22:48:11 tstaig Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
 
 # user definable C-compilation flags
 USER_CFLAGS =
-USER_LIB    =  	-lbaci \
-		-lmaci \
-		-lTAO_CosNotification \
-        -lTAO_CosNotification_MC_Ext \
-		-lRepeatGuard \
-        -lacstime
+USER_LIB    =
 
 DEBUG=on
 
@@ -69,7 +64,7 @@ acsnc_OBJECTS  = acsncCDBProperties \
                  acsncServiceChecker acsncReconnectionCallback \
                  acsncCircularQueue
 
-acsnc_LIBS     = pthread rt ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS logging
+acsnc_LIBS     = pthread rt ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS logging RepeatGuard acstime maci basenc TAO_CosNotification_MC_Ext
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
 acsncServiceChecker_LIBS = acsnc maciClient

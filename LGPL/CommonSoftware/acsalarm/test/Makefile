@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.17 2011/11/23 15:12:59 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.18 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,7 @@ USER_CFLAGS = -rdynamic
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lstdc++ -lxerces-c
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:

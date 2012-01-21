@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2005/01/31 21:45:24 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.18 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -25,24 +25,7 @@
 #  
 # additional include and library search paths
 USER_CFLAGS =
-USER_LIB = -lACE \
-           -lTAO \
-           -lTAO_DsLogAdmin \
-           -lTAO_CosNaming \
-           -lTAO_IORTable \
-           -lTAO_PortableServer \
-           -lTAO_Svc_Utils \
-           -lTAO_CosTrading \
-           -lTAO_DynamicAny \
-           -lTAO_IFR_Client \
-           -lacsutil \
-           -lcdb \
-           -llogging \
-	   -lacscomponent \
-           -lbaci \
-           -lmaci \
-           -lmaciClient \
-           -lacstime
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -65,34 +48,34 @@ xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
 testClock_OBJECTS = testClock
-testClock_LIBS    = 
+testClock_LIBS    = acstime maciClient
 
 testDuration_OBJECTS = testDuration
-testDuration_LIBS    = 
+testDuration_LIBS    = acstime 
 
 testEpoch_OBJECTS = testEpoch
-testEpoch_LIBS    = 
+testEpoch_LIBS    = acstime maciClient
 
 testException_OBJECTS = testException
 testException_LIBS    = timeServiceC maciClient 
 
 testNow_OBJECTS = testNow
-testNow_LIBS    = 
+testNow_LIBS    = acstime maciClient
 
 testProp_OBJECTS = testProp
-testProp_LIBS    = 
+testProp_LIBS    = acstime maciClient
 
 testTimeout_OBJECTS = testTimeout
-testTimeout_LIBS    = 
+testTimeout_LIBS    = acstime maciClient
 
 timeoutExample_OBJECTS = timeoutExample
-timeoutExample_LIBS    = 
+timeoutExample_LIBS    = acstime maciClient
 
 testTimeUtil_OBJECTS = testTimeUtil
-testTimeUtil_LIBS    = 
+testTimeUtil_LIBS    = acstime maciClient
 
 testProfiler_OBJECTS = testProfiler
-testProfiler_LIBS    = 
+testProfiler_LIBS    = acstime
 
 
 

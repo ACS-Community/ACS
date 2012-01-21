@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2009/05/20 17:19:48 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -24,8 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lACE -lTAO -lTAO_CosNaming -lTAO_PortableServer -lTAO_CosNotification -lacsutil -lacscommonStubs \
-	  -lloki -lbasenc
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -52,7 +51,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = archiveeventsArchiveSupplier.h
+INCLUDES        = archiveeventsArchiveSupplier.h archiveeventsExport.h
 
 #
 # Libraries (public and local)
@@ -61,7 +60,8 @@ LIBRARIES       = archiveevents
 LIBRARIES_L     =  
 
 archiveevents_OBJECTS = archiveeventsArchiveSupplier
-archiveevents_LIBS = acsncErrType cdb
+archiveevents_LIBS = acsncErrType cdb acsncStubs basenc
+archiveevents_CFLAGS = -DARCHIVEEVENTS_BUILD_DLL
 
 #
 # <brief description of lllll library>

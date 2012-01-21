@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.43 2009/10/02 14:01:56 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.44 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -45,7 +45,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lenumpropStdStubs -lbaciErrTypeProperty -lbaciErrTypeDevIO -lmaciErrType
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -69,21 +69,27 @@ enumpropTestServer_LIBS = acsContainerServices maci enumpropTestDevice
 
 testClient_COMMON = testClient
 testClient_OBJECTS   = $(testClient_COMMON) $(common_GENERATED)
+testClient_LIBS = enumpropTestDevice
 
 testRWClient_COMMON = testRWClient
 testRWClient_OBJECTS = $(testRWClient_COMMON) $(common_GENERATED)
+testRWClient_LIBS = enumpropTestDevice
 
 monitorTest_COMMON = monitorTest
 monitorTest_OBJECTS =  $(monitorTest_COMMON) $(common_GENERATED)
+monitorTest_LIBS = enumpropTestDevice
 
 alarmTest_COMMON = alarmTest
 alarmTest_OBJECTS=  $(alarmTest_COMMON) $(common_GENERATED)
+alarmTest_LIBS = enumpropTestDevice
 
 onchangeMonitorTest_COMMON = onchangeMonitorTest
 onchangeMonitorTest_OBJECTS=  $(onchangeMonitorTest_COMMON) $(common_GENERATED)
+onchangeMonitorTest_LIBS = enumpropTestDevice
 
 alarmTestSetFFFM_COMMON = alarmTestSetFFFM
 alarmTestSetFFFM_OBJECTS = $(alarmTestSetFFFM_COMMON) $(common_GENERATED)
+alarmTestSetFFFM_LIBS = enumpropTestDevice
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -99,7 +105,7 @@ INCLUDES        =
 LIBRARIES       =
 LIBRARIES_L     = enumpropTestDevice
 enumpropTestDevice_OBJECTS = enumpropTestDeviceImpl 
-enumpropTestDevice_LIBS = enumpropTestDeviceStubs
+enumpropTestDevice_LIBS = enumpropTestDeviceStubs baci
 
 #
 # <brief description of lllll library>
@@ -183,6 +189,8 @@ CSOURCENAMES = \
 IDL_FILES = enumpropTestDevice enumpropALMASW2003048
 IDL_TAO_FLAGS =
 USER_IDL =
+enumpropTestDeviceStubs_LIBS = baciStubs enumpropStdStubs
+enumpropALMASW2003048Stubs_LIBS = baciStubs
 
 
 #

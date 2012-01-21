@@ -44,7 +44,6 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
-mastercomp_ifStubs_LIBS := baciStubs ACSErrTypeCommonStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -119,6 +118,7 @@ CDB_SCHEMAS = MasterComponent
 IDL_FILES = mastercomp_if
 IDL_TAO_FLAGS =
 USER_IDL =
+mastercomp_ifStubs_LIBS = baciStubs ACSErrTypeCommonStubs
 #
 # Jarfiles and their directories
 #

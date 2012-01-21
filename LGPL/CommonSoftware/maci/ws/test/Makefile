@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.102 2011/06/07 23:56:38 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.103 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -19,7 +19,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lmaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lbaselogging 
+USER_LIB =
 
 # Program to build
 # Can be overwritten in the call
@@ -155,6 +155,7 @@ CSOURCENAMES = \
 # IDL FILES
 #
 IDL_FILES = maciTest
+maciTestStubs_LIBS = maciStubs acscomponentStubs
 
 #
 #>>>>> END OF standard rules

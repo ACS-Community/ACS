@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2006/09/26 19:23:11 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 USER_INC = -I$(INSTALL_ROOT)/include/xercesc/dom
-USER_LIB = -lxerces-c
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:

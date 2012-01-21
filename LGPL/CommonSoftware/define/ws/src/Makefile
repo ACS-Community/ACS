@@ -51,14 +51,13 @@ XML_IDL = "IdentifierRange=alma.archive.range.IdentifierRange"
 # error definitions to generate ACS-style exceptions from
 ACSERRDEF = ArchiveIdentifierError
 
-
 # 
 # IDL Files and flags
 # 
 IDL_FILES = xmlentity archive_xmlstore_if 
 IDL_TAO_FLAGS =
 USER_IDL =
-
+archive_xmlstore_ifStubs_LIBS = acscommonStubs acscomponentStubs xmlentityStubs
 
 # Libraries (public and local)
 # ----------------------------
@@ -67,17 +66,15 @@ LIBRARIES_L     =
 
 # the following is not necessary because the acs make file creates xmlentityStubs library automatically
 # but we leave it here for now to avoid troubles
-xmlentity_OBJECTS           = xmlentityC xmlentityS   
+xmlentity_OBJECTS           =
 xmlentity_LIBS := xmlentityStubs
 
-archive_xmlstore_if_OBJECTS = archive_xmlstore_ifC
-archive_xmlstore_if_LIBS := acscomponentStubs xmlentityStubs
+archive_xmlstore_if_OBJECTS = 
+archive_xmlstore_if_LIBS := archive_xmlstore_ifStubs
 
 # adds the IdentifierRange schema to archive_xmlstore_if.jar to ensure that it can be loaded again when the archive has been erased.
 archive_xmlstore_if_EXTRAS = -C ../idl/IdentifierRange.xsd
 
-ArchiveIdentifierErrorStubs_LIBS := acserr
-archive_xmlstore_ifStubs_LIBS := acscomponentStubs xmlentityStubs
 #
 # Jarfiles and their directories
 #

@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.18 2009/03/11 17:01:41 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -50,8 +50,7 @@ DEBUG=on
 #USER_INC =
 #USER_LIB = 
 
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_IFR_Client -lacsutil -lcdb -llogging -lacscomponent -lbaci -lmaci -lmaciClient -lacsnc -lTAO_DynamicInterface -lACSErrTypeCommon
-
+USER_LIB =
 
 PROG 	=
 
@@ -91,6 +90,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 acssamp_OBJECTS   = acssampImpl acssampC acssampS
+acssamp_LIBS = acsutil cdb logging acscomponent baci maci maciClient acsnc acssampStubs TAO_DynamicInterface
 
 #
 # Configuration Database Files
@@ -104,6 +104,7 @@ CDB_SCHEMAS = SAMP
 IDL_FILES = acssamp
 IDL_TAO_FLAGS =
 USER_IDL =
+acssampStubs_LIBS = baciStubs ACSErrTypeCommon
 
 
 #

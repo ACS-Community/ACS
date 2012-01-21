@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.34 2011/10/14 17:58:17 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.35 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -25,29 +25,7 @@ MAKE_ONLY="C++"
 # 
 # additional include and library search paths
 USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV
-USER_LIB = 	-lACE \
-		-lTAO_AV \
-		-lTAO \
-		-lTAO_DsLogAdmin \
-		-lTAO_CosNaming \
-		-lTAO_IORTable \
-		-lTAO_PortableServer \
-		-lTAO_Svc_Utils \
-		-lTAO_CosTrading \
-                -lTAO_CosNotification \
-		-lTAO_DynamicAny \
-		-lTAO_IFR_Client \
-                -lTAO_CosProperty \
-		-lacsutil \
-		-lcdb \
-		-llogging \
-	        -lacscomponent \
-		-lbaci \
-		-lmaci \
-		-lmaciClient \
-		-lacserr \
-		-lm
-#		-lmd5
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -77,7 +55,7 @@ bulkDataEx1_LIBS      = bulkDataReceiverStubs \
 			bulkDataSenderStubs \
 			bulkDataStubs \
 			bulkDataCallback \
-			ACSBulkDataError
+			ACSBulkDataError maciClient
 
 bulkDataEx2_OBJECTS   = bulkDataEx2	
 bulkDataEx2_LIBS      = bulkDataReceiverStubs \
@@ -86,7 +64,7 @@ bulkDataEx2_LIBS      = bulkDataReceiverStubs \
 			bulkDataSenderEx2Stubs \
 			bulkDataStubs \
 			bulkDataCallback \
-			ACSBulkDataError
+			ACSBulkDataError maciClient
 
 bulkDataEx3_OBJECTS   = bulkDataEx3	
 bulkDataEx3_LIBS      = bulkDataReceiverStubs \
@@ -96,7 +74,7 @@ bulkDataEx3_LIBS      = bulkDataReceiverStubs \
 			bulkDataStubs \
 			bulkDataCallback \
 			ACSBulkDataError \
-			ACSBulkDataStatus
+			ACSBulkDataStatus maciClient
 
 bulkDataSendRecvEx_OBJECTS   = bulkDataSendRecvEx	
 bulkDataSendRecvEx_LIBS      = bulkDataSendRecvStubs \
@@ -104,7 +82,7 @@ bulkDataSendRecvEx_LIBS      = bulkDataSendRecvStubs \
 				bulkDataSenderStubs \
 				bulkDataStubs \
 				bulkDataCallback \
-				ACSBulkDataError
+				ACSBulkDataError maciClient
 
 bulkDataDistributerEx_OBJECTS   = bulkDataDistributerEx	
 bulkDataDistributerEx_LIBS      = bulkDataDistributerStubs \
@@ -115,7 +93,7 @@ bulkDataDistributerEx_LIBS      = bulkDataDistributerStubs \
 					bulkDataReceiverDistr2Stubs \
 					bulkDataStubs \
 					bulkDataCallback \
-					ACSBulkDataError
+					ACSBulkDataError maciClient
 
 bulkDataPerf_OBJECTS   = bulkDataPerf	
 bulkDataPerf_LIBS      = bulkDataReceiverStubs \
@@ -124,7 +102,7 @@ bulkDataPerf_LIBS      = bulkDataReceiverStubs \
 			bulkDataSenderPerfStubs \
 			bulkDataStubs \
 			bulkDataCallback \
-			ACSBulkDataError
+			ACSBulkDataError maciClient
 
 bulkDataDistrPerf_OBJECTS   = bulkDataDistrPerf	
 bulkDataDistrPerf_LIBS      = bulkDataReceiverStubs \
@@ -134,7 +112,7 @@ bulkDataDistrPerf_LIBS      = bulkDataReceiverStubs \
 			      bulkDataDistributerStubs \
 			      bulkDataStubs \
 			      bulkDataCallback \
-			      ACSBulkDataError
+			      ACSBulkDataError maciClient
 
 bulkDataNotificationTest_OBJECTS   = bulkDataNotificationTest	
 bulkDataNotificationTest_LIBS      = bulkDataReceiverStubs \
@@ -142,7 +120,7 @@ bulkDataNotificationTest_LIBS      = bulkDataReceiverStubs \
 			             bulkDataDistributerStubs \
 			             bulkDataStubs \
 			             bulkDataCallback \
-			             ACSBulkDataError
+			             ACSBulkDataError maciClient
 
 bulkDataThreadTest_OBJECTS   = bulkDataThreadTest	
 bulkDataThreadTest_LIBS      = bulkDataSenderStubs \
@@ -151,7 +129,7 @@ bulkDataThreadTest_LIBS      = bulkDataSenderStubs \
 			       bulkDataReceiverStubs \
 			       bulkDataStubs \
 			       bulkDataCallback \
-			       ACSBulkDataError
+			       ACSBulkDataError maciClient
 
 
 #
@@ -189,64 +167,64 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 
 bulkDataReceiverLibEx1_OBJECTS   = bulkDataReceiverCbEx1
-bulkDataReceiverLibEx1_LIBS      = bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError
+bulkDataReceiverLibEx1_LIBS      = bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError baci
 
 bulkDataReceiverLibEx2_OBJECTS   = bulkDataReceiverCbEx2
 bulkDataReceiverLibEx2_LIBS      = bulkDataReceiverStubs bulkDataReceiverEx2Stubs bulkDataStubs \
-				   bulkDataCallback ACSBulkDataError
+				   bulkDataCallback ACSBulkDataError baci
 
 bulkDataReceiverLibEx3_OBJECTS   = bulkDataReceiverCbEx3
 bulkDataReceiverLibEx3_LIBS      = bulkDataReceiverStubs bulkDataReceiverEx3Stubs bulkDataStubs \
-				   bulkDataCallback ACSBulkDataError ACSBulkDataStatus
+				   bulkDataCallback ACSBulkDataError ACSBulkDataStatus baci
 
 bulkDataReceiverLibNotif_OBJECTS   = bulkDataReceiverCbNotif
 bulkDataReceiverLibNotif_LIBS      = bulkDataReceiverStubs bulkDataStubs \
-				     bulkDataCallback ACSBulkDataError ACSBulkDataStatus
+				     bulkDataCallback ACSBulkDataError ACSBulkDataStatus baci
 
 bulkDataReceiver1LibNotif_OBJECTS   = bulkDataReceiver1CbNotif
 bulkDataReceiver1LibNotif_LIBS      = bulkDataReceiverStubs bulkDataStubs \
-				      bulkDataCallback ACSBulkDataError ACSBulkDataStatus
+				      bulkDataCallback ACSBulkDataError ACSBulkDataStatus baci
 
 bulkDataSenderLibEx1_OBJECTS   = bulkDataSenderEx1Impl
-bulkDataSenderLibEx1_LIBS      = bulkDataSenderEx1Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibEx1_LIBS      = bulkDataSenderEx1Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError baci
 
 bulkDataSenderLibEx2_OBJECTS   = bulkDataSenderEx2Impl
-bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError baci
 
 bulkDataSenderLibEx3_OBJECTS   = bulkDataSenderEx3Impl
-bulkDataSenderLibEx3_LIBS      = bulkDataSenderEx3Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibEx3_LIBS      = bulkDataSenderEx3Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError baci
 
 bulkDataSenderLibPerf_OBJECTS   = bulkDataSenderPerfImpl
-bulkDataSenderLibPerf_LIBS      = bulkDataReceiverStubs bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibPerf_LIBS      = bulkDataReceiverStubs bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError baci
 
 bulkDataSenderLibNotif_OBJECTS   = bulkDataSenderNotifImpl
-bulkDataSenderLibNotif_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibNotif_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError baci
 
 bulkDataReceiver1LibPerf_OBJECTS   = bulkDataReceiver1PerfCb
 bulkDataReceiver1LibPerf_LIBS      = bulkDataReceiverStubs bulkDataReceiver1PerfStubs bulkDataStubs \
-				     bulkDataCallback ACSBulkDataError
+				     bulkDataCallback ACSBulkDataError baci
 
 bulkDataSendRecvLib_OBJECTS   = bulkDataSendRecvCb
 bulkDataSendRecvLib_LIBS      = bulkDataSendRecvStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs \
-				bulkDataCallback ACSBulkDataError
+				bulkDataCallback ACSBulkDataError baci
 
 bulkDataSenderDistrLib_OBJECTS   = bulkDataSenderDistr
 bulkDataSenderDistrLib_LIBS      = bulkDataReceiverStubs bulkDataSenderDistrStubs bulkDataSenderStubs \
-				   bulkDataStubs ACSBulkDataError
+				   bulkDataStubs ACSBulkDataError baci
 
 bulkDataReceiverDistr1Lib_OBJECTS   = bulkDataReceiverCbDistr1
 bulkDataReceiverDistr1Lib_LIBS      =  bulkDataReceiverStubs bulkDataReceiverDistr1Stubs bulkDataStubs \
-				       bulkDataCallback ACSBulkDataError
+				       bulkDataCallback ACSBulkDataError baci
 
 bulkDataReceiverDistr2Lib_OBJECTS   = bulkDataReceiverDistr2Impl bulkDataReceiverCbDistr2
 bulkDataReceiverDistr2Lib_LIBS      = bulkDataReceiverStubs bulkDataReceiverDistr2Stubs bulkDataStubs \
-				      bulkDataCallback ACSBulkDataError
+				      bulkDataCallback ACSBulkDataError baci
 
 bulkDataSenderLibThread_OBJECTS   = bulkDataSenderThreadImpl
-bulkDataSenderLibThread_LIBS      = bulkDataSenderDistrStubs bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibThread_LIBS      = bulkDataSenderDistrStubs bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError baci
 
 bulkDataReceiverLibThread_OBJECTS = bulkDataReceiverCbThread
-bulkDataReceiverLibThread_LIBS    = bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError
+bulkDataReceiverLibThread_LIBS    = bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError baci
 
 #
 # Scripts (public and local)
@@ -314,6 +292,18 @@ IDL_FILES = bulkDataSenderEx1 bulkDataReceiverEx2 bulkDataSenderEx2 \
 	    bulkDataSenderPerf bulkDataReceiver1Perf
 IDL_TAO_FLAGS =
 USER_IDL =
+bulkDataSenderEx1Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+bulkDataReceiverEx2Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs
+bulkDataSenderEx2Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+bulkDataSenderEx3Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+bulkDataReceiverEx3Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs
+bulkDataSendRecvStubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+bulkDataSenderDistrStubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+bulkDataReceiverDistr1Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs
+bulkDataReceiverDistr2Stubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs
+bulkDataSenderPerfStubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+bulkDataReceiver1PerfStubs_LIBS = baciStubs ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs
+
 #
 # Jarfiles and their directories
 #

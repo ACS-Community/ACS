@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.h,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
+* "@(#) $Id: MonitorCollectorImpl.h,v 1.3 2012/01/21 22:48:11 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "MonitorComponent.h"
 #include <ace/Synch.h>
-#include <Hash_Map_Manager_T.h>
+#include <ace/Hash_Map_Manager_T.h>
 #include <MonitorArchiverIFC.h>
 
 namespace TMCDB

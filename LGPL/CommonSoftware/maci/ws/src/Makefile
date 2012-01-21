@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.128 2011/10/14 16:57:58 rtobar Exp $" 
+# "@(#) $Id: Makefile,v 1.129 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -26,7 +26,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lACE -lTAO -lTAO_Messaging -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny  -lTAO_CosProperty -lTAO_DynamicInterface -lTAO_IFR_Client -lTAO_Monitor -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsQoS -lexpat -lbaselogging -larchiveevents
+USER_LIB =
 
 
 # Program to build
@@ -81,7 +81,7 @@ INCLUDES	= maciHelper.h maciSimpleClient.h \
               maciContainerImpl.h maciContainerThreadHook.h \
 		      maciACSComponentDefines.h maciPropertyDefines.h \
               maciLibraryManager.h maciRegistrar.h maciComponentStateManager.h\
-		      maciRegistrar.i 
+		      maciRegistrar.i maciClientExport.h
 INCLUDES_L	= maciContainer.h maciServantManager.h \
 		      maciORBTask.h 
 
@@ -94,11 +94,13 @@ LIBRARIES_L     =
 maci_OBJECTS   = maciLibraryManager maciORBTask  maciContainerThreadHook \
 		 maciServantManager maciContainerServices maciContainerImpl \
 		 maciHelper maciComponentStateManager 
-maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS alarmSource
+maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS alarmSource acscomponent acsQoS archiveevents
 maci_LDFLAGS = -ggdb
+maci_CFLAGS = -DMACI_BUILD_DLL
 
 maciClient_OBJECTS =  maciSimpleClient maciSimpleClientThreadHook
 maciClient_LIBS    =  baci maci maciErrType
+maciClient_CFLAGS = -DMACICLIENT_BUILD_DLL
 
 
 #

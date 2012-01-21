@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.18 2006/09/26 22:21:12 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 USER_INC = -I$(INSTALL_ROOT)/include/xercesc/dom
-USER_LIB = -lxerces-c
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -76,15 +76,15 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 execComponentTestImpl_OBJECTS   = execComponentTestImpl
-execComponentTestImpl_LIBS = ACSErrTypeCommon
+execComponentTestImpl_LIBS = ACSErrTypeCommon taskComponentStubs acscomponent
 
 #
 characteristicTaskTestImpl_OBJECTS = characteristicTaskTestImpl
-characteristicTaskTestImpl_LIBS = ACSErrTypeCommon baci
+characteristicTaskTestImpl_LIBS = ACSErrTypeCommon baci characteristicTaskStubs
 
 #
 paramTaskTestImpl_OBJECTS = paramTaskTestImpl
-paramTaskTestImpl_LIBS = ACSErrTypeCommon 
+paramTaskTestImpl_LIBS = ACSErrTypeCommon parameterTask
 
 # Scripts (public and local)
 # ----------------------------

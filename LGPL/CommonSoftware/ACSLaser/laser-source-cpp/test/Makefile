@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.15 2011/11/23 13:47:10 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.16 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,8 @@ USER_CFLAGS = -rdynamic
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lstdc++ -lxerces-c -lacscomponent
+USER_LIB =
+# -lstdc++ -lxerces-c -lacscomponent
 
 #
 # MODULE CODE DESCRIPTION:
@@ -90,11 +91,11 @@ LIBRARIES_L     = AlarmTestMountImpl AlarmTestMountMultiThreadedImpl
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountImpl_OBJECTS  = AlarmTestMountImpl
-AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType
+AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType acscomponent
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountMultiThreadedImpl_OBJECTS  = AlarmTestMountMultiThreadedImpl
-AlarmTestMountMultiThreadedImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType
+AlarmTestMountMultiThreadedImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType acscomponent
 
 #
 # Scripts (public and local)
@@ -148,6 +149,7 @@ CDB_SCHEMAS =
 IDL_FILES = testCppAlarmSourceComponents
 IDL_TAO_FLAGS =
 USER_IDL =
+testCppAlarmSourceComponentsStubs_LIBS = acscomponentStubs
 #
 # Jarfiles and their directories
 #

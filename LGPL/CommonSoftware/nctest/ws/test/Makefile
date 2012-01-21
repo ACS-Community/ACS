@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.13 2006/11/24 13:48:23 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.14 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -116,6 +116,9 @@ PANELS_L =
 IDL_FILES_L = nctestSpr2005067 separateTypedef testStructs DataCaptureExample
 IDL_TAO_FLAGS =
 USER_IDL =
+nctestSpr2005067Stubs_LIBS = baciStubs
+testStructsStubs_LIBS = separateTypedefStubs
+DataCaptureExampleStubs_LIBS = acstimeStubs
 
 #
 # Jarfiles and their directories

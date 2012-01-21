@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.29 2012/01/20 22:07:43 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.30 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -47,8 +47,6 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
-ACSTimeErrorStubs_LIBS := acserr
-acstimeStubs_LIBS := baciStubs ACSTimeErrorStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -85,7 +83,7 @@ acstimer_LIBS      =    baci ACSTimeError acstime
 
 
 #Quick fix a Sun-SWIG problem is to NOT compile acstimeSWIG_wrap for Sun
-_acstimeSWIG_OBJECTS   = $(shell if [ $(shell uname) = Linux ]; then echo 'acstimeSWIG_wrap '; fi;) \
+_acstimeSWIG_OBJECTS   = $(shell if [ $(shell uname) = Linux -o $(shell uname) = $(CYGWIN_VER) ]; then echo 'acstimeSWIG_wrap '; fi;) \
 			 acstimeTimeUtil \
 			 acstimeDurationHelper acstimeEpochHelper \
 			 acstimeC acstimeS
@@ -153,6 +151,7 @@ CDB_SCHEMAS = CLOCK
 IDL_FILES = acstime
 IDL_TAO_FLAGS =
 USER_IDL =
+acstimeStubs_LIBS = baciStubs ACSTimeErrorStubs
 
 #ACS Error System target
 ACSERRDEF = ACSTimeError
@@ -236,8 +235,8 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
-	@$(RM) $(INSTALL_ROOT)/lib/python/site-packages/_acstimeSWIG.so
-	@cp ../lib/lib_acstimeSWIG.so $(INSTALL_ROOT)/lib/python/site-packages/_acstimeSWIG.so
+	@$(RM) $(INSTALL_ROOT)/lib/python/site-packages/_acstimeSWIG.$(SHLIB_EXT)
+	@cp ../lib/lib_acstimeSWIG.$(SHLIB_EXT) $(INSTALL_ROOT)/lib/python/site-packages/_acstimeSWIG.$(SHLIB_EXT)
 	@echo " . . . installation done"
 
 acstime_swig:

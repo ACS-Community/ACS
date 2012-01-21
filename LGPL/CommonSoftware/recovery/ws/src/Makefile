@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.12 2010/10/26 19:57:36 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.13 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -19,7 +19,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS = 
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny
+USER_LIB = 
 #USER_INC = 
 
 # Program to build

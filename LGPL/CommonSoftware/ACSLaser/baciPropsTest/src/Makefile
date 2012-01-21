@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2008/03/25 14:06:19 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -39,29 +39,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB =      -lACE \
-                -lTAO \
-                -lTAO_DsLogAdmin \
-                -lTAO_CosNaming \
-                -lTAO_IORTable \
-                -lTAO_PortableServer \
-                -lTAO_Svc_Utils \
-                -lTAO_CosTrading \
-                -lTAO_CosNotification \
-                -lTAO_DynamicAny \
-                -lTAO_IFR_Client \
-                -lTAO_CosProperty \
-                -lacsutil \
-                -lcdb \
-                -llogging \
-                -lacscomponent \
-                -lbaci \
-                -lmaci \
-                -lmaciClient \
-                -lacserr \
-                -lm \
-                -lloki \
-                -lACSErrTypeCommon
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -150,6 +128,7 @@ CDB_SCHEMAS =
 IDL_FILES =testComponent
 IDL_TAO_FLAGS =
 USER_IDL =
+testComponentStubs_LIBS = baciStubs
 #
 # Jarfiles and their directories
 #

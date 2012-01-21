@@ -1,11 +1,16 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.5 2010/07/22 14:28:41 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of acstestcomp
 #
 # $Log: Makefile,v $
+# Revision 1.6  2012/01/21 22:48:11  tstaig
+# Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+# ACS on Windows under Cygwin. This commit corresponds to several CommonSoftware
+# modules.
+#
 # Revision 1.5  2010/07/22 14:28:41  jagonzal
 # Python scripts must be under PY_SCRIPTS rather than SCRIPTS
 #
@@ -37,30 +42,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lACE \
-        -lTAO \
-        -lTAO_DsLogAdmin \
-        -lTAO_CosNaming \
-        -lTAO_IORTable \
-        -lTAO_PortableServer \
-        -lTAO_Svc_Utils \
-        -lTAO_CosTrading \
-        -lTAO_CosNotification \
-        -lTAO_DynamicAny \
-        -lTAO_IFR_Client \
-        -lTAO_CosProperty \
-        -lacsutil \
-        -lcdb \
-        -llogging \
-        -lacscomponent \
-        -lbaci \
-        -lmaci \
-        -lmaciErrType \
-        -lmaciClient \
-        -lacserr \
-        -lm \
-        -lloki \
-	-lacstime
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -85,7 +67,7 @@ acstestcompTestComponentActivationErrors_LDFLAGS =
 acstestcompTestComponentActivationErrors_LIBS = acstestcompStubs  maciClient maciErrType acstime
 
 acstestcompcppTestCDBCompImpl_OBJECTS       = acstestcompcppTestCDBCompImpl
-acstestcompcppTestCDBCompImpl_LIBS          = acstestcompcppTestCDBCompStubs
+acstestcompcppTestCDBCompImpl_LIBS          = acstestcompcppTestCDBCompStubs baci
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -166,6 +148,7 @@ xxxx_DBL_FLAGS =
 IDL_FILES = acstestcompcppTestCDBComp
 IDL_TAO_FLAGS =
 USER_IDL =
+acstestcompcppTestCDBCompStubs_LIBS = baciStubs
 #
 # Jarfiles and their directories
 #

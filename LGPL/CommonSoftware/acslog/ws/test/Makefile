@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.18 2006/12/14 08:38:42 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -41,7 +41,7 @@
 
 #
 # additional include and library search paths
-USER_LIB = -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client 
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -121,6 +121,8 @@ PANELS_L =
 IDL_FILES = ESTest acslog
 IDL_TAO_FLAGS =
 USER_IDL =
+ESTestStubs_LIBS = acserrStubs ACSErrTypeTestStubs
+acslogStubs_LIBS = acserrStubs acscommonStubs
 
 ACSERRDEF = ACSErrTypeTest
 #

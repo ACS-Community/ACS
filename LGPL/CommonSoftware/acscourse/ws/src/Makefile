@@ -2,7 +2,7 @@
 
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.22 2010/10/26 21:27:56 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.23 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -50,28 +50,7 @@ XML_IDL="MyXmlConfigData=alma.acscourse.xmlbinding.myxmlconfigdata.MyXmlConfigDa
 # ----------------------------
 #
 USER_CFLAGS =
-USER_LIB = 	-lACE \
-		-lTAO \
-		-lTAO_DsLogAdmin \
-		-lTAO_CosNaming \
-		-lTAO_IORTable \
-		-lTAO_PortableServer \
-		-lTAO_Svc_Utils \
-		-lTAO_CosTrading \
-                -lTAO_CosNotification \
-		-lTAO_DynamicAny \
-		-lTAO_IFR_Client \
-                -lTAO_CosProperty \
-		-lacsutil \
-		-lcdb \
-		-llogging \
-	        -lacscomponent \
-		-lbaci \
-		-lmaci \
-		-lmaciClient \
-		-lacserr \
-		-lm
-
+USER_LIB =
 
 #
 # Includes (.h) files (public and local)
@@ -86,24 +65,22 @@ INCLUDES =	acscourseMount1Impl.h \
 LIBRARIES =	acscourseMount1Impl acscourseMount2Impl acscourseMount2LoopImpl acscourseMount3Impl acscourseMount4Impl acscourseMount5Impl
 
 acscourseMount1Impl_OBJECTS	= acscourseMount1Impl
-acscourseMount1Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse
+acscourseMount1Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse acscomponent archiveevents
 
 acscourseMount2Impl_OBJECTS	= acscourseMount2Impl acscourseMount2ImplDLL
-acscourseMount2Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse 
+acscourseMount2Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse acscomponent baci archiveevents
 
 acscourseMount2LoopImpl_OBJECTS	= acscourseMount2LoopImpl acscourseMount2Impl
-acscourseMount2LoopImpl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse
+acscourseMount2LoopImpl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse acscomponent baci archiveevents
 
 acscourseMount3Impl_OBJECTS	= acscourseMount3Impl 
-acscourseMount3Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse 
+acscourseMount3Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse acscomponent baci archiveevents
 
 acscourseMount4Impl_OBJECTS	= acscourseMount4Impl
-acscourseMount4Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse 
+acscourseMount4Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCourse acscomponent baci archiveevents
 
 acscourseMount5Impl_OBJECTS	= acscourseMount5Impl
-acscourseMount5Impl_LIBS	= acscourseMountStubs xmlentityStubs acsnc ACSErrTypeACSCourse
-
-acscourseMountStubs_LIBS := xmlentityStubs ACSErrTypeACSCourse
+acscourseMount5Impl_LIBS	= acscourseMountStubs xmlentityStubs acsnc ACSErrTypeACSCourse acscomponent baci archiveevents
 #
 # Configuration database schema Files
 # ------------------------------------
@@ -114,6 +91,7 @@ CDB_SCHEMAS = ACSCourseMount ACSCourseMountRW
 #----------------------------
 IDL_FILES = 	acscourseMount
 USER_IDL = 
+acscourseMountStubs_LIBS = baciStubs ACSErrTypeACSCourse ACSErrTypeCommon xmlentityStubs
 
 #
 # Python sources

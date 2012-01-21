@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.111 2011/09/02 11:00:18 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.112 2012/01/21 22:48:11 tstaig Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -19,7 +19,7 @@
 #endif
 
 #include <acsutil.h>
-#include <maciExport.h>
+#include <maciClientExport.h>
 
 #include <logging.h>
 
@@ -76,7 +76,7 @@ namespace maci {
  */
 
 
-class maci_EXPORT SimpleClient :
+class maciClient_EXPORT SimpleClient :
     public virtual POA_maci::Client,
     public virtual PortableServer::RefCountServantBase
 {

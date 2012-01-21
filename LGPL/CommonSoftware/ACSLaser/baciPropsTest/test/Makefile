@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2011/11/23 10:19:22 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,29 +44,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB =  	-lACE \
-                -lTAO \
-                -lTAO_DsLogAdmin \
-                -lTAO_CosNaming \
-                -lTAO_IORTable \
-                -lTAO_PortableServer \
-                -lTAO_Svc_Utils \
-                -lTAO_CosTrading \
-                -lTAO_CosNotification \
-                -lTAO_DynamicAny \
-                -lTAO_IFR_Client \
-                -lTAO_CosProperty \
-                -lacsutil \
-                -lcdb \
-                -llogging \
-                -lacscomponent \
-                -lbaci \
-                -lmaci \
-                -lmaciClient \
-                -lacserr \
-                -lm \
-                -lloki \
-                -lACSErrTypeCommon
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -104,7 +82,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 baciTest_OBJECTS   = baciTestImpl
-baciTest_LIBS =  testComponentStubs
+baciTest_LIBS =  testComponentStubs baci
 
 #
 # Scripts (public and local)

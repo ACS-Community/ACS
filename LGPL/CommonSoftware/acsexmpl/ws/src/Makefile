@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.140 2010/10/26 20:50:49 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.141 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -40,29 +40,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = 	-lACE \
-		-lTAO \
-		-lTAO_DsLogAdmin \
-		-lTAO_CosNaming \
-		-lTAO_IORTable \
-		-lTAO_PortableServer \
-		-lTAO_Svc_Utils \
-		-lTAO_CosTrading \
-                -lTAO_CosNotification \
-		-lTAO_DynamicAny \
-		-lTAO_IFR_Client \
-                -lTAO_CosProperty \
-		-lacsutil \
-		-lcdb \
-		-llogging \
-	        -lacscomponent \
-		-lbaci \
-		-lmaci \
-		-lmaciClient \
-		-lacserr \
-		-lm \
-                -lloki \
-                -lACSErrTypeCommon
+USER_LIB =
 
 #
 # This will trigger debugging information for Java
@@ -109,50 +87,50 @@ EXECUTABLES_L   =
 # <brief description of xxxxx program>
 
 acsexmplClient_OBJECTS	   = acsexmplClient
-acsexmplClient_LIBS	   = acsexmplMountStubs acsexmplCallbacksImpl
+acsexmplClient_LIBS	   = acsexmplMountStubs acsexmplCallbacksImpl maciClient
 
 acsexmplAsyncCalls_OBJECTS	= acsexmplAsyncCalls acsexmplAsyncCallbacks acsexmplAsyncMethodCB
-acsexmplAsyncCalls_LIBS	   	= acsexmplMountStubs 
+acsexmplAsyncCalls_LIBS	   	= acsexmplMountStubs maciClient
 
 acsexmplClientWave_OBJECTS	   = acsexmplClientWave
-acsexmplClientWave_LIBS	           = acsexmplMountStubs acsexmplCallbacksImpl
+acsexmplClientWave_LIBS	           = acsexmplMountStubs acsexmplCallbacksImpl maciClient
 
 acsexmplClientAlarmThread_OBJECTS  = acsexmplClientAlarmThread
-acsexmplClientAlarmThread_LIBS	   = acsexmplPowerSupplyStubs acsexmplCallbacksImpl
+acsexmplClientAlarmThread_LIBS	   = acsexmplPowerSupplyStubs acsexmplCallbacksImpl maciClient
 
 acsexmplClientFridgeCmd_OBJECTS	   = acsexmplClientFridgeCmd
-acsexmplClientFridgeCmd_LIBS	   = acsexmplFridgeStubs acsnc
+acsexmplClientFridgeCmd_LIBS	   = acsexmplFridgeStubs acsnc maciClient
 
 acsexmplClientFridge_OBJECTS	   = acsexmplClientFridge
-acsexmplClientFridge_LIBS	   = acsexmplFridgeStubs acsnc acsexmplCallbacksImpl
+acsexmplClientFridge_LIBS	   = acsexmplFridgeStubs acsnc acsexmplCallbacksImpl maciClient
 
 acsexmplClientComponentIOR_OBJECTS 	   = acsexmplClientComponentIOR
+acsexmplClientComponentIOR_LIBS       = maciClient
 
 acsexmplClientListComponents_OBJECTS           = acsexmplClientListComponents
+acsexmplClientListComponents_LIBS           = maciClient
 
 acsexmplClientAmsSeq_OBJECTS	   = acsexmplClientAmsSeq
-acsexmplClientAmsSeq_LIBS	   = acsexmplAmsSeqStubs
+acsexmplClientAmsSeq_LIBS	   = acsexmplAmsSeqStubs maciClient
 
 acsexmplClientHelloWorld_OBJECTS   = acsexmplClientHelloWorld
-acsexmplClientHelloWorld_LIBS      = acsexmplHelloWorldStubs ACSErrTypeCommon
+acsexmplClientHelloWorld_LIBS      = acsexmplHelloWorldStubs ACSErrTypeCommon maciClient
 
 acsexmplClientHelloWorldSP_OBJECTS   = acsexmplClientHelloWorldSP
-acsexmplClientHelloWorldSP_LIBS      = acsexmplHelloWorldStubs ACSErrTypeCommon
+acsexmplClientHelloWorldSP_LIBS      = acsexmplHelloWorldStubs ACSErrTypeCommon maciClient
 
 acsexmplClientFridgeNC_OBJECTS     = acsexmplClientFridgeNC
-acsexmplClientFridgeNC_LIBS        = acsnc acsexmplFridgeStubs ACSErrTypeCommon
+acsexmplClientFridgeNC_LIBS        = acsnc acsexmplFridgeStubs ACSErrTypeCommon maciClient
 
 
 acsexmplClientDynamicComponent_OBJECTS = acsexmplClientDynamicComponent
-acsexmplClientDynamicComponent_LIBS    = acsexmplHelloWorldStubs ACSErrTypeCommon
+acsexmplClientDynamicComponent_LIBS    = acsexmplHelloWorldStubs ACSErrTypeCommon maciClient
 
 acsexmplClientErrorComponent_OBJECTS   = acsexmplClientErrorComponent
-acsexmplClientErrorComponent_LIBS      = acsexmplErrorComponentStubs ACSErrTypeCommon
+acsexmplClientErrorComponent_LIBS      = acsexmplErrorComponentStubs ACSErrTypeCommon maciClient
 
 acsexmplCDB_OBJECTS = acsexmplCDB
 acsexmplCDB_LIBS = 
-
-acsexmplRampedPowerSupplyStubs_LIBS := acsexmplPowerSupplyStubs 
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
@@ -206,56 +184,73 @@ LIBRARIES =	acsexmplCallbacksImpl \
 LIBRARIES_L     =
 
 acsexmplCallbacksImpl_OBJECTS   = acsexmplCallbacksImpl
-acsexmplCallbacksImpl_LIBS	= 
+acsexmplCallbacksImpl_LIBS	= baci
+acsexmplCallbacksImpl_CFLAGS = -DACSEXMPL_BUILD_DLL
 
 acsexmplPowerSupplyImpl_OBJECTS = acsexmplPowerSupplyImpl acsexmplPowerSupplyCurrentImpl acsexmplPowerSupplyDLL 
-acsexmplPowerSupplyImpl_LIBS	= acsexmplPowerSupplyStubs 
+acsexmplPowerSupplyImpl_LIBS	= acsexmplPowerSupplyStubs baci
+acsexmplPowerSupplyImpl_CFLAGS = -DACSEXMPL_BUILD_DLL
 
 acsexmplRampedPowerSupplyImpl_OBJECTS	= acsexmplRampedPowerSupplyImpl \
 	  	              acsexmplPowerSupplyImpl acsexmplPowerSupplyCurrentImpl 
-acsexmplRampedPowerSupplyImpl_LIBS	= acsexmplRampedPowerSupplyStubs acsexmplPowerSupplyStubs
+acsexmplRampedPowerSupplyImpl_LIBS	= acsexmplRampedPowerSupplyStubs acsexmplPowerSupplyImpl
+acsexmplRampedPowerSupplyImpl_CFLAGS = -DACSEXMPL_BUILD_DLL
 
 acsexmplMountImpl_OBJECTS	= acsexmplMountImpl
-acsexmplMountImpl_LIBS		= acsexmplMountStubs
+acsexmplMountImpl_LIBS		= acsexmplMountStubs baci
+acsexmplMountImpl_CFLAGS		= -DACSEXMPL_BUILD_DLL
 
 acsexmplSlowMountImpl_OBJECTS	= acsexmplSlowMountImpl
-acsexmplSlowMountImpl_LIBS	= acsexmplMountStubs
+acsexmplSlowMountImpl_LIBS	= acsexmplMountStubs baci
+acsexmplSlowMountImpl_CFLAGS = -DACSEXMPL_BUILD_DLL
 
 acsexmplLampImpl_OBJECTS 	= acsexmplLampImpl
-acsexmplLampImpl_LIBS 		= acsexmplLampStubs
+acsexmplLampImpl_LIBS 		= acsexmplLampStubs baci
+acsexmplLampImpl_CFLAGS 	= -DACSEXMPL_BUILD_DLL
 
 acsexmplFridgeImpl_OBJECTS	= acsexmplFridgeImpl
-acsexmplFridgeImpl_LIBS	   	= acsnc acsexmplFridgeStubs
+acsexmplFridgeImpl_LIBS	   	= acsnc acsexmplFridgeStubs baci
+acsexmplFridgeImpl_CFLAGS   	= -DACSEXMPL_BUILD_DLL
 
 acsexmplDoorImpl_OBJECTS       	= acsexmplDoorImpl
-acsexmplDoorImpl_LIBS     	= acsexmplBuildingStubs
+acsexmplDoorImpl_LIBS     	= acsexmplBuildingStubs baci
+acsexmplDoorImpl_CFLAGS     = -DACSEXMPL_BUILD_DLL
 
 acsexmplBuildingImpl_OBJECTS   	= acsexmplBuildingImpl
-acsexmplBuildingImpl_LIBS   	= acsexmplBuildingStubs
+acsexmplBuildingImpl_LIBS   	= acsexmplBuildingStubs baci
+acsexmplBuildingImpl_CFLAGS   	= -DACSEXMPL_BUILD_DLL
 
 acsexmplAmsSeqImpl_OBJECTS     	= acsexmplAmsSeqImpl
-acsexmplAmsSeqImpl_LIBS     	= acsexmplAmsSeqStubs
+acsexmplAmsSeqImpl_LIBS     	= acsexmplAmsSeqStubs baci
+acsexmplAmsSeqImpl_CFLAGS     	= -DACSEXMPL_BUILD_DLL
 
 acsexmplCalendarImpl_OBJECTS   	= acsexmplCalendarImpl
-acsexmplCalendarImpl_LIBS   	= acsexmplCalendarStubs
+acsexmplCalendarImpl_LIBS   	= acsexmplCalendarStubs baci
+acsexmplCalendarImpl_CFLAGS   = -DACSEXMPL_BUILD_DLL
 
 acsexmplHelloWorldImpl_OBJECTS 	= acsexmplHelloWorldImpl
-acsexmplHelloWorldImpl_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon
+acsexmplHelloWorldImpl_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acscomponent archiveevents
+acsexmplHelloWorldImpl_CFLAGS	= -DACSEXMPL_BUILD_DLL
 
 acsexmplLampWheelImpl_OBJECTS 	= acsexmplLampWheelImpl
-acsexmplLampWheelImpl_LIBS	= acsexmplLampWheelStubs expat
+acsexmplLampWheelImpl_LIBS	= acsexmplLampWheelStubs expat baci
+acsexmplLampWheelImpl_CFLAGS	= -DACSEXMPL_BUILD_DLL
 
 acsexmplFilterWheelImpl_OBJECTS = acsexmplFilterWheelImpl
-acsexmplFilterWheelImpl_LIBS = acsexmplFilterWheelStubs 
+acsexmplFilterWheelImpl_LIBS = acsexmplFilterWheelStubs baci
+acsexmplFilterWheelImpl_CFLAGS = -DACSEXMPL_BUILD_DLL
 
 acsexmplErrorComponentImpl_OBJECTS 	= acsexmplErrorComponentImpl
-acsexmplErrorComponentImpl_LIBS	= acsexmplErrorComponentStubs ACSErrTypeCommon
+acsexmplErrorComponentImpl_LIBS	= acsexmplErrorComponentStubs ACSErrTypeCommon acscomponent archiveevents
+acsexmplErrorComponentImpl_CFLAGS	= -DACSEXMPL_BUILD_DLL
 
 acsexmplInitErrorHelloWorld_OBJECTS 	= acsexmplInitErrorHelloWorld
-acsexmplInitErrorHelloWorld_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acsexmplErrTest
+acsexmplInitErrorHelloWorld_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acsexmplErrTest acscomponent archiveevents
+acsexmplInitErrorHelloWorld_CFLAGS 	= -DACSEXMPL_BUILD_DLL
 
 acsexmplConstrErrorHelloWorld_OBJECTS 	= acsexmplConstrErrorHelloWorld
-acsexmplConstrErrorHelloWorld_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acsexmplErrTest
+acsexmplConstrErrorHelloWorld_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acsexmplErrTest acscomponent archiveevents
+acsexmplConstrErrorHelloWorld_CFLAGS 	= -DACSEXMPL_BUILD_DLL
 
 #
 # Scripts (public and local)
@@ -337,6 +332,18 @@ IDL_FILES = 	acsexmplPowerSupply \
 		acsexmplFilterWheel \
                 acsexmplErrorComponent
 USER_IDL = 
+acsexmplPowerSupplyStubs_LIBS = baciStubs
+acsexmplMountStubs_LIBS = baciStubs
+acsexmplRampedPowerSupplyStubs_LIBS = acsexmplPowerSupplyStubs
+acsexmplLampStubs_LIBS = baciStubs
+acsexmplFridgeStubs_LIBS = baciStubs
+acsexmplBuildingStubs_LIBS = baciStubs acserrStubs
+acsexmplAmsSeqStubs_LIBS = baciStubs
+acsexmplCalendarStubs_LIBS = baciStubs
+acsexmplHelloWorldStubs_LIBS = acscomponentStubs ACSErrTypeCommon
+acsexmplLampWheelStubs_LIBS = baciStubs
+acsexmplFilterWheelStubs_LIBS = baciStubs
+acsexmplErrorComponentStubs_LIBS = acscomponentStubs ACSErrTypeCommon
 
 ACSERRDEF = 	acsexmplErrTest
 

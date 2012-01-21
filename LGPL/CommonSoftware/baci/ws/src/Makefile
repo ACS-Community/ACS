@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.133 2009/09/15 08:52:12 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.134 2012/01/21 22:48:11 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS = 
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_CosProperty_Serv -lTAO_IFR_Client -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lbaciStubs -larchiveevents
+USER_LIB =
 USER_INC = 
 
 # Program to build
@@ -145,8 +145,10 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 	        baciROstring baciRWstring \
 		baciROdoubleSeq baciROfloatSeq baciROlongSeq \
 		baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq 
-baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle acsAlSysSource \
-			acsErrTypeAlarmSourceFactory ACSErrTypeMonitor PatternAlarmCleared PatternAlarmTriggered
+baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle alSysSource acsAlSysSource \
+			acsErrTypeAlarmSourceFactory ACSErrTypeMonitor PatternAlarmCleared PatternAlarmTriggered \
+			acsutil cdb logging acscomponent recovery acserr baciStubs archiveevents TAO_CosProperty_Serv
+baci_CFLAGS = -DBACI_BUILD_DLL
  
 #
 # Scripts (public and local)

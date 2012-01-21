@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2011/03/28 09:19:59 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -24,29 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = 	-lACE \
-		-lTAO \
-		-lTAO_DsLogAdmin \
-		-lTAO_CosNaming \
-		-lTAO_IORTable \
-		-lTAO_PortableServer \
-		-lTAO_Svc_Utils \
-		-lTAO_CosTrading \
-        -lTAO_CosNotification \
-		-lTAO_DynamicAny \
-		-lTAO_IFR_Client \
-        -lTAO_CosProperty \
-		-lacsutil \
-		-lcdb \
-		-llogging \
-	    -lacscomponent \
-		-lbaci \
-		-lmaci \
-		-lmaciClient \
-		-lacserr \
-		-lm \
-        -lloki \
-        -lACSErrTypeCommon
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -84,10 +62,10 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 lifeCycleTestImpl_OBJECTS   = lifeCycleTestImpl
-lifeCycleTestImpl_LIBS = lifecycleTest_IFStubs 
+lifeCycleTestImpl_LIBS = lifecycleTest_IFStubs acscomponent
 
 lifeCycleCharTestImpl_OBJECTS   = lifeCycleCharTestImpl
-lifeCycleCharTestImpl_LIBS = lifecycleTest_IFStubs 
+lifeCycleCharTestImpl_LIBS = lifecycleTest_IFStubs baci
 #
 # Scripts (public and local)
 # ----------------------------
@@ -140,6 +118,7 @@ CDB_SCHEMAS =
 IDL_FILES = lifecycleTest_IF
 IDL_TAO_FLAGS =
 USER_IDL =
+lifecycleTest_IFStubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs baciStubs
 #
 # Jarfiles and their directories
 #

@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: recoveryStore.h,v 1.8 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: recoveryStore.h,v 1.9 2012/01/21 22:48:11 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -21,8 +21,8 @@
 #include <ace/pre.h>
 #include <ace/SString.h>
 #include <ace/Hash_Map_Manager.h>
-#include <Thread_Mutex.h>
-#include <Recursive_Thread_Mutex.h>
+#include <ace/Thread_Mutex.h>
+#include <ace/Recursive_Thread_Mutex.h>
 
 namespace recovery {
 
@@ -43,7 +43,7 @@ namespace recovery {
  * It also supports saving data into a file.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: recoveryStore.h,v 1.8 2006/09/01 02:20:55 cparedes Exp $"
+ * @version "@(#) $Id: recoveryStore.h,v 1.9 2012/01/21 22:48:11 tstaig Exp $"
  * @precondition keys must not contain SEPARATOR_CHAR --- 
  * this restriction should be somehow removed in implementation... 
  */
@@ -217,6 +217,11 @@ protected:
 // REVISION HISTORY:
 //
 // $Log: recoveryStore.h,v $
+// Revision 1.9  2012/01/21 22:48:11  tstaig
+// Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
+// ACS on Windows under Cygwin. This commit corresponds to several CommonSoftware
+// modules.
+//
 // Revision 1.8  2006/09/01 02:20:55  cparedes
 // small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //

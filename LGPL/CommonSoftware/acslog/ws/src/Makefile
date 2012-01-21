@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.15 2005/07/21 12:13:13 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.16 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -43,8 +43,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaci -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil
-
+USER_LIB =
 
 #
 # This will trigger debugging information for Java
@@ -66,7 +65,8 @@ EXECUTABLES_L   =
 
 #
 # <brief description of xxxxx program>
-acsLogSvc_OBJECTS   = acsLogSvc acslogSvcImpl acslogC acslogS
+acsLogSvc_OBJECTS   = acsLogSvc acslogSvcImpl
+acsLogSvc_LIBS      = acserr maci logging acsutil acslogStubs
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
@@ -129,6 +129,7 @@ PANELS_L =
 IDL_FILES = acslog
 IDL_TAO_FLAGS =
 USER_IDL =
+acslogStubs_LIBS = acscommonStubs acserrStubs
 
 #
 # man pages to be done

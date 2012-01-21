@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.30 2011/10/18 08:37:07 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.31 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -39,29 +39,7 @@
 # So we set it locally: it works but it is not 100% safe.
 #
 USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV
-USER_LIB = 	-lACE \
-		-lTAO_AV \
-		-lTAO \
-		-lTAO_DsLogAdmin \
-		-lTAO_CosNaming \
-		-lTAO_IORTable \
-		-lTAO_PortableServer \
-		-lTAO_Svc_Utils \
-		-lTAO_CosTrading \
-                -lTAO_CosNotification \
-		-lTAO_DynamicAny \
-		-lTAO_IFR_Client \
-                -lTAO_CosProperty \
-		-lacsutil \
-		-lcdb \
-		-llogging \
-	        -lacscomponent \
-		-lbaci \
-		-lmaci \
-		-lmaciClient \
-		-lacserr \
-		-lm
-#		-lmd5
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -109,14 +87,11 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 bulkDataCallback_OBJECTS   = bulkDataCallback
-bulkDataCallback_LIBS      = ACSBulkDataError ACSBulkDataStatus
+bulkDataCallback_LIBS      = ACSBulkDataError ACSBulkDataStatus archiveevents TAO_AV
 
 bulkDataDistributerLib_OBJECTS   = bulkDataDistributerCb	
-bulkDataDistributerLib_LIBS      = ACSBulkDataError ACSBulkDataStatus bulkDataDistributerStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs
+bulkDataDistributerLib_LIBS      = ACSBulkDataError ACSBulkDataStatus bulkDataDistributerStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs baci ACSErrTypeCORBA
 
-bulkDataReceiverStubs_LIBS := ACSBulkDataError bulkDataStubs
-bulkDataSenderStubs_LIBS := ACSBulkDataError bulkDataStubs bulkDataReceiverStubs
-bulkDataDistributerStubs_LIBS := bulkDataSenderStubs
 #
 # Scripts (public and local)
 # ----------------------------
@@ -168,6 +143,10 @@ CDB_SCHEMAS = BulkDataReceiver BulkDataSender BulkDataDistributer
 # 
 IDL_FILES = bulkData bulkDataReceiver bulkDataSender bulkDataDistributer
 IDL_TAO_FLAGS =
+bulkDataStubs_LIBS = TAO_AV
+bulkDataReceiverStubs_LIBS = baciStubs ACSBulkDataError ACSBulkDataStatus bulkDataStubs
+bulkDataSenderStubs_LIBS = baciStubs ACSBulkDataError bulkDataStubs bulkDataReceiverStubs
+bulkDataDistributerStubs_LIBS = baciStubs ACSErrTypeCommon ACSBulkDataError bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
 
 #ACS Error System target
 ACSERRDEF = ACSBulkDataError ACSBulkDataStatus

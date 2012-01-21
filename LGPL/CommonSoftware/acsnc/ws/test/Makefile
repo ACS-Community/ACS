@@ -1,5 +1,5 @@
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.66 2008/11/13 01:57:44 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.67 2012/01/21 22:48:11 tstaig Exp $"
 #
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002  
@@ -25,7 +25,7 @@
 # Makefile for acsnc/ws/test applications
 
 USER_CFLAGS =
-USER_LIB = 	-lacsnc
+USER_LIB =
 
 PROG = 
 
@@ -84,6 +84,7 @@ acsncRTSupplierCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
 
 IDL_FILES = EventComponent
+EventComponentStubs_LIBS = acscomponentStubs
 
 # list of all possible C-sources (used to create automatic dependencies)
 # ------------------------------

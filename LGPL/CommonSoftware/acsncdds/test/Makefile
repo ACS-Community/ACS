@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.7 2010/10/25 20:15:47 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -165,6 +165,9 @@ CDB_SCHEMAS =
 USE_OPENDDS=1
 DDS_FILES = NCBenchmark SimpleExample #CDBProps 
 IDL_FILES = NCBenchmark SimpleExample CDBProps
+NCBenchmarkStubs_LIBS = baciStubs
+SimpleExampleStubs_LIBS = baciStubs
+CDBPropsStubs_LIBS = baciStubs
 
 # man pages to be done
 # --------------------

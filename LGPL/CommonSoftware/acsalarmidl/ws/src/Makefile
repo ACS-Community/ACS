@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.13 2011/11/23 15:21:22 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.14 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -64,8 +64,6 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
-acsErrTypeAlarmSourceFactoryStubs_LIBS := acserr
-AcsAlarmSystemStubs_LIBS := ACSErrTypeCommonStubs acserr
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -144,6 +142,7 @@ CDB_SCHEMAS = 	AcsAlarmSystem \
 IDL_FILES = AcsAlarmSystem
 IDL_TAO_FLAGS =
 USER_IDL =
+AcsAlarmSystemStubs_LIBS = ACSErrTypeCommonStubs acserrStubs
 #
 # Jarfiles and their directories
 #

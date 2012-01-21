@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.103 2005/07/18 12:59:04 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.104 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -22,27 +22,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lACE \
-           -lTAO \
-           -lTAO_DsLogAdmin \
-           -lTAO_CosNaming \
-           -lTAO_IORTable \
-           -lTAO_PortableServer \
-           -lTAO_Svc_Utils \
-           -lTAO_CosTrading \
-           -lTAO_DynamicAny \
-           -lTAO_IFR_Client \
-	   -lTAO_CosNotification \
-           -lacsutil \
-           -lacserr \
-           -lcdb \
-           -llogging \
-	   -lacscomponent \
-           -lbaci \
-           -lmaci \
-           -lmaciClient \
-	   -lacsnc 
-
+USER_LIB =
 
 # Program to build
 # Can be overwritten in the call
@@ -73,10 +53,10 @@ $(PROG)_LDFLAGS            =
 $(PROG)_LIBS               = C++
 
 acsexmplTestMemory_OBJECTS = acsexmplTestMemory
-acsexmplTestMemory_LIBS    = acsexmplMountStubs
+acsexmplTestMemory_LIBS    = acsexmplMountStubs maciClient
 
 acsexmplClientTower_OBJECTS = acsexmplClientTower
-acsexmplClientTower_LIBS    = acsexmplBuildingStubs
+acsexmplClientTower_LIBS    = acsexmplBuildingStubs maciClient
 
 #
 # Includes (.h) files (public and local)

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2005/01/31 21:45:25 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -42,7 +42,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lACE -llogging -lrecovery
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -59,6 +59,7 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 recoveryStore_Test_OBJECTS   = recoveryStore_Test
+recoveryStore_Test_LIBS      = recovery
 
 #
 # special compilation flags for single c sources

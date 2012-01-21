@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.47 2009/11/24 13:36:30 rtobar Exp $" 
+# "@(#) $Id: Makefile,v 1.48 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lacscomponentStubs -lcdb -lACE -lTAO -lexpat -llogging -lTAO_PortableServer 
+USER_LIB =
 
 # Program to build
 # Can be overwritten in the call
@@ -68,8 +68,9 @@ $(PROG)_LDFLAGS            =
 $(PROG)_LIBS               = C++
 
 nodeTest_OBJECTS		   = nodeTest
+nodeTest_LIBS           = cdb
 cdbTest_OBJECTS            = cdbTest
-cdbTestServer_LIBS         = 
+cdbTest_LIBS         = cdb
 
 
 #

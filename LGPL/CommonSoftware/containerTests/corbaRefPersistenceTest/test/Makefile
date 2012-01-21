@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.8 2010/10/05 15:46:11 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.9 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -39,29 +39,7 @@ USER_CFLAGS =
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB =      -lACE \
-                -lTAO \
-                -lTAO_DsLogAdmin \
-                -lTAO_CosNaming \
-                -lTAO_IORTable \
-                -lTAO_PortableServer \
-                -lTAO_Svc_Utils \
-                -lTAO_CosTrading \
-                -lTAO_CosNotification \
-                -lTAO_DynamicAny \
-                -lTAO_IFR_Client \
-                -lTAO_CosProperty \
-                -lacsutil \
-                -lcdb \
-                -llogging \
-                -lacscomponent \
-                -lbaci \
-                -lmaci \
-                -lmaciClient \
-                -lacserr \
-                -lm \
-                -lloki \
-                -lACSErrTypeCommon
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -78,7 +56,7 @@ EXECUTABLES_L   = cppClient
 #
 # <brief description of xxxxx program>
 cppClient_OBJECTS   =	cppClient
-cppClient_LIBS      =   HelloWorldStubs ACSErrTypeCommon
+cppClient_LIBS      =   HelloWorldStubs ACSErrTypeCommon maciClient
 
 #
 # special compilation flags for single c sources
@@ -98,10 +76,10 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 corbaRefTest_OBJECTS   = HelloWorldImpl
-corbaRefTest_LIBS     = HelloWorldStubs
+corbaRefTest_LIBS     = HelloWorldStubs acscomponent
 
 componentGetterImpl_OBJECTS = componentGetterImpl
-componentGetterImpl_LIBS    = componentGetterStubs
+componentGetterImpl_LIBS    = componentGetterStubs acscomponent ACSErrTypeCORBA maciErrType
 
 #
 # Scripts (public and local)

@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClientImpl.h,v 1.86 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciTestClientImpl.h,v 1.87 2012/01/21 22:48:11 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -23,7 +23,7 @@
 
 
 #include <maciS.h>
-#include <SString.h>
+#include <ace/SString.h>
 
 //Class MaciTestClientImpl
 class  MaciTestClientImpl : public virtual POA_maci::Client

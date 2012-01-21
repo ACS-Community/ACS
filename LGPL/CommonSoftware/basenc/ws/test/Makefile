@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2006/10/20 12:20:59 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lbasenc 
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:

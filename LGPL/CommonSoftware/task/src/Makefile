@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2010/10/26 20:37:22 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.18 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lxerces-c
+USER_LIB =
 
 #
 # MODULE CODE DESCRIPTION:
@@ -41,7 +41,7 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 taskRunner_OBJECTS   = taskRunner
-taskRunner_LIBS      = taskComponentStubs staticContainer characteristicTaskStubs taskErrType baciStubs
+taskRunner_LIBS      = taskComponentStubs staticContainer characteristicTaskStubs taskErrType baciStubs xerces-c
 
 #
 # special compilation flags for single c sources
@@ -62,19 +62,16 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 taskComponent_OBJECTS   = taskComponent
-taskComponent_LIBS      = staticContainer taskComponentStubs taskErrType 
+taskComponent_LIBS      = staticContainer taskComponentStubs taskErrType maci xerces-c
 
 parameterTask_OBJECTS= parameterTask
-parameterTask_LIBS= taskComponent parameter acsXercesUtilities
+parameterTask_LIBS= taskComponent parameter acsXercesUtilities maci xerces-c
 
-characteristicTask_LIBS =  taskComponent characteristicTaskStubs baciStubs baci 
+characteristicTask_LIBS =  taskComponent characteristicTaskStubs baciStubs baci maci xerces-c
 
 staticContainer_OBJECTS = taskStaticContainer taskStaticContainerServices
-staticContainer_LIBS = maci
+staticContainer_LIBS = maci xerces-c
 
-taskErrTypeStubs_LIBS := acserr
-taskComponentStubs_LIBS := acscomponentStubs taskErrTypeStubs
-characteristicTaskStubs_LIBS := baciStubs taskComponentStubs
 #
 # Scripts (public and local)
 # ----------------------------
@@ -127,6 +124,8 @@ CDB_SCHEMAS =
 IDL_FILES = taskComponent characteristicTask
 IDL_TAO_FLAGS =
 USER_IDL =
+taskComponentStubs_LIBS = acscomponentStubs taskErrType
+characteristicTaskStubs_LIBS = taskComponentStubs baciStubs
 
 ACSERRDEF = taskErrType
 

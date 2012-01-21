@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.11 2006/10/10 06:35:57 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.12 2012/01/21 22:48:11 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -43,7 +43,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -llogging -lacscomponent -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lmaciErrType
+USER_LIB =
 
 # Program to build
 # Can be overwritten in the call
@@ -88,6 +88,7 @@ LIBRARIES       = acscomponentTest
 LIBRARIES_L     = 
 
 acscomponentTest_OBJECTS = acscomponentTestImpl
+acscomponentTest_LIBS = acscomponentTestStubs acscomponent 
 
 #
 # Scripts (public and local)
@@ -152,6 +153,7 @@ CSOURCENAMES = \
 # IDL FILES
 #
 IDL_FILES = acscomponentTest
+acscomponentTestStubs_LIBS = acscomponentStubs
 
 #
 #>>>>> END OF standard rules

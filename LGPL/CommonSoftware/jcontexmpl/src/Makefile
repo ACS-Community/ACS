@@ -49,17 +49,14 @@ CLASSPATH := $(CLASSPATH):$(XERCES_JAR)
 IDL_FILES = HelloDemo XmlComponent LampAccess LampCallback ErrorSystemComponent EventComponent
 IDL_TAO_FLAGS =
 USER_IDL =
+HelloDemoStubs_LIBS = acscomponentStubs
+XmlComponentStubs_LIBS = acscomponentStubs JContExmplErrTypeTestStubs xmlentityStubs 
+LampAccessStubs_LIBS = acscomponentStubs acserrStubs
+LampCallbackStubs_LIBS = acscomponentStubs acserrStubs LampAccessStubs
+ErrorSystemComponentStubs_LIBS = ErrorSystemExampleStubs acscomponentStubs
+EventComponentStubs_LIBS = acsexmplFridgeStubs ACSErrTypeCommonStubs acscomponentStubs
 
 ACSERRDEF = JContExmplErrTypeTest ErrorSystemExample
-
-JContExmplErrTypeTestStubs_LIBS := acserr
-ErrorSystemExampleStubs_LIBS := acserr
-HelloDemoStubs_LIBS := acscomponentStubs
-XmlComponentStubs_LIBS:= acscomponentStubs JContExmplErrTypeTestStubs xmlentityStubs 
-LampAccessStubs_LIBS := acscomponentStubs
-LampCallbackStubs_LIBS := acscomponentStubs acserr LampAccessStubs
-ErrorSystemComponentStubs_LIBS := ErrorSystemExampleStubs acscomponentStubs
-EventComponentStubs_LIBS := acsexmplFridgeStubs ACSErrTypeCommonStubs acscomponentStubs
 
 #
 # Jarfiles: We must distinguish between component implementation classes and other classes.

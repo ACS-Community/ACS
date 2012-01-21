@@ -16,13 +16,15 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskComponent.cpp,v 1.1 2005/07/29 21:43:58 sharring Exp $"
+* "@(#) $Id: taskComponent.cpp,v 1.2 2012/01/21 22:48:11 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2004-09-20  created 
 */
 
+#ifndef __CYGWIN__
 #define _TASK_LIB
+#endif
 #include "taskStaticContainer.cpp"
 #include "taskRunner.cpp"

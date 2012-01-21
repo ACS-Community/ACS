@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.7 2010/10/01 17:20:48 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -43,8 +43,6 @@ EXECUTABLES_L   =
 xxxxx_OBJECTS   =	
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
-
-SimulatorStubs_LIBS = acscomponentStubs
 
 #
 # special compilation flags for single c sources
@@ -118,6 +116,8 @@ PANELS_L =
 IDL_FILES = Simulator
 IDL_TAO_FLAGS =
 USER_IDL =
+SimulatorStubs_LIBS = acscomponentStubs
+
 #
 # Jarfiles and their directories
 #

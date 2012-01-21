@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.27 2012/01/20 22:07:44 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.28 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -62,15 +62,15 @@ EXECUTABLES_L   = testLLU testTmp testFindFile testPorts testAnyAide testTimeSta
 testLLU_OBJECTS   = testLLU	
 testLLU_LIBS = acsutil	
 testTmp_OBJECTS   = testTmp
-testTmp_LIBS = acsuti
+testTmp_LIBS = acsutil
 testPorts_OBJECTS = testPorts
-testPorts_LIBS = acsuti
+testPorts_LIBS = acsutil
 testFindFile_OBJECTS = testFindFile
-testFindFile_LIBS = acsuti
+testFindFile_LIBS = acsutil
 testAnyAide_OBJECTS = testAnyAide
 testAnyAide_LIBS    = baciStubs acscommonStubs acscomponentStubs acserrStubs acsutil
 testTimeStamp_OBJECTS = testTimeStamp
-testTimeStamp_LIBS = acsuti
+testTimeStamp_LIBS = acsutil
 
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =

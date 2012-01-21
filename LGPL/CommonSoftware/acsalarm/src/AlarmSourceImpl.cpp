@@ -25,7 +25,7 @@
 #include "AlarmSourceImpl.h"
 #include <faultStateConstants.h>
 
-#include <Guard_T.h>
+#include <ace/Guard_T.h>
 
 using namespace acsalarm;
 

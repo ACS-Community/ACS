@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2011/05/13 12:55:58 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of containerTests (the package dealing with container tests)
 #
@@ -36,11 +36,11 @@
 # Macro definitions.                          #
 ###############################################
 define makeIt
-   ( ((/usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1) && ( echo "### ==> SUCCEDED" | tee -a  $4 >/dev/null )) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   ( ( (/usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1) && ( echo "### ==> SUCCEDED" | tee -a  $4 >/dev/null ) ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 ) ) | tee -a $3 $4 >/dev/null;
 endef
 
 define makeItAux
-   (( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   ( ( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 ) ) | tee -a $3 $4 >/dev/null;
 endef
 ###############################################
 
@@ -51,6 +51,9 @@ MODULES_CTEST = monicd moncollect monblobber moncontroller
 SUBSYSTEM = "monitoring"
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
+    MAKE_FLAGS = "NOCCS=1"
+endif
+ifeq ($(os),$(CYGWIN_VER))
     MAKE_FLAGS = "NOCCS=1"
 endif
 

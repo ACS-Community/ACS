@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.22 2006/10/19 15:20:40 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.23 2012/01/21 22:48:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,34 +44,6 @@ USER_CFLAGS =
 #USER_INC =
 #USER_LIB = 
 
-USER_LIB = \
-	-lACE \
-	-lTAO \
-	-lTAO_DsLogAdmin \
-	-lTAO_CosNaming \
-	-lTAO_IORTable \
-	-lTAO_PortableServer \
-	-lTAO_Svc_Utils \
-	-lTAO_CosTrading \
-	-lTAO_DynamicAny \
-	-lTAO_IFR_Client \
-        -lTAO_CosProperty \
-        -lTAO_DynamicInterface \
-	-lTAO_CosNotification \
-	-lacsutil \
-	-lacserr \
-	-lcdb \
-	-llogging \
-	-lacscomponent \
-	-lbaci \
-	-lmaci \
-	-lmaciClient \
-	-lacsnc \
-	-lrecovery \
-	-lacsutil \
-	-lACSErrTypeCommon
-
-
 PROG 	=
 
 #
@@ -93,19 +65,19 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acssampOnlyNCServer_OBJECTS     = acssampOnlyNCServer
-acssampOnlyNCServer_LIBS        = acssampStubs
+acssampOnlyNCServer_LIBS        = acssampStubs maciClient
 
 acssampFullNCTest_OBJECTS     = acssampFullNCTest
-acssampFullNCTest_LIBS        = acssampStubs
+acssampFullNCTest_LIBS        = acssampStubs acsnc maciClient
 
 acssampOnlyNCClient_OBJECTS     = acssampOnlyNCClient
-acssampOnlyNCClient_LIBS        = acssampStubs
+acssampOnlyNCClient_LIBS        = acssampStubs acsnc maciClient
 
 acssampPerfServer_OBJECTS     = acssampPerfServer
-acssampPerfServer_LIBS        = acssampStubs
+acssampPerfServer_LIBS        = acssampStubs maciClient
 
 acssampPerfClient_OBJECTS     = acssampPerfClient
-acssampPerfClient_LIBS        = acssampStubs
+acssampPerfClient_LIBS        = acssampStubs acsnc maciClient
 
 #
 # special compilation flags for single c sources
