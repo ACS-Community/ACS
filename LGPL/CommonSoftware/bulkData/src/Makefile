@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.31 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.32 2012/01/21 23:20:46 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -90,7 +90,7 @@ bulkDataCallback_OBJECTS   = bulkDataCallback
 bulkDataCallback_LIBS      = ACSBulkDataError ACSBulkDataStatus archiveevents TAO_AV
 
 bulkDataDistributerLib_OBJECTS   = bulkDataDistributerCb	
-bulkDataDistributerLib_LIBS      = ACSBulkDataError ACSBulkDataStatus bulkDataDistributerStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs baci ACSErrTypeCORBA
+bulkDataDistributerLib_LIBS      = ACSBulkDataError ACSBulkDataStatus bulkDataDistributerStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs baci ACSErrTypeCORBA TAO_Messaging
 
 #
 # Scripts (public and local)
