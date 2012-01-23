@@ -17,3 +17,6 @@ getDynamicComponent called with compName
 componentReleased
 authenticate called
 Request queue is full
+ACS Container Daemon
+chmod: changing permissions of
+GlobalLogger
