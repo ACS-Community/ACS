@@ -21,4 +21,7 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
+acscontainerdaemonSmartStart
+sleep 5
 acsutilTATTestRunner acsStartJava -Duser.dir=$PWD junit.textui.TestRunner alma.test.benchmark.components.StressStartComponents
+sleep 5
