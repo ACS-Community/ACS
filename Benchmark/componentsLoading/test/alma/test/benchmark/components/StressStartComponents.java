@@ -50,6 +50,15 @@ import alma.testManager.MountOperations;
 
 /**
  * Start components in containers in parallel.
+ * <P>
+ * The test starts {@link #totComponentsToStart} components in {@link #totContainersToStart} containers.
+ * The hosts to start the containers into are described in {@link #containerHostNames}.
+ * <P>
+ * To allow the test to be run by NRI, {@link #containerHostNames} contains only the
+ * local host (i.e. <code>null</code>). 
+ * <BR>If you wish to run this test by running containers
+ * on different hosts, you have to manually add the host names into {@link #containerHostNames} and
+ * start the container daemon on those hosts.
  * 
  * @author acaproni
  *
@@ -135,10 +144,12 @@ public class StressStartComponents extends ComponentClientTestCase {
 	 * are more then the host names, it restarts from the beginning. 
 	 * <P>
 	 * <code>null</code> mean local host.
+	 * <P>
+	 * To allow NRI to run this test, we set this variable only contains
+	 * the local host (i.e. <code>null</code>).
 	 */
-	private final String[] containerHostNames = {
-		"alma78.hq.eso.org",
-		"te91.hq.eso.org"
+	private String[] containerHostNames = {
+		null,
 	};
 	
 	/**
