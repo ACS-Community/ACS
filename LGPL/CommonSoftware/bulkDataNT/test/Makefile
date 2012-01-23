@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.18 2012/01/19 09:14:30 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/01/23 16:24:10 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -68,7 +68,7 @@ bdNTConfigurationParserTest_OBJECTS=bdNTConfigurationParserTest
 bdNTConfigurationParserTest_LIBS=bulkDataNT
 
 bdNTTEST1_OBJECTS = bdNTTEST1
-bdNTTEST1_LIBS = bulkDataReceiverStubs bulkDataSenderStubs
+bdNTTEST1_LIBS = bulkDataReceiverStubs bulkDataSenderStubs maciClient
 
 bdNTReceiverImplClient_OBJECTS= bdNTReceiverImplClient
 bdNTReceiverImplClient_LIBS= maciClient bulkDataReceiverStubs
