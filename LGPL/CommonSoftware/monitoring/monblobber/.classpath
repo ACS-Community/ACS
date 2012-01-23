@@ -25,5 +25,15 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/MonitorCollectorErr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
