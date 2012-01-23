@@ -25,3 +25,4 @@ acscontainerdaemonSmartStart
 sleep 5
 acsutilTATTestRunner acsStartJava -Duser.dir=$PWD junit.textui.TestRunner alma.test.benchmark.components.StressStartComponents
 sleep 5
+acscontainerdaemonStop
