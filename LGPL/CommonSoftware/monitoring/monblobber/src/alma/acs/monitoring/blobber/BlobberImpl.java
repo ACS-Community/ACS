@@ -158,27 +158,13 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 */
 	@Override
 	public void execute() {
-		blobberLoopRunner = new ThreadLoopRunner(this.myWorker, collectorIntervalSec, TimeUnit.SECONDS, m_containerServices.getThreadFactory(), m_logger);
+		blobberLoopRunner = new ThreadLoopRunner(this.myWorker, collectorIntervalSec, TimeUnit.SECONDS, 
+				m_containerServices.getThreadFactory(), m_logger, name());
 		blobberLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_RATE);
 		blobberLoopRunner.runLoop();
 		m_logger.info("BlobberWorker thread loop is running.");
 	}
 
-//	/**
-//	 * Modification of the collector interval during blobber runs 
-//	 * is only used in the legacy tests, not for blobber operations.
-//	 * @TODO Remove this method and the tests, unless there is a clear purpose.
-//	 * @param collectorIntervalSeconds	new interval in seconds, must be greater than zero.
-//	 * @see ThreadLoopRunner#setDelayTime(long, TimeUnit)
-//	 */
-//	protected boolean setCollectorIntervalSeconds(long collectorIntervalSeconds) {
-//		if (collectorIntervalSeconds <= 0) {
-//			throw new IllegalArgumentException("collectorIntervalSeconds must be > 0.");
-//		}
-//		myWorker.notifyCollectorIntervalChange(collectorIntervalSeconds);
-//		return blobberLoopRunner.setDelayTime(collectorIntervalSeconds, TimeUnit.SECONDS);
-//	}
-//	
 	
 	/**
 	 * Stops the blobber loop, but does not forcibly stop the running blobber.
