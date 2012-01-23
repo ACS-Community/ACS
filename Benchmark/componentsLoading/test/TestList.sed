@@ -31,3 +31,10 @@ s/LoggingChannelBin/LogChannel_Name/g
 s/LoggingChannel/LogChannel_Name/g
 s/Manager login done.*/Manager login donee, handle 'xxxxxxxxxx' obtained./g
 s/.XML log record import finished with [0-9]* records in [0-9]* seconds/.XML log record import finished with nnnn records in xxx seconds/g
+s/[0-9]* containers activated in .*/nnn containers activated in hh:mm:ss.ddd in thread main/g
+s/[0-9]* containers stopped in .*/nnn containers stopped in hh:mm:ss.ddd in thread main/g
+s/Components released in .*/Components released in hh:mm:ss.ddd in thread main/g
+s/Container bilboContainer_. stopped in .*/Container bilboContainer_X stopped in hh:mm:ss.ddd in thread main/g
+s/Containers stopped in .*/Containers stopped in hh:mm:ss.ddd in thread main/g
+s/Stopping container bilboContainer_. in.*/Stopping container bilboContainer_X/g
+

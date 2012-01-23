@@ -1,4 +1,5 @@
-DEBUG \[acsStartJava\]
+DEBUG
+FINE
 ^. - [jJ]ava
 Time:
 export
@@ -10,3 +11,9 @@ Jlog will use cache for
 object is activated
 Local file logger: Cache saved to
 ACS.log.minlevel.namedloggers not defined.
+Component loaded in
+A task got the component
+getDynamicComponent called with compName
+componentReleased
+authenticate called
+Request queue is full
