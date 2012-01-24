@@ -1,5 +1,6 @@
 package alma.acs.monitoring.blobber;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ComponentStates;
@@ -34,7 +35,12 @@ public class MonitorTestCollector implements MonitorCollectorOperations {
      */
     @Override
     public MonitorDataBlock[] getMonitorData() {
-        MonitorDataBlock[] outArray = this.myDataLock.take();
+        MonitorDataBlock[] outArray = null;
+		try {
+			outArray = this.myDataLock.take();
+		} catch (InterruptedException ex) {
+			logger.log(Level.WARNING, "Failed to get monitor data.", ex);
+		}
         if (outArray == null) {
             outArray = new MonitorDataBlock[0];
         }
@@ -44,8 +50,9 @@ public class MonitorTestCollector implements MonitorCollectorOperations {
     /**
      * Stores the data that later can be read through {@link #getMonitorData()}.
      * Blocks if called twice in a row, until data gets taken out in getMonitorData.
+     * @throws InterruptedException 
      */
-    public void setMonitorData(MonitorDataBlock[] inData) {
+    public void setMonitorData(MonitorDataBlock[] inData) throws InterruptedException {
         this.myDataLock.put(inData);
     }
 

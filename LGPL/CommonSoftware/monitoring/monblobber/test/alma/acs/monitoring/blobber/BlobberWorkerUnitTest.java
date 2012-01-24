@@ -145,7 +145,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         		CollectorListStatus.UNKNOWN, worker.removeCollector(coll1));
     }
 
-    public void testStandardHandling() {
+    public void testStandardHandling() throws Exception {
     	blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -190,9 +190,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         long startTime = BASE_TIME + 100;
         long stopTime = BASE_TIME + 101;
 		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
-
-		MonitorDataBlock[] blocks = new MonitorDataBlock[1];
-        blocks[0] = block;
+		MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
         
         // Feeds the above test data to the mock monitor collector
         getTestWorker().getCollector().setMonitorData(blocks);
@@ -265,7 +263,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data, 1.0, 10.0, 5.5, 3.0276504091);
     }
 
-    public void testCorrelatorHandling() {
+    public void testCorrelatorHandling() throws Exception {
     	blobber.setCollectorIntervalSeconds(100); 
         getTestWorker().setCanHandle(true);
         // Collector "TestCase" is just a dummy name to trick the worker to believe that 
@@ -358,7 +356,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
     }
 
-    public void testStandardFloat() {
+    public void testStandardFloat() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -405,7 +403,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data, 1.0, 10.0, 5.5, 3.0276504091);
     }
 
-    public void testStandardLong() {
+    public void testStandardLong() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -452,7 +450,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data, 1.0, 10.0, 5.5, 3.0276504091);
     }
 
-    public void testStandardLongLong() {
+    public void testStandardLongLong() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -499,7 +497,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data, 1.0, 10.0, 5.5, 3.0276504091);
     }
 
-    public void testStandardULongLong() {
+    public void testStandardULongLong() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -546,7 +544,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data, 1.0, 10.0, 5.5, 3.0276504091);
     }
 
-    public void testStandardPattern() {
+    public void testStandardPattern() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -592,7 +590,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data);
     }
 
-    public void testStandardString() {
+    public void testStandardString() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -639,7 +637,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data);
     }
 
-    public void testStandardEnum() {
+    public void testStandardEnum() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -685,7 +683,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data);
     }
 
-    public void testStandardAny() {
+    public void testStandardAny() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -751,7 +749,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data);
     }
 
-    public void testCorrelatorFloat() {
+    public void testCorrelatorFloat() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -814,7 +812,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
     }
 
-    public void testCorrelatorLong() {
+    public void testCorrelatorLong() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -878,7 +876,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
     }
 
-    public void testCorrelatorLongLong() {
+    public void testCorrelatorLongLong() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -942,7 +940,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
     }
 
-    public void testCorrelatorULongLong() {
+    public void testCorrelatorULongLong() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -1006,7 +1004,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
     }
 
-    public void testCorrelatorString() {
+    public void testCorrelatorString() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
@@ -1070,7 +1068,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
     }
 
-    public void testTimestamps() {
+    public void testTimestamps() throws Exception {
         blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
         getTestWorker().setCanHandle(true);
         // Collector "TestCollector" is just a dummy to trick the worker to believe that 
