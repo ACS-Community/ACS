@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.129 2012/01/21 22:48:11 tstaig Exp $" 
+# "@(#) $Id: Makefile,v 1.130 2012/01/24 00:50:13 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -47,7 +47,7 @@ EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdow
 EXECUTABLES_L   = 
 
 maciContainer_OBJECTS   = maciContainer
-maciContainer_LIBS = maci acsContainerServices acsComponentListener
+maciContainer_LIBS = maci acsContainerServices acsComponentListener TAO_CosNotification_MC_Ext TAO_DynamicInterface
 
 maciManagerShutdown_OBJECTS = maciManagerShutdown
 maciManagerShutdown_LIBS = maci
