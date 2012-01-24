@@ -62,7 +62,7 @@ import java.util.logging.Logger;
 public class ThreadLoopRunner
 {
 	private final Logger logger;
-	
+
 	/**
 	 * The single-threaded executor that backs our ThreadLoopRunner.
 	 */
@@ -184,16 +184,27 @@ public class ThreadLoopRunner
 			// store the value
 			delayTimeNanos = TimeUnit.NANOSECONDS.convert(delayTime, unit);
 			if (isLoopRunning()) {
-				// stop the loop, and schedule restarting it after the currently running task (if any) has finished
+				// stop the loop
 				suspendLoop();
-				taskWrapper.restartLoopAfterCurrentTaskFinished(new Runnable() {
-					@Override
-					public void run() {
-						logger.finer("["+ loopName + "] will restart the loop now, which was stopped to change the delay time.");
-						// @TODO: here we could sleep a bit to keep the intended delay rate/length, if needed.
-						runLoop();
-					}
-				});
+				
+				// restart the loop
+				if (isTaskRunning()) {
+					// schedule restarting the loop after the currently running task has finished.
+					// The same loopLock is used so that setting up this task now guarantees getting it run after the currently executing task.
+					taskWrapper.restartLoopAfterCurrentTaskFinished(new Runnable() {
+						@Override
+						public void run() {
+							logger.finer("["+ loopName + "] will restart the loop now, which was stopped to change the delay time.");
+							// @TODO: here we could sleep a bit to keep the intended delay rate/length, if needed.
+							runLoop();
+						}
+					});
+				}
+				else {
+					// The task was not running after we suspended the loop. We thus assume that no task has been started in the meantime
+					// and simply restart the loop directly.
+					runLoop();
+				}
 			}
 		}
 		finally {
@@ -418,7 +429,7 @@ public class ThreadLoopRunner
 		// We wait a tiny bit, to avoid "Forcibly terminating surviving thread" complaints 
 		// from ContainerService's ThreadFactory during component shutdown.
 		// Alternatively we could try to synchronize with ThreadPoolExecutor.terminated() callback.
-		Thread.currentThread().sleep(2);
+		Thread.sleep(2);
 		
 		return ret;
 	}
@@ -460,7 +471,8 @@ public class ThreadLoopRunner
 	private static class TaskWrapper implements Runnable {
 		
 		private final Logger logger;
-		
+//		private boolean extraDebugLogs;
+
 		/**
 		 * The delegate Runnable that gets called from inside our run method.
 		 */
@@ -485,6 +497,7 @@ public class ThreadLoopRunner
 		
 		TaskWrapper(Runnable delegate, ReentrantLock loopLock, Logger logger) {
 			this.logger = logger;
+//			extraDebugLogs = !delegate.getClass().getName().toLowerCase().contains("alarm");
 			this.delegate = delegate;
 			runLock = new ReentrantLock();
 			this.loopLock = loopLock;
@@ -496,7 +509,9 @@ public class ThreadLoopRunner
 			runLock.lock();
 			try {
 				isRunning = true;
+//				if (extraDebugLogs) logger.finest("About to call delegate#run on delegate=" + delegate.getClass().getName());
 				delegate.run();
+//				if (extraDebugLogs) logger.finest("Returned from delegate#run");
 			}
 			finally {
 				runLock.unlock();
@@ -507,7 +522,9 @@ public class ThreadLoopRunner
 			loopLock.lock();
 			try {
 				if (restartLoopRunnable != null) {
+//					if (extraDebugLogs) logger.finest("About to call restartLoopRunnable#run");
 					restartLoopRunnable.run();
+//					if (extraDebugLogs) logger.finest("Returned from restartLoopRunnable#run");
 					restartLoopRunnable = null;
 				}
 			} finally {
@@ -558,6 +575,11 @@ public class ThreadLoopRunner
 			loopLock.lock();
 			this.restartLoopRunnable = restartLoopRunnable;
 			loopLock.unlock();
+			
+//			if (extraDebugLogs) {
+//				String msg = "Registered restartLoopRunnable: " + (restartLoopRunnable == null ? "null" : restartLoopRunnable.getClass().getName());
+//				logger.fine(msg);
+//			}
 		}
 	}
 	
