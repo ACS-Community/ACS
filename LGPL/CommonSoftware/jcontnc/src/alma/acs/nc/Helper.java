@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.regex.Pattern;
+
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.IntHolder;
 import org.omg.CosNaming.NameComponent;
@@ -606,9 +608,12 @@ public class Helper {
 			// if channel mapping exists take it, wildchars are also supported
 			try {
 				String[] channelNameList = channelsDAO.get_string_seq("NotificationServiceMapping/Channels_");
-				for (String pattern : channelNameList)
-					if (WildcharMatcher.match(pattern, channelName))
+				for (String pattern : channelNameList) {
+					String regExpStr = WildcharMatcher.simpleWildcardToRegex(pattern);
+					
+					if (Pattern.matches(regExpStr, channelName))
 						return channelsDAO.get_string("NotificationServiceMapping/Channels_/" + pattern + "/NotificationService");
+				}
 			} catch (Throwable th) {
 				m_logger.finer("No Channel to NotificationService mapping found for channel: " + channelName);
 			}
