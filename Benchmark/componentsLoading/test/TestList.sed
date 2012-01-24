@@ -37,4 +37,4 @@ s/Components released in .*/Components released in hh:mm:ss.ddd in thread main/g
 s/Container bilboContainer_. stopped in .*/Container bilboContainer_X stopped in hh:mm:ss.ddd in thread main/g
 s/Containers stopped in .*/Containers stopped in hh:mm:ss.ddd in thread main/g
 s/Stopping container bilboContainer_. in.*/Stopping container bilboContainer_X/g
-
+s/The threads got all the components in .*/The threads got all the components in hh:mm:ss.ddd in thread main/g
