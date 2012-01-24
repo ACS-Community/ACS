@@ -454,6 +454,51 @@ public class WildcharMatcher
 		System.out.println("**?*x*[abh-]*Q == XYZxabbauuZQ : true = "
 		    + WildcharMatcher.match("**?*x*[abh-]*Q", "XYZxabbauuZQ"));
 	}
+	
+	/**
+	 * Translate a simple wildcard string into a regular expression.
+	 * <P>
+	 * Saying simple wildcard I mean a wildcard that uses only '*' and '?'
+	 * as control characters.
+	 * <P>
+	 * Chars that are control chars for regular expression are escaped 
+	 * (i.e if for example the wildard to translate contains a '[' it is 
+	 * escaped "\[“ in the translated string).
+	 *  
+	 * @param wildcard The "simple" wildcard string to translate into a regular expression
+	 * @return The regular expression produced from the "simple" wildcrad
+	 */
+	public static String simpleWildcardToRegex(String wildcard) {
+
+		StringBuffer s = new StringBuffer(wildcard.length());
+		s.append('^');
+
+		for (int i = 0, is = wildcard.length(); i < is; i++) {
+
+			char c = wildcard.charAt(i);
+
+			switch(c) {
+			case '*':
+				s.append(".*");
+				break;
+			case '?':
+				s.append(".");
+				break;
+			// escape special regexp-characters
+			case '(': case ')': case '[': case ']': case '$':
+			case '^': case '.': case '{': case '}': case '|':
+			case '\\':
+				s.append("\\");
+				s.append(c);
+				break;
+			default:
+				s.append(c);
+				break;
+			}
+		}
+		s.append('$');
+		return(s.toString());
+	}
 }
 
 /* __oOo__ */
