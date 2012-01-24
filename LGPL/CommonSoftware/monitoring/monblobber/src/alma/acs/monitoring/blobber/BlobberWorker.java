@@ -92,7 +92,7 @@ public class BlobberWorker extends CancelableRunnable {
     public static final String BLOBBER_CHECK_JVM_MEMORY_PROPERTYNAME = "alma.acs.monitoring.blobber.checkmemory";
 	
     /**
-     * Stores the data in the DB, inside proper transaction(s), and performing auto-completion of hardware tables if necessary.
+     * DAOs store the data in the DB or on file, inside proper transaction(s) and performing auto-completion of hardware tables if necessary.
      */
     protected List<MonitorDAO> myMonitorDAOList;
 
