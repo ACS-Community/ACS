@@ -22,6 +22,7 @@
 package alma.ACS.impl;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_IMPLEMENT;
@@ -46,6 +47,8 @@ import alma.cdbErrType.WrongCDBDataTypeEx;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
+
+import com.cosylab.util.WildcharMatcher;;
 
 
 /**
@@ -168,10 +171,12 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			int max;
 			max = allSeq.length;
 			ArrayList<String> arrSeq = new ArrayList<String>();
-			UtilsWildcards uw = new UtilsWildcards();
+			
+			String regExpStr = WildcharMatcher.simpleWildcardToRegex(wildcard);
+			Pattern pattern = Pattern.compile(regExpStr);
 
 			for(int i=0;i<max;i++)
-				if( uw.wildcardFit(allSeq[i],wildcard))
+				if( pattern.matcher(allSeq[i]).matches())
 					arrSeq.add(allSeq[i]);
 			if (arrSeq.isEmpty())
 				throw new CDBFieldDoesNotExistEx();
