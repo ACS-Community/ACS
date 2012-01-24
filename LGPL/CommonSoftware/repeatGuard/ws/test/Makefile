@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2007/07/10 14:59:18 hmeuss Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/01/24 01:00:05 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -62,16 +62,10 @@ SCRIPTS_L    	= repeatGuardJavaTest #repeatGuardJavaLoggerTest
 #
 # <brief description of xxxxx program>
 testRepeatGuard_OBJECTS   =	testRepeatGuard
-testRepeatGuard_LDFLAGS   = -lRepeatGuard -lacsutil -lTAO -lTAO_PortableServer -llogging
+testRepeatGuard_LIBS      = RepeatGuard acsutil logging
 
 testRepeatGuardLogger_OBJECTS   = testRepeatGuardLogger
-testRepeatGuardLogger_LDFLAGS   = -lRepeatGuardLogger -lRepeatGuard -lrepeatGuardLogTypeExampleLTS \
-                                  -lmaciClient -lacslogStubs \
-                                  -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery \
-                                  -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin \
-                                  -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer \
-                                  -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny \
-                                  -lTAO_CosProperty -lTAO_IFR_Client
+testRepeatGuardLogger_LIBS   = RepeatGuardLogger RepeatGuard repeatGuardLogTypeExampleLTS maciClient
 
 #
 # list of all possible C-sources (used to create automatic dependencies)

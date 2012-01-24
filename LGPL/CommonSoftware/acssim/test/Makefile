@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.18 2007/03/22 22:37:40 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -120,6 +120,7 @@ PANELS_L =
 IDL_FILES = acssimTest
 IDL_TAO_FLAGS =
 USER_IDL =
+acssimTestStubs_LIBS = baciStubs acsncStubs
 #
 # Jarfiles and their directories
 #

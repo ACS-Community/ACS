@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.23 2010/11/22 15:00:14 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.24 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -44,6 +44,7 @@ DEBUG=on
 IDL_FILES = jconttest_if
 IDL_TAO_FLAGS =
 USER_IDL =
+jconttest_ifStubs_LIBS = acscommonStubs acscomponentStubs ACSErrTypeCommonStubs
 
 #
 # Jarfiles and their directories

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2009/06/10 22:49:04 utfsm Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ssgTestSuite
 #
@@ -50,6 +50,8 @@ SCRIPTS_L       = testSamplingSystemUI.sh TATPrologue
 IDL_FILES = sampledComp
 IDL_TAO_FLAGS =
 USER_IDL =
+sampledCompStubs_LIBS = baciStubs
+
 #
 # Jarfiles and their directories
 #

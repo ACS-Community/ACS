@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.43 2010/04/13 01:58:43 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.44 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -76,6 +76,8 @@ SCRIPTS_L = acspyTATPrologue
 INSTALL_FILES =
 
 IDL_FILES = acspytest acspyTestQoS
+acspytestStubs_LIBS = baciStubs
+acspyTestQoSStubs_LIBS = acscomponentStubs
 
 #
 #>>>>> END OF standard rules

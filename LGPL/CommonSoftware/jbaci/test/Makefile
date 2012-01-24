@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.16 2009/05/04 14:16:41 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.17 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of jbaci
 #
@@ -135,6 +135,10 @@ PANELS_L =
 IDL_FILES = testSimpleMasterComponent testSeqTestingComponent testPrimTestingComponent testjBaciEnumProp
 IDL_TAO_FLAGS =
 USER_IDL = 
+testSimpleMasterComponentStubs_LIBS = baciStubs
+testSeqTestingComponentStubs_LIBS = baciStubs
+testPrimTestingComponentStubs_LIBS = baciStubs
+testjBaciEnumPropStubs_LIBS = baciStubs enumpropStdStubs
 #
 # Jarfiles and their directories
 #

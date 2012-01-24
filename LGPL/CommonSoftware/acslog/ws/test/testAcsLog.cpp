@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAcsLog.cpp,v 1.20 2010/03/26 23:28:15 javarias Exp $"
+* "@(#) $Id: testAcsLog.cpp,v 1.21 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,12 +28,12 @@
 // Uncomment this if you are using the VLT environment
 // #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.20 2010/03/26 23:28:15 javarias Exp $"; 
+static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.21 2012/01/24 01:00:04 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <SString.h>
+#include <ace/SString.h>
 #include <acsutilPorts.h>
 #include <acserr.h>
 

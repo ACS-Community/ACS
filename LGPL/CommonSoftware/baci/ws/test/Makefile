@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.110 2012/01/21 22:48:11 tstaig Exp $" 
+# "@(#) $Id: Makefile,v 1.111 2012/01/24 01:00:04 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -80,7 +80,7 @@ $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
 $(PROG)_LIBS               = C++ CCS
 
-baciTestServer_OBJECTS          = baciTestServer baciTestClassImpl baciTestC baciTestS
+baciTestServer_OBJECTS          = baciTestServer baciTestClassImpl
 baciTestServer_LIBS             = baciTestUtils acsContainerServices maciStubs ACSErrTypeCommon baci
 baciTestClient_OBJECTS          = baciTestClient baciTestC
 baciTestClient_LIBS             = baciTestUtils baci
@@ -125,7 +125,7 @@ LIBRARIES       = acsexmplPropTest
 LIBRARIES_L     = baciTestUtils
 
 baciTestUtils_OBJECTS	= baciTestUtils
-baciTestUtils_LIBS = logging
+baciTestUtils_LIBS = baciTestStubs logging archiveevents
 acsexmplPropTest_OBJECTS = baciTestClassImpl baciTestUtils
 acsexmplPropTest_LIBS = baciTestStubs baci
 

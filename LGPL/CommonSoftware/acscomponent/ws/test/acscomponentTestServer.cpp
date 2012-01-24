@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.20 2011/10/16 08:53:49 hsommer Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.21 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.20 2011/10/16 08:53:49 hsommer Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.21 2012/01/24 01:00:04 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -160,7 +160,11 @@ class TestContainerServices : public maci::ContainerServices {
         }
 };
 
-CORBA::ORB_var orb;
+#ifdef __CYGWIN__
+extern __declspec( dllimport ) CORBA::ORB_var orb;
+#else
+extern CORBA::ORB_var orb;
+#endif
 
 void TerminationSignalHandler(int)
 {

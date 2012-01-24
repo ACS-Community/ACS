@@ -34,6 +34,7 @@ SCRIPTS_L       = mastercompTATPrologue mastercompTATEpilogue junitNoACS junitWi
 IDL_FILES = mastercompTest_if
 IDL_TAO_FLAGS =
 USER_IDL =
+mastercompTest_ifStubs_LIBS = mastercomp_ifStubs
 
 #
 # Jarfiles and their directories

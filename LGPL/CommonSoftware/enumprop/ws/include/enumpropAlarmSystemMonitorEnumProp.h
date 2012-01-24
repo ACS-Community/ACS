@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropAlarmSystemMonitorEnumProp.h,v 1.1 2006/09/27 06:21:59 bjeram Exp $"
+* "@(#) $Id: enumpropAlarmSystemMonitorEnumProp.h,v 1.2 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ namespace baci
  * implementation of the AlarmSystemMonitor for discret types (patter, ...) 
  */
 template<class T, class TPROP>
-class baci_EXPORT AlarmSystemMonitorEnumProp : public AlarmSystemMonitor<TPROP>
+class AlarmSystemMonitorEnumProp : public AlarmSystemMonitor<TPROP>
 {
   public:
     

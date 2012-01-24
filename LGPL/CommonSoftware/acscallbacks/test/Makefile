@@ -19,6 +19,7 @@
 IDL_FILES = DemoCallbackResponderIF
 IDL_TAO_FLAGS =
 USER_IDL =
+DemoCallbackResponderIFStubs_LIBS = xmlentityStubs baciStubs acscomponentStubs
 #
 # Jarfiles and their directories
 #

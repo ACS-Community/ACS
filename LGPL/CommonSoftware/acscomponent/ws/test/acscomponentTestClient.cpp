@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestClient.cpp,v 1.5 2005/09/21 13:39:47 vwang Exp $"
+* "@(#) $Id: acscomponentTestClient.cpp,v 1.6 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
 * rcirami   2005-09-26  created
 */
 
-static char *rcsId="@(#) $Id: acscomponentTestClient.cpp,v 1.5 2005/09/21 13:39:47 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acscomponentTestClient.cpp,v 1.6 2012/01/24 01:00:04 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acscomponentTestImpl.h"
@@ -46,7 +46,11 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
     } \
 }
 
-CORBA::ORB_var orb;
+#ifdef __CYGWIN__
+extern __declspec( dllimport ) CORBA::ORB_var orb;
+#else
+extern CORBA::ORB_var orb;
+#endif
 
 int main(int argc, char *argv[])
 {

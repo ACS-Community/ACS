@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.103 2012/01/21 22:48:11 tstaig Exp $" 
+# "@(#) $Id: Makefile,v 1.104 2012/01/24 01:00:04 tstaig Exp $" 
 #
 # Makefile of ........
 #
@@ -47,28 +47,26 @@ $(PROG)_LIBS               = C++
 maciTestSimpleClientMulti_OBJECTS			= maciTestSimpleClientMulti
 maciTestSimpleClientMulti_LIBS			= maciClient
 maciTestClient_OBJECTS          = maciTestClient \
-                                  maciTestC \
                                   maciTestClientImpl
-maciTestClient_LIBS             = maciClient maciTestUtils
+maciTestClient_LIBS             = maciClient maciTestUtils maciTestStubs
 
-maciTestLogConfigClient_OBJECTS = maciTestLogConfigClient maciTestC
-maciTestLogConfigClient_LIBS    = maciClient maciTestUtils
+maciTestLogConfigClient_OBJECTS = maciTestLogConfigClient
+maciTestLogConfigClient_LIBS    = maciClient maciTestUtils maciTestStubs
 
-maciContainerServicesClient_OBJECTS = maciContainerServicesClient \
-									  maciTestC
-maciContainerServicesClient_LIBS = maciClient
+maciContainerServicesClient_OBJECTS = maciContainerServicesClient
+maciContainerServicesClient_LIBS = maciClient maciTestStubs
 
-maciLifeCycleClient_OBJECTS = maciLifeCycleClient maciTestC
-maciLifeCycleClient_LIBS = maciClient
+maciLifeCycleClient_OBJECTS = maciLifeCycleClient
+maciLifeCycleClient_LIBS = maciClient maciTestStubs
 
-maciTestSimpleClient_OBJECTS =  maciTestSimpleClient maciTestC
-maciTestSimpleClient_LIBS = maciClient
+maciTestSimpleClient_OBJECTS =  maciTestSimpleClient
+maciTestSimpleClient_LIBS = maciClient maciTestStubs
 
-maciTestSimpleClientContainerServices_OBJECTS =  maciTestSimpleClientContainerServices maciTestC
-maciTestSimpleClientContainerServices_LIBS = maciClient maciTestClass
+maciTestSimpleClientContainerServices_OBJECTS =  maciTestSimpleClientContainerServices
+maciTestSimpleClientContainerServices_LIBS = maciClient maciTestClass maciTestStubs
 
-maciTestComponentSmartPtr_OBJECTS =  maciTestComponentSmartPtr maciTestC
-maciTestComponentSmartPtr_LIBS = maciClient cppunit
+maciTestComponentSmartPtr_OBJECTS =  maciTestComponentSmartPtr
+maciTestComponentSmartPtr_LIBS = maciClient cppunit maciTestStubs
 
 maciTestRegistrar_OBJECTS 	= maciTestRegistrar
 
@@ -87,13 +85,17 @@ LIBRARIES_L     =
 
 maciBlockingComponentListener_OBJECTS = maciBlockingComponentListener
 maciBlockingComponentListener_LIBS = acsComponentListener
-maciTestClass_OBJECTS	= maciTestClassImpl maciTestC maciTestS
+maciTestClass_OBJECTS	= maciTestClassImpl
+maciTestClass_LIBS = maciTestStubs acscomponent ACSErrTypeCORBA maciErrType
 maciTestUtils_OBJECTS	= maciTestUtils
-maciTestLogConfig_OBJECTS = maciTestLogConfigImpl maciTestC maciTestS
+maciTestUtils_LIBS = archiveevents TAO_PortableServer
+maciTestLogConfig_OBJECTS = maciTestLogConfigImpl
 maciTestLogConfig_LDFLAGS= -ggdb
-maciContainerServicesTestClass_OBJECTS = maciContainerServicesTestClassImpl maciTestS maciTestC 
-maciContainerServicesTestClass_LIBS = maci acsContainerServices maciBlockingComponentListener 
-maciDynComp_OBJECTS = maciDynCompImpl maciTestS maciTestC
+maciTestLogConfig_LIBS = maciTestStubs acscomponent archiveevents
+maciContainerServicesTestClass_OBJECTS = maciContainerServicesTestClassImpl
+maciContainerServicesTestClass_LIBS = maciTestStubs maci acsContainerServices maciBlockingComponentListener 
+maciDynComp_OBJECTS = maciDynCompImpl
+maciDynComp_LIBS = maciTestStubs acscomponent archiveevents
 
 #
 # Scripts (public and local)

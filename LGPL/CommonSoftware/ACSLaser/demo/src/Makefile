@@ -82,7 +82,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 alsysMountImpl_OBJECTS  = alsysMountImpl
-alsysMountImpl_LIBS		= demoComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory 
+alsysMountImpl_LIBS		= demoComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory acscomponent archiveevents
 #
 # Scripts (public and local)
 # ----------------------------
@@ -135,6 +135,8 @@ CDB_SCHEMAS =
 IDL_FILES = demoComponents
 IDL_TAO_FLAGS =
 USER_IDL =
+demoComponentsStubs_LIBS = acscomponentStubs
+
 #
 # Jarfiles and their directories
 #

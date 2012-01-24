@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.16 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.17 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -91,11 +91,11 @@ LIBRARIES_L     = AlarmTestMountImpl AlarmTestMountMultiThreadedImpl
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountImpl_OBJECTS  = AlarmTestMountImpl
-AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType acscomponent
+AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType acscomponent archiveevents
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountMultiThreadedImpl_OBJECTS  = AlarmTestMountMultiThreadedImpl
-AlarmTestMountMultiThreadedImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType acscomponent
+AlarmTestMountMultiThreadedImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType acscomponent archiveevents
 
 #
 # Scripts (public and local)

@@ -40,7 +40,9 @@ DEBUG = on
 # 
 # IDL Files and flags
 # 
-IDL_FILES = xmltest ACSErrTypeACSCourse acscourseMount
+IDL_FILES = xmltest acscourseMount
+xmltestStubs_LIBS = acscommonStubs acscomponentStubs
+acscourseMountStubs_LIBS = baciStubs ACSErrTypeCommonStubs ACSErrTypeACSCourseStubs
 
 ACSERRDEF = ACSErrTypeACSCourse
 

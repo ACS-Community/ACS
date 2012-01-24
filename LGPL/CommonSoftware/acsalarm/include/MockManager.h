@@ -22,14 +22,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
 #include <acsutil.h>
-#include <maciExport.h>
 #include <maciS.h>
 #include <cdb.h>
 #include <logging.h>
 
 namespace maci 
 {
-	class maci_EXPORT MockManager: public virtual POA_maci::Manager, public virtual maci::Manager
+	class MockManager: public virtual POA_maci::Manager, public virtual maci::Manager
 	{
 		public:
 

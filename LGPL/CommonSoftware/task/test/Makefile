@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.19 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.20 2012/01/24 01:00:05 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -76,7 +76,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 execComponentTestImpl_OBJECTS   = execComponentTestImpl
-execComponentTestImpl_LIBS = ACSErrTypeCommon taskComponentStubs acscomponent
+execComponentTestImpl_LIBS = ACSErrTypeCommon taskComponentStubs acscomponent archiveevents
 
 #
 characteristicTaskTestImpl_OBJECTS = characteristicTaskTestImpl

@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: alarmTest.cpp,v 1.41 2008/10/01 02:33:31 cparedes Exp $"
+* "@(#) $Id: alarmTest.cpp,v 1.42 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,13 +27,13 @@
 * bjeram
 */
 
-static char *rcsId="@(#) $Id: alarmTest.cpp,v 1.41 2008/10/01 02:33:31 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: alarmTest.cpp,v 1.42 2012/01/24 01:00:04 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
 #include <baciS.h>
 #include <enumpropTestDeviceC.h>
-#include <SString.h>
+#include <ace/SString.h>
 #include <logging.h>
 
 

@@ -18,7 +18,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.20 2011/04/13 16:51:32 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.21 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -51,6 +51,9 @@ CDB_SCHEMAS =
 IDL_FILES = adminTest1 adminTest2 adminTest3
 TAO_IDLFLAGS =
 USER_IDL =
+adminTest1Stubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs
+adminTest2Stubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs
+adminTest3Stubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs
 
 #
 # Jarfiles and their directories

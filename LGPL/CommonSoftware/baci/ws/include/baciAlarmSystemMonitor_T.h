@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.9 2009/09/15 08:51:14 bjeram Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.10 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -45,7 +45,7 @@ namespace baci
  *  The purpose of this class or better its implementation is to send alarms to the ACS alarm system
  */
 template<class TPROP>
-class baci_EXPORT AlarmSystemMonitor : public AlarmSystemMonitorBase
+class AlarmSystemMonitor : public AlarmSystemMonitorBase
 {
   public:
     

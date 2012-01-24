@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.25 2011/11/23 10:40:40 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.26 2012/01/24 01:00:04 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -144,6 +144,7 @@ IDL_FILES = \
 
 IDL_TAO_FLAGS =
 USER_IDL =
+AlarmSystemStubs_LIBS = AcsAlarmSystemStubs
 #
 # Jarfiles and their directories
 #

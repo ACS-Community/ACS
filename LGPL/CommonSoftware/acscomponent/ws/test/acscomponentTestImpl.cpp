@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestImpl.cpp,v 1.11 2008/09/29 09:58:37 cparedes Exp $"
+* "@(#) $Id: acscomponentTestImpl.cpp,v 1.12 2012/01/24 01:00:04 tstaig Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -28,12 +28,12 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acscomponentTestImpl.cpp,v 1.11 2008/09/29 09:58:37 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acscomponentTestImpl.cpp,v 1.12 2012/01/24 01:00:04 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acscomponentTestImpl.h>
 
-extern CORBA::ORB_var orb;
+CORBA::ORB_var orb;
 
 //This must be used instead of "using ...." because of VxWorks
  using namespace acscomponent;
