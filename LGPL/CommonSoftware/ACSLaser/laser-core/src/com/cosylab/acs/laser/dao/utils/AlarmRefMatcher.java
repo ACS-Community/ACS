@@ -28,6 +28,8 @@ import java.util.regex.PatternSyntaxException;
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Triplet;
 
+import com.cosylab.util.WildcharMatcher;
+
 /**
  * <p>Utility class to check if an alarm matches an alarm reference specification.
  * Given a fault family, a fault member, and a fault code specification (that is,
@@ -83,8 +85,8 @@ public class AlarmRefMatcher
 			throw new IllegalArgumentException();
 
 		if( _reduction_rule_patter.equals("wildcard") ) {
-			_familyPattern = Pattern.compile(wildcardToRegex(familySpec));
-			_memberPattern = Pattern.compile(wildcardToRegex(memberSpec));
+			_familyPattern = Pattern.compile(WildcharMatcher.simpleWildcardToRegex(familySpec));
+			_memberPattern = Pattern.compile(WildcharMatcher.simpleWildcardToRegex(memberSpec));
 		}
 		else {
 			_familyPattern = Pattern.compile(familySpec);
@@ -114,39 +116,6 @@ public class AlarmRefMatcher
 //		} catch (NumberFormatException e) {
 //			throw new IllegalArgumentException("Invalid code spec");
 //		}
-	}
-
-	/* Code taken from http://www.rgagnon.com/javadetails/java-0515.html */
-	private String wildcardToRegex(String wildcard) {
-
-		StringBuffer s = new StringBuffer(wildcard.length());
-		s.append('^');
-
-		for (int i = 0, is = wildcard.length(); i < is; i++) {
-
-			char c = wildcard.charAt(i);
-
-			switch(c) {
-			case '*':
-				s.append(".*");
-				break;
-			case '?':
-				s.append(".");
-				break;
-			// escape special regexp-characters
-			case '(': case ')': case '[': case ']': case '$':
-			case '^': case '.': case '{': case '}': case '|':
-			case '\\':
-				s.append("\\");
-				s.append(c);
-				break;
-			default:
-				s.append(c);
-				break;
-			}
-		}
-		s.append('$');
-		return(s.toString());
 	}
 
 	public boolean isMatch(Alarm a)
