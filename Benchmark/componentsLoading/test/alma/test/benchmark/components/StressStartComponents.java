@@ -258,6 +258,7 @@ public class StressStartComponents extends ComponentClientTestCase {
 		// Start the components
 		Vector<Future<MountOperations>> tasks = new Vector<Future<MountOperations>>();
 		int c=0; // to cycle through containers in the array
+		long startLoadTime = System.currentTimeMillis();
 		for (int t=0; t<totComponentsToStart; t++) {
 			String name = componentNameTrailing+t;
 			String contName = containers[c].name;
@@ -293,8 +294,14 @@ public class StressStartComponents extends ComponentClientTestCase {
 				n++;
 			}
 		}
-		logger.info("The threads got all the components");
-		
+		long endLoadTime = System.currentTimeMillis();
+		logTime("The threads got all the components in ", endLoadTime-startLoadTime);
+		// The loading of the components took around 1m 30s in te91
+		// The next log is published if the loading time increased to 2mins or more
+		// In this case a message is logged and will trigger a failure in the tat test
+		if (endLoadTime-startLoadTime>120*1000) {
+			logger.warning("It seems that the load time of the components was too slow");
+		}
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException ie) {}
@@ -305,6 +312,12 @@ public class StressStartComponents extends ComponentClientTestCase {
 		componentAccessUtil.releaseAllComponents(true);
 		long endTime=System.currentTimeMillis();
 		logTime("Components released in ", endTime-startTime);
+		// The unloading of the components took around 1m 150s in te91
+		// The next log is published if the unloading time increased to 2mins or more
+		// In this case a message is logged and will trigger a failure in the tat test
+		if (endTime-startTime>120*1000) {
+			logger.warning("It seems that the unload time of the components was too slow");
+		}
 		
 		try {
 			Thread.sleep(1000);
