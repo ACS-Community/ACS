@@ -189,9 +189,24 @@ public class StressStartComponents extends ComponentClientTestCase {
 	 * @param time Execution time 
 	 */
 	private void logTime(String msg, long time) {
+		logTime(AcsLogLevel.INFO, msg, time);
+	}
+	
+	/**
+	 * 
+	 * @param logLevel The level to log the message 
+	 * @param msg
+	 * @param time
+	 */
+	private void logTime(AcsLogLevel logLevel, String msg, long time) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(time);
-		logger.info(msg+cal.get(Calendar.HOUR_OF_DAY)+':'+cal.get(Calendar.MINUTE)+':'+cal.get(Calendar.SECOND)+'.'+cal.get(Calendar.MILLISECOND)+" in thread "+Thread.currentThread().getName());
+		logger.log(logLevel,
+				msg+cal.get(Calendar.HOUR_OF_DAY)+':'+
+				cal.get(Calendar.MINUTE)+':'+
+				cal.get(Calendar.SECOND)+'.'+
+				cal.get(Calendar.MILLISECOND)+
+				" in thread "+Thread.currentThread().getName());
 	}
 	
 	/**
@@ -300,7 +315,7 @@ public class StressStartComponents extends ComponentClientTestCase {
 		// The next log is published if the loading time increased to 2mins or more
 		// In this case a message is logged and will trigger a failure in the tat test
 		if (endLoadTime-startLoadTime>120*1000) {
-			logger.warning("It seems that the load time of the components was too slow");
+			logTime(AcsLogLevel.WARNING, "It seems that the load time of the components was too slow (expected<2min): ",endLoadTime-startLoadTime);
 		}
 		try {
 			Thread.sleep(1000);
@@ -316,7 +331,7 @@ public class StressStartComponents extends ComponentClientTestCase {
 		// The next log is published if the unloading time increased to 2mins or more
 		// In this case a message is logged and will trigger a failure in the tat test
 		if (endTime-startTime>120*1000) {
-			logger.warning("It seems that the unload time of the components was too slow");
+			logTime(AcsLogLevel.WARNING, "It seems that the unload time of the components was too slow (expected<2min): ",endTime-startTime);
 		}
 		
 		try {
