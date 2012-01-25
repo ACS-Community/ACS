@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.22 2011/11/04 08:56:02 hsommer Exp $"
+# "@(#) $Id: acsNotifyService,v 1.23 2012/01/25 23:26:23 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -308,7 +308,7 @@ then
   NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/${CL_NS_TYPE}NotifyMCIOR"
   INSTANCE_DIR_REG=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`
   sed -e "s/MC_IOR/$NOTIFY_MC_IOR/" -e "s/INS_DIR/$INSTANCE_DIR_REG/" -e "s/NS_TYPE/${CL_NS_TYPE}/" $ACSROOT/config/svc.conf/defaultNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf
-  ORBOPTS="$ORBOPTS -ORBDebugLevel 1 -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf"
+  ORBOPTS="$ORBOPTS -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf"
 
   # I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
   # in order to get the correct svc.conf service configuration file.
