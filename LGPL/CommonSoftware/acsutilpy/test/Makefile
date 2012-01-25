@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2007/02/21 10:59:42 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/01/25 13:45:39 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -81,7 +81,8 @@ TCL_SCRIPTS_L   =
 PY_SCRIPTS         =
 PY_SCRIPTS_L       = 	acsutilpyTestFindFile \
 			acsutilpyTestPorts acsutilpyTestCmdLinePorts \
-			acsutilpyTestImport
+			acsutilpyTestImport \
+			acsutilpyTestWildcharMatcher
 
 PY_MODULES         =
 PY_MODULES_L       =
