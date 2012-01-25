@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.8 2009/09/09 21:18:06 javarias Exp $
+# @(#) $Id: CommonNC.py,v 1.9 2012/01/25 16:08:24 acaproni Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,11 +25,11 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.8 2009/09/09 21:18:06 javarias Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.9 2012/01/25 16:08:24 acaproni Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
-import re
+from AcsutilPy import wildcharMatch
 #--CORBA STUBS-----------------------------------------------------------------
 from ACSErrTypeCommonImpl         import CORBAProblemExImpl
 from ACSErr                       import NameValue
@@ -44,6 +44,7 @@ from Acspy.Nc.CDBProperties   import get_channel_qofs_props
 from Acspy.Nc.CDBProperties   import get_channel_admin_props
 from Acspy.Nc.CDBProperties   import get_notification_service_mapping
 from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
+
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -167,12 +168,12 @@ class CommonNC:
         '''
 
         if channel is not None:
-            crec = [ chan for chan in get_notification_service_mapping('Channel') if re.match(chan['Name'], channel)]
+            crec = [ chan for chan in get_notification_service_mapping('Channel') if wildcharMatch(chan['Name'], channel)]
             if crec != []:
                 return crec[0]['NotificationService']
 
         if domain is not None:
-            crec = [ chan for chan in get_notification_service_mapping('Domain') if re.match(chan['Name'], domain)]
+            crec = [ chan for chan in get_notification_service_mapping('Domain') if wildcharMatch(chan['Name'], domain)]
             if crec != []:
                 return crec[0]['NotificationService']
 
