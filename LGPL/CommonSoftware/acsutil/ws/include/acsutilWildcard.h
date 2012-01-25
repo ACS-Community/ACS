@@ -28,7 +28,7 @@
 * F.Schintke, the author of the original code, has authorized to 
 * distribute these files under LGPL License.
 *
-* "@(#) $Id: acsutilWildcard.h,v 1.16 2005/08/26 22:22:54 dfugate Exp $"
+* "@(#) $Id: acsutilWildcard.h,v 1.17 2012/01/25 16:26:58 acaproni Exp $"
 * 
 * ----------------------
 * Implementation of the UN*X wildcards
@@ -37,6 +37,10 @@
 *	 '[a-g]l*i?n' matches 'florian'
 *	 '[!abc]*e' matches 'smile'
 *	 '[-z] matches 'a'
+*
+* TODO: java and python translates a wilcard string into a regular expression and then
+*       matches the string using regular expresson libraries. With a low priority we should
+*       do the same in C++.
 *
 * 
 * who       when      what
