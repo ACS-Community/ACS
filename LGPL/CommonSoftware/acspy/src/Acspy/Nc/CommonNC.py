@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.9 2012/01/25 16:08:24 acaproni Exp $
+# @(#) $Id: CommonNC.py,v 1.10 2012/01/25 16:45:33 acaproni Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,11 +25,11 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.9 2012/01/25 16:08:24 acaproni Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.10 2012/01/25 16:45:33 acaproni Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
-from AcsutilPy import wildcharMatch
+from AcsutilPy.WildcharMatcher import wildcharMatch
 #--CORBA STUBS-----------------------------------------------------------------
 from ACSErrTypeCommonImpl         import CORBAProblemExImpl
 from ACSErr                       import NameValue
