@@ -99,7 +99,7 @@ ZoomProgressListener {
 	public void testFolderName() throws Exception {
 		String userDir = System.getProperty("user.dir");
 		assertNotNull(userDir);
-		assertEquals(userDir+"/zoom",manager.filesFolder);
+		assertEquals(userDir+File.separator+"zoom",manager.filesFolder);
 	}
 	
 	/**

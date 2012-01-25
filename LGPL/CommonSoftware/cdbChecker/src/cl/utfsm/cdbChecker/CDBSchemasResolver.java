@@ -41,7 +41,7 @@ class CDBSchemasResolver implements EntityResolver
     public CDBSchemasResolver(CDBChecker checker, String XSDPath)
 	{
     	_checker = checker;
-	    schemaPaths=XSDPath.split(""+File.pathSeparatorChar);
+	    schemaPaths=XSDPath.split(File.pathSeparator);
 	}
 
     /**

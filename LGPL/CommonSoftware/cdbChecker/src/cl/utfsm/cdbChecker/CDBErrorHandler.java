@@ -41,8 +41,8 @@ class CDBErrorHandler extends DefaultHandler implements ErrorHandler {
 	public void warning(SAXParseException e)
 	throws SAXException{
 		String filename=e.getSystemId();
-		if(filename.startsWith("file://"))
-			filename=filename.substring(7);
+		if(filename.startsWith("file:///"))
+			filename=filename.substring(8);
 		if(_checker.isVerbose())
 			System.out.print(":"+e.getLineNumber()+":"+e.getColumnNumber()+" [Warning]\n\t "+e.getMessage()+"\n");
 		else
@@ -54,8 +54,8 @@ class CDBErrorHandler extends DefaultHandler implements ErrorHandler {
 	public void error(SAXParseException e)
 	throws SAXException{
 		String filename=e.getSystemId();
-		if(filename.startsWith("file://"))
-			filename=filename.substring(7);
+		if(filename.startsWith("file:///"))
+			filename=filename.substring(8);
 		if(_checker.isVerbose())
 			System.out.print(":"+e.getLineNumber()+":"+e.getColumnNumber()+" [Error]\n\t "+e.getMessage()+"\n");	
 		else
@@ -69,8 +69,8 @@ class CDBErrorHandler extends DefaultHandler implements ErrorHandler {
 	throws SAXException{
 		String filename=e.getSystemId();
                 if(filename != null){
-                        if(filename.startsWith("file://"))
-                                filename=filename.substring(7);
+                        if(filename.startsWith("file:///"))
+                                filename=filename.substring(8);
                         if( _checker.isVerbose() )
                                 System.out.print(":"+e.getLineNumber()+":"+e.getColumnNumber()+" [Fatal Error]\n\t "+e.getMessage()+"\n");
                         else

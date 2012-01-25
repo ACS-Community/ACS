@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2010/10/05 10:21:53 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/01/25 12:46:34 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -115,6 +115,9 @@ CDB_SCHEMAS =
 IDL_FILES = HelloWorld componentGetter
 IDL_TAO_FLAGS =
 USER_IDL =
+HelloWorldStubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs
+componentGetterStubs_LIBS = acscomponentStubs
+
 #
 # Jarfiles and their directories
 #

@@ -147,7 +147,7 @@ public class CDBChecker {
 	private FilenameFilter dirFileFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
-			return new File(dir.getAbsolutePath() + File.separatorChar + name).isDirectory();
+			return new File(dir.getAbsolutePath() + File.separator + name).isDirectory();
 		}
 	};
 
@@ -183,8 +183,8 @@ public class CDBChecker {
 				} 
 			    else
 				{ //Is a directory
-				if(!(paths[i].endsWith("/"))) 
-				    paths[i]=paths[i]+"/";
+				if(!(paths[i].endsWith(File.separator))) 
+				    paths[i]=paths[i]+File.separator;
 			    
 				//Search for files, filtering for 'type'
 				if(type.equals("xml"))   files = (new File(paths[i])).list(xmlFileFilter);
@@ -200,7 +200,7 @@ public class CDBChecker {
 				    String[] dirs = (new File(paths[i])).list(dirFileFilter);
 				    if(dirs.length != 0)
 					for (int j=0; j < dirs.length; j++){
-					dirs[j]=paths[i]+dirs[j]+"/";
+					dirs[j]=paths[i]+dirs[j]+File.separator;
 					}
 				    vector.addAll(getFilenames(dirs,type));
 				    }
@@ -274,7 +274,7 @@ public class CDBChecker {
 				try{
 					validateFileEncoding(filename.get(i));
 					SP.reset();
-					SP.setEntityResolver(new CDBSchemasResolver(this, schemaFolder+":"+XSDPath));
+					SP.setEntityResolver(new CDBSchemasResolver(this, schemaFolder+File.pathSeparator+XSDPath));
 					SP.setFeature("http://xml.org/sax/features/validation",true);
 					SP.setFeature("http://apache.org/xml/features/validation/schema",true);
 					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
@@ -284,7 +284,7 @@ public class CDBChecker {
 
 					FileInputStream fis = new FileInputStream(file);
 					InputSource inputSource = new InputSource(fis);
-					inputSource.setSystemId("file://" + file.getAbsolutePath());
+					inputSource.setSystemId("file:///" + file.getAbsolutePath());
 					SP.parse(inputSource);
 					fis.close();
 					if(verbose && !errorFlag)
@@ -354,7 +354,7 @@ public class CDBChecker {
 
 					FileInputStream fis = new FileInputStream(file);
 					InputSource inputSource = new InputSource(fis);
-					inputSource.setSystemId("file://" + file.getAbsolutePath());
+					inputSource.setSystemId("file:///" + file.getAbsolutePath());
 					SP.parse(inputSource);
 					fis.close();
 					if(verbose && !errorFlag)
@@ -394,7 +394,7 @@ public class CDBChecker {
 
 					FileInputStream fis = new FileInputStream(file);
 					InputSource inputSource = new InputSource(fis);
-					inputSource.setSystemId("file://" + file.getAbsolutePath());
+					inputSource.setSystemId("file:///" + file.getAbsolutePath());
 					SP.parse(inputSource);
 					fis.close();
 				} catch(SAXException e){e.getMessage();}
@@ -428,7 +428,7 @@ public class CDBChecker {
 					}
 					else
 					{
-						xsd_targetns.put(targetNamespace, "file://" + XSDFilenames.get(i));
+						xsd_targetns.put(targetNamespace, "file:///" + XSDFilenames.get(i));
 					}
 				}
 			}else{
@@ -585,9 +585,8 @@ public class CDBChecker {
 		if(retVal) {
 			// check for the additional (optional) command line arguments, XMLPath and XSDPath
 			for (int i = myGetOpt.getOptind(); i < args.length ; i++) {
-				
 				if(myGetOpt.getOptind() == i) {
-					if(args[i].startsWith("/")) {
+					if(args[i].startsWith("/") || args[i].matches("[a-zA-Z]:.*")) {
 						this.XMLPath = args[i];
 					}
 					else {
@@ -597,7 +596,7 @@ public class CDBChecker {
 					}
 				}
 				else {
-					if(args[i].startsWith("/")) {
+					if(args[i].startsWith("/") || args[i].matches("[a-zA-Z]:.*")) {
 						this.XSDPath = args[i];
 					}
 					else {
@@ -615,8 +614,8 @@ public class CDBChecker {
       				String acsCdbPath = System.getenv("ACS_CDB");
 				if(null != acsCdbPath)
 				{
-					acsCdbPath += "/CDB";
-					System.out.println("*** XML path not specified; defaulting to $ACS_CDB/CDB: " + acsCdbPath);
+					acsCdbPath += File.separator+"CDB";
+					System.out.println("*** XML path not specified; defaulting to $ACS_CDB"+File.separator+"CDB: " + acsCdbPath);
 					XMLPath = acsCdbPath;
 				}
 				else
@@ -647,7 +646,7 @@ public class CDBChecker {
       // else use the systems default
       if (tmp_path == null)
 		{
-			tmp_path = File.separatorChar+"tmp";
+			tmp_path = File.separator+"tmp";
 		}
       
       
@@ -658,7 +657,7 @@ public class CDBChecker {
 	 SP.setFeature("http://apache.org/xml/features/validation/schema",false);
 	 SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
 	 SP.setFeature("http://xml.org/sax/features/namespaces",true);
-	 SP.parse(config_path+"/config/reqSchemas.xml");
+	 SP.parse(config_path+File.separator+"config"+File.separator+"reqSchemas.xml");
       }catch(SAXException e){e.getMessage();}
       catch (IOException e){
 	 System.out.println("[IOException] Probably the configuration file doesn't exist.");return false;
@@ -671,11 +670,11 @@ public class CDBChecker {
 	    System.out.println("[Error] No permission to create temporary directory " + tmpDir.getAbsolutePath());
 	    return false;
 	 } 
-	 schemaFolder=tmpDir.getAbsolutePath()+"/";
+	 schemaFolder=tmpDir.getAbsolutePath()+File.separator;
 	 downloadSchemas(reqSchemas);
       }
       else{
-	 schemaFolder=config_path+"/config/CDB/schemas/";
+	 schemaFolder=config_path+File.separator+"config"+File.separator+"CDB"+File.separator+"schemas"+File.separator;
 	 if(!(new File(schemaFolder)).exists()){
 	    System.out.println("[Error] The required schema files are missing, please run the tool with the '-n' option.");
 	    return false;
@@ -688,7 +687,7 @@ public class CDBChecker {
 	protected void deleteTmp(){
 		String list[] = tmpDir.list();
 		for(int i=0;i<list.length;i++)
-			(new File(tmpDir.getAbsolutePath()+"/"+list[i])).delete();
+			(new File(tmpDir.getAbsolutePath()+File.separator+list[i])).delete();
 		tmpDir.delete();
 	}
 	
@@ -720,7 +719,7 @@ public class CDBChecker {
        
        if(cdbchecker.checkArgs(args)) {
        		//add panta@naoj 2009/10/05
-       		String pathsMulti[]=cdbchecker.XMLPath.split(":");
+       		String pathsMulti[]=cdbchecker.XMLPath.split(File.pathSeparator);
        	
        		for(int i = 0; i < pathsMulti.length; i++){
 				File file_ = new File(pathsMulti[i]);
@@ -765,7 +764,7 @@ public class CDBChecker {
 				if (cdbchecker.checkidl)
 					cdbchecker.checkIdlTypes();
 
-				String paths[]=cdbchecker.XSDPath.split(""+File.pathSeparatorChar);
+				String paths[]=cdbchecker.XSDPath.split(File.pathSeparator);
 				Vector<String> XSDFilenames=new Vector<String>();
 				XSDFilenames=cdbchecker.getFilenames(paths,"xsd");
 			
@@ -773,7 +772,7 @@ public class CDBChecker {
 				// We assume that cdbchecker.XMLPath is at least
 				// initialised to the empty string and never null
 		
-				paths=cdbchecker.XMLPath.split(""+File.pathSeparatorChar);
+				paths=cdbchecker.XMLPath.split(File.pathSeparator);
 				Vector<String> XMLFilenames=new Vector<String>();
 				XMLFilenames=cdbchecker.getFilenames(paths,"xml");
 				
@@ -793,8 +792,8 @@ public class CDBChecker {
 				//checks if implLang matches, those written in XXComponents.xml and XXContainers.xml
 				
 				for(int i = 0; i < pathsMulti.length; i++){
-					cdbchecker.componentsFolder= pathsMulti[i] + "/MACI/Components";
-					cdbchecker.containersFolder= pathsMulti[i] + "/MACI/Containers";
+					cdbchecker.componentsFolder= pathsMulti[i] + File.separator+"MACI"+File.separator+"Components";
+					cdbchecker.containersFolder= pathsMulti[i] + File.separator+"MACI"+File.separator+"Containers";
 				
 					File compFolder = new File(cdbchecker.componentsFolder);
 					File contFolder = new File(cdbchecker.containersFolder);
@@ -954,7 +953,7 @@ public class CDBChecker {
 	    			}
 
 		 			//go get containers at the "Container" location
-		  			tempContainersFolder = containersFolder + "/" + elm.getAttribute("Container" );
+		  			tempContainersFolder = containersFolder + File.separator + elm.getAttribute("Container" );
 	    			
 		      		//open the container file and have a look
 		  			DocumentBuilderFactory dbfCont = DocumentBuilderFactory.newInstance();
@@ -967,7 +966,7 @@ public class CDBChecker {
 		  			Document docCont = null;
 		  			try {
 		  				//System.out.println("\ntempContainersFolder " + tempContainersFolder);
-		  				File contFile = new File(tempContainersFolder + "//" + new File(tempContainersFolder).getName()+ ".xml");
+		  				File contFile = new File(tempContainersFolder + File.separator + new File(tempContainersFolder).getName()+ ".xml");
 						//System.out.println("\ncontainerFile " + contFile);
 		  				if(contFile.exists()){
 		  					docCont = dbCont.parse(contFile);

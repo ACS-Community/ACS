@@ -167,9 +167,11 @@ public class EbeDocument extends ComplexObject {
         	OutputFormat outFormat = new OutputFormat(Method.XML,null,true);
         	outFormat.setEncoding("UTF-8");
         	outFormat.setVersion("1.0");
+         FileOutputStream out = new FileOutputStream(name);
         	XMLSerializer xmlSerializer=new XMLSerializer(
-        			new PrintWriter(new FileOutputStream(name)),outFormat);
+        			new PrintWriter(out), outFormat);
         	xmlSerializer.serialize(docu);
+         out.close();
         }
         
         /** Add a node (completion/error) to the document 

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.9 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.10 2012/01/25 12:46:34 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -76,10 +76,10 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 corbaRefTest_OBJECTS   = HelloWorldImpl
-corbaRefTest_LIBS     = HelloWorldStubs acscomponent
+corbaRefTest_LIBS     = HelloWorldStubs acscomponent archiveevents
 
 componentGetterImpl_OBJECTS = componentGetterImpl
-componentGetterImpl_LIBS    = componentGetterStubs acscomponent ACSErrTypeCORBA maciErrType
+componentGetterImpl_LIBS    = componentGetterStubs acscomponent ACSErrTypeCORBA maciErrType archiveevents
 
 #
 # Scripts (public and local)

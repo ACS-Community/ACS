@@ -43,7 +43,7 @@
 /** @file cdbTestCDBCompImpl.h
  */
 
-class cdb_EXPORT TestCDBComp: public baci::CharacteristicComponentImpl     //Standard component superclass
+class TestCDBComp: public baci::CharacteristicComponentImpl     //Standard component superclass
 {
   public:
     TestCDBComp(

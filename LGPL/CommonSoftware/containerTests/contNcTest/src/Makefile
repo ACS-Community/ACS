@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.2 2011/03/10 15:04:27 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/01/25 12:46:34 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -121,6 +121,8 @@ PANELS_L =
 IDL_FILES = contNcTest_IF
 IDL_TAO_FLAGS =
 USER_IDL =
+contNcTest_IFStubs_LIBS = acscomponentStubs ACSErrTypeCommonStubs
+
 #
 # Jarfiles: We must distinguish between component implementation classes and other classes.
 #
