@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.34 2012/01/17 11:25:03 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.35 2012/01/26 10:25:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.34 2012/01/17 11:25:03 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.35 2012/01/26 10:25:47 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -40,6 +40,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     const SenderFlowConfiguration &sndCfg/*, cb*/) :
     BulkDataNTFlow(flowName),
     senderStream_m(senderStream),
+    senderFlowCfg_m(sndCfg),
     ddsPublisher_m(0), ddsTopic_m(0), writerReaderListener_m(0), ddsDataWriter_m(0), frame_m(0)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
@@ -68,7 +69,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
       throw ex;
     }//if
 
-  setACKsTimeout(sndCfg.getACKsTimeout());
+  setACKsTimeout(senderFlowCfg_m.getACKsTimeout());
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Sender Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
 }//BulkDataNTSenderFlow
 
@@ -230,7 +231,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		{
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			toEx.setSenderName(senderStream_m->getName().c_str()); toEx.setFlowName(flowName_m.c_str());
-			toEx.setTimeout(0.0); //TBD: put value from QoS
+			toEx.setTimeout(senderFlowCfg_m.getSendFrameTimeout());
 			toEx.setFrameCount(restFrameCount);
 			throw toEx;
 		}else

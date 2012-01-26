@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.15 2012/01/11 11:53:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.16 2012/01/26 10:25:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -105,14 +105,15 @@ public:
 protected:
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m; /// pointer to the sender
 
+	SenderFlowConfiguration senderFlowCfg_m; /// flow configuration
+
 	AcsBulkdata::BulkDataNTDDSPublisher *ddsPublisher_m;  /// DDS publisher
 	DDS::Topic *ddsTopic_m;  /// DDS topic where data will be write
 	BulkDataNTWriterListener *writerReaderListener_m;  /// DDS listener for status etc.
 	ACSBulkData::BulkDataNTFrameDataWriter *ddsDataWriter_m;  /// DDS writer
 
 	DDS::Duration_t ackTimeout_m;  /// ACKs timeout
-	void setACKsTimeout(double ACKsTimeout);  /// setter fro ackTimeout
-
+	void setACKsTimeout(double ACKsTimeout);  /// setter for ackTimeout
 
 	// should it go to upper class Publisher ?
 	/**
