@@ -40,7 +40,6 @@ import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
 import alma.ACS.CharacteristicModelOperations;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.jbaci.PropertySetImpl;
-import alma.ACS.jbaci.UtilsWildcards;
 import alma.acs.container.ContainerServices;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
