@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.15 2012/01/20 09:00:26 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.16 2012/01/26 14:48:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,6 +31,7 @@ using namespace std;
 using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
+const char* AcsBulkdata::dataType2String[]={"BD_PARAM", "BD_DATA", "BD_STOP" };
 
 BulkDataNTDDS::BulkDataNTDDS(DDS::DomainParticipant* participant, const DDSConfiguration &ddsCfg) :
 	participant_m(participant),

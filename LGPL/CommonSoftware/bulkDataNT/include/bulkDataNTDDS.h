@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.12 2012/01/26 13:58:06 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.13 2012/01/26 14:48:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,6 +53,8 @@
 
 namespace AcsBulkdata
 {
+
+extern const char* dataType2String[];
 
 /**
  * class responsible for all DDS related details
