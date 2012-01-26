@@ -18,24 +18,16 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.11 2012/01/26 13:57:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.12 2012/01/26 13:58:06 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-/************************************************************************
- *
- *----------------------------------------------------------------------
- */
-
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
-
-//COREDX
-//#include "bulkDataNTTypeSupport.hh"
 
 //RTI
 #ifndef RTI_UNIX
@@ -65,7 +57,6 @@ namespace AcsBulkdata
 /**
  * class responsible for all DDS related details
  */
-//TBD should be renamed to Stream ?
 class BulkDataNTDDS
 {
 public:
