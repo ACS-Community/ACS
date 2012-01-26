@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.45 2012/01/26 13:47:15 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.46 2012/01/26 15:43:45 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -28,6 +28,7 @@
 #include "ACS_BD_Errors.h"
 #include <ACS_DDS_Errors.h>
 #include <ACSErrTypeCommon.h>
+#include <RepeatGuard.h>
 #include <iostream>
 #include <iterator>
 
@@ -333,9 +334,16 @@ void BulkDataNTReaderListener::on_subscription_matched(DDS::DataReader*, const D
 
 void BulkDataNTReaderListener::on_sample_rejected( DDS::DataReader*, const DDS::SampleRejectedStatus& srs)
 {
-  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-      (LM_WARNING, "Sample Rejected: reason %d, change: %d, total: %d!",
-          srs.last_reason, srs.total_count_change, srs.total_count));
+	RepeatGuard rg(5000000/*=0.5s*/,0);
+	if ( DDSConfiguration::debugLevel > 0 || rg.checkAndIncrement() )
+	{
+		if (DDSConfiguration::debugLevel<=0)
+			LoggingProxy::AddData("repeatCount", "%d", rg.count() );
+
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+				(LM_WARNING, "Sample Rejected, but MOT lost (need to be resent): reason %d, change: %d, total: %d!",
+						srs.last_reason, srs.total_count_change, srs.total_count));
+	}
 }//on_sample_rejected
 
 void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::SampleLostStatus& s)
