@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.19 2011/12/22 15:59:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.20 2012/01/26 13:47:15 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,8 +62,13 @@ public:
   virtual void on_sample_lost(DDS::DataReader* reader, const DDS::SampleLostStatus& status);
   
 private:
-  typedef enum {StartState, DataRcvState, StopState} ReaderListenerStates;
+  /** ReaderListener's state:
+   * IgnoreDataState - we go in this state when we get WrongDataError for Data
+   * ... and we stay there until next start/stop. In this way we prevent overfloating with error msg.
+   */
+  typedef enum {StartState, DataRcvState, StopState, IgnoreDataState } ReaderListenerStates;
   ReaderListenerStates currentState_m; /// current state of ReaderListener
+  static const char* state2String[]; /// strings name of states
 
   std::string topicName_m;  /// name of DDS topic
 

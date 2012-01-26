@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.44 2012/01/17 13:09:16 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.45 2012/01/26 13:47:15 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -58,6 +58,7 @@ using namespace std;
         callback_mp->onError(ucb);													\
     }
 
+const char *BulkDataNTReaderListener::state2String[] = {"StartState", "DataRcvState", "StopState", "IgnoreDataState" };
 
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTCallback* cb)
 : BulkDataNTDDSLoggable("BulkDataNT:"+string(name)),
@@ -115,7 +116,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
               case ACSBulkData::BD_PARAM:
                 {
                   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "startSend has been received on: %s with paramter size: %d", topicName_m.c_str(), message.data.length()));
-                  if (currentState_m==StartState || currentState_m==StopState)
+                  if (currentState_m==StartState || currentState_m==StopState || currentState_m==IgnoreDataState)
                     {
                       dataLength_m = 0;
                       frameCounter_m = 0;
@@ -127,7 +128,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   else //error
                     {
                       WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
-                      wfo.setDataType("BD_PARAM"); wfo.setState(currentState_m);
+                      wfo.setDataType("BD_PARAM"); wfo.setState(state2String[currentState_m]);
                       wfo.setStreamFlowName(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
                       wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
                       callback_mp->onError(wfo);
@@ -137,7 +138,8 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                 }//	case ACSBulkData::BD_PARAM:
               case ACSBulkData::BD_DATA:
                 {
-                  if (currentState_m==DataRcvState)
+                  if (currentState_m==IgnoreDataState) break; // in ignore data state just skip the freame
+                  if (currentState_m==DataRcvState )
                     {
                       if (dataLength_m==0) // we get the first data frame
                         {
@@ -187,9 +189,9 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Lost samples at the end of sendData on: %s: total_count: %d total_count_change: %d ",
                     				  topicName_m.c_str(), s.total_count, s.total_count_change
                     				  ))
-                    	  }
+                    	  }//if (DDSConfiguration::debugLevel>0)
                           dataLength_m = 0;
-                        }
+                        }//else
 
                       cbReceiveStartTime_m = ACE_OS::gettimeofday();
                       message.data.to_array(tmpArray, message.data.length());
@@ -210,17 +212,19 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   else //error
                     {
                       WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
-                      wfo.setDataType("BD_DATA"); wfo.setState(currentState_m);
+                      wfo.setDataType("BD_DATA"); wfo.setState(state2String[currentState_m]);
                       wfo.setStreamFlowName(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
                       wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
+                      wfo.addData("Note", "all BD_DATA frames will be ignored until next BD_START/BD_STOP");
                       callback_mp->onError(wfo);
-                      increasConseqErrorCount();
+                      currentState_m = IgnoreDataState; //we go to IgnoreData state, so all data until next start/stop will be ignored
+                      //increasConseqErrorCount();
                     }
                   break;
                 }//case ACSBulkData::BD_DATA
               case ACSBulkData::BD_STOP:
                 {
-                  if (currentState_m==DataRcvState)
+                  if (currentState_m==DataRcvState )
                     {
                       currentState_m = StopState;
                       ACS_SHORT_LOG((LM_DEBUG, "sendStop has been received for: %s", topicName_m.c_str()));
@@ -251,7 +255,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                                 (LM_WARNING, "On %s stop (BD_STOP) arrived in stop state - will be ignored!",
                                     topicName_m.c_str()));
                           }
-                        else //StartState
+                        else //StartState || IgnoreDataState
                           {
                             ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
                                 (LM_WARNING, "On %s stop (BD_STOP) arrived in start state: no parameter data (startSend) has arrived!",
