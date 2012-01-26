@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.35 2012/01/26 10:25:47 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.36 2012/01/26 11:11:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.35 2012/01/26 10:25:47 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.36 2012/01/26 11:11:54 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -177,7 +177,7 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration);
 			}else
 			{
-				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration);
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration/*, (iteration%100==0)*/);
 			}
 		}//for
 		// at this point we have sent all frames, we could wait for ACKs, but it is done in writeFrame
@@ -203,7 +203,7 @@ void BulkDataNTSenderFlow::stopSend()
 	}
 }//stopSend
 
-void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len, unsigned int restFrameCount)
+void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len, unsigned int restFrameCount, bool waitForACKs)
 {
 	DDS::ReturnCode_t ret;
 	DDS::ReliableWriterCacheChangedStatus status; //RTI
@@ -260,8 +260,9 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 	}//if (ret != DDS::RETCODE_OK)
 
-	//TBD: is it enough to wait for ACSks at the very end, or should be checked also in between (depending on queue size)
-	if (restFrameCount==0) //we wait for ACKs just if it was the only frame, or the last frame
+
+	//we wait for ACKs if it is explecitly asked or if it was the last frame (only frame)
+	if (waitForACKs || restFrameCount==0)
 	{
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		if (DDSConfiguration::debugLevel>0)
@@ -277,7 +278,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
 			throw ackToEx; //	ackToEx.log(LM_WARNING);
 		}//if
-	}//if (restFrameCount==0)
+	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
 
 /*___oOo___*/

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.16 2012/01/26 10:25:48 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.17 2012/01/26 11:11:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -123,9 +123,10 @@ protected:
 	 * @param param   - data
 	 * @param len length of data
 	 * @param restFrameCount how many frames do we have still sent
+	 * @param waitForACKs  shall be wait for the ACKs (we force to wait for ACKs)
 	 * @exception #SendFrameTimeoutExImpl, #SendFrameGenericErrorExImpl, #FrameAckTimeoutExImpl
 	 */
-	void writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0, unsigned int restFrameCount=0);
+	void writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0, unsigned int restFrameCount=0, bool waitForACKs=false);
 
 	/// frame
 	ACSBulkData::BulkDataNTFrame *frame_m;
