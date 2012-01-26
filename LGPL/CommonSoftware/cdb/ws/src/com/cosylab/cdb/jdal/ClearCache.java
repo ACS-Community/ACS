@@ -77,16 +77,15 @@ public class ClearCache {
 			
 			if( curl != null ) {
 				dal.clear_cache( curl );
-				m_logger.log(AcsLogLevel.INFO, "clear_cache is invoked for " + curl );
+				m_logger.log(AcsLogLevel.INFO, "Cleared CDB cache for curl=" + curl );
 			} 
 			else {
 				dal.clear_cache_all();
-				m_logger.log(AcsLogLevel.INFO, "clear_cache is invoked for all curls"  );
+				m_logger.log(AcsLogLevel.INFO, "Cleared CDB cache for all curls.");
 			}
 		}
 		catch (Exception e) {
-			m_logger.log(AcsLogLevel.NOTICE, ""+ e);
-			e.printStackTrace(System.out);
+			m_logger.log(AcsLogLevel.NOTICE, "Failed to clear the CDB cache:", e);
 		}
 	}
 }
