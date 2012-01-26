@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDALClearCache,v 1.12 2009/02/09 12:06:00 hsommer Exp $"
+# "@(#) $Id: cdbjDALClearCache,v 1.13 2012/01/26 15:23:49 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -115,13 +115,27 @@ if [ "$CL_HELP" ] ; then
    exit $EC_OK
 fi
 
+
 ############################################################
+
+# Set logger levels to INFO unless the env vars are set already.
+if [ "X$ACS_LOG_STDOUT" = "X" ]; then
+    export ACS_LOG_STDOUT=4
+fi
+if [ "X$ACS_LOG_CENTRAL" = "X" ]; then
+    export ACS_LOG_CENTRAL=4
+fi
+
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "cdbjDALClearCache.gclog". 
+export JVM_GC_LOG_NAME=cdbjDALClearCache
+
+
 HOST=`getIP`
 ACS_CDB_PORT=`getCDBPort`
 
 if [ "X$CL_DAL_REFERENCE" = "X" ] 
 then
-  #if not set then use the MANAGER_REFERENCE to contruct it
+  #if not set then use the MANAGER_REFERENCE to construct it
   #if this one is not set neither, then create it using HOST
     if [ "X$MANAGER_REFERENCE" != "X" ]
     then
