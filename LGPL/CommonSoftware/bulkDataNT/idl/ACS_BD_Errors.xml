@@ -51,7 +51,7 @@
     </ErrorCode>
     <ErrorCode name="WrongFrameOrder" shortDescription="Wrong frame order" description="Parmeter or data frame arrived at wrong point">
         <Member name="DataType" type="string" description="Data Type" />
-        <Member name="State" type="long" description="State: StartState, DataRcvState, StopState" />
+        <Member name="State" type="string" description="State: StartState, DataRcvState, StopState" />
         <Member name="FrameLength" type="long" description="Length of the frame"/>
         <Member name="FrameCount" type="long" description="Actual frame count" />
         <Member name="TotalFrameCount" type="long" description="Number of all frames" />
