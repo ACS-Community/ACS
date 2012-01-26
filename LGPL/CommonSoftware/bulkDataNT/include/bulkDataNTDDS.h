@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.10 2012/01/20 08:48:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.11 2012/01/26 13:57:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,47 +65,37 @@ namespace AcsBulkdata
 /**
  * class responsible for all DDS related details
  */
-//TBD should be renamed to Stream
+//TBD should be renamed to Stream ?
 class BulkDataNTDDS
 {
 public:
 
 	/**
 	 * Constructor
+	 * @param participant participant
+	 * @param ddsCfg generic DDS configuration
 	 */
-	BulkDataNTDDS(DDS::DomainParticipant*, const DDSConfiguration &ddsCfg);
+	BulkDataNTDDS(DDS::DomainParticipant* participant, const DDSConfiguration &ddsCfg);
 
 	/**
 	 * Destructor
 	 */
 	virtual ~BulkDataNTDDS();
 
-
-	DDS::Topic* createDDSTopic(const char* topicName); // should return topic
+	/**
+	 * It creates topic with name topicName using participant given in CTOR
+	 * @param topicName
+	 * @return
+	 */
+	DDS::Topic* createDDSTopic(const char* topicName);
 
 protected:
-/*
-	void createDDSFactory();
-	void createDDSParticipant();
 
-*/
-//	DDS::Publisher* createDDSPublisher(); // should return publisher ?
-	//should return generic writer and have another method in Base class that narrows
-//	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Publisher* pub, DDS::Topic *topic);
+	DDS::DomainParticipant* participant_m; /// pointer to participant
 
-
-//	DDS::DomainParticipantFactory *factory;
-	DDS::DomainParticipant* participant_m;
-
-	const DDSConfiguration ddsCfg_m;
+	const DDSConfiguration ddsCfg_m;  /// configuration
 
 	std::string topicName_m; /// name of topic (it is set when createDDSTopic
-
-//	DDS::Publisher* pub;
-//	DDS::Topic* topic; // should be  an array just temporary
-	// + we need array of data writers
-	// so for each flow there is at least a topic + writer + publisher(?)
-//	ACSBulkData::BulkDataNTFrameDataWriter *dw;
 
 	/// disable default - empty constructor
 	BulkDataNTDDS();
