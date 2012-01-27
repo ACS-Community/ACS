@@ -64,8 +64,9 @@ public class TestBlobberWorker extends BlobberWorker {
      * with the side effect that the next ComponentData can then be stored.
      * This mechanism puts the test in the position of the backing database that
      * can see what property data came in.
+     * @throws InterruptedException 
      */
-    protected ComponentData fetchData() {
+    protected ComponentData fetchData() throws InterruptedException {
         myLogger.fine("Fetching blobber data.");
         return this.myBlobDataLock.take();
     }

@@ -30,7 +30,7 @@ public class TestBlobber extends BlobberImpl {
 	private boolean useDatabase;
 	
 	/**
-	 * Allows a unit test to read all property data via (@link TestBlobberWorker##fetchData()} 
+	 * Allows a unit test to read all property data via (@link TestBlobberWorker#fetchData()} 
 	 * before the next property data can be inserted in {@link TestMonitorDAO#store(ComponentData)}.
 	 */
 	private DataLock<ComponentData> myBlobDataLock;
@@ -113,7 +113,6 @@ public class TestBlobber extends BlobberImpl {
 	/**
 	 * @TODO Check if tests really benefit from setting collector intervals. If not, remove this method.
 	 * @param collectorIntervalSeconds	new interval in seconds, must be greater than zero.
-	 * @return true if call succeeded, false if timeout occurred.
 	 * @see ThreadLoopRunner#setDelayTime(long, TimeUnit)
 	 */
 	protected void setCollectorIntervalSeconds(long collectorIntervalSeconds) {
@@ -122,9 +121,7 @@ public class TestBlobber extends BlobberImpl {
 		}
 		long oldCollectorIntervalSeconds = blobberLoopRunner.getDelayTimeMillis() / 1000;
 		myWorker.notifyCollectorIntervalChange(collectorIntervalSeconds);
-		
 		blobberLoopRunner.setDelayTime(collectorIntervalSeconds, TimeUnit.SECONDS);
-		
 		this.m_logger.fine("Changed collector interval from " + oldCollectorIntervalSeconds + " s to " + collectorIntervalSeconds + " s.");
 	}
 	

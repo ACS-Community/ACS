@@ -30,7 +30,7 @@ public class TestBlobber extends BlobberImpl {
 	private boolean useDatabase;
 	
 	/**
-	 * Allows a unit test to read all property data via (@link TestBlobberWorker##fetchData()} 
+	 * Allows a unit test to read all property data via (@link TestBlobberWorker#fetchData()} 
 	 * before the next property data can be inserted in {@link TestMonitorDAO#store(ComponentData)}.
 	 */
 	private DataLock<ComponentData> myBlobDataLock;
@@ -88,10 +88,13 @@ public class TestBlobber extends BlobberImpl {
 		MonitorDAO monitorDAO = null;
 		if (useDatabase) {
 			try {
-				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
-						.asSubclass(MonitorDAO.class);
-				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
-				monitorDAO = ctor.newInstance(containerServices);
+				// TODO If "useDatabase==true" is ever needed, then use alma.acs.monitoring.blobber.BlobberPluginAlmaImpl#getMonitorDAOs().
+				// For now we just throw an exception to document that the code is broken.
+				throw new RuntimeException("Currently not supported.");
+//				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
+//						.asSubclass(MonitorDAO.class);
+//				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
+//				monitorDAO = ctor.newInstance(containerServices);
 			} catch (Exception ex) {
 				// @TODO refactor to throw a checked exception
 				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
