@@ -54,22 +54,22 @@
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 6
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 -     data[1] : isErr = true
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 - Error Trace Level : 6
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -     data[0] : depth = 5
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 4
@@ -85,36 +85,36 @@
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 -     data[0] : depth = 1
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
-2 -     data[0] : depth = 0
-2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
-2 - Error Trace Level : 0
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=2 description:Test error 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 -     data[0] : End of call's chain = 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
+2 -     data[0] : depth = 0
+2 -     data[1] : isErr = true
+2 - Error Trace Level : 0
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 -   Severity=0 type=900901 code=2 description:Test error 1
+2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
@@ -266,22 +266,22 @@
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 -     data[0] : depth = 6
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 6
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
+2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
+2 -     data[0] : depth = 6
+2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
+2 - Error Trace Level : 6
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 5
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 4
@@ -294,42 +294,42 @@
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[0] : depth = 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[0] : depth = 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
-2 -   Severity=0 type=900901 code=2 description:Test error 1
-2 -     data[0] : End of call's chain = 
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
+2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
@@ -475,22 +475,22 @@
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 7
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -     data[0] : depth = 6
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 6
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 5
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
@@ -506,41 +506,41 @@
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -     data[0] : depth = 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -     data[0] : depth = 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 -     data[0] : depth = 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 -   Severity=0 type=900901 code=2 description:Test error 1
-2 -     data[0] : End of call's chain = 
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
+2 -   Severity=0 type=900901 code=2 description:Test error 1
+2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
@@ -688,24 +688,24 @@
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 7
 2 -     data[1] : isErr = true
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 - Error Trace Level : 7
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 -     data[0] : depth = 6
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 6
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 -     data[0] : depth = 6
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
+2 -     data[1] : isErr = true
+2 - Error Trace Level : 6
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 5
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 4
@@ -718,41 +718,41 @@
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -     data[0] : depth = 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[0] : depth = 0
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
-2 -   Severity=0 type=900901 code=2 description:Test error 1
-2 -     data[0] : End of call's chain = 
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
+2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
@@ -903,19 +903,19 @@
 2 - Error Trace Level : 7
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -     data[0] : depth = 6
 2 -     data[1] : isErr = true
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 - Error Trace Level : 6
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -     data[0] : depth = 5
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
@@ -930,39 +930,39 @@
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 -     data[0] : depth = 2
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 2
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 -     data[0] : depth = 1
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 1
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 -     data[0] : depth = 0
+2 -     data[0] : depth = 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - Error Trace Level : 2
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 -     data[0] : depth = 1
+2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - Error Trace Level : 1
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
+2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 -     data[0] : depth = 0
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
+2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 -     data[0] : End of call's chain = 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
@@ -1113,23 +1113,23 @@
 2 -     data[0] : depth = 7
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 -     data[0] : depth = 6
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 6
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 -     data[0] : depth = 6
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
+2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
+2 - Error Trace Level : 6
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 5
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 4
@@ -1145,34 +1145,34 @@
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -     data[0] : depth = 1
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 -     data[0] : depth = 0
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=2 description:Test error 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 -     data[0] : End of call's chain = 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
@@ -1323,17 +1323,17 @@
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 7
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 6
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - Error Trace Level : 6
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
@@ -1350,48 +1350,48 @@
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (4) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[0] : depth = 3
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -     data[0] : depth = 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 -     data[0] : depth = 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 -     data[1] : isErr = true
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - Error Trace Level : 1
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 -     data[0] : depth = 1
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 1
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
 2 -     data[0] : depth = 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 -   Severity=0 type=900901 code=2 description:Test error 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 -     data[0] : End of call's chain = 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "3"
@@ -1537,21 +1537,21 @@
 2 -     data[0] : depth = 7
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 6
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - Error Trace Level : 6
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 5
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
@@ -1563,47 +1563,47 @@
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 3
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[0] : depth = 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 -   Severity=0 type=900901 code=2 description:Test error 1
+2 -     data[0] : End of call's chain = 
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
-2 -     data[0] : End of call's chain = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "3"
@@ -1749,23 +1749,23 @@
 2 -     data[0] : depth = 7
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 7
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 -     data[0] : depth = 6
+2 -     data[1] : isErr = true
+2 - Error Trace Level : 6
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
-2 -     data[0] : depth = 6
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
-2 -     data[1] : isErr = true
-2 - Error Trace Level : 6
-2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 5
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 4
@@ -1776,44 +1776,44 @@
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 3
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -     data[0] : depth = 2
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 -     data[0] : depth = 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 -     data[1] : isErr = true
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
-2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
+2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
-2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
+2 -   Severity=0 type=900901 code=2 description:Test error 1
 2 -     data[0] : End of call's chain = 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
@@ -1960,22 +1960,22 @@
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 7
 2 -     data[1] : isErr = true
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 - Error Trace Level : 7
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (7) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest0Completion: 0
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 -     data[0] : depth = 6
 2 -     data[1] : isErr = true
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
 2 - Error Trace Level : 6
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (6) of file acserrTestImpl.cpp at line 138
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is equal to ACSErrTest0Completion: 1
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
+2 - ----------T--:--:--.--- [GlobalLogger - ] We got Completion that is NOT equal to ACSErrTest1Completion: 0
 2 -     data[0] : depth = 5
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] Stack depth: 11
 2 - Error Trace Level : 5
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (5) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
@@ -1987,45 +1987,45 @@
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
 2 -     data[0] : depth = 3
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 3
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (3) of file acserrTestImpl.cpp at line 138
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[0] : depth = 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 -     data[1] : isErr = true
 2 - Error Trace Level : 2
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (2) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
-2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
 2 -     data[0] : depth = 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 - Error Trace Level : 1
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (1) of file acserrTestImpl.cpp at line 138
-2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "73"
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
 2 -   Severity=0 type=900901 code=3 description:Test error 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::test"
 2 -     data[0] : depth = 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
 2 -     data[1] : isErr = true
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - Error Trace Level : 0
 2 -   ----------T--:--:--.--- in acserrTestImpl::f1 (0) of file acserrTestImpl.cpp at line 155
-2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 -   HostName:xxxxxxxxx process:acserrTestServer s1  Thread:xxxxxxxxx
-2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
 2 -   Severity=0 type=900901 code=2 description:Test error 1
-2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 -     data[0] : End of call's chain = 
+2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorType:  "900901"
+2 - ----------T--:--:--.--- [GlobalLogger - ] ErrorCode:  "1"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Severity:   "2"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Description: "Test error 0"
+2 - ----------T--:--:--.--- [GlobalLogger - ] FileName:   "acserrTestImpl.cpp"
+2 - ----------T--:--:--.--- [GlobalLogger - ] LineNumber: "138"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Routine:    "acserrTestImpl::f1 (9)"
+2 - ----------T--:--:--.--- [GlobalLogger - ] HostName:   xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] Process:    "acserrTestServer s1 "
 2 - ----------T--:--:--.--- [GlobalLogger - ] Thread:     xxxxxxxxx
 2 - ----------T--:--:--.--- [GlobalLogger - ] TimeStamp:  xxxxxxxxx
@@ -2139,18 +2139,18 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (2)] Test error 1 (type=900901, code=2) isErr="true" depth="2"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (3)] Test error 1 (type=900901, code=2) isErr="true" depth="3"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (1)] Test error 1 (type=900901, code=2) isErr="true" depth="1"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (2)] Test error 1 (type=900901, code=2) isErr="true" depth="2"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (3)] Test error 1 (type=900901, code=2) isErr="true" depth="3"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
@@ -2158,6 +2158,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (2/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2166,24 +2168,26 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (3)] Test error 1 (type=900901, code=2) isErr="true" depth="3"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (1)] Test error 1 (type=900901, code=2) isErr="true" depth="1"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (2)] Test error 1 (type=900901, code=2) isErr="true" depth="2"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (3)] Test error 1 (type=900901, code=2) isErr="true" depth="3"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
 1 - ----------T--:--:--.--- [GlobalLogger - ] Exception members are: 3 | 3, 3.330000, stringMember, 1
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (3/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2193,7 +2197,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (1)] Test error 1 (type=900901, code=2) isErr="true" depth="1"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (2)] Test error 1 (type=900901, code=2) isErr="true" depth="2"
@@ -2201,15 +2204,18 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
 1 - ----------T--:--:--.--- [GlobalLogger - ] Exception members are: 3 | 3, 3.330000, stringMember, 1
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (4/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2218,24 +2224,26 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (3)] Test error 1 (type=900901, code=2) isErr="true" depth="3"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (1)] Test error 1 (type=900901, code=2) isErr="true" depth="1"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (2)] Test error 1 (type=900901, code=2) isErr="true" depth="2"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (3)] Test error 1 (type=900901, code=2) isErr="true" depth="3"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
 1 - ----------T--:--:--.--- [GlobalLogger - ] Exception members are: 3 | 3, 3.330000, stringMember, 1
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (5/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2245,7 +2253,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (1)] Test error 1 (type=900901, code=2) isErr="true" depth="1"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (2)] Test error 1 (type=900901, code=2) isErr="true" depth="2"
@@ -2253,15 +2260,18 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (4)] Test error 1 (type=900901, code=2) isErr="true" depth="4"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (5)] Test error 1 (type=900901, code=2) isErr="true" depth="5"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (6)] Test error 1 (type=900901, code=2) isErr="true" depth="6"
-2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (7)] Test error 1 (type=900901, code=2) isErr="true" depth="7"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (8)] Test error 1 (type=900901, code=2) isErr="true" depth="8"
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (9)] Test error 1 (type=900901, code=2) isErr="true" depth="9"
 1 - ----------T--:--:--.--- [GlobalLogger - ] Exception members are: 3 | 3, 3.330000, stringMember, 1
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (6/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2288,6 +2298,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (7/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2314,6 +2326,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (8/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2340,6 +2354,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (9/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2366,6 +2382,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test2 (remote call - exceptions) ... (10/10)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f2 (0)] Test error 1 (type=900901, code=2)
@@ -2392,6 +2410,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testExceptions] Test error 0 (type=900901, code=1) Member4="1" Member2="3.33" Member3="stringMember" Member1="3"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Catch ACSErrTest0Ex !
 2 - ----------T--:--:--.--- [GlobalLogger - ] Members of the caught exception are: 3, 3.330000, stringMember, 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is equal to ACSErrTest0ExImpl: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Caught an exception that is NOT equal to ACSErrTest1ExImpl: 0
 2 - ----------T--:--:--.--- [GlobalLogger - testClient::main] Test error 0 (type=900901, code=1)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Test2 performed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Performing test3 (no error) ... (1/10)
@@ -2533,5 +2553,5 @@
 2 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testCompletionOut] Test error 0 (type=900901, code=1)
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::testCompletionOut] Exiting...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Test6 performed (completion out).
-1 - ----------T--:--:--.--- [GlobalLogger - acserr TestImpl Shutdown] 
 2 - All done!
+1 - ----------T--:--:--.--- [GlobalLogger - acserr TestImpl Shutdown] 
