@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderTest.cpp,v 1.13 2012/01/19 09:23:40 bjeram Exp $"
+* "@(#) $Id: bdNTSenderTest.cpp,v 1.14 2012/01/27 07:59:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,10 +57,13 @@ int main(int argc, char *argv[])
     }//while
 
     try{
+    	SenderFlowConfiguration sndFlowCfg;
+   		sndFlowCfg.setACKsTimeout(5.0);
+
     	BulkDataNTSenderStream senderStream1("DefaultStream");
 
-    	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
-    	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01");
+    	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00", sndFlowCfg);
+    	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01", sndFlowCfg);
 
     	sleep(1); //here we should wait for at least one receiver
     	//std::cout << "press a key to start.." << std::endl;
@@ -71,8 +74,8 @@ int main(int argc, char *argv[])
     	flow0->startSend(parm, 3);
 
     	// for test purpose we do not invoke startSend
-    	//	strcpy(parm, "abc");
-    	//	flow1->startSend(parm, 3);
+  //  		strcpy(parm, "abc");
+  //		flow1->startSend(parm, 3);
 
     	//unsigned char data[]="Hello wrold !!!!";
     	unsigned char *data= new unsigned char[dataSize];
@@ -90,8 +93,22 @@ int main(int argc, char *argv[])
 
     	for (unsigned int i=0; i<dataSize; i++)
     		data[i]=i%10;
+
+    	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
+    	start_time = ACE_OS::gettimeofday();
     	flow0->sendData(data, dataSize);
+    	elapsed_time = ACE_OS::gettimeofday() - start_time;
+    	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
+
+
+    	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
+    	start_time = ACE_OS::gettimeofday();
     	flow1->sendData(data, dataSize);
+    	elapsed_time = ACE_OS::gettimeofday() - start_time;
+    	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
+
 
     	sleep(2);
 
