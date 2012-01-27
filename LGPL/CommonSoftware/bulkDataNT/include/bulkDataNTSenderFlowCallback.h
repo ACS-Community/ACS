@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.3 2012/01/12 14:49:14 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.4 2012/01/27 14:52:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,6 +38,11 @@ class BulkDataNTSenderFlowCallback
 public:
 	virtual ~BulkDataNTSenderFlowCallback(){};
 
+	void setFlowName (const char* name) { flowName_m =name; }
+	const char* getFlowName () { return flowName_m.c_str(); }
+
+	void setStreamName (const char* name) { streamName_m =name; }
+	const char* getStreamName () { return streamName_m.c_str(); }
 
 	/**
 	 * The method is called when an asychronous error happen on sender flow.
@@ -58,6 +63,10 @@ public:
 	 * @param totalRcvs total number of receivers remain after the disconnect
 	 */
 	virtual void onReceiverDisconnect(unsigned short discRcvs, unsigned short totalRcvs);
+
+protected:
+	std::string flowName_m;
+	std::string streamName_m;
 
 };//class BulkDataNTSenderFlowCallback
 
