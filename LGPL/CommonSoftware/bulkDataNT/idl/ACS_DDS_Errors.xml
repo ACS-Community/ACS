@@ -120,5 +120,8 @@
     
     <ErrorCode name="DDSLivelinesLost" shortDescription="Livelines lost." description="Livelines lost.">
     </ErrorCode>
+    
+    <ErrorCode name="DDSDestinationUnreachable" shortDescription="Destination Unreachable." description="Destination Unreachable.">
+    </ErrorCode>
  
 </Type>
