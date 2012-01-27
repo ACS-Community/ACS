@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlowCallback.cpp,v 1.2 2012/01/12 14:49:14 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlowCallback.cpp,v 1.3 2012/01/27 15:14:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,13 +30,13 @@ void AcsBulkdata::BulkDataNTSenderFlowCallback::onError(ACSErr::CompletionImpl &
 	error.log();
 }
 
-void AcsBulkdata::BulkDataNTSenderFlowCallback::onReceiverConnect(unsigned short  newRcvs, unsigned short  totalRcvs)
+void AcsBulkdata::BulkDataNTSenderFlowCallback::onReceiverConnect(unsigned short  totalRcvs)
 {
 }
 
 
 
-void AcsBulkdata::BulkDataNTSenderFlowCallback::onReceiverDisconnect(unsigned short  discRcvs, unsigned short  totalRcvs)
+void AcsBulkdata::BulkDataNTSenderFlowCallback::onReceiverDisconnect(unsigned short  totalRcvs)
 {
 }
 

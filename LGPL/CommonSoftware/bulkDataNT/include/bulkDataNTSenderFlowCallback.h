@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.4 2012/01/27 14:52:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.5 2012/01/27 15:14:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,17 +52,15 @@ public:
 
 	/**
 	 * This method is called when new receiver connects
-	 * @param newRcvs number of newly connected receivers
 	 * @param totalRcvs number of all connected receivers so far
 	 */
-	virtual void onReceiverConnect(unsigned short newRcvs, unsigned short totalRcvs);
+	virtual void onReceiverConnect(unsigned short totalRcvs);
 
 	/**
 	 * This method is called when a receiver disconnects
-	 * @param discRecvs number of disconnected receivers
 	 * @param totalRcvs total number of receivers remain after the disconnect
 	 */
-	virtual void onReceiverDisconnect(unsigned short discRcvs, unsigned short totalRcvs);
+	virtual void onReceiverDisconnect(unsigned short totalRcvs);
 
 protected:
 	std::string flowName_m;
