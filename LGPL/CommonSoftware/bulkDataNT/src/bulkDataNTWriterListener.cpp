@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.5 2012/01/27 14:40:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.6 2012/01/27 15:15:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,12 +24,14 @@
 */
 
 #include "bulkDataNTWriterListener.h"
-
+#include "ACS_BD_Errors.h"
 #include <ACS_DDS_Errors.h>
 #include <iostream>
 
 using namespace std;
 using namespace AcsBulkdata;
+using namespace ACS_BD_Errors;
+using namespace ACS_DDS_Errors;
 
 BulkDataNTWriterListener::BulkDataNTWriterListener(const char *name, BulkDataNTSenderFlowCallback* cb)
 		: BulkDataNTDDSLoggable("BulkDataNT:"+string(name)),
@@ -51,14 +53,18 @@ void BulkDataNTWriterListener::on_offered_deadline_missed (
 		::DDS::DataWriter* writer,
 		const ::DDS::OfferedDeadlineMissedStatus & status)
 {
-	cerr << topicName_m << " BulkDataNTWriterListener::on_offered_deadline_missed" << endl;
+	DDSOffeeredDeadlineMissedCompletion iqerr(__FILE__, __LINE__, __FUNCTION__);
+	initalizeLogging(); //force initialization of logging sys TBD changed
+	callback_mp->onError(iqerr);
 }
 
 void BulkDataNTWriterListener::on_offered_incompatible_qos (
 		::DDS::DataWriter* writer,
 		const ::DDS::OfferedIncompatibleQosStatus & status)
 {
-	cerr << topicName_m << " BulkDataNTWriterListener::on_offered_incompatible_qos" << endl;
+	DDSOfferedIncompatibleQoSCompletion iqerr(__FILE__, __LINE__, __FUNCTION__);
+	initalizeLogging(); //force initialization of logging sys TBD changed
+	callback_mp->onError(iqerr);
 }
 
 
@@ -66,7 +72,9 @@ void BulkDataNTWriterListener::on_liveliness_lost (
 		::DDS::DataWriter* writer,
 		const ::DDS::LivelinessLostStatus & status)
 {
-	cerr << topicName_m << " BulkDataNTWriterListener::on_liveliness_lost" << endl;
+	DDSLivelinesLostCompletion llcomp(__FILE__, __LINE__, __FUNCTION__);
+	initalizeLogging(); //force initialization of logging sys TBD changed
+	callback_mp->onError(llcomp);
 }
 
 
@@ -92,18 +100,39 @@ void BulkDataNTWriterListener::on_reliable_writer_cache_changed(DDSDataWriter* w
 void BulkDataNTWriterListener::on_reliable_reader_activity_changed(DDSDataWriter* writer,
 		const DDS::ReliableReaderActivityChangedStatus& status)
 {
-	cerr <<  topicName_m << " ==========> BulkDataNTWriterListener::on_reliable_reader_activity_changed:" << endl;
-	cerr <<  topicName_m << "   ==========>	status.active_count:" << status.active_count << endl;
-	cerr <<  topicName_m << "   ==========>	status.active_count_change:" << status.active_count_change << endl;
-	cerr <<  topicName_m << "   ==========>	status.inactive_count:" << status.inactive_count << endl;
-	cerr <<  topicName_m << "   ==========>	status.inactive_count_change:" << status.inactive_count_change << endl;
+	if (status.active_count_change>0)
+	    {
+	      for(int i=0; i<status.active_count_change; i++)
+	        {
+	          ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+	              (LM_INFO, "A new receiver has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
+	                  callback_mp->getFlowName(), callback_mp->getStreamName(),
+	                  status.active_count));
+	          //BDNT_READER_LISTENER_USER_ERR( callback_mp->onReceiverConnect() )
+	          callback_mp->onReceiverConnect(status.active_count);
+	        }//for
+	    }else
+	      {
+	        for(int i=status.active_count_change; i<0; i++)
+	          {
+	            ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+	                (LM_INFO, "A receiver has disconnected from flow: %s of the stream: %s. Total alive connection(s): %d",
+	                    callback_mp->getFlowName(), callback_mp->getStreamName(),
+	                    status.active_count));
+	            //BDNT_READER_LISTENER_USER_ERR( callback_mp->onReceiverDisconnect() )
+	            callback_mp->onReceiverDisconnect(status.active_count);
+	          }//for
+	      }//if-else
 }
 
 void BulkDataNTWriterListener::on_destination_unreachable(DDSDataWriter* writer,
 		const DDS_InstanceHandle_t& handle,
 		const DDS_Locator_t& destination)
 {
-	cerr <<  topicName_m << " BulkDataNTWriterListener::on_destination_unreachable" << endl;
+
+	DDSDestinationUnreachableCompletion  du(__FILE__, __LINE__, __FUNCTION__);
+	initalizeLogging(); //force initialization of logging sys TBD changed
+	callback_mp->onError(du);
 }
 
 /*___oOo___*/
