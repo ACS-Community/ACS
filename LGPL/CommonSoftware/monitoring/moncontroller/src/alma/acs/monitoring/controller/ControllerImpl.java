@@ -261,20 +261,21 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
         return outValue;
     }
 
-    /**
-     * Gets the blobber component reference for the given component name.
-     * @throws AcsJContainerServicesEx
-     */
-    protected BlobberOperations getBlobber(String inBlobberName)
-            throws AcsJContainerServicesEx {
-        // If not already referenced, get reference
-        if (!myBlobberRefMap.containsKey(inBlobberName)) {
-            BlobberOperations newBlobber = BlobberHelper.narrow(
-                m_containerServices.getComponent(inBlobberName));
-            myBlobberRefMap.put(inBlobberName, newBlobber);
-        }
-        return myBlobberRefMap.get(inBlobberName);
-    }
+	/**
+	 * Gets the blobber component reference for the given component name.
+	 * 
+	 * @throws AcsJContainerServicesEx
+	 */
+	protected BlobberOperations getBlobber(String inBlobberName) throws AcsJContainerServicesEx {
+		synchronized (myBlobberList) {
+			// If not already referenced, get reference
+			if (!myBlobberRefMap.containsKey(inBlobberName)) {
+				BlobberOperations newBlobber = BlobberHelper.narrow(m_containerServices.getComponent(inBlobberName));
+				myBlobberRefMap.put(inBlobberName, newBlobber);
+			}
+			return myBlobberRefMap.get(inBlobberName);
+		}
+	}
 
 	/**
 	 * Thread to re-register known collectors to a Blobber if restarted.
