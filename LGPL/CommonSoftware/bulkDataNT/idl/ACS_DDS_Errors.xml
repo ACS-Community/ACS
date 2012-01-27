@@ -117,4 +117,8 @@
         <Member name="ViewState" type="long" description="View state" />
         <Member name="InstanceState" type="long" description="Instance state" />
     </ErrorCode>
+    
+    <ErrorCode name="DDSLivelinesLost" shortDescription="Livelines lost." description="Livelines lost.">
+    </ErrorCode>
+ 
 </Type>
