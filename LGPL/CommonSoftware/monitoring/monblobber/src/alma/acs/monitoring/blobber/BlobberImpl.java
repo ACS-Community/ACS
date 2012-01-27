@@ -30,6 +30,7 @@ import alma.MonitorArchiver.BlobberOperations;
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.MonitorArchiver.ControllerHelper;
 import alma.MonitorArchiver.ControllerOperations;
+import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.concurrent.ThreadLoopRunner;
@@ -62,6 +63,8 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 
 	protected BlobberPlugin blobberPlugin;
 
+	protected AlarmSource alarmSource;
+	
 	
     //////////////////////////////////////
     ///////// ComponentLifecycle /////////
@@ -81,12 +84,14 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
 		super.initialize(inContainerServices);
 
-		// clear alarm that might have been left active from a previous run
 		try {
-			inContainerServices.clearAlarm("Monitoring", "MonitorArchiver", 2); // @TODO use component-specific alarm triplet
+			alarmSource = inContainerServices.getAlarmSource();
 		} catch (AcsJContainerServicesEx ex) {
-			throw new ComponentLifecycleException("Failed to clear alarm", ex);
+			throw new ComponentLifecycleException(ex);
 		}
+		
+		// clear alarm that might have been left active from a previous run
+		alarmSource.clearAlarm("Monitoring", "MonitorArchiver", 2); // @TODO use component-specific alarm triplet
 
 		try {
 			blobberPlugin = createBlobberPlugin();
@@ -98,12 +103,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 			this.myWorker = createWorker(blobberPlugin);
 			m_logger.finer("Instantiated blobber worker object.");
 		} catch (AcsJCouldntCreateObjectEx ex) {
-			try {
-				inContainerServices.raiseAlarm("Monitoring", "MonitorArchiver", 2);
-			} catch (AcsJContainerServicesEx ex1) {
-				m_logger.severe("Blobber initialization failed and alarm could not be raised.");
-				// fall through to ComponentLifecycleException
-			}
+			alarmSource.raiseAlarm("Monitoring", "MonitorArchiver", 2);
 			throw new ComponentLifecycleException(ex);
 		}	
 
