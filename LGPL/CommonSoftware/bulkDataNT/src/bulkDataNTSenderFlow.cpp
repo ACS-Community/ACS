@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.38 2012/01/27 14:40:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.39 2012/01/27 14:57:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.38 2012/01/27 14:40:37 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.39 2012/01/27 14:57:46 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -49,6 +49,9 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
   std::string streamName, topicName;
   streamName = senderStream_m->getName();
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to create Sender Flow: %s @ stream: %s ...", flowName_m.c_str(), streamName.c_str()));
+
+  callback_m->setStreamName(streamName.c_str());
+  callback_m->setFlowName(flowName);
 
   senderStream->addDDSQoSProfile(sndCfg);
 
