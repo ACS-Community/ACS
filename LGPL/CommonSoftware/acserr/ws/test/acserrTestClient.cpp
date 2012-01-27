@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestClient.cpp,v 1.54 2012/01/27 10:29:00 bjeram Exp $"
+* "@(#) $Id: acserrTestClient.cpp,v 1.55 2012/01/27 11:00:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.54 2012/01/27 10:29:00 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.55 2012/01/27 11:00:27 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestC.h"
@@ -108,8 +108,7 @@ int main(int argc, char *argv[])
       }
 
       ACS_SHORT_LOG((LM_INFO, "We got Completion that is equal to ACSErrTest0Completion: %d", ACSErrTest0Completion::isEqual(tc)));
-      ACS_SHORT_LOG((LM_INFO, "We got Completion that is NOT equal to ACSErrTest0Completion: %d", ACSErrTest1Completion::isEqual(tc)));
-
+      ACS_SHORT_LOG((LM_INFO, "We got Completion that is NOT equal to ACSErrTest1Completion: %d", ACSErrTest1Completion::isEqual(tc)));
 
       errorTrace = comp.getErrorTraceHelper();
       ACS_SHORT_LOG((LM_INFO, "Stack depth: %d", errorTrace->getDepth()));
@@ -182,7 +181,10 @@ int main(int argc, char *argv[])
             	       exorg.getMember1(),
 		       exorg.getMember2(),
 		       buf.c_str(), exorg.getMember4()));
-	
+
+      ACS_SHORT_LOG((LM_INFO, "Caught an exception that is equal to ACSErrTest0ExImpl: %d", ACSErrTest0ExImpl::isEqual(exorg)));
+      ACS_SHORT_LOG((LM_INFO, "Caught an exception that is NOT equal to ACSErrTest1ExImpl: %d", ACSErrTest1ExImpl::isEqual(exorg)));
+
       ACSErrTest0ExImpl *ex = new ACSErrTest0ExImpl(_ex, __FILE__, __LINE__, "testClient::main");
       ex->log();
 //	ACSErrTest0Completion c(_ex.errorTrace,  __FILE__, __LINE__, "testClient::main-convertion");
