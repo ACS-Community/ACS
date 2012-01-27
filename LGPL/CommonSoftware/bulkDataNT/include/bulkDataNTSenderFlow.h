@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.17 2012/01/26 11:11:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.18 2012/01/27 14:40:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #include "bulkDataNTFlow.h"
 #include "bulkDataNTDDSPublisher.h"
 #include "bulkDataNTSenderStream.h"
+#include "bulkDataNTSenderFlowCallback.h"
 #include "bulkDataNTWriterListener.h"
 
 
@@ -48,12 +49,15 @@ public:
 	 * Sender Flow constructor.
 	 * @param senderStream  sender stream where the flow will be created
 	 * @param flowName the name of flow that should be created
-	 * @param sndCfg sender flow onfiguration
+	 * @param sndCfg sender flow configuration
+	 * @param cb pointer to callback
+	 * @param releaseCB should CB be released when flow is destroyed
 	 */
 	BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 						const char* flowName,
-						const SenderFlowConfiguration &sndCfg
-						/*cb*/);
+						const SenderFlowConfiguration &sndCfg,
+						BulkDataNTSenderFlowCallback *cb,
+						bool releaseCB );
 
 	/**
 	 * Sender flow destructor
@@ -106,6 +110,9 @@ protected:
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m; /// pointer to the sender
 
 	SenderFlowConfiguration senderFlowCfg_m; /// flow configuration
+
+	BulkDataNTSenderFlowCallback *callback_m; /// callback
+	bool releaseCB_m; /// should the CB be destroyed when the flow is destroyed
 
 	AcsBulkdata::BulkDataNTDDSPublisher *ddsPublisher_m;  /// DDS publisher
 	DDS::Topic *ddsTopic_m;  /// DDS topic where data will be write

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.h,v 1.3 2011/10/14 17:30:28 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.h,v 1.4 2012/01/27 14:40:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,18 +28,21 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-//#include "bulkDataNTSupport.h"
+#include "bulkDataNTSenderFlowCallback.h"
+#include "bulkDataNTDDSLoggable.h"
 #include <ndds/ndds_namespace_cpp.h>
 
-#include <loggingLoggable.h>
+
+namespace AcsBulkdata
+{
 
 class BulkDataNTWriterListener :
 	public virtual DDS::DataWriterListener,
-	public Logging::Loggable
+	public BulkDataNTDDSLoggable
 {
 public:
 	//Constructor
-	BulkDataNTWriterListener(const char *name);
+	BulkDataNTWriterListener(const char *name, BulkDataNTSenderFlowCallback* cb);
 
 	//Destructor
 	virtual ~BulkDataNTWriterListener ();
@@ -80,11 +83,13 @@ public:
 private:
 	std::string topicName_m;  /// name of DDS topic
 
+	BulkDataNTSenderFlowCallback* callback_mp; /// pointer to user defined callback
+
 	unsigned long sum_unacknowledged_sample;
 	long max_unacknowledged_sample;
 	unsigned long iter;
 };
 
-
+};//namespace AcsBulkdata
 
 #endif /*!_H*/

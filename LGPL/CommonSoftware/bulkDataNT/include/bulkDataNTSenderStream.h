@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.10 2012/01/12 14:28:51 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.11 2012/01/27 14:40:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,7 +70,7 @@ public:
 	 * @param flowName name of the flow that should be created
 	 * @param cfg (optional) sender flow configuration
 	 * @param cb (optional) Sender flow status callback
-	 * @param releaseCB should be the callback relased when the flow is destroyed
+	 * @param releaseCB should be the callback released when the flow is destroyed
 	 * @return pointer to created sender flow object
 	 */
 	BulkDataNTSenderFlow* createFlow(const char* flowName, const SenderFlowConfiguration &cfg=SenderFlowConfiguration(),

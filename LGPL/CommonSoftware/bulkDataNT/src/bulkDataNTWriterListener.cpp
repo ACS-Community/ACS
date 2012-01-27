@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.4 2012/01/12 11:41:38 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.5 2012/01/27 14:40:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,9 +29,11 @@
 #include <iostream>
 
 using namespace std;
+using namespace AcsBulkdata;
 
-BulkDataNTWriterListener::BulkDataNTWriterListener(const char *name) :
-		topicName_m(name)
+BulkDataNTWriterListener::BulkDataNTWriterListener(const char *name, BulkDataNTSenderFlowCallback* cb)
+		: BulkDataNTDDSLoggable("BulkDataNT:"+string(name)),
+		topicName_m(name), callback_mp(cb)
 {
 	ACS_TRACE(__PRETTY_FUNCTION__);
 	sum_unacknowledged_sample = 0;

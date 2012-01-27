@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.13 2012/01/12 14:28:51 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.14 2012/01/27 14:40:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.13 2012/01/12 14:28:51 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.14 2012/01/27 14:40:37 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -57,7 +57,9 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, c
 															BulkDataNTSenderFlowCallback *cb, bool releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	BulkDataNTSenderFlowCallback *callback=0;
 	BulkDataNTSenderFlow *flow = 0;
+
 	if (this->existFlow(flowName))
 	{
 		FlowAlreadyExistsExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -67,7 +69,9 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, c
 	}
 
 	try{
-		flow = new BulkDataNTSenderFlow(this, flowName, cfg);
+		callback = (cb==0) ? new BulkDataNTSenderFlowCallback() : cb;
+
+		flow = new BulkDataNTSenderFlow(this, flowName, cfg, callback, (cb==0)||releaseCB);
 		flows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
 		return flow;
 	}catch(const ACSErr::ACSbaseExImpl &acsEx)
