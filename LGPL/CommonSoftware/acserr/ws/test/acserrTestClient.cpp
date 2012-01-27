@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestClient.cpp,v 1.53 2011/03/24 16:53:35 tstaig Exp $"
+* "@(#) $Id: acserrTestClient.cpp,v 1.54 2012/01/27 10:29:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.53 2011/03/24 16:53:35 tstaig Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.54 2012/01/27 10:29:00 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestC.h"
@@ -106,6 +106,10 @@ int main(int argc, char *argv[])
         comp.log();
         return 0;
       }
+
+      ACS_SHORT_LOG((LM_INFO, "We got Completion that is equal to ACSErrTest0Completion: %d", ACSErrTest0Completion::isEqual(tc)));
+      ACS_SHORT_LOG((LM_INFO, "We got Completion that is NOT equal to ACSErrTest0Completion: %d", ACSErrTest1Completion::isEqual(tc)));
+
 
       errorTrace = comp.getErrorTraceHelper();
       ACS_SHORT_LOG((LM_INFO, "Stack depth: %d", errorTrace->getDepth()));
