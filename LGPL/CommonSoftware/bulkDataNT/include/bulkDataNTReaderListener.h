@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.20 2012/01/26 13:47:15 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.21 2012/01/27 14:28:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,13 +36,16 @@
 #include <string>
 #include <ACE.h>
 
+namespace AcsBulkdata
+{
+
 class BulkDataNTReaderListener
   : public virtual DDS::DataReaderListener,
     public BulkDataNTDDSLoggable
 {
 public:
   //Constructor
-  BulkDataNTReaderListener (const char*name, AcsBulkdata::BulkDataNTCallback* cb);
+  BulkDataNTReaderListener (const char*name, BulkDataNTCallback* cb);
 
   //destructor
   virtual ~BulkDataNTReaderListener (void);
@@ -86,7 +89,7 @@ private:
   ACSBulkData::BulkDataNTFrameDataReader *frameDataReader_mp; /// pointer to DDS reader
 
    // pointer to user defined callback
-  AcsBulkdata::BulkDataNTCallback* callback_mp;
+  BulkDataNTCallback* callback_mp;
 
   ACE_Time_Value cbReceiveStartTime_m;  /// time just be4 cbReceive is going to be executed
   ACE_Time_Value cbReceiveElapsedTime_m;  /// elapsed time of cbReceive
@@ -94,4 +97,5 @@ private:
   double cbReceiveTimeoutSec_m; /// cbReceiver process timeout read from CDB (or default value)
 };
 
+};//namepsace AcsBulkdata
 #endif
