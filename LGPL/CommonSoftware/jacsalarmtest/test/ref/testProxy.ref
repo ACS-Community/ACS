@@ -9,6 +9,8 @@
 1 - ----------T--:--:----- FINEST [testPushAlarm#testPushAlarm] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [testPushAlarm#testPushAlarm] manager narrow successful
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] Manager login done ...
+1 - ----------T--:--:----- FINER [testPushAlarm#testPushAlarm] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [testPushAlarm#testPushAlarm] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- DEBUG [testPushAlarm#testPushAlarm] Alarm system type: ACS
 1 - ----------T--:--:----- DEBUG [testPushAlarm#testPushAlarm] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] Alarm source of UNDEFINED connected to the logging
