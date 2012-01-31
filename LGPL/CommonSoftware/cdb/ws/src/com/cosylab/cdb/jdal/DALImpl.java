@@ -114,7 +114,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	private HashMap<String, DAO> daoMap = new HashMap<String, DAO>();
 
 	// clean cache implementation
-	private HashMap<String, ArrayList<Integer>> listenedCurls = new HashMap<String, ArrayList<Integer>>();
+	private final HashMap<String, ArrayList<Integer>> listenedCurls = new HashMap<String, ArrayList<Integer>>();
 	private File listenersStorageFile = null;
 	private Random idPool = new Random();
 	private HashMap<Integer, DALChangeListener> regListeners = new HashMap<Integer, DALChangeListener>();
@@ -123,7 +123,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	private DALNode rootNode = null; // used for node listening 
 	private final Logger m_logger;
 	private volatile boolean shutdown = false;
-	private Object shutdownLock = new Object();
+	private final Object shutdownLock = new Object();
 
 	// preparation for future self-profiling
 	protected final AtomicLong totalDALInvocationCounter;
@@ -612,7 +612,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 
-	private LinkedHashMap<String, Object> cache = new LinkedHashMap<String, Object>();
+	private final LinkedHashMap<String, Object> cache = new LinkedHashMap<String, Object>();
 	private boolean cacheDisabled = false;
 	private volatile boolean cacheLimitReached = false;
 	
@@ -940,8 +940,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * @return File
 	 */
 	protected File getStorageFile() {
-		if (listenersStorageFile != null)
+		if (listenersStorageFile != null) {
 			return listenersStorageFile;
+		}
 		String filePath = FileHelper.getTempFileName("ACS_RECOVERY_FILE", "CDB_Recovery.txt");
 		m_logger.log(AcsLogLevel.INFO,  "Recovery file: " + filePath);
 		listenersStorageFile = new File(filePath);
@@ -965,11 +966,13 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	public void loadListeners() {
 		if (disableRecoveryFile) return;
 		File storageFile = getStorageFile();
-		if (storageFile == null || !storageFile.exists())
+		if (storageFile == null || !storageFile.exists()) {
 			return;
+		}
+		BufferedReader reader = null;
 		try {
 			InputStream in = new FileInputStream(storageFile);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			reader = new BufferedReader(new InputStreamReader(in));
 
 			synchronized (listenedCurls)
 			{
@@ -1004,9 +1007,17 @@ public class DALImpl extends JDALPOA implements Recoverer {
 					listenedCurls.put(curl, arr);
 				}
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -1017,10 +1028,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		if (disableRecoveryFile) return false;
 		String key, ior;
 		File storageFile = getStorageFile();
-		if (storageFile == null)
+		if (storageFile == null) {
 			return false;
+		}
+		OutputStream out = null;
 		try {
-			OutputStream out = new FileOutputStream(storageFile);
+			out = new FileOutputStream(storageFile);
 			//listenedCurls.store(new FileOutputStream(storageFile), "Listeners");
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 			// write listeners
@@ -1053,6 +1066,14 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 		return true;
 	}
