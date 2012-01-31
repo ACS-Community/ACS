@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.44 2012/01/05 07:56:42 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.45 2012/01/31 08:01:29 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -71,6 +71,10 @@ MACIContainerServices::MACIContainerServices(
 	m_manager = maci::Manager::_duplicate(manager);
 	m_offShootPOA = PortableServer::POA::_nil();
 	componentStateManager_mp = new MACIComponentStateManager(name);
+#ifndef MAKE_VXWORKS
+  m_alarmSource = new acsalarm::AlarmSourceImpl();
+  m_alarmSource->start();
+#endif
 }
 
 //
