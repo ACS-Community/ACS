@@ -66,9 +66,8 @@ public class CorbaNullFinder
 		if (errors == null) {
 			errors = new ArrayList<String>();
 			if (corbaData != null) {
-				if (!corbaData.getClass().getPackage().getName().startsWith("java")) { // dont recurse into the fields of String etc
-					recursiveCheckForNulls(corbaData, corbaData.getClass().getSimpleName());
-				}
+				String path = corbaData.getClass().getSimpleName();
+				recursiveCheckForNulls(corbaData, path);
 			}
 			else {
 				errors.add("Top-level object is null; cannot distinguish between a legal null object reference and an illegal null data item.");
@@ -88,51 +87,62 @@ public class CorbaNullFinder
 			return;
 		}
 		
-		Field[] fields = _corbaData.getClass().getFields();
-		for (Field field : fields) {
-			Class<?> clzz = field.getType();
-			String qualifiedFieldName = path + "/" + field.getName();
-			try {
-				Object value = field.get(_corbaData);
-				if (clzz.isPrimitive()) {
-					// nothing to do 
-				}
-				else if (clzz == String.class) {
-					if (value == null) {
-						errors.add("Null string in field " + qualifiedFieldName);
+		if (_corbaData.getClass().getPackage() != null && _corbaData.getClass().getPackage().getName().startsWith("java")) {
+			// don't recurse into the fields of String etc
+			return;
+		}
+		else if (_corbaData.getClass().isArray()) {
+			// recurse into the members of this array
+			for (int i = 0; i < Array.getLength(_corbaData); i++) {
+				String recPath = (path.endsWith("[]") ? path.substring(0, path.length()-1) + i + "]" : path); 
+				recursiveCheckForNulls(Array.get(_corbaData, i), recPath);
+			}
+		}
+		else {
+			// recurse into the fields of this class
+			Field[] fields = _corbaData.getClass().getFields();
+			for (Field field : fields) {
+				Class<?> clzz = field.getType();
+				String qualifiedFieldName = path + "/" + field.getName();
+				try {
+					Object value = field.get(_corbaData);
+					if (clzz.isPrimitive()) {
+						// nothing to do 
 					}
-				}
-				else if (isIDLEnumClass(clzz)) {
-					if (value == null) {
-						errors.add("Null enum in field " + qualifiedFieldName);
-					}
-				}
-				else if (isIDLStructClass(clzz)) {
-					if (value == null) {
-						errors.add("Null struct in field " + qualifiedFieldName);
-					}
-					else {
-						recursiveCheckForNulls(value, qualifiedFieldName);
-					}
-				}
-				else if (clzz.isArray()) {
-					if (value == null) {
-						errors.add("Null array in field " + qualifiedFieldName);
-					}
-					else {
-						// null element check 
-						for (int i = 0; i < Array.getLength(value); i++) {
-							recursiveCheckForNulls(Array.get(value, i), qualifiedFieldName + "[" + i + "]");
+					else if (clzz == String.class) {
+						if (value == null) {
+							errors.add("Null string in field " + qualifiedFieldName);
 						}
 					}
+					else if (isIDLEnumClass(clzz)) {
+						if (value == null) {
+							errors.add("Null enum in field " + qualifiedFieldName);
+						}
+					}
+					else if (isIDLStructClass(clzz)) {
+						if (value == null) {
+							errors.add("Null struct in field " + qualifiedFieldName);
+						}
+						else {
+							recursiveCheckForNulls(value, qualifiedFieldName);
+						}
+					}
+					else if (clzz.isArray()) {
+						if (value == null) {
+							errors.add("Null array in field " + qualifiedFieldName);
+						}
+						else {
+							recursiveCheckForNulls(value, qualifiedFieldName + "[]");
+						}
+					}
+					else if (!isIDLInterfaceClass(clzz)) {
+						// @TODO: check test output, and eventually remove this println!
+						System.out.println("DEBUG: Check if we need to update " + CorbaNullFinder.class.getName() + " to support " + clzz.getName() 
+								+ " used in " + qualifiedFieldName);
+					}
+				} catch (Exception ex) {
+					errors.add("Failed to read field of type " + clzz.getName());
 				}
-				else if (!isIDLInterfaceClass(clzz)) {
-					// @TODO: check test output, and eventually remove this println!
-					System.out.println("DEBUG: Check if we need to update " + CorbaNullFinder.class.getName() + " to support " + clzz.getName() 
-							+ " used in " + qualifiedFieldName);
-				}
-			} catch (Exception ex) {
-				errors.add("Failed to read field of type " + clzz.getName());
 			}
 		}
 	}

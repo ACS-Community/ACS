@@ -25,7 +25,7 @@ import alma.jconttest.ComponentWithBadNullsPackage.Struct2Helper;
 
 
 /**
- * Tests CorbaNullFinder. See COMP-4592.
+ * Tests CorbaNullFinder. See COMP-4592 and COMP-6091.
  * @author hsommer
  */
 public class CorbaNullFinderTest extends TestCase
@@ -174,6 +174,17 @@ public class CorbaNullFinderTest extends TestCase
 		expected.add("Null object in field Struct2/seqOfStruct1[0]");
 		assertNullFinderErrors(expected, finder.getErrors());
 		
+		// Arrays outside of structs, with good values or with null values (see COMP-6091)
+		finder = new CorbaNullFinder(new String[] {"goodString"});
+		assertFalse(finder.hasErrors());
+		finder = new CorbaNullFinder(new String[] {"goodStringAtFirst", null, "anotherGoodString"});
+		assertTrue(finder.hasErrors());
+		expected.clear();
+		expected.add("Null object in field String[1]");
+		assertNullFinderErrors(expected, finder.getErrors());
+		finder = new CorbaNullFinder(new int[] {1,2}); // CorbaNullFinder will see them as Integer objects.
+		assertFalse(finder.hasErrors());
+
 		// main object null
 		finder = new CorbaNullFinder(null);
 		assertTrue(finder.hasErrors());
@@ -208,8 +219,7 @@ public class CorbaNullFinderTest extends TestCase
 					"InstanceForUnitTest", false, collectingLogger, null, null
 			);
 		
-		// invocation
-		
+		// invocation of methodWithReturnData
 		String instring = null;
 		Struct1 instruct1 = ComponentWithBadNullsImpl.createGoodStruct1();
 		instruct1.myenum1 = null;
@@ -221,21 +231,23 @@ public class CorbaNullFinderTest extends TestCase
 		sealedComponent.methodWithReturnData(instring, instruct1, 
 				inoutstringHolder, inoutstruct1Holder, 
 				outstringHolder, outstruct1Holder);
-		
+
+		// check the logs produced by the ContainerSealant who uses CorbaNullFinder
 		LogRecord[] logRecords = collectingLogger.getCollectedLogRecords();
+		assertEquals(3, logRecords.length);
 		assertEquals("intercepted a call to 'InstanceForUnitTest#methodWithReturnData'.", logRecords[0].getMessage());
 		assertTrue(logRecords[1].getMessage().startsWith("returning from InstanceForUnitTest#methodWithReturnData after"));
 		System.out.println(logRecords[2].getMessage());
 		assertEquals(
 				"Illegal null value in out parameter(s) of method methodWithReturnData:\n" + 
-				"  Paramter StringHolder: \n" + 
+				"  Parameter StringHolder: \n" + 
 				"    Null string in field StringHolder/value\n" + 
-				"  Paramter Struct1Holder: \n" +  
+				"  Parameter Struct1Holder: \n" +  
 				"    Null string in field Struct1Holder/value/mystring\n" + 
 				"    Null enum in field Struct1Holder/value/myenum1\n" + 
-				"  Paramter StringHolder: \n" + 
+				"  Parameter StringHolder: \n" + 
 				"    Null string in field StringHolder/value\n" + 
-				"  Paramter Struct1Holder: \n" + 
+				"  Parameter Struct1Holder: \n" + 
 				"    Null string in field Struct1Holder/value/mystring\n" + 
 				"    Null enum in field Struct1Holder/value/myenum1\n",
 				logRecords[2].getMessage() );
