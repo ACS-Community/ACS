@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.18 2012/01/19 14:13:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.19 2012/02/01 13:51:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,6 +47,18 @@ const char* const ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS="225.3.2.
 double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT=0.01; //sec
 bool ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST=true;
 
+
+bool AcsBulkdata::isBulkDataNTEnabled()
+{
+	const char *enableBulkDataNT = getenv("ENABLE_BULKDATA_NT");
+
+	return ( enableBulkDataNT != 0 &&
+			(strcmp(enableBulkDataNT, "1")==0 ||
+			 strcasecmp(enableBulkDataNT, "true")==0 ||
+			 strcasecmp(enableBulkDataNT, "y")==0
+			)
+		);
+}
 /**************************************************************************************
  * 			StreamConfiguration
  **************************************************************************************/
@@ -233,6 +245,10 @@ void SenderFlowConfiguration::setSendFrameTimeout(double frameTimeout)
 {
     this->sendFrameTimeout = frameTimeout;
 }
+
+
+
+
 
 
 

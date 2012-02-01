@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.31 2012/01/19 14:13:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.32 2012/02/01 13:51:23 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -35,6 +35,13 @@
 
 namespace AcsBulkdata
 {
+
+/**
+ * Should return true if the value of ENABLE_BULKDATA_NT is set to:
+ * 1, y, Y or true (ignorecase)
+ * @return true or false
+ */
+bool isBulkDataNTEnabled();
 
 ///DDS configuration class at this moment it is common for all configuration classes
 //  ... but can be later split if needed
