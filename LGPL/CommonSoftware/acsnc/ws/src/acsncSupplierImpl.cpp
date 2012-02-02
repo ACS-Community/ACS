@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.89 2011/11/17 23:31:54 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.90 2012/02/02 15:03:01 rtobar Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -372,9 +372,53 @@ Supplier::createSupplier()
 	    throw err.getCORBAProblemEx();
 	    }
 
+	// Check if our admin is a proper TAO extension
+	// so we can create a named proxy consumer
+	bool isAdminExt = false;
+	try {
+		NotifyMonitoringExt::SupplierAdmin_var supplierAdminExt = NotifyMonitoringExt::SupplierAdmin::_narrow(SupplierAdmin_m);
+		isAdminExt = (supplierAdminExt != 0);
+	} catch(...) {}
+
 	//get a proxy consumer
-	CosNotifyChannelAdmin::ProxyConsumer_var
-	    proxyconsumer = SupplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID);
+	CosNotifyChannelAdmin::ProxyConsumer_var proxyconsumer = 0;
+	if( isAdminExt ) {
+
+		char *name = 0;
+		if( component_mp != 0 )
+			name = component_mp->name();
+		else
+			name = "Unknown";
+
+		std::stringstream ss;
+		ss << name << "-" << ACE_OS::rand();
+		ACE_CString	proxyName = ss.str().c_str();
+		ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
+		NotifyMonitoringExt::SupplierAdmin_var supplierAdminExt = NotifyMonitoringExt::SupplierAdmin::_narrow(SupplierAdmin_m);
+
+		while( proxyconsumer == 0 ) {
+			try {
+				proxyconsumer = supplierAdminExt->obtain_named_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID, proxyName.c_str());
+	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Got named proxy supplier '%s' with proxyID %d", proxyName.c_str(), proxyconsumerID));
+			} catch (NotifyMonitoringExt::NameAlreadyUsed &ex) {
+				// If the original name is already in use, append "-<tries>" and try again
+				// until we find a free name
+				std::stringstream ss;
+				ss << name << "-" << ACE_OS::rand();
+				proxyName = ss.str().c_str();
+			} catch (...) {
+				// If any unexpected problem appears, try the unnamed version
+				proxyconsumer = SupplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID);
+	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Created unnamed proxy supplier"));
+			}
+		}
+
+	}
+	else {
+		// Just the unnamed version if we don't have the TAO extensions
+		proxyconsumer = SupplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID);
+	}
+
 	//sanity check on the consumer admin
 	if(CORBA::is_nil(proxyconsumer.in()) == true)
 	    {
