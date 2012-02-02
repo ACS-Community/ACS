@@ -51,7 +51,7 @@ void AlarmSystemMonitorPattern::clearAlarm()
 			}
 			setProperty("BACI_BitDescription", bitDesc);
 			setProperty("BACI_Value", tmpVal);
-			ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s, bit %d (%s) cleared. Value change to: "ACE_UINT64_FORMAT_SPECIFIER_ASCII, property_mp->name(), bitPos_m, bitDesc, tmpVal));
+			ACS_SHORT_LOG((LM_DEBUG, "Alarm for property: %s, bit %d (%s) cleared. Value change to: "ACE_UINT64_FORMAT_SPECIFIER_ASCII, property_mp->name(), bitPos_m, bitDesc, tmpVal));
 			this->sendAlarm(1, false);
 			this->alarmRaised_m --;
 		}//if
@@ -103,14 +103,14 @@ void AlarmSystemMonitorPattern::check(BACIValue &val,
     			// how the bit has changed (we could merge this with if above but would	 not be cleared then)
     			if ( ~(value ^ alarmTrigger_m) & 1 )
     			{
-    				ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s, bit %d (%s) raised. Value change to: "ACE_UINT64_FORMAT_SPECIFIER_ASCII, property_mp->name(), bitPos_m, bitDesc, value));
+    				ACS_SHORT_LOG((LM_DEBUG, "Alarm for property: %s, bit %d (%s) raised. Value change to: "ACE_UINT64_FORMAT_SPECIFIER_ASCII, property_mp->name(), bitPos_m, bitDesc, value));
     				this->sendAlarm(1, true);
     				this->lastAlarmValue_m = val;
     				this->alarmRaised_m ++;
       			}
     			else
     			{
-    				ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s, bit %d (%s) cleared. Value change to: "ACE_UINT64_FORMAT_SPECIFIER_ASCII, property_mp->name(), bitPos_m, bitDesc, value));
+    				ACS_SHORT_LOG((LM_DEBUG, "Alarm for property: %s, bit %d (%s) cleared. Value change to: "ACE_UINT64_FORMAT_SPECIFIER_ASCII, property_mp->name(), bitPos_m, bitDesc, value));
     				this->sendAlarm(1, false);
     				this->lastAlarmValue_m = val;
     				this->alarmRaised_m --;
