@@ -45,8 +45,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmClients.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ACS_jacsutil2"/>
 	<classpathentry kind="var" path="ACSROOT/lib/AcsContainerLogLTS.jar"/>
 	<classpathentry kind="lib" path="lib/jconttest_if.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
