@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderTest.cpp,v 1.14 2012/01/27 07:59:45 bjeram Exp $"
+* "@(#) $Id: bdNTSenderTest.cpp,v 1.15 2012/02/02 07:23:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,6 +57,9 @@ int main(int argc, char *argv[])
     }//while
 
     try{
+
+    	ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
+
     	SenderFlowConfiguration sndFlowCfg;
    		sndFlowCfg.setACKsTimeout(5.0);
 
