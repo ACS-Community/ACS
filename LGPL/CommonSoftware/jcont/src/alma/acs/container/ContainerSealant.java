@@ -227,7 +227,7 @@ public class ContainerSealant
 							CorbaNullFinder finder = new CorbaNullFinder(args[argIndex]);
 							if (finder.hasErrors()) {
 								List<String> errors = finder.getErrors();
-								sb.append("  Paramter " + clzzOutParam.getSimpleName() + ": \n");
+								sb.append("  Parameter " + clzzOutParam.getSimpleName() + ": \n");
 								for (String errorline : errors) {
 									sb.append("    ").append(errorline).append("\n");
 								}
