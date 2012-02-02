@@ -34,7 +34,7 @@ void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 	{
 		ostr << value << std::ends;
 		ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
-		ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value changed to: %s", this->property_mp->name(), ts.c_str()));
+		ACS_SHORT_LOG((LM_DEBUG, "Alarm for property: %s cleared. Value changed to: %s", this->property_mp->name(), ts.c_str()));
 
 		this->setProperty("BACI_Value", ts.c_str());
 		this->clearAlarm(); //=	this->sendAlarm(this->lastAlarmFaultCode_m, false);
@@ -47,7 +47,7 @@ void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 		ostr << value << std::ends;
 		ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 
-		ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s raised - value %s too low!.", this->property_mp->name(), ts.c_str()));
+		ACS_SHORT_LOG((LM_DEBUG, "Alarm for property: %s raised - value %s too low!.", this->property_mp->name(), ts.c_str()));
 
 		this->setProperty("BACI_Value", ts.c_str());
 		this->sendAlarm(2, true);
@@ -60,7 +60,7 @@ void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 		ostr << value << std::ends;
 		ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 
-		ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s raised - value %s too high!", this->property_mp->name(), ts.c_str()));
+		ACS_SHORT_LOG((LM_DEBUG, "Alarm for property: %s raised - value %s too high!", this->property_mp->name(), ts.c_str()));
 
 		this->setProperty("BACI_Value", ts.c_str());
 		this->sendAlarm(3, true);
