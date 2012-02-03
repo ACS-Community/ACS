@@ -27,6 +27,7 @@ package alma.acs.nc;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosEventChannelAdmin.AlreadyConnected;
@@ -38,22 +39,25 @@ import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
-import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
-import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
-import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumer;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
-import org.omg.CosNotifyChannelAdmin.SupplierAdmin;
 import org.omg.CosNotifyComm.InvalidEventType;
 import org.omg.CosNotifyComm.StructuredPushSupplier;
 import org.omg.CosNotifyComm.StructuredPushSupplierHelper;
 
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
+import gov.sandia.NotifyMonitoringExt.SupplierAdmin;
+
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
+import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
+import alma.AcsNCTraceLog.LOG_NC_TaoExtensionsSubtypeMissing;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
@@ -187,32 +191,57 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 		
 		// get the channel and the Supplier admin object
 		m_channel = m_helper.getNotificationChannel(m_channelName, getChannelKind(), getNotificationFactoryName());
-		if (m_channel == null) {
-			String reason = "Null reference obtained for the notification channel " + m_channelName;
-			throw new AcsJCORBAReferenceNilEx(reason);
-		}
-		ih = new IntHolder();
-		m_supplierAdmin = m_channel.new_for_suppliers(InterFilterGroupOperator.AND_OP, ih);
-		if (m_supplierAdmin == null) {
+
+		// Corba NC spec about adminId: a unique identifier assigned by the target EventChannel instance that is unique among all 
+		// SupplierAdmin instances currently associated with the channel.
+		// We are currently not using it, but it could be logged to help with NC debugging.
+		IntHolder adminIdHolder = new IntHolder(); 
+		org.omg.CosNotifyChannelAdmin.SupplierAdmin supplierAdminBase = m_channel.new_for_suppliers(InterFilterGroupOperator.AND_OP, adminIdHolder);
+		if (supplierAdminBase == null) {
 			String reason = "Null reference obtained for the supplier admin for channel " + m_channelName;
 			throw new AcsJCORBAReferenceNilEx(reason);
 		}
-
-		// Get the Consumer proxy to which the published events will be fed.
-		// The client type parameter selects a StructuredProxyPushConsumer (based on Structured Events),
-		// as opposed to ProxyPushConsumer (based on Anys), or SequenceProxyPushConsumer (based on sequences of Structured Events).
 		try {
-			cp_ih = new IntHolder(); // to receive the unique ID assigned by the admin object (will be dicarded) 
-			org.omg.CORBA.Object tempCorbaObj = m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, cp_ih);
-			if (tempCorbaObj == null) {
-				String reason = "Null reference obtained for the Proxy Push Consumer!";
-				throw new AcsJCORBAReferenceNilEx(reason);
+			m_supplierAdmin = gov.sandia.NotifyMonitoringExt.SupplierAdminHelper.narrow(supplierAdminBase);
+		} catch (BAD_PARAM ex) {
+			// This should never happen, since we already enforced the presence of TAO extensions in Helper#initializeNotifyFactory
+			String specialSupplierAdminId = gov.sandia.NotifyMonitoringExt.SupplierAdminHelper.id();
+			String standardSupplierAdminId = org.omg.CosNotifyChannelAdmin.SupplierAdminHelper.id();
+			LOG_NC_TaoExtensionsSubtypeMissing.log(m_logger, m_channelName + "-SupplierAdmin", specialSupplierAdminId, standardSupplierAdminId);
+			AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
+			ex2.setNarrowType(specialSupplierAdminId);
+			throw ex2;
+		}
+
+		while( m_proxyConsumer == null ) {
+			String randomizedClientName = m_helper.createRandomizedClientName(m_services.getName());
+			// Holder for the unique ID assigned by the admin object. It is different from the name we set, and will be discarded.
+			IntHolder proxyIdHolder = new IntHolder();
+			try {
+				// Create the consumer proxy (to which the published events will be fed) with a name.
+				// The client type parameter selects a StructuredProxyPushConsumer (based on Structured Events),
+				// as opposed to ProxyPushConsumer (based on Anys), or SequenceProxyPushConsumer (based on sequences of Structured Events).
+				org.omg.CORBA.Object tempCorbaObj = m_supplierAdmin.obtain_named_notification_push_consumer(ClientType.STRUCTURED_EVENT, proxyIdHolder, randomizedClientName.toString());
+				if (tempCorbaObj == null) {
+					String reason = "Null reference obtained for the Proxy Push Consumer!";
+					throw new AcsJCORBAReferenceNilEx(reason);
+				}
+				m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
+				m_logger.fine("Created named proxy consumer '" + randomizedClientName + "'.");
+			} catch (NameAlreadyUsed e) {
+				// Hopefully we won't run into this situation. Still, try to go on in the loop,
+				// with a different client name next time.
+			} catch (NameMapError ex) {
+				// Default to the unnamed version
+				try {
+					m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, proxyIdHolder));
+					m_logger.fine("Created unnamed proxy consumer with ID=" + proxyIdHolder.value);
+				} catch (AdminLimitExceeded ex2) {
+					throw new AcsJCORBAProblemEx(ex2);
+				}
+			} catch (AdminLimitExceeded e) {
+				throw new AcsJCORBAProblemEx(e);
 			}
-			m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
-		} 
-		catch (AdminLimitExceeded e) {
-			// convert it into an exception developers care about
-			throw new AcsJCORBAProblemEx(e);
 		}
 
 		// must connect this StructuredPushSupplier to the proxy consumer, or events would never be sent anywhere.
@@ -545,7 +574,8 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 					getCDBAdminProps(m_channelName));
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
-		} catch (UnsupportedAdmin e) {
+		} catch (UnsupportedAdmin ex) {
+			m_logger.warning(m_helper.createUnsupportedAdminLogMessage(ex, m_channelName));
 		} catch (NullPointerException e) {
 		}
 	}
@@ -594,10 +624,6 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
-	
-	private IntHolder ih;
-	
-	private IntHolder cp_ih;
 	
 	private AcsNcReconnectionCallback reconnectCallback;
 	
