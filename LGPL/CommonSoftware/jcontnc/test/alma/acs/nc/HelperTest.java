@@ -36,6 +36,7 @@ import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
 import gov.sandia.NotifyMonitoringExt.NameMapError;
 
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
@@ -369,10 +370,11 @@ public class HelperTest extends ComponentClientTestCase
 		
 		/**
 		 * Counts down the optional CountDownLatch, then delegates to parent method
+		 * @throws AcsJCORBAProblemEx 
 		 */
 		protected EventChannel createNotifyChannel_internal(EventChannelFactory notifyFactory, Property[] initial_qos,
 				Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
-				throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError, AcsJNarrowFailedEx {
+				throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError, AcsJNarrowFailedEx, AcsJCORBAProblemEx {
 			if (synch != null) {
 				// count down and wait for other threads to reach the same state before going on.
 				synch.countDown();
