@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSLoggable.h,v 1.2 2011/11/10 14:00:17 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSLoggable.h,v 1.3 2012/02/03 15:32:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,6 +29,29 @@
 
 #include <loggingLoggable.h>
 #include <logging.h>
+
+#define BDNT_LISTENER_USER_ERR(call)		 								\
+    try { call; 																	\
+    }catch(const ACSErr::ACSbaseExImpl &ex){										\
+        UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
+        ucb.setCall("#call");														\
+        ucb.setStreamFlowName(topicName_m.c_str());									\
+        callback_mp->onError(ucb);													\
+    }catch(const std::exception &stdex){											\
+        ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);  \
+        ex.setWhat(stdex.what());													\
+        UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
+        ucb.setCall("#call");														\
+        ucb.setStreamFlowName(topicName_m.c_str());									\
+        callback_mp->onError(ucb);													\
+    }catch(...){																	\
+        ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);   	\
+        UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
+        ucb.setCall("#call");														\
+        ucb.setStreamFlowName(topicName_m.c_str());									\
+        callback_mp->onError(ucb);													\
+    }
+
 
 /**
  * The purpose of this class is to make possible to log from classes that are used by threads created by DDS,
