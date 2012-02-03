@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.6 2012/01/27 15:15:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.7 2012/02/03 15:33:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,6 +26,7 @@
 #include "bulkDataNTWriterListener.h"
 #include "ACS_BD_Errors.h"
 #include <ACS_DDS_Errors.h>
+#include <ACSErrTypeCommon.h>
 #include <iostream>
 
 using namespace std;
@@ -108,8 +109,7 @@ void BulkDataNTWriterListener::on_reliable_reader_activity_changed(DDSDataWriter
 	              (LM_INFO, "A new receiver has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
 	                  callback_mp->getFlowName(), callback_mp->getStreamName(),
 	                  status.active_count));
-	          //BDNT_READER_LISTENER_USER_ERR( callback_mp->onReceiverConnect() )
-	          callback_mp->onReceiverConnect(status.active_count);
+	          BDNT_LISTENER_USER_ERR( callback_mp->onReceiverConnect(status.active_count) )
 	        }//for
 	    }else
 	      {
@@ -119,8 +119,7 @@ void BulkDataNTWriterListener::on_reliable_reader_activity_changed(DDSDataWriter
 	                (LM_INFO, "A receiver has disconnected from flow: %s of the stream: %s. Total alive connection(s): %d",
 	                    callback_mp->getFlowName(), callback_mp->getStreamName(),
 	                    status.active_count));
-	            //BDNT_READER_LISTENER_USER_ERR( callback_mp->onReceiverDisconnect() )
-	            callback_mp->onReceiverDisconnect(status.active_count);
+	            BDNT_LISTENER_USER_ERR( callback_mp->onReceiverDisconnect(status.active_count) )
 	          }//for
 	      }//if-else
 }
