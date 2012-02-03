@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.25 2012/01/12 12:01:31 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.26 2012/02/03 14:25:15 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -118,14 +118,16 @@ public:
 	virtual void onError(ACSErr::CompletionImpl &error);
 
 	/**
-	 * The method is called when a new sender is connected to the flow
+	 * The method is called when a new sender is connected to a flow
+	 * @param totalSeners new number os senders after connect
 	 */
-	virtual void onSenderConnect(){};
+	virtual void onSenderConnect(unsigned short totalSeners){};
 
 	/**
 	 * The method is called when a sender is disconnected for a flow
+	 * @param totalSeners new number of senders, after disconnect
 	 */
-	virtual void onSenderDisconnect(){};
+	virtual void onSenderDisconnect(unsigned short totalSeners){};
 
 	/**
 	 * The method is called when a frame (DDS sample) did not arrive.
