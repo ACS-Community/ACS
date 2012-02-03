@@ -1,31 +1,32 @@
 package alma.acs.xml.validator;
-//import javax.xml.transform.Source;
-//import javax.xml.transform.stream.StreamSource;
-//import javax.xml.validation.Schema;
-//import javax.xml.validation.SchemaFactory;
-//import javax.xml.validation.Validator;
-//
-//import java.io.File;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 
+import java.io.FileReader;
+
 public class XMLValidator {
 	static boolean error;
 	public class XMLErrorHandler implements ErrorHandler {
+		String xml;
+		public XMLErrorHandler(String xml) {
+			this.xml = xml;
+		}
 		public void warning(SAXParseException ex) {
 			XMLValidator.error = true;
-			System.err.println(ex.getMessage());
+			System.err.println(xml+": "+ex.getMessage());
 		}
 		public void error(SAXParseException ex) {
 			XMLValidator.error = true;
-			System.err.println(ex.getMessage());
+			System.err.println(xml+": "+ex.getMessage());
 		}
 		public void fatalError(SAXParseException ex) throws SAXException {
 			XMLValidator.error = true;
@@ -35,7 +36,7 @@ public class XMLValidator {
 	public void run(String[] args) {
 		try {
 			if(args.length != 2) {
-				System.out.println("Incorrect arguments. You need to provide the XML and XSD files");
+				System.out.println("Incorrect arguments. You need to provide the XML and XSD files.");
 				System.exit(3);
 			}
 			XMLValidator.error = false;
@@ -48,16 +49,31 @@ public class XMLValidator {
 			// create schema by reading it from an XSD file:
 			Schema schema = factory.newSchema(new StreamSource(args[1]));
 			Validator validator = schema.newValidator();
-			ErrorHandler eh = new XMLErrorHandler();
+			ErrorHandler eh = new XMLErrorHandler(args[0]);
 			validator.setErrorHandler(eh);
 			
 			// at last perform validation:
+			XMLInputFactory xFact = XMLInputFactory.newInstance();
+			XMLStreamReader xRead = xFact.createXMLStreamReader(new FileReader(args[0]));
+			if(xRead.getVersion() == null) {
+				System.err.println("There is no XML Definition in the "+ args[0] +" file.");
+				XMLValidator.error = true;
+			} else if(xRead.getCharacterEncodingScheme() == null) {
+				System.err.println("The encoding attribute is not defined in the XML Definition of the "+ args[0] +" file.");
+				XMLValidator.error = true;
+			} else if(xRead.getCharacterEncodingScheme().compareTo("ISO-8859-1") != 0) {
+				System.err.println("Incorrect encoding type in the XML Definition of the "+ args[0] +" file");
+				XMLValidator.error = true;
+			}
+				
 			validator.validate(new StreamSource(args[0]));
 		}catch (SAXException ex) {
 			System.err.println("Fatal Error");
-			System.err.println(ex.getMessage());
+			System.err.println(args[0]+": "+ex.getMessage());
+			XMLValidator.error = true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			XMLValidator.error = true;
 		}
 			if(XMLValidator.error) {
 				//System.exit(1); //Error
