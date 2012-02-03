@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.47 2012/02/03 14:26:39 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.48 2012/02/03 14:30:01 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -167,7 +167,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                               lde.setRestFrames(message.restDataLength);
                               lde.setFrameLength(message.data.length());
                               lde.setStreamFlowName(topicName_m.c_str());
-                              callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde);
+                              BDNT_READER_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde))
                               increasConseqErrorCount();
                               return; // ??
                             }
@@ -244,7 +244,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                                 lde.setRestFrames(message.restDataLength); // should be ??
                                 lde.setFrameLength(message.data.length()); // should be 0
                                 lde.setStreamFlowName(topicName_m.c_str());
-                                callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde);
+                                BDNT_READER_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde) )
                                 increasConseqErrorCount();
                               }//if
                           }//if-else
@@ -356,7 +356,7 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
   sle.setTotalSampleLost(s.total_count);
   sle.setReason(s.last_reason);
   initalizeLogging(); //force initialization of logging sys TBD changed
-  callback_mp->onDataLost(frameCounter_m, totalFrames_m, sle);
+  BDNT_READER_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, sle) )
 }//on_sample_lost
 
 void BulkDataNTReaderListener::increasConseqErrorCount()
