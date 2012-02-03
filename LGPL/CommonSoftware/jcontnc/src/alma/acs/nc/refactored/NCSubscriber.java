@@ -19,16 +19,8 @@
 
 package alma.acs.nc.refactored;
 
-import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
-import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
-import gov.sandia.NotifyMonitoringExt.EventChannel;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -62,7 +54,13 @@ import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 import org.omg.CosNotifyFilter.FilterNotFound;
 
-import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
+import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
+import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
+
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -333,12 +331,6 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 		// get the channel
 		channel = helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
-		if (channel == null) {
-			AcsJCORBAReferenceNilEx ex = new AcsJCORBAReferenceNilEx();
-			ex.setContext("Null reference obtained for the notification channel " + channelName);
-			ex.setVariable("channel");
-			throw ex;
-		}
 
 		// populate the map with the maxProcessTime an event receiver processing should take
 		handlerTimeoutMap = helper.getEventHandlerTimeoutMap(this.channelName);
@@ -497,22 +489,15 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		IntHolder proxyIdHolder = new IntHolder(); // will get assigned "a numeric identifier [...] that is unique among all proxy suppliers [the admin object] has created"
 
 		try {
-			// See the comments on Consumer#createConsumer() for a nice explanation
-			// of why this randomness is happening here
-			Random random = new Random(System.currentTimeMillis());
-			StringBuffer clientNameSB = new StringBuffer(clientName);
-			clientNameSB.append('-');
-			clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
-
 			ProxySupplier proxy = null;
 			while( proxy == null ) {
+				// See the comments on Consumer#createConsumer() for a nice explanation of why this randomness is happening here
+				String randomizedClientName = helper.createRandomizedClientName(clientName);
 				try {
-					proxy = sharedConsumerAdmin.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder, clientNameSB.toString());
+					proxy = sharedConsumerAdmin.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder, randomizedClientName);
 				} catch (NameAlreadyUsed e) {
-					// Hopefully we won't run into this situation. Still, try to go on
-					clientNameSB.delete(clientName.length(), clientNameSB.length());
-					clientNameSB.append('-');
-					clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+					// Hopefully we won't run into this situation. Still, try to go on in the loop,
+					// with a different client name next time.
 				} catch (NameMapError e) {
 					// Default to the unnamed version
 					proxy = sharedConsumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder);
@@ -1152,7 +1137,8 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 					getCDBAdminProps(channelName));
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
-		} catch (UnsupportedAdmin e) {
+		} catch (UnsupportedAdmin ex) {
+			logger.warning(helper.createUnsupportedAdminLogMessage(ex, channelName));
 		}
 		
 	}
