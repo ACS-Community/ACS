@@ -1,17 +1,18 @@
 package alma.acs.nc.refactored;
 
-import gov.sandia.NotifyMonitoringExt.EventChannel;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
 import org.omg.CosNotifyChannelAdmin.ProxyType;
 
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.concurrent.ThreadBurstExecutorService;
 import alma.acs.nc.AcsEventSubscriber;
@@ -30,12 +31,15 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
+		m_logger.info("------------ setUp " + getName() + " --------------");
 		Helper helper = new Helper(getContainerServices());
 		channel = helper.getNotificationChannel(CHANNEL_NAME, NC_KIND.value, helper.getNotificationFactoryNameForChannel(CHANNEL_NAME));
 		assertNotNull(channel);
+		assertEquals(0, channel.get_all_consumeradmins().length);
 	}
 
 	public void tearDown() throws Exception {
+		m_logger.info("------------ tearDown " + getName() + " --------------");
 		// Make sure we don't have any admin for the next round
 		destroyConsumers();
 		super.tearDown();
@@ -133,20 +137,22 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 
 	private void runConcurrentSubscribersCreation(int subscribersNum) throws Exception {
 
-		// Create all the tasks first
-		final List<AcsEventSubscriber> subscribers = new ArrayList<AcsEventSubscriber>();
-		ThreadBurstExecutorService executor = new ThreadBurstExecutorService(getContainerServices().getThreadFactory());
+		m_logger.info("Setting up " + subscribersNum + " concurrent subscriber creations...");
+		
+		final List<AcsEventSubscriber> subscribers = Collections.synchronizedList(new ArrayList<AcsEventSubscriber>());
 
+		// Create all the tasks first
+		ThreadBurstExecutorService executor = new ThreadBurstExecutorService(getContainerServices().getThreadFactory());
 		for(int i=0; i!=subscribersNum; i++) {
 
 			Runnable r = new Runnable() {
 				@SuppressWarnings("deprecation")
 				public void run() {
 					try {
+						// create subscriber, and add it to the list
 						subscribers.add( getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME) );
-					} catch (AcsJContainerServicesEx e) {
-						e.printStackTrace();
-						fail("Failed to create subscriber number");
+					} catch (Exception e) {
+						m_logger.log(Level.WARNING, "Failed to create a subscriber.", e);
 					}
 				}
 			};
@@ -159,13 +165,14 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		}
 
 		// and now run'em all at the same time! (concurrently)
+		m_logger.info("Running " + subscribersNum + " concurrent subscriber creations...");
 		try {
-			executor.executeAllAndWait(100, TimeUnit.SECONDS);
+			assertTrue(executor.executeAllAndWait(100, TimeUnit.SECONDS));
 		} catch (InterruptedException e) {
 			fail("Got InterruptedException while running all my threads");
 		}
 
-		// After all the show, we should get all the subscribers
+		// After all the show, we should have all requested subscribers in the  list
 		assertEquals(subscribersNum, subscribers.size());
 
 		// ...and all the admins should be full, except the last one (depending if CONCURRENT_SUBSCRIBERS is multiple of PROXIES_PER_ADMIN)
@@ -190,7 +197,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 				fail("Can't get information about consumer admin " + admin);
 			}
 		}
-
+		
 		destroyConsumers();
 	}
 }
