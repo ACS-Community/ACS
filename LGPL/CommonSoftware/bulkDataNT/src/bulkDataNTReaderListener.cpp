@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.48 2012/02/03 14:30:01 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.49 2012/02/03 15:33:06 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -37,27 +37,6 @@ using namespace ACS_DDS_Errors;
 using namespace AcsBulkdata;
 using namespace std;
 
-#define BDNT_READER_LISTENER_USER_ERR(call)		 								\
-    try { call; 																	\
-    }catch(const ACSErr::ACSbaseExImpl &ex){										\
-        UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
-        ucb.setCall("#call");														\
-        ucb.setStreamFlowName(topicName_m.c_str());									\
-        callback_mp->onError(ucb);													\
-    }catch(const std::exception &stdex){											\
-        ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);  \
-        ex.setWhat(stdex.what());													\
-        UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
-        ucb.setCall("#call");														\
-        ucb.setStreamFlowName(topicName_m.c_str());									\
-        callback_mp->onError(ucb);													\
-    }catch(...){																	\
-        ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);   	\
-        UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
-        ucb.setCall("#call");														\
-        ucb.setStreamFlowName(topicName_m.c_str());									\
-        callback_mp->onError(ucb);													\
-    }
 
 const char *BulkDataNTReaderListener::state2String[] = {"StartState", "DataRcvState", "StopState", "IgnoreDataState" };
 
@@ -123,7 +102,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                       frameCounter_m = 0;
                       currentState_m = DataRcvState;
                       message.data.to_array(tmpArray, message.data.length());
-                      BDNT_READER_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) )
+                      BDNT_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) )
                       conseqErrorCount_m=0;
                     }
                   else //error
@@ -167,7 +146,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                               lde.setRestFrames(message.restDataLength);
                               lde.setFrameLength(message.data.length());
                               lde.setStreamFlowName(topicName_m.c_str());
-                              BDNT_READER_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde))
+                              BDNT_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde))
                               increasConseqErrorCount();
                               return; // ??
                             }
@@ -196,7 +175,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
                       cbReceiveStartTime_m = ACE_OS::gettimeofday();
                       message.data.to_array(tmpArray, message.data.length());
-                      BDNT_READER_LISTENER_USER_ERR( callback_mp->cbReceive(tmpArray, message.data.length()) )
+                      BDNT_LISTENER_USER_ERR( callback_mp->cbReceive(tmpArray, message.data.length()) )
                       conseqErrorCount_m=0;
                       cbReceiveElapsedTime_m = ACE_OS::gettimeofday() - cbReceiveStartTime_m;
                       cbReceiveElapsedTimeSec_m = cbReceiveElapsedTime_m.sec() + (cbReceiveElapsedTime_m.usec() / 1000000.0);
@@ -244,7 +223,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                                 lde.setRestFrames(message.restDataLength); // should be ??
                                 lde.setFrameLength(message.data.length()); // should be 0
                                 lde.setStreamFlowName(topicName_m.c_str());
-                                BDNT_READER_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde) )
+                                BDNT_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde) )
                                 increasConseqErrorCount();
                               }//if
                           }//if-else
@@ -264,7 +243,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                           }//if-else
                       }
                   // in all above warning/error case we call  user's cbStop()
-                  BDNT_READER_LISTENER_USER_ERR( callback_mp->cbStop() )
+                  BDNT_LISTENER_USER_ERR( callback_mp->cbStop() )
                   conseqErrorCount_m=0;
                   break;
                 }//case ACSBulkData::BD_STOP
@@ -312,7 +291,7 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
               (LM_INFO, "A new sender has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
                   callback_mp->getFlowName(), callback_mp->getStreamName(),
                   lcs.alive_count));
-          BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderConnect(lcs.alive_count) )
+          BDNT_LISTENER_USER_ERR( callback_mp->onSenderConnect(lcs.alive_count) )
         }//for
     }else
       {
@@ -322,7 +301,7 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
                 (LM_INFO, "A sender has disconnected to flow: %s of the stream: %s. Total alive connection(s): %d",
                     callback_mp->getFlowName(), callback_mp->getStreamName(),
                     lcs.alive_count));
-            BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderDisconnect(lcs.alive_count) )
+            BDNT_LISTENER_USER_ERR( callback_mp->onSenderDisconnect(lcs.alive_count) )
           }//for
       }//if-else
 }//on_liveliness_changed
@@ -356,7 +335,7 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
   sle.setTotalSampleLost(s.total_count);
   sle.setReason(s.last_reason);
   initalizeLogging(); //force initialization of logging sys TBD changed
-  BDNT_READER_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, sle) )
+  BDNT_LISTENER_USER_ERR( callback_mp->onDataLost(frameCounter_m, totalFrames_m, sle) )
 }//on_sample_lost
 
 void BulkDataNTReaderListener::increasConseqErrorCount()
