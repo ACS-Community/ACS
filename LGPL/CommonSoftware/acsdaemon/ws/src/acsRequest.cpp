@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.12 2012/01/16 10:45:00 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.13 2012/02/03 12:57:33 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,6 +31,8 @@
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeOK.h>
 #include <ACSErrTypeCORBA.h>
+
+#include <ace/Auto_Ptr.h>
 
 /******************************* Helper methods *******************************/
 
@@ -111,6 +113,102 @@ void RequestProcessorThread::process(Request* r) {
     m_wait->signal();
 }
 
+/******************************* AsyncRequestThreadPool *******************************/
+
+int AsyncRequestThreadPool::conf_threads = 1;
+ACE_Thread_Mutex AsyncRequestThreadPool::mutex_;
+ACE_CString AsyncRequestThreadPool::process_name;
+LoggingProxy* AsyncRequestThreadPool::logger = 0;
+
+
+AsyncRequestThreadPool* AsyncRequestThreadPool::instance_ = 0;
+
+class AsyncRequestRequest : public ACE_Method_Request, public Logging::Loggable
+{
+public:
+	AsyncRequestRequest (ACSServiceRequest* request, RequestChainContext<ACSServiceRequest> *context) :
+		Logging::Loggable("AsyncRequestRequest"),
+		m_request(request),
+		m_context(context)
+    {
+        ACS_TRACE ("ActivationMethod::ActivationMethod");
+    }
+
+    virtual int call (void)
+    {
+        ACS_TRACE ("AsyncRequestRequest::call");
+        m_request->process(m_context);
+        return 0;
+    }
+
+private:
+    ACSServiceRequest* m_request;
+    RequestChainContext<ACSServiceRequest>* m_context;
+};//class AsyncRequestRequest
+
+class ExitMethod : public ACE_Method_Request
+{
+public:
+    virtual int call (void)
+    {
+        // Cause exit.
+        return -1;
+    }
+};//class ExitMethod
+
+
+AsyncRequestThreadPool::AsyncRequestThreadPool (int n_threads) :
+    Logging::Loggable("AsyncRequestThreadPool"),
+    m_threads(n_threads)
+{
+    ACS_TRACE ("AsyncRequestThreadPool::AsyncRequestThreadPool");
+    this->activate (THR_NEW_LWP|THR_JOINABLE|THR_INHERIT_SCHED, n_threads);
+}
+
+int
+AsyncRequestThreadPool::svc (void)
+{
+    if (logger)
+    {
+      // in some threads the logging will be initialized two times what is not harmful
+      LoggingProxy::init(logger);
+      LoggingProxy::ProcessName(process_name.c_str());
+    }
+
+    ACS_TRACE ("AsyncRequestThreadPool::svc");
+
+    while (1)
+    {
+        // Dequeue the next method object
+        auto_ptr<ACE_Method_Request>
+        request (this->activation_queue_.dequeue ());
+
+        // Invoke the method request.
+        if (request->call () == -1)
+            break;
+    }
+
+    return 0;
+}
+
+int
+AsyncRequestThreadPool::enqueue (ACE_Method_Request *request)
+{
+    ACS_TRACE ("AsyncRequestThreadPool::enqueue");
+    return this->activation_queue_.enqueue (request);
+}
+
+void AsyncRequestThreadPool::shutdown()
+{
+	for (int i = 0; i < m_threads; i++)
+    	this->enqueue (new ExitMethod ());
+
+    // might do better implementation
+    while (!this->activation_queue_.is_empty()) {
+        ACE_OS::sleep(1);
+    }
+}
+
 /******************************* ChainedRequest *******************************/
 
 template <class R> void ChainedRequest<R>::process(RequestChainContext<R> *icontext) {
@@ -127,34 +225,79 @@ template <class R> void ChainedRequest<R>::complete() {
 
 /***************************** RequestChainContext ****************************/
 
-template <class R> void RequestChainContext<R>::proceed(R *lastreq) {
-    if (curreq != lastreq) {
-        ACS_SHORT_LOG ((LM_ERROR, "Chain should proceed from its previous request!"));
-        return;
-    }
+template <class R> void RequestChainContext<R>::proceed(R *curreq) {
+	ACE_Guard<ACE_Thread_Mutex> guard(mutex);
+
     if (inprocess) {
+
+    	if (hasAsync && curreq->isAsync())
+    		asyncToComplete--;
+
+    	//printf("hasAsync %d, curreq->isAsync() %d, asyncToComplete %d name %s\n",
+    	//		hasAsync, curreq->isAsync(), asyncToComplete, curreq->getDescription()->getACSServiceName());
+
         if (!requestDone(curreq)) {
-            chainAborted();
-            delete this;
-            return;
+			failed = true;
+
+			if (hasAsync && asyncToComplete > 0)
+        	{
+	    		// wait for other async to complete...
+				return;
+        	}
+        	else
+        	{
+        		// no async pending, can stop...
+				chainAborted();
+				guard.release();
+				delete this;
+				return;
+        	}
         }
     }
+
     if (requests.empty()) {
-        chainDone();
-        delete this;
-        return;
+    	if (hasAsync && asyncToComplete > 0)
+    	{
+    		// wait for other async to complete...
+    		return;
+    	}
+    	else
+    	{
+    		if (failed)
+    			chainAborted();
+    		else
+    			chainDone();
+			guard.release();
+			delete this;
+			return;
+    	}
     } else {
-        curreq = requests.front();
-        requests.pop_front();
-        curreq->process(this);
+
+    	while (!requests.empty())
+    	{
+            inprocess = true;
+			curreq = requests.front();
+			requests.pop_front();
+
+			if (curreq->isAsync())
+			{
+				hasAsync = true;
+				asyncToComplete++;
+				AsyncRequestThreadPool::getInstance()->enqueue(new AsyncRequestRequest(curreq, this));
+			}
+			else
+			{
+				curreq->process(this);
+				break;
+			}
+    	}
     }
-    inprocess = true;
 }
 
 /*********************** ACS SERVICES SPECIFIC REQUESTS ***********************/
 /************************ ACSServiceRequestDescription ************************/
 
-ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), corbalocName(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(true), recovery(false) {
+ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), corbalocName(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(true), recovery(false), async(false) {
 }
 
 ACSServiceRequestDescription::ACSServiceRequestDescription(const ACSServiceRequestDescription &desc) : service(desc.service), instance_number(desc.instance_number), host(STRDUP(desc.host)), name(STRDUP(desc.name)), corbalocName(STRDUP(desc.corbalocName)), domain(STRDUP(desc.domain)), cdbxmldir(STRDUP(desc.cdbxmldir)), loadir(desc.loadir), wait(desc.wait), recovery(desc.recovery) {
@@ -178,6 +321,7 @@ void ACSServiceRequestDescription::setFromXMLAttributes(const char **atts) {
         else if (strcasecmp(atts[i], "load") == 0) loadir = strcasecmp(atts[i+1], "true") == 0;
         else if (strcasecmp(atts[i], "wait_load") == 0) wait = strcasecmp(atts[i+1], "true") == 0;
         else if (strcasecmp(atts[i], "recovery") == 0) recovery = strcasecmp(atts[i+1], "true") == 0;
+        else if (strcasecmp(atts[i], "parallel") == 0) async = strcasecmp(atts[i+1], "true") == 0;
         i += 2;
     }
 }

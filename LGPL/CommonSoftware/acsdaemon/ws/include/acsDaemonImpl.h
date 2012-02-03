@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.10 2011/10/21 13:20:39 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.11 2012/02/03 12:57:33 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,6 +44,9 @@
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
 #include "acsdaemonORBTask.h"
+
+// thread-pool
+#include "acsRequest.h"
 
 /**
  *  Service management class for daemon.
@@ -207,7 +210,8 @@ int ACSDaemonServiceImpl<T>::run (void)
 
       // constrcut CORBA ORB request handler task
       ORBTask task (this->m_orb.in(), &m_logProxy);
-const int m_serverThreads = 5;
+      const int m_serverThreads = 5;
+
       // activate task, i.e. spawn threads and handle requests
       if (task.activate (THR_NEW_LWP | THR_JOINABLE, m_serverThreads) == 0)
           // wait until CORBA ORB is shutdown or destroyed
@@ -235,6 +239,9 @@ void ACSDaemonServiceImpl<T>::shutdown (bool wait_for_completition)
     {
 	ACS_SHORT_LOG ((LM_INFO, "Stopping the %s...", this->getName().c_str()));
 	m_blockTermination=true;
+
+	AsyncRequestThreadPool::destroy();
+
 	// shutdown the ORB.
 	if (!CORBA::is_nil (m_orb.in ()))
 	{
@@ -450,6 +457,8 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
         ACE_OS::setenv("ACS_LOG_FILE", acsLogFileValue.c_str(), 1);
     else
         ACE_OS::unsetenv("ACS_LOG_FILE");
+
+    AsyncRequestThreadPool::configure(argv[0], m_logger, 5);	// 5 threads for async
 
     // Ready the service manager
     service = new ACSDaemonServiceImpl<T>(*m_logger, !unprotected);

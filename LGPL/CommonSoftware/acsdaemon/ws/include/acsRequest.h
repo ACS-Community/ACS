@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.8 2012/01/16 10:45:00 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.9 2012/02/03 12:57:33 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,6 +33,13 @@
 #include <acsutilPorts.h>
 #include <queue>
 #include <memory>
+
+#include <ace/Task.h>
+#include <ace/Activation_Queue.h>
+#include <ace/Method_Request.h>
+#include <ace/Guard_T.h>
+
+#include <logging.h>
 
 // callback call timeout
 #define CORBA_TIMEOUT 5000
@@ -64,9 +71,10 @@ struct ACSService {
     std::string (*svcport)(int);
     std::string (*namedsvcport)(int, const char *);
     bool autorestart;      // Should ACS service automatically restart
+    bool async;            // Should service be started asynchronously
 };
 
-// start=up (dependency) order
+// start-up (dependency) order
 enum ACSServiceType {
     NAMING_SERVICE = 0,
     INTERFACE_REPOSITORY,
@@ -93,6 +101,7 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/NameService",
 				&ACSPorts::getNamingServicePort,
 				NULL,
+				false,
 				false
 		}, {
 				"interface_repository",
@@ -104,7 +113,8 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/InterfaceRepository",
 				&ACSPorts::getIRPort,
 				NULL,
-				false
+				false,
+				true
 		}, {
 				"cdb",
 				"acsConfigurationDatabase",
@@ -115,6 +125,7 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/CDB",
 				&ACSPorts::getCDBPort,
 				NULL,
+				false,
 				false
 		}, {
 				"notification_service",
@@ -126,7 +137,8 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/%s",
 				NULL,
 				&ACSPorts::getNotifyServicePort,
-				true
+				true,
+				false
 		}, {
 				"logging_service",
 				"acsLoggingService",
@@ -137,7 +149,8 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/Log",
 				&ACSPorts::getLoggingServicePort,
 				NULL,
-				true
+				true,
+				false
 		}, {
 				"acs_log",
 				"acsACSLogService",
@@ -148,6 +161,7 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/ACSLogSvc",
 				&ACSPorts::getLogPort,
 				NULL,
+				false,
 				false
 		}, {
 				"alarm_service",
@@ -159,6 +173,7 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/AcsAlarmService",
 				&ACSPorts::getAlarmServicePort,
 				NULL,
+				false,
 				false
 		}, {
 				"manager",
@@ -170,8 +185,9 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/Manager",
 				&ACSPorts::getManagerPort,
 				NULL,
+				false,
 				false
-		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false }
+		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false }
 };
 
 enum ACSServiceRequestType {
@@ -220,11 +236,12 @@ template <class R> class ChainedRequest : public Request {
   private:
     RequestChainContext<R> *context;
     friend class RequestChainContext<R>;
-    void process(RequestChainContext<R> *icontext);
   protected:
     virtual void complete();
   public:
     ChainedRequest() : context(NULL) {}
+    void process(RequestChainContext<R> *icontext);
+    virtual bool isAsync() { return false; }
 };
 
 template <class R> class RequestChainContext {
@@ -234,12 +251,20 @@ template <class R> class RequestChainContext {
     Queue requests;
     R *curreq;
     bool inprocess;
+
+    bool hasAsync;
+    bool failed;
+    int asyncToComplete;
+
+    ACE_Thread_Mutex mutex;
+
   protected:
     virtual bool requestDone(R *request) = 0;
     virtual void chainDone() = 0;
     virtual void chainAborted() = 0;
   public:
-    RequestChainContext(RequestProcessorThread *irpt) : rpt(irpt), curreq(NULL), inprocess(false) {}
+    RequestChainContext(RequestProcessorThread *irpt) : rpt(irpt), curreq(NULL), inprocess(false),
+    	hasAsync(false), failed(false), asyncToComplete(0) {}
     virtual ~RequestChainContext() {
         while (!requests.empty()) {
             delete requests.front();
@@ -275,7 +300,7 @@ class ACSServiceRequestDescription {
     ACSServiceType service;
     int instance_number;
     const char *host, *name, *corbalocName, *domain, *cdbxmldir;
-    bool loadir, wait, recovery;
+    bool loadir, wait, recovery, async;
     ACE_CString prepareCommand(ACSServiceRequestType request_type, bool log);
   public:
     ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number);
@@ -297,6 +322,7 @@ class ACSServiceRequestDescription {
     const char *getHost() { return host == NULL ? ACSPorts::getIP() : host; }
     ACSServiceType getACSService() { return service; }
     const char *getACSServiceName() { return acsServices[service].xmltag; }
+    bool isAsync() { return async; }
 };
 
 class ACSDaemonContext;
@@ -328,6 +354,7 @@ class ACSServiceRequest : public ChainedRequest<ACSServiceRequest>, POA_acsdaemo
     const char *getACSServiceName() { return desc->getACSServiceName(); }
     int getInstanceNumber() { return desc->getInstanceNumber(); }
     const char *getHost() { return desc->getHost(); }
+    virtual bool isAsync() { return desc->isAsync(); }
 };
 
 class ACSServiceRequestChainContext : public RequestChainContext<ACSServiceRequest> {
@@ -348,6 +375,60 @@ class ACSServiceRequestChainContext : public RequestChainContext<ACSServiceReque
     void startProcessing() { proceed(); }
 };
 
+
+class AsyncRequestThreadPool : public ACE_Task_Base, public Logging::Loggable
+{
+public:
+
+	static void configure(const char* processName, LoggingProxy *log, int threads)
+	{
+		ACE_Guard<ACE_Thread_Mutex> guard(mutex_);
+		process_name = processName;
+		logger = log;
+		conf_threads = threads;
+	}
+
+	// not thread-safe
+	static AsyncRequestThreadPool* getInstance()
+	{
+		ACE_Guard<ACE_Thread_Mutex> guard(mutex_);
+		if (!instance_)
+			instance_ = new AsyncRequestThreadPool(conf_threads);
+		return instance_;
+	}
+
+	static void destroy()
+	{
+		ACE_Guard<ACE_Thread_Mutex> guard(mutex_);
+		if (instance_)
+		{
+			instance_->shutdown();
+			delete instance_;
+			instance_ = 0;
+		}
+	}
+
+    virtual int svc (void);
+
+    int enqueue (ACE_Method_Request *request);
+
+    void shutdown();
+
+private:
+
+    AsyncRequestThreadPool (int n_threads = 1);
+
+    static ACE_Thread_Mutex mutex_;
+    static int conf_threads;
+    static ACE_CString process_name;
+    static LoggingProxy *logger;
+
+    static AsyncRequestThreadPool* instance_;
+
+    ACE_Activation_Queue activation_queue_;
+
+	int m_threads;
+};
 
 #endif
 
