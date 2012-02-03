@@ -49,7 +49,6 @@ public class EventILComponentTest extends ComponentClient
 	}
 
 	/**
-	 * Calls sayHello() on the hello component.
 	 */
 	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
 		try {
