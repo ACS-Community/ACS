@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.5 2012/01/27 15:14:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.6 2012/02/03 14:38:55 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,7 +46,10 @@ public:
 
 	/**
 	 * The method is called when an asychronous error happen on sender flow.
-	 * @param error
+	 * @param error as completion. It can be:
+	 * #DDSOfferedIncompatibleQoSCompletion
+	 * #DDSOffeeredDeadlineMissedCompletion
+	 * #DDSLivelinesLostCompletion
 	 */
 	virtual void onError(ACSErr::CompletionImpl &error);
 
