@@ -29,6 +29,7 @@ package alma.acs.nc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +41,7 @@ import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 import org.omg.CosNotification.Property;
+import org.omg.CosNotification.PropertyError;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
@@ -97,6 +99,8 @@ public class Helper {
 
 	// / Our own personal logger
 	protected final Logger m_logger;
+	
+	protected final Random random = new Random(System.currentTimeMillis());
 
 	// / Provides access to channel's quality of service properties
 	private final ChannelProperties m_channelProperties;
@@ -249,7 +253,7 @@ public class Helper {
 	 * 
 	 * @TODO Make "protected" again once we no longer have NC classes in separate subpackge "refactored".
 	 *  
-	 * @return Reference to the event channel specified by channelName.
+	 * @return Reference to the event channel specified by channelName. Never null.
 	 * @param channelName
 	 *           Name of the event channel registered with the CORBA Naming
 	 *           Service
@@ -306,13 +310,6 @@ public class Helper {
 					} catch (InterruptedException ex1) {
 						// too bad
 					}
-				} catch (NameMapError ex) {
-					m_logger.log(Level.WARNING, "*** TODO check what this NameMapError means!!!", ex);
-					try {
-						Thread.sleep(retrySleepSec*1000);
-					} catch (InterruptedException ex1) {
-						// too bad
-					}
 				}
 			}
 		} while (retValue == null && --retryNumberAttempts >= 0);
@@ -327,6 +324,11 @@ public class Helper {
 	}
 	
 	
+	/**
+	 * @param notifyFactoryName
+	 * @throws AcsJException AcsJCORBAProblemEx if the NotifyService reference cannot be retrieved from the NamingService;
+	 *                       AcsJNarrowFailedEx if the NotifyService is not of the required TAO extension type.
+	 */
 	protected void initializeNotifyFactory(String notifyFactoryName) 
 		throws AcsJException
 	{
@@ -398,11 +400,10 @@ public class Helper {
 	 *           Name of the notification service as registered with the CORBA naming service.
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
-	 * @throws NameMapError (@TODO check in TAO code what this means!) 
 	 * @throws NameAlreadyUsed thrown if the channel of this name already exists.
 	 */
 	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
-		throws AcsJException, NameAlreadyUsed, NameMapError
+		throws AcsJException, NameAlreadyUsed
 	{
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
 		
@@ -457,10 +458,6 @@ public class Helper {
 			// Think there is virtually no chance of this every happening but...
 			Throwable cause = new Throwable(e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
-		} catch (org.omg.CosNotification.UnsupportedAdmin e) {
-			Throwable cause = new Throwable("The administrative properties specified for the '" + channelName
-					+ "' channel are unsupported: " + e.getMessage());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosNotification.UnsupportedQoS e) {
 			Throwable cause = new Throwable("The quality of service properties specified for the '" + channelName
 					+ "' channel are unsupported: " + e.getMessage());
@@ -476,31 +473,43 @@ public class Helper {
 	/**
 	 * Broken out from {@link #createNotificationChannel(String, String, String)}
 	 * to give tests better control about the timing when this call to the event factory is made.
+	 * @throws NameAlreadyUsed if the call to NotifyFactory#create_named_channel fails with this exception.
+	 * @throws AcsJCORBAProblemEx if the TAO extension throws a NameMapError or if the QoS attributes cause a UnsupportedAdmin.
 	 */
 	protected EventChannel createNotifyChannel_internal(Property[] initial_qos, Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
-		throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError, AcsJNarrowFailedEx {
+		throws NameAlreadyUsed, UnsupportedQoS, AcsJNarrowFailedEx, AcsJCORBAProblemEx {
 		
 		EventChannel ret = null;
 		
 		StopWatch stopwatch = new StopWatch();
 		
-		// The TAO extension of the notify factory that we use declares only the plain EventChannel type, 
-		// even though it creates the TAO-extension subtype.
-		org.omg.CosNotifyChannelAdmin.EventChannel eventChannelBaseType = notifyFactory.create_named_channel(
-				initial_qos,
-				initial_admin, 
-				channelIdHolder, 
-				channelName);
-		
-		LOG_NC_ChannelCreatedRaw_OK.log(m_logger, channelName, channelIdHolder.value, stopwatch.getLapTimeMillis());
-		
 		try {
+			// The TAO extension of the notify factory that we use declares only the plain EventChannel type, 
+			// even though it creates the TAO-extension subtype.
+			org.omg.CosNotifyChannelAdmin.EventChannel eventChannelBaseType = notifyFactory.create_named_channel(
+					initial_qos,
+					initial_admin, 
+					channelIdHolder, 
+					channelName);
+			
+			LOG_NC_ChannelCreatedRaw_OK.log(m_logger, channelName, channelIdHolder.value, stopwatch.getLapTimeMillis());
+		
 			// re-create the client side corba stub, to get the extension subtype
 			ret = gov.sandia.NotifyMonitoringExt.EventChannelHelper.narrow(eventChannelBaseType);
 		} catch (BAD_PARAM ex) {
 			LOG_NC_TaoExtensionsSubtypeMissing.log(m_logger, channelName, EventChannel.class.getName(), org.omg.CosNotifyChannelAdmin.EventChannelHelper.id());
 			AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
 			ex2.setNarrowType(EventChannelHelper.id());
+			throw ex2;
+		} catch (NameMapError ex) {
+			String msg = "Got a TAO extension-specific NameMapError exception that means the TAO NC extension is not usable. Bailing out since we need the extension.";
+			m_logger.log(AcsLogLevel.ERROR, msg, ex);
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(ex);
+			ex2.setInfo(msg);
+			throw ex2;
+		} catch (UnsupportedAdmin ex) {
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(ex);
+			ex2.setInfo(createUnsupportedAdminLogMessage(ex, channelName));
 			throw ex2;
 		}
 		return ret;
@@ -707,5 +716,45 @@ public class Helper {
 	
 	public EventChannelFactory getNotifyFactory() {
 		return notifyFactory;
+	}
+	
+	/**
+	 * Corba spec: If the implementation of the target object is not capable of supporting 
+	 * any of the requested administrative property settings, the UnsupportedAdmin exception is raised. 
+	 * This exception has associated with it a list of name-value pairs of which each name 
+	 * identifies an administrative property whose requested setting could not be satisfied, 
+	 * and each associated value the closest setting for that property that could be satisfied.
+	 * @param ex
+	 * @param channelName
+	 * @return a String that contains the information from UnsupportedAdmin
+	 */
+	public String createUnsupportedAdminLogMessage(UnsupportedAdmin ex, String channelName) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Caught " + ex.getMessage() + ": The administrative properties specified for the '" + channelName 
+				+ "' channel are not supported: ");
+		for (PropertyError propertyError : ex.admin_err) {
+			sb.append("code=" + propertyError.code.toString()).append("; ");
+			sb.append("name=" + propertyError.name);
+			// TODO: Figure out what type (inside the Any) the range values are and add something like the following
+//			sb.append("available_low=" + propertyError.available_range.low_val.extract_long());
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * Appends a random number to the given client name.
+	 * <p>
+	 * This is used when setting names on NC proxy objects via the TAO extension API.
+	 * It reduces the risk of creating a new object with an existing name,
+	 * because TAO has memory bug and will not delete the badly named object
+	 * even if it throws the correct NameAlreadyUsed exception.
+	 * @param clientName
+	 * @return "clientName-randomNumber"
+	 */
+	public String createRandomizedClientName(String clientName) {
+		StringBuffer clientNameSB = new StringBuffer(clientName);
+		clientNameSB.append('-');
+		clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+		return clientNameSB.toString();
 	}
 }
