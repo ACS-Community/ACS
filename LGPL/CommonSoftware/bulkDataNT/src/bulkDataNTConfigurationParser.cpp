@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.29 2012/01/20 11:53:34 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.30 2012/02/03 14:31:17 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -205,7 +205,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 			continue;
 
 		XMLChSP nodeName = XMLString::transcode(streamNode->getNodeName());
-		if( ACE_OS::strcmp(nodeName.get(),parsingInfo.reqStreamNodeName) != 0 ) {
+		if( ACE_OS::strncmp(nodeName.get(), parsingInfo.reqStreamNodeName, ACE_OS::strlen(parsingInfo.reqStreamNodeName)) != 0 ) {
 			// Don't throw exception, just continue parsing
 			// The XML document might specify other things which are of no interest to us
 			continue;
@@ -292,7 +292,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 			}
 
 			// Process the Flow nodes
-			else if( ACE_OS::strcmp(childNodeName.get(), parsingInfo.reqFlowNodeName) == 0 ) {
+			else if( ACE_OS::strncmp(childNodeName.get(), parsingInfo.reqFlowNodeName, ACE_OS::strlen(parsingInfo.reqFlowNodeName)) == 0 ) {
 
 				const XMLCh * flowNameCh = getAttrValue(streamChildNode, "Name");
 				if( flowNameCh == 0 ) {
@@ -362,7 +362,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 						continue;
 
 					XMLChSP childFlowNodeName = XMLString::transcode(childFlowNode->getNodeName());
-					if( ACE_OS::strcmp(childFlowNodeName.get(),parsingInfo.reqFlowQoSNodeName) != 0 ) {
+					if( ACE_OS::strcmp(childFlowNodeName.get(), parsingInfo.reqFlowQoSNodeName) != 0 ) {
 
 						stringstream s;
 						s << "Node name is different from '" << parsingInfo.reqFlowQoSNodeName << "': " << childFlowNodeName.get();
