@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.46 2012/01/26 15:43:45 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.47 2012/02/03 14:26:39 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -312,7 +312,7 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
               (LM_INFO, "A new sender has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
                   callback_mp->getFlowName(), callback_mp->getStreamName(),
                   lcs.alive_count));
-          BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderConnect() )
+          BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderConnect(lcs.alive_count) )
         }//for
     }else
       {
@@ -322,7 +322,7 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
                 (LM_INFO, "A sender has disconnected to flow: %s of the stream: %s. Total alive connection(s): %d",
                     callback_mp->getFlowName(), callback_mp->getStreamName(),
                     lcs.alive_count));
-            BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderDisconnect() )
+            BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderDisconnect(lcs.alive_count) )
           }//for
       }//if-else
 }//on_liveliness_changed
