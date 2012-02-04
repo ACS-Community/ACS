@@ -100,7 +100,15 @@ public class Helper {
 	// / Our own personal logger
 	protected final Logger m_logger;
 	
-	protected final Random random = new Random(System.currentTimeMillis());
+	/**
+	 * Random number generator, used to randomize client names 
+	 * when used as server-side proxy names.
+	 * This class is static to avoid that two subscribers or suppliers create
+	 * Helper instances at the same time and thus produce identical sequences
+	 * of random numbers, which would defy the purpose of avoiding 
+	 * name clashes on the server. 
+	 */
+	protected static final Random random = new Random(System.currentTimeMillis());
 
 	// / Provides access to channel's quality of service properties
 	private final ChannelProperties m_channelProperties;
@@ -748,10 +756,15 @@ public class Helper {
 	 * It reduces the risk of creating a new object with an existing name,
 	 * because TAO has memory bug and will not delete the badly named object
 	 * even if it throws the correct NameAlreadyUsed exception.
+	 * <p>
+	 * This method is synchronized just to overcome residual doubts about the thread safety
+	 * of random#nextInt.
+	 * 
 	 * @param clientName
 	 * @return "clientName-randomNumber"
+	 * @see #random
 	 */
-	public String createRandomizedClientName(String clientName) {
+	public static synchronized String createRandomizedClientName(String clientName) {
 		StringBuffer clientNameSB = new StringBuffer(clientName);
 		clientNameSB.append('-');
 		clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
