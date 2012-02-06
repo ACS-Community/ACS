@@ -57,6 +57,8 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
+import alma.AcsNCTraceLog.LOG_NC_ConsumerProxyCreation_FAIL;
+import alma.AcsNCTraceLog.LOG_NC_ConsumerProxyCreation_OK;
 import alma.AcsNCTraceLog.LOG_NC_TaoExtensionsSubtypeMissing;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
@@ -213,10 +215,12 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			throw ex2;
 		}
 
-		while( m_proxyConsumer == null ) {
+		int proxyCreationAttempts = 0;
+		while( m_proxyConsumer == null) {
 			String randomizedClientName = m_helper.createRandomizedClientName(m_services.getName());
 			// Holder for the unique ID assigned by the admin object. It is different from the name we set, and will be discarded.
 			IntHolder proxyIdHolder = new IntHolder();
+			proxyCreationAttempts++;
 			try {
 				// Create the consumer proxy (to which the published events will be fed) with a name.
 				// The client type parameter selects a StructuredProxyPushConsumer (based on Structured Events),
@@ -227,19 +231,22 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 					throw new AcsJCORBAReferenceNilEx(reason);
 				}
 				m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
-				m_logger.fine("Created named proxy consumer '" + randomizedClientName + "'.");
+				LOG_NC_ConsumerProxyCreation_OK.log(m_logger, proxyIdHolder.value, randomizedClientName, proxyCreationAttempts, m_services.getName(), m_channelName, getNotificationFactoryName());
 			} catch (NameAlreadyUsed e) {
 				// Hopefully we won't run into this situation. Still, try to go on in the loop,
 				// with a different client name next time.
+				m_logger.fine("Consumer proxy name '" + randomizedClientName + "' already in use. Will try again with different random number appended.");
 			} catch (NameMapError ex) {
 				// Default to the unnamed version
 				try {
 					m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, proxyIdHolder));
-					m_logger.fine("Created unnamed proxy consumer with ID=" + proxyIdHolder.value);
+					LOG_NC_ConsumerProxyCreation_OK.log(m_logger, proxyIdHolder.value, "-unknown-", proxyCreationAttempts, m_services.getName(), m_channelName, getNotificationFactoryName());
 				} catch (AdminLimitExceeded ex2) {
+					LOG_NC_ConsumerProxyCreation_FAIL.log(m_logger, m_services.getName(), m_channelName, getNotificationFactoryName(), ex2.getMessage());
 					throw new AcsJCORBAProblemEx(ex2);
 				}
 			} catch (AdminLimitExceeded e) {
+				LOG_NC_ConsumerProxyCreation_FAIL.log(m_logger, m_services.getName(), m_channelName, getNotificationFactoryName(), e.getMessage());
 				throw new AcsJCORBAProblemEx(e);
 			}
 		}
