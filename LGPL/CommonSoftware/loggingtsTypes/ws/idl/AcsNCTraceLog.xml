@@ -121,7 +121,8 @@
 		description="Successfully created a notification channel supplier proxy object, on behalf of the NC subscriber identified by 'ClientName'."
 		priority="TRACE"
 		audience="Developer">
-		<Member name="SupplierProxyId" type="long" description="ID of the supplier proxy object that was created." />
+		<Member name="SupplierProxyId" type="long" description="System-provided ID of the supplier proxy object that was created." />
+		<!--  TODO Member name="SupplierProxyName" type="long" description="Application-provided name of the supplier proxy object that was created." / -->
 		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
 		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
@@ -135,6 +136,32 @@
 		audience="Developer">
 		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
 		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+		<Member name="Reason" type="string" description="Description of the reason for the failure." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ConsumerProxyCreation_OK"
+		shortDescription="Successfully created a notification channel consumer proxy object."
+		description="Successfully created a notification channel Consumer proxy object, on behalf of the NC supplier identified by 'ClientName'."
+		priority="TRACE"
+		audience="Developer">
+		<Member name="ConsumerProxyId" type="long" description="System-provided ID of the consumer proxy object that was created." />
+		<Member name="ConsumerProxyName" type="string" description="Application-provided name of the consumer proxy object that was created." />
+		<Member name="ProxyCreationAttempts" type="long" description="Creation attempts until a unique proxy name was found. Should almost always be '1' thanks to random number appended." />
+		<Member name="ClientName" type="string" description="Name of the publishing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the consumer proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ConsumerProxyCreation_FAIL"
+		shortDescription="Failed to create a notification channel consumer proxy object."
+		description="Failed to create a notification channel Consumer proxy object on behalf of the NC supplier identified by 'ClientName'."
+		priority="NOTICE"
+		audience="Developer">
+		<Member name="ClientName" type="string" description="Name of the publishing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the consumer proxy was created." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
 		<Member name="Reason" type="string" description="Description of the reason for the failure." />
 	</LogDefinition>
