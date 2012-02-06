@@ -32,7 +32,6 @@ import gov.sandia.NotifyMonitoringExt.NameMapError;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -374,6 +373,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		IntHolder consumerAdminIDHolder = new IntHolder();
 
 		// get the Consumer admin object (no reuse of admin obj. This gets addressed in the new NCSubscriber class)
+		// We don't need to use the TAO extension method "named_new_for_consumers" because only the proxy object will get a name from us.
 		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
 
 		// sanity check
@@ -390,6 +390,8 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 			consumerAdminExt = gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper.narrow(m_consumerAdmin);
 		} catch (BAD_PARAM ex) {
 			// Don't care, we won't be able to create the proxy with a name, but that's it
+			// HSO: Actually this should never happen, because without TAO extension present, 
+			// already getting the NotifyFactory reference would have failed.
 		}
 
 		if( consumerAdminExt != null ) {
@@ -401,22 +403,16 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 			// (TAO scopes the proxy name to the EventChannel object, not to the consumer admin)
 			// but won't actually destroy the newly created proxy on the server side,
 			// which could lead to memory leaks
-			Random random = new Random(System.currentTimeMillis());
-			StringBuffer clientNameSB = new StringBuffer(m_clientName);
-			clientNameSB.append('-');
-			clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
-
 			while( m_proxySupplier == null ) {
+				String randomizedClientName = m_helper.createRandomizedClientName(m_clientName);
 				try {
 					// Create the push supplier with a name
 					m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(
-							consumerAdminExt.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID, clientNameSB.toString()));
-					m_logger.fine("Created named proxy supplier '" + clientNameSB.toString() + "'");
+							consumerAdminExt.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID, randomizedClientName));
+					m_logger.fine("Created named proxy supplier '" + randomizedClientName + "'");
 				} catch (NameAlreadyUsed e) {
-					// Hopefully we won't run into this situation. Still, try to go on
-					clientNameSB.delete(m_clientName.length(), clientNameSB.length());
-					clientNameSB.append('-');
-					clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+					// Hopefully we won't run into this situation. Still, try to go on in the loop,
+					// with a different client name next time.
 				} catch (NameMapError e) {
 					// Default to the unnamed version
 					try {
@@ -1084,7 +1080,8 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 					getCDBAdminProps(m_channelName));
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
-		} catch (UnsupportedAdmin e) {
+		} catch (UnsupportedAdmin ex) {
+			m_logger.warning(m_helper.createUnsupportedAdminLogMessage(ex, m_channelName));
 		} catch (NullPointerException e) {
 		}
 		
