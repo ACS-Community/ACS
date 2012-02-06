@@ -27,6 +27,7 @@ import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.TIMEOUT;
 import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosEventChannelAdmin.AlreadyConnected;
+import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.EventHeader;
 import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.FixedEventHeader;
@@ -137,9 +138,9 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 	 *             into an ACS Error System exception for the developer's
 	 *             convenience.
 	 */
-	public NCPublisher(String channelName, ContainerServicesBase services)
+	public NCPublisher(String channelName, ContainerServicesBase services, NamingContext namingService)
 			throws AcsJException {
-		this(channelName, null, services);
+		this(channelName, null, services, namingService);
 	}
 
 	/**
@@ -160,13 +161,26 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 	 *             converted into an ACS Error System exception for the
 	 *             developer's convenience.
 	 */
-	public NCPublisher(String channelName,
-			String channelNotifyServiceDomainName,
-			ContainerServicesBase services) throws AcsJException {
+	public NCPublisher(String channelName, String channelNotifyServiceDomainName,
+			ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+		
 		if (channelName == null) {
-			Throwable cause = new Throwable(
-					"Null reference obtained for the channel name!");
+			Throwable cause = new Throwable("Null reference obtained for the channel name!");
 			throw new AcsJBadParameterEx(cause);
+		}
+		
+		if (services == null) {
+			AcsJBadParameterEx ex = new AcsJBadParameterEx();
+			ex.setParameter("services");
+			ex.setParameterValue("null");
+			throw ex;
+		}
+
+		if (namingService == null) {
+			AcsJBadParameterEx ex = new AcsJBadParameterEx();
+			ex.setParameter("namingService");
+			ex.setParameterValue("null");
+			throw ex;
 		}
 
 		this.channelName = channelName;
@@ -175,18 +189,12 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 		logger = services.getLogger();
 
 		anyAide = new AnyAide(this.services);
-		helper = new Helper(this.services);
+		helper = new Helper(this.services, namingService);
 		isTraceEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
 		// get the channel
 		// @TODO: handle Corba TIMEOUT 
 		channel = helper.getNotificationChannel(this.channelName, getChannelKind(), getNotificationFactoryName());
-		if (channel == null) {
-			Throwable cause = new Throwable(
-					"Null reference obtained for the notification channel "
-							+ this.channelName);
-			throw new AcsJCORBAReferenceNilEx(cause);
-		}
 		
 		// get the Supplier admin
 		supplierAdminID = new IntHolder();
@@ -486,7 +494,8 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 					getCDBAdminProps(channelName));
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
-		} catch (UnsupportedAdmin e) {
+		} catch (UnsupportedAdmin ex) {
+			logger.warning(helper.createUnsupportedAdminLogMessage(ex, channelName));
 		}
 		
 	}
