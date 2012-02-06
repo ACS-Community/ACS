@@ -29,7 +29,7 @@ import alma.acs.exceptions.AcsJException;
  * 
  * @author rtobar
  */
-public interface AcsEventPublisher {
+public interface AcsEventPublisher<T> {
 
 	/**
 	 * Publishes a structured event through the Notification Channel to which
@@ -39,7 +39,7 @@ public interface AcsEventPublisher {
 	 * @throws AcsJException In case of any failure, including if the publisher
 	 *   is not yet connected (or has been disconnected) to the Notification Channel.
 	 */
-	public void publishEvent(Object customStruct) throws AcsJException;
+	public void publishEvent(T customStruct) throws AcsJException;
 
 	/**
 	 * Disconnect this Publisher from the Notification Channel.
