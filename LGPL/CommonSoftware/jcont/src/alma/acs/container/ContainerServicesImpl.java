@@ -1365,10 +1365,11 @@ public class ContainerServicesImpl implements ContainerServices
 			Object[] args = new Object[]{
 					channelName,
 					channelNotifyServiceDomainName,
-					this
+					this,
+					getNameService()
 			};
 			Class<?> clazz = Class.forName(CLASSNAME_NC_PUBLISHER);
-			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class);
+			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class);
 			publisher = (AcsEventPublisher)constructor.newInstance(args);
 		} catch(ClassNotFoundException e) {
 			// TODO: maybe we could prevent future NCPublisher creation tries, since the class isn't and will not be loaded
