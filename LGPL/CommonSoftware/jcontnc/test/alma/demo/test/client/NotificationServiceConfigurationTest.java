@@ -46,22 +46,20 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	 * Gets the supplier component to send out events 
 	 */
 	public void doSomeStuff() throws AcsJException {
-		Helper helper = new Helper(getContainerServices());
-		
 		// default expected
-		System.out.println(helper.getNotificationFactoryNameForChannel("any"));
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("any")));
 		
 		// channel mapping 
-		System.out.println(helper.getNotificationFactoryNameForChannel("PARTICULAR"));
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("PARTICULAR")));
 		
 		// wildchars channel mapping 
-		System.out.println(helper.getNotificationFactoryNameForChannel("CONTROL_CHANNEL"));
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("CONTROL_CHANNEL")));
 		
 		// domain mapping
-		System.out.println(helper.getNotificationFactoryNameForChannel("anyOnLaser", "ALARMSYSTEM"));
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("anyOnLaser", "ALARMSYSTEM")));
 		
 		// fallback to default
-		System.out.println(helper.getNotificationFactoryNameForChannel("anyOnNonExistingDomain", "NONEXISTING_DOMAIN"));
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("anyOnNonExistingDomain", "NONEXISTING_DOMAIN")));
 	}
 
 
