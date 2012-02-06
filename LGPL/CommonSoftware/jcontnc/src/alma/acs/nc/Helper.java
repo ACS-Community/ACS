@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import java.util.regex.Pattern;
 
 import org.omg.CORBA.BAD_PARAM;
@@ -62,6 +61,7 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreatedRaw_OK;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_ATTEMPT;
@@ -76,7 +76,10 @@ import alma.acs.util.StopWatch;
 
 
 /**
- * This class provides methods useful to both supplier and consumer objects.
+ * This class provides methods useful to both supplier and consumer objects, 
+ * where it is associated with exactly one Notification Channel.
+ * It can also be used without any notification channel.
+ * Never use a Helper instance for more than once NC!
  */
 public class Helper {
 
@@ -94,33 +97,26 @@ public class Helper {
 	 */
 	private static final String m_nameJavaProp = "ORBInitRef.NameService";
 
-	// / Access to the component's name along with the logging service.
+	
+	/**
+	 * Access to the component's name along with the logging service.
+	 */
 	private final ContainerServicesBase m_services;
 
-	// / Our own personal logger
+	// Our own personal logger
 	protected final Logger m_logger;
 	
 	/**
-	 * Random number generator, used to randomize client names 
-	 * when used as server-side proxy names.
-	 * This class is static to avoid that two subscribers or suppliers create
-	 * Helper instances at the same time and thus produce identical sequences
-	 * of random numbers, which would defy the purpose of avoiding 
-	 * name clashes on the server. 
+	 * The name is used to enforce that a Helper instance can be used for not more than one notification channel.
+	 * Thus it is either null or has the name of the NC that this Helper is used for.
 	 */
-	protected static final Random random = new Random(System.currentTimeMillis());
-
-	// / Provides access to channel's quality of service properties
-	private final ChannelProperties m_channelProperties;
-	
-	// CDB access helper (factory)
-	private final CDBAccess m_cdbAccess;
-	
-	// cached MACI/Channels DAO
-	private DAOProxy channelsDAO;
+	protected volatile String theChannelName;
 	
 	// channelId is used to reconnect to channel in case that Notify Server crashes
 	private int channelId;
+	
+	// Provides access to channel's quality of service properties
+	private final ChannelProperties m_channelProperties;
 	
 	private EventChannelFactory notifyFactory;
 
@@ -132,11 +128,30 @@ public class Helper {
 	 */
 	private final Map<String, Long> channelConfigProblems = new HashMap<String, Long>();
 
+	/**
+	 * Cached notify factory name where our NC is or should be hosted.
+	 * Avoids unnecessary CDB calls.
+	 */
+	private volatile String ncFactoryName;
+
+	/**
+	 * Random number generator, used to randomize client names 
+	 * when used as server-side proxy names.
+	 * This class is static and thus shared among the subscribers and suppliers of one client or component,
+	 * to reduce the risk that two subscribers or suppliers create
+	 * Helper instances at the same time (system time is used as random generator seed) 
+	 * and thereby produce identical sequences of random numbers, 
+	 * which would defy the purpose of avoiding name clashes on the server.
+	 */
+	protected static final Random random = new Random(System.currentTimeMillis());
+	
 
 	/**
 	 * Creates a new instance of Helper, which includes resolving the naming service.
 	 * @param services A reference to the ContainerServices
 	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
+	 * @deprecated Use {@link #Helper(ContainerServicesBase, NamingContext)} instead, as done by NCPublisher and NCSubscriber
+	 *             that are integrated into the ContainerServices.
 	 */
 	public Helper(ContainerServicesBase services) throws AcsJException {
 		this(services, getNamingServiceInitial(services));
@@ -167,9 +182,6 @@ public class Helper {
 
 		m_nContext = namingService;
 
-		// create CDB access
-		m_cdbAccess = new CDBAccess(getContainerServices().getAdvancedContainerServices().getORB(), m_logger);
-		m_cdbAccess.setDAL(getContainerServices().getCDB());
 	}
 
 	
@@ -185,23 +197,23 @@ public class Helper {
 
 	/**
 	 * Retrieves and returns a reference to the Naming Service.
-	 * This code belongs to the constructor and should only be called from there.
-	 * <p>
-	 * This method is <code>protected </code> to support unit tests, otherwise it would be <code>private</code>.
 	 * <p>
 	 * @TODO: The dependence of NC libs on the NamingService should be expressed in a less hidden form 
 	 * than using a property, which leads to dangerous runtime-only failures if missing.
 	 * It would already be an improvement if we would obtain the NamingService reference
 	 * from {@link AdvancedContainerServices#getORB()}.
-	 * A more radical change would be to integrate the NC classes into the ContainerServices.
+	 * A more radical change will be to only use NC classes integrated into the ContainerServices,
+	 * which get the namingservice reference passed.
 	 * 
 	 * @return Valid reference to the Naming Service.
 	 * @throws AcsJException
 	 *            Thrown when there's a bad corbaloc given for the Naming Service
 	 *            or the reference cannot be narrowed.
 	 * @see #getNamingService()
+	 * @deprecated Should eventually be moved from ./src to ./test, 
+	 *             once all NC libs other than NCPublisher and NCSubscriber are gone.
 	 */
-	protected static NamingContext getNamingServiceInitial(ContainerServicesBase cs) throws AcsJException {
+	public static NamingContext getNamingServiceInitial(ContainerServicesBase cs) throws AcsJException {
 		
 		// acsStartJava always adds this Java property for us
 		String nameCorbaloc = System.getProperty(m_nameJavaProp);
@@ -244,11 +256,15 @@ public class Helper {
 	}
 	
 	
+	/**
+	 * The TAO extension's reconnect() methods call this, 
+	 * so that we call again {@link org.omg.CosNotifyChannelAdmin.EventChannelFactoryOperations#get_event_channel(int)}.
+	 */
 	public EventChannel getNotificationChannel(EventChannelFactory ecf)
 	{
 		EventChannel ec = null;
 		try {
-			ec = EventChannelHelper.narrow( ecf.get_event_channel(channelId) );  // @TODO HSO: Shouldn't this be "ec = ..." ?
+			ec = EventChannelHelper.narrow( ecf.get_event_channel(channelId) );
 		} catch (ChannelNotFound e) {
 			// I cannot recover the channel using the ID
 		}
@@ -276,6 +292,8 @@ public class Helper {
 	public EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException 
 	{
+		enforceSingleNC(channelName);
+		
 		// return value
 		EventChannel retValue = null;
 		NameComponent[] t_NameSequence = { new NameComponent(channelName, channelKind) };
@@ -413,6 +431,8 @@ public class Helper {
 	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException, NameAlreadyUsed
 	{
+		enforceSingleNC(channelName);
+		
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
 		
 		// return value
@@ -487,6 +507,8 @@ public class Helper {
 	protected EventChannel createNotifyChannel_internal(Property[] initial_qos, Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
 		throws NameAlreadyUsed, UnsupportedQoS, AcsJNarrowFailedEx, AcsJCORBAProblemEx {
 		
+		enforceSingleNC(channelName);
+		
 		EventChannel ret = null;
 		
 		StopWatch stopwatch = new StopWatch();
@@ -546,6 +568,8 @@ public class Helper {
 	protected void destroyNotificationChannel(String channelName, String channelKind, org.omg.CosNotifyChannelAdmin.EventChannel channelRef)
 			throws AcsJException 
 	{
+		enforceSingleNC(channelName);
+		
 		try {
 			// destroy the remote CORBA object
 			channelRef.destroy();
@@ -600,22 +624,29 @@ public class Helper {
 	 * @param domainName	name of the domain, <code>null</code> if undefined.
 	 * @return notification channel factory name.
 	 */
-	public String getNotificationFactoryNameForChannel(String channelName, String domainName)
+	public String getNotificationFactoryNameForChannel(String channelName, String domainName) 
 	{
-		// lazy initialization
-		if (channelsDAO == null)
-		{
-			try {
-				channelsDAO = m_cdbAccess.createDAO("MACI/Channels");
-			} catch (Throwable th) {
-				// keep track of when this occurs
-				Long timeLastError = channelConfigProblems.get(channelName);
-				channelConfigProblems.put(channelName, System.currentTimeMillis());
-				// don't log this too often (currently only once)
-				if (timeLastError == null) {
-					m_logger.log(AcsLogLevel.CONFIG, "Config issue for channel '" + channelName + "'. " + 
-							"Failed to get MACI/Channels DAO from CDB. Will use default notification service.");
-				}
+		enforceSingleNC(channelName);
+
+		// try local cache
+		if (ncFactoryName != null) {
+			return ncFactoryName;
+		}
+		
+		// lazy initialization of CDB access
+		DAOProxy channelsDAO = null;
+		try {
+			CDBAccess cdbAccess = new CDBAccess(m_services.getAdvancedContainerServices().getORB(), m_logger);
+			cdbAccess.setDAL(m_services.getCDB());
+			channelsDAO = cdbAccess.createDAO("MACI/Channels");
+		} catch (Throwable th) {
+			// keep track of when this occurs
+			Long timeLastError = channelConfigProblems.get(channelName);
+			channelConfigProblems.put(channelName, System.currentTimeMillis());
+			// don't log this too often (currently only once)
+			if (timeLastError == null) {
+				m_logger.log(AcsLogLevel.CONFIG, "Config issue for channel '" + channelName + "'. " + 
+						"Failed to get MACI/Channels DAO from CDB. Will use default notification service.");
 			}
 		}
 		
@@ -628,8 +659,10 @@ public class Helper {
 				for (String pattern : channelNameList) {
 					String regExpStr = WildcharMatcher.simpleWildcardToRegex(pattern);
 					
-					if (Pattern.matches(regExpStr, channelName))
-						return channelsDAO.get_string("NotificationServiceMapping/Channels_/" + pattern + "/NotificationService");
+					if (Pattern.matches(regExpStr, channelName)) {
+						ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/Channels_/" + pattern + "/NotificationService");
+						return ncFactoryName;
+					}
 				}
 			} catch (Throwable th) {
 				m_logger.finer("No Channel to NotificationService mapping found for channel: " + channelName);
@@ -639,7 +672,8 @@ public class Helper {
 			if (domainName != null)
 			{
 				try {
-					return channelsDAO.get_string("NotificationServiceMapping/Domains/" + domainName + "/NotificationService");
+					ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/Domains/" + domainName + "/NotificationService");
+					return ncFactoryName;
 				} catch (Throwable th) {
 					m_logger.finer("No Domain to NotificationService mapping found for domain/channel: " + domainName + "/" + channelName);
 				}
@@ -647,14 +681,16 @@ public class Helper {
 	
 			// return default
 			try {
-				return channelsDAO.get_string("NotificationServiceMapping/DefaultNotificationService");
+				ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/DefaultNotificationService");
+				return ncFactoryName;
 			} catch (Throwable th) {
 				m_logger.finer("No NotificationServiceMapping/DefaultNotificationService attribute found, returning hardcoded default.");
 			}
 		}
 		
-		// return default
-		return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+		// default
+		ncFactoryName = alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+		return ncFactoryName;
 	}
 
 	/**
@@ -666,6 +702,8 @@ public class Helper {
 	 * @return HashMap described above
 	 */
 	public HashMap<String, Double> getEventHandlerTimeoutMap(String channelName) {
+		enforceSingleNC(channelName);
+
 		// initialize the return value
 		HashMap<String, Double> retVal = new HashMap<String, Double>();
 
@@ -740,11 +778,14 @@ public class Helper {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Caught " + ex.getMessage() + ": The administrative properties specified for the '" + channelName 
 				+ "' channel are not supported: ");
-		for (PropertyError propertyError : ex.admin_err) {
-			sb.append("code=" + propertyError.code.toString()).append("; ");
-			sb.append("name=" + propertyError.name);
-			// TODO: Figure out what type (inside the Any) the range values are and add something like the following
-//			sb.append("available_low=" + propertyError.available_range.low_val.extract_long());
+		if (ex.admin_err != null) {
+			for (PropertyError propertyError : ex.admin_err) {
+				sb.append("code=" + propertyError.code).append("; ");
+				sb.append("name=" + propertyError.name);
+				// TODO: Figure out what type (inside the Any) the range values are and add something like the following
+				// sb.append("available_low=" + propertyError.available_range.low_val.extract_long());
+				// or use alma.acs.nc.AnyAide.#corbaAnyToObject(Any)
+			}
 		}
 		return sb.toString();
 	}
@@ -769,5 +810,23 @@ public class Helper {
 		clientNameSB.append('-');
 		clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
 		return clientNameSB.toString();
+	}
+	
+	/**
+	 * Enforces that a Helper instance works for at most one NC.
+	 * This method must be called by all other Helper methods that work for a particular NC.
+	 * @TODO: For a cleaner solution, refactor this Helper class to accept channelName only in the constructor
+	 * and take it out from the other methods.
+	 * 
+	 * @param ncName Name of the NC to use this helper with.
+	 * @throws IllegalArgumentException If this Helper has already been used with another NC.
+	 */
+	protected void enforceSingleNC(String ncName) {
+		if (theChannelName != null && !theChannelName.equals(ncName)) {
+			throw new IllegalArgumentException("Helper for NC '" + theChannelName + "' cannot be used also for '" + ncName + "'.");
+		}
+		else {
+			theChannelName = ncName;
+		}
 	}
 }
