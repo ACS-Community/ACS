@@ -16,6 +16,7 @@ import junit.framework.AssertionFailedError;
 
 import org.omg.CORBA.IntHolder;
 import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.UnsupportedAdmin;
@@ -62,7 +63,7 @@ public class HelperTest extends ComponentClientTestCase
 	protected void setUp() throws Exception {
 		System.out.println("------------------------- " + getName() + " -------------------------");
 		super.setUp();
-		helper = new HelperWithChannelCreationSynch(getContainerServices());
+		helper = new HelperWithChannelCreationSynch(getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
 
 		String factoryMonitorRegName = "MC_NotifyEventChannelFactory";
 		try {
@@ -364,8 +365,8 @@ public class HelperTest extends ComponentClientTestCase
 
 		private volatile CountDownLatch synch;
 
-		public HelperWithChannelCreationSynch(ContainerServicesBase services) throws AcsJException {
-			super(services);
+		public HelperWithChannelCreationSynch(ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+			super(services, namingService);
 		}
 		
 		/**

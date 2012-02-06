@@ -25,6 +25,7 @@ import alma.ADMINTEST1.OnOffStates;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
+import alma.acs.nc.Helper;
 
 /**
  * This test class aims to test the NCPublisher class.
@@ -53,7 +54,7 @@ public class NCPublisherTest extends ComponentClientTestCase {
 	public void testPublisherSendingEvents() throws Exception {
 		// Creating a new Publisher
 		int numEvents = 1000;
-		publisher = new NCPublisher("testingChannel", services);
+		publisher = new NCPublisher("testingChannel", services, Helper.getNamingServiceInitial(getContainerServices()));
 		assertTrue(publisher != null);
 
 		// Sending numEvents;

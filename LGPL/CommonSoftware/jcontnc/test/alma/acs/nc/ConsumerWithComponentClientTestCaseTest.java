@@ -57,9 +57,9 @@ public class ConsumerWithComponentClientTestCaseTest extends ComponentClientTest
 
 	private void channelUp() throws AcsJException, InterruptedException {
 		// this is the problematic code from the Consumer ctor 
-		ncHelper = new Helper(getContainerServices());
-		channel = ncHelper.getNotificationChannel(channelName, NC_KIND.value, NOTIFICATION_FACTORY_NAME.value);		
-        m_logger.info("NC consumer installed on channel " + channelName);
+		ncHelper = new Helper(getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
+		channel = ncHelper.getNotificationChannel(channelName, NC_KIND.value, NOTIFICATION_FACTORY_NAME.value);
+		m_logger.info("NC consumer installed on channel " + channelName);
 		Thread.sleep(500);
 	}
 

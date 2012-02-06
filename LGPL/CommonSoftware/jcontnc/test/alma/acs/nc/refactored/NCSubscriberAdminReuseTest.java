@@ -32,7 +32,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		m_logger.info("------------ setUp " + getName() + " --------------");
-		Helper helper = new Helper(getContainerServices());
+		Helper helper = new Helper(getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
 		channel = helper.getNotificationChannel(CHANNEL_NAME, NC_KIND.value, helper.getNotificationFactoryNameForChannel(CHANNEL_NAME));
 		assertNotNull(channel);
 		assertEquals(0, channel.get_all_consumeradmins().length);
@@ -53,7 +53,6 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	@SuppressWarnings("deprecation")
 	public void testSharedAdminReuse() throws Exception {
 
-		assertEquals(0, channel.get_all_consumeradmins().length);
 		List<AcsEventSubscriber> subscriberList = new ArrayList<AcsEventSubscriber>();
 		for(int i=1; i<=10; i++) {
 			// Create the maximum number of proxies per admin
@@ -81,8 +80,6 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 
 	@SuppressWarnings("deprecation")
 	public void testNewAndOldNCsTogether() throws Exception {
-
-		assertEquals(0, channel.get_all_consumeradmins().length);
 
 		List<Consumer> consumers = new ArrayList<Consumer>();
 		for(int i=1; i<=10; i++) {
