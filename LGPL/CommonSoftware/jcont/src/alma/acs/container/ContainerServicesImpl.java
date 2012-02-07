@@ -40,8 +40,12 @@ import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
+
 import alma.ACS.CBlong;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
@@ -76,9 +80,6 @@ import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -1191,6 +1192,7 @@ public class ContainerServicesImpl implements ContainerServices
     /**
      * @see alma.acs.container.ContainerServices#getThreadFactory()
      */
+	@Override
     public ThreadFactory getThreadFactory() {
         return m_threadFactory;
     }
@@ -1303,13 +1305,15 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
 	 */
+	@Override
 	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
 		return createNotificationChannelSubscriber(channelName, null); //TODO (rtobar): Is this fine? I'm only 99% sure
 	}
-
+	
 	/**
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
 	 */
+	@Override
 	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
 
 		AcsEventSubscriber subscriber = null;
@@ -1350,16 +1354,19 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see ContainerServices#createNotificationChannelPublisher(String)
 	 */
-	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx {
-		return createNotificationChannelPublisher(channelName, null); // TODO (rtobar): only 99% sure that this is right
+	@Override
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return createNotificationChannelPublisher(channelName, null, eventType);
 	}
 
+	
 	/**
 	 * @see ContainerServices#createNotificationChannelPublisher(String, String)
 	 */
-	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+	@Override
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
 
-		AcsEventPublisher publisher = null;
+		AcsEventPublisher<T> publisher = null;
 
 		try {
 			Object[] args = new Object[]{
@@ -1368,9 +1375,11 @@ public class ContainerServicesImpl implements ContainerServices
 					this,
 					getNameService()
 			};
-			Class<?> clazz = Class.forName(CLASSNAME_NC_PUBLISHER);
-			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class);
-			publisher = (AcsEventPublisher)constructor.newInstance(args);
+//			// TODO: Can we do this without the direct cast? The usual "asSubclass" does not work 
+			// because we don't create Class<T> but rather Class<U<T>>. 
+			Class<AcsEventPublisher<T>> clazz = (Class<AcsEventPublisher<T>>) Class.forName(CLASSNAME_NC_PUBLISHER);
+			Constructor<AcsEventPublisher<T>> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class);
+			publisher = constructor.newInstance(args);
 		} catch(ClassNotFoundException e) {
 			// TODO: maybe we could prevent future NCPublisher creation tries, since the class isn't and will not be loaded
 			//       The same applies for the next "catch" block

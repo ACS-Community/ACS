@@ -72,6 +72,7 @@ import alma.acs.nc.ReconnectableSubscriber;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
+import alma.acsncErrType.wrappers.AcsJPublishEventFailureEx;
 
 /**
  * NCPublisher is the Notificaction Channel implementation to be used with the
@@ -79,7 +80,7 @@ import alma.acsnc.OSPushSupplierPOA;
 
  * @author jslopez, hsommer
  */
-public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher<IDLEntity>, ReconnectableSubscriber {
+public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublisher<T>, ReconnectableSubscriber {
 
 	/** Provides useful methods. */
 	protected final Helper helper;
@@ -489,18 +490,19 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher<
 	 * 
 	 * @param customStruct
 	 *            An instance of the IDL struct (Java class) to be published.
+	 * @throws AcsJPublishEventFailureEx If <code>customStruct</code> is not an IDL struct,
+	 *            for which it must be a subclass of IDLEntity.
 	 * @throws AcsJException
-	 *             There are an enormous amount of possibilities pertaining to
-	 *             why an AcsJException would be thrown by publishEvent.
+	 *            There are an enormous amount of possibilities pertaining to
+	 *            why an AcsJException would be thrown by publishEvent.
 	 */
 	@Override
-	public void publishEvent(IDLEntity customStruct) throws AcsJException {
+	public void publishEvent(T customStruct) throws AcsJException {
 
-		// Now that IDLEntity is back in the interface, we may delete the following lines. 
 		// Let's first verify that the use of generics between base class and here is OK also for the DDS side. 
-//		if( !(customStruct instanceof IDLEntity) ) {
-//			throw new AcsJPublishEventFailureEx(new ClassCastException("'" + customStruct.getClass().getName() + "' doesn't inherit from org.omg.CORBA.portable.IDLEntity"));
-//		}
+		if( !(customStruct instanceof IDLEntity) ) {
+			throw new AcsJPublishEventFailureEx(new ClassCastException("'" + customStruct.getClass().getName() + "' doesn't inherit from org.omg.CORBA.portable.IDLEntity"));
+		}
 		IDLEntity customStructEntity = (IDLEntity)customStruct;
 		
 		String typeName = customStruct.getClass().getSimpleName();

@@ -297,16 +297,16 @@ public class ContainerServicesProxy implements ContainerServices
 	 * @see ContainerServices#createNotificationChannelPublisher(String)
 	 */
 	@Override
-	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx {
-		return delegate.createNotificationChannelPublisher(channelName);
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelPublisher(channelName, eventType);
 	}
 
 	/**
 	 * @see ContainerServices#createNotificationChannelPublisher(String, String)
 	 */
 	@Override
-	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
-		return delegate.createNotificationChannelPublisher(channelName, channelNotifyServiceDomainName);
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelPublisher(channelName, channelNotifyServiceDomainName, eventType);
 	}
 
 	@Override

@@ -294,7 +294,7 @@ public class DummyContainerServices implements ContainerServices
 	 * @see ContainerServices#createNotificationChannelPublisher(String)
 	 */
 	@Override
-	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx {
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx();
 	}
 
@@ -302,7 +302,7 @@ public class DummyContainerServices implements ContainerServices
 	 * @see ContainerServices#createNotificationChannelPublisher(String, String)
 	 */
 	@Override
-	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx();
 	}
 
