@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.18 2012/01/27 14:40:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.19 2012/02/07 09:07:55 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,7 +67,7 @@ public:
 
 	/**
 	 * Returns number of connected receivers for the flow.
-	 * @return nmumber of receivers
+	 * @return number of receivers
 	 */
 	unsigned int getNumberOfReceivers();
 
