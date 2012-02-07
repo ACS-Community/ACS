@@ -45,7 +45,14 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 	private static String CHANNEL_NAME = "pink-floyd";
 	private NCSubscriber m_subscriber;
-	private AcsEventPublisher m_publisher;
+	
+	/**
+	 * We'll use this publisher to publish events of different types
+	 * (statusBlockEvent1 and statusBlockEvent2).
+	 * Thus we cannot parametrize it to any one of these types, but have to use the 
+	 * generic base type IDLEntity or Object.
+	 */
+	private AcsEventPublisher<IDLEntity> m_publisher;
 
 	private enum EventType {
 		statusBlock1,
@@ -58,7 +65,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		m_publisher = getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME);
+		m_publisher = getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
 		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
 
 		// This is the all-exclusive filter

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.portable.IDLEntity;
+
 import alma.ADMINTEST1.OnOffStates;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
@@ -37,8 +39,17 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 	private int m_interval;
 	private int m_times;
 	private int m_nEvents;
-	private AcsEventPublisher  m_publisher;
+	
+	/**
+	 * We'll use this publisher to publish events of different types
+	 * (statusBlockEvent1, statusBlockEvent2, EventDescription).
+	 * Thus we cannot parametrize it to any of these types, but have to use the 
+	 * generic base type IDLEntity or Object.
+	 */
+	private AcsEventPublisher<IDLEntity> m_publisher;
+	
 	private AcsEventSubscriber m_subscriber;
+	
 	private ComponentClient m_client;
 
 	public SimpleSupplierConsumerClient(int nEvents, int interval, int times) {
@@ -55,7 +66,7 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 
 				m_subscriber = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
 				m_subscriber.addSubscription(this);
-				m_publisher = m_client.getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME);
+				m_publisher = m_client.getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
 			} catch (AcsJContainerServicesEx e) {
 				// Silently ignore the errors
 			} catch (AcsJException e) {
