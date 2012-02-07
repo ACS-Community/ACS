@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.28 2012/02/06 15:09:56 hsommer Exp $"
+# "@(#) $Id: TestList.lite,v 1.29 2012/02/07 17:05:02 hsommer Exp $"
 #
 # TestList
 #
@@ -50,6 +50,6 @@ PROLOGUE acsutilTATPrologue -l
 
 8 testRefactoredNCSubscriber "acsutilTATTestRunner runNCSubscriberTests.sh"
 
-EPILOGUE acsutilTATEpilogue
-
 9 testHelper "acsutilTATTestRunner runHelperTest.sh"
+
+EPILOGUE acsutilTATEpilogue
