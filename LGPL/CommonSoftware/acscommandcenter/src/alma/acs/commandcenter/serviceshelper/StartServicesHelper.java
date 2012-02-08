@@ -182,6 +182,36 @@ public class StartServicesHelper {
     		listenersUpdaterThread.start();
     	}
     }
+    
+    /**
+     * An object to hold the definitins of the services to start.
+     * 
+     * @author acaproni
+     *
+     */
+    public class AlarmServicesDefinitionHolder {
+    	/**
+    	 * The XML describing the services to start/stop
+    	 */
+    	public final String xmlServicesDefinition;
+    	
+    	/**
+    	 * The immutable list of services to start as it has been retrieved
+    	 * from the TMCDB
+    	 */
+    	public final List<AcsServiceToStart> services;
+    	
+    	/**
+    	 * Constructor 
+    	 * 
+    	 * @param xml The xml describing the services to start/stop
+    	 * @param services The list of services to start read from the TMCDB
+    	 */
+    	public AlarmServicesDefinitionHolder(String xml, List<AcsServiceToStart> services) {
+    		xmlServicesDefinition=xml;
+    		this.services=services;
+    	}
+    }
 
 	/**
 	 * The listener of events generated starting and stopping 
@@ -301,12 +331,12 @@ public class StartServicesHelper {
 	 * because method {@link #startACSServices} includes this step.
 	 * <P>
 	 * This method delegates to {@link #internalGetServicesDescritpion(ServicesDaemon, ServiceDefinitionBuilder)}
-	 * @return An XML representation of the services to start.
+	 * @return A struct with the XML representation of the services to start and the services to start read from the TMCDB
 	 * @throws Exception In case of error getting the services
 	 * 
 	 *  @see #internalGetServicesDescritpion(ServicesDaemon, ServiceDefinitionBuilder)
 	 */ 
-	public String getServicesDescription() throws Exception {
+	public AlarmServicesDefinitionHolder getServicesDescription() throws Exception {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		
@@ -318,10 +348,10 @@ public class StartServicesHelper {
 	 * TMCDB.
 	 *  
 	 * @param daemon That services deamon
-	 * @return The XML string with the services to start
+	 * @return The XML and the list of services describing the services to start
 	 * @throws Exception In case of error reading the TMCDB or creating the XML with the {@link ServiceDefinitionBuilder}
 	 */
-	private String internalGetServicesDescription(
+	private AlarmServicesDefinitionHolder internalGetServicesDescription(
 			ServicesDaemon daemon) throws Exception {
 		if (daemon==null) {
 			throw new IllegalArgumentException("The daemon can't be null");
@@ -379,7 +409,7 @@ public class StartServicesHelper {
 			// Error in the XML
 			throw new Exception("Error in the services definition: "+errorStr.value);
 		}
-		return svcsXML;
+		return new AlarmServicesDefinitionHolder(svcsXML, Collections.unmodifiableList(services));
 	}
 
 	/** 
@@ -415,18 +445,20 @@ public class StartServicesHelper {
 	 * <P> 
 	 * The real starting of services is delegated to {@link #internalStartServices(ServicesDaemon, ServiceDefinitionBuilder, String)}
 	 * 
-	 * @return An XML representation of the started services, to be used in {@link #stopServices}.
+	 * @return A struct with the An XML representation of the started services, to be used in {@link #stopServices}
+	 * 			and a list of services as they have been read from the TMCDB
 	 * @throws Exception In case of error getting the list of services from the TMCDB 
-	 *                   or getting the reference of the services daemon 
+	 *                   or getting the reference of the services daemon
+	 * @see AlarmServicesDefinitionHolder 
 	 */
-	public String startACSServices() throws Exception {
+	public AlarmServicesDefinitionHolder startACSServices() throws Exception {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		// Get the services from the TMCDB
-		String svcsXML=internalGetServicesDescription(daemon);
+		AlarmServicesDefinitionHolder holder=internalGetServicesDescription(daemon);
 		// Start the services
-		internalStartServices(daemon, svcsXML);
-		return svcsXML;
+		internalStartServices(daemon, holder.xmlServicesDefinition);
+		return holder;
 	}
 	
 	/**
