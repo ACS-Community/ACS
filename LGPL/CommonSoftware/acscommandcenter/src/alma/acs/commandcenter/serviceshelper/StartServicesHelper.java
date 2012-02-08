@@ -34,6 +34,7 @@ import alma.ACSErr.Completion;
 import alma.acs.commandcenter.engine.Executor.RemoteServicesDaemonFlow;
 import alma.acs.commandcenter.serviceshelper.TMCDBServicesHelper.AcsServiceToStart;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.util.AcsLocations;
 import alma.acsdaemon.DaemonSequenceCallback;
@@ -69,21 +70,121 @@ public class StartServicesHelper {
     	 * The logger
     	 */
         private final AcsLogger logger;
+        
+        /**
+         * <code>true</code> if the callback is used while starting services
+         */
+        private final boolean startingServices;
 
-        public DaemonSequenceCallbackImpl(AcsLogger logger) {
+        /**
+         * C'tor.
+         * 
+         * @param logger The logger 
+         * @param starting <code>true</code> means that the callback is used while starting services
+         */
+        public DaemonSequenceCallbackImpl(AcsLogger logger, boolean starting) {
         	if (logger==null) {
         		throw new IllegalArgumentException("The logger can't be null");
         	}
             this.logger = logger;
+            this.startingServices=starting;
         }
 
         public void done(Completion comp) {
-            logger.info("done: comp=" + comp.timeStamp);
+            logger.log(AcsLogLevel.DEBUG,"Done: comp=" + comp.timeStamp);
+            notifyListenersDone(comp.type, comp.code);
         }
 
         public void working(String service, String host, short instance_number, Completion comp) {
-            logger.info("working: service=" + service + " host=" + host + " instance=" + instance_number + " comp=" + comp.timeStamp);
+            logger.log(AcsLogLevel.DEBUG,"Working: service=" + service + " host=" + host + " instance=" + instance_number + " comp=" + comp.timeStamp);
+            notifyListenersStartStop(startingServices, service, host, instance, comp.type, comp.code);
         }
+        
+        /**
+    	 * Notify all the listeners about the progresses while starting/stopping of services.
+    	 * <P> 
+    	 * This method is executed by {@link #working(String, String, short, Completion)}
+    	 * to notify the listener that a service started or stopped.
+    	 *  
+    	 * @param starting <code>true</code> means starting of services;
+    	 * 				   <code>false</code> means stopping.
+    	 * @param serviceName The name of the service. 
+    	 * @param hostName The name of the host where the service started.		
+    	 * @param instance The number of the ACS instance
+    	 * @param errorType The type of error (0 means no error)
+    	 * @param errorCode The code of the error
+    	 */
+    	private void notifyListenersStartStop(
+    			final boolean starting, 
+    			final String serviceName, 
+    			final String hostName,
+    			final int instance, 
+    			final int errorType, 
+    			final int errorCode)  {
+    		
+    		if (listeners.isEmpty()) {
+    			// Nobody to notify!
+    			return;
+    		}
+    		Thread listenersUpdaterThread=contSvcs.getThreadFactory().newThread(new Runnable() {
+    			public void run() {
+    				synchronized (listeners) {
+    					for (ServicesListener listener: listeners) {
+   							// The working method of the callback has been invoked
+							if (starting) {
+								listener.serviceStarted(
+										serviceName,
+										hostName, 
+										instance, 
+										errorType,errorCode);
+							} else {
+								listener.serviceStopped(
+										serviceName,
+										hostName, 
+										instance,
+										errorType,										
+										errorCode);
+							}
+    					}
+    				}
+    			}
+    		});
+    		listenersUpdaterThread.setName("ListenersUpdaterStartStopThread");
+    		listenersUpdaterThread.setDaemon(true);
+    		listenersUpdaterThread.start();
+    	}
+    	
+    	/**
+    	 * Notify all the listeners that the operation has terminated.
+    	 * <P> 
+    	 * This method is executed by {@link #done(Completion)}
+    	 * to notify the listener that the starting of stopping of the
+    	 * services terminated.
+    	 *  
+    	 * @param errorType The type of error (0 means no error)
+    	 * @param errorCode The code of the error
+    	 */
+    	private void notifyListenersDone(
+    			final int errorType, 
+    			final int errorCode)  {
+    		
+    		if (listeners.isEmpty()) {
+    			// Nobody to notify!
+    			return;
+    		}
+    		Thread listenersUpdaterThread=contSvcs.getThreadFactory().newThread(new Runnable() {
+    			public void run() {
+    				synchronized (listeners) {
+    					for (ServicesListener listener: listeners) {
+   							listener.done(errorType, errorCode);
+    					}
+    				}
+    			}
+    		});
+    		listenersUpdaterThread.setName("ListenersUpdaterDoneThread");
+    		listenersUpdaterThread.setDaemon(true);
+    		listenersUpdaterThread.start();
+    	}
     }
 
 	/**
@@ -96,34 +197,36 @@ public class StartServicesHelper {
 	public interface ServicesListener {
 		
 		/**
-		 * Invoked when all the start/stop of services terminated.
+		 * Invoked when start/stop of services terminated.
+		 * 
+		 * @param errorType The type of error (o means no error)
+		 * @param errorCode The code of the error
 		 */
-		public void done();
+		public void done(int errorType, int errorCode);
 		
 		/**
 		 * Invoked when the service with the passed name has been
 		 * successfully started.
 		 * 
 		 * @param name The name of the service
+		 * @param host The name of the host where the services has been started/stopped
+		 * @param instance The number of the ACS instance
+		 * @param errorType The type of error (o means no error)
+		 * @param errorCode The code of the error
 		 */
-		public void serviceStarted(String name);
+		public void serviceStarted(String name, String host, int instance, int errorType, int errorCode);
 		
 		/**
 		 * Invoked when the service with the passed name has been
 		 * successfully stopped.
 		 * 
 		 * @param name The name of the service
+		 * @param host The name of the host where the services has been started/stopped
+		 * @param instance The number of the ACS instance
+		 * @param errorType The type of error (o means no error)
+		 * @param errorCode The code of the error
 		 */
-		public void serviceStopped(String name);
-		
-		/**
-		 * Invoked when an error occurred trying to start or stop
-		 * the service with the passed name.
-		 * 
-		 * @param name The name of the service
-		 */
-		public void error(String name);
-		
+		public void serviceStopped(String name, String host, int instance, int errorType, int errorCode);
 	}
 	
 	/**
@@ -352,7 +455,7 @@ public class StartServicesHelper {
 		if (svcsXML==null || svcsXML.isEmpty()) {
 			throw new IllegalArgumentException("The XML list of services can't be null nor empty");
 		}
-		 DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger());
+		 DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger(),true);
          DaemonSequenceCallback daemonSequenceCallback = 
         		 DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
          daemon.start_services(svcsXML, true, daemonSequenceCallback);
@@ -371,7 +474,7 @@ public class StartServicesHelper {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		
-		DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger());
+		DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger(),false);
         DaemonSequenceCallback daemonSequenceCallback = 
        		 DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
         daemon.stop_services(xmlListOfServices, daemonSequenceCallback);
