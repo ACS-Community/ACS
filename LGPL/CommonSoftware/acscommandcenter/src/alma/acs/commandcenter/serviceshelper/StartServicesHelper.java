@@ -20,18 +20,15 @@
  *******************************************************************************/
 package alma.acs.commandcenter.serviceshelper;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.hibernate.Session;
 import org.omg.CORBA.StringHolder;
 
 import alma.ACSErr.Completion;
-import alma.acs.commandcenter.engine.Executor.RemoteServicesDaemonFlow;
 import alma.acs.commandcenter.serviceshelper.TMCDBServicesHelper.AcsServiceToStart;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
@@ -43,7 +40,6 @@ import alma.acsdaemon.DaemonSequenceCallbackPOA;
 import alma.acsdaemon.ServiceDefinitionBuilder;
 import alma.acsdaemon.ServicesDaemon;
 import alma.acsdaemon.ServicesDaemonHelper;
-import alma.acsdaemonErrType.AcsStartServices;
 
 /**
  * An helper to start the ACS services defined in the TMCDB with the 
@@ -497,12 +493,13 @@ public class StartServicesHelper {
 	 * Remove the passed listener of the start/stop of services.
 	 *  
 	 * @param listener The not <code>null</code> listener to remove.
+	 * @return <code>true</code> if this set contained the specified element
 	 */
-	public void removeServiceListener(ServicesListener listener) {
+	public boolean  removeServiceListener(ServicesListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("The listener can't be null");
 		}
-		listeners.remove(listener);
+		return listeners.remove(listener);
 	}
 	
 	/**
