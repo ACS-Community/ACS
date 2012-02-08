@@ -25,10 +25,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.omg.CORBA.StringHolder;
 
 import alma.ACSErr.Completion;
+import alma.ACSErrTypeCommon.BadParameterEx;
+import alma.ACSErrTypeCommon.NoResourcesEx;
 import alma.acs.commandcenter.serviceshelper.TMCDBServicesHelper.AcsServiceToStart;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
@@ -256,6 +259,89 @@ public class StartServicesHelper {
 	}
 	
 	/**
+	 * The exception returned when an error happens getting the services daemon.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class GettingDaemonException extends Exception {
+		
+		/**
+		 * C'tor
+		 * 
+		 * @see Exception#Exception(String)
+		 */
+		public GettingDaemonException(String errorStr) {
+			super(errorStr);
+		}
+		
+		/**
+		 * C'tor
+		 * 
+		 * @see Exception#Exception(String, Throwable)
+		 */
+		public GettingDaemonException(String message, Throwable cause) {
+	        super(message, cause);
+	    }
+	}
+	
+	/**
+	 * Encapsulate the exception returned by the daemon
+	 * 
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class DaemonException extends Exception {
+		
+		/**
+		 * C'tor
+		 * 
+		 * @see Exception#Exception(String)
+		 */
+		public DaemonException(String errorStr) {
+			super(errorStr);
+		}
+		
+		/**
+		 * C'tor
+		 * 
+		 * @see Exception#Exception(String, Throwable)
+		 */
+		public DaemonException(String message, Throwable cause) {
+	        super(message, cause);
+	    }
+	}
+	
+	/**
+	 * The exception in case of error from the TMCDB
+	 * 
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class TMCDBException extends Exception {
+		
+		/**
+		 * C'tor
+		 * 
+		 * @see Exception#Exception(String)
+		 */
+		public TMCDBException(String errorStr) {
+			super(errorStr);
+		}
+		
+		/**
+		 * C'tor
+		 * 
+		 * @see Exception#Exception(String, Throwable)
+		 */
+		public TMCDBException(String message, Throwable cause) {
+	        super(message, cause);
+	    }
+	}
+	
+	/**
 	 * The listener of events
 	 */
 	private final Set<ServicesListener> listeners = 
@@ -332,11 +418,14 @@ public class StartServicesHelper {
 	 * <P>
 	 * This method delegates to {@link #internalGetServicesDescritpion(ServicesDaemon, ServiceDefinitionBuilder)}
 	 * @return A struct with the XML representation of the services to start and the services to start read from the TMCDB
-	 * @throws Exception In case of error getting the services
+	 * @throws GettingDaemonException In case of error getting the daemon
+	 * @throws DaemonException In case of error from the daemon
+	 * @throws TMCDBException If the list of service read from the TMCDB is empty
 	 * 
-	 *  @see #internalGetServicesDescritpion(ServicesDaemon, ServiceDefinitionBuilder)
+	 * @see #internalGetServicesDescritpion(ServicesDaemon, ServiceDefinitionBuilder)
 	 */ 
-	public AlarmServicesDefinitionHolder getServicesDescription() throws Exception {
+	public AlarmServicesDefinitionHolder getServicesDescription() 
+			throws GettingDaemonException, DaemonException, TMCDBException {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		
@@ -347,67 +436,79 @@ public class StartServicesHelper {
 	 * Return the the XML string describing the services to start by reading the services from the
 	 * TMCDB.
 	 *  
-	 * @param daemon That services deamon
+	 * @param daemon That services daemon
 	 * @return The XML and the list of services describing the services to start
-	 * @throws Exception In case of error reading the TMCDB or creating the XML with the {@link ServiceDefinitionBuilder}
+	 * @throws HibernateException In case of error reading the services from the TMCDB
+	 * @throws DaemonException In case of error from the daemon
+	 * @throws TMCDBException If the list of service read from the TMCDB is empty
 	 */
-	private AlarmServicesDefinitionHolder internalGetServicesDescription(
-			ServicesDaemon daemon) throws Exception {
+	private AlarmServicesDefinitionHolder internalGetServicesDescription (
+			ServicesDaemon daemon) 
+					throws HibernateException, DaemonException, TMCDBException {
 		if (daemon==null) {
 			throw new IllegalArgumentException("The daemon can't be null");
 		}
 		// Get the service definition builder for the current instance
-		ServiceDefinitionBuilder srvDefBuilder=daemon.create_service_definition_builder((short)instance);
+		ServiceDefinitionBuilder srvDefBuilder=null;
+		try {
+			srvDefBuilder=daemon.create_service_definition_builder((short)instance);
+		} catch (Throwable t) {
+			throw new DaemonException("Error getting the service definition builder", t);
+		}
 		// Get the services from the TMCDB
 		List<AcsServiceToStart> services = getServicesList();
 		if (services.isEmpty()) {
-			throw new Exception("No services to start from TMCDB");
+			throw new TMCDBException("No services to start from TMCDB");
 		}
 		// Add the services to the service definition builder
-		for (AcsServiceToStart svc: services) {
-			switch (svc.serviceType) {
-			case MANAGER: {
-				srvDefBuilder.add_manager(svc.hostName, "", false);
-				break;
+		try { 
+			for (AcsServiceToStart svc: services) {
+				switch (svc.serviceType) {
+				case MANAGER: {
+					srvDefBuilder.add_manager(svc.hostName, "", false);
+					break;
+				}
+				case ALARM: {
+					srvDefBuilder.add_alarm_service(svc.hostName);
+					break;
+				}
+				case CDB: {
+					srvDefBuilder.add_xml_cdb(svc.hostName, false, "");
+					break;
+				}
+				case IFR: {
+					srvDefBuilder.add_interface_repository(svc.hostName, true, false);
+					break;
+				}
+				case LOGGING: {
+					srvDefBuilder.add_logging_service(svc.hostName, svc.serviceName);
+					break;
+				}
+				case LOGPROXY: {
+					srvDefBuilder.add_acs_log(svc.hostName);
+					break;
+				}
+				case NAMING: {
+					srvDefBuilder.add_naming_service(svc.hostName);
+					break;
+				}
+				case NOTIFICATION: {
+					srvDefBuilder.add_notification_service(svc.serviceName, svc.hostName);
+					break;
+				}
+				default: {
+					throw new Exception("Unknown type of service to start: "+svc.serviceType+", on "+svc.hostName);
+				}
+				}
 			}
-			case ALARM: {
-				srvDefBuilder.add_alarm_service(svc.hostName);
-				break;
-			}
-			case CDB: {
-				srvDefBuilder.add_xml_cdb(svc.hostName, false, "");
-				break;
-			}
-			case IFR: {
-				srvDefBuilder.add_interface_repository(svc.hostName, true, false);
-				break;
-			}
-			case LOGGING: {
-				srvDefBuilder.add_logging_service(svc.hostName, svc.serviceName);
-				break;
-			}
-			case LOGPROXY: {
-				srvDefBuilder.add_acs_log(svc.hostName);
-				break;
-			}
-			case NAMING: {
-				srvDefBuilder.add_naming_service(svc.hostName);
-				break;
-			}
-			case NOTIFICATION: {
-				srvDefBuilder.add_notification_service(svc.serviceName, svc.hostName);
-				break;
-			}
-			default: {
-				throw new Exception("Unknown type of service to start: "+svc.serviceType+", on "+svc.hostName);
-			}
-			}
+		} catch (Throwable t) {
+			throw new DaemonException("Error adding services to the daemon", t);
 		}
 		String svcsXML = srvDefBuilder.get_services_definition();
 		StringHolder errorStr = new StringHolder();
 		if (!srvDefBuilder.is_valid(errorStr)) {
 			// Error in the XML
-			throw new Exception("Error in the services definition: "+errorStr.value);
+			throw new DaemonException("Error in the services definition: "+errorStr.value);
 		}
 		return new AlarmServicesDefinitionHolder(svcsXML, Collections.unmodifiableList(services));
 	}
@@ -420,20 +521,33 @@ public class StartServicesHelper {
 	 * The starting of the services is delegated to a acs service daemon. 
 	 * @param xmlListOfServices The XML describing the list of services to start. 
 	 * It is generally returned by getServicesDescription() 
+	 * 
+	 * @throws GettingDaemonException in case of error getting the services daemon
+	 * @throws DaemonException In case of error from the daemon
 	 */ 
-	public void startACSServices(String xmlListOfServices) throws Exception {
+	public void startACSServices(String xmlListOfServices) 
+			throws GettingDaemonException, DaemonException {
 		if (xmlListOfServices==null || xmlListOfServices.isEmpty()) {
 			throw new IllegalArgumentException("The XML list of services can't be null nor empty");
 		}
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		// Get the service definition builder for the current instance
-		ServiceDefinitionBuilder srvDefBuilder=daemon.create_service_definition_builder((short)instance);
-		srvDefBuilder.add_services_definition(xmlListOfServices);
+		ServiceDefinitionBuilder srvDefBuilder=null;
+		try {
+			srvDefBuilder=daemon.create_service_definition_builder((short)instance);
+		} catch (Throwable t) {
+			throw new DaemonException("Error getting the service definition builder", t);
+		}
+		try {
+			srvDefBuilder.add_services_definition(xmlListOfServices);
+		} catch (Throwable t) {
+			throw new DaemonException("Error adding the list of services to the daemon", t);
+		}
 		StringHolder errorStr = new StringHolder();
 		if (!srvDefBuilder.is_valid(errorStr)) {
 			// Error in the XML
-			throw new Exception("Error in the services definition: "+errorStr.value);
+			throw new DaemonException("Invalid XML list of services: "+errorStr.value);
 		}
 		internalStartServices(daemon, xmlListOfServices);
 	}
@@ -447,11 +561,15 @@ public class StartServicesHelper {
 	 * 
 	 * @return A struct with the An XML representation of the started services, to be used in {@link #stopServices}
 	 * 			and a list of services as they have been read from the TMCDB
-	 * @throws Exception In case of error getting the list of services from the TMCDB 
-	 *                   or getting the reference of the services daemon
+	 * 
+	 * @throws GettingDaemonException in case of error getting the services daemon
+	 * @throws HibernateException In case of error reading the services from the TMCDB
+	 * @throws DaemonExceptionIn case of error from the daemon
+	 * @throws TMCDBException If the list of services read from the TMCDB is empty
 	 * @see AlarmServicesDefinitionHolder 
 	 */
-	public AlarmServicesDefinitionHolder startACSServices() throws Exception {
+	public AlarmServicesDefinitionHolder startACSServices() throws 
+	GettingDaemonException, HibernateException, DaemonException, TMCDBException {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		// Get the services from the TMCDB
@@ -471,12 +589,13 @@ public class StartServicesHelper {
 	 * @param builder The builder to validate the XML;
 	 *                 If <code>null</code> an instance is retrieved from the daemon.
 	 * @param svcsXML The XML string describing the services to start
-	 * @throws Exception
+	 * 
+	 * @throws DaemonException In case of a bad parameter in the method to start the services
+	 * 						   or instantiating the callback
 	 */
 	private void internalStartServices(
 			ServicesDaemon daemon, 
-			String svcsXML) 
-	throws Exception {
+			String svcsXML) throws DaemonException {
 		if (daemon==null) {
 			throw new IllegalArgumentException("The daemon can't be null");
 		}
@@ -484,18 +603,29 @@ public class StartServicesHelper {
 			throw new IllegalArgumentException("The XML list of services can't be null nor empty");
 		}
 		 DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger(),true);
-         DaemonSequenceCallback daemonSequenceCallback = 
-        		 DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
-         daemon.start_services(svcsXML, true, daemonSequenceCallback);
+         DaemonSequenceCallback daemonSequenceCallback = null;
+        		 
+         try {
+        	 daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
+         } catch (Throwable t) {
+  			throw new DaemonException("Error starting the callback", t);
+  		}
+         try {
+        	 daemon.start_services(svcsXML, true, daemonSequenceCallback);
+         } catch (Throwable t) {
+ 			throw new DaemonException("Error starting the services", t);
+ 		}
 	}
 
 	/** 
 	 * Stops the services whose definition is in the passed parameter. 
 	 * 
 	 * @param xmlListOfServices The XML describing the list of services to stop.
-	 * @throws Exception In case of error getting the services daemon 
+	 * @throws GettingDaemonException In case of error getting the services daemon 
+	 * @throws DaemonException In case of error from the services daemon
 	 */ 
-	public void stopServices(String xmlListOfServices) throws Exception {
+	public void stopServices(String xmlListOfServices) 
+	throws GettingDaemonException, DaemonException {
 		if (xmlListOfServices==null || xmlListOfServices.isEmpty()) {
 			throw new IllegalArgumentException("The XML list of services can't be null nor empty");
 		}
@@ -503,9 +633,17 @@ public class StartServicesHelper {
 		ServicesDaemon daemon = getServicesDaemon();
 		
 		DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger(),false);
-        DaemonSequenceCallback daemonSequenceCallback = 
-       		 DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
-        daemon.stop_services(xmlListOfServices, daemonSequenceCallback);
+        DaemonSequenceCallback daemonSequenceCallback = null;
+        try {
+        	daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
+        } catch (Throwable t) {
+        	throw new DaemonException("Error instantiating the callback", t);
+        }
+        try {
+        	daemon.stop_services(xmlListOfServices, daemonSequenceCallback);
+        } catch (Throwable t) {
+        	throw new DaemonException("Error stopping services", t);
+        }
 	}
 	
 	/**
@@ -539,7 +677,7 @@ public class StartServicesHelper {
 	 * @return The list of services to start.
 	 * @throws Exception In case of error getting the list of services from the TMCDB
 	 */
-	private List<AcsServiceToStart> getServicesList() throws Exception {
+	private List<AcsServiceToStart> getServicesList() throws HibernateException {
 		TMCDBServicesHelper tmcdbHelper = new TMCDBServicesHelper(contSvcs.getLogger(), session);
 		return tmcdbHelper.getServicesList(configurationName);
 	}
@@ -550,9 +688,9 @@ public class StartServicesHelper {
 	 * 
 	 * @return the reference to the services daemon
 	 * 
-	 * @throws Exception in case of error getting the services daemon
+	 * @throws GettingDaemonException in case of error getting the services daemon
 	 */
-	private ServicesDaemon getServicesDaemon() throws Exception {
+	private ServicesDaemon getServicesDaemon() throws GettingDaemonException {
 		ServicesDaemon daemon;
 		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(daemonHost);
 		try {
@@ -560,11 +698,11 @@ public class StartServicesHelper {
 					contSvcs.getAdvancedContainerServices().getORB().string_to_object(daemonLoc);
 			daemon = ServicesDaemonHelper.narrow(object);
 			if (daemon == null)
-				throw new NullPointerException("Received null trying to retrieve acs services daemon on "+daemonHost);
+				throw new GettingDaemonException("Received null trying to retrieve acs services daemon on "+daemonHost);
 			if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
-				throw new RuntimeException("Acs services daemon not existing on "+daemonHost);
+				throw new GettingDaemonException("Acs services daemon not existing on "+daemonHost);
 		} catch (Throwable t) {
-			throw new Exception("Error getting the services daemon "+t.getMessage(), t);
+			throw new GettingDaemonException("Error getting the services daemon "+t.getMessage(), t);
 		}
 		return daemon;
 	}
