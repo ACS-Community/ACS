@@ -195,7 +195,7 @@ public class StartServicesHelper {
 		/**
 		 * Invoked when start/stop of services terminated.
 		 * 
-		 * @param errorType The type of error (o means no error)
+		 * @param errorType The type of error (0 means no error)
 		 * @param errorCode The code of the error
 		 */
 		public void done(int errorType, int errorCode);
@@ -207,7 +207,7 @@ public class StartServicesHelper {
 		 * @param name The name of the service
 		 * @param host The name of the host where the services has been started/stopped
 		 * @param instance The number of the ACS instance
-		 * @param errorType The type of error (o means no error)
+		 * @param errorType The type of error (0 means no error)
 		 * @param errorCode The code of the error
 		 */
 		public void serviceStarted(String name, String host, int instance, int errorType, int errorCode);
@@ -219,7 +219,7 @@ public class StartServicesHelper {
 		 * @param name The name of the service
 		 * @param host The name of the host where the services has been started/stopped
 		 * @param instance The number of the ACS instance
-		 * @param errorType The type of error (o means no error)
+		 * @param errorType The type of error (0 means no error)
 		 * @param errorCode The code of the error
 		 */
 		public void serviceStopped(String name, String host, int instance, int errorType, int errorCode);
@@ -310,7 +310,7 @@ public class StartServicesHelper {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		
-		return internalGetServicesDescritpion(daemon);
+		return internalGetServicesDescription(daemon);
 	}
 	
 	/**
@@ -321,7 +321,7 @@ public class StartServicesHelper {
 	 * @return The XML string with the services to start
 	 * @throws Exception In case of error reading the TMCDB or creating the XML with the {@link ServiceDefinitionBuilder}
 	 */
-	private String internalGetServicesDescritpion(
+	private String internalGetServicesDescription(
 			ServicesDaemon daemon) throws Exception {
 		if (daemon==null) {
 			throw new IllegalArgumentException("The daemon can't be null");
@@ -423,7 +423,7 @@ public class StartServicesHelper {
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		// Get the services from the TMCDB
-		String svcsXML=internalGetServicesDescritpion(daemon);
+		String svcsXML=internalGetServicesDescription(daemon);
 		// Start the services
 		internalStartServices(daemon, svcsXML);
 		return svcsXML;
