@@ -33,6 +33,7 @@ import com.cosylab.cdb.jdal.hibernate.HibernateDBUtil;
 import com.cosylab.cdb.jdal.hibernate.HibernateUtil;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.stat.CategorizedStatistics;
@@ -160,8 +161,10 @@ class TMCDBServicesHelper {
 	/**
 	 * 
 	 * @return The configuration names from the TMCDB
+	 * 
+	 * @throws HibernateException In case of error getting data from the TMCDB
 	 */
-	public Collection getConfigurationNames() throws Exception {
+	public Collection getConfigurationNames() throws HibernateException {
 		Query query = session.createQuery("from Configuration");
 		List list= query.list();
 		return list;
@@ -173,9 +176,9 @@ class TMCDBServicesHelper {
 	 * 
 	 * @param configurationName The not <code>null</code> and not empty name of the configuration
 	 * @return The not <code>null</code> list of services to start for the passed configuration
-	 * @throws Exception In case of error getting data from the TMCDB
+	 * @throws HibernateException In case of error getting data from the TMCDB
 	 */
-	public List<AcsServiceToStart> getServicesList(String configurationName) throws Exception {
+	public List<AcsServiceToStart> getServicesList(String configurationName) throws HibernateException {
 		if (configurationName==null || configurationName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid null or empty name of configuration");
 		}
