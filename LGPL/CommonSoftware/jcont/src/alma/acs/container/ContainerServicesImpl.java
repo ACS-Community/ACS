@@ -167,7 +167,7 @@ public class ContainerServicesImpl implements ContainerServices
 	private final List<CleanUpCallback> cleanUpCallbacks;
 
 	private final Map<String, AcsEventSubscriber> m_subscribers;
-	private final Map<String, AcsEventPublisher<?>>  m_publishers;
+	private final Map<String, AcsEventPublisher<?>> m_publishers;
 	
 	/**
 	 * Subscriber instance gets created using reflection, since module jcontnc must come after jcont for other reasons.
@@ -180,7 +180,8 @@ public class ContainerServicesImpl implements ContainerServices
 	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
 
 	/**
-	 * Separate sync object for lazu instantiations, to not conflict with other uses of this object's monitor.
+	 * Instead of using "synchronized" lazy factory methods, there is this separate sync object 
+	 * for lazy instantiations, to not conflict with possible other uses of this object's monitor.
 	 */
 	private final Object lazyCreationSync = new Object();
 
@@ -202,7 +203,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @param clientCurl
 	 * @param componentStateManager  can be null if this class is instantiated 
 	 * 									for a component client outside of a container
-     * @param threadFactory to be used for <code>getThreadFactory</code>
+	 * @param threadFactory to be used for <code>getThreadFactory</code>
 	 */
 	public ContainerServicesImpl(AcsManagerProxy acsManagerProxy, POA componentPOA, AcsCorba acsCorba,
 									AcsLogger logger, int componentHandle, String clientCurl, 
@@ -1409,7 +1410,7 @@ public class ContainerServicesImpl implements ContainerServices
 			ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class not present in the classpath");
 			throw ex;
 		} catch(ClassCastException e) {
-			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC publisher because loaded class is not of type 'AcsEventPublisher", e);
+			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC publisher because loaded class '" + CLASSNAME_NC_PUBLISHER + "' is not of type 'AcsEventPublisher", e);
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
 			ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class does not extend 'AcsEventPublisher'");
 			throw ex;
@@ -1420,8 +1421,13 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 
 		m_publishers.put( (channelNotifyServiceDomainName == null ? "" : channelNotifyServiceDomainName) + "/" + channelName, publisher);
+		
+		// crude and arbitrary measure against misbehaving clients. In one case we've seen more than 2000 suppliers created by accident. 
+		if (m_publishers.size() > 200) {
+			m_logger.warning("Component or client '" + m_clientName + "' has already created " + m_publishers.size() + " event publishers. Developers should check if this is really necessary.");
+		}
+		
 		return publisher;
-
 	}
 
 	/**
