@@ -86,6 +86,9 @@ import alma.acsnc.OSPushSupplierPOA;
  * or document that it is not thread safe otherwise.
  * 
  * @author dfugate
+ * 
+ * @deprecated since ACS 10.1. Use {@link ContainerServices#createNotificationChannelPublisher(String, Class)} or 
+ *             {@link ContainerServices#createNotificationChannelPublisher(String, String, Class)} instead.
  */
 public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSubscriber
 {
@@ -467,7 +470,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 				eventBuff.push(se);
 			} catch (EventDroppedException ex) {
 				if(eventProcCallback != null)
-					eventProcCallback.eventDropped(event);
+					eventProcCallback.eventDropped(event); // TODO: Shouldn't we pass ex.getEvent() instead of event ?
 			} finally{
 				if(eventProcCallback != null)
 					eventProcCallback.eventStoredInQueue(event);
