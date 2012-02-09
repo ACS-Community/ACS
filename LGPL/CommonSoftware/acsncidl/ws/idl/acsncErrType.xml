@@ -59,6 +59,9 @@
 		<Member name="ChannelName"
 			type="string"
 			description="Channel on which publish event failed."/>
+		<Member name="FailureDescription"
+			type="string"
+			description="Context information about the failure."/>
 	</ErrorCode>
 </Type>
 
