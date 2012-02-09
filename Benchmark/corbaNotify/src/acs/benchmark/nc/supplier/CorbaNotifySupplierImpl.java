@@ -44,7 +44,7 @@ import alma.benchmark.MountStatusData;
 import alma.benchmark.NcEventSpec;
 import alma.benchmark.SomeOtherEventType;
 
-public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublisher> implements CorbaNotifySupplierOperations
+public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublisher<IDLEntity>> implements CorbaNotifySupplierOperations
 {
 	private final List<PublishEventRunnable> runnables = new ArrayList<PublishEventRunnable>();
 
@@ -59,25 +59,25 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 //	}
 
 	@Override
-	protected AcsEventPublisher createNcParticipant(String ncName) throws AcsJContainerServicesEx {
-		return m_containerServices.createNotificationChannelPublisher(ncName);
+	protected AcsEventPublisher<IDLEntity> createNcParticipant(String ncName) throws AcsJContainerServicesEx {
+		return m_containerServices.createNotificationChannelPublisher(ncName, IDLEntity.class);
 	}
 
 	@Override
-	protected void disconnectNcParticipant(AcsEventPublisher pub) {
+	protected void disconnectNcParticipant(AcsEventPublisher<IDLEntity> pub) {
 		pub.disconnect();
 	}
 
 	protected class PublishEventRunnable implements Runnable {
 		private final Object ncName;
 		private final List<IDLEntity> events;
-		private final AcsEventPublisher pub;
+		private final AcsEventPublisher<IDLEntity> pub;
 		private final int eventsMax;
 		private int eventsSent;
 		private ScheduledFuture<?> future;
 		private int lastEventIndex = -1;
 		
-		PublishEventRunnable(NcEventSpec spec, AcsEventPublisher pub, int numberOfEvents) {
+		PublishEventRunnable(NcEventSpec spec, AcsEventPublisher<IDLEntity> pub, int numberOfEvents) {
 			if (spec.ncName == null || spec.ncName.isEmpty()) {
 				throw new IllegalArgumentException("No NC specified");
 			}
