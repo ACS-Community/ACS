@@ -167,10 +167,29 @@ public class ContainerServicesImpl implements ContainerServices
 	private final List<CleanUpCallback> cleanUpCallbacks;
 
 	private final Map<String, AcsEventSubscriber> m_subscribers;
-	private final Map<String, AcsEventPublisher>  m_publishers;
-	final String CLASSNAME_NC_SUBSCRIBER = "alma.acs.nc.refactored.NCSubscriber";
-	final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
+	private final Map<String, AcsEventPublisher<?>>  m_publishers;
+	
+	/**
+	 * Subscriber instance gets created using reflection, since module jcontnc must come after jcont for other reasons.
+	 */
+	private final String CLASSNAME_NC_SUBSCRIBER = "alma.acs.nc.refactored.NCSubscriber";
+	
+	/**
+	 * Publisher instance gets created using reflection, since module jcontnc must come after jcont for other reasons.
+	 */
+	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
 
+	/**
+	 * Separate sync object for lazu instantiations, to not conflict with other uses of this object's monitor.
+	 */
+	private final Object lazyCreationSync = new Object();
+
+	/**
+	 * The cached CDB reference.
+	 */
+	private volatile DAL cdb;
+	
+	
 	/**
 	 * ctor.
 	 * @param acsManagerProxy 
@@ -209,7 +228,7 @@ public class ContainerServicesImpl implements ContainerServices
 		m_activatedOffshootsMap = Collections.synchronizedMap(new HashMap<Object, Servant>());
 
 		m_subscribers = new HashMap<String, AcsEventSubscriber>();
-		m_publishers  = new HashMap<String, AcsEventPublisher>();
+		m_publishers  = new HashMap<String, AcsEventPublisher<?>>();
 
 		m_threadFactory = threadFactory;
 		
@@ -350,6 +369,7 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#assignUniqueEntityId(EntityT)
 	 */
+	@Override
 	public void assignUniqueEntityId(EntityT entity) throws AcsJContainerServicesEx
 	{
 		if (entity == null) {
@@ -387,6 +407,7 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#findComponents(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public String[] findComponents(String curlWildcard, String typeWildcard) 
 		throws AcsJContainerServicesEx
 	{
@@ -739,31 +760,28 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#getCDB()
 	 */
-	public DAL getCDB() throws AcsJContainerServicesEx
-	{
-		DAL dal = null;
-
-        String errMsg = "Failed to get the reference to the CDB component/service.";
-        try
-        {
-        	// @TODO: Cache the CDB reference!
-            org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
-            dal = DALHelper.narrow(dalObj);
-		} catch (AcsJmaciErrTypeEx ex) {
-			m_logger.log(Level.FINE, errMsg, ex);
-			throw new AcsJContainerServicesEx(ex);
+	@Override
+	public DAL getCDB() throws AcsJContainerServicesEx {
+		synchronized (lazyCreationSync) {
+			if (cdb == null) {
+				String errMsg = "Failed to get the reference to the CDB component/service.";
+				try {
+					org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
+					cdb = DALHelper.narrow(dalObj);
+				} catch (AcsJmaciErrTypeEx ex) {
+					m_logger.log(Level.FINE, errMsg, ex);
+					throw new AcsJContainerServicesEx(ex);
+				} catch (Throwable thr) {
+					String msg = "Unexpectedly failed to get the CDB reference!";
+					m_logger.log(Level.FINE, msg, thr);
+					AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+					ex.setContextInfo(msg);
+					throw ex;
+				}
+			}
 		}
-		catch (Throwable thr) {
-			String msg = "Unexpectedly failed to get the CDB reference!";
-			m_logger.log(Level.FINE, msg, thr);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-			ex.setContextInfo(msg);
-			throw ex;
-        }
-        
-		return dal;
+		return cdb;
 	}
-
 
 	/**
 	 * Releases the specified component reference. This involves notification of the manager,
@@ -1101,18 +1119,19 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 	}
 
-
-    /**
-     * @see alma.acs.container.ContainerServices#getAdvancedContainerServices()
-     */
-    public synchronized AdvancedContainerServices getAdvancedContainerServices() {
-        if (advancedContainerServices == null) {
-            advancedContainerServices = new AdvancedContainerServicesImpl(this, m_logger);
-            // todo: once the legitimate cases of calling this method are settled, remove the log message.
-            m_logger.info("component '" + getName() + "' requested AdvancedContainerServices");
-        }
-        return advancedContainerServices;
-    }
+	/**
+	 * @see alma.acs.container.ContainerServices#getAdvancedContainerServices()
+	 */
+	public synchronized AdvancedContainerServices getAdvancedContainerServices() {
+		synchronized (lazyCreationSync) {
+			if (advancedContainerServices == null) {
+				advancedContainerServices = new AdvancedContainerServicesImpl(this, m_logger);
+				// todo: once the legitimate cases of calling this method are settled, remove the log message.
+				m_logger.info("component '" + getName() + "' requested AdvancedContainerServices");
+			}
+		}
+		return advancedContainerServices;
+	}
 
 	/**
 	 * {@inheritDoc}.
@@ -1244,7 +1263,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 		/* Disconnect NC publishers */
 		for(String channel: m_publishers.keySet()) {
-			AcsEventPublisher subscriber = m_publishers.get(channel);
+			AcsEventPublisher<?> subscriber = m_publishers.get(channel);
 			try {
 				subscriber.disconnect();
 				String tmp[] = channel.split("/");
@@ -1375,10 +1394,12 @@ public class ContainerServicesImpl implements ContainerServices
 					this,
 					getNameService()
 			};
-//			// TODO: Can we do this without the direct cast? The usual "asSubclass" does not work 
-			// because we don't create Class<T> but rather Class<U<T>>. 
+//			// TODO: Can we do this without the direct cast? The usual "asSubclass" is not enough 
+			// because we don't create a subclass of Class<T> but rather of Class<U<T>>.
+			// Also the getGenericInterfaces / ParameterizedType trick does not work because because we don't have a 
+			// concrete parameterized type.
 			Class<AcsEventPublisher<T>> clazz = (Class<AcsEventPublisher<T>>) Class.forName(CLASSNAME_NC_PUBLISHER);
-			Constructor<AcsEventPublisher<T>> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class);
+			Constructor<? extends AcsEventPublisher<T>> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class);
 			publisher = constructor.newInstance(args);
 		} catch(ClassNotFoundException e) {
 			// TODO: maybe we could prevent future NCPublisher creation tries, since the class isn't and will not be loaded
@@ -1403,6 +1424,9 @@ public class ContainerServicesImpl implements ContainerServices
 
 	}
 
+	/**
+	 * @deprecated remove along with raiseAlarm, clearAlarm
+	 */
 	private void submitAlarm(String faultFamily, String faultMember, int faultCode, boolean raise) throws AcsJContainerServicesEx {
 		m_alarmSource.setAlarm(faultFamily, faultMember, faultCode, raise);
 	}
