@@ -69,6 +69,7 @@ import alma.acs.nc.AnyAide;
 import alma.acs.nc.CircularQueue;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
+import alma.acs.nc.CircularQueue.EventDroppedException;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -77,12 +78,30 @@ import alma.acsncErrType.wrappers.AcsJPublishEventFailureEx;
 /**
  * NCPublisher is the Notificaction Channel implementation to be used with the
  * event channel API to publish events using the Java programming language.
-
+ * It has been created out of the old <code>SimpleSupplier</code> class, 
+ * to integrate its functionality into the ContainerServices and and to allow
+ * using transport mechanisms other than Corba NC under the hood.
+ * <p>
+ * Design note on CORBA usage (generally not relevant to ACS NC users): 
+ * The IDL-struct-data is wrapped by a corba Any, but then pushed on the notification channel inside a "Structured Event" 
+ * (with the Any object in StructuredEvent#filterable_data[0]).
+ * Don't confuse this with Corba's option of sending events directly as Anys. 
+ * As of 2006-12, HSO is not sure why this complex design was chosen, instead of using structured events without the Any wrapping inside. 
+ * Possibly it offers some flexibility for generic consumer tools written in languages that have no introspection. 
+ * <p>
+ * @TODO (HSO): figure out if the CORBA impl is thread safe. Fix this class accordingly, 
+ * or document that it is not thread safe otherwise.
+ * <p>
+ * Note about refactoring: NCPublisher gets instantiated in module jcont using java reflection.
+ * Thus if you change the package, name, or constructor of this class, 
+ * make sure to fix {@link alma.acs.container.ContainerServicesImpl#CLASSNAME_NC_PUBLISHER}
+ * or its use to get the constructor.
+ * 
  * @author jslopez, hsommer
  */
 public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublisher<T>, ReconnectableSubscriber {
 
-	/** Provides useful methods. */
+	/** Provides code shared among suppliers and consumers. */
 	protected final Helper helper;
 
 	/** The event channel has exactly one name registered in the naming service. */
@@ -92,8 +111,9 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	protected final String channelNotifyServiceDomainName;
 
 	/**
-	 * Supplier Admin object is responsible for creating & managing proxy
-	 * consumers.
+	 * Supplier Admin object is responsible for creating & managing proxy consumers.
+	 * Unlike in NCSubscriber, we do not (yet) share admin objects on the supplier side,
+	 * so that each NCPublisher instance is responsible alone for its server-side admin object.
 	 */
 	protected SupplierAdmin supplierAdmin;
 
@@ -123,8 +143,28 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	
 	protected AcsNcReconnectionCallback reconnectCallback;
 	
-	protected final CircularQueue eventBuff;
+	/**
+	 * Optional event processing handler. May be <code>null</code>.
+	 * @see #registerEventProcessingCallback(alma.acs.nc.AcsEventPublisher.EventProcessingHandler)
+	 */
+	protected EventProcessingHandler<T> eventProcessingHandler;
+	
+	/**
+	 * If the user registers {@link #eventProcessingHandler}, then we also create this queue; 
+	 * otherwise it remains null. 
+	 * <p>
+	 * The queue stores events during Notify Service failures, to allow re-sending them later.
+	 * The re-sending is implemented in a rather simple way, without using a separate thread;
+	 * future attempts to publish other events simply check if the queue contains older events, 
+	 * which then get sent first.
+	 */
+	protected CircularQueue eventQueue;
 
+	/**
+	 * Monitor for access to {@link #eventQueue} and {@link #eventProcessingHandler}. 
+	 */
+	protected final Object eventQueueSync = new Object();
+	
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
 
@@ -244,6 +284,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 					AcsJCORBAReferenceNilEx ex = new AcsJCORBAReferenceNilEx();
 					ex.setVariable("tempCorbaObj");
 					ex.setContext("Null reference obtained for the Proxy Push Consumer for publisher " + services.getName());
+					// @TODO destroy supplierAdmin
 					throw ex;
 				}
 				proxyConsumer = StructuredProxyPushConsumerHelper.narrow(tempCorbaObj);
@@ -259,10 +300,12 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 					LOG_NC_ConsumerProxyCreation_OK.log(logger, proxyIdHolder.value, "-unknown-", proxyCreationAttempts, services.getName(), channelName, getNotificationFactoryName());
 				} catch (AdminLimitExceeded ex2) {
 					LOG_NC_ConsumerProxyCreation_FAIL.log(logger, services.getName(), channelName, getNotificationFactoryName(), ex2.getMessage());
+					// @TODO destroy supplierAdmin
 					throw new AcsJCORBAProblemEx(ex2);
 				}
 			} catch (AdminLimitExceeded e) {
 				LOG_NC_ConsumerProxyCreation_FAIL.log(logger, services.getName(), channelName, getNotificationFactoryName(), e.getMessage());
+				// @TODO destroy supplierAdmin
 				throw new AcsJCORBAProblemEx(e);
 			}
 		}
@@ -276,13 +319,13 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			proxyConsumer.connect_structured_push_supplier(thisSps);
 		} catch (AcsJContainerServicesEx e) {
 			// convert it to an ACS Error System Exception
+			// @TODO destroy supplierAdmin and proxyConsumer
 			throw new AcsJCORBAProblemEx(e);
 		} catch (AlreadyConnected e) {
 			// Think there is virtually no chance of this every happening but...
+			// @TODO destroy supplierAdmin and proxyConsumer
 			throw new AcsJCORBAProblemEx(e);
 		}
-		
-		eventBuff = new CircularQueue();
 		
 		reconnectCallback = new AcsNcReconnectionCallback(this);
 		reconnectCallback.init(services, helper.getNotifyFactory());
@@ -294,21 +337,25 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * Failure to do so can result in remote memory leaks. User should not call
 	 * this method multiple times either. Once disconnect has been called, all
 	 * of SimpleSupplier's methods will cease to function properly.
+	 * @throws IllegalStateException if called when already disconnected.
 	 */
 	@Override
-	public void disconnect() {
+	public synchronized void disconnect() {
 		if (supplierAdmin == null) {
 			throw new IllegalStateException("Publisher already disconnected");
 		}
 
-		String errMsg = "Failed to cleanly disconnect SimpleSupplier for channel '" + channelName + "': ";
-		try {
-			// handle notification channel cleanup
-			proxyConsumer.disconnect_structured_push_consumer();
-		} catch (Throwable thr) {
-			logger.log(Level.WARNING, errMsg + "could not disconnect push consumer", thr);
+		String errMsg = "Failed to cleanly disconnect NCPublisher for channel '" + channelName + "': ";
+		
+		// Disconnect this supplier from the server-side proxy
+		if (proxyConsumer != null) {
+			try {
+				proxyConsumer.disconnect_structured_push_consumer();
+			} catch (Throwable thr) {
+				logger.log(Level.WARNING, errMsg + "could not disconnect push consumer", thr);
+			}
 		}
-
+		
 		try {
 			supplierAdmin.destroy();
 		} catch (Throwable thr) {
@@ -319,7 +366,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			// clean-up CORBA stuff
 			services.deactivateOffShoot(this);
 		} catch (Throwable thr) {
-			logger.log(Level.WARNING, errMsg + "could not deactivate the SimpleSupplier offshoot.", thr);
+			logger.log(Level.WARNING, errMsg + "could not deactivate the NCPublisher offshoot.", thr);
 		}
 		
 		reconnectCallback = null;
@@ -368,7 +415,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
-	 * This method returns a the notify service name as registered with the
+	 * This method returns the notify service name as registered with the
 	 * CORBA Naming Service. This is normally equivalent to
 	 * acscommon::ALMADOMAIN. The sole reason this method is provided is to
 	 * accomodate subclasses which subscribe/publish non-ICD style events (ACS
@@ -392,25 +439,20 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
-	 * Override this method to do something when a consumer unsubscribes from
-	 * the channel. <b>Do not call it from your code!</b>
-	 * <p>
-	 * 
-	 * @TODO (HSO): The CORBA NC spec (3.3.10.1) says: The
-	 *       disconnect_structured_push_supplier operation is invoked to
+	 * The CORBA NC spec (3.3.10.1) says: 
+	 *       "The disconnect_structured_push_supplier operation is invoked to
 	 *       terminate a connection between the target StructuredPushSupplier
 	 *       and its associated consumer. This operation takes no input
 	 *       parameters and returns no values. The result of this operation is
 	 *       that the target StructuredPushSupplier will release all resources
 	 *       it had allocated to support the connection, and dispose its own
-	 *       object reference. Is it really true what the log message says, that
-	 *       one of many consumers has disconnected, and we should continue for
-	 *       our other consumers? It may be so, given that the life cycle of a
-	 *       SimpleSupplier seemss unaffected of consumers in the ACS NC design.
+	 *       object reference."
+	 *       In the ACS NC design the life cycle of an NCPublisher is unaffected 
+	 *       by that of consumers. Thus we only log a FINE message here.
 	 */
 	public void disconnect_structured_push_supplier() {
 		String msg = "A Consumer has disconnected from the '" + channelName + "' channel";
-		logger.info(msg);
+		logger.fine(msg);
 	}
 
 	/**
@@ -422,17 +464,45 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * @throws AcsJException
 	 *             if the event cannot be published for some reason or another.
 	 */
-	protected void publishCORBAEvent(StructuredEvent se) throws AcsJException {
+	protected void publishCORBAEvent(StructuredEvent se, T customData) throws AcsJException {
 		try {
-			// @TODO: Merge eventBuff handling from SimpleSupplier (rev. 1.48) here...
-			
-			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
-			proxyConsumer.push_structured_event(se);
+			//Check the queue for events from previous failures`
+			synchronized (eventQueueSync) {
+				if (eventQueue != null) {
+					StructuredEvent tmp;
+					while ((tmp = eventQueue.pop()) != null) {
+						proxyConsumer.push_structured_event(tmp);
+						// @TODO: Don't we need to call eventProcessingHandler#eventSent(customData),
+						// for which we'd have to keep customData in the queue, or recover it from se#filterable_data[0] ??
+						// We could even call this method recursively.
+					}
+				}
+				// Publish directly the given event (see CORBA NC spec 3.3.7.1)
+				proxyConsumer.push_structured_event(se);
+				
+				if (eventQueue != null) {
+					eventProcessingHandler.eventSent(customData);
+				}
+			}
+		} catch (org.omg.CORBA.TRANSIENT e) {
+			// the Notify Service is down...
+			// @TODO: Shouldn't we do the same also for some of the other SystemExceptions caught below?
+			synchronized (eventQueueSync) {
+				if (eventQueue != null) {
+					try {
+						eventQueue.push(se);
+					} catch (EventDroppedException ex) {
+						eventProcessingHandler.eventDropped((T)ex.getEvent()); // TODO: parameterize class CircularQueue
+					} finally{
+						// @TODO: Shouldn't we let the user decide (through a returned flag) if she really wants this event
+						// to go into the queue, before we insert it?
+						eventProcessingHandler.eventStoredInQueue(customData);
+					}
+				}
+			}
 		} catch (org.omg.CosEventComm.Disconnected e) {
 			// declared CORBA ex
-			String reason = "Failed to publish event on channel '"
-					+ channelName
-					+ "': org.omg.CosEventComm.Disconnected was thrown.";
+			String reason = "Failed to publish event on channel '" + channelName + "': org.omg.CosEventComm.Disconnected was thrown.";
 			AcsJCORBAProblemEx jex = new AcsJCORBAProblemEx();
 			jex.setInfo(reason);
 			throw jex;
@@ -448,8 +518,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		} catch (Throwable thr) {
 			// other ex
 			Throwable cause = new Throwable(
-					"Failed to publish event on channel '" + channelName
-							+ "'. " + thr.getMessage());
+					"Failed to publish event on channel '" + channelName + "'. " + thr.getMessage());
 			AcsJUnexpectedExceptionEx jex = new AcsJUnexpectedExceptionEx(cause);
 			throw jex;
 		}
@@ -501,20 +570,23 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 
 		// Let's first verify that the use of generics between base class and here is OK also for the DDS side. 
 		if( !(customStruct instanceof IDLEntity) ) {
-			throw new AcsJPublishEventFailureEx(new ClassCastException("'" + customStruct.getClass().getName() + "' doesn't inherit from org.omg.CORBA.portable.IDLEntity"));
+			String msg = "ACS is using Corba NC as the underlying pub/sub framework. Event data must be IDL-defined structs that inherit from org.omg.CORBA.portable.IDLEntity.";
+			AcsJPublishEventFailureEx ex = new AcsJPublishEventFailureEx();
+			ex.setFailureDescription(msg);
+			ex.setChannelName(channelName);
+			ex.setEventName(customStruct.getClass().getName());
+			throw ex;
 		}
 		IDLEntity customStructEntity = (IDLEntity)customStruct;
 		
-		String typeName = customStruct.getClass().getSimpleName();
+		String typeName = customStructEntity.getClass().getSimpleName();
 		// event to send
 		StructuredEvent event = getCORBAEvent(typeName, "");
 
 		// Store the info for Exec/I&T into the event.
 		// create the any
-		event.remainder_of_body = services.getAdvancedContainerServices()
-				.getAny();
-		// get the useful data which includes the component's name, timestamp,
-		// and event count
+		event.remainder_of_body = services.getAdvancedContainerServices().getAny();
+		// get the useful data which includes the component's name, timestamp, and event count
 		EventDescription descrip = new EventDescription(services.getName(),
 				alma.acs.util.UTCUtility.utcJavaToOmg(System.currentTimeMillis()), count);
 		// store the IDL struct into the structured event
@@ -529,7 +601,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			logger.log(Level.INFO, "Channel:" + channelName + ", Event Type:" + typeName);
 		}
 
-		publishCORBAEvent(event);
+		publishCORBAEvent(event, customStruct);
 		count++;
 	}
 
@@ -555,6 +627,18 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			logger.warning(helper.createUnsupportedAdminLogMessage(ex, channelName));
 		}
 		
+	}
+
+	@Override
+	public void enableEventQueue(int queueSize, EventProcessingHandler<T> handler) {
+		synchronized (eventQueueSync) {
+			// allow user also to update the handler
+			eventProcessingHandler = handler;
+			// queue can be created only once of course
+			if (eventQueue == null) {
+				eventQueue = new CircularQueue(queueSize);
+			}
+		}
 	}
 
 }
