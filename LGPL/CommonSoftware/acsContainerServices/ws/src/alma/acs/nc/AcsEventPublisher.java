@@ -23,17 +23,16 @@ import alma.acs.exceptions.AcsJException;
 
 /**
  * This interface provides an abstraction for an Event Publisher.
- *
- * @TODO Discuss this interface, and also the exceptions. For some more details, check
- *  the TODOs described in {@link AcsEventSubscriber}.
+ * It can be used both for Corba NC events and for DDS events.
  * 
  * @author rtobar
  */
 public interface AcsEventPublisher<T> {
 
 	/**
-	 * Publishes a structured event through the Notification Channel to which
+	 * Publishes an event through the Notification Channel to which
 	 * this publisher is connected to.
+	 * (In the future, ACS may use other mechanisms than Corba NC for pub/sub.)
 	 *
 	 * @param customStruct The structure to send through the Notification Channel
 	 * @throws AcsJException In case of any failure, including if the publisher
@@ -49,4 +48,49 @@ public interface AcsEventPublisher<T> {
 	 */
 	public void disconnect() throws IllegalStateException;
 
+	
+	/**
+	 * Handler for optional callbacks to the event publishing client,
+	 * which allows notifying the client of success or failure with publishing the event(s).
+	 * <p>
+	 * This handler makes sense only in conjunction with using an event queue in the publisher,
+	 * because without a queue the user notices directly the successful or failed sending of an event 
+	 * by either a normal return or an exception from method {@link AcsEventPublisher#publishEvent(Object)}.
+	 * <p>
+	 * The user is responsible to implement the handler methods.
+	 * The handler methods must return quickly and should not throw exceptions.
+	 * 
+	 * @see AcsEventPublisher#registerEventProcessingCallback(EventProcessingHandler)
+	 */
+	public static interface EventProcessingHandler<U> {
+		/**
+		 * Notification that an event was sent.
+		 * Depending on the underlying pub-sub framework and its configuration, this may or may not 
+		 * imply that the subscriber(s) will also receive the event.
+		 * @param event The event that was sent.
+		 */
+		public void eventSent(U event);
+		
+		/**
+		 * Notification that an event was stored in a local queue
+		 * after some problem occurred when trying to send the event immediately.
+		 * @param event The event that was stored in the queue.
+		 */
+		public void eventStoredInQueue(U event);
+		
+		/**
+		 * Notification that an event was dropped because of failures and a full queue.
+		 * @param event The event that was dropped.
+		 */
+		public void eventDropped(U event);
+	}
+
+	/**
+	 * Enables using a queue for published events. When using a queue, a handler must be registered
+	 * so that the user learns about success or failure.
+	 * @param handler
+	 */
+	public void enableEventQueue(int queueSize, EventProcessingHandler<T> handler);
+	
 }
+
