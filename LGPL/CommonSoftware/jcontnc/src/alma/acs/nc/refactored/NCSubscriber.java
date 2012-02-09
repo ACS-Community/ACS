@@ -127,6 +127,8 @@ import alma.acsnc.OSPushConsumerPOA;
  * The NCSubscriber will be created (and cleaned up if needed) through the container services, 
  * At the moment it is still under development and not used in operational code, 
  * see the currently deprecated method {@link alma.acs.container.ContainerServicesImpl#createNotificationChannelSubscriber(String, String)}.
+ * Note about refactoring: NCSubscriber gets instantiated in module jcont using java reflection.
+ * Thus if you change the package, name, or constructor of this class, make sure to fix the corresponding "forName" call in jcont.
  * 
  * @author jslopez, hsommer, rtobar
  */
