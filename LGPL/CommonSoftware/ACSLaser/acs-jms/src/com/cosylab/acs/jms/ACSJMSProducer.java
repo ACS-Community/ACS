@@ -31,7 +31,8 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 
-import alma.acs.container.ContainerServicesBase;
+import alma.acs.container.ContainerServices;
+
 
 /**
  * @author kzagar
@@ -40,7 +41,7 @@ import alma.acs.container.ContainerServicesBase;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public abstract class ACSJMSProducer implements MessageProducer {
-	protected ContainerServicesBase containerServices;
+	protected ContainerServices containerServices;
 
 	private long timeToLive;
 
@@ -51,7 +52,7 @@ public abstract class ACSJMSProducer implements MessageProducer {
 	/**
 	 * @param arg0
 	 */
-	public ACSJMSProducer(Destination destination, ContainerServicesBase containerServices) throws JMSException {
+	public ACSJMSProducer(Destination destination, ContainerServices containerServices) throws JMSException {
 		this.destination = destination;
 		this.containerServices = containerServices;
 	}

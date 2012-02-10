@@ -32,7 +32,7 @@ import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
-import alma.acs.container.ContainerServicesBase;
+import alma.acs.container.ContainerServices;
 
 /**
  * @author kzagar
@@ -45,7 +45,7 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 	/**
 	 * @param containerServices
 	 */
-	public ACSJMSTopicSession(ContainerServicesBase containerServices) {
+	public ACSJMSTopicSession(ContainerServices containerServices) {
 		super(containerServices);
 	}
 
@@ -53,7 +53,7 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 	 * @see javax.jms.TopicSession#createSubscriber(javax.jms.Topic)
 	 */
 	public TopicSubscriber createSubscriber(Topic topic) throws JMSException {
-		return new ACSJMSTopicSubscriber(topic, this.containerServices,null);
+		return new ACSJMSTopicSubscriber(topic, this.containerServices, null);
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +65,7 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 		boolean noLocal)
 		throws JMSException {
 		// TODO messageSelector and noLocal arguments should be used somehow
-		return new ACSJMSTopicSubscriber(topic, this.containerServices,messageSelector);
+		return new ACSJMSTopicSubscriber(topic, this.containerServices, messageSelector);
 	}
 
 	/* (non-Javadoc)

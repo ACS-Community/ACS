@@ -33,7 +33,7 @@ import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicSession;
 
-import alma.acs.container.ContainerServicesBase;
+import alma.acs.container.ContainerServices;
 
 /**
  * @author kzagar
@@ -45,9 +45,9 @@ public class ACSJMSTopicConnection
 	extends ACSJMSConnection
 	implements TopicConnection {
 
-	public ACSJMSTopicConnection(ContainerServicesBase containerServices)
+	public ACSJMSTopicConnection(ContainerServices containerServices)
 	{
-		super(containerServices);	
+		super(containerServices);
 	}
 	
 	/* (non-Javadoc)
