@@ -42,6 +42,7 @@ import alma.acs.exceptions.AcsJException;
  * 
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
+ * @deprecated since ACS 10.1, see COMP-1786
  */
 public class CorbaNotificationChannel {
 
