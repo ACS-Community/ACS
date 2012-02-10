@@ -69,7 +69,6 @@ import alma.acs.nc.AnyAide;
 import alma.acs.nc.CircularQueue;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
-import alma.acs.nc.CircularQueue.EventDroppedException;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -154,14 +153,18 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * otherwise it remains null. 
 	 * <p>
 	 * The queue stores events during Notify Service failures, to allow re-sending them later.
-	 * The re-sending is implemented in a rather simple way, without using a separate thread;
+	 * The re-sending is implemented in a rather simple way, without using a separate timer and thread;
 	 * future attempts to publish other events simply check if the queue contains older events, 
 	 * which then get sent first.
 	 */
-	protected CircularQueue eventQueue;
+	protected CircularQueue<T> eventQueue;
 
 	/**
-	 * Monitor for access to {@link #eventQueue} and {@link #eventProcessingHandler}. 
+	 * Monitor for access to {@link #eventQueue} and {@link #eventProcessingHandler}.
+	 * <p>
+	 * We assume that compared to the Corba transport of events
+	 * the overhead to synchronize threads using this object is negligible, 
+	 * so that we don't bother with fancier synchronization techniques.
 	 */
 	protected final Object eventQueueSync = new Object();
 	
@@ -459,44 +462,37 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * Method which publishes an entire CORBA StructuredEvent without making any
 	 * modifications to it.
 	 * 
-	 * @param se
-	 *            A complete structured event
+	 * @param se A complete structured event
+	 * @param customData  The user-supplied event data, needed for eventProcessingHandler notification.
 	 * @throws AcsJException
 	 *             if the event cannot be published for some reason or another.
 	 */
 	protected void publishCORBAEvent(StructuredEvent se, T customData) throws AcsJException {
 		try {
-			//Check the queue for events from previous failures`
+			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
+			proxyConsumer.push_structured_event(se);
+
+			// Log successful sending of event (if event tracing is enabled)
+			if (isTraceEventsEnabled) {
+				// TODO: use type-safe log
+				logger.log(Level.INFO, "Channel:" + channelName + ", Event Type:" + customData.getClass().getSimpleName());
+			}
+			
+			// Notify user (if handler is registered) 
 			synchronized (eventQueueSync) {
-				if (eventQueue != null) {
-					StructuredEvent tmp;
-					while ((tmp = eventQueue.pop()) != null) {
-						proxyConsumer.push_structured_event(tmp);
-						// @TODO: Don't we need to call eventProcessingHandler#eventSent(customData),
-						// for which we'd have to keep customData in the queue, or recover it from se#filterable_data[0] ??
-						// We could even call this method recursively.
-					}
-				}
-				// Publish directly the given event (see CORBA NC spec 3.3.7.1)
-				proxyConsumer.push_structured_event(se);
-				
 				if (eventQueue != null) {
 					eventProcessingHandler.eventSent(customData);
 				}
 			}
-		} catch (org.omg.CORBA.TRANSIENT e) {
+		} catch (org.omg.CORBA.TRANSIENT ex) {
 			// the Notify Service is down...
 			// @TODO: Shouldn't we do the same also for some of the other SystemExceptions caught below?
 			synchronized (eventQueueSync) {
 				if (eventQueue != null) {
-					try {
-						eventQueue.push(se);
-					} catch (EventDroppedException ex) {
-						eventProcessingHandler.eventDropped((T)ex.getEvent()); // TODO: parameterize class CircularQueue
-					} finally{
-						// @TODO: Shouldn't we let the user decide (through a returned flag) if she really wants this event
-						// to go into the queue, before we insert it?
-						eventProcessingHandler.eventStoredInQueue(customData);
+					CircularQueue<T>.Data dropped = eventQueue.push(se, customData);
+					eventProcessingHandler.eventStoredInQueue(customData);
+					if (dropped != null) {
+						eventProcessingHandler.eventDropped(dropped.userData);
 					}
 				}
 			}
@@ -597,8 +593,20 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		event.filterable_data[0] = new Property(
 				alma.acscommon.DEFAULTDATANAME.value, anyAide.complexObjectToCorbaAny(customStructEntity));
 
-		if (isTraceEventsEnabled) {
-			logger.log(Level.INFO, "Channel:" + channelName + ", Event Type:" + typeName);
+		// Check the queue for events from previous failures.
+		synchronized (eventQueueSync) {
+			if (eventQueue != null) {
+				CircularQueue<T>.Data tmp;
+				try {
+					while ((tmp = eventQueue.pop()) != null) {
+						publishCORBAEvent(tmp.corbaData, tmp.userData);
+					}
+				} catch (Exception ex) {
+					Level lev = ( isTraceEventsEnabled ? Level.INFO : Level.FINEST );
+					logger.log(lev, "Failed to flush event queue.", ex);
+					// go on and try to send the new event, to at least have it inserted into the queue.
+				}
+			}
 		}
 
 		publishCORBAEvent(event, customStruct);
@@ -636,7 +644,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			eventProcessingHandler = handler;
 			// queue can be created only once of course
 			if (eventQueue == null) {
-				eventQueue = new CircularQueue(queueSize);
+				eventQueue = new CircularQueue<T>(queueSize);
 			}
 		}
 	}
