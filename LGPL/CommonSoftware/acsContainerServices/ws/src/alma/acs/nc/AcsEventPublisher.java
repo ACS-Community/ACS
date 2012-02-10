@@ -23,7 +23,7 @@ import alma.acs.exceptions.AcsJException;
 
 /**
  * This interface provides an abstraction for an Event Publisher.
- * It can be used both for Corba NC events and for DDS events.
+ * It can be used both for Corba NC events and in the future also for DDS events.
  * 
  * @author rtobar
  */
@@ -42,6 +42,7 @@ public interface AcsEventPublisher<T> {
 
 	/**
 	 * Disconnect this Publisher from the Notification Channel.
+	 * This method must be called when the publisher object is no longer needed.
 	 *
 	 * @throws IllegalStateException If the current Publisher is already
 	 * disconnected
@@ -88,7 +89,13 @@ public interface AcsEventPublisher<T> {
 	/**
 	 * Enables using a queue for published events. When using a queue, a handler must be registered
 	 * so that the user learns about success or failure.
-	 * @param handler
+	 * <p>
+	 * As of ACS 10.1, only a missing NotifyService as diagnosed through 
+	 * a <code>org.omg.CORBA.TRANSIENT</code> exception will cause the publisher
+	 * to store an event in this queue for later re-sending.
+	 * @param queueSize Number of events that this queue should store.
+	 *        The choice is a tradeoff between memory use and data loss.
+	 * @param handler  The handler that should be notified by the publisher.
 	 */
 	public void enableEventQueue(int queueSize, EventProcessingHandler<T> handler);
 	
