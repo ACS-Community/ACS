@@ -26,15 +26,28 @@ import java.util.Vector;
 import org.omg.CosNotification.StructuredEvent;
 
 /**
- * Circular Queue implemented to maintain temporally structured events when 
- * the Notify Service is down.
+ * Circular Queue that can buffer events while the Notify Service is down.
+ * <p>
+ * Currently we store the event data twice: Both the StructuredEvent with Corba Anys inside (incl. the user data), 
+ * and also the user data separately. This design relieves us from transforming the user data back 
+ * from Corba Any to IDL-generated struct.
+ * If this becomes a memory issue, we may have to change it.
  * 
  * @see SimpleSupplier.publishCORBAEvent
- * 
  * @author Jorge Avarias <javarias [at] nrao.edu>
  */
-public class CircularQueue {
-	private Vector<StructuredEvent> queue;
+public class CircularQueue<T> {
+	
+	public class Data {
+		public Data(StructuredEvent corbaData, T userData) {
+			this.corbaData = corbaData;
+			this.userData = userData;
+		}
+		public StructuredEvent corbaData;
+		public T userData;
+	}
+	
+	private Vector<Data> queue;
 	private int length;
 	
 	
@@ -44,8 +57,7 @@ public class CircularQueue {
 	 * @param size the size of the queue
 	 */
 	public CircularQueue(int size){
-		queue = new Vector<StructuredEvent>(size+1);
-		size = 0;
+		queue = new Vector<Data>(size+1);
 	}
 	
 	/**
@@ -61,20 +73,20 @@ public class CircularQueue {
 	 * queue
 	 * 
 	 * @param e the event to be inserted in the queue
-	 * @throws EventDroppedException if the queue dropped an event, but the
-	 * object will be inserted anyways in the queue and the removed event will
-	 * be returned in the exception.
+	 * @return <code>null</code> if all went well, 
+	 *         or otherwise the data for another event that had to be pushed out of the queue 
+	 *         if the queue was full.
 	 */
 	
-	public void push(StructuredEvent e) throws EventDroppedException{
-		queue.add(e);
+	public Data push(StructuredEvent e, T userData) {
+		Data ret = null;
+		queue.add(new Data(e, userData));
 		length++;
-		if(length > queue.capacity()-1){
-			EventDroppedException ex = 
-				new EventDroppedException(queue.remove(0));
+		if(length > queue.capacity()-1) {
+			ret = queue.remove(0);
 			length--;
-			throw ex;
 		}
+		return ret;
 	}
 	
 	/**
@@ -91,30 +103,14 @@ public class CircularQueue {
 	 *
 	 * @return the first element in the queue
 	 */
-	public StructuredEvent pop(){
-		StructuredEvent e = null;
+	public Data pop(){
+		Data ret = null;
 		try{
-			e = queue.remove(0);
+			ret = queue.remove(0);
 			length--;
 		}catch (IndexOutOfBoundsException ex)
 		{}
-		return e;
+		return ret;
 	}
 	
-	public class EventDroppedException extends java.lang.Exception{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -6138342262356370746L;
-		private final StructuredEvent event;
-		
-		public EventDroppedException (StructuredEvent event){
-			this.event = event;
-		}
-		
-		public StructuredEvent getEvent(){
-			return event;
-		}
-		
-	}
 }
