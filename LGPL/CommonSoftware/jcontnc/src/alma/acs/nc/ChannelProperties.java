@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.14 2011/10/25 14:17:26 hsommer Exp $
+ * @version $Id: ChannelProperties.java,v 1.15 2012/02/10 12:54:39 hsommer Exp $
  * @since
  */
 
@@ -65,11 +65,13 @@ import alma.cdbErrType.WrongCDBDataTypeEx;
 import com.cosylab.CDB.DAO;
 
 /**
- * ChanncelProperties is a class designed to retrieve the various quality of
+ * ChannelProperties is a class designed to retrieve the various quality of
  * service and administrative properties for a given channel. It is intended to
  * be used primarily by the Helper class within this package.
  *  * <p>
  * @TODO think about joining this class with {@link ChannelInfo}.
+ * <p>
+ * @TODO: Cache CDB data and only re-read when CDB calls back to us via DALChangeListener mechanism.
  * 
  * @author dfugate
  */
