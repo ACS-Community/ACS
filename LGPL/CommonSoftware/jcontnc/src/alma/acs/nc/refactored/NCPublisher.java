@@ -39,6 +39,7 @@ import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyChannelAdmin.ObtainInfoMode;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumer;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
 import org.omg.CosNotifyComm.InvalidEventType;
@@ -313,6 +314,10 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			}
 		}
 
+		// Avoid future calls from the NC to #subscription_change(EventType[], EventType[]). See Corba spec 3.4.1.3
+		// @TODO: If we use ALL_NOW_UPDATES_ON then we could actually suppress sending of event types that no consumer wants to get. 
+		proxyConsumer.obtain_subscription_types(ObtainInfoMode.NONE_NOW_UPDATES_OFF);
+		
 		// must connect this StructuredPushSupplier to the proxy consumer, or
 		// events would never be sent anywhere.
 		// see 3.4.4.1 of Notification Service, v1.1
@@ -432,13 +437,24 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
+	 * This method gets called by the CORBA framework to notify us that the subscriber 
+	 * situation has changed. See 2.6.3 of Notification Service, v1.1
+	 * <p>
 	 * ACS does not provide an implementation of this method.
+	 * Probably because of not fully understanding the possibilities of the 
+	 * obtain_subscription_types call (see c'tor above) in the past, we assumed that 
+	 * a supplier could not know whether there is more than one subscriber listening 
+	 * for a given event type on our NC, so that the subscription_change information coming from 
+	 * a single subscriber would not be good enough to make us drop certain event types 
+	 * on the supplier side.
+	 * <p>
+	 * @TODO: Check this optimization potential in the future.
 	 * 
 	 * @see org.omg.CosNotifyComm.NotifySubscribeOperations#subscription_change(org.omg.CosNotification.EventType[],
 	 *      org.omg.CosNotification.EventType[])
 	 */
 	public void subscription_change(EventType[] added, EventType[] removed) throws InvalidEventType {
-		throw new NO_IMPLEMENT();
+		throw new NO_IMPLEMENT(); // suggested by corba spec, in case the supplier does not want to be notified.
 	}
 
 	/**
