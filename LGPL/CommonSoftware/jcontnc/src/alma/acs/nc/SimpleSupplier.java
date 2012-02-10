@@ -61,9 +61,9 @@ import alma.AcsNCTraceLog.LOG_NC_ConsumerProxyCreation_FAIL;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerProxyCreation_OK;
 import alma.AcsNCTraceLog.LOG_NC_TaoExtensionsSubtypeMissing;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.CircularQueue.EventDroppedException;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -269,7 +269,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			throw new AcsJCORBAProblemEx(e);
 		}
 		
-		eventBuff = new CircularQueue();
+		eventBuff = new CircularQueue<IDLEntity>();
 		
 		reconnectCallback = new AcsNcReconnectionCallback(this);
 		reconnectCallback.init(services, m_helper.getNotifyFactory());
@@ -457,23 +457,19 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			T event) throws AcsJException {
 		try {
 			//Check the queue for remaining events
-			StructuredEvent tmp;
+			CircularQueue<IDLEntity>.Data tmp;
 			while ((tmp = eventBuff.pop()) != null)
-				m_proxyConsumer.push_structured_event(tmp);
+				m_proxyConsumer.push_structured_event(tmp.corbaData);
 			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
 			m_proxyConsumer.push_structured_event(se);
 			if(eventProcCallback != null)
 				eventProcCallback.eventSent(event);
 		} catch (org.omg.CORBA.TRANSIENT e){
 			// the Notify Service is down...
-			try {
-				eventBuff.push(se);
-			} catch (EventDroppedException ex) {
-				if(eventProcCallback != null)
-					eventProcCallback.eventDropped(event); // TODO: Shouldn't we pass ex.getEvent() instead of event ?
-			} finally{
-				if(eventProcCallback != null)
-					eventProcCallback.eventStoredInQueue(event);
+			CircularQueue<IDLEntity>.Data dropped = eventBuff.push(se, event);
+			eventProcCallback.eventStoredInQueue(event);
+			if (dropped != null) {
+				eventProcCallback.eventDropped(dropped.userData);
 			}
 		} catch (org.omg.CosEventComm.Disconnected e) {
 			// declared CORBA ex
@@ -637,7 +633,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	
 	private AcsNcReconnectionCallback reconnectCallback;
 	
-	private CircularQueue eventBuff;
+	private CircularQueue<IDLEntity> eventBuff;
 	
 	protected EventProcessingCallback eventProcCallback;
 
