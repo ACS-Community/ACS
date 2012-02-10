@@ -9,6 +9,7 @@
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- DELOUSE [PubSubTest#testTopicConnection] Successfully created a notification channel, w/o configuration. [ logName='LOG_NC_ChannelCreatedRaw_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] Successfully created a notification channel consumer proxy object. [ logName='LOG_NC_ConsumerProxyCreation_OK' ConsumerProxyId='4' ConsumerProxyName='alma.acsjms.test.PubSubTest-xxx' ProxyCreationAttempts='1' ClientName='alma.acsjms.test.PubSubTest' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- CONFIG [PubSubTest#testTopicConnection] Connected to DAO 'MACI/Channels'.
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - 
