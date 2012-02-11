@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
+import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
@@ -36,6 +37,9 @@ import org.omg.PortableServer.ServantRetentionPolicyValue;
 import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
 import org.omg.PortableServer.POAPackage.AdapterNonExistent;
 import org.omg.PortableServer.POAPackage.InvalidPolicy;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
@@ -47,23 +51,23 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.CleaningDaemonThreadFactory;
-import alma.acs.container.ContainerServicesBase;
+import alma.acs.container.testsupport.DummyContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
+import alma.acs.nc.AcsEventPublisher;
+import alma.acs.nc.Helper;
+import alma.acs.nc.refactored.NCPublisher;
 
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
-
-public class AlarmSystemContainerServices implements ContainerServicesBase {
+/**
+ * @TODO: Try to reuse the original container services implementation from jcont,
+ * e.g. by using a ComponentClient inside the alarm service.
+ */
+public class AlarmSystemContainerServices extends DummyContainerServices {
 	
 	/**
 	 * The CORBA ORB
 	 */
 	private final ORB orb;
-	
-	/**
-	 * The logger
-	 */
-	private final AcsLogger logger;
 	
 	/**
 	 * Thread factory.
@@ -74,12 +78,7 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	/**
 	 * The CORBA server for the alarm system
 	 */
-	private AlarmSystemCorbaServer alSysCorbaServer;
-	
-	/**
-	 * The name returned by <code>getName()</code>.
-	 */
-	private static final String name = "AlarmService";
+	private final AlarmSystemCorbaServer alSysCorbaServer;
 	
 	/**
 	 * The implementation of the {@link AdvancedContainerServices}
@@ -93,6 +92,8 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	 * @param theLogger The logger
 	 */
 	public AlarmSystemContainerServices(AlarmSystemCorbaServer alSysCorbaServer, AcsLogger theLogger) {
+		super("AlarmService", theLogger);
+		
 		if (alSysCorbaServer==null) {
 			throw new IllegalArgumentException("The AlarmSystemCorbaServer can't be null");
 		}
@@ -102,7 +103,6 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		threadFactory = new CleaningDaemonThreadFactory(name, theLogger);
 		this.alSysCorbaServer=alSysCorbaServer;
 		this.orb=alSysCorbaServer.getORB();
-		logger=theLogger;
 		advancedContainerServices= new AlarmSystemAdvancedContainerServices(this);
 	}
 
@@ -142,6 +142,33 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		}
 
 		return OffShootHelper.narrow(actObj);
+	}
+
+	@Override
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return createNotificationChannelPublisher(channelName, null, eventType);
+	}
+
+	@Override
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(
+			String channelName,
+			String channelNotifyServiceDomainName, 
+			Class<T> eventType) throws AcsJContainerServicesEx {
+		
+		AcsEventPublisher<T> publisher = null; 
+		try {
+			// TODO: try to get the naming service ref in a nicer way (from ORB etc)
+			NamingContext namingService = Helper.getNamingServiceInitial(this);
+			publisher = new NCPublisher<T>(channelName, channelNotifyServiceDomainName, this, namingService);
+		} catch(Throwable e) {
+			logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventPublisher object", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			throw ex;
+		}
+
+//		m_publishers.put( (channelNotifyServiceDomainName == null ? "" : channelNotifyServiceDomainName) + "/" + channelName, publisher);
+		
+		return publisher;
 	}
 
 	private Policy[] m_offshootPolicies;
@@ -195,16 +222,6 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	@Override
 	public AdvancedContainerServices getAdvancedContainerServices() {
 		return advancedContainerServices;
-	}
-
-	@Override
-	public AcsLogger getLogger() {
-		return logger;
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	@Override
