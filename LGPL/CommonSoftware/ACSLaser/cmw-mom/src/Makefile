@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:52:36 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/02/13 10:25:06 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -123,7 +123,7 @@ cmwmom_DIRS = cern
 cmwmom_EXTRAS = 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on
 #
 # ACS XmlIdl generation on/off
 #
