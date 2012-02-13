@@ -130,7 +130,7 @@ public class AlarmSender {
 			String FM, 
 			int FC, 
 			boolean active) {
-		sendAlarm(FF,FM,FC,null,active);
+		sendAlarm(FF,FM,FC,new Properties(),active);
 	}
 	
 	/**
