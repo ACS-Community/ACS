@@ -272,7 +272,7 @@ public class ManagerEngine
 			logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
 		}
 	    
-		// initialize manager "mock" container servies
+		// initialize manager "mock" container services
 		ManagerContainerServices managerContainerServices = new ManagerContainerServices(orb, managerPOA, cdbAccess.getDAL(), logger);
 		
 		manager.initialize(prevayler, cdbAccess, context, logger, managerContainerServices);
