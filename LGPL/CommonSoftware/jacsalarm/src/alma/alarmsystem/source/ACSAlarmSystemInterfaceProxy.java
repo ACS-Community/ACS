@@ -53,6 +53,9 @@ public class ACSAlarmSystemInterfaceProxy implements ACSAlarmSystemInterface {
 		}
 		this.name=name;
 		m_logger = logger;
+		
+		// This "connected to the logging" just means we are connected to ACS lightweight alarm system based on logs.
+		// Better not change / clarify it now, would make lots of tests fail.
 		m_logger.fine("Alarm source of "+name+" connected to the logging");
 	}
 	
