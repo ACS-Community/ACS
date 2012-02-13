@@ -2684,15 +2684,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// finalizeFearation
 		finalizeFederation();
 
-		// process tasks in thread poll
+		// process tasks in thread pool
 		// !!! NOTE: this could block (for a long time)
-		logger.log(Level.FINER,"Waiting tasks in thread poll to complete...");
+		logger.log(Level.FINER,"Waiting for tasks in thread pool to complete...");
 		threadPool.shutdown();
         try {
             if (!threadPool.awaitTermination(3, TimeUnit.SECONDS))
             	threadPool.shutdownNow();
         } catch (InterruptedException ie) { /* noop */ } 
 
+        alarmSource.tearDown();
+        
 		// unbind Manager
 		unbind("Manager", null);
 
