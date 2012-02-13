@@ -74,6 +74,7 @@ public class RRWithDefaultFM extends ComponentClientTestCase implements Category
 
 	@Override
 	protected void tearDown() throws Exception {
+		alarmSource.close();
 		categoryClient.close();
 		super.tearDown();
 		System.out.println("tearDown done");

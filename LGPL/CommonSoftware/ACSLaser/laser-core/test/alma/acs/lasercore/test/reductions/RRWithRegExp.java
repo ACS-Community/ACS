@@ -74,6 +74,7 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 
 	@Override
 	protected void tearDown() throws Exception {
+		alarmSource.close();
 		ACSAlarmSystemInterfaceFactory.done();
 		categoryClient.close();
 		super.tearDown();
