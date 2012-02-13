@@ -97,6 +97,9 @@ public class AlarmSender {
 				// @TODO (hso): return? exception? Otherwise NPE from source.push below
 			}
 		}
+		if (properties==null) {
+			properties = new Properties();
+		}
 		try {
 			
 			ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(FF, FM, FC);
@@ -130,7 +133,7 @@ public class AlarmSender {
 			String FM, 
 			int FC, 
 			boolean active) {
-		sendAlarm(FF,FM,FC,new Properties(),active);
+		sendAlarm(FF,FM,FC,null,active);
 	}
 	
 	/**
