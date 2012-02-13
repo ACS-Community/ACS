@@ -35,6 +35,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJNotImplementedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
@@ -44,6 +45,9 @@ import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 
 /**
+ * @TODO: Share some code with jcont and laser alarms who also implement ContainerServicesBase, 
+ * e.g. through a new ContainerServicesBaseImpl class in module acsContainerServices.
+ * 
  * @author msekoranja
  */
 public class ManagerContainerServices implements ContainerServicesBase,
@@ -58,6 +62,8 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	private Policy[] offshootPolicies;
 	
 	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
+	private final ThreadFactory threadFactory;
+	
 	/**
 	 * @param orb
 	 * @param dal
@@ -70,7 +76,7 @@ public class ManagerContainerServices implements ContainerServicesBase,
 		this.offshootPoa = null; // on demand  
 		this.dal = dal;
 		this.logger = logger;
-		
+		this.threadFactory = new DaemonThreadFactory(ManagerContainerServices.class.getSimpleName());
 	}
 	
 	/**
@@ -222,7 +228,7 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	}
 
 	public ThreadFactory getThreadFactory() {
-		throw new NO_IMPLEMENT();
+		return threadFactory;
 	}
 
 	public String corbaObjectToString(org.omg.CORBA.Object objRef)
