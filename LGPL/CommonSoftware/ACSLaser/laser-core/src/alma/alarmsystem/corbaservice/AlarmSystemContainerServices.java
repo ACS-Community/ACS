@@ -45,29 +45,32 @@ import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNotImplementedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.CleaningDaemonThreadFactory;
-import alma.acs.container.testsupport.DummyContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.nc.AcsEventPublisher;
+import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Helper;
 import alma.acs.nc.refactored.NCPublisher;
 
-/**
- * @TODO: Try to reuse the original container services implementation from jcont,
- * e.g. by using a ComponentClient inside the alarm service.
- */
-public class AlarmSystemContainerServices extends DummyContainerServices {
+public class AlarmSystemContainerServices implements ContainerServicesBase {
 	
 	/**
 	 * The CORBA ORB
 	 */
 	private final ORB orb;
+	
+	/**
+	 * The logger
+	 */
+	private final AcsLogger logger;
 	
 	/**
 	 * Thread factory.
@@ -78,7 +81,12 @@ public class AlarmSystemContainerServices extends DummyContainerServices {
 	/**
 	 * The CORBA server for the alarm system
 	 */
-	private final AlarmSystemCorbaServer alSysCorbaServer;
+	private AlarmSystemCorbaServer alSysCorbaServer;
+	
+	/**
+	 * The name returned by <code>getName()</code>.
+	 */
+	private static final String name = "AlarmService";
 	
 	/**
 	 * The implementation of the {@link AdvancedContainerServices}
@@ -92,8 +100,6 @@ public class AlarmSystemContainerServices extends DummyContainerServices {
 	 * @param theLogger The logger
 	 */
 	public AlarmSystemContainerServices(AlarmSystemCorbaServer alSysCorbaServer, AcsLogger theLogger) {
-		super("AlarmService", theLogger);
-		
 		if (alSysCorbaServer==null) {
 			throw new IllegalArgumentException("The AlarmSystemCorbaServer can't be null");
 		}
@@ -103,6 +109,7 @@ public class AlarmSystemContainerServices extends DummyContainerServices {
 		threadFactory = new CleaningDaemonThreadFactory(name, theLogger);
 		this.alSysCorbaServer=alSysCorbaServer;
 		this.orb=alSysCorbaServer.getORB();
+		logger=theLogger;
 		advancedContainerServices= new AlarmSystemAdvancedContainerServices(this);
 	}
 
@@ -171,6 +178,18 @@ public class AlarmSystemContainerServices extends DummyContainerServices {
 		return publisher;
 	}
 
+
+	@Override
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
+	}
+
+	@Override
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName,
+			String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
+	}
+
 	private Policy[] m_offshootPolicies;
 
 	public POA getPOAForOffshoots(POA componentPOA) throws AcsJContainerEx,
@@ -222,6 +241,16 @@ public class AlarmSystemContainerServices extends DummyContainerServices {
 	@Override
 	public AdvancedContainerServices getAdvancedContainerServices() {
 		return advancedContainerServices;
+	}
+
+	@Override
+	public AcsLogger getLogger() {
+		return logger;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	@Override
