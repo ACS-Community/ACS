@@ -28,13 +28,14 @@ import java.util.logging.Logger;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.COUNTER.CHANNELNAME_COUNTER;
 import alma.COUNTER.CounterSupplierOperations;
 import alma.COUNTER.OnOffStates;
 import alma.COUNTER.statusBlockEvent;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.AcsEventPublisher;
 
 /** 
  * CounterSupplier is a simple class that creates the "counter" notification channel,
@@ -48,7 +49,8 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
 
 	private ContainerServices m_containerServices;
 	private Logger m_logger;
-	private SimpleSupplier m_supplier = null;
+	private AcsEventPublisher<statusBlockEvent> m_supplier;
+	
    /** 
      * Total number of events that have been consumed.
      */    
@@ -66,14 +68,14 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
     	m_logger.info("initialize() called...");
 
     	try {
-    		m_supplier = new SimpleSupplier(alma.COUNTER.CHANNELNAME_COUNTER.value, m_containerServices);
+    		m_supplier = containerServices.createNotificationChannelPublisher(CHANNELNAME_COUNTER.value, statusBlockEvent.class);
             m_logger.info("CounterSupplier ready to send NC events...");
     	}
     	catch (Exception e) {
-        	if (m_supplier != null) {				
+        	if (m_supplier != null) {
         		m_supplier.disconnect();
         	}
-            m_logger.info("CounterSupplier failed to connect as an event supplier to channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
+            m_logger.info("CounterSupplier failed to connect as an event supplier to channel " + CHANNELNAME_COUNTER.value);
         }
 
 	}
@@ -90,7 +92,7 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
 
 	public void cleanUp() {
 		if (m_supplier != null) {
-			m_logger.info("cleanUp() called, disconnecting supplier from channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
+			m_logger.info("cleanUp() called, disconnecting supplier from channel " + CHANNELNAME_COUNTER.value);
 	    	m_supplier.disconnect();
 		}
 		else {
