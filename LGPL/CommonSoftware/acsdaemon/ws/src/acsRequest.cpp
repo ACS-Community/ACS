@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.13 2012/02/03 12:57:33 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.14 2012/02/13 13:52:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -231,7 +231,10 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
     if (inprocess) {
 
     	if (hasAsync && curreq->isAsync())
-    		asyncToComplete--;
+    	{
+			asyncStartInProgress.erase(curreq->getDescription()->getACSService());
+			asyncToComplete--;
+    	}
 
     	//printf("hasAsync %d, curreq->isAsync() %d, asyncToComplete %d name %s\n",
     	//		hasAsync, curreq->isAsync(), asyncToComplete, curreq->getDescription()->getACSServiceName());
@@ -277,13 +280,20 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
     	{
             inprocess = true;
 			curreq = requests.front();
+
+			// wait for dependent aysnc-started service to complete
+			if (hasAsync &&
+				asyncStartInProgress.find(curreq->getDescription()->getDependentService()) != asyncStartInProgress.end())
+				break;
+
 			requests.pop_front();
 
-			if (curreq->isAsync())
+			if (curreq->getRequestType() == START_SERVICE && curreq->isAsync())
 			{
 				hasAsync = true;
 				asyncToComplete++;
 				AsyncRequestThreadPool::getInstance()->enqueue(new AsyncRequestRequest(curreq, this));
+				asyncStartInProgress.insert(curreq->getDescription()->getACSService());
 			}
 			else
 			{
@@ -297,10 +307,12 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
 /*********************** ACS SERVICES SPECIFIC REQUESTS ***********************/
 /************************ ACSServiceRequestDescription ************************/
 
-ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), corbalocName(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(true), recovery(false), async(false) {
+ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), corbalocName(NULL), domain(NULL), cdbxmldir(NULL),
+		loadir(false), wait(true), recovery(false), async(acsServices[service].async) {
 }
 
-ACSServiceRequestDescription::ACSServiceRequestDescription(const ACSServiceRequestDescription &desc) : service(desc.service), instance_number(desc.instance_number), host(STRDUP(desc.host)), name(STRDUP(desc.name)), corbalocName(STRDUP(desc.corbalocName)), domain(STRDUP(desc.domain)), cdbxmldir(STRDUP(desc.cdbxmldir)), loadir(desc.loadir), wait(desc.wait), recovery(desc.recovery) {
+ACSServiceRequestDescription::ACSServiceRequestDescription(const ACSServiceRequestDescription &desc) : service(desc.service), instance_number(desc.instance_number), host(STRDUP(desc.host)), name(STRDUP(desc.name)), corbalocName(STRDUP(desc.corbalocName)), domain(STRDUP(desc.domain)), cdbxmldir(STRDUP(desc.cdbxmldir)),
+		loadir(desc.loadir), wait(desc.wait), recovery(desc.recovery), async(desc.async) {
 }
 
 ACSServiceRequestDescription::~ACSServiceRequestDescription() {

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.9 2012/02/03 12:57:33 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.10 2012/02/13 13:52:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,6 +40,8 @@
 #include <ace/Guard_T.h>
 
 #include <logging.h>
+
+#include <set>
 
 // callback call timeout
 #define CORBA_TIMEOUT 5000
@@ -60,6 +62,19 @@
 // can't run requested servant: launch attempt timed out
 #define EC_TIMEOUT 45
 
+// start-up (dependency) order
+enum ACSServiceType {
+    NAMING_SERVICE = 0,
+    INTERFACE_REPOSITORY,
+    CDB,
+    NOTIFICATION_SERVICE,
+    LOGGING_SERVICE,
+    ACS_LOG_SERVICE,
+    ALARM_SERVICE,
+    MANAGER,
+    UNKNOWN
+};
+
 struct ACSService {
     const char *xmltag;
     const char *script;
@@ -72,19 +87,7 @@ struct ACSService {
     std::string (*namedsvcport)(int, const char *);
     bool autorestart;      // Should ACS service automatically restart
     bool async;            // Should service be started asynchronously
-};
-
-// start-up (dependency) order
-enum ACSServiceType {
-    NAMING_SERVICE = 0,
-    INTERFACE_REPOSITORY,
-    CDB,
-    NOTIFICATION_SERVICE,
-    LOGGING_SERVICE,
-    ACS_LOG_SERVICE,
-    ALARM_SERVICE,
-    MANAGER,
-    UNKNOWN
+    ACSServiceType depententService;     // What async started service to wait for
 };
 
 #define ACS_SERVICE_TYPES UNKNOWN
@@ -102,7 +105,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getNamingServicePort,
 				NULL,
 				false,
-				false
+				false,
+				UNKNOWN
 		}, {
 				"interface_repository",
 				"acsInterfaceRepository",
@@ -114,7 +118,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getIRPort,
 				NULL,
 				false,
-				true
+				true,
+				NAMING_SERVICE
 		}, {
 				"cdb",
 				"acsConfigurationDatabase",
@@ -126,7 +131,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getCDBPort,
 				NULL,
 				false,
-				false
+				true,
+				NAMING_SERVICE
 		}, {
 				"notification_service",
 				"acsNotifyService",
@@ -138,7 +144,8 @@ const ACSService acsServices[] = {
 				NULL,
 				&ACSPorts::getNotifyServicePort,
 				true,
-				false
+				false,
+				NAMING_SERVICE
 		}, {
 				"logging_service",
 				"acsLoggingService",
@@ -150,7 +157,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getLoggingServicePort,
 				NULL,
 				true,
-				false
+				false,
+				NAMING_SERVICE
 		}, {
 				"acs_log",
 				"acsACSLogService",
@@ -162,7 +170,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getLogPort,
 				NULL,
 				false,
-				false
+				false,
+				NAMING_SERVICE
 		}, {
 				"alarm_service",
 				"acsAlarmService",
@@ -174,7 +183,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getAlarmServicePort,
 				NULL,
 				false,
-				false
+				true,
+				CDB
 		}, {
 				"manager",
 				"acsManager",
@@ -186,8 +196,9 @@ const ACSService acsServices[] = {
 				&ACSPorts::getManagerPort,
 				NULL,
 				false,
-				false
-		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false }
+				false,
+				CDB
+		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, UNKNOWN }
 };
 
 enum ACSServiceRequestType {
@@ -255,6 +266,7 @@ template <class R> class RequestChainContext {
     bool hasAsync;
     bool failed;
     int asyncToComplete;
+    std::set<ACSServiceType> asyncStartInProgress;
 
     ACE_Thread_Mutex mutex;
 
@@ -264,7 +276,7 @@ template <class R> class RequestChainContext {
     virtual void chainAborted() = 0;
   public:
     RequestChainContext(RequestProcessorThread *irpt) : rpt(irpt), curreq(NULL), inprocess(false),
-    	hasAsync(false), failed(false), asyncToComplete(0) {}
+    	hasAsync(false), failed(false), asyncToComplete(0), asyncStartInProgress() {}
     virtual ~RequestChainContext() {
         while (!requests.empty()) {
             delete requests.front();
@@ -323,6 +335,7 @@ class ACSServiceRequestDescription {
     ACSServiceType getACSService() { return service; }
     const char *getACSServiceName() { return acsServices[service].xmltag; }
     bool isAsync() { return async; }
+    ACSServiceType getDependentService() { return acsServices[service].depententService; }
 };
 
 class ACSDaemonContext;
@@ -350,6 +363,7 @@ class ACSServiceRequest : public ChainedRequest<ACSServiceRequest>, POA_acsdaemo
     const ACSErr::Completion *getCompletion() { return completion; }
     bool isErrorFree() { return completion == NULL || completion->previousError.length() == 0; }
     ACSServiceRequestTarget getRequestTarget() { return target; }
+    ACSServiceRequestType getRequestType() { return request_type; }
     ACSServiceRequestDescription *getDescription() { return desc; }
     const char *getACSServiceName() { return desc->getACSServiceName(); }
     int getInstanceNumber() { return desc->getInstanceNumber(); }
