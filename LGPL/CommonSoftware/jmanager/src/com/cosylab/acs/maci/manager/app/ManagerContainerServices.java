@@ -3,6 +3,7 @@
  */
 package com.cosylab.acs.maci.manager.app;
 
+import java.lang.reflect.Constructor;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +11,8 @@ import java.util.logging.Logger;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
@@ -28,13 +31,17 @@ import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNotImplementedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.nc.AcsEventPublisher;
+import alma.acs.nc.AcsEventSubscriber;
 
 /**
  * @author msekoranja
@@ -50,6 +57,7 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	private POA offshootPoa;
 	private Policy[] offshootPolicies;
 	
+	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
 	/**
 	 * @param orb
 	 * @param dal
@@ -262,6 +270,70 @@ public class ManagerContainerServices implements ContainerServicesBase,
 
 	public void disconnectManagerAdmin(AdministratorOperations adminOp) {
 		throw new NO_IMPLEMENT();
+	}
+
+	@Override
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return createNotificationChannelPublisher(channelName, null, eventType);
+	}
+
+	@Override
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(
+			String channelName,
+			String channelNotifyServiceDomainName, 
+			Class<T> eventType) throws AcsJContainerServicesEx {
+			AcsEventPublisher<T> publisher = null;
+
+			try {
+				// TODO: Matej please help, is there a more elegant way to get the naming service ref?
+				org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+				NamingContext ncRef = NamingContextHelper.narrow(objRef);
+				Object[] args = new Object[]{
+						channelName,
+						channelNotifyServiceDomainName,
+						this,
+						ncRef
+				};
+//				// TODO: Can we do this without the direct cast? The usual "asSubclass" is not enough 
+				// because we don't create a subclass of Class<T> but rather of Class<U<T>>.
+				// Also the getGenericInterfaces / ParameterizedType trick does not work because because we don't have a 
+				// concrete parameterized type.
+				Class<AcsEventPublisher<T>> clazz = (Class<AcsEventPublisher<T>>) Class.forName(CLASSNAME_NC_PUBLISHER);
+				Constructor<? extends AcsEventPublisher<T>> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class);
+				publisher = constructor.newInstance(args);
+			} catch(ClassNotFoundException e) {
+				// TODO: maybe we could prevent future NCPublisher creation tries, since the class isn't and will not be loaded
+				//       The same applies for the next "catch" block
+				logger.log(AcsLogLevel.ERROR, "Cannot create NC publisher because the 'NCPublisher' class is not present in the classpath", e);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+				ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class not present in the classpath");
+				throw ex;
+			} catch(ClassCastException e) {
+				logger.log(AcsLogLevel.ERROR, "Cannot create NC publisher because loaded class '" + CLASSNAME_NC_PUBLISHER + "' is not of type 'AcsEventPublisher", e);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+				ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class does not extend 'AcsEventPublisher'");
+				throw ex;
+			} catch(Throwable e) {
+				logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventPublisher object", e);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+				throw ex;
+			}
+
+//			m_publishers.put( (channelNotifyServiceDomainName == null ? "" : channelNotifyServiceDomainName) + "/" + channelName, publisher);
+
+			return publisher;
+	}
+
+
+	@Override
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
+	}
+
+	@Override
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName,
+			String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
 	}
 
 }
