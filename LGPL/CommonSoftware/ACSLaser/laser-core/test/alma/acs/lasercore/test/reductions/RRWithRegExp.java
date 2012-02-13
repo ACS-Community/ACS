@@ -106,6 +106,7 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 	 * 				I have decided to condesate the 2 tests in only one.
 	 * 
 	 * @TODO Split this test in two test when the problem described upon has been fixed.
+	 *       Update 2012-02: SimpleSupplier has been removed, so it is worth trying again.
 	 * 
 	 * @throws Exception
 	 */
