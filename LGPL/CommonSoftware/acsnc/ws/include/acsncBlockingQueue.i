@@ -27,6 +27,7 @@ event_info<T> blocking_queue<T>::pop() {
     if(buffer.size() == 0)
         pthread_cond_wait(&cond, &mutex);
     if (buffer.size() == 0) {
+        pthread_mutex_unlock(&mutex);
         interrupted_blocking_queue ex;
         throw ex;
     }
@@ -34,6 +35,17 @@ event_info<T> blocking_queue<T>::pop() {
     buffer.pop();
     pthread_mutex_unlock(&mutex);
     return ret_val;
+}
+
+template<class T>
+void blocking_queue<T>::pop_no_block() {
+    pthread_mutex_lock(&mutex);
+    if(buffer.size() == 0) {
+        return;
+    }
+    buffer.pop();
+    pthread_mutex_unlock(&mutex);
+    return;
 }
 
 template<class T>
