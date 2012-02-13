@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,23 +51,6 @@ import org.prevayler.Prevayler;
 import org.prevayler.implementation.AbstractPrevalentSystem;
 import org.prevayler.implementation.SnapshotPrevayler;
 
-import si.ijs.maci.ClientOperations;
-import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
-import alma.acs.concurrent.DaemonThreadFactory;
-import alma.acs.exceptions.AcsJException;
-import alma.acs.util.ACSPorts;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
-import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
-import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.AuthenticationData;
@@ -80,7 +62,6 @@ import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
-import com.cosylab.acs.maci.Container.ComponentInfoCompletionCallback;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
@@ -99,6 +80,7 @@ import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.SynchronousAdministrator;
 import com.cosylab.acs.maci.TimeoutRemoteException;
 import com.cosylab.acs.maci.Transport;
+import com.cosylab.acs.maci.Container.ComponentInfoCompletionCallback;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
 import com.cosylab.acs.maci.manager.app.ManagerContainerServices;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
@@ -135,6 +117,23 @@ import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.client.DAOProxy;
 import com.cosylab.cdb.client.DAOProxyConnectionListener;
 import com.cosylab.util.WildcharMatcher;
+
+import si.ijs.maci.ClientOperations;
+
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.acs.alarmsystem.source.AlarmSource;
+import alma.acs.alarmsystem.source.AlarmSourceImpl;
+import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.exceptions.AcsJException;
+import alma.acs.util.ACSPorts;
+import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
+import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * This class is an implementation of MACI com.cosylab.acs.maci.Manager.
@@ -894,7 +893,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Alarm System Interface.
 	 */
-    private transient ACSAlarmSystemInterface alarmSource;
+    private transient AlarmSource alarmSource;
 
 	/**
 	 * Persistent set of raised (timer task) alarms.
@@ -1002,14 +1001,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// establish connect to the alarm system
 		try
 		{
-		        ACSAlarmSystemInterfaceFactory.init(managerContainerServices);
-		        alarmSource = ACSAlarmSystemInterfaceFactory.createSource("ALARM_SYSTEM_SOURCES");
+			alarmSource = new AlarmSourceImpl(managerContainerServices);
+			alarmSource.start();
 		}
 		catch (Throwable ex)
 		{
-		        logger.log(Level.SEVERE, "Failed to initialize Alarm System Interface " + ex.getMessage(), ex);
-		        alarmSource = null;
-	        }
+			logger.log(Level.SEVERE, "Failed to initialize Alarm System Interface " + ex.getMessage(), ex);
+			alarmSource = null;
+		}
 		
 		// register ping tasks
 		initializePingTasks();
@@ -9937,10 +9936,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			threadPool.execute(new Runnable() {
 				public void run() {
 					try {
-						ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(FAULT_FAMILY, FAULT_MEMBER, FAULT_CODE);
-						fs.setDescriptor(raise ? ACSFaultState.ACTIVE : ACSFaultState.TERMINATE);
-						fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-						alarmSource.push(fs);
+						alarmSource.raiseAlarm(FAULT_FAMILY, FAULT_MEMBER, FAULT_CODE);
 					} catch (Throwable th) {
 						logger.log(Level.WARNING, "Failed to send alarm.", th);
 					}

@@ -4,19 +4,17 @@
 
 package com.cosylab.acs.maci.manager;
 
-import java.sql.Timestamp;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
 
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.HandleHelper;
 import com.cosylab.acs.maci.RemoteTimeoutException;
 import com.cosylab.acs.maci.RemoteTransientException;
+
+import alma.acs.alarmsystem.source.AlarmSource;
+import alma.alarmsystem.source.ACSFaultState;
 
 /**
  * Implementation of ping task executed by <code>java.util.Timer</class>.
@@ -66,7 +64,7 @@ public class PingTimerTask extends TimerTask
 	/**
 	 * Alarm System Interface.
 	 */
-	private ACSAlarmSystemInterface alarmSource;
+	private AlarmSource alarmSource;
 
 	/**
 	 * Constructs a ping task which monitors client's state.
@@ -76,7 +74,7 @@ public class PingTimerTask extends TimerTask
 	 * @param	alarmSource	interface to send alarms
 	 * @param	activeAlarm	set of active alarms
 	 */
-	public PingTimerTask(ManagerImpl manager, Logger logger, ClientInfo clientInfo, ACSAlarmSystemInterface alarmSource)
+	public PingTimerTask(ManagerImpl manager, Logger logger, ClientInfo clientInfo, AlarmSource alarmSource)
 	{
 		super();
 		
@@ -241,20 +239,20 @@ public class PingTimerTask extends TimerTask
 	public void send_alarm(String faultMember, String state) {
 		
 		// if no alarm system initialized ignore
-		if (alarmSource == null)
+		if (alarmSource == null) {
 			return;
+		}
 
 		try {
-			ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(FAULT_FAMILY, faultMember, FAULT_CODE);
-			fs.setDescriptor(state);
-			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-			alarmSource.push(fs);
+			alarmSource.raiseAlarm(FAULT_FAMILY, faultMember, FAULT_CODE);
 
-			// seve alarm state
-			if (ACSFaultState.ACTIVE.equals(state))
+			// save alarm state
+			if (ACSFaultState.ACTIVE.equals(state)) {
 				manager.alarmRaised(faultMember);
-			else if (ACSFaultState.TERMINATE.equals(state))
+			}
+			else if (ACSFaultState.TERMINATE.equals(state)) {
 				manager.alarmCleared(faultMember);
+			}
 			
 		} catch (Throwable th) {
 			// do nothing, alarm did not work
