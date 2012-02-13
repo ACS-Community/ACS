@@ -47,8 +47,7 @@ import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicSubscriber;
 
-import alma.acs.container.ContainerServices;
-
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -58,9 +57,9 @@ import alma.acs.container.ContainerServices;
  */
 public class ACSJMSSession implements Session {
 
-	protected ContainerServices containerServices;
+	protected ContainerServicesBase containerServices;
 
-	public ACSJMSSession(ContainerServices containerServices)
+	public ACSJMSSession(ContainerServicesBase containerServices)
 	{
 		if (containerServices==null) {
 			throw new IllegalArgumentException("Invalid null ContainerServices");

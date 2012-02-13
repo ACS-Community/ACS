@@ -35,7 +35,7 @@ import javax.jms.Message;
 import javax.jms.Topic;
 import javax.jms.TopicPublisher;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventPublisher;
 
@@ -94,7 +94,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 		 * @param name The name of the topic (i.e. of the NC)
 		 * @throws AcsJException In case of error building the <code>AcsEventPublisher</code>
 		 */
-		public PublisherPoolItem(String name, ContainerServices contSvcs) throws AcsJException {
+		public PublisherPoolItem(String name, ContainerServicesBase contSvcs) throws AcsJException {
 			ncName = name;
 			publisher = contSvcs.createNotificationChannelPublisher(ncName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
 			lastAccessTime=System.currentTimeMillis();
@@ -169,7 +169,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 
 	 * @throws JMSException 
 	 */
-	public ACSJMSTopicPublisher(Topic topic, ContainerServices containerServices) throws JMSException {
+	public ACSJMSTopicPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		super(topic, containerServices);
 		
 		if(topic != null) {

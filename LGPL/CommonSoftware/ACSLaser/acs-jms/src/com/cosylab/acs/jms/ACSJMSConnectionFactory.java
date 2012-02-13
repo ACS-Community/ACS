@@ -30,8 +30,7 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
-import alma.acs.container.ContainerServices;
-
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -40,9 +39,9 @@ import alma.acs.container.ContainerServices;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ACSJMSConnectionFactory implements ConnectionFactory {
-	protected ContainerServices containerServices;
+	protected ContainerServicesBase containerServices;
 
-	public ACSJMSConnectionFactory(ContainerServices containerServices)
+	public ACSJMSConnectionFactory(ContainerServicesBase containerServices)
 	{
 		this.containerServices = containerServices;
 	}

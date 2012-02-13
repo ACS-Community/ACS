@@ -32,8 +32,7 @@ import javax.jms.JMSException;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
 
-import alma.acs.container.ContainerServices;
-
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -45,7 +44,7 @@ public class ACSJMSTopicConnectionFactory
 	extends ACSJMSConnectionFactory
 	implements TopicConnectionFactory, Serializable {
 
-	public ACSJMSTopicConnectionFactory(ContainerServices containerServices)
+	public ACSJMSTopicConnectionFactory(ContainerServicesBase containerServices)
 	{
 		super(containerServices);
 	}
