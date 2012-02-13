@@ -1,7 +1,7 @@
 package alma.nctest.clients;
 
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.AcsEventPublisher;
 import alma.simpleAcsTest.StructWithMyString;
 
 
@@ -35,7 +35,7 @@ public class ClosedLoopEventTest extends ComponentClientTestCase {
 	public void testStructWithTypedef() throws Exception {
 		
 		StructWithMyString event = new StructWithMyString("myRealString", "myTypedefdString");
-		SimpleSupplier supplier = new SimpleSupplier(ADHOC_CHANNEL_NAME, getContainerServices());
+		AcsEventPublisher<StructWithMyString> supplier = getContainerServices().createNotificationChannelPublisher(ADHOC_CHANNEL_NAME, StructWithMyString.class);
 		supplier.publishEvent(event);
 	}
 }

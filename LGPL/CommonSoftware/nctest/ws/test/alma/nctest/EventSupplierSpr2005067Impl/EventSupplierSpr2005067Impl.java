@@ -28,6 +28,8 @@ package alma.nctest.EventSupplierSpr2005067Impl;
 
 import java.util.logging.Level;
 
+import org.omg.CORBA.portable.IDLEntity;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.SPR2005067.ControlSystemChangeOfStateEvent;
@@ -36,7 +38,7 @@ import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.AcsEventPublisher;
 import alma.demo.SupplierCompOperations;
 
 /** Class designed for testing event suppliers.
@@ -46,7 +48,7 @@ public class EventSupplierSpr2005067Impl
     extends ComponentImplBase implements SupplierCompOperations
 {
 
-   private SimpleSupplier m_supplier = null;
+   private AcsEventPublisher<IDLEntity> m_supplier = null;
    
    /** Sends some events to an event channel.
     * @param param number of events to send
@@ -150,53 +152,41 @@ public class EventSupplierSpr2005067Impl
    }
    
    
-    /** Disconnects the supplier. */
-   public void cleanUp()
-   {
-      m_logger.info("cleanUp() called...");
-      
-      try
-	  {
-	  
-	  //fake a consumer disconnecting...
-	  m_supplier.disconnect_structured_push_supplier();
-	  m_supplier.disconnect();
-	  }
-      catch (Exception e)
-	  {
-	  ComponentLifecycleException acsex = new ComponentLifecycleException(
-	      "failed to cleanup SimpleSupplier", e);
+	/** Disconnects the supplier. */
+	public void cleanUp() {
+		m_logger.info("cleanUp() called...");
 
-	  m_logger.log(Level.SEVERE, "Failed to cleanup", e);
+		try {
+			m_supplier.disconnect();
+		} catch (Exception e) {
+			ComponentLifecycleException acsex = new ComponentLifecycleException("failed to cleanup AcsEventPublisher", e);
+			m_logger.log(Level.SEVERE, "Failed to cleanup", e);
 
-	  // Here I want to log the error stack.
-          // But this is not an ACS exception, so I cannot do it.
+			// Here I want to log the error stack.
+			// But this is not an ACS exception, so I cannot do it.
+		}
+	}
 
-	  }
-   }
-   
-   
-   /** Sets up the SimpleSupplier.
-    * @param containerServices Services to components.
-    * @throws ComponentLifecycleException Not thrown.
-    */
-   public void initialize(ContainerServices containerServices)
-   throws ComponentLifecycleException
-   {
-      super.initialize(containerServices);
-      m_logger.info("initialize() called...");
-      
-      try
-	  {
-         //Instantiate our supplier
-	  m_supplier = new SimpleSupplier(alma.SPR2005067.CHANNELNAME_SPR2005067.value,  //the channel's name
-					  m_containerServices);
-	  }
-      catch (Exception e)
-	  {
-	  throw new ComponentLifecycleException(
-	      "failed to create new SimpleSupplier", e);
-	  }
-   }
+	/**
+	 * Sets up the AcsEventPublisher.
+	 * 
+	 * @param containerServices
+	 *            Services to components.
+	 * @throws ComponentLifecycleException
+	 *             Not thrown.
+	 */
+	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+		super.initialize(containerServices);
+		m_logger.info("initialize() called...");
+
+		try {
+			// Instantiate our supplier
+			m_supplier = containerServices.createNotificationChannelPublisher(
+					alma.SPR2005067.CHANNELNAME_SPR2005067.value, // the channel's name
+					IDLEntity.class); // common base type of the events we'll publish
+		} catch (Exception e) {
+			throw new ComponentLifecycleException("failed to create new AcsEventPublisher", e);
+		}
+	}
 }
 
