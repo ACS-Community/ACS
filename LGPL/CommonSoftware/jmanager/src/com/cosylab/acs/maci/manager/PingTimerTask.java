@@ -215,9 +215,9 @@ public class PingTimerTask extends TimerTask
 	 *
 	 * @param faultMember
 	 */
-	public void raise_alarm(String faultMember) {
+	private void raise_alarm(String faultMember) {
 		if (!manager.hasActiveAlarm(clientInfo.getName()))
-			send_alarm(faultMember, ACSFaultState.ACTIVE);
+			send_alarm(faultMember, true);
 	}
 
 	/**
@@ -225,9 +225,9 @@ public class PingTimerTask extends TimerTask
 	 *
 	 * @param faultMember
 	 */
-	public void clear_alarm(String faultMember) {
+	private void clear_alarm(String faultMember) {
 		if (manager.hasActiveAlarm(clientInfo.getName()))
-			send_alarm(faultMember, ACSFaultState.TERMINATE);
+			send_alarm(faultMember, false);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class PingTimerTask extends TimerTask
 	 * @param faultMember
 	 * @param state
 	 */
-	public void send_alarm(String faultMember, String state) {
+	private void send_alarm(String faultMember, boolean raise) {
 		
 		// if no alarm system initialized ignore
 		if (alarmSource == null) {
@@ -244,13 +244,13 @@ public class PingTimerTask extends TimerTask
 		}
 
 		try {
-			alarmSource.raiseAlarm(FAULT_FAMILY, faultMember, FAULT_CODE);
+			alarmSource.setAlarm(FAULT_FAMILY, faultMember, FAULT_CODE, raise);
 
 			// save alarm state
-			if (ACSFaultState.ACTIVE.equals(state)) {
+			if (raise) {
 				manager.alarmRaised(faultMember);
 			}
-			else if (ACSFaultState.TERMINATE.equals(state)) {
+			else {
 				manager.alarmCleared(faultMember);
 			}
 			
