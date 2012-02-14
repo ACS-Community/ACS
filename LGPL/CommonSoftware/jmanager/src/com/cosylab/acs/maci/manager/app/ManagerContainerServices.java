@@ -56,12 +56,16 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	private final ORB orb;
 	private final DAL dal;
 	private final Logger logger;
-    private AcsLogger componentLogger;
+	private AcsLogger componentLogger;
 	private final POA clientPOA;
 	private POA offshootPoa;
 	private Policy[] offshootPolicies;
 	
+	/**
+	 * NCPublisher can be instantiated only using reflection, because modules jcontnc comes after jmanager
+	 */
 	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
+	
 	private final ThreadFactory threadFactory;
 	
 	/**
