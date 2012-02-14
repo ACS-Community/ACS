@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.10 2012/02/13 13:52:14 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.11 2012/02/14 19:01:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -267,6 +267,7 @@ template <class R> class RequestChainContext {
     bool failed;
     int asyncToComplete;
     std::set<ACSServiceType> asyncStartInProgress;
+    bool syncPending;
 
     ACE_Thread_Mutex mutex;
 
@@ -276,7 +277,7 @@ template <class R> class RequestChainContext {
     virtual void chainAborted() = 0;
   public:
     RequestChainContext(RequestProcessorThread *irpt) : rpt(irpt), curreq(NULL), inprocess(false),
-    	hasAsync(false), failed(false), asyncToComplete(0), asyncStartInProgress() {}
+    	hasAsync(false), failed(false), asyncToComplete(0), asyncStartInProgress(), syncPending(false) {}
     virtual ~RequestChainContext() {
         while (!requests.empty()) {
             delete requests.front();

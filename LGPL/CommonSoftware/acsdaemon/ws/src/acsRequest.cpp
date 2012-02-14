@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.14 2012/02/13 13:52:14 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.15 2012/02/14 19:01:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -235,6 +235,10 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
 			asyncStartInProgress.erase(curreq->getDescription()->getACSService());
 			asyncToComplete--;
     	}
+    	else
+    	{
+    		syncPending = false;
+    	}
 
     	//printf("hasAsync %d, curreq->isAsync() %d, asyncToComplete %d name %s\n",
     	//		hasAsync, curreq->isAsync(), asyncToComplete, curreq->getDescription()->getACSServiceName());
@@ -242,7 +246,12 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
         if (!requestDone(curreq)) {
 			failed = true;
 
-			if (hasAsync && asyncToComplete > 0)
+			if (hasAsync && curreq->isAsync() && syncPending)
+			{
+	    		// wait for other sync to complete...
+				return;
+			}
+			else if (hasAsync && asyncToComplete > 0)
         	{
 	    		// wait for other async to complete...
 				return;
@@ -258,8 +267,13 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
         }
     }
 
-    if (requests.empty()) {
-    	if (hasAsync && asyncToComplete > 0)
+	if (requests.empty()) {
+		if (hasAsync && curreq->isAsync() && syncPending)
+		{
+    		// wait for other sync to complete...
+			return;
+		}
+		else if (hasAsync && asyncToComplete > 0)
     	{
     		// wait for other async to complete...
     		return;
@@ -276,6 +290,12 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
     	}
     } else {
 
+		if (hasAsync && curreq->isAsync() && syncPending)
+		{
+    		// wait for other sync to complete...
+			return;
+		}
+
     	while (!requests.empty())
     	{
             inprocess = true;
@@ -284,7 +304,9 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
 			// wait for dependent aysnc-started service to complete
 			if (hasAsync &&
 				asyncStartInProgress.find(curreq->getDescription()->getDependentService()) != asyncStartInProgress.end())
+			{
 				break;
+			}
 
 			requests.pop_front();
 
@@ -297,6 +319,7 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
 			}
 			else
 			{
+	    		syncPending = true;
 				curreq->process(this);
 				break;
 			}
