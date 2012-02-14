@@ -2693,7 +2693,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
             	threadPool.shutdownNow();
         } catch (InterruptedException ie) { /* noop */ } 
 
-        alarmSource.tearDown();
+        if (alarmSource != null) {
+            alarmSource.tearDown();
+        }
         
 		// unbind Manager
 		unbind("Manager", null);
