@@ -61,7 +61,6 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreatedRaw_OK;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_ATTEMPT;
@@ -673,9 +672,14 @@ public class Helper {
 			{
 				try {
 					ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/Domains/" + domainName + "/NotificationService");
+					if (m_logger.isLoggable(Level.FINEST)) {
+						m_logger.finest("NC '" + channelName + "' of domain '" + domainName + "' mapped to NotificationService '" + ncFactoryName + "'.");
+					}
 					return ncFactoryName;
 				} catch (Throwable th) {
-					m_logger.finer("No Domain to NotificationService mapping found for domain/channel: " + domainName + "/" + channelName);
+					if (m_logger.isLoggable(Level.FINER)) {
+						m_logger.finer("No Domain to NotificationService mapping found for domain/channel: " + domainName + "/" + channelName);
+					}
 				}
 			}
 	
