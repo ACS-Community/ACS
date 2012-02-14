@@ -51,12 +51,12 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 {
     /**
      * We publish the two event types temperatureDataBlockEvent and NestedFridgeEvent,
-     * and thus can only restrict the publisher to the common base type.
+     * and thus can only restrict the publisher to the common base type IDLEntity.
      */
     private AcsEventPublisher<IDLEntity> m_supplier;
 
     /**
-     * Sets up the SimpleSupplier.
+     * Sets up the AcsEventPublisher.
      */
     public void initialize(ContainerServices containerServices) throws ComponentLifecycleException
     {
