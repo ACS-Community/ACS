@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.9 2012/01/17 16:15:19 hsommer Exp $
+# @(#) $Id: acsdataClean.py,v 1.10 2012/02/14 16:04:34 hsommer Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -47,7 +47,7 @@ import socket
 from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.9 2012/01/17 16:15:19 hsommer Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.10 2012/02/14 16:04:34 hsommer Exp $"
 #------------------------------------------------------------------------------
 
 ################################################################################################
@@ -120,15 +120,15 @@ def cleanDirectory(dir):
                    print "Unable to remove this file:", entry  
    
    except Exception, e:
-       print "An exception occured in acsdataClean.py's main:", e
+       print "An exception occurred in acsdataClean.py's main:", e
 
 
 if argv.count("-h")!=0 or argv.count("--help")!=0:
-   print "Clean the temporal directories of ACS"
+   print "Clean the temporal directories of ACS, as given by $ACS_TMP, or otherwise $ACSDATA/tmp"
    print "Options:"
    print "-h or --help : Show this message and then exit.\n"
-   print "-all : acsdataClean will remove all the directory entries under the tmp directory. By default the ACS_INSTANCE.* directories are preserved.\n"
-   print "-other_hosts : acsdataClean will clean all the directories located under $ACSDATA/tmp/ this will clean the tmp directories of the other hosts sharing the $ACSDATA in the same machine.\n"
+   print "-all : acsdataClean will remove all the directory entries under the tmp directory. Without this option, the ACS_INSTANCE.* subdirectories are preserved.\n"
+   print "-other_hosts : acsdataClean will clean all directories located under $ACSDATA/tmp/, thus cleaning also the tmp directories of other hosts sharing the $ACSDATA in the same machine.\n"
    exit(0)
 
 print "Cleaning up ACS temporary directories"
@@ -136,7 +136,7 @@ myDir = getAcsTmpDirectoryPath()
 if argv.count("-other_hosts")==0:
    cleanDirectory(myDir)
 else:
-   print "Cleanning all the possible hosts' temporary directories"
+   print "Cleaning all the possible hosts' temporary directories"
    myDir = myDir + "/../"
    if not exists(myDir):
       print "'", myDir, "' does not exist!"
@@ -144,6 +144,6 @@ else:
    fileList = listdir(myDir)
    for file in fileList:
       if isdir(myDir + file):
-         print "Cleanning " + file
+         print "Cleaning " + file
          cleanDirectory(myDir + file)
 
