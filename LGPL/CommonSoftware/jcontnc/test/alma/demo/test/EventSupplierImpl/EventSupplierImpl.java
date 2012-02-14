@@ -28,13 +28,17 @@ package alma.demo.test.EventSupplierImpl;
 
 import java.util.logging.Level;
 
+import org.omg.CORBA.NO_IMPLEMENT;
+import org.omg.CORBA.portable.IDLEntity;
+
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.AcsEventPublisher;
+import alma.acs.nc.refactored.NCPublisher;
 import alma.acsnc.EventDescription;
 import alma.demo.SupplierCompOperations;
 import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
@@ -45,11 +49,14 @@ import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
  */
 public class EventSupplierImpl extends ComponentImplBase implements SupplierCompOperations 
 {
-	private SimpleSupplier m_supplier = null;
+	/**
+	 * To publish "NestedFridgeEvent" or "EventDescription" events
+	 */
+	private NCPublisher<IDLEntity> m_supplier = null;
 
 	
 
-	/** Sets up the SimpleSupplier.
+	/** Sets up the NCPublisher.
 	 * @param containerServices Services to components.
 	 * @throws ComponentLifecycleException Not thrown.
 	 */
@@ -58,9 +65,10 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 
 		try {
 			//Instantiate our supplier
-			m_supplier = new SimpleSupplier("blar", //the channel's name
-					m_containerServices);
-			m_logger.info("SimpleSupplier for 'blar' channel created.");
+			AcsEventPublisher<IDLEntity> pubIF = containerServices.createNotificationChannelPublisher("blar", IDLEntity.class);
+			// For special testing, we cast to the expected publisher impl class (normally not needed)
+			m_supplier = (NCPublisher<IDLEntity>) pubIF;
+			m_logger.info("NCPublisher for 'blar' channel created.");
 		} catch (Exception e) {
 			throw new ComponentLifecycleException(e);
 		}
@@ -71,7 +79,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 	 * @param param number of events to send
 	 */
 	public void sendEvents(short param) {
-		m_logger.info("Now sending simplesupplier events...");
+		m_logger.info("Now sending events via NCPublisher...");
 		try {
 			//first send out some number of events.
 			EventDescription t_block = new EventDescription("no name", 32L, 64L);
@@ -80,9 +88,14 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 				Thread.sleep(1);
 			}
 
-			//fake a subscription change
-			m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
-					new org.omg.CosNotification.EventType[] {});
+			//fake a subscription change notification (should be disabled on the proxy consumer in the real system)
+			try {
+				m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
+						new org.omg.CosNotification.EventType[] {});
+				m_logger.warning("Call to 'subscription_change' did not produce the expected NO_IMPLEMENT exception.");
+			} catch (NO_IMPLEMENT ex) {
+				// expected
+			}
 
 		} catch (Exception e) {
 			System.err.println(e);
@@ -106,7 +119,8 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 		m_logger.info("cleanUp() called...");
 
 		try {
-			//fake a consumer disconnecting...
+			// Fake a consumer disconnecting...
+			// This should produce the FINE log "A Consumer has disconnected from the 'blar' channel"
 			m_supplier.disconnect_structured_push_supplier();
 			
 			m_supplier.disconnect();

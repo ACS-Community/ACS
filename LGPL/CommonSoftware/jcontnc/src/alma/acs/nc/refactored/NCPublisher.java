@@ -193,7 +193,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
-	 * Creates a new instance of SimpleSupplier. Make sure you call
+	 * Creates a new instance of NCPublisher. Make sure you call
 	 * {@link #disconnect()} when you no longer need this event supplier object.
 	 * 
 	 * @param channelName
@@ -206,7 +206,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 *            the ACS logging system.
 	 * @throws AcsJException
 	 *             There are literally dozens of CORBA exceptions that could be
-	 *             thrown by the SimpleSupplier class. Instead, these are
+	 *             thrown by the NCPublisher class. Instead, these are
 	 *             converted into an ACS Error System exception for the
 	 *             developer's convenience.
 	 */
@@ -344,7 +344,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * User code <b>must call this method when the Supplier is no longer useful</b>.
 	 * Failure to do so can result in remote memory leaks. User should not call
 	 * this method multiple times either. Once disconnect has been called, all
-	 * of SimpleSupplier's methods will cease to function properly.
+	 * of NCPublisher's methods will cease to function properly.
 	 * @throws IllegalStateException if called when already disconnected.
 	 */
 	@Override

@@ -25,6 +25,8 @@ import java.util.Vector;
 
 import org.omg.CosNotification.StructuredEvent;
 
+import alma.acs.nc.refactored.NCPublisher;
+
 /**
  * Circular Queue that can buffer events while the Notify Service is down.
  * <p>
@@ -33,7 +35,7 @@ import org.omg.CosNotification.StructuredEvent;
  * from Corba Any to IDL-generated struct.
  * If this becomes a memory issue, we may have to change it.
  * 
- * @see SimpleSupplier.publishCORBAEvent
+ * @see NCPublisher#publishCORBAEvent(StructuredEvent, T) 
  * @author Jorge Avarias <javarias [at] nrao.edu>
  */
 public class CircularQueue<T> {
