@@ -905,11 +905,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
      */
     private transient long lastExecutionId = 0;
 
-    /**
-     * Prevayler state.
-     */
-	private transient volatile AtomicBoolean prevaylerAlarmState;
-    
 	/**
 	 * Queue (per client) for its messages.
 	 */
@@ -969,8 +964,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		pendingActivations = new HashMap();
 		pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
 
-		prevaylerAlarmState = new AtomicBoolean(true);
-		
 		clientMessageQueue = new HashMap<Client, LinkedList<ClientMessageTask>>();
 		
 		groupedNotifyTaskMap = new HashMap<Object, GroupedNotifyTask>();
@@ -9920,36 +9913,25 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public void reportPrevaylerState(final boolean raise, Throwable alarmEx) {
 		
-		// ignore duplicate requests
-		if (prevaylerAlarmState.getAndSet(raise) == raise)
-			return;
-		
 		// log message
-		if (raise)
-			logger.log(Level.SEVERE, "Manager persistence subsystem failed to store pesistent data.", alarmEx);
-		else
-			logger.log(Level.INFO, "Manager persistence subsystem is functional.");
-		
-		// if no alarm system initialized ignore
-		if (alarmSource == null)
-			return;
-
-		// do not block
-		try
-		{
-			threadPool.execute(new Runnable() {
-				public void run() {
-					try {
-						alarmSource.raiseAlarm(FAULT_FAMILY, FAULT_MEMBER, FAULT_CODE);
-					} catch (Throwable th) {
-						logger.log(Level.WARNING, "Failed to send alarm.", th);
-					}
-				}
-			});
-		} catch (Throwable th) {
-			logger.log(Level.WARNING, "Failed to put send alarm async request to queue.", th);
+		if (raise) {
+			logger.log(Level.WARNING, "Manager persistence subsystem failed to store pesistent data.", alarmEx);
+		}
+		else {
+			logger.log(Level.FINER, "Manager persistence subsystem is functional.");
 		}
 		
+		// if no alarm system initialized ignore
+		if (alarmSource == null) {
+			return;
+		}
+
+		try {
+			// alarm source internally does async processing
+			alarmSource.setAlarm(FAULT_FAMILY, FAULT_MEMBER, FAULT_CODE, raise);
+		} catch (Throwable th) {
+			logger.log(Level.WARNING, "Failed to send alarm.", th);
+		}
 	}
 	
 	/**
