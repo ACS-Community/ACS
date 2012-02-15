@@ -21,28 +21,28 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon Controller - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [ACS Services Daemon Request Processor - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [ACS Services Daemon Controller - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [ACS Services Daemon Controller - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [ACS Services Daemon Request Processor - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [ACS Services Daemon Controller - ACS::Thread::run] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] DaemonSeqeuenceCallback is waiting for incoming requests.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
 2 - ----------T--:--:--.--- [GlobalLogger - ] BUILDING SERVICE DEFINITION.
 2 - SERVICE DEFINITION XML:
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] CREATING ServiceDefinitionBuilderImpl. New count: 'something'!
 2 - <acs_services_definition instance="1">
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] CREATING ServiceDefinitionBuilderImpl. New count: 'something'!
 2 - <naming_service host="a.b.c.d" />
 2 - <interface_repository host="a.b.c.d" load="false" wait_load="false" />
 2 - <notification_service name="NotifyEventChannelFactory" host="a.b.c.d" />
 2 - <notification_service name="LoggingNotifyEventChannelFactory" host="a.b.c.d" />
 2 - <notification_service name="AlarmNotifyEventChannelFactory" host="a.b.c.d" />
 2 - <notification_service name="ArchiveNotifyEventChannelFactory" host="a.b.c.d" />
-2 - <logging_service host="a.b.c.d" name="Log" />
 2 - ----------T--:--:--.--- [GlobalLogger - ] STARTING UP THE SERVICES.
+2 - <logging_service host="a.b.c.d" name="Log" />
 2 - <acs_log host="a.b.c.d" />
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ServiceDefinitionBuilderImpl. New count: 'something'!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 2 - <cdb host="a.b.c.d" recovery="true" cdb_xml_dir="/alma/ACS-x.y/acsdata/config/defaultCDB" />
 2 - <alarm_service host="a.b.c.d" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 2 - <manager host="a.b.c.d" recovery="true" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ServiceDefinitionBuilderImpl. New count: 'something'!
 2 - </acs_services_definition>
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - 
@@ -50,26 +50,40 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [AsyncRequestRequest - ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::AsyncRequestThreadPool] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [AsyncRequestRequest - ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [AsyncRequestRequest - AsyncRequestRequest::call] 
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [AsyncRequestRequest - AsyncRequestRequest::call] 
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Interface Repository (instance 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Configuration Database (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
@@ -106,28 +120,29 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [AsyncRequestRequest - ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [AsyncRequestRequest - AsyncRequestRequest::call] 
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Configuration Database (instance 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Alarm Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 2 - ----------T--:--:--.--- [GlobalLogger - ] DONE STARTING UP SERVICES.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
@@ -163,14 +178,6 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Alarm Service (instance 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Configuration Database (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
@@ -226,6 +233,14 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Configuration Database (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Interface Repository (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
@@ -239,15 +254,20 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 2 - ----------T--:--:--.--- [GlobalLogger - ] DONE SHUTTING DOWN SERVICES.
-2 - ----------T--:--:--.--- [GlobalLogger - ] TEST COMPLETE.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Ended processing command requests!
-2 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING TestDaemonSequenceCallback!
+2 - ----------T--:--:--.--- [GlobalLogger - ] TEST COMPLETE.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ACSServiceRequestChainContext!
+2 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING TestDaemonSequenceCallback!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 3 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
 3 - ----------T--:--:--.--- [GlobalLogger - ] Calling shutdown().
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Shutting down the ACS Services Daemon on remote request...
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping the ACS Services Daemon...
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [AsyncRequestThreadPool - AsyncRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Disposing ACSDaemonContext!
 3 - ----------T--:--:--.--- [GlobalLogger - ] Daemon shutdown message issued.
