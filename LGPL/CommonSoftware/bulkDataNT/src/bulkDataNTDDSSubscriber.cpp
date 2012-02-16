@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.21 2012/01/20 14:51:07 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.22 2012/02/16 14:32:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -174,6 +174,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	}
 	else
 	{
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast address.", topicName_m.c_str()));
 		//TBD if we add support for setting unicast addreess
 		//dr_qos.unicast.value.ensure_length(1,1);
 	}
