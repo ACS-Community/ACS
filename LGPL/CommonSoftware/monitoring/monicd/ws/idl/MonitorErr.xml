@@ -1,5 +1,7 @@
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="MonitorCollectorErr" type="60200" _prefix="alma">
-<ErrorCode name="DeviceAlreadyRegistred" shortDescription="Device already registred." description="Device already registred.">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="MonitorErr" type="60200" _prefix="alma">
+	
+<ErrorCode name="DeviceAlreadyRegistered" shortDescription="Device already registered." description="Device already registered.">
 	<Member name="Device" type="string" description="Device name."/>
 </ErrorCode>
 
@@ -7,7 +9,7 @@
 	<Member name="Device" type="string" description="Device name."/>
 </ErrorCode>
 
-<ErrorCode name="DeviceNotRegistred" shortDescription="Device has not been registred." description="Device has not been registred.">
+<ErrorCode name="DeviceNotRegistered" shortDescription="Device has not been registered." description="Device has not been registered.">
 	<Member name="Device" type="string" description="Device name."/>
 </ErrorCode>
 
@@ -19,7 +21,7 @@
 	<Member name="Device" type="string" description="Device name."/>
 </ErrorCode>
 
-<ErrorCode name="NonExsistentProperty" shortDescription="Property does not exist." description="The property does not exist.">
+<ErrorCode name="NonExistentProperty" shortDescription="Property does not exist." description="The property does not exist.">
 	<Member name="Property" type="string" description="Property name."/>
 </ErrorCode>
 
