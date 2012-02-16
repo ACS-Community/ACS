@@ -25,6 +25,7 @@
 
 #include <acscomponent.idl>
 #include <CollectorListStatus.idl>
+#include "MonitorErr.idl"
 
 #pragma prefix "alma"
 
@@ -49,9 +50,13 @@ module MonitorArchiver
 	{
 		/**
 		 * A monitor collector registers itself using this method, 
-		  * so that the controller can assign a blobber to fetch data from that collector.
+		 * so that the controller can assign a blobber to fetch data from that collector.
+		 *
+		 * @throws CollectorRegistrationFailedEx if the collector could not be registered with any of the available blobbers.
+		 *         The collector should raise an alarm but also try again later, because more blobbers may be available then.
 		 */
-		void registerCollector(in string collectorCompName);
+		void registerCollector(in string collectorCompName) 
+			raises (MonitorErr::CollectorRegistrationFailedEx);
 
 		/**
 		 * Monitor collector deregisters here.
@@ -59,8 +64,10 @@ module MonitorArchiver
 		void deregisterCollector(in string collectorCompName);
 
 		/**
+		 * Re-registers all previously registered collectors to their blobbers.
+		 * <p>
 		 * If a blobber was shut down while collectors were still assigned to the blobber, 
-		 * upon restart the blobber can request to get the same known collectors assigned again, 
+		 * upon restart the blobber can request via this method to get the same known collectors assigned again, 
 		 * which will result in calls to Blobber.addCollector.
 		 * <p>
 		 * This call will be ignored by the controller if no collectors are assigned to the blobber, 
