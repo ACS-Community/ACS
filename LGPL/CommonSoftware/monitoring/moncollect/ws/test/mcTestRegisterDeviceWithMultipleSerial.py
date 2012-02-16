@@ -27,8 +27,8 @@ from sys                        import argv
 from sys                        import exit
 from TMCDB                      import MonitorCollector
 from TMCDB                      import propertySerailNumber
-import MonitorCollectorErrImpl
-import MonitorCollectorErr
+import MonitorErrImpl
+import MonitorErr
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
@@ -40,26 +40,26 @@ try:
     psns =[propertySerailNumber('asds', ['12124']),propertySerailNumber('sdfsfs', ['3432535'])]
     
     mc.registerMonitoredDeviceWithMultipleSerial('FAKE_DEVICE', psns)
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();
     
 print "Test EH(registerMonitoredDeviceWithMultipleSerial): Property does not exist Problem"
 try:    
     mc.registerMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();
 
 psns =[propertySerailNumber('current', ['12124']),propertySerailNumber('status', ['3432535'])]    
 mc.registerMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)    
 mc.startMonitoring('TEST_PS_1')    
     
-print "Test EH(registerMonitoredDeviceWithMultipleSerial): DeviceAlreadyRegistred"
+print "Test EH(registerMonitoredDeviceWithMultipleSerial): DeviceAlreadyRegistered"
 try:
     mc.registerMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();   
 
 

@@ -28,8 +28,8 @@ from sys                        import exit
 from TMCDB                      import MonitorCollector
 from TMCDB                      import propertySerailNumber
 from omniORB                    import any
-import MonitorCollectorErrImpl
-import MonitorCollectorErr
+import MonitorErrImpl
+import MonitorErr
 import time
 
 # Make an instance of the PySimpleClient
@@ -51,8 +51,8 @@ try:
     mc.enable_archiving('MC_TEST_COMPONENT','doubleProp')
     time.sleep(10)
     mc.stopMonitoring('MC_TEST_COMPONENT')
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();   
 
 data = mc.getMonitorData()

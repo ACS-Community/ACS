@@ -27,8 +27,8 @@ from sys                        import argv
 from sys                        import exit
 from TMCDB                      import MonitorCollector
 from TMCDB                      import propertySerailNumber
-import MonitorCollectorErrImpl
-import MonitorCollectorErr
+import MonitorErrImpl
+import MonitorErr
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
@@ -39,8 +39,8 @@ try:
     psns =[propertySerailNumber('ROdoubleSeqPM', ['12124']),propertySerailNumber('RWdoubleSeqPM', ['3432535'])]    
     mc.registerMonitoredDeviceWithMultipleSerial('AMSSEQ1', psns)    
     mc.startMonitoring('AMSSEQ1')    
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();   
 
 mc.stopMonitoring('AMSSEQ1')

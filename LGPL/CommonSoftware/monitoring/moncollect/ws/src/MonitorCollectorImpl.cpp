@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.3 2011/03/30 18:11:18 tstaig Exp $"
+* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,14 +25,14 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.3 2011/03/30 18:11:18 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorCollectorImpl.h"
-#include "MonitorCollectorErr.h"
+#include "MonitorErr.h"
 
 using namespace TMCDB;
-using namespace MonitorCollectorErr;
+using namespace MonitorErr;
 
 
 MonitorCollectorImpl::MonitorCollectorImpl(const ACE_CString& name,
@@ -171,7 +171,7 @@ MonitorComponent* MonitorCollectorImpl::registerMonitoredComponent (const char *
 
     if (!monitorComponents_m.find(componentName))
     {
-    	DeviceAlreadyRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDevice");
+    	DeviceAlreadyRegisteredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDevice");
 	    ex.setDevice(componentName);
 
 	    throw ex;
@@ -226,10 +226,10 @@ void MonitorCollectorImpl::deregisterMonitoredDevice (const char * componentName
 
     if (monitorComponents_m.find(componentName, mc))
     {
-    	DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::deregisterMonitoredDevice");
+    	DeviceNotRegisteredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::deregisterMonitoredDevice");
     	ex.setDevice(componentName);
 
-    	throw ex.getDeviceNotRegistredEx();
+    	throw ex.getDeviceNotRegisteredEx();
     }//if
     monitorComponents_m.unbind(componentName);
     numOfComponents_m--;
@@ -348,9 +348,9 @@ void MonitorCollectorImpl::set_archiving_interval(const char* componentName, con
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m); // protection
 	
 	if (monitorComponents_m.find(componentName, mc)) {
-		DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::set_archiving_interval");
+		DeviceNotRegisteredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::set_archiving_interval");
 		ex.setDevice(componentName);
-		throw ex.getDeviceNotRegistredEx();
+		throw ex.getDeviceNotRegisteredEx();
 	}//if
 	if (mc) {
 		mc->set_archiving_interval(propertyName, time);
@@ -369,9 +369,9 @@ void MonitorCollectorImpl::suppress_archiving(const char* componentName, const c
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m); // protection
 	
 	if (monitorComponents_m.find(componentName, mc)) {
-		DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::suppress_archiving");
+		DeviceNotRegisteredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::suppress_archiving");
 		ex.setDevice(componentName);
-		throw ex.getDeviceNotRegistredEx();
+		throw ex.getDeviceNotRegisteredEx();
 	}//if
 	if (mc) {
 		mc->suppress_archiving(propertyName);
@@ -390,9 +390,9 @@ void MonitorCollectorImpl::enable_archiving(const char* componentName, const cha
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m); // protection
 	
 	if (monitorComponents_m.find(componentName, mc)) {
-		DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::enable_archiving");
+		DeviceNotRegisteredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::enable_archiving");
 		ex.setDevice(componentName);
-		throw ex.getDeviceNotRegistredEx();
+		throw ex.getDeviceNotRegisteredEx();
 	}//if
 	if (mc) {
 		mc->enable_archiving(propertyName);

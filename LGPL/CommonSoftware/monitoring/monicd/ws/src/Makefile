@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2011/03/30 17:59:22 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/02/16 14:16:12 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -116,14 +116,14 @@ IDL_FILES = TMCDBCOMMON_IDL MonitorCollector MCtestComponent CollectorListStatus
 TAO_IDLFLAGS =
 USER_IDL =
 TMCDBCOMMON_IDLStubs_LIBS = acscommonStubs
-MonitorCollectorStubs_LIBS = acscommonStubs acscomponentStubs TMCDBCOMMON_IDLStubs MonitorCollectorErr
+MonitorCollectorStubs_LIBS = acscommonStubs acscomponentStubs TMCDBCOMMON_IDLStubs MonitorErr
 MCtestComponentStubs_LIBS = acscommonStubs baciStubs
 CollectorListStatusStubs_LIBS = baciStubs enumpropMACROStubs
 MonitorArchiverIFStubs_LIBS = acscomponentStubs CollectorListStatusStubs
 
 #Error definition xml files
-ACSERRDEF= MonitorCollectorErr DAOErrType
-MonitorCollectorErrStubs_LIBS = acserr
+ACSERRDEF= MonitorErr DAOErrType
+MonitorErrStubs_LIBS = acserr
 DAOErrTypeStubs_LIBS = acserr
 #
 #

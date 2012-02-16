@@ -4,11 +4,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ComponentStates;
-import alma.MonitorCollectorErr.DeviceAlreadyRegistredEx;
-import alma.MonitorCollectorErr.DeviceNotRegistredEx;
-import alma.MonitorCollectorErr.RegisteringDeviceProblemEx;
-import alma.MonitorCollectorErr.StartMonitoringProblemEx;
-import alma.MonitorCollectorErr.StopMonitoringProblemEx;
+import alma.MonitorErr.DeviceAlreadyRegisteredEx;
+import alma.MonitorErr.DeviceNotRegisteredEx;
+import alma.MonitorErr.RegisteringDeviceProblemEx;
+import alma.MonitorErr.StartMonitoringProblemEx;
+import alma.MonitorErr.StopMonitoringProblemEx;
 import alma.TMCDB.MonitorCollectorOperations;
 import alma.TMCDB.MonitorDataBlock;
 import alma.TMCDB.propertySerailNumber;
@@ -58,19 +58,19 @@ public class MonitorTestCollector implements MonitorCollectorOperations {
 
     @Override
     public void deregisterMonitoredDevice(String componentName)
-            throws DeviceNotRegistredEx {
+            throws DeviceNotRegisteredEx {
     }
 
     @Override
     public void registerMonitoredDevice(String componentName,
             String serialNumber) throws RegisteringDeviceProblemEx,
-            DeviceAlreadyRegistredEx {
+            DeviceAlreadyRegisteredEx {
     }
 
     @Override
     public void registerMonitoredDeviceWithMultipleSerial(String componentName,
             propertySerailNumber[] serialNumbers)
-            throws RegisteringDeviceProblemEx, DeviceAlreadyRegistredEx {
+            throws RegisteringDeviceProblemEx, DeviceAlreadyRegisteredEx {
     }
 
     @Override

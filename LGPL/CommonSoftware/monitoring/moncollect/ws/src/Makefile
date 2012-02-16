@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.2 2012/02/16 14:19:59 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -62,7 +62,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 MonitorCollector_OBJECTS   = MonitorCollectorImpl MonitorComponent MonitorPoint
-MonitorCollector_LIBS = baci TMCDBCOMMON_IDLStubs MonitorCollectorStubs MonitorArchiverIFStubs MonitorCollectorErr CollectorListStatusStubs acscommonStubs enumpropMACROStubs TAO_DynamicInterface
+MonitorCollector_LIBS = baci TMCDBCOMMON_IDLStubs MonitorCollectorStubs MonitorArchiverIFStubs MonitorErr CollectorListStatusStubs acscommonStubs enumpropMACROStubs TAO_DynamicInterface
 
 #
 # Scripts (public and local)

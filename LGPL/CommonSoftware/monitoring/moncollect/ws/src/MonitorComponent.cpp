@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorComponent.cpp,v 1.3 2011/04/28 02:14:13 tstaig Exp $"
+* "@(#) $Id: MonitorComponent.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,14 +25,14 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.3 2011/04/28 02:14:13 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorComponent.h"
-#include "MonitorCollectorErr.h"
+#include "MonitorErr.h"
 
 using namespace TMCDB;
-using namespace MonitorCollectorErr;
+using namespace MonitorErr;
 
 
 MonitorComponent::MonitorComponent(ACS::CharacteristicComponent_ptr comp, maci::ContainerServices *cs)
@@ -104,7 +104,7 @@ void MonitorComponent::setPropertySerialNumber(char* propertyName, serialNumberT
 		}
 
 		//if we go out of the loop w/o finding the property we have to throw an exception
-		NonExsistentPropertyExImpl ex(__FILE__, __LINE__, "MonitorComponent::setPropertySerialNumber");
+		NonExistentPropertyExImpl ex(__FILE__, __LINE__, "MonitorComponent::setPropertySerialNumber");
 		ex.setProperty(propertyName);
 
 		throw ex;

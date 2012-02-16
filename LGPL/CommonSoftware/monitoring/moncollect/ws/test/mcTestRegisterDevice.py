@@ -26,8 +26,8 @@ from Acspy.Clients.SimpleClient import PySimpleClient
 from sys                        import argv
 from sys                        import exit
 from TMCDB                      import MonitorCollector
-import MonitorCollectorErrImpl
-import MonitorCollectorErr
+import MonitorErrImpl
+import MonitorErr
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
@@ -37,27 +37,27 @@ mc = simpleClient.getComponent(argv[1])
 print "Test EH(registerMonitoredDevice): RegisteringDeviceProblem"
 try:
     mc.registerMonitoredDevice('FAKE_DEVICE', '12345')
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();
     
     
 mc.registerMonitoredDevice('TEST_PS_1', '12345')    
 mc.startMonitoring('TEST_PS_1')    
     
-print "Test EH(registerMonitoredDevice): DeviceAlreadyRegistred"
+print "Test EH(registerMonitoredDevice): DeviceAlreadyRegistered"
 try:
     mc.registerMonitoredDevice('TEST_PS_1', '12345')
-except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();   
 
 
-print "Test EH(deregisterMonitoredDevice): DeviceNotRegistredEx"
+print "Test EH(deregisterMonitoredDevice): DeviceNotRegisteredEx"
 try:
     mc.deregisterMonitoredDevice('FAKE_DEVICE')
-except MonitorCollectorErr.DeviceNotRegistredEx, _ex:
-    ex = MonitorCollectorErrImpl.DeviceNotRegistredExImpl(exception=_ex)
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
     ex.Print();   
 
 

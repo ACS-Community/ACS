@@ -5,7 +5,7 @@
 #include <acscomponent.idl>
 #include <TMCDBCOMMON_IDL.idl>
 
-#include "MonitorCollectorErr.idl"
+#include "MonitorErr.idl"
 
 #pragma prefix "alma"
 
@@ -26,17 +26,17 @@ typedef sequence<propertySerailNumber> propertySerialNumberSeq;
     {
     /// methods for a component/device
     void registerMonitoredDevice(in string componentName, in serialNumberType serialNumber) 
-    	raises (MonitorCollectorErr::DeviceAlreadyRegistredEx, MonitorCollectorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
     	
 	void registerMonitoredDeviceWithMultipleSerial(in string componentName, in  propertySerialNumberSeq serialNumbers) 
-    	raises (MonitorCollectorErr::DeviceAlreadyRegistredEx, MonitorCollectorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
     	    	
     void deregisterMonitoredDevice(in string componentName)
-    	raises(MonitorCollectorErr::DeviceNotRegistredEx);
+    	raises(MonitorErr::DeviceNotRegisteredEx);
     
-    void startMonitoring(in string componentName) raises(MonitorCollectorErr::StartMonitoringProblemEx);
+    void startMonitoring(in string componentName) raises(MonitorErr::StartMonitoringProblemEx);
     
-    void stopMonitoring(in string componentName) raises (MonitorCollectorErr::StopMonitoringProblemEx);
+    void stopMonitoring(in string componentName) raises (MonitorErr::StopMonitoringProblemEx);
 
 	///for the archiver or better monitor controler
     MonitorDataBlocks getMonitorData();  
