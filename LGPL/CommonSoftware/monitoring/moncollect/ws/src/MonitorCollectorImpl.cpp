@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $"
+* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.5 2012/02/16 15:19:40 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $";
+static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.5 2012/02/16 15:19:40 hsommer Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorCollectorImpl.h"
@@ -62,6 +62,11 @@ void MonitorCollectorImpl::initialize()
 		//       so that we could obtain it by type ("IDL:alma/MonitorArchiver/Controller:1.0") rather than by configured instance name?
 		archiveMonitorController_m = contServ_m->getComponentNonSticky<MonitorArchiver::Controller>("ARCHIVE/TMCDB/MONITOR_CONTROL");
 		archiveMonitorController_m->registerCollector(name());
+	}
+	catch(MonitorErr::CollectorRegistrationFailedEx &ex)
+	{
+		// This is just a dummy impl, after having added the exception to IDL.
+		// TODO: deal with this exception, e.g. raise an alarm.
 	}
 	catch(ACSErr::ACSbaseExImpl &_ex)
 	{
