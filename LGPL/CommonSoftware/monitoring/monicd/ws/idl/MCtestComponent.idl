@@ -46,6 +46,17 @@ module TMCDB
 		readonly attribute ACS::RWlongSeq   longSeqRWProp;
 	};
 
+	interface MCtestAlarmsComponent : ACS::CharacteristicComponent
+	{
+		readonly attribute ACS::ROdouble    doubleROProp;
+		readonly attribute ACS::ROfloat     floatROProp;
+		readonly attribute ACS::ROlong      longROProp;
+		readonly attribute ACS::ROlongLong  longLongROProp;
+		readonly attribute ACS::ROuLongLong uLongLongROProp;
+		readonly attribute ACS::ROdoubleSeq doubleSeqROProp;
+		readonly attribute ACS::ROfloatSeq  floatSeqROProp;
+		readonly attribute ACS::ROlongSeq   longSeqROProp;
+	};
 
 };//module  TMCDB
 
