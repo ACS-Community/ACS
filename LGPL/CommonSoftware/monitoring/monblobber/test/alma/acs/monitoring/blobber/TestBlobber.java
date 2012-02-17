@@ -56,18 +56,20 @@ public class TestBlobber extends BlobberImpl {
 	 * @see alma.archive.tmcdb.monitor.BlobberImpl#createBlobberPlugin()
 	 */
 	@Override
-	protected BlobberPlugin createBlobberPlugin() {
+	protected BlobberPlugin createBlobberPlugin() throws AcsJCouldntCreateObjectEx {
 		MonitorDAO monitorDAO = null;
 		if (useDatabase) {
 			try {
-				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
-						.asSubclass(MonitorDAO.class);
-				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
-				monitorDAO = ctor.newInstance(m_logger);
+				// TODO If "useDatabase==true" is ever needed, then use alma.acs.monitoring.blobber.BlobberPluginAlmaImpl#getMonitorDAOs().
+				// For now we just throw an exception to document that the code is broken.
+				throw new AcsJCouldntCreateObjectEx("Currently not supported.");
+//				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
+//						.asSubclass(MonitorDAO.class);
+//				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
+//				monitorDAO = ctor.newInstance(m_logger);
 			} catch (Exception ex) {
-				// @TODO refactor to throw a checked exception
 				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
-				throw new IllegalArgumentException(ex);
+				throw new AcsJCouldntCreateObjectEx(ex);
 			}
 		} else {
 			monitorDAO = new TestMonitorDAO(m_logger, myBlobDataLock);
@@ -80,25 +82,24 @@ public class TestBlobber extends BlobberImpl {
 	 * {@link #initialize(ContainerServices, String, boolean)}.
 	 * 
 	 * @see alma.archive.tmcdb.monitor.BlobberImpl#createWorker()
-	 * @throws IllegalArgumentException
+	 * @throws AcsJCouldntCreateObjectEx
 	 *             if mock objects cannot be created.
 	 */
 	@Override
-	protected BlobberWorker createWorker(BlobberPlugin blobberPlugin) {
+	protected BlobberWorker createWorker(BlobberPlugin blobberPlugin) throws AcsJCouldntCreateObjectEx {
 		MonitorDAO monitorDAO = null;
 		if (useDatabase) {
 			try {
 				// TODO If "useDatabase==true" is ever needed, then use alma.acs.monitoring.blobber.BlobberPluginAlmaImpl#getMonitorDAOs().
 				// For now we just throw an exception to document that the code is broken.
-				throw new RuntimeException("Currently not supported.");
+				throw new AcsJCouldntCreateObjectEx("Currently not supported.");
 //				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
 //						.asSubclass(MonitorDAO.class);
 //				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
 //				monitorDAO = ctor.newInstance(containerServices);
 			} catch (Exception ex) {
-				// @TODO refactor to throw a checked exception
 				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
-				throw new IllegalArgumentException(ex);
+				throw new AcsJCouldntCreateObjectEx(ex);
 			}
 		} else {
 			monitorDAO = new TestMonitorDAO(m_logger, myBlobDataLock);
