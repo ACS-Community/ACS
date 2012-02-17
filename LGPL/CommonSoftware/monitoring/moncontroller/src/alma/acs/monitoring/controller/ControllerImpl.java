@@ -18,284 +18,333 @@
  */
 package alma.acs.monitoring.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.MonitorArchiver.BlobberHelper;
 import alma.MonitorArchiver.BlobberOperations;
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.MonitorArchiver.ControllerOperations;
+import alma.MonitorErr.CollectorRegistrationFailedEx;
+import alma.MonitorErr.wrappers.AcsJCollectorRegistrationFailedEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.monitoring.controller.BlobberList.BlobberInfo;
 
 
 /**
  * The monitor collector components contact the controller, to get assigned to a blobber.
- * <p>
- * @TODO (HSO): Any access to the blobber components should check for corba runtime exceptions, 
- * and those blobbers should eventually be deregistered (and the monitor collectors they served be re-assigned)
  */
 public class ControllerImpl extends ComponentImplBase implements ControllerOperations {
 
-    /**
-     * The IDL type of the blobber components. Used to retrieve all instances of this type.
-     */
-    private static final String BLOBBER_IDL_TYPE = "IDL:alma/MonitorArchiver/Blobber:1.0";
-
-    /**
-     * List of blobber component names.
-     */
-    protected final List<String> myBlobberList = new ArrayList<String>();
+	/**
+	 * The IDL type of the blobber components ("IDL:alma/MonitorArchiver/Blobber:1.0"). 
+	 * Used to retrieve all configured instances of this type.
+	 */
+	private static final String BLOBBER_IDL_TYPE = BlobberHelper.id();
 
 	/**
-	 * Mapping Blobber name to known CORBA reference.
-	 * <p>
-	 * @TODO (HSO): If myBlobberRefMap and myBlobberList contain information about the same blobbers, (which it seems
-	 *       to me it does), then we should try to keep that data only once. How about using a LinkedHashMap for myBlobberRefMap
-	 *       whose reliable iteration order then makes myBlobberList unnecessary?
-	 *       We would avoid possible misalignment between the two, at the expense that we'd have to iterate
-	 *       over myBlobberRefMap.keySet where now we call myBlobberList(index).
+	 * List of known blobbers, either just the component names or also the references.
 	 */
-	protected final Map<String, BlobberOperations> myBlobberRefMap = new HashMap<String, BlobberOperations>();
+	protected final BlobberList blobberList = new BlobberList();
 
 	/**
 	 * Maps names of MonitorCollector components to the corresponding Blobber components. 
 	 * The blobber name is expected to be contained in {@link #myBlobberList}.
+	 * <p>
+	 * @TODO: Replace this map with a list of collectors inside BlobberInfo,
+	 * to avoid possible inconsistencies. The performance loss cannot be serious with
+	 * 10 - 66 blobber components in the full system.
 	 */
 	protected final Map<String, String> collector2BlobberName = new HashMap<String, String>();
 
-    /**
-     * Current position in {@link #myBlobberList}, pointing to the registered blobber component
-     * which will serve the next incoming collector.
-     * @see #addCollector(String) 
-     */
-    protected int myBlobberListIndex = 0;
 
-    
-    //////////////////////////////////////
-    ///////// ComponentLifecycle /////////
-    //////////////////////////////////////
-
-    @Override
-    public void cleanUp() {
-    	synchronized (myBlobberList) {
-            for (String blobberName : myBlobberList) {
-                if (myBlobberRefMap.containsKey(blobberName)) {
-                    m_containerServices.releaseComponent(blobberName, null);
-                }
-            }
-    	}
-    }
-
-    @Override
-    public void initialize(ContainerServices inContainerServices)
-            throws ComponentLifecycleException {
-        super.initialize(inContainerServices);
-
-        try {
-			String[] componentNames = m_containerServices.findComponents(null, BLOBBER_IDL_TYPE);
-            if (componentNames.length == 0) {
-                throw new ComponentLifecycleException(
-                        "No blobbers (" + BLOBBER_IDL_TYPE + ") found in the CDB. At least one must be configured.");
-            }
-            myBlobberList.addAll(Arrays.asList(componentNames));
-            m_logger.info("The following blobbers were found: " + myBlobberList);
-        } catch (AcsJContainerServicesEx e) {
-            throw new ComponentLifecycleException(e);
-        }
-    }
-
-    /////////////////////////////////
-    ///////// IDL interface /////////
-    /////////////////////////////////
-
-    @Override
-    public synchronized void registerCollector(String collectorCompName) {
-        m_logger.info("Attempting to register collector " + collectorCompName);
-        try {
-            String blobberName = isRegistered(collectorCompName);
-            if (blobberName == null) {
-                blobberName = addCollector(collectorCompName);
-                if (blobberName == null) {
-                    // @TODO add dynamic blobber component (probably in method addCollector) and/or raise alarm.
-                    m_logger.log(Level.SEVERE, collectorCompName + " could not be registered to any of the blobbers.");
-                } else {
-                    m_logger.info(collectorCompName + " was registered to blobber " + blobberName);
-                }
-            } else {
-                m_logger.warning(collectorCompName + " is already registered to blobber " + blobberName);
-            }
-        } catch (Exception e) {
-        	// @TODO (HSO): Shouldn't the IDL declare an exception for this?
-            m_logger.log(Level.SEVERE, "Unexpected problem.", e);
-        }
-    }
+	//////////////////////////////////////
+	///////// ComponentLifecycle /////////
+	//////////////////////////////////////
 
 	@Override
-	public synchronized void deregisterCollector(String inComponentName) {
+	public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
+		super.initialize(inContainerServices);
+
 		try {
-			boolean removed = false;
-			String blobberName = null;
-			synchronized (myBlobberList) {
-				for (String name : myBlobberList) {
-					blobberName = name;
-					if (getBlobber(name).removeCollector(inComponentName) == CollectorListStatus.REMOVED) {
-						collector2BlobberName.remove(inComponentName);
-						removed = true;
-						break;
-					}
+			String[] componentNames = getConfiguredBlobberCompNames();
+			if (componentNames.length == 0) {
+				throw new ComponentLifecycleException("No blobbers (" + BLOBBER_IDL_TYPE
+						+ ") found in the CDB. At least one must be configured.");
+			}
+
+			for (String componentName : componentNames) {
+				try {
+					blobberList.createBlobberInfo(componentName);
+				} catch (AcsJIllegalArgumentEx ex) {
+					m_logger.warning("Failed to process blobber component name '" + componentName + "', which apparently is a duplicate.");
 				}
 			}
-			if (!removed) {
-				m_logger.severe(inComponentName + " could not be deregistered.");
-				if (blobberName == null) {
-					// @TODO (HSO): this can never happen, since blobberName gets assigned while iterating over the blobber name list,
-					// regardless of whether that blobber served the given collector.
-					m_logger.severe("Collector was not registered.");
-				} else {
-					// @TODO (HSO): If this means that we found the right blobber but failed to deregister the monitor collector,
-					// then the log message should be changed.
-					m_logger.severe("Collector was registered to blobber " + blobberName + ".");
-				}
-			} else {
-				m_logger.info(inComponentName + " was deregistered from blobber " + blobberName + ".");
-			}
-		} catch (Exception e) {
-			// @TODO (HSO): Shouldn't the IDL declare an exception for this?
-			m_logger.log(Level.SEVERE, "Unexpected problem.", e);
+			m_logger.info("The following configured blobber components were found: "
+					+ blobberList.getBlobberNames(false) + ". Blobbers will be requested later on demand.");
+		} catch (AcsJContainerServicesEx e) {
+			throw new ComponentLifecycleException(e);
 		}
 	}
 
-    @Override
-    public void registerKnownCollectors(String blobberCompName) {
-        if (!collector2BlobberName.containsValue(blobberCompName)) {
-            m_logger.fine("Blobber '" + blobberCompName + "' seems to start cleanly, thus cannot register previously served collectors.");
-            return;
-        }
+	/**
+	 * Broken out from {@link #initialize(ContainerServices)} to allow mock impl.
+	 * @throws AcsJContainerServicesEx
+	 */
+	protected String[] getConfiguredBlobberCompNames() throws AcsJContainerServicesEx {
+		return m_containerServices.findComponents(null, BLOBBER_IDL_TYPE);
+	}
+	
+	@Override
+	public void cleanUp() {
+		for (String blobberName : blobberList.getBlobberNames(true)) {
+			// async release of blobber components
+			m_containerServices.releaseComponent(blobberName, null);
+		}
+	}
 
-        AsynchronousRegistration process = new AsynchronousRegistration(blobberCompName);
-        Thread t = m_containerServices.getThreadFactory().newThread(process);
-        t.start();
-        m_logger.info("Started asynchronous registration of collectors previously assigned to " + blobberCompName);
-    }
+	///////////////////////////////////////////////
+	//////////// Controller IDL interface /////////
+	///////////////////////////////////////////////
 
+	/**
+	 * Note that a collector may call this method before all blobber containers have started. Thus we may get blobber
+	 * activation failures in the beginning that later go away.
+	 * 
+	 * @throws CollectorRegistrationFailedEx If the collector cannot be registered with any of the available blobbers.
+	 *         Here we only log this problem; the calling collector is expected to raise an alarm. 
+	 * @see alma.MonitorArchiver.ControllerOperations#registerCollector(java.lang.String)
+	 */
+	@Override
+	public void registerCollector(String collectorCompName) throws CollectorRegistrationFailedEx {
+		m_logger.fine("Attempting to register collector " + collectorCompName);
+		String errorMsg = null;
+		String blobberName = null;
+		int numBlobbers = blobberList.size();
+		
+		if (numBlobbers == 0) {
+			errorMsg = "No blobbers available.";
+		}
+		else {
+			try {
+				blobberName = findBlobberAssignedToCollector(collectorCompName, false);
+				
+				if (blobberName == null) {
+					// Assign the collector to the first available blobber.
+					// attemptCount is used to eventually exit the loop even if all blobbers are full;
+					//   in this case we generously iterate more than once over the blobbers, to benefit from new blobbers
+					//   being possibly added during this iteration, or blobbers becoming available by other collectors signing out.
+					// In the good case we exit the loop as soon as the collector has been registered.
+					for (int attemptCount = 0; attemptCount < 2 * numBlobbers; attemptCount++) {
+						BlobberInfo nextBlobberInfo = blobberList.getNextBlobberInfo();
+						getBlobberRef(nextBlobberInfo, true);
+						if (nextBlobberInfo.blobberRef != null) {
+							CollectorListStatus status = nextBlobberInfo.blobberRef.addCollector(collectorCompName);
+							if (status == CollectorListStatus.ADDED) {
+								collector2BlobberName.put(collectorCompName, nextBlobberInfo.blobberName);
+								blobberName = nextBlobberInfo.blobberName;
+								break;
+							}
+						}
+					}
+				}
+				if (blobberName == null) {
+					// Bad... let's update the number of blobbers for the exception, in case it has changed from the earlier number
+					numBlobbers = blobberList.size();
+					errorMsg = "Collector was not accepted by any of the " + numBlobbers + " blobber(s).";
+				} 
+				else {
+					m_logger.info("Collector '" + collectorCompName + "' registered to blobber '" + blobberName + "'.");
+				}
+			} catch (Exception e) {
+				errorMsg = "Unexpected problem: " + e.getMessage();
+			}
+		}
+		
+		if (errorMsg != null) {
+			m_logger.severe("Failed to register collector '" + collectorCompName + "': " + errorMsg);
+			
+			alma.MonitorErr.wrappers.AcsJCollectorRegistrationFailedEx ex = new AcsJCollectorRegistrationFailedEx();
+			ex.setNumberOfBlobbers(numBlobbers);
+			throw ex.toCollectorRegistrationFailedEx();
+		}
+	}
+
+	@Override
+	public void deregisterCollector(String collectorCompName) {
+		m_logger.fine("Attempting to de-register collector " + collectorCompName);
+		
+		boolean removed = false;
+		String blobberName = null;
+		
+		try {
+			// cheap cache-based attempt at first
+			blobberName = findBlobberAssignedToCollector(collectorCompName, true);
+			if (blobberName != null) {
+				BlobberInfo blobberInfo = blobberList.getBlobberInfo(blobberName);
+				getBlobberRef(blobberInfo, true); // just in case, should not be needed though.
+				CollectorListStatus status = blobberInfo.blobberRef.removeCollector(collectorCompName);
+				if (status == CollectorListStatus.REMOVED) {
+					removed = true;
+				}
+				else {
+					// TODO log unexpected status CollectorListStatus.UNKNOWN (e.g. cache error, blobber error)
+				}
+				collector2BlobberName.remove(collectorCompName);
+			}
+			else {
+				// log unexpected missing blobber mapping.
+			}
+			
+			if (!removed) {
+				// Now we call all blobbers to be sure our collector isn't assigned there by mistake
+				blobberName = findBlobberAssignedToCollector(collectorCompName, false);
+				if (blobberName != null) {
+					// cache was wrong in saying collector isn't assignied. We must deregister it from the surprise blobber.
+					BlobberInfo blobberInfo = blobberList.getBlobberInfo(blobberName);
+					CollectorListStatus status = blobberInfo.blobberRef.removeCollector(collectorCompName);
+					if (status == CollectorListStatus.REMOVED) {
+						removed = true;
+					}
+					else {
+						// TODO log unexpected status CollectorListStatus.UNKNOWN (blobber error)
+					}
+				}
+				else {
+					// none of the blobbers knows our collector. 
+					// TODO log the error, e.g. that this collector was never assigned.
+				}
+			}
+		} catch (Exception e) {
+			m_logger.warning("Unexpected problem while de-registering collector '" + collectorCompName 
+					+ "' from blobber '" + blobberName + "': " + e.getMessage());
+		}
+		
+		if (removed) {
+			m_logger.info("Collector '" + collectorCompName + "' de-registered from blobber '" + blobberName + "'.");
+		}
+		else {
+			// the error case we've already treated through log messages in the code above.
+		}
+	}
+
+	/**
+	 * @TODO: Shouldn't we give preference to the same old blobber, 
+	 * especially since we do not yet do load balancing?
+	 * 
+	 * @see alma.MonitorArchiver.ControllerOperations#registerKnownCollectors(java.lang.String)
+	 */
+	@Override
+	public void registerKnownCollectors(final String blobberCompName) {
+		if (!collector2BlobberName.containsValue(blobberCompName)) {
+			m_logger.fine("Blobber '" + blobberCompName
+					+ "' seems to start cleanly, thus cannot register previously served collectors.");
+			return;
+		}
+
+		m_containerServices.getThreadFactory().newThread(new Runnable() {
+			public void run() {
+				for (Map.Entry<String, String> m : collector2BlobberName.entrySet()) {
+					if (blobberCompName.equals(m.getValue())) {
+						// Re-register known Collector
+						try {
+							registerCollector(m.getKey());
+						} catch (CollectorRegistrationFailedEx ex) {
+							// registerCollector already has a SEVERE log, so here just the additional info about re-registration.
+							m_logger.log(Level.WARNING, "Failed to asynchronously re-register collector '" + m.getKey()
+									+ "' previously served by blobber '" + blobberCompName + "'.", ex); 
+						}
+					}
+				}
+			}
+		}).start();
+		m_logger.info("Started asynchronous re-registration of collectors previously assigned to blobber '" + blobberCompName + "'.");
+	}
 
     //////////////////////////////////////
     ///////// Other impl methods /////////
     //////////////////////////////////////
 
-    /**
-     * Checks whether the given monitor collector component is registered with any of the blobber components.
-     * @return The matching blobber component name, or <code>null</code> if none was found. 
-     */
-    protected String isRegistered(String inComponentName) throws AcsJContainerServicesEx {
-        String outValue = null;
-        synchronized (myBlobberList) {
-            for (String blobberName : myBlobberList) {
-                try {
-                    if (getBlobber(blobberName).containsCollector(inComponentName) == CollectorListStatus.KNOWN) {
-                        outValue = blobberName;
-                        break;
-                    }
-                } catch (AcsJContainerServicesEx ex) {
-                	// @TODO (HSO): what is meant by "inactive"? Is it normal that we configure blobber instances that cannot be instantiated?
-                    m_logger.log(Level.WARNING, "Failed to get the configured Blobber component '" + blobberName + 
-                    		"', probably inactive. Will skip verification of its assignment to '" + inComponentName + "'.", ex);
-                }
-            }
-        }
-        return outValue;
-    }
-
-    /**
-     * Iterates over the list of blobbers, starting from {@link #myBlobberListIndex},
-     * and attempts to add the given collector to the first available blobber.
-     * @param collectorCompName Name of collector component.
-     * @return Name of blobber component to which the collector was added, or <code>null</code> if none of the blobbers could add the collector.
-     * @throws IllegalStateException if no blobber components are available.
-     *         @TODO: This case should perhaps be treated together with having only blobbers that no longer accept collectors.
-     * @throws AcsJContainerServicesEx if a blobber component reference cannot be retrieved.
-     */
-    protected String addCollector(String collectorCompName) throws Exception {
-        String outValue = null;
-    	synchronized (myBlobberList) {
-	        int startIndex = myBlobberListIndex;
-	        if (myBlobberList.size() == 0) {
-	            throw new IllegalStateException("Attempt to add a collector but the list of blobbers is empty.");
-	        }
-	        while (true) {
-                    String blobberName = null;
-                    if (collector2BlobberName.containsKey(collectorCompName)) {
-                        blobberName = collector2BlobberName.get(collectorCompName);
-                        m_logger.info(collectorCompName + " will be re-registered to blobber " + blobberName);
-                        // @TODO: Change log message. We just try the blobber first which served or still serves this collector.
-                        //        In the end the collector could end up with a different blobber if the first choice is full.
-                    } else {
-                        blobberName = myBlobberList.get(myBlobberListIndex);
-                    }
-
-                    // Register to Blobber
-                    if (getBlobber(blobberName).addCollector(collectorCompName) == CollectorListStatus.ADDED) {
-                        outValue = blobberName;
-                        if (!collector2BlobberName.containsKey(collectorCompName)) {
-                            // Add to myCollectorMap
-                        	collector2BlobberName.put(collectorCompName, blobberName);
-                            myBlobberListIndex++;
-                        }
-                    }
-
-                    if (myBlobberListIndex == myBlobberList.size()) {
-                        myBlobberListIndex = 0;
-                    }
-                    if (outValue != null || myBlobberListIndex == startIndex) {
-                        break;
-                    }
-	        }
-    	}
-        return outValue;
-    }
-
 	/**
-	 * Gets the blobber component reference for the given component name.
+	 * Retrieves the blobber component reference for the given blobber name, unless we have it already.
+	 * In case of success, the blobber reference is stored in the given <code>blobberInfo</code> object,
+	 * otherwise the reference field stays <code>null</code>.
 	 * 
-	 * @throws AcsJContainerServicesEx
+	 * @param blobberInfo
+	 * @param skipKnownProblematicBlobber If <code>true</code> then we skip the blobber reference retrieval 
+	 *                                    if the last failure occurred less than 30 s ago.
 	 */
-	protected BlobberOperations getBlobber(String inBlobberName) throws AcsJContainerServicesEx {
-		synchronized (myBlobberList) {
-			// If not already referenced, get reference
-			if (!myBlobberRefMap.containsKey(inBlobberName)) {
-				BlobberOperations newBlobber = BlobberHelper.narrow(m_containerServices.getComponent(inBlobberName));
-				myBlobberRefMap.put(inBlobberName, newBlobber);
-			}
-			return myBlobberRefMap.get(inBlobberName);
-		}
-	}
-
-	/**
-	 * Thread to re-register known collectors to a Blobber if restarted.
-	 */
-	private class AsynchronousRegistration implements Runnable
-	{
-		String blobberName = null;
-
-		public AsynchronousRegistration(String blobberName) {
-			this.blobberName = blobberName;
-		}
-
-		public void run() {
-			for (Map.Entry<String, String> m : collector2BlobberName.entrySet()) {
-				if (this.blobberName.equals(m.getValue())) {
-					// Re-register known Collector
-					registerCollector(m.getKey());
+	protected void getBlobberRef(BlobberInfo blobberInfo, boolean skipKnownProblematicBlobber) {
+		synchronized (blobberInfo) {
+			if (blobberInfo.blobberRef == null) {
+				if (!skipKnownProblematicBlobber || !blobberInfo.hadRefRequestFailureWithinLastSec(30)) {
+					try {
+						blobberInfo.blobberRef = getBlobberRefFromContainerServices(blobberInfo.blobberName);
+						blobberInfo.lastRefRequestFailedTimeMillis = -1;
+					} catch (Exception ex) {
+						blobberInfo.lastRefRequestFailedTimeMillis = System.currentTimeMillis();
+						// todo log
+					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Broken out from {@link #getBlobberRef(BlobberInfo, boolean)}, 
+	 * to allow mock impl in tests.
+	 * @throws AcsJContainerServicesEx 
+	 */
+	protected BlobberOperations getBlobberRefFromContainerServices(String blobberName) throws AcsJContainerServicesEx {
+		return BlobberHelper.narrow(m_containerServices.getComponent(blobberName));
+	}
+	
+	/**
+	 * @param collectorCompName
+	 * @param trustLocalCache
+	 * @return Name of blobber that is assigned to the give collector, or null if no blobber was found.
+	 */
+	protected String findBlobberAssignedToCollector(String collectorCompName, boolean trustLocalCache) {
+		String ret = null;
+		
+		// check the cache
+		String assignedBlobberName = collector2BlobberName.get(collectorCompName);
+		
+		if (trustLocalCache) {
+			ret = assignedBlobberName;
+		}
+		else {
+			if (assignedBlobberName != null) {
+				// validate that that the cache hit blobber is really assigned
+				BlobberInfo assignedBlobberInfo = blobberList.getBlobberInfo(assignedBlobberName);
+				if (assignedBlobberInfo != null && assignedBlobberInfo.blobberRef != null // should always be true
+						&& assignedBlobberInfo.blobberRef.containsCollector(collectorCompName) == CollectorListStatus.KNOWN) {
+					// confirmed 
+					m_logger.fine("Collector '" + collectorCompName + "' assigned to blobber '" + assignedBlobberName + "' as expected.");
+					ret = assignedBlobberName;
+				}
+				else {
+					collector2BlobberName.remove(assignedBlobberName);
+					m_logger.info("Cache error: collector '" + collectorCompName
+							+ "' was expected to be assigned to blobber '" + assignedBlobberName
+							+ "' but this blobber denies it. Will re-assign this collector.");
+					// fallthrough: check other blobbers
+				}
+			}
+			if (ret == null) {
+				// Getting here means the collector was not found in the cache, 
+				// or the cache did not reflect the actual assignment (only possible by very strange error).
+				//
+				// TODO: Iterate over all blobbers and check if the collector is assigned to one of them.
+				// This is unlikely, but a mistake would be really bad for the collector and the monitor data flow in general.
+			}
+		}
+		return ret;
+	}
+	
 }
