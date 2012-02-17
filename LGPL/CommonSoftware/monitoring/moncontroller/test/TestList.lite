@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.4 2011/09/23 13:54:28 rtobar Exp $"
+# "@(#) $Id: TestList.lite,v 1.5 2012/02/17 17:42:16 hsommer Exp $"
 #
 # Makefile for running tat test.
 #
@@ -26,10 +26,12 @@
 #
 
 SOURCE TATEnvironment
-PROLOGUE MonitorArchiverTATPrologue
+PROLOGUE ControllerTATPrologue
 
 #
-1 MonitorArchiverUnitTest "acsStartJava -D archive.configFile=archiveConfig.properties.blobberTest -D 'ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2' alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.BlobberWorkerUnitTest"
+1 ControllerImplTest "acsutilTATTestRunner acsStartJava org.junit.runner.JUnitCore alma.acs.monitoring.controller.ControllerImplTest"
+
+# TODO (HSO): Why is this test here under moncontroller instead of under monblobber?
 2 FileBasedMonitoringSystem "runFileBasedMonitoringSystem.sh"
 
 EPILOGUE acsutilTATEpilogue

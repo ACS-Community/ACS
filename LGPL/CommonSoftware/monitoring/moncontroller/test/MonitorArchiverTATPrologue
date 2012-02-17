@@ -1,9 +1,0 @@
-#! /bin/bash
-#*******************************************************************************
-
-echo " ****************** MonitorArchiverTATPrologue ************* "
-ACS_CDB=$PWD
-
-echo " Starting ORB Services and Manager"
-acsutilTATPrologue -l --noloadifr
-acsutilAwaitContainerStart -java ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer

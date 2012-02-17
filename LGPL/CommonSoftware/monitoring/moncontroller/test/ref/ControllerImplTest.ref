@@ -1,0 +1,13 @@
+1 -  -- org.junit.runner.JUnitCore alma.acs.monitoring.controller.ControllerImplTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: org.junit.runner.JUnitCore alma.acs.monitoring.controller.ControllerImplTest
+1 - ----------T--:--:--.--- INFO [ControllerImplTest#testSimpleRegistration] ----------- setUp for 'testSimpleRegistration' -----------
+1 - ----------T--:--:--.--- INFO [ControllerImpl] The following configured blobber components were found: [blobber1, blobber2]. Blobbers will be requested later on demand.
+1 - ----------T--:--:--.--- FINE [ControllerImpl] Attempting to register collector collector1
+1 - ----------T--:--:--.--- INFO [MockBlobber] addCollector called with collectorName=collector1
+1 - ----------T--:--:--.--- INFO [ControllerImpl] Collector 'collector1' registered to blobber 'blobber1'.
+1 - ----------T--:--:--.--- INFO [ControllerImpl] CS: Async release of component 'blobber1'.
+1 - ----------T--:--:--.--- INFO [ControllerImplTest#testSimpleRegistration] ----------- tearDown for 'testSimpleRegistration' -----------
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

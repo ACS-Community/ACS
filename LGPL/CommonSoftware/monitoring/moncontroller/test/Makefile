@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2011/09/23 13:54:28 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/02/17 17:42:16 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = MonitorArchiverTATPrologue runFileBasedMonitoringSystem.sh
+SCRIPTS_L       = ControllerTATPrologue runFileBasedMonitoringSystem.sh
 
 #
 # TCL scripts (public and local)
@@ -138,7 +138,7 @@ testMonitorArchiver_DIRS = alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on
 #
 # ACS XmlIdl generation on/off
 #
