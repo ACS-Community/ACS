@@ -16,11 +16,12 @@ import java.util.Map;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.MonitorArchiver.Controller;
 import alma.MonitorArchiver.ControllerHelper;
-import alma.MonitorCollectorErr.DeviceAlreadyRegistredEx;
-import alma.MonitorCollectorErr.DeviceNotRegistredEx;
-import alma.MonitorCollectorErr.RegisteringDeviceProblemEx;
-import alma.MonitorCollectorErr.StartMonitoringProblemEx;
-import alma.MonitorCollectorErr.StopMonitoringProblemEx;
+import alma.MonitorErr.CollectorRegistrationFailedEx;
+import alma.MonitorErr.DeviceAlreadyRegisteredEx;
+import alma.MonitorErr.DeviceNotRegisteredEx;
+import alma.MonitorErr.RegisteringDeviceProblemEx;
+import alma.MonitorErr.StartMonitoringProblemEx;
+import alma.MonitorErr.StopMonitoringProblemEx;
 import alma.TMCDB.MonitorBlob;
 import alma.TMCDB.MonitorCollectorOperations;
 import alma.TMCDB.MonitorDataBlock;
@@ -66,34 +67,35 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 		public long readBytes;
 	}
 
-    @Override
-    public void initialize(ContainerServices inContainerServices)
-            throws ComponentLifecycleException {
-        super.initialize(inContainerServices);
-        Controller controller;
+	@Override
+	public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
+		super.initialize(inContainerServices);
+		Controller controller;
 		try {
 			controller = ControllerHelper.narrow(m_containerServices.getComponent("ARCHIVE/TMCDB/MONITOR_CONTROL"));
-		} catch (AcsJContainerServicesEx e) {
-			throw new ComponentLifecycleException(e);
+			controller.registerCollector(name());
+		} catch (AcsJContainerServicesEx ex) {
+			throw new ComponentLifecycleException(ex);
+		} catch (CollectorRegistrationFailedEx ex) {
+			throw new ComponentLifecycleException(ex);
 		}
-        controller.registerCollector(name());
-    }
+	}
 
 	@Override
 	public void registerMonitoredDevice(String componentName,
 			String serialNumber) throws RegisteringDeviceProblemEx,
-			DeviceAlreadyRegistredEx {
+			DeviceAlreadyRegisteredEx {
 	}
 
 	@Override
 	public void registerMonitoredDeviceWithMultipleSerial(String componentName,
 			propertySerailNumber[] serialNumbers)
-			throws RegisteringDeviceProblemEx, DeviceAlreadyRegistredEx {
+			throws RegisteringDeviceProblemEx, DeviceAlreadyRegisteredEx {
 	}
 
 	@Override
 	public void deregisterMonitoredDevice(String componentName)
-			throws DeviceNotRegistredEx {
+			throws DeviceNotRegisteredEx {
 	}
 
 	@Override
