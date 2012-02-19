@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2011/06/08 19:54:18 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/02/19 14:29:48 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -77,10 +77,10 @@ MCtestPropertiesComponent_OBJECTS = MCtestPropertiesComponentImpl
 MCtestPropertiesComponent_LIBS= MCtestComponentStubs baci
 
 MCmockBlobber_OBJECTS = MCmockBlobberImpl
-MCmockBlobber_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent 
+MCmockBlobber_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent MonitorErr 
 
 MCmockController_OBJECTS = MCmockControllerImpl
-MCmockController_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent
+MCmockController_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent MonitorErr
 
 #
 # Scripts (public and local)
