@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.42 2012/01/20 22:07:44 tstaig Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.43 2012/02/20 16:26:22 acaproni Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -53,6 +53,7 @@
 #include "loggingExport.h"
 #include "loggingLoggingTSSStorage.h"
 #include "loggingLogThrottle.h"
+#include "loggingThrottleAlarmInterface.h"
 
 #define DYNAMIC_LOG_LEVEL 1
 #define CDB_REFRESH_LOG_LEVEL 2
@@ -116,7 +117,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.42 2012/01/20 22:07:44 tstaig Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.43 2012/02/20 16:26:22 acaproni Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -317,6 +318,12 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 	    return initialized;
 	}
 
+    /// Set the pointer to raise/clear alarms in case the log throttle inhibits the sending
+    /// of logs.
+    ///
+    /// If the passed parameter is NULL, the sending of alarms is inhibited.
+    void setAlarmSender(LogThrottleAlarm* alarmSender);
+
    /// Returns true if logging is initialized in this thread
     static bool isInitThread();
 
@@ -391,6 +398,14 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     int m_maxLogsPerSecond;
     logging::LogThrottle *logThrottle;
+
+    ///
+    /// The object to raise/clear alarms when the throttle inhibits the sending
+    /// of logs.
+    ///
+    /// It is initially NULL and alarms are pushed only if it is explicitly set
+    LogThrottleAlarm* logThrottleAlarm_p;
+
     ///
     /// Reference to the persistent object which implements the Telecom Log
     /// Service�s Log interface, in particular the write_records method.
