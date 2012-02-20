@@ -15,7 +15,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/MonitorCollectorErr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/MonitorCollector.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/MonitorBlobber.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
@@ -28,5 +27,6 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitorErr.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
