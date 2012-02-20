@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.85 2011/07/15 17:36:53 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.86 2012/02/20 16:23:26 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.85 2011/07/15 17:36:53 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.86 2012/02/20 16:23:26 acaproni Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1034,6 +1034,7 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_maxCachePriority(maxCachePriority),
   m_autoFlushTimeoutSec(autoFlushTimeoutSec),
   m_maxLogsPerSecond(maxLogsPerSecond),
+  logThrottleAlarm_p(NULL),
   m_logger(Logging::AcsLogService::_duplicate(centralizedLogger)),
   m_noLogger(false),
   m_namingContext(CosNaming::NamingContext::_duplicate(namingContext)),
@@ -1578,6 +1579,11 @@ LoggingProxy::sendCacheInternal()
 	 m_sendingPending = false;
 }
 
+void LoggingProxy::setAlarmSender(LogThrottleAlarm* alarmSender) {
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
+	logThrottleAlarm_p=alarmSender;
+}
+
 
 /// NO LOGGING IN THIS METHOD !!!
 bool LoggingProxy::sendRecord(const Logging::XmlLogRecordSeq &reclist)
@@ -1598,8 +1604,16 @@ bool LoggingProxy::sendRecord(const Logging::XmlLogRecordSeq &reclist)
 		}
 
 		ace_mon.release();
-		if(canSend)
+		if(canSend) {
 			m_logger->writeRecords(reclist);
+			if (logThrottleAlarm_p!=NULL) {
+				logThrottleAlarm_p->raiseLogThrottleAlarm();
+			}
+		} else {
+			if (logThrottleAlarm_p!=NULL) {
+				logThrottleAlarm_p->clearLogThrottleAlarm();
+			}
+		}
 
 		// here we have to acquire the mutex again. Should be done in better way.
 		ace_mon.acquire();
