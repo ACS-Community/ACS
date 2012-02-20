@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.73 2012/01/20 22:07:44 tstaig Exp $" 
+# "@(#) $Id: Makefile,v 1.74 2012/02/20 16:22:27 acaproni Exp $" 
 #
 # Makefile of ........
 #
@@ -104,7 +104,7 @@ INCLUDES        = 	logging.h loggingExport.h loggingBaseExport.h loggingXMLEleme
 			loggingAcsLogServiceImpl.h loggingStdoutlayout.h loggingXmlLayout.h\
             loggingACSCategory.h loggingACSLoggingEvent.h loggingLogThrottle.h \
             loggingACSRemoteAppender.h loggingLog4cpp.h loggingLog4cppMACROS.h \
-			loggingLog4cppACEMACROS.h loggingACSHierarchyMaintainer.h
+			loggingLog4cppACEMACROS.h loggingACSHierarchyMaintainer.h loggingThrottleAlarmInterface.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \
