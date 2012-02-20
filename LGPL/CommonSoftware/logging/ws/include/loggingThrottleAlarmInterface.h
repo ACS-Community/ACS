@@ -1,5 +1,5 @@
-#ifndef _H
-#define _H
+#ifndef LOGGINGTHROTTLEALARM_H
+#define LOGGINGTHROTTLEALARM_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * Copyright (c) European Southern Observatory, 2012 
@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingThrottleAlarmInterface.h,v 1.1 2012/02/20 16:21:29 acaproni Exp $"
+* "@(#) $Id: loggingThrottleAlarmInterface.h,v 1.2 2012/02/20 16:45:52 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,4 +88,4 @@ public:
 	virtual void clearLogThrottleAlarm()=0;
 };
 
-#endif /*!_H*/
+#endif /*!LOGGINGTHROTTLEALARM_H*/
