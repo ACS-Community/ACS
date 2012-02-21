@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.130 2012/01/24 00:50:13 tstaig Exp $" 
+# "@(#) $Id: Makefile,v 1.131 2012/02/21 11:30:50 acaproni Exp $" 
 #
 # Makefile of ........
 #
@@ -46,7 +46,7 @@ PROG =
 EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdown maciReleaseComponent maciContainerLogLevel
 EXECUTABLES_L   = 
 
-maciContainer_OBJECTS   = maciContainer
+maciContainer_OBJECTS   = maciContainer 
 maciContainer_LIBS = maci acsContainerServices acsComponentListener TAO_CosNotification_MC_Ext TAO_DynamicInterface
 
 maciManagerShutdown_OBJECTS = maciManagerShutdown
@@ -93,7 +93,7 @@ LIBRARIES_L     =
 
 maci_OBJECTS   = maciLibraryManager maciORBTask  maciContainerThreadHook \
 		 maciServantManager maciContainerServices maciContainerImpl \
-		 maciHelper maciComponentStateManager 
+		 maciHelper maciComponentStateManager maciLogThrottleAlarmImpl
 maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS alarmSource acscomponent acsQoS archiveevents
 maci_LDFLAGS = -ggdb
 maci_CFLAGS = -DMACI_BUILD_DLL
