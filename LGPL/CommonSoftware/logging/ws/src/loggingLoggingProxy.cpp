@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.86 2012/02/20 16:23:26 acaproni Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.87 2012/02/21 10:39:04 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.86 2012/02/20 16:23:26 acaproni Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.87 2012/02/21 10:39:04 acaproni Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1606,12 +1606,12 @@ bool LoggingProxy::sendRecord(const Logging::XmlLogRecordSeq &reclist)
 		ace_mon.release();
 		if(canSend) {
 			m_logger->writeRecords(reclist);
-			if (logThrottleAlarm_p!=NULL) {
-				logThrottleAlarm_p->raiseLogThrottleAlarm();
+			if (logThrottleAlarm_p!=NULL && m_maxLogsPerSecond!=-1) {
+				logThrottleAlarm_p->clearLogThrottleAlarm();
 			}
 		} else {
-			if (logThrottleAlarm_p!=NULL) {
-				logThrottleAlarm_p->clearLogThrottleAlarm();
+			if (logThrottleAlarm_p!=NULL && m_maxLogsPerSecond!=-1) {
+				logThrottleAlarm_p->raiseLogThrottleAlarm();
 			}
 		}
 
