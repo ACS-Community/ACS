@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.143 2012/01/21 22:48:11 tstaig Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.144 2012/02/21 11:30:20 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.143 2012/01/21 22:48:11 tstaig Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.144 2012/02/21 11:30:20 acaproni Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -330,6 +330,11 @@ ContainerImpl::ContainerImpl() :
 
 ContainerImpl::~ContainerImpl()
 {
+
+	if (m_logThrottleAlarm_p!=NULL) {
+		m_loggerProxy->setAlarmSender(m_logThrottleAlarm_p);
+		delete m_logThrottleAlarm_p;
+	}
 
     if (getLogger() != 0)   // we have to check if logger is there. ....
 	{                   // ....It can happened that Container is just created w/o using init method where the logger is "created"
@@ -1440,6 +1445,9 @@ ContainerImpl::connect()
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusMgrInitEndMsg);
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusStartupEndMsg);
 
+      // Init the sending of alarms in the LoggingProxy
+      m_logThrottleAlarm_p = new LogThrottleAlarmImpl(m_containerServices,m_container_name);
+      m_loggerProxy->setAlarmSender(m_logThrottleAlarm_p);
 
       return true;
 
