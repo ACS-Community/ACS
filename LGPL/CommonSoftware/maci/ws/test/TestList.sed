@@ -65,7 +65,7 @@ s/Manager hostname obtained via command line: '[A-Z,a-z,0-9,/,_,.,-]*'/Manager h
 s/\[IDL\:[^ ]* /\[IDL<Dynamic Component> /g
 s/IDL\:alma[0-9,a-z,A-Z,\.,_,\:,-]*_[0-9]*/IDL<Dynamic Component>/g
 s/\.java:[0-9]*/.java:xxx/g
-s/Filename='[0-9,a-z,A-Z,\/,_,-]*\/ACS\/LGPL/Filename='xxx\/ACS\/LGPL/g
+s/Filename='[0-9,a-z,A-Z,\/,_,-]*\/CDB-WRONG\/CDB/Filename='xxx\/CDB-WRONG\/CDB/g
 
 
 s/logName="LOG_CompAct_Corba_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Corba_OK" TimeMillis="nnn"/g
