@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.131 2012/02/21 11:30:50 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.132 2012/02/22 11:29:43 acaproni Exp $" 
 #
 # Makefile of ........
 #
@@ -81,7 +81,7 @@ INCLUDES	= maciHelper.h maciSimpleClient.h \
               maciContainerImpl.h maciContainerThreadHook.h \
 		      maciACSComponentDefines.h maciPropertyDefines.h \
               maciLibraryManager.h maciRegistrar.h maciComponentStateManager.h\
-		      maciRegistrar.i maciClientExport.h
+		      maciRegistrar.i maciClientExport.h maciLogThrottleAlarmImpl.h
 INCLUDES_L	= maciContainer.h maciServantManager.h \
 		      maciORBTask.h 
 
