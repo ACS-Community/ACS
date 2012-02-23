@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.68 2012/01/20 22:07:43 tstaig Exp $"
+# "@(#) $Id: acsStartJava,v 1.69 2012/02/23 13:47:55 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -552,7 +552,7 @@ then
         JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSParallelRemarkEnabled"
     fi
 
-    # Since ACS 8.0 we support dedicated options for JVM heap size and thread stack size (instead of accepting the generic -jvmOption)
+    # Options for JVM heap size and thread stack size
     if [ X"$CL_MAXHEAPSIZE" != X ]; then
         JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xmx$CL_MAXHEAPSIZE"
     fi
@@ -560,20 +560,22 @@ then
         JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xss$CL_THREADSTACKSIZE"
     fi
 
-    # Since ACS 8.1 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME. Slashes in the file name are replaced by underscores.
-    if [ X"$JVM_GC_LOG_NAME" != X ]; then
+    # Log the garbage collector output if DEBUG stdout logs are enabled and the calling script sets $JVM_GC_LOG_NAME. 
+    # Slashes in the file name are replaced by underscores.
+    if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ] && [ X"$JVM_GC_LOG_NAME" != X ]; then
         JVM_GC_LOG_FILE=$INSTANCE_DIR/`echo $JVM_GC_LOG_NAME | sed s/"\/"/_/g`.gclog
         if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
             JVM_GC_LOG_FILE="`cygpath -w $JVM_GC_LOG_FILE`"
-            JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:\"$JVM_GC_LOG_FILE\" -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC"
+            JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:\"$JVM_GC_LOG_FILE\""
         else
-            JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_FILE -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC"
+            JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_FILE"
         fi
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC"
     fi
 
-    # Since ACS 7.0.2 we get dumps for OutOfMemoryError
+    # JVM dumps for OutOfMemoryError.
     # see http://jira.alma.cl/browse/COMP-3061 about JVM crash when XX:HeapDumpPath is empty
-    # Since ACS 8.1.0 we use the -XX:ErrorFile flag to keep any Fatal Error Log also in $ACS_TMP
+    # We use the -XX:ErrorFile flag to keep any Fatal Error Log also in $ACS_TMP
     JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+HeapDumpOnOutOfMemoryError"
     if [ X"$INSTANCE_DIR" != X ]; then
         JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$INSTANCE_DIR -XX:ErrorFile=$INSTANCE_DIR/jvm_fatal_error%p.log"
