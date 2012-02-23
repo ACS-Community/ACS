@@ -93,11 +93,18 @@ public class AdminConsumer extends Consumer {
 //		long count = eDescrip.count;
 		Any eventAny = evt.filterable_data[0].value;
 		boolean oresult = Application.equeue.offer(new EventData(eDescrip.timestamp,eDescrip.name,eDescrip.count,evt.header.fixed_header.event_type.type_name,evtCounter.get(evtTypeName),m_channelName, eventAny));
+		// TEST CODE FOR SLOW RECEIVER
+//		try {
+//			Thread.sleep(5000);
+//		}
+//		catch (InterruptedException e) {
+//			
+//		}
 		if (!oresult)
 			m_logger.severe("Couldn't queue event # "+channelEventCount);
 		if (++totalEventCount % 100 == 0) { // Maybe this is redundant with the "Total rows processed" log
-			m_logger.info("A total of "+totalEventCount+" events have been received.");
-			m_logger.info("Event queue size is now: "
+			m_logger.fine("A total of "+totalEventCount+" events have been received.");
+			m_logger.fine("Event queue size is now: "
 					+ Application.equeue.size() + " elements.");
 		}
 			//		m_logger.fine("Time "+eDescrip.timestamp+" "+m_channelName+" "+eDescrip.name+" "+eDescrip.count+" "+channelEventCount+" "
@@ -113,6 +120,10 @@ public class AdminConsumer extends Consumer {
 
 	public static void setPrintDetails(boolean printDetails) {
 		AdminConsumer.printDetails = printDetails;
+	}
+	
+	public static long getTotalEventCount() {
+		return totalEventCount;
 	}
 
 }
