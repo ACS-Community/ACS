@@ -26,18 +26,19 @@
  */
 package alma.acs.eventbrowser.model;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.AcsEventPublisher;
 import alma.acsnc.EventDescription;
 
 /** Class designed for testing event suppliers.
  * @author original by dfugate, hacked for eventGUI testing by jschwarz
+ * Refactored to replace deprecated SimpleSupplier with container services createNotificationChannelPublisher method
  */
-public class EventSupplierImpl implements SupplierCompOperations 
+public class EventSupplierImpl
 {
 	private Logger m_logger;
 	private ContainerServices m_containerServices;
@@ -50,7 +51,8 @@ public class EventSupplierImpl implements SupplierCompOperations
 		m_containerServices = cs;
 	}
 
-	private SimpleSupplier m_supplier = null;
+	private EventDescription t_block;
+	private AcsEventPublisher<EventDescription> epub;
 
 	
 
@@ -62,9 +64,9 @@ public class EventSupplierImpl implements SupplierCompOperations
 
 		try {
 			//Instantiate our supplier
-			m_supplier = new SimpleSupplier(channelName, //the channel's name
-					m_containerServices);
-			m_logger.info("SimpleSupplier for '"+channelName+"' channel created.");
+			t_block = new EventDescription("no name", 32L, 64L);
+			epub = m_containerServices.createNotificationChannelPublisher(channelName, EventDescription.class);
+			m_logger.info("NC Publisher for '"+channelName+"' channel created.");
 		} catch (Exception e) {
 			throw new ComponentLifecycleException(e);
 		}
@@ -75,45 +77,24 @@ public class EventSupplierImpl implements SupplierCompOperations
 	 * @param param number of events to send
 	 */
 	public void sendEvents(short param) {
-		m_logger.info("Now sending simplesupplier events...");
+		m_logger.info("Now sending test events...");
 		try {
 			//first send out some number of events.
-			EventDescription t_block = new EventDescription("no name", 32L, 64L);
 			for (short i = 0; i < param; i++) {
-				m_supplier.publishEvent(t_block);
+				epub.publishEvent(t_block);
 			}
-
-			//fake a subscription change
-			m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
-					new org.omg.CosNotification.EventType[] {});
-
-		} catch (Exception e) {
+		} catch (AcsJException e) {
 			System.err.println(e);
 		}
 	}
-
-//	public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
-//		try {
-//			m_logger.info("Now sending " + eventData.length + " NestedFridgeEvent events...");
-//			for (NestedFridgeEvent event : eventData) {
-//				m_supplier.publishEvent(event);
-//			}
-//		} catch (Throwable thr) {
-//			m_logger.log(Level.WARNING, "failed to send NestedFridgeEvent. Will not try again.");
-//			throw (new AcsJCouldntPerformActionEx(thr)).toCouldntPerformActionEx();
-//		}
-//	}
 
 	/** Disconnects the supplier. */
 	public void cleanUp() {
 		m_logger.info("cleanUp() called...");
 
 		try {
-
-			//fake a consumer disconnecting...
-			m_supplier.disconnect_structured_push_supplier();
-			m_supplier.disconnect();
-		} catch (Exception e) {
+			epub.disconnect();
+		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		}
 	}

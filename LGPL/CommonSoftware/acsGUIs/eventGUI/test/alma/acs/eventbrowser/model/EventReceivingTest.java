@@ -80,7 +80,7 @@ public class EventReceivingTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		if (consumer != null) {
-			consumer.disconnect();
+			em.closeSelectedConsumer("blar", false);
 			consumer = null;
 		}
 		if (supplier != null) {
@@ -95,11 +95,13 @@ public class EventReceivingTest extends TestCase {
 	public void testReceiveEvents() throws InterruptedException {
 		long startTime = System.currentTimeMillis();
 		supplier.sendEvents((short) EVENTS_TO_SEND);
-		Thread.sleep(2*EVENTS_TO_SEND);
-		assertEquals(QUEUE_SIZE-EVENTS_TO_SEND, Application.equeue.remainingCapacity());
 		long endTime = System.currentTimeMillis();
 		long diff = endTime - startTime;
 		logger.info("Time to send "+EVENTS_TO_SEND+" events was "+diff+" ms.");
+		Thread.sleep(EVENTS_TO_SEND);
+		logger.info("Consumer received "+AdminConsumer.getTotalEventCount());
+		assertEquals(QUEUE_SIZE-EVENTS_TO_SEND, Application.equeue.remainingCapacity());
+
 	}
 
 }
