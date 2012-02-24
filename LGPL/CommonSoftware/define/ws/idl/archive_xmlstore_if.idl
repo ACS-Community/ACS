@@ -367,6 +367,9 @@ module xmlstore
 		 * will be returned, otherwise only exact matches. In addition, if PiCoIfilter 
 	     * is not the empty string, it has to match exactly the userid field.
 		 * 
+		 * 
+         *  Projects where domain_entity_state ="Cancelled" will never be returned.
+         *  
 		 * Each matching data set is one element in the returned Array and
 		 * represented again as an array, whose elements you can access using the values 
 		 * OTout_... explained below and defined in (alma.archive.database.interfaces.InternalIF).
