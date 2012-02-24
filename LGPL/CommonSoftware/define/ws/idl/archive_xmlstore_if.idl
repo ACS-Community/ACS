@@ -359,8 +359,8 @@ module xmlstore
 		/**
 		 * custom method for OT submission queries, accessing relational data.
 		 * Returns key data of projects matching the search string for the specified
-		 * field (fieldID). As fieldId, use one of the following values: PI: 0 CoI
-		 * or PI: 1 projName: 2 projCode: 3
+		 * field (fieldID). As fieldId, use one of the following values OTfield_... explained below and 
+		 * defined in (alma.archive.database.interfaces.InternalIF).
 		 * 
 		 * caseSensitive defines whether query should be evaluated in case-sensitive
 		 * mode. If containsQuery is true, every UID containing the searchString
@@ -368,9 +368,33 @@ module xmlstore
 	     * is not the empty string, it has to match exactly the userid field.
 		 * 
 		 * Each matching data set is one element in the returned Array and
-		 * represented again as an array in the following order: archive_uid, title,
-		 * prj_code, pi_userid, PRJ_TIME_OF_CREATION, datereceived,
-		 * domain_entity_state
+		 * represented again as an array, whose elements you can access using the values 
+		 * OTout_... explained below and defined in (alma.archive.database.interfaces.InternalIF).
+		 * 
+		 * These constants have to be used for fieldId (OTfield...) and for accessing the returned arrays (OTout...):
+		 * They are defined in the class alma.archive.database.interfaces.InternalIF, so for searching for 
+		 * project name for example, you should use alma.archive.database.interfaces.InternalIF.OTfield_projName
+		 * If you have one element out (of type Array) of the returned array, and want to get the UID, 
+		 * you should use: out[alma.archive.database.interfaces.InternalIF.OTout_archive_uid]
+		 * 
+		 * The class alma.archive.database.interfaces.InternalIF containing these definitions is part of
+		 * the file archive_database.jar and part of the basic ACS/Archive distribution.
+		 * 
+		 * 
+	public static final short OTfield_PI=0;       # PI only
+    public static final short OTfield_CoI_PI=1;   # PI or CoI
+    public static final short OTfield_projName=2;
+    public static final short OTfield_projCode=3;
+	public static final short OTfield_entityState=4;
+
+	public static final short OTout_archive_uid=0;
+	public static final short OTout_title=1;
+	public static final short OTout_prj_code=2;
+	public static final short OTout_pi_userid=3;
+	public static final short OTout_PRJ_TIME_OF_CREATION=4;
+	public static final short OTout_datereceived=5;
+	public static final short OTout_domain_entity_state=6;
+		 * 
 		 */
 		typedef sequence <StringSeq> stringSeqSeq;
 		stringSeqSeq querySubmissions(in short fieldID, in string searchString,
