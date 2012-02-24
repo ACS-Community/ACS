@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
@@ -182,9 +183,16 @@ class TMCDBServicesHelper {
 		if (configurationName==null || configurationName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid null or empty name of configuration");
 		}
+		logger.log(AcsLogLevel.DEBUG,"Getting the list of services from TMCDB and configuration "+configurationName);
 		Query query = session.createSQLQuery(sqlQuery);
 		query.setString(namedParameterName, configurationName);
 		List svcs= query.list();
+		if (svcs!=null) {
+			AcsLogLevel lvl = (svcs.size()==0)?AcsLogLevel.WARNING:AcsLogLevel.DEBUG;
+			logger.log(lvl,"Got "+svcs.size()+" services from TMCDB");
+		} else {
+			logger.log(AcsLogLevel.WARNING,"Got a NULL list of services from TMCDB");
+		}
 		List<AcsServiceToStart> ret = new ArrayList<TMCDBServicesHelper.AcsServiceToStart>();
 		for (Object s: svcs) {
         	ret.add(AcsServiceToStart.instanceFromDBRow((Object[])s));
