@@ -20,10 +20,12 @@
  *******************************************************************************/
 package alma.acs.commandcenter.serviceshelper;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadFactory;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -34,6 +36,7 @@ import alma.ACSErrTypeCommon.BadParameterEx;
 import alma.ACSErrTypeCommon.NoResourcesEx;
 import alma.acs.commandcenter.serviceshelper.TMCDBServicesHelper.AcsServiceToStart;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.util.AcsLocations;
@@ -55,6 +58,82 @@ import alma.acsdaemon.ServicesDaemonHelper;
  *
  */
 public class StartServicesHelper {
+	
+	/**
+	 * The thread class factory.
+	 * <P>
+	 * A new thread is created to notify listeners about the progresses 
+	 * of starting/stopping services.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class ServicesHelperThreadFactory implements ThreadFactory, UncaughtExceptionHandler {
+		
+		/**
+		 * The thread group to which belongs all the thread
+		 * created by the factory
+		 */
+		private final ThreadGroup threadGroup;
+		
+		/**
+		 * C'tor 
+		 * 
+		 * @param name The name of this factory (used to name the thread group)
+		 */
+		public ServicesHelperThreadFactory(String name) {
+			if (name==null || name.isEmpty()) {
+				throw new IllegalArgumentException("Invalig name: "+name);
+			}
+			threadGroup = new ThreadGroup(name);
+			threadGroup.setDaemon(true);
+		}
+
+		/**
+		 * Create a new thread assigned to the {@link #threadGroup} thread group.
+		 * Each thread is a daemon thread.
+		 * 
+		 * @param r The runnable
+		 * @return The newly created thread
+		 * 
+		 * @see ThreadFactory
+		 */
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t= new Thread(threadGroup, r);
+			t.setDaemon(true);
+			t.setUncaughtExceptionHandler(this);
+			return t;
+		}
+		
+		/**
+		 * Create a new thread with the given name.
+		 * <P>
+		 * The creation of the thread is delegated to {@link #newThread(Runnable)}.
+		 * 
+		 * @param r The runnable
+		 * @param name The name of the thread
+		 * @return The newly created thread
+		 */
+		public Thread newThread(Runnable r, String name) {
+			Thread t = newThread(r);
+			t.setName(name);
+			return t;
+		}
+
+		/**
+		 * It is executed in case one of the thread of the group terminates with an exception.
+		 * <P>
+		 * It logs the exception to help debugging.
+		 */
+		@Override
+		public void uncaughtException(Thread t, Throwable e) {
+			System.out.println("Thread "+t.getName()+" terminated with uncaught exception: "+e.getMessage());
+			e.printStackTrace();
+			logger.log(AcsLogLevel.ERROR,"Thread "+t.getName()+" terminated with uncaught exception" , e);
+		}
+		
+	}
 
 	/**
      * The callback to notify the listeners about the progress of the async start/stop
@@ -125,29 +204,35 @@ public class StartServicesHelper {
     			// Nobody to notify!
     			return;
     		}
-    		Thread listenersUpdaterThread=contSvcs.getThreadFactory().newThread(new Runnable() {
+    		Thread listenersUpdaterThread = threadFactory.newThread(new Runnable() {
     			public void run() {
     				synchronized (listeners) {
     					for (ServicesListener listener: listeners) {
    							// The working method of the callback has been invoked
-							if (starting) {
-								listener.serviceStarted(
-										serviceName,
-										hostName, 
-										instance, 
-										errorType,errorCode);
-							} else {
-								listener.serviceStopped(
-										serviceName,
-										hostName, 
-										instance,
-										errorType,										
-										errorCode);
-							}
+    						try {
+								if (starting) {
+									listener.serviceStarted(
+											serviceName,
+											hostName, 
+											instance, 
+											errorType,errorCode);
+								} else {
+									listener.serviceStopped(
+											serviceName,
+											hostName, 
+											instance,
+											errorType,										
+											errorCode);
+								}
+    						} catch (Throwable t) {
+    							System.err.println("Exception caught notifying working to listener "+t.getMessage());
+    							t.printStackTrace();
+    							logger.log(AcsLogLevel.ERROR, "Exception caught notifying working to listener", t);
+    						}
     					}
     				}
     			}
-    		});
+    		},"notifyWorking "+serviceName+"@"+hostName);
     		listenersUpdaterThread.setName("ListenersUpdaterStartStopThread");
     		listenersUpdaterThread.setDaemon(true);
     		listenersUpdaterThread.start();
@@ -171,15 +256,21 @@ public class StartServicesHelper {
     			// Nobody to notify!
     			return;
     		}
-    		Thread listenersUpdaterThread=contSvcs.getThreadFactory().newThread(new Runnable() {
+    		Thread listenersUpdaterThread = threadFactory.newThread(new Runnable() {
     			public void run() {
     				synchronized (listeners) {
     					for (ServicesListener listener: listeners) {
-   							listener.done(errorType, errorCode);
+    						try {
+    							listener.done(errorType, errorCode);
+    						} catch (Throwable t) {
+    							System.err.println("Exception caught notifying done to listener "+t.getMessage());
+    							t.printStackTrace();
+    							logger.log(AcsLogLevel.ERROR, "Exception caught notifying done to listener", t);
+    						}
     					}
     				}
     			}
-    		});
+    		},"notifyDone");
     		listenersUpdaterThread.setName("ListenersUpdaterDoneThread");
     		listenersUpdaterThread.setDaemon(true);
     		listenersUpdaterThread.start();
@@ -187,7 +278,7 @@ public class StartServicesHelper {
     }
     
     /**
-     * An object to hold the definitins of the services to start.
+     * An object to hold the definitions of the services to start.
      * 
      * @author acaproni
      *
@@ -353,6 +444,11 @@ public class StartServicesHelper {
 	private final Session session;
 	
 	/**
+	 * The logger
+	 */
+	private final AcsLogger logger;
+	
+	/**
 	 * The name of the configuration to get the list of services from
 	 * the tmcdb
 	 */
@@ -361,7 +457,7 @@ public class StartServicesHelper {
 	/**
 	 * The ContainerServices
 	 */
-	private final ContainerServices contSvcs;
+	private final AcsCorba acsCorba;
 	
 	/**
 	 * The host where the service daemon runs
@@ -373,19 +469,26 @@ public class StartServicesHelper {
 	 */
 	private final int instance;
 	
+	/**
+	 * The thread factory
+	 */
+	private final ServicesHelperThreadFactory threadFactory = new ServicesHelperThreadFactory("StartServicesHelperThreadGroup");
+	
 	/** 
 	 * Constructor.
 	 * 
 	 * @param Session The hibernate session to read data from the TMCDB 
 	 * @param configurationName The name of the configuration 
-	 * @param contSvcs The {@link ContainerServices}
+	 * @param acsCorba The {@link AcsCorba}
+	 * @param logger The logger
 	 * @param daemonHost The host where the service daemon runs
 	 * @param instance The ACS instance
 	 */ 
 	public StartServicesHelper(
 			Session session, 
 			String configurationName, 
-			ContainerServices contSvcs,
+			AcsCorba acsCorba,
+			AcsLogger logger,
 			String daemonHost,
 			int instance) {
 		if (session==null) {
@@ -396,15 +499,21 @@ public class StartServicesHelper {
 			throw new IllegalArgumentException("The Session can't be NULL nor empty!");
 		}
 		this.configurationName=configurationName;
-		if (contSvcs==null) {
-			throw new IllegalArgumentException("The ContainerServices can't be null!");
+		if (acsCorba==null) {
+			throw new IllegalArgumentException("The AcsCorba can't be null!");
 		}
-		this.contSvcs=contSvcs;
+		this.acsCorba=acsCorba;
+		if (logger==null) {
+			throw new IllegalArgumentException("The logger can't be null!");
+		}
+		this.logger=logger;
 		if (daemonHost==null || daemonHost.isEmpty()) {
 			throw new IllegalArgumentException("The host address of the service daemon can't be NULL nor empty!");
 		}
 		this.daemonHost=daemonHost;
 		this.instance=instance;
+		
+		logger.log(AcsLogLevel.DEBUG,"StartServicesHelper instantiated with daemon "+this.daemonHost+", instance "+this.instance+" and configuration name "+this.configurationName);
 	}
 
 	/** 
@@ -455,14 +564,17 @@ public class StartServicesHelper {
 		} catch (Throwable t) {
 			throw new DaemonException("Error getting the service definition builder", t);
 		}
+		logger.log(AcsLogLevel.DEBUG,"ServiceDefinitionBuilder got from the ACS services daemon");
 		// Get the services from the TMCDB
 		List<AcsServiceToStart> services = getServicesList();
 		if (services.isEmpty()) {
 			throw new TMCDBException("No services to start from TMCDB");
 		}
+		logger.log(AcsLogLevel.DEBUG,"Read "+services.size()+" to start from TMCDB");
 		// Add the services to the service definition builder
 		try { 
 			for (AcsServiceToStart svc: services) {
+				logger.log(AcsLogLevel.DEBUG,"Adding "+svc.serviceName+"@"+svc.hostName+" to the ServicesDefinitionBuilder");
 				switch (svc.serviceType) {
 				case MANAGER: {
 					srvDefBuilder.add_manager(svc.hostName, "", false);
@@ -539,6 +651,7 @@ public class StartServicesHelper {
 		} catch (Throwable t) {
 			throw new DaemonException("Error getting the service definition builder", t);
 		}
+		logger.log(AcsLogLevel.DEBUG,"ServiceDefinitionBuilder got from the ACS services daemon");
 		try {
 			srvDefBuilder.add_services_definition(xmlListOfServices);
 		} catch (Throwable t) {
@@ -570,8 +683,10 @@ public class StartServicesHelper {
 	 */
 	public AlarmServicesDefinitionHolder startACSServices() throws 
 	GettingDaemonException, HibernateException, DaemonException, TMCDBException {
+		logger.log(AcsLogLevel.DEBUG,"Starting ACS with services daemon");
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
+		logger.log(AcsLogLevel.DEBUG,"Services daemon acquired");
 		// Get the services from the TMCDB
 		AlarmServicesDefinitionHolder holder=internalGetServicesDescription(daemon);
 		// Start the services
@@ -602,14 +717,15 @@ public class StartServicesHelper {
 		if (svcsXML==null || svcsXML.isEmpty()) {
 			throw new IllegalArgumentException("The XML list of services can't be null nor empty");
 		}
-		 DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger(),true);
+		 DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(logger,true);
          DaemonSequenceCallback daemonSequenceCallback = null;
         		 
          try {
-        	 daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
+        	 daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(acsCorba.activateOffShoot(callback, acsCorba.getRootPOA()));
          } catch (Throwable t) {
   			throw new DaemonException("Error starting the callback", t);
   		}
+         logger.log(AcsLogLevel.DEBUG,"Asking the services daemon to start services");
          try {
         	 daemon.start_services(svcsXML, true, daemonSequenceCallback);
          } catch (Throwable t) {
@@ -629,16 +745,18 @@ public class StartServicesHelper {
 		if (xmlListOfServices==null || xmlListOfServices.isEmpty()) {
 			throw new IllegalArgumentException("The XML list of services can't be null nor empty");
 		}
+		logger.log(AcsLogLevel.DEBUG,"Stopping ACS with the services daemon");
 		// Get the reference to the daemon
 		ServicesDaemon daemon = getServicesDaemon();
 		
-		DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(contSvcs.getLogger(),false);
+		DaemonSequenceCallbackImpl callback = new DaemonSequenceCallbackImpl(logger,false);
         DaemonSequenceCallback daemonSequenceCallback = null;
         try {
-        	daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(contSvcs.activateOffShoot(callback));
+        	daemonSequenceCallback = DaemonSequenceCallbackHelper.narrow(acsCorba.activateOffShoot(callback, acsCorba.getRootPOA()));
         } catch (Throwable t) {
         	throw new DaemonException("Error instantiating the callback", t);
         }
+        logger.log(AcsLogLevel.DEBUG,"Asking the services daemon to stop services");
         try {
         	daemon.stop_services(xmlListOfServices, daemonSequenceCallback);
         } catch (Throwable t) {
@@ -678,7 +796,7 @@ public class StartServicesHelper {
 	 * @throws Exception In case of error getting the list of services from the TMCDB
 	 */
 	private List<AcsServiceToStart> getServicesList() throws HibernateException {
-		TMCDBServicesHelper tmcdbHelper = new TMCDBServicesHelper(contSvcs.getLogger(), session);
+		TMCDBServicesHelper tmcdbHelper = new TMCDBServicesHelper(logger, session);
 		return tmcdbHelper.getServicesList(configurationName);
 	}
 	
@@ -693,9 +811,10 @@ public class StartServicesHelper {
 	private ServicesDaemon getServicesDaemon() throws GettingDaemonException {
 		ServicesDaemon daemon;
 		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(daemonHost);
+		logger.log(AcsLogLevel.DEBUG,"Getting services daemon from "+daemonHost);
 		try {
 			org.omg.CORBA.Object object = 
-					contSvcs.getAdvancedContainerServices().getORB().string_to_object(daemonLoc);
+					acsCorba.getORB().string_to_object(daemonLoc);
 			daemon = ServicesDaemonHelper.narrow(object);
 			if (daemon == null)
 				throw new GettingDaemonException("Received null trying to retrieve acs services daemon on "+daemonHost);
