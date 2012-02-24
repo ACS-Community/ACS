@@ -720,6 +720,13 @@ public class BlobberWorker extends CancelableRunnable {
 												.indexOf(':') + 1);
 								blobData.startTime = block.startTime;
 								collectorData.equipmentData.put(key, blobData);
+								
+								// TODO: Remove this temporary R9.0.4 debug log
+								myLogger.fine("Created new BlobData and stored it in suspicious CollectorList.CollectorData#equipmentData cache: " + blobData.toString());
+							}
+							else {
+								// TODO: Remove this temporary R9.0.4 debug log
+								myLogger.fine("Reusing BlobData from suspicious CollectorList.CollectorData#equipmentData cache, which can erroneously modify previously stored objects still waiting in the DAO cache: " + blobData.toString());
 							}
 
 							// Update blob data.
