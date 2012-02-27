@@ -246,6 +246,12 @@ module xmlstore
 		exception MalformedURI{};
 		/** An entity is requested that does not exist in the Archive. */
 		exception NotFound{};
+		
+		/**
+		 * Some methods are only implemented for an Oracle backend, this exception 
+		 * is thrown if a method is not implemented for the used backend.
+		 */
+		exception NotImplemented{};
 
 		/**
 		* An entity is tried to update, but a timestamp mismatch detected
@@ -402,7 +408,7 @@ module xmlstore
 		typedef sequence <StringSeq> stringSeqSeq;
 		stringSeqSeq querySubmissions(in short fieldID, in string searchString,
 				in boolean caseSensitive, in boolean containsQuery, in string PiCoIfilter)
-				raises (ArchiveInternalError);
+				raises (ArchiveInternalError, NotImplemented);
 			
 		
 		/**
