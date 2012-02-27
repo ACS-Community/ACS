@@ -607,7 +607,8 @@ public class BlobberWorker extends CancelableRunnable {
 			} catch (Exception e) {
 				myLogger.log(Level.WARNING, "Exception caught while processing monitor collector " + collectorData.getCollectorId() 
 						+ "; the data cache for this collector will be cleared, the data is LOST FOREVER", e);
-				collectorData.equipmentData.clear();
+// disabled, along with read/write use of collectorData.equipmentData, see above
+//				collectorData.equipmentData.clear();
 				// @TODO Shouldn't we raise an alarm also here, now that we do when blobber comp fails to initialize?
 				// Then it would need to be cleared once (the same collector's??) data is processed ok in the next round.
 			}
@@ -698,20 +699,28 @@ public class BlobberWorker extends CancelableRunnable {
 						List<AnyDataContainer> containerList = extractData(blob.blobDataSeq);
 						int index = 0;
 						for (AnyDataContainer container : containerList) {
-							String key = blob.propertyName;
+//							String key = blob.propertyName;
 							String serialNumber = block.deviceSerialNumber;
 							if (blob.propertySerialNumber != null
 									&& blob.propertySerialNumber.length != 0) {
 								// data is coming from correlator,
 								// handle serial numbers.
+								// @TODO (hso): Can we delegate this special treatment to the DAO?
 								serialNumber = blob.propertySerialNumber[index];
 								// create unique key by adding the index number.
-								key += index;
+//								key += index;
 								index++;
 							}
-							myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + key);
-							blobData = collectorData.equipmentData.get(key);
-							if (blobData == null) {
+							myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + blob.propertyName); // key);
+							// HSO 2012-02: The use of cache "collectorData.equipmentData" fails with the new async DAO processing,
+							//              because we modify the retrieved BlobData on the same object that may still sit 
+							//              in the DAO's queue from a previous call (and should have its previous values there). 
+							//              Therefore I disable the use of this cache.
+							//              It seems to not have been very useful anyway, aside from sparing the JVM some object creations and clean-up.
+							//              Perhaps I miss the deeper purpose of this cache; then we should bring it back, but ensure
+							//              that we don't modify objects that have been passed to the DAO.
+//							blobData = collectorData.equipmentData.get(key);
+//							if (blobData == null) {
 								blobData = new BlobData();
 								blobData.componentName = block.componentName;
 								blobData.serialNumber = serialNumber;
@@ -719,15 +728,15 @@ public class BlobberWorker extends CancelableRunnable {
 										.substring(blob.propertyName
 												.indexOf(':') + 1);
 								blobData.startTime = block.startTime;
-								collectorData.equipmentData.put(key, blobData);
+//								collectorData.equipmentData.put(key, blobData);
 								
-								// TODO: Remove this temporary R9.0.4 debug log
-								myLogger.fine("Created new BlobData and stored it in suspicious CollectorList.CollectorData#equipmentData cache: " + blobData.toString());
-							}
-							else {
-								// TODO: Remove this temporary R9.0.4 debug log
-								myLogger.fine("Reusing BlobData from suspicious CollectorList.CollectorData#equipmentData cache, which can erroneously modify previously stored objects still waiting in the DAO cache: " + blobData.toString());
-							}
+//								// TODO: Remove this temporary R9.0.4 debug log
+//								myLogger.fine("Created new BlobData and stored it in suspicious CollectorList.CollectorData#equipmentData cache: " + blobData.toString());
+//							}
+//							else {
+//								// TODO: Remove this temporary R9.0.4 debug log
+//								myLogger.fine("Reusing BlobData from suspicious CollectorList.CollectorData#equipmentData cache, which can erroneously modify previously stored objects still waiting in the DAO cache: " + blobData.toString());
+//							}
 
 							// Update blob data.
 							blobData.dataList.clear();
