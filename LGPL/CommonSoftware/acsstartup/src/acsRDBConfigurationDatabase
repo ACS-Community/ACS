@@ -1,0 +1,75 @@
+#! /bin/bash
+. acsstartupLogging.sh
+. acsstartupConstants
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsRDBConfigurationDatabase,v 1.1 2012/02/28 12:47:29 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# msekoran  2012-02-28 Created.
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+ACS_LOG_COMMAND $@
+
+PID=$$
+COMMAND=`basename $0`
+#LOGPOSTFIX=" using 'ACS_INSTANCE=$ACS_INSTANCE'"
+LOGPOSTFIX=
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts RDB Configuration Database for Acs
+
+Usage: $COMMAND config_name [arguments passed to acsConfiguratonDatabase script]
+EOF
+}
+
+#
+# Check if configuration name is given.
+if [ "$#" == "0" ]; then
+  printUsage
+  exit $EC_BADARGS;
+fi
+
+#
+# Store configuration name
+CONFIG_NAME=$1
+shift
+
+#
+# Set env. vars and delegate.
+export ENABLE_TMCDB=1
+export TMCDB_CONFIGURATION_NAME=$CONFIG_NAME
+acsConfigurationDatabase $*
+
+#
+# ___oOo___
