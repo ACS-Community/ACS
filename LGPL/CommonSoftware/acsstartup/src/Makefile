@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.58 2012/01/20 22:07:43 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.59 2012/02/28 12:50:52 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -48,6 +48,7 @@ SCRIPTS         = \
 		acsstartupProcesses \
 		acsACSLogService \
 		acsConfigurationDatabase \
+		acsRDBConfigurationDatabase \
 		acsInterfaceRepository \
 		acsLoggingService \
 		acsManager \
