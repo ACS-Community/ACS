@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.16 2012/02/28 12:53:37 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.17 2012/02/28 13:01:06 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -501,6 +501,19 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
             spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_xml_cdb(cbptr, instance_number, recovery, UNNULL(cdbxmldir)); break;
+            case STOP_SERVICE: spell->stop_cdb(cbptr, instance_number); break;
+            }
+            break;
+        } case RDB_CDB: {
+            acsdaemon::CDBSpell_var spell = acsdaemon::CDBSpell::_narrow(obj.in());
+            if (CORBA::is_nil(spell.in())) {
+                ACS_SHORT_LOG((LM_ERROR, "Failed to narrow reference '%s'.", corbaloc));
+                acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
+                return failed.returnCompletion(false);
+            }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
+            switch (request_type) {
+            case START_SERVICE: spell->start_rdb_cdb(cbptr, instance_number, recovery, UNNULL(cdbxmldir)); break;
             case STOP_SERVICE: spell->stop_cdb(cbptr, instance_number); break;
             }
             break;

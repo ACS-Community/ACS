@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.13 2012/02/28 12:53:37 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.14 2012/02/28 13:01:06 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -228,6 +228,17 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
         acsdaemonErrType::ServiceAlreadyRunningEx
       ));
     
+    void start_rdb_cdb (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number,
+        ::CORBA::Boolean recovery,
+        const char * config_name
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+
     void start_manager (
         const char * domain,
         ::acsdaemon::DaemonCallback_ptr callback,

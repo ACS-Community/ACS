@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.20 2012/02/28 12:53:37 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.21 2012/02/28 13:03:56 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -343,7 +343,7 @@ void ACSServicesHandlerImpl::start_rdb_cdb (
     acsdaemonErrType::ServiceAlreadyRunningEx
   ))
 {
-    if (config_name != NULL && strlen(config_name) == 0) cdb_xml_dir = NULL;
+    if (config_name != NULL && strlen(config_name) == 0) config_name = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Starting RDB Configuration Database (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(RDB_CDB, instance_number);
     desc->setRecovery(recovery);
