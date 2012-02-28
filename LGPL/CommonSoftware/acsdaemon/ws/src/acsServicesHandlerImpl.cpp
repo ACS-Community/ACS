@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.19 2009/10/12 14:03:15 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.20 2012/02/28 12:53:37 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,6 +93,18 @@ void ServiceDefinitionBuilderImpl::add_xml_cdb (
     services_definition_xml = services_definition_xml + " />\n";
 }
     
+void ServiceDefinitionBuilderImpl::add_rdb_cdb (
+    const char * host,
+    ::CORBA::Boolean recovery,
+    const char * config_name)
+{
+    services_definition_xml = services_definition_xml + "<" + acsServices[CDB].xmltag;
+    if (host != NULL) services_definition_xml = services_definition_xml + " host=\"" + host + "\"";
+    services_definition_xml = services_definition_xml + " recovery=\"" + (recovery ? "true" : "false") + "\"";
+    services_definition_xml = services_definition_xml + " config_name=\"" + config_name + "\"";
+    services_definition_xml = services_definition_xml + " />\n";
+}
+
 void ServiceDefinitionBuilderImpl::add_manager (
     const char * host,
     const char * domain,
@@ -320,6 +332,25 @@ void ACSServicesHandlerImpl::start_xml_cdb (
     context->processRequest(IMP, START_SERVICE, desc, callback);
 }
     
+void ACSServicesHandlerImpl::start_rdb_cdb (
+    ::acsdaemon::DaemonCallback_ptr callback,
+    ::CORBA::Short instance_number,
+    ::CORBA::Boolean recovery,
+    const char * config_name
+  )
+  ACE_THROW_SPEC ((
+    ACSErrTypeCommon::BadParameterEx,
+    acsdaemonErrType::ServiceAlreadyRunningEx
+  ))
+{
+    if (config_name != NULL && strlen(config_name) == 0) cdb_xml_dir = NULL;
+    ACS_SHORT_LOG ((LM_INFO, "Starting RDB Configuration Database (instance %d).", instance_number));
+    ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(RDB_CDB, instance_number);
+    desc->setRecovery(recovery);
+    desc->setCdbXMLDir(config_name);	// used as config_name
+    context->processRequest(IMP, START_SERVICE, desc, callback);
+}
+
 void ACSServicesHandlerImpl::start_manager (
     const char * domain,
     ::acsdaemon::DaemonCallback_ptr callback,

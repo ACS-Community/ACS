@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.15 2012/02/14 19:01:34 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.16 2012/02/28 12:53:37 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -353,6 +353,7 @@ void ACSServiceRequestDescription::setFromXMLAttributes(const char **atts) {
         else if (strcasecmp(atts[i], "name") == 0) name = strdup(atts[i+1]);
         else if (strcasecmp(atts[i], "domain") == 0) domain = strdup(atts[i+1]);
         else if (strcasecmp(atts[i], "cdb_xml_dir") == 0) cdbxmldir = strdup(atts[i+1]);
+        else if (strcasecmp(atts[i], "config_name") == 0) cdbxmldir = strdup(atts[i+1]);
         else if (strcasecmp(atts[i], "load") == 0) loadir = strcasecmp(atts[i+1], "true") == 0;
         else if (strcasecmp(atts[i], "wait_load") == 0) wait = strcasecmp(atts[i+1], "true") == 0;
         else if (strcasecmp(atts[i], "recovery") == 0) recovery = strcasecmp(atts[i+1], "true") == 0;
@@ -376,6 +377,7 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
         ACS_SHORT_LOG ((LM_WARNING, "Domain parameter of Manager startup script is not yet supported!"));
     }
     if (cdbxmldir != NULL && service == CDB) commandline = commandline + " -d \"" + cdbxmldir + "\"";
+    if (cdbxmldir != NULL && service == RDB_CDB) commandline = commandline + "\"" + cdbxmldir + "\"";
     if (log) {
         ACE_CString logDirectory="~/.acs/commandcenter/";
         char * acsdata = ACE_OS::getenv("ACSDATA");

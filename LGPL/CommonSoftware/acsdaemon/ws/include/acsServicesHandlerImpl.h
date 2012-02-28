@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.12 2009/09/28 19:46:49 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.13 2012/02/28 12:53:37 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,6 +88,11 @@ class ServiceDefinitionBuilderImpl : public POA_acsdaemon::ServiceDefinitionBuil
         ::CORBA::Boolean recovery,
         const char * cdb_xml_dir);
     
+    void add_rdb_cdb (
+        const char * host,
+        ::CORBA::Boolean recovery,
+        const char * config_name);
+
     void add_manager (
         const char * host,
         const char * domain,

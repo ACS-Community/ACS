@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.21 2009/09/28 19:42:41 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.22 2012/02/28 12:54:12 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -222,13 +222,21 @@ module acsdaemon
 
 		/** 
 		 *  Starts a CDB service.
-		 *  About the TMCDB, see ServicesDaemon#start_xml_cdb 
 		 *  @param host Hostname
 		 *  @param recovery if true then use recovery information from previous run. 
 		 *  @param xml_cdb_dir the directory which contains the CDB directory, see env var ACS_CDB.
 		 *  @return void
 		 */
 		void add_xml_cdb(in string host, in boolean recovery, in string xml_cdb_dir) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts a RDB CDB service.
+		 *  @param host Hostname
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param config_name the name of the configuration to use.
+		 *  @return void
+		 */
+		void add_rdb_cdb(in string host, in boolean recovery, in string config_name) raises (ACSErrTypeCommon::BadParameterEx);
 
 		/** 
 		 *  Starts a manager.
@@ -470,10 +478,6 @@ module acsdaemon
 		 *  Asynchronously starts an XML-based CDB service on the current host.
 		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
 		 *  <p>
-		 *  Note about the TMCDB: as of 2008-09 it is not clear if parts of the TMCDB (e.g. hibernate dal corba service) 
-		 *  will ever be started via this daemon. We therefore do not yet include any TMCDB support in the daemon API.
-		 *  We call this method "start_xml_cdb" instead of generic "start_cdb" because xml-CDB and TMCDB require different start parameters,
-		 *  and thus one method with a flag for which implementation of the DAL interface to start will not work even when we support the TMCDB. 
 		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
 		 *  @param instance_number ACS instance number
 		 *  @param recovery if true then use recovery information from previous run. 
@@ -481,6 +485,19 @@ module acsdaemon
 		 *  @return void
 		 */
 		void start_xml_cdb(in DaemonCallback callback, in short instance_number, in boolean recovery, in string xml_cdb_dir) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously starts an RDB-based CDB service on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 *  <p>
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param config_name the name of the configuration to use.
+		 *  @return void
+		 */
+		void start_rdb_cdb(in DaemonCallback callback, in short instance_number, in boolean recovery, in string config_name) 
 			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
 
 		/** 

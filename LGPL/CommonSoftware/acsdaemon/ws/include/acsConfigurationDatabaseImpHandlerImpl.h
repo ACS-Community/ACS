@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsConfigurationDatabaseImpHandlerImpl.h,v 1.2 2009/09/29 16:04:06 msekoran Exp $"
+* "@(#) $Id: acsConfigurationDatabaseImpHandlerImpl.h,v 1.3 2012/02/28 12:53:37 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,6 +59,25 @@ public:
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(CDB, instance_number);
         desc->setRecovery(recovery);
         desc->setCdbXMLDir(cdb_xml_dir);
+        context->processRequest(LOCAL, START_SERVICE, desc, callback);
+    }
+
+    void start_rdb_cdb (
+        acsdaemon::DaemonCallback_ptr callback,
+        CORBA::Short instance_number,
+        CORBA::Boolean recovery,
+        const char * config_name
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ))
+    {
+        if (config_name != NULL && strlen(config_name) == 0) config_name = NULL;
+        ACS_SHORT_LOG ((LM_INFO, "Starting RDB Configuration Database on Imp (instance %d).", instance_number));
+        ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(RDB_CDB, instance_number);
+        desc->setRecovery(recovery);
+        desc->setCdbXMLDir(config_name);	// used as config_name
         context->processRequest(LOCAL, START_SERVICE, desc, callback);
     }
 

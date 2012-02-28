@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.11 2012/02/14 19:01:34 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.12 2012/02/28 12:53:37 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,6 +67,7 @@ enum ACSServiceType {
     NAMING_SERVICE = 0,
     INTERFACE_REPOSITORY,
     CDB,
+    RDB_CDB,
     NOTIFICATION_SERVICE,
     LOGGING_SERVICE,
     ACS_LOG_SERVICE,
@@ -91,7 +92,7 @@ struct ACSService {
 };
 
 #define ACS_SERVICE_TYPES UNKNOWN
-#define ACS_SERVICE_INSTANCES 10
+#define ACS_SERVICE_INSTANCES 11
 
 const ACSService acsServices[] = {
 		{
@@ -123,6 +124,19 @@ const ACSService acsServices[] = {
 		}, {
 				"cdb",
 				"acsConfigurationDatabase",
+				"CDB Imp",
+				"ConfigurationDatabaseImp",
+				"2983",
+				"acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonConfigurationDatabaseImp",
+				"corbaloc::%s:%s/CDB",
+				&ACSPorts::getCDBPort,
+				NULL,
+				false,
+				true,
+				NAMING_SERVICE
+		}, {
+				"rdb_cdb",
+				"acsRDBConfigurationDatabase",
 				"CDB Imp",
 				"ConfigurationDatabaseImp",
 				"2983",
