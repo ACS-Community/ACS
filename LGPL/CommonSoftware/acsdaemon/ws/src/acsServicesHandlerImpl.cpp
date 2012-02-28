@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.21 2012/02/28 13:03:56 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.22 2012/02/28 13:19:05 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ void ServiceDefinitionBuilderImpl::add_rdb_cdb (
     ::CORBA::Boolean recovery,
     const char * config_name)
 {
-    services_definition_xml = services_definition_xml + "<" + acsServices[CDB].xmltag;
+    services_definition_xml = services_definition_xml + "<" + acsServices[RDB_CDB].xmltag;
     if (host != NULL) services_definition_xml = services_definition_xml + " host=\"" + host + "\"";
     services_definition_xml = services_definition_xml + " recovery=\"" + (recovery ? "true" : "false") + "\"";
     services_definition_xml = services_definition_xml + " config_name=\"" + config_name + "\"";

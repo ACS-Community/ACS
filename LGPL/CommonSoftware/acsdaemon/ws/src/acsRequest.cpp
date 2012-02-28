@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.17 2012/02/28 13:01:06 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.18 2012/02/28 13:19:05 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -363,8 +363,13 @@ void ACSServiceRequestDescription::setFromXMLAttributes(const char **atts) {
 }
 
 ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType request_type, bool log) {
-    char buffer[64];
-    sprintf(buffer, "%s %s -b %d", acsServices[service].script, request_type == START_SERVICE ? "-k -s" : "-k", instance_number);
+	// TODO usage of snprintf
+    char buffer[128];
+    if (service == RDB_CDB)
+        sprintf(buffer, "%s \"%s\" %s -b %d", acsServices[service].script, cdbxmldir, request_type == START_SERVICE ? "-k -s" : "-k", instance_number);
+    else
+    	sprintf(buffer, "%s %s -b %d", acsServices[service].script, request_type == START_SERVICE ? "-k -s" : "-k", instance_number);
+
     ACE_CString commandline = buffer;
     if (!loadir && service == INTERFACE_REPOSITORY) commandline = commandline + " -noloadIFR";
     if (wait && request_type == START_SERVICE) commandline = commandline + " -w";
@@ -377,7 +382,6 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
         ACS_SHORT_LOG ((LM_WARNING, "Domain parameter of Manager startup script is not yet supported!"));
     }
     if (cdbxmldir != NULL && service == CDB) commandline = commandline + " -d \"" + cdbxmldir + "\"";
-    if (cdbxmldir != NULL && service == RDB_CDB) commandline = commandline + "\"" + cdbxmldir + "\"";
     if (log) {
         ACE_CString logDirectory="~/.acs/commandcenter/";
         char * acsdata = ACE_OS::getenv("ACSDATA");

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.12 2012/02/28 12:53:37 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.13 2012/02/28 13:19:05 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -132,7 +132,7 @@ const ACSService acsServices[] = {
 				&ACSPorts::getCDBPort,
 				NULL,
 				false,
-				true,
+				false,	// no parallel start for XML CDB
 				NAMING_SERVICE
 		}, {
 				"rdb_cdb",
@@ -198,7 +198,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				true,
-				CDB
+				RDB_CDB		// TODO CDB
 		}, {
 				"manager",
 				"acsManager",
@@ -211,7 +211,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				false,
-				CDB
+				RDB_CDB		// TODO CDB
 		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, UNKNOWN }
 };
 
