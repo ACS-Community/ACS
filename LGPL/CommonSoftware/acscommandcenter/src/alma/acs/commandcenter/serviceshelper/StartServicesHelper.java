@@ -86,7 +86,6 @@ public class StartServicesHelper {
 				throw new IllegalArgumentException("Invalig name: "+name);
 			}
 			threadGroup = new ThreadGroup(name);
-			threadGroup.setDaemon(true);
 		}
 
 		/**
@@ -100,6 +99,9 @@ public class StartServicesHelper {
 		 */
 		@Override
 		public Thread newThread(Runnable r) {
+			if (r==null) {
+				throw new IllegalArgumentException("Invalid NULL runnable!");
+			}
 			Thread t= new Thread(threadGroup, r);
 			t.setDaemon(true);
 			t.setUncaughtExceptionHandler(this);
