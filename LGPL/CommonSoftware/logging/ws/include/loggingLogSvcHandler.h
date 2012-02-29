@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.h,v 1.11 2012/01/20 22:07:44 tstaig Exp $"
+* "@(#) $Id: loggingLogSvcHandler.h,v 1.12 2012/02/29 12:50:09 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@ namespace Logging {
     /**
      *
      */
-    class LogSvcHandler : public virtual Handler
+    class logging_EXPORT LogSvcHandler : public virtual Handler
     {
       public:
 	// --------------------------------------------------------
@@ -113,7 +113,7 @@ namespace Logging {
 	 * Maximum size of a formatted log message passed to
 	 * unformatted2formatted.
 	 */
-	static const int logging_EXPORT MAX_MESSAGE_SIZE = 1000;
+	static const int MAX_MESSAGE_SIZE = 1000;
 	
 	/**
 	 * Method used to convert unformatted printf-style messages

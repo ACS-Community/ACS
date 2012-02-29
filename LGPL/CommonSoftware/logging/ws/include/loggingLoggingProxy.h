@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.43 2012/02/20 16:26:22 acaproni Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.44 2012/02/29 12:50:09 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -117,7 +117,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.43 2012/02/20 16:26:22 acaproni Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.44 2012/02/29 12:50:09 tstaig Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -424,14 +424,14 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     int m_failureCount;
 
     /// Failure count limit.
-    static int logging_EXPORT m_failureLimit;
+    static int m_failureLimit;
 
     /// The time CL was disabled.
     /// LoggingProxy will try to reconnect after some (defined) time.
     ACE_Time_Value m_disconnectionTime;
 
     /// Reconnection retry (minimum time in sec)
-    static int logging_EXPORT m_minReconnectionTime;
+    static int m_minReconnectionTime;
 
     ///
     /// Local cache
@@ -452,7 +452,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     /// Process
     ///
-    static char /*ACE_CString*/ logging_EXPORT m_process[256];
+    static char /*ACE_CString*/ m_process[256];
 
     ///
     /// Thread mutex to make log() method thread-safe
@@ -464,8 +464,8 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     /// Thread specific storage
     ///
-    static ACE_TSS<LoggingTSSStorage> * logging_EXPORT tss;
-    static int logging_EXPORT instances;
+    static ACE_TSS<LoggingTSSStorage> * tss;
+    static int instances;
 
     /// Local output file, if Centralized Logger is unavailable (set by ACE_LOG_FILE env. var)
     ACE_CString m_filename;
@@ -486,13 +486,13 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ACE_CString m_syslog;
 
     /// Initialization flag.
-    static bool logging_EXPORT initialized;
+    static bool initialized;
 
-    static ACE_CString logging_EXPORT sourceObject_m;
+    static ACE_CString sourceObject_m;
 
     /// Set /clear flag counter - number of timest that
     /// global flags were set cleared
-    static unsigned int logging_EXPORT setClrCount_m;
+    static unsigned int setClrCount_m;
 
   /// The mutual exclusion mechanism which is required to use the <m_workWorkCond>.
   ACE_SYNCH_MUTEX m_doWorkMutex;

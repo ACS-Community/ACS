@@ -36,7 +36,7 @@
 #include <ace/Log_Msg_Callback.h>
 #include <ace/Log_Priority.h>
 
-class LogLevelDefinition {
+class logging_EXPORT LogLevelDefinition {
   public:
     LogLevelDefinition(int val, std::string name);
     ~LogLevelDefinition(){}
@@ -48,7 +48,7 @@ class LogLevelDefinition {
     std::string getName();
   private:
 
-    static ACE_Log_Priority logging_EXPORT m_LogEntryCast[];
+    static ACE_Log_Priority m_LogEntryCast[];
     int m_value;
     std::string m_name;
 };

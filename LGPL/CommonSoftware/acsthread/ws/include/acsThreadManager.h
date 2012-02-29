@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.20 2012/01/20 23:18:16 tstaig Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.21 2012/02/29 12:50:09 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,7 +31,7 @@ namespace ACS
      * @class ThreadManager
      * This clas is an extension of ACS::ThreadManagerBase which is used with ACS::Thread
      */
-    class ThreadManager : public ACS::ThreadManagerBase,
+    class acsThread_EXPORT  ThreadManager : public ACS::ThreadManagerBase,
 			  public Logging::Loggable
     {
 	friend class Thread;
@@ -225,7 +225,7 @@ namespace ACS
 	/**
 	 * Thread Manager TSS used for sending thread manager pointer to thread objects
 	 */
-	static ACE_TSS<ThreadManagerTSS> acsThread_EXPORT threadManagerTSS;
+	static ACE_TSS<ThreadManagerTSS> threadManagerTSS;
 
     };//class ThreadManager
 

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingRemoteSyslog.h,v 1.36 2012/01/20 22:07:44 tstaig Exp $"
+* "@(#) $Id: loggingRemoteSyslog.h,v 1.37 2012/02/29 12:50:09 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -92,7 +92,7 @@ public:
     } facilityPair;
     
     /// Facility name to int value mapping table.
-    static facilityPair logging_EXPORT m_facilityNames[];
+    static facilityPair m_facilityNames[];
 
     /// Constructor
     /// facility has to be already shifted left by 3 bits.
@@ -147,7 +147,11 @@ public:
 // REVISION HISTORY:
 //
 // $Log: loggingRemoteSyslog.h,v $
-// Revision 1.36  2012/01/20 22:07:44  tstaig
+// Revision 1.37  2012/02/29 12:50:09  tstaig
+// Changes were made to remove warning "'visibility' attribute ignored on non-class
+// types" messages.
+//
+// Revision 1.36  2012/01/20 22:07:52  tstaig
 // Backport from branches ACS-9_0_0-windows-B and ACS-9_1_0-windows-B to support
 // ACS on Windows under Cygwin. This commit corresponds to the folowing
 // CommonSoftware modules:

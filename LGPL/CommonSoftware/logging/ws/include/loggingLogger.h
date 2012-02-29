@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.26 2012/01/20 22:07:44 tstaig Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.27 2012/02/29 12:50:09 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,7 +52,7 @@ namespace Logging
      * about the ACS logging service and is based in part on the implementation
      * of the Java Logger interface.
      */
-    class Logger : public virtual BaseLog
+    class loggingBase_EXPORT Logger : public virtual BaseLog
     {
       public:
 	//----------------------------------------------------
@@ -333,12 +333,12 @@ namespace Logging
 	 * mutex which guards the loggers lost making this class completely
 	 * thread-safe
 	 */
-	static ACE_Thread_Mutex loggingBase_EXPORT loggersMutex_m;
+	static ACE_Thread_Mutex loggersMutex_m;
 
 	/**
 	 * External function that configures logger.
 	 */
-	static ConfigureLoggerFunction loggingBase_EXPORT configureLoggerFunction_m;
+	static ConfigureLoggerFunction configureLoggerFunction_m;
 
     };
     //------------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingBaseLog.h,v 1.15 2012/01/20 22:07:44 tstaig Exp $"
+* "@(#) $Id: loggingBaseLog.h,v 1.16 2012/02/29 12:50:09 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,7 +44,7 @@ namespace Logging
      * Pure abstract logging interface. Includes the bare
      * minimum logging concepts used by ALMA.
      */
-    class BaseLog
+    class loggingBase_EXPORT BaseLog
     {
       public:
 
@@ -155,23 +155,23 @@ namespace Logging
 	 * This constant member is the value of a string param of log that cannot
 	 * be determined for some reason or another.
 	 */
-	static const std::string loggingBase_EXPORT FIELD_UNAVAILABLE;
+	static const std::string FIELD_UNAVAILABLE;
 
 	/**
 	 * This constant member is the value of the global logger's name.
 	 */
-	static const std::string loggingBase_EXPORT GLOBAL_LOGGER_NAME;
+	static const std::string GLOBAL_LOGGER_NAME;
 
 	/**
 	 * This constant member is the value of the anonymous logger's name.
 	 */
-	static const std::string loggingBase_EXPORT ANONYMOUS_LOGGER_NAME;
+	static const std::string ANONYMOUS_LOGGER_NAME;
 
 	/**
 	 * This constant member is the name of loggers being used from a static
 	 * context.
 	 */
-	static const std::string loggingBase_EXPORT STATIC_LOGGER_NAME;
+	static const std::string STATIC_LOGGER_NAME;
     };
     //------------------------------------------------------------------------------
     /**

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsQoStimeout.h,v 1.8 2012/01/20 22:07:43 tstaig Exp $"
+* "@(#) $Id: acsQoStimeout.h,v 1.9 2012/02/29 12:50:09 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 namespace acsQoS
 {
 
-class Timeout
+class acsQoS_EXPORT Timeout
 {
 	public:
 
@@ -161,8 +161,8 @@ class Timeout
 
 		CORBA::PolicyList previousPolicy_m;    // here we'll store previously set timeout
     
-		static acsQoS_EXPORT CORBA::ORB_var orb_m;
-		static acsQoS_EXPORT bool initialized_m;
+		static CORBA::ORB_var orb_m;
+		static bool initialized_m;
 };//class Timeout
 
 };//namespace acsQoS 
