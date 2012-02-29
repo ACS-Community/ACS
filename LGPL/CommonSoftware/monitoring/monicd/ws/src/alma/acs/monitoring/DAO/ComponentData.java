@@ -72,10 +72,9 @@ public class ComponentData {
         return builder.toString();
     }
 
-	/*
-	 * Next methods hashCode and equals override the ones that are inherited
-	 * from Object They were added to allow ComponentData to be a key of a
-	 * HashMap ( ComponenentData => MonitorCharacteristicIds )
+	/**
+	 * hashCode based on {@link ComponentData#componentName}, {@link #propertyName},
+	 * {@link #index}, and {@link #serialNumber}.
 	 */
 	public int hashCode() {
 		return componentName.toString().hashCode()
@@ -83,6 +82,10 @@ public class ComponentData {
 				+ propertyName.toString().hashCode() + index.hashCode();
 	}
 
+	/**
+	 * equals based on {@link ComponentData#componentName}, {@link #propertyName},
+	 * {@link #index}, and {@link #serialNumber}.
+	 */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
