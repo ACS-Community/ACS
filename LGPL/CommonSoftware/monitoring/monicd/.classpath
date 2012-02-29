@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="ws/lib/MCtestComponent.jar"/>
 	<classpathentry kind="lib" path="ws/lib/MonitorArchiverIF.jar"/>
 	<classpathentry kind="lib" path="ws/lib/MonitorCollector.jar"/>
-	<classpathentry kind="lib" path="ws/lib/MonitorCollectorErr.jar"/>
 	<classpathentry kind="lib" path="ws/lib/TMCDBCOMMON_IDL.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="ws/lib/MonitoringDAO_IF.jar"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="lib" path="ws/lib/MonitorErr.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
