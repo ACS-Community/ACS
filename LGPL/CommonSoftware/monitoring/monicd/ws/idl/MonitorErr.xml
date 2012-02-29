@@ -41,7 +41,7 @@
 	<ErrorCode name="CollectorRegistrationFailed" 
 	           shortDescription="Failed to register a collector with a blobber." 
 	           description="The monitor controller failed to assign the calling monitor collector to any of the blobber components.">
-		<Member name="NumberOfBlobbers" type="long" description="The number of blobber components tried to assign the collector to."/>
+		<Member name="NumberOfBlobbers" type="long" description="The number of blobber components tried to assign the collector to. This may include configured blobbers that are not available at runtime."/>
 	</ErrorCode>
 
 </Type>
