@@ -153,7 +153,7 @@ public class TestBlobber extends BlobberImpl {
 		}
 
 		@Override
-		public void openTransactionStore() {
+		public void openTransactionStore(String transactionName) {
 		}
 
 		@Override
