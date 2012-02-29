@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.13 2012/02/28 13:19:05 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.14 2012/02/29 09:17:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,11 +88,16 @@ struct ACSService {
     std::string (*namedsvcport)(int, const char *);
     bool autorestart;      // Should ACS service automatically restart
     bool async;            // Should service be started asynchronously
-    ACSServiceType depententService;     // What async started service to wait for
+    const ACSServiceType* depententService;     // What async started service to wait for
 };
 
 #define ACS_SERVICE_TYPES UNKNOWN
 #define ACS_SERVICE_INSTANCES 11
+
+const ACSServiceType noDependency[] = { UNKNOWN };
+const ACSServiceType namingServiceDependency[] = { NAMING_SERVICE, UNKNOWN };
+const ACSServiceType cdbDependency[] = { CDB, RDB_CDB, UNKNOWN };
+
 
 const ACSService acsServices[] = {
 		{
@@ -107,7 +112,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				false,
-				UNKNOWN
+				noDependency
 		}, {
 				"interface_repository",
 				"acsInterfaceRepository",
@@ -120,7 +125,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				true,
-				NAMING_SERVICE
+				namingServiceDependency
 		}, {
 				"cdb",
 				"acsConfigurationDatabase",
@@ -132,8 +137,8 @@ const ACSService acsServices[] = {
 				&ACSPorts::getCDBPort,
 				NULL,
 				false,
-				false,	// no parallel start for XML CDB
-				NAMING_SERVICE
+				true,
+				namingServiceDependency
 		}, {
 				"rdb_cdb",
 				"acsRDBConfigurationDatabase",
@@ -146,7 +151,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				true,
-				NAMING_SERVICE
+				namingServiceDependency
 		}, {
 				"notification_service",
 				"acsNotifyService",
@@ -159,7 +164,7 @@ const ACSService acsServices[] = {
 				&ACSPorts::getNotifyServicePort,
 				true,
 				false,
-				NAMING_SERVICE
+				namingServiceDependency
 		}, {
 				"logging_service",
 				"acsLoggingService",
@@ -172,7 +177,7 @@ const ACSService acsServices[] = {
 				NULL,
 				true,
 				false,
-				NAMING_SERVICE
+				namingServiceDependency
 		}, {
 				"acs_log",
 				"acsACSLogService",
@@ -185,7 +190,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				false,
-				NAMING_SERVICE
+				namingServiceDependency
 		}, {
 				"alarm_service",
 				"acsAlarmService",
@@ -198,7 +203,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				true,
-				RDB_CDB		// TODO CDB
+				cdbDependency
 		}, {
 				"manager",
 				"acsManager",
@@ -211,8 +216,8 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				false,
-				RDB_CDB		// TODO CDB
-		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, UNKNOWN }
+				cdbDependency
+		}, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, noDependency }
 };
 
 enum ACSServiceRequestType {
@@ -350,7 +355,7 @@ class ACSServiceRequestDescription {
     ACSServiceType getACSService() { return service; }
     const char *getACSServiceName() { return acsServices[service].xmltag; }
     bool isAsync() { return async; }
-    ACSServiceType getDependentService() { return acsServices[service].depententService; }
+    const ACSServiceType* getDependentService() { return acsServices[service].depententService; }
 };
 
 class ACSDaemonContext;

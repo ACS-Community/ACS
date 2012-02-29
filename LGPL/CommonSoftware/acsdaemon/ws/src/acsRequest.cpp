@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.18 2012/02/28 13:19:05 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.19 2012/02/29 09:17:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -302,10 +302,18 @@ template <class R> void RequestChainContext<R>::proceed(R *curreq) {
 			curreq = requests.front();
 
 			// wait for dependent aysnc-started service to complete
-			if (hasAsync &&
-				asyncStartInProgress.find(curreq->getDescription()->getDependentService()) != asyncStartInProgress.end())
+			if (hasAsync)
 			{
-				break;
+				const ACSServiceType* deps = curreq->getDescription()->getDependentService();
+				bool found = false;
+				int ix = 0;
+				while (deps[ix] != UNKNOWN && !found)
+					if (asyncStartInProgress.find(deps[ix++]) != asyncStartInProgress.end())
+						found = true;
+
+				// dependent service found, do not continue
+				if (found)
+					break;
 			}
 
 			requests.pop_front();
