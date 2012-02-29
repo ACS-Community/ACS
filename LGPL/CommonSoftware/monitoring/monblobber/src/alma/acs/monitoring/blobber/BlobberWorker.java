@@ -684,7 +684,7 @@ public class BlobberWorker extends CancelableRunnable {
 			}
 			
 			for (MonitorDAO monitorDAO : myMonitorDAOList) {
-				monitorDAO.openTransactionStore(); // @TODO: Should we catch / log the possible Exception, or just let it fly?
+				monitorDAO.openTransactionStore(Long.toString(cycleCount) + "-" + collectorData.getCollectorId()); // @TODO: Should we catch / log the possible Exception, or just let it fly?
 			}
 
 			// iterate over devices
