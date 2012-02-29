@@ -23,7 +23,7 @@
  *
  * @author Pablo Burgos
  * @since ACS-8_0_0-B Jun2009
- * @version "@(#) $Id: MonitorDAO.java,v 1.6 2011/12/15 13:35:09 mmora Exp $
+ * @version "@(#) $Id: MonitorDAO.java,v 1.7 2012/02/29 14:52:39 hsommer Exp $
  */
 package alma.acs.monitoring.DAO;
 
@@ -48,9 +48,11 @@ public interface MonitorDAO {
      * If the DAO supports transactions (e.g. for DB insertion), 
      * it should open a transaction here.
      * Currently a transaction contains the data from all device components from one container.
+     * @param transactionName  A name assigned (and to be understood) by the calling client, for error feedback etc.
+     *                         This name should have no relevance for actually storing the data.
      * @see #closeTransactionStore()
      */
-    public void openTransactionStore() throws AcsJException;
+    public void openTransactionStore(String transactionName) throws AcsJException;
 
     /**
      * If the DAO supports transactions (e.g. for DB insertion), 
