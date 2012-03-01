@@ -575,8 +575,20 @@ public class StartServicesHelper {
 		logger.log(AcsLogLevel.DEBUG,"Read "+services.size()+" to start from TMCDB");
 		// Add the services to the service definition builder
 		try { 
+			/*
+			 * NOTE: some of the paremeters required to start the services are hardcoded
+			 *       because the tables of the database do not allow to have them stored
+			 *       in the TMCDB.
+			 *       For this release it is good enough but if we want to have them available
+			 *       in the TMCDB and the explorer then we have to change the table of
+			 *       the database too.
+			 */
 			for (AcsServiceToStart svc: services) {
-				logger.log(AcsLogLevel.DEBUG,"Adding "+svc.serviceName+"@"+svc.hostName+" to the ServicesDefinitionBuilder");
+				if (svc.serviceName==null) {
+					logger.log(AcsLogLevel.DEBUG,"Adding "+svc.serviceType+"@"+svc.hostName+" to the ServicesDefinitionBuilder");
+				} else {
+					logger.log(AcsLogLevel.DEBUG,"Adding "+svc.serviceType+"@"+svc.hostName+" with name "+svc.serviceName+" to the ServicesDefinitionBuilder");
+				}
 				switch (svc.serviceType) {
 				case MANAGER: {
 					srvDefBuilder.add_manager(svc.hostName, "", false);
@@ -595,7 +607,7 @@ public class StartServicesHelper {
 					break;
 				}
 				case LOGGING: {
-					srvDefBuilder.add_logging_service(svc.hostName, svc.serviceName);
+					srvDefBuilder.add_logging_service(svc.hostName, null);
 					break;
 				}
 				case LOGPROXY: {
@@ -618,11 +630,14 @@ public class StartServicesHelper {
 		} catch (Throwable t) {
 			throw new DaemonException("Error adding services to the daemon", t);
 		}
+		logger.log(AcsLogLevel.DEBUG,"All the services have been added to the ServiceDefinitionBuilder");
 		String svcsXML = srvDefBuilder.get_services_definition();
 		StringHolder errorStr = new StringHolder();
 		if (!srvDefBuilder.is_valid(errorStr)) {
 			// Error in the XML
 			throw new DaemonException("Error in the services definition: "+errorStr.value);
+		} else {
+			logger.log(AcsLogLevel.DEBUG,"Services successfully validated by the ServicesDefinitionBuilder");
 		}
 		return new AlarmServicesDefinitionHolder(svcsXML, Collections.unmodifiableList(services));
 	}
