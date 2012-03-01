@@ -587,7 +587,7 @@ public class StartServicesHelper {
 					break;
 				}
 				case CDB: {
-					srvDefBuilder.add_xml_cdb(svc.hostName, false, "");
+					srvDefBuilder.add_rdb_cdb(svc.hostName, false, configurationName);
 					break;
 				}
 				case IFR: {
