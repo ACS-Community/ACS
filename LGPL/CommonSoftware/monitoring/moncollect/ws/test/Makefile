@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2012/02/19 14:29:48 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/03/02 14:03:10 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,7 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       =
-LIBRARIES_L     = MCtestComponent MCtestPropertiesComponent MCmockBlobber MCmockController
+LIBRARIES_L     = MCtestComponent MCtestPropertiesComponent MCtestAlarmsComponent MCmockBlobber MCmockController
 
 #
 # <brief description of lllll library>
@@ -75,6 +75,9 @@ MCtestComponent_LIBS= MCtestComponentStubs baci
 
 MCtestPropertiesComponent_OBJECTS = MCtestPropertiesComponentImpl
 MCtestPropertiesComponent_LIBS= MCtestComponentStubs baci
+
+MCtestAlarmsComponent_OBJECTS = MCtestAlarmsComponentImpl
+MCtestAlarmsComponent_LIBS= MCtestComponentStubs baci ACSErrTypeDevIO
 
 MCmockBlobber_OBJECTS = MCmockBlobberImpl
 MCmockBlobber_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent MonitorErr 
@@ -100,7 +103,7 @@ TCL_SCRIPTS_L   =
 PY_SCRIPTS         =
 PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
 						mcTestComponent mcTestPropertiesComponent mcTestDynEnable mcTestDynSuppress mcTestDynInterval \
-                  mcTestDynSupEn #mcTestManualPublish mcTestManualPublishOnSuppressed mcTestArchiveDelta mcTestArchiveDeltaPercent 
+                  mcTestDynSupEn mcTestAlarmsComponent #mcTestManualPublish mcTestManualPublishOnSuppressed mcTestArchiveDelta mcTestArchiveDeltaPercent
 PY_MODULES         =
 PY_MODULES_L       =
 

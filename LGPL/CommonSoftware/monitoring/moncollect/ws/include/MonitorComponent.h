@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: MonitorComponent.h,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
+ * "@(#) $Id: MonitorComponent.h,v 1.3 2012/03/02 14:03:10 tstaig Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,6 +30,23 @@
 #endif
 
 #include "MonitorPoint.h"
+
+#define ROMONITORPOINTNS(NS, Type, type) ROMonitorPoint<NS::Type, TMCDB::type##BlobDataSeq, ACS::P##type, POA_ACS::CB##type, POA_ACS::Alarm##type, NS::Type, ACS::type##Seq_var, NS::Type>
+#define ROMONITORPOINT(Type, type) ROMonitorPoint<const Type, TMCDB::type##BlobDataSeq, ACS::P##type, POA_ACS::CB##type, POA_ACS::Alarm##type, Type, ACS::type##Seq_var, const Type>
+#define ROMONITORPOINTNSSEQ(NS, Type, type) ROMonitorPoint<const ACS::type##Seq&, TMCDB::type##SeqBlobDataSeq, ACS::P##type##Seq, POA_ACS::CB##type##Seq, POA_ACS::Alarm##type, NS::Type, ACS::type##SeqSeq_var, NS::Type>
+#define ROMONITORPOINTSEQ(Type, type) ROMonitorPoint<const ACS::type##Seq&, TMCDB::type##SeqBlobDataSeq, ACS::P##type##Seq, POA_ACS::CB##type##Seq, POA_ACS::Alarm##type, Type, ACS::type##SeqSeq_var, const Type>
+#define MONITORPOINTNS(NS, Type, type) MonitorPoint<NS::Type, TMCDB::type##BlobDataSeq, ACS::P##type, POA_ACS::CB##type, NS::Type>
+#define MONITORPOINT(Type, type) MonitorPoint<const Type, TMCDB::type##BlobDataSeq, ACS::P##type, POA_ACS::CB##type, Type>
+#define MONITORPOINTNSSEQ(NS, Type, type) MonitorPoint<const ACS::type##Seq&, TMCDB::type##SeqBlobDataSeq, ACS::P##type##Seq, POA_ACS::CB##type##Seq, NS::Type>
+#define MONITORPOINTSEQ(Type, type) MonitorPoint<const ACS::type##Seq&, TMCDB::type##SeqBlobDataSeq, ACS::P##type##Seq, POA_ACS::CB##type##Seq, Type>
+#define CBTIENS(NS, Type, type) POA_ACS::CB##type##_tie<MONITORPOINTNS(NS, Type, type) >
+#define CBTIE(Type, type) POA_ACS::CB##type##_tie<MONITORPOINT(Type, type) >
+#define CBTIENSSEQ(NS, Type, type) POA_ACS::CB##type##Seq_tie<MONITORPOINTNSSEQ(NS, Type, type) >
+#define CBTIESEQ(Type, type) POA_ACS::CB##type##Seq_tie<MONITORPOINTSEQ(Type, type) >
+#define ALARMTIENS(NS, Type, type) POA_ACS::Alarm##type##_tie<ROMONITORPOINTNS(NS, Type, type) >
+#define ALARMTIE(Type, type) POA_ACS::Alarm##type##_tie<ROMONITORPOINT(Type, type) >
+#define ALARMTIENSSEQ(NS, Type, type) POA_ACS::Alarm##type##_tie<ROMONITORPOINTNSSEQ(NS, Type, type) >
+#define ALARMTIESEQ(Type, type) POA_ACS::Alarm##type##_tie<ROMONITORPOINTSEQ(Type, type) >
 
 namespace TMCDB
 {

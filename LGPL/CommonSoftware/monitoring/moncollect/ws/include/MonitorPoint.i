@@ -8,6 +8,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 	try
 	{
 
+		monitorServant_m = NULL;
 		property_m = TPROP::_narrow(property);
 
 		if (property_m->default_timer_trigger()==0)
@@ -31,12 +32,12 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_suppress");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		if ( strcmp(strCharacteristic, "false")!=0 ) {
-			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_suppress is set to 'false', but to: %s.",
+			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_suppress is set to 'false', but to: %s.",
 					property_m->name(),
 					property_m->_repository_id(),
 					strCharacteristic
 			));
-			suppressed_m = true;
+			monitorSuppressed_m = true;
 		}
 		double archiveMaxInt;
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_max_int");
@@ -46,7 +47,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		archiveMaxInt *= static_cast<double>(10000000.0); //we have to convert to 100s nsec.
 		if ( archiveMaxInt==0.0 )
 		{
-			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected by time interval, because archive_max_int is 0 (%f).",
+			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected by time interval, because archive_max_int is 0 (%f).",
 					property_m->name(),
 					property_m->_repository_id(),
 					archiveMaxInt
@@ -60,7 +61,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		std::istringstream i1(strCharacteristic);
 		i1 >> val;
 		if ( val == 0 ) {
-			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
+			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
 					property_m->name(),
 					property_m->_repository_id(),
 					strCharacteristic
@@ -74,7 +75,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
-			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value percentage change, because archive_delta_percent is set to '%s'.",
+			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value percentage change, because archive_delta_percent is set to '%s'.",
 					property_m->name(),
 					property_m->_repository_id(),
 					strCharacteristic
@@ -83,9 +84,9 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			valuePercentTrigger_m = valPer;
 		}
 	} catch(CORBA::SystemException &ex) {
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in MonitorPoint::MonitorPoint");
+		ACE_PRINT_EXCEPTION(ex, "CORBA problem in MonitorPoint<>::MonitorPoint");
 	} catch(...) {
-		printf("problem in MonitorPoint::MonitorPoint!!!\n");
+		printf("problem in MonitorPoint<>::MonitorPoint!!!\n");
 	}//try-catch
 }//MonitorPoint
 
@@ -100,38 +101,74 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::~MonitorPoint()
 {
 	AUTO_TRACE("MonitorPoint<>::~MonitorPoint");
 	CORBA::release(property_m);
+	if(monitorServant_m != NULL)
+		delete monitorServant_m;
 }//~MonitorPoint
 
+template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
+void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::setMonitorServant(TCB *servant)
+{
+   monitorServant_m = servant;
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
+void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::activate(maci::ContainerServices *cs)
+{
+	AUTO_TRACE("MonitorPoint<>::activate");
+	try
+	{
+		MonitorPointBase::monitorCallback_m = cs->activateOffShoot(monitorServant_m);
+		monitorServant_m->_remove_ref(); //Decrease ref count to 1
+	}
+	catch(CORBA::Exception &ex)
+	{
+		ACE_PRINT_EXCEPTION(ex, "MonitorPoint<>::activate");
+	}
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
+void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::deactivate(maci::ContainerServices *cs)
+{
+	AUTO_TRACE("MonitorPoint<>::deactivate");
+	try
+	{
+		cs->deactivateOffShoot(monitorServant_m);
+	}
+	catch(CORBA::Exception &ex)
+	{
+		ACE_PRINT_EXCEPTION(ex, "MonitorPoint<>::deactivate");
+	}
+}
 
 template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
 void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::startMonitoring()
 {
 	ACS::CBDescIn cbDescIn;
-	AUTO_TRACE("MonitorPoint<T, TPROP, TCB>::startMonitoring");
+	AUTO_TRACE("MonitorPoint<>::startMonitoring");
 
 	try
 	{
 
-		//printf("cb1 %d %d\n", callback_m->_refcount_value(), _refcount_value());
+		//printf("cb1 %d %d\n", monitorCallback_m->_refcount_value(), _refcount_value());
 		if ( !CORBA::is_nil(monitor_m) )
 			return; // we are already monitoring
 
 		CORBA::Request_var req;
 		req = property_m->_request("create_monitor");
-		req->add_in_arg ("CB") <<= callback_m.in();
+		req->add_in_arg ("CB") <<= monitorCallback_m.in();
 		req->add_in_arg ("CBDescIn") <<= cbDescIn;
 		req->set_return_type (ACS::_tc_Monitor);
 
 		req->invoke();
 
-		//printf("cb2 %d %d\n", callback_m->_refcount_value(), _refcount_value());
+		//printf("cb2 %d %d\n", monitorCallback_m->_refcount_value(), _refcount_value());
 
 		if (req->response_received ())
 		{
 			ACS::Monitor *m;
 			req->return_value() >>= m;
 			monitor_m = m->_duplicate(m);
-			if(suppressed_m == true)
+			if(monitorSuppressed_m == true)
 				monitor_m->suspend();
 
 			monitor_m->set_timer_trigger(archivingInterval_m);
@@ -153,7 +190,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::startMonitoring()
 		}else
 			printf("DII problems\n");
 
-		//monitor_m = property_m->create_monitor(this->callback_m, cbDescIn);
+		//monitor_m = property_m->create_monitor(this->monitorCallback_m, cbDescIn);
 	}
 	catch(CORBA::Exception &cex)
 	{
@@ -203,7 +240,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::fillSeq()
 template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
 void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::set_archiving_interval(ACS::TimeInterval time)
 {
-	AUTO_TRACE("MonitorPoint<T, TPROP, TCB>::set_archiving_interval");
+	AUTO_TRACE("MonitorPoint<>::set_archiving_interval");
 	archivingInterval_m = time;
 	if ( CORBA::is_nil(monitor_m) )
 		return; // The monitor does not exist.
@@ -213,8 +250,8 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::set_archiving_interval(ACS::
 template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
 void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::suppress_archiving()
 {
-	AUTO_TRACE("MonitorPoint<T, TPROP, TCB>::suppress_archiving");
-	suppressed_m = true;
+	AUTO_TRACE("MonitorPoint<>::suppress_archiving");
+	monitorSuppressed_m = true;
 	if ( CORBA::is_nil(monitor_m) )
 		return; // The monitor does not exist.
 	monitor_m->suspend();
@@ -223,8 +260,8 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::suppress_archiving()
 template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
 void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::enable_archiving()
 {
-	AUTO_TRACE("MonitorPoint<T, TPROP, TCB>::enable_archiving");
-	suppressed_m = false;
+	AUTO_TRACE("MonitorPoint<>::enable_archiving");
+	monitorSuppressed_m = false;
 	if ( CORBA::is_nil(monitor_m) )
 		return; // The monitor does not exist.
 	monitor_m->resume();
@@ -241,8 +278,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::working(T value, const ACSEr
 	{
 		seqLen_m = curSeqPos_m+prealocSeqLen_m;
 		blobDataSeq_m.length(seqLen_m);
-		/*ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::working",
-						(LM_DEBUG, "Increased blobData sequence size for property: %s to: %d", monitorBlob_m.propertyName.in(), seqLen_m));*/
+		/*ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::working", (LM_DEBUG, "Increased blobData sequence size for property: %s to: %d", monitorBlob_m.propertyName.in(), seqLen_m));*/
 	}//if
 
 	blobDataSeq_m[curSeqPos_m].value = value;
@@ -257,3 +293,202 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::done(T value, const ACSErr::
 
 }
 
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::ROMonitorPoint(const char *propertyName, const ACS::TimeInterval &monitoringInterval, ACS::Property* property, TMCDB::DataValueType typeOfData, MonitorBlob& mb) :
+	MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>(propertyName, monitoringInterval, property, typeOfData, mb)
+{
+	try
+	{
+		alarmServant_m = NULL;
+		CORBA::Any *anyCharacteristic;
+		char *strCharacteristic;
+		anyCharacteristic = MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::property_m->get_characteristic_by_name("alarm_timer_trig");
+		double valPer;
+		MonitorPointBase::alarmTimerTrigger_m = 0;
+		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
+		std::istringstream i2(strCharacteristic);
+		i2 >> valPer;
+		if ( valPer == 0 ) {
+			ACS_LOG(LM_FULL_INFO ,"ROMonitorPoint<>::ROMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected when alarms are raised, because alarm_timer_trig is set to '%s'.",
+					MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::property_m->name(),
+					MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::property_m->_repository_id(),
+					strCharacteristic
+			));
+		} else {
+			MonitorPointBase::alarmTimerTrigger_m = valPer;
+		}
+	} catch(CORBA::SystemException &ex) {
+		ACE_PRINT_EXCEPTION(ex, "CORBA problem in ROMonitorPoint<>::MonitorPoint");
+	} catch(...) {
+		printf("problem in ROMonitorPoint<>::MonitorPoint!!!\n");
+	}//try-catch
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::~ROMonitorPoint()
+{
+	if(alarmServant_m != NULL)
+		delete alarmServant_m;
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::setAlarmServant(TACB *servant)
+{
+   alarmServant_m = servant;
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::activate(maci::ContainerServices *cs)
+{
+	AUTO_TRACE("ROMonitorPoint<>::activate");
+   MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::activate(cs);
+	try
+	{
+		MonitorPointBase::alarmCallback_m = cs->activateOffShoot(alarmServant_m);
+		alarmServant_m->_remove_ref(); //Decrease ref count to 1
+	}
+	catch(CORBA::Exception &ex)
+	{
+		ACE_PRINT_EXCEPTION(ex, "ROMonitorPoint<>::activate");
+	}
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::deactivate(maci::ContainerServices *cs)
+{
+	AUTO_TRACE("ROMonitorPoint<>::deactivate");
+   MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::deactivate(cs);
+	try
+	{
+		cs->deactivateOffShoot(alarmServant_m);
+	}
+	catch(CORBA::Exception &ex)
+	{
+		ACE_PRINT_EXCEPTION(ex, "ROMonitorPoint<>::deactivate");
+	}
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::startMonitoring()
+{
+   MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::startMonitoring();
+	ACS::CBDescIn cbDescIn;
+	AUTO_TRACE("ROMonitorPoint<>::startMonitoring");
+
+	try
+	{
+		if(MonitorPointBase::alarmTimerTrigger_m == 0)
+			return; //Alarms can't be configured with alarm_timer_trig=0
+
+		//printf("cb1 %d %d\n", alarmCallback_m->_refcount_value(), _refcount_value());
+		if ( !CORBA::is_nil(MonitorPointBase::subscription_m) )
+			return; // we are already checking alarms
+
+		CORBA::Request_var req;
+		req = MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::property_m->_request("new_subscription_Alarm");
+		req->add_in_arg ("CB") <<= MonitorPointBase::alarmCallback_m.in();
+		req->add_in_arg ("CBDescIn") <<= cbDescIn;
+		req->set_return_type (ACS::_tc_Subscription);
+		req->invoke();
+
+		//printf("cb2 %d %d\n", alarmCallback_m->_refcount_value(), _refcount_value());
+		if (req->response_received ())
+		{
+			ACS::Subscription *s;
+			req->return_value() >>= s;
+			MonitorPointBase::subscription_m = s->_duplicate(s);
+			if(MonitorPointBase::alarmSuppressed_m == true)
+				MonitorPointBase::subscription_m->suspend();
+		}else
+			printf("DII problems\n");
+		//subscription_m = property_m->new_subscription_Alarm(this->alarmCallback_m, cbDescIn);
+	}
+	catch(CORBA::Exception &cex)
+	{
+		//TBD: improve error handling
+		ACE_PRINT_EXCEPTION(cex, "in ROMonitorPoint<>::startMonitoring");
+	}
+}//startMonitoring
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::stopMonitoring()
+{
+   MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::stopMonitoring();
+	AUTO_TRACE("ROMonitorPoint<>::stopMonitoring");
+	try
+	{
+	if ( !CORBA::is_nil(MonitorPointBase::subscription_m) )
+	   MonitorPointBase::subscription_m->destroy();
+	   MonitorPointBase::subscription_m = ACS::Subscription::_nil();
+	}
+	catch(CORBA::Exception &cex)
+	{
+		//TBD: improve error handling
+		ACE_PRINT_EXCEPTION(cex, "in ROMonitorPoint<>::stopMonitoring");
+	}
+}//stopMonitoring
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::suppress_archiving()
+{
+   MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::suppress_archiving();
+	AUTO_TRACE("ROMonitorPoint<>::suppress_archiving");
+	MonitorPointBase::alarmSuppressed_m = true;
+	if ( CORBA::is_nil(MonitorPointBase::subscription_m) )
+		return; // The monitor does not exist.
+	MonitorPointBase::subscription_m->suspend();
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::enable_archiving()
+{
+   MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::enable_archiving();
+	AUTO_TRACE("ROMonitorPoint<>::enable_archiving");
+	MonitorPointBase::alarmSuppressed_m = false;
+	if ( CORBA::is_nil(MonitorPointBase::subscription_m) )
+		return; // The monitor does not exist.
+	MonitorPointBase::subscription_m->resume();
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::alarm_raised(TALARM value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout)
+{
+	ACE_GUARD(ACE_Thread_Mutex, mut, MonitorPointBase::switchMutex_m);
+
+	if ( MonitorPointBase::curSeqPos_m>=MonitorPointBase::seqLen_m )
+	{
+		MonitorPointBase::seqLen_m = MonitorPointBase::curSeqPos_m+MonitorPointBase::prealocSeqLen_m;
+		MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::blobDataSeq_m.length(MonitorPointBase::seqLen_m);
+	}//if
+
+	MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::blobDataSeq_m[MonitorPointBase::curSeqPos_m].value = value;
+	MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::blobDataSeq_m[MonitorPointBase::curSeqPos_m].time = comp.timeStamp;
+
+	MonitorPointBase::curSeqPos_m++;
+
+   std::cout << "Error while reading property:" << MonitorPointBase::propertyName_m << " with description:" << std::endl;
+   for(unsigned int i = 0; i < comp.previousError.length(); i++)
+      std::cout << comp.previousError[i].shortDescription << std::endl;
+   //Obtain back-log and archive it.
+   ACS::TimeSeq_var ts;
+   TSEQ seq;
+   CORBA::Long len = MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::property_m->get_history(MonitorPointBase::backLogSize_m, seq.out(), ts.out());
+   for(int i = 0; i < len; i++)
+   {
+     	if ( MonitorPointBase::curSeqPos_m>=MonitorPointBase::seqLen_m )
+     	{
+     		MonitorPointBase::seqLen_m = MonitorPointBase::curSeqPos_m+MonitorPointBase::prealocSeqLen_m;
+     		MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::blobDataSeq_m.length(MonitorPointBase::seqLen_m);
+     	}//if
+  
+     	MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::blobDataSeq_m[MonitorPointBase::curSeqPos_m].value = seq.in()[i];
+     	MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>::blobDataSeq_m[MonitorPointBase::curSeqPos_m].time = ts.in()[i];
+  
+     	MonitorPointBase::curSeqPos_m++;
+   }
+}
+
+template<class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::alarm_cleared(TALARM value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout)
+{
+}

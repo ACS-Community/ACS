@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorComponent.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $"
+* "@(#) $Id: MonitorComponent.cpp,v 1.5 2012/03/02 14:03:10 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.4 2012/02/16 14:19:59 hsommer Exp $";
+static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.5 2012/03/02 14:03:10 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorComponent.h"
@@ -59,7 +59,7 @@ MonitorComponent::~MonitorComponent()
 	for( unsigned int i=0; i<numOfProp; i++ )
 	{
 		monitorPoints_m[i]->stopMonitoring();
-		containerServices_m->deactivateOffShoot(monitorPoints_m[i]);
+		monitorPoints_m[i]->deactivate(containerServices_m);
 	}
 }//~MonitorComponent
 
@@ -218,13 +218,26 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("doubleSeq:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<const ACS::doubleSeq&, TMCDB::doubleSeqBlobDataSeq, ACS::PdoubleSeq, POA_ACS::CBdoubleSeq, CORBA::Double>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::doubleSeqValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]
-		);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNSSEQ(CORBA, Double, double)( 
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::doubleSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+			ALARMTIENSSEQ(CORBA, Double, double) *alarmServant = new ALARMTIENSSEQ(CORBA, Double, double)(dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Double, double) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Double, double) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNSSEQ(CORBA, Double, double)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::doubleSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+		CBTIENSSEQ(CORBA, Double, double) *monitorServant = new CBTIENSSEQ(CORBA, Double, double)(dynamic_cast<MONITORPOINTNSSEQ(CORBA, Double, double) *>(mp), false);
+		dynamic_cast<MONITORPOINTNSSEQ(CORBA, Double, double) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -233,13 +246,26 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("double:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<CORBA::Double, TMCDB::doubleBlobDataSeq, ACS::Pdouble, POA_ACS::CBdouble, CORBA::Double>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::doubleValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]
-		);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(CORBA, Double, double)( 
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::doubleValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+			ALARMTIENS(CORBA, Double, double) *alarmServant = new ALARMTIENS(CORBA, Double, double)(dynamic_cast<ROMONITORPOINTNS(CORBA, Double, double) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(CORBA, Double, double) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(CORBA, Double, double)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::doubleValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+		CBTIENS(CORBA, Double, double) *monitorServant = new CBTIENS(CORBA, Double, double)(dynamic_cast<MONITORPOINTNS(CORBA, Double, double) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(CORBA, Double, double) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -249,13 +275,26 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	////////////////////
 	if (propType.find("longSeq:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<const ACS::longSeq&, TMCDB::longSeqBlobDataSeq, ACS::PlongSeq, POA_ACS::CBlongSeq, CORBA::Long>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::longSeqValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]
-		);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNSSEQ(CORBA, Long, long)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::longSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+			ALARMTIENSSEQ(CORBA, Long, long) *alarmServant = new ALARMTIENSSEQ(CORBA, Long, long)(dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Long, long) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Long, long) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNSSEQ(CORBA, Long, long)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::longSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+		CBTIENSSEQ(CORBA, Long, long) *monitorServant = new CBTIENSSEQ(CORBA, Long, long)(dynamic_cast<MONITORPOINTNSSEQ(CORBA, Long, long) *>(mp), false);
+		dynamic_cast<MONITORPOINTNSSEQ(CORBA, Long, long) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -264,12 +303,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("long:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<CORBA::Long, TMCDB::longBlobDataSeq, ACS::Plong, POA_ACS::CBlong, CORBA::Long>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::longValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(CORBA, Long, long)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::longValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(CORBA, Long, long) *alarmServant = new ALARMTIENS(CORBA, Long, long)(dynamic_cast<ROMONITORPOINTNS(CORBA, Long, long) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(CORBA, Long, long) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(CORBA, Long, long)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::longValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(CORBA, Long, long) *monitorServant = new CBTIENS(CORBA, Long, long)(dynamic_cast<MONITORPOINTNS(CORBA, Long, long) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(CORBA, Long, long) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -279,12 +330,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	///////////////////////
 	if (propType.find("floatSeq:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<const ACS::floatSeq&, TMCDB::floatSeqBlobDataSeq, ACS::PfloatSeq, POA_ACS::CBfloatSeq, CORBA::Float>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::floatSeqValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNSSEQ(CORBA, Float, float)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::floatSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENSSEQ(CORBA, Float, float) *alarmServant = new ALARMTIENSSEQ(CORBA, Float, float)(dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Float, float) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Float, float) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNSSEQ(CORBA, Float, float)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::floatSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENSSEQ(CORBA, Float, float) *monitorServant = new CBTIENSSEQ(CORBA, Float, float)(dynamic_cast<MONITORPOINTNSSEQ(CORBA, Float, float) *>(mp), false);
+		dynamic_cast<MONITORPOINTNSSEQ(CORBA, Float, float) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -293,12 +356,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("float:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<CORBA::Float, TMCDB::floatBlobDataSeq, ACS::Pfloat, POA_ACS::CBfloat, CORBA::Float>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::floatValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(CORBA, Float, float)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::floatValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(CORBA, Float, float) *alarmServant = new ALARMTIENS(CORBA, Float, float)(dynamic_cast<ROMONITORPOINTNS(CORBA, Float, float) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(CORBA, Float, float) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(CORBA, Float, float)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::floatValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(CORBA, Float, float) *monitorServant = new CBTIENS(CORBA, Float, float)(dynamic_cast<MONITORPOINTNS(CORBA, Float, float) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(CORBA, Float, float) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -318,11 +393,22 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("pattern:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<ACS::pattern, TMCDB::patternBlobDataSeq, ACS::Ppattern, POA_ACS::CBpattern, ACS::pattern>(propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::patternValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(ACS, pattern, pattern)(propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::patternValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(ACS, pattern, pattern) *alarmServant = new ALARMTIENS(ACS, pattern, pattern)(dynamic_cast<ROMONITORPOINTNS(ACS, pattern, pattern) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(ACS, pattern, pattern) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(ACS, pattern, pattern)(propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::patternValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(ACS, pattern, pattern) *monitorServant = new CBTIENS(ACS, pattern, pattern)(dynamic_cast<MONITORPOINTNS(ACS, pattern, pattern) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(ACS, pattern, pattern) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -343,12 +429,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("longLong:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<ACS::longLong, TMCDB::longLongBlobDataSeq, ACS::PlongLong, POA_ACS::CBlongLong, ACS::longLong>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::longLongValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(ACS, longLong, longLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::longLongValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(ACS, longLong, longLong) *alarmServant = new ALARMTIENS(ACS, longLong, longLong)(dynamic_cast<ROMONITORPOINTNS(ACS, longLong, longLong) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(ACS, longLong, longLong) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(ACS, longLong, longLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::longLongValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(ACS, longLong, longLong) *monitorServant = new CBTIENS(ACS, longLong, longLong)(dynamic_cast<MONITORPOINTNS(ACS, longLong, longLong) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(ACS, longLong, longLong) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -369,12 +467,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("uLongLong:")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<ACS::uLongLong, TMCDB::uLongLongBlobDataSeq, ACS::PuLongLong, POA_ACS::CBuLongLong, ACS::uLongLong>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::uLongLongValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(ACS, uLongLong, uLongLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::uLongLongValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(ACS, uLongLong, uLongLong) *alarmServant = new ALARMTIENS(ACS, uLongLong, uLongLong)(dynamic_cast<ROMONITORPOINTNS(ACS, uLongLong, uLongLong) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(ACS, uLongLong, uLongLong) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(ACS, uLongLong, uLongLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::uLongLongValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(ACS, uLongLong, uLongLong) *monitorServant = new CBTIENS(ACS, uLongLong, uLongLong)(dynamic_cast<MONITORPOINTNS(ACS, uLongLong, uLongLong) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(ACS, uLongLong, uLongLong) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -385,12 +495,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	if (propType.find("stringSeq:")!=ACE_CString::npos)
 	{
 		//TBD: could be that string/const char* needs template specialization due to corba memory management!
-		mp = new MonitorPoint<const ACS::stringSeq&, TMCDB::stringSeqBlobDataSeq, ACS::PstringSeq, POA_ACS::CBstringSeq, char *>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::stringSeqValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTSEQ(char *, string)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::stringSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIESEQ(char *, string) *alarmServant = new ALARMTIESEQ(char *, string)(dynamic_cast<ROMONITORPOINTSEQ(char *, string) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTSEQ(char *, string) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTSEQ(char *, string)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::stringSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIESEQ(char *, string) *monitorServant = new CBTIESEQ(char *, string)(dynamic_cast<MONITORPOINTSEQ(char *, string) *>(mp), false);
+		dynamic_cast<MONITORPOINTSEQ(char *, string) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;
@@ -400,12 +522,24 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	if (propType.find("string:")!=ACE_CString::npos)
 	{
 		//TBD: could be that string/const char* needs template specialization due to corba memory management!
-		mp = new MonitorPoint<const char*, TMCDB::stringBlobDataSeq, ACS::Pstring, POA_ACS::CBstring, char *>(
-				propName,
-				monitoringInterval,
-				propRef,
-				TMCDB::stringValueType,
-				monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINT(char *, string)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::stringValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIE(char *, string) *alarmServant = new ALARMTIE(char *, string)(dynamic_cast<ROMONITORPOINT(char *, string) *>(mp), false);
+			dynamic_cast<ROMONITORPOINT(char *, string) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINT(char *, string)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::stringValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIE(char *, string) *monitorServant = new CBTIE(char *, string)(dynamic_cast<MONITORPOINT(char *, string) *>(mp), false);
+		dynamic_cast<MONITORPOINT(char *, string) *>(mp)->setMonitorServant(monitorServant);
 		mp->activate(containerServices_m);
 		monitorPoints_m[seqIndex_m] = mp;
 		seqIndex_m++;

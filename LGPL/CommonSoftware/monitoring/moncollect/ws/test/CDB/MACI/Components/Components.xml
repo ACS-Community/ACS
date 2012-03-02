@@ -27,6 +27,7 @@
 	<_ Name="MC_TEST_COMPONENT3" Code="MCtestComponent" Type="IDL:alma/TMCDB/MCtestComponent:1.0"    Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="MC_TEST_COMPONENT4" Code="MCtestComponent" Type="IDL:alma/TMCDB/MCtestComponent:1.0"    Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="MC_TEST_PROPERTIES_COMPONENT" Code="MCtestPropertiesComponent" Type="IDL:alma/TMCDB/MCtestPropertiesComponent:1.0"    Container="monColTestCont" ImplLang="cpp" />
+	<_ Name="MC_TEST_ALARMS_COMPONENT" Code="MCtestAlarmsComponent" Type="IDL:alma/TMCDB/MCtestAlarmsComponent:1.0"    Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="ARCHIVE/TMCDB/MONITOR_BLOBBER" Code="MCmockBlobber" Type="IDL:alma/MonitorArchiver/Blobber:1.0"    Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="ARCHIVE/TMCDB/MONITOR_CONTROL" Code="MCmockController" Type="IDL:alma/MonitorArchiver/Controller:1.0"    Container="monColTestCont" ImplLang="cpp" />
 

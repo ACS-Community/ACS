@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.cpp,v 1.3 2011/05/23 19:31:44 javarias Exp $"
+* "@(#) $Id: MonitorPoint.cpp,v 1.4 2012/03/02 14:03:10 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorPoint.cpp,v 1.3 2011/05/23 19:31:44 javarias Exp $";
+static char *rcsId="@(#) $Id: MonitorPoint.cpp,v 1.4 2012/03/02 14:03:10 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorPoint.h"
@@ -41,32 +41,21 @@ MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInte
 	AUTO_TRACE("MonitorPointBase::MonitorPointBase");
 
 	monitor_m = ACS::Monitor::_nil();
+	subscription_m = ACS::Subscription::_nil();
 	curSeqPos_m = 0;
 	//monitorBlob_m = new MonitorBlob;
 	monitorBlob_m.propertyName = CORBA::string_dup(propertyName);
 	monitorBlob_m.typeOfValue = typeOfData;
-	suppressed_m = false;
+	monitorSuppressed_m = false;
+	alarmSuppressed_m = false;
 	valuePercentTrigger_m = 0;
+	backLogSize_m = 32;
 }
 
 void MonitorPointBase::setPropertySerialNumber(serialNumberTypeSeq& sn)
 {
 		monitorBlob_m.propertySerialNumber = sn;
 }//setSerialNumber
-
-void MonitorPointBase::activate(maci::ContainerServices *cs)
-{
-	AUTO_TRACE("MonitorPointBase::activate");
-	try
-	{
-		callback_m = cs->activateOffShoot(this);
-		this->_remove_ref(); //Decrease ref count to 1
-	}
-	catch(CORBA::Exception &ex)
-	{
-		ACE_PRINT_EXCEPTION(ex, "MonitorPointBase::activate");
-	}
-}//activate
 
 MonitorPointBase::~MonitorPointBase()
 {

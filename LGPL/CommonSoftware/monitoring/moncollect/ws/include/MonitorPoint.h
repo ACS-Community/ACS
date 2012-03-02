@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.h,v 1.3 2011/05/23 19:31:44 javarias Exp $"
+* "@(#) $Id: MonitorPoint.h,v 1.4 2012/03/02 14:03:10 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,8 @@ public:
 	CORBA::Boolean negotiate(ACS::TimeInterval, const ACS::CBDescOut&){ return true; }
 
 	/// activate corba object
-	virtual void activate(maci::ContainerServices *cs);
+	virtual void activate(maci::ContainerServices *cs)=0;
+	virtual void deactivate(maci::ContainerServices *cs)=0;
 
 	///start monitoring the property (monitor point)
 	virtual void startMonitoring()=0;
@@ -84,7 +85,10 @@ protected:
 
 	ACS::Monitor_var monitor_m; /// monitor of the property
 
-	ACS::OffShoot_var callback_m; ///callback CORBA reference
+	ACS::Subscription_var subscription_m; /// Subscription for the alarm of the property
+
+	ACS::OffShoot_var monitorCallback_m; ///callback CORBA reference
+	ACS::OffShoot_var alarmCallback_m; ///callback CORBA reference
 
 	unsigned int curSeqPos_m; ///current position to write in the sequence
 
@@ -92,33 +96,43 @@ protected:
 
 	ACE_Thread_Mutex switchMutex_m; //when we switch the collection sequence
 
-	bool suppressed_m;
+	bool monitorSuppressed_m;
+	bool alarmSuppressed_m;
+	double alarmTimerTrigger_m;
 
 	static const unsigned int prealocSeqLen_m = 100; // preallocated length of the seqnece. This is the step that the sequence will grow
+
+	CORBA::Long backLogSize_m;
 	//TBD: do we need also type (as string or ..)?
 };//MonitorPointBase
 
 template <class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
-class MonitorPoint : public MonitorPointBase, public virtual TCB
+class MonitorPoint : public MonitorPointBase
 {
 public:
 	MonitorPoint(const char *propertyName, const ACS::TimeInterval &monitoringInterval, ACS::Property* property, TMCDB::DataValueType typeOfData, MonitorBlob& mb);
 
-	~MonitorPoint();
+	virtual ~MonitorPoint();
+
+	//Sets the servant for the property monitor
+	void setMonitorServant(TCB *servant);
+
+	virtual void activate(maci::ContainerServices *cs);
+	virtual void deactivate(maci::ContainerServices *cs);
 
 	///start monitoring the property (monitor point)
-	void startMonitoring();
+	virtual void startMonitoring();
 
 	///stop monitoring the property (monitor point)
-	void stopMonitoring();
+	virtual void stopMonitoring();
 
 	void fillSeq();
 
 	void set_archiving_interval(ACS::TimeInterval time);
 
-	void suppress_archiving();
+	virtual void suppress_archiving();
 
-	void enable_archiving();
+	virtual void enable_archiving();
 
 	/// implementig CB interface
 	void working(T value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
@@ -129,7 +143,30 @@ protected:
 	TPROP* property_m;
 	TBLOB_SEQ blobDataSeq_m;
 	TBASE valueTrigger_m; // Delta value describing how much a value can change before the value should be archived (and so monitored)
+	TCB * monitorServant_m;
 };//MonitorPoint
+
+template <class T, class TBLOB_SEQ, class TPROP, class TMCB, class TACB, class TBASE, class TSEQ, class TALARM>
+class ROMonitorPoint : public MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>
+{
+  public:
+	ROMonitorPoint(const char *propertyName, const ACS::TimeInterval &monitoringInterval, ACS::Property* property, TMCDB::DataValueType typeOfData, MonitorBlob& mb);
+	~ROMonitorPoint();
+	//Sets the servant for the alarm monitor
+	void setAlarmServant(TACB *servant);
+	void activate(maci::ContainerServices *cs);
+	void deactivate(maci::ContainerServices *cs);
+	///start/stop monitoring the property (monitor point) and its alarms
+	void startMonitoring();
+	void stopMonitoring();
+	void suppress_archiving();
+	void enable_archiving();
+	//Implementing Alarm interface
+	void alarm_raised(TALARM value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
+	void alarm_cleared(TALARM value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
+  protected:
+	TACB * alarmServant_m;
+};
 
 template <class T>
 T initValue(unsigned int len);
