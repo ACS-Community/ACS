@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.54 2011/10/06 20:57:07 javarias Exp $
+# @(#) $Id: Container.py,v 1.55 2012/03/02 21:23:07 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.54 2011/10/06 20:57:07 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.55 2012/03/02 21:23:07 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.54 2011/10/06 20:57:07 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.55 2012/03/02 21:23:07 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -870,6 +870,16 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             except:
                 self.logger.logCritical("There was a problem autoloading the '" + str(temp_package) + "' Python script!")
                 print_exc()
+                
+        try:
+            #Get the global unnamed logging config to retrieve the maxLogsPerSecond attribute
+            logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+            maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+        except (CDBRecordDoesNotExistEx):
+            # No value was supplied so default is used
+            maxLogsPerSec = -1
+        self.logger.configureLogging(maxLogsPerSec)
+
 
     #--------------------------------------------------------------------------
     def configCORBA(self): # pragma: NO COVER
