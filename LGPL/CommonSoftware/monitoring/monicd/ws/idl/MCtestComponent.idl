@@ -56,6 +56,10 @@ module TMCDB
 		readonly attribute ACS::ROdoubleSeq doubleSeqROProp;
 		readonly attribute ACS::ROfloatSeq  floatSeqROProp;
 		readonly attribute ACS::ROlongSeq   longSeqROProp;
+		/// resets devio values and time
+		void reset();
+		void increase();
+		void decrease();
 	};
 
 };//module  TMCDB

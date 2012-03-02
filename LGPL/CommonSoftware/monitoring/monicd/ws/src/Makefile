@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2012/02/16 14:16:12 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/03/02 14:05:15 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -119,7 +119,7 @@ TMCDBCOMMON_IDLStubs_LIBS = acscommonStubs
 MonitorCollectorStubs_LIBS = acscommonStubs acscomponentStubs TMCDBCOMMON_IDLStubs MonitorErr
 MCtestComponentStubs_LIBS = acscommonStubs baciStubs
 CollectorListStatusStubs_LIBS = baciStubs enumpropMACROStubs
-MonitorArchiverIFStubs_LIBS = acscomponentStubs CollectorListStatusStubs
+MonitorArchiverIFStubs_LIBS = acscomponentStubs CollectorListStatusStubs MonitorErr
 
 #Error definition xml files
 ACSERRDEF= MonitorErr DAOErrType
