@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2012/01/20 23:18:16 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/03/02 13:12:11 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -115,7 +115,8 @@ ACSERRDEF = baciErrTypeProperty baciErrTypeDevIO
 # IDL Files and flags
 # 
 IDL_FILES = baci
-IDL_TAO_FLAGS = 
+TAO_IDLFLAGS = -GT
+IDL_EXTENSIONS = S_T.h S_T.cpp
 USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/
 baciStubs_LIBS = acscomponentStubs acscommonStubs acserrStubs
 #

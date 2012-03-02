@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.10 2011/10/25 15:13:54 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.11 2012/03/02 13:10:37 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -133,6 +133,8 @@ CDB_SCHEMAS =
 # IDL Files and flags
 # 
 IDL_FILES = acscommon
+TAO_IDLFLAGS = -GT
+IDL_EXTENSIONS = S_T.h S_T.cpp
 acscommonStubs_LIBS = acserrStubs
 
 #
