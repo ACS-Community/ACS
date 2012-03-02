@@ -138,4 +138,4 @@
 1 - 		{'value': [8, 8], 'time': ------------------L}
 1 - 		{'value': [9, 9], 'time': ------------------L}
 1 - 		{'value': [10, 10], 'time': ------------------L}
-1 - ----------T--:--:--.--- 0.priv.inf.utfsm.cl disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
