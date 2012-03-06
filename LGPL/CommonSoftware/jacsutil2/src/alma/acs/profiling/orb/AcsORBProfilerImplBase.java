@@ -23,6 +23,7 @@ package alma.acs.profiling.orb;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 import org.jacorb.orb.acs.AcsORBProfiler;
 
@@ -35,7 +36,7 @@ import alma.acs.util.IsoDateFormat;
  * of containers, manager, OMC etc.
  * <p>
  * If registered with the ORB, this class will collect ORB callbacks and log statistics every 10 seconds,
- * see {@link #logStatus()}.
+ * see {@link #checkAndLogStatus()}.
  * <p>
  * To get logs for every ORB callback (only available for stdout), use {@link #DEBUG_CONFIG_PROPERTYNAME}.
  * 
@@ -55,11 +56,11 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 	/**
 	 * Logger passed in the c'tor. 
 	 */
-	private final AcsLogger logger;
+	protected final AcsLogger logger;
 	
 	/**
-	 * Repeat guard logger wrapped around {@link #logger}, to control the number of ORB status messages logged.
-	 * @see #logStatus()
+	 * Repeat guard wrapped around {@link #logger}, to control the number of ORB status messages logged.
+	 * @see #checkAndLogStatus()
 	 */
 	private final RepeatGuard orbStatusLogRepeatGuard;
 	
@@ -113,7 +114,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 	
 	public AcsORBProfilerImplBase(AcsLogger logger) {
 		this.logger = logger;
-		orbStatusLogRepeatGuard = new RepeatGuard(10, TimeUnit.SECONDS, -1);
+		orbStatusLogRepeatGuard = new RepeatGuard(30, TimeUnit.SECONDS, -1);
 		String debugConfig = System.getProperty(DEBUG_CONFIG_PROPERTYNAME);
 		if (debugConfig != null) {
 			String[] debugMethodNames = debugConfig.split("[ ,]+");
@@ -147,7 +148,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 		}
 		
 		connectionPoolUsePercent = (int)(((totalThreads-idleThreads)/(double)maxThreads)*100);
-		logStatus();
+		checkAndLogStatus();
 	}
 	
 	@Override
@@ -156,7 +157,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 			System.out.println(IsoDateFormat.formatCurrentDate() + " undeliveredRequest: messageSize=" + messageSize + ", poaName=" + poaName + ", operation=" + operation);
 		}
 		undeliveredRequests.incrementAndGet();
-		logStatus();
+		checkAndLogStatus();
 	}
 
 	/**
@@ -177,7 +178,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 				requestQueueMaxUsePOA = poaName;
 			}
 		}
-		logStatus();
+		checkAndLogStatus();
 	}
 
 	@Override
@@ -185,7 +186,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 		if (debugThreadPoolSizeChanged) {
 			System.out.println(IsoDateFormat.formatCurrentDate() + " threadPoolSizeChanged: poaName=" + poaName + ", idleThreads=" + idleThreads + ", totalThreads=" + totalThreads + ", maxThreads=" + maxThreads);
 		}
-		logStatus();
+		checkAndLogStatus();
 	}
 
 	/**
@@ -260,18 +261,46 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 	 * Logs the ORB status and resets {@link #undeliveredRequests}, {@link #requestQueueMaxUsePercent}.
 	 * We use repeat guard {@link #orbStatusLogRepeatGuard} so that at most one status message 
 	 * gets logged per configured time interval, while nothing is logged if the ORB does not get called.
+	 * <p>
+	 * Subclasses that want to modify the log message should override {@link #logStatus(String)}.
 	 */
-	private void logStatus() {
+	private void checkAndLogStatus() {
 		if (orbStatusLogRepeatGuard.checkAndIncrement()) {
 			String msg = null;
+			int snapshotConnectionPoolUsePercent = -1;
+			int snapshotUndeliveredRequests = -1;
+			int snapshotRequestQueueMaxUsePercent = -1;
+			String snapshotRequestQueueMaxUsePOA = null;
 			synchronized (requestQueueMaxUsePercent) {
-				msg = "ORB status: connectionThreadsUsed=" + connectionPoolUsePercent +
-					"%, lost calls=" + undeliveredRequests.getAndSet(0) + 
-					", requestQueueMaxUsePercent=" + requestQueueMaxUsePercent.getAndSet(0) + "% (in POA '" + requestQueueMaxUsePOA + "').";
+				snapshotConnectionPoolUsePercent = connectionPoolUsePercent ;
+				snapshotUndeliveredRequests = undeliveredRequests.getAndSet(0);
+				snapshotRequestQueueMaxUsePercent = requestQueueMaxUsePercent.getAndSet(0);
+				snapshotRequestQueueMaxUsePOA = requestQueueMaxUsePOA;
 				requestQueueMaxUsePOA = "---";
 			}
-			logger.info(msg);
+			msg = "ORB status: connectionThreadsUsed=" + snapshotConnectionPoolUsePercent +
+			"%, lost calls=" + snapshotUndeliveredRequests + 
+			", requestQueueMaxUsePercent=" + snapshotRequestQueueMaxUsePercent + "% (in POA '" + snapshotRequestQueueMaxUsePOA + "').";
+			
+			logStatus(msg, Level.INFO, snapshotConnectionPoolUsePercent, 
+						snapshotUndeliveredRequests, snapshotRequestQueueMaxUsePercent, snapshotRequestQueueMaxUsePOA);
 		}
+	}
+	
+	/**
+	 * This method is broken out from {@link #checkAndLogStatus()} so that subclasses can change or suppress the log message,
+	 * without having to worry about log repeat guard or synchronization.
+	 * 
+	 * @param defaultLogMessage A default log message, that can be used or replaced by another message.
+	 * @param defaultLogLevel A suggested log level.
+	 * @param connectionPoolUsePercent See {@link #connectionPoolUsePercent}. Can be used to build a custom message.
+	 * @param undeliveredRequests See {@link #undeliveredRequests}. Can be used to build a custom message.
+	 * @param requestQueueMaxUsePercent See {@link #requestQueueMaxUsePercent}. Can be used to build a custom message.
+	 * @param requestQueueMaxUsePOA See {@link #requestQueueMaxUsePOA}. Can be used to build a custom message.
+	 */
+	protected void logStatus(String defaultLogMessage, Level defaultLogLevel, int connectionPoolUsePercent,
+			int undeliveredRequests, int requestQueueMaxUsePercent, String requestQueueMaxUsePOA) {
+		logger.log(defaultLogLevel, defaultLogMessage);
 	}
 
 }
