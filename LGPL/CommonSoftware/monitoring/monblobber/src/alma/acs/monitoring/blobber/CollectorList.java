@@ -19,7 +19,6 @@
 package alma.acs.monitoring.blobber;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -178,18 +177,6 @@ public class CollectorList {
     protected static class CollectorData {
 
         private final String collectorId;
-
-		/**
-         * Key is property name, value is blob data.
-         * 
-         * HSO: Exposing a map in public is not nice. At least now it's final.
-         */
-        public final HashMap<String, BlobData> equipmentData = new HashMap<String, BlobData>();
-
-//        /**
-//         * Used to store the previous value for archive-on-change values;
-//         */
-//        public Object previousValue;
 
         public CollectorData(String inCollectorId) {
             if (inCollectorId == null) {
