@@ -56,13 +56,13 @@ public class XMLValidator {
 			XMLInputFactory xFact = XMLInputFactory.newInstance();
 			XMLStreamReader xRead = xFact.createXMLStreamReader(new FileReader(args[0]));
 			if(xRead.getVersion() == null) {
-				System.err.println("There is no XML Definition in the "+ args[0] +" file.");
+				System.err.println(args[0]+": There is no XML Definition.");
 				XMLValidator.error = true;
 			} else if(xRead.getCharacterEncodingScheme() == null) {
-				System.err.println("The encoding attribute is not defined in the XML Definition of the "+ args[0] +" file.");
+				System.err.println(args[0]+": The encoding attribute is not defined in the XML Definition.");
 				XMLValidator.error = true;
 			} else if(xRead.getCharacterEncodingScheme().compareTo("ISO-8859-1") != 0) {
-				System.err.println("Incorrect encoding type in the XML Definition of the "+ args[0] +" file");
+				System.err.println(args[0]+": Incorrect encoding type in the XML Definition.");
 				XMLValidator.error = true;
 			}
 				

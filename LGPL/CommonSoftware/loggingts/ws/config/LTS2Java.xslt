@@ -58,7 +58,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.8 2011/10/25 14:49:48 hsommer Exp $
+ * @version $Id: LTS2Java.xslt,v 1.9 2012/03/06 19:16:56 tstaig Exp $
  * @since
  */
 
@@ -117,6 +117,7 @@ public class </xsl:text>
                 <xsl:when test='@type="string"'><xsl:text>String</xsl:text></xsl:when>
 				<xsl:when test='@type="double"'><xsl:text>double</xsl:text></xsl:when>
                 <xsl:when test='@type="long"'><xsl:text>long</xsl:text></xsl:when>
+                <xsl:when test='@type="boolean"'><xsl:text>boolean</xsl:text></xsl:when>
 			</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="@name"/>
 	</xsl:for-each>
@@ -168,6 +169,9 @@ public class </xsl:text>
               	</xsl:when>
                 <xsl:when test='@type="long"'>
 	        	<xsl:text>Long</xsl:text>
+          	</xsl:when>
+                <xsl:when test='@type="boolean"'>
+	        	<xsl:text>Boolean</xsl:text>
           	</xsl:when>
         </xsl:choose>
 	<xsl:text> value) {

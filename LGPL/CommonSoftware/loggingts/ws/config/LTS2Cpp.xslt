@@ -41,7 +41,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.8 2011/10/25 14:49:48 hsommer Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.9 2012/03/06 19:16:56 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -127,8 +127,16 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
 		<xsl:for-each select="loggingts:Member">
 		<xsl:text>void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::set</xsl:text><xsl:variable name="memberName"><xsl:value-of select="@name"/></xsl:variable>
 		<xsl:value-of select="$memberName"/>
-		<xsl:text>(</xsl:text><xsl:value-of select="@type"/><xsl:text> value){
-
+		<xsl:text>(</xsl:text>
+		<xsl:choose>
+			<xsl:when test='@type="boolean"'>
+				<xsl:text>bool</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+			<xsl:value-of select="@type"/>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:text> value){
 	ACSLoggingLog::NameValue nv;
 	nv.name=CORBA::string_dup("</xsl:text><xsl:value-of select="$memberName"/><xsl:text>");
 </xsl:text>

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/04/10 12:23:58 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/03/06 19:16:56 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -64,7 +64,7 @@ LIBRARIES_L     =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = loggingtsGenPython loggingtsGenH loggingtsGenCpp loggingtsGenJava
+SCRIPTS         = loggingtsGenPython loggingtsGenH loggingtsGenCpp loggingtsGenJava loggingtsGenCheckXML
 SCRIPTS_L       =
 
 #

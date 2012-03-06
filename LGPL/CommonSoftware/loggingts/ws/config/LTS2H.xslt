@@ -48,7 +48,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2H.xslt,v 1.6 2011/10/25 14:49:48 hsommer Exp $"
+* "@(#) $Id: LTS2H.xslt,v 1.7 2012/03/06 19:16:56 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -112,8 +112,17 @@ namespace </xsl:text><xsl:value-of select="@name"/>
 </xsl:text>
 		<xsl:for-each select="loggingts:Member">
 		<xsl:text>		void set</xsl:text><xsl:value-of select="@name"/>
-		<xsl:text>(</xsl:text><xsl:value-of select="@type"/><xsl:text> value);
-</xsl:text>	</xsl:for-each>
+		<xsl:text>(</xsl:text>
+		<xsl:choose>
+			<xsl:when test='@type="boolean"'>
+				<xsl:text>bool</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+			<xsl:value-of select="@type"/>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:text> value);
+</xsl:text> </xsl:for-each>
 <xsl:text>
 };
 

@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.29 2012/01/13 18:54:47 tstaig Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.30 2012/03/06 19:16:56 tstaig Exp $
 #
 #(info Entering definitions.mk)
 
@@ -1057,7 +1057,11 @@ endif
 
 # MAIN TARGET FOR DO_ALL
 
-do_logts_$1: $$(ALL_LOGTS) 
+.PHONY: check_logts_$1
+check_logts_$1:
+	$(AT)loggingtsGenCheckXML ../idl/$1.xml
+
+do_logts_$1: check_logts_$1 $$(ALL_LOGTS)
 
 ../object/$1.cpp ../object/$1.h:  ../idl/$1.xml
 ifeq ($(call mustBuild,C++),true)

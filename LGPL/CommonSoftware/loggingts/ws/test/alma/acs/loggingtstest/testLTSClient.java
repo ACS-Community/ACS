@@ -18,7 +18,7 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.3 2007/07/12 11:29:53 nbarriga Exp $
+ * @version $Id: testLTSClient.java,v 1.4 2012/03/06 19:16:56 tstaig Exp $
  * @since    
  */
 
@@ -64,6 +64,7 @@ public class testLTSClient extends ComponentClient
 			clog.setsomeDoubleMember(3.14159);
 			clog.setsomeStringMember("test string");
 			clog.setsomeLongMember((long)42);
+			clog.setsomeBooleanMember(true);
 			clog.log();
 			
 			complexLog clogAA=new complexLog(logger);
@@ -72,6 +73,7 @@ public class testLTSClient extends ComponentClient
 			clogAA.setsomeDoubleMember(3.14159);
 			clogAA.setsomeStringMember("test string");
 			clogAA.setsomeLongMember((long)42);
+			clogAA.setsomeBooleanMember(true);
 			clogAA.log();
 			
 			Thread.sleep(2000);
