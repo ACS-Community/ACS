@@ -129,4 +129,11 @@
         <Member name="ProcessTimeoutSec" type="double" description="cbReceive Process Timeout in Sec" />
         <Member name="ActualProcessTime" type="double" description="Actual  execution time of cbReceive" />
     </ErrorCode>
+    
+    <ErrorCode name="SenderWrongCmdOrder" shortDescription="Wrong sender command order" description="The command/method was not executed in the right order.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="Command" type="string" description="command/method name" />
+        <Member name="State" type="string" description="Current sender flow state" />
+    </ErrorCode>
 </Type>
