@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.19 2012/02/07 09:07:55 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.20 2012/03/06 16:22:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -107,6 +107,11 @@ public:
 	void stopSend();
 
 protected:
+
+	typedef enum {StartState, DataRcvState, StopState, IgnoreDataState } SenderFlowStates;
+	SenderFlowStates currentState_m; /// current state of Sender Flow
+	static const char* state2String[]; /// strings name of states
+
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m; /// pointer to the sender
 
 	SenderFlowConfiguration senderFlowCfg_m; /// flow configuration

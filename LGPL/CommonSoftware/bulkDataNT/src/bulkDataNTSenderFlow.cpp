@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.39 2012/01/27 14:57:46 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.40 2012/03/06 16:22:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.39 2012/01/27 14:57:46 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.40 2012/03/06 16:22:21 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -35,11 +35,14 @@ using namespace std;
 using namespace ACS_DDS_Errors;
 using namespace ACS_BD_Errors;
 
+const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataRcvState", "StopState" };
+
 BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     const char* flowName,
     const SenderFlowConfiguration &sndCfg,
     BulkDataNTSenderFlowCallback *cb, bool releaseCB) :
     BulkDataNTFlow(flowName),
+    currentState_m(StartState),
     senderStream_m(senderStream),
     senderFlowCfg_m(sndCfg),
     callback_m(cb), releaseCB_m(releaseCB),
@@ -148,7 +151,19 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
 {
 	try
 	{
-		writeFrame(ACSBulkData::BD_PARAM, param, len);
+		if (currentState_m==StartState || currentState_m==StopState)
+		{
+			writeFrame(ACSBulkData::BD_PARAM, param, len);
+			currentState_m = DataRcvState;
+		}
+		else
+		{
+			SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+			swco.setSenderName(senderStream_m->getName().c_str()); swco.setFlowName(flowName_m.c_str());
+			swco.setCommand("startSend");
+			swco.setState(state2String[currentState_m]);
+			throw swco;
+		}
 	}catch(const ACSErr::ACSbaseExImpl &ex)
 	{
 		StartSendErrorExImpl ssEx(ex, __FILE__, __LINE__, __FUNCTION__);
@@ -159,7 +174,7 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
 
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
-	unsigned int iteration;
+	unsigned int iteration=0;
 	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: should be configurable ?
 
 	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfFrame do we have to send
@@ -174,8 +189,18 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
 	try{
+
+		if (currentState_m!=DataRcvState)
+		{
+			SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+			swco.setSenderName(senderStream_m->getName().c_str()); swco.setFlowName(flowName_m.c_str());
+			swco.setCommand("sendData");
+			swco.setState(state2String[currentState_m]);
+			throw swco;
+		}
+
 		//	start_time = ACE_OS::gettimeofday();
-		for(iteration=0; iteration<numOfIter; iteration++)
+		for(; iteration<numOfIter; iteration++)
 		{
 			if (iteration==(numOfIter-1) && restFrameSize>0)
 			{
@@ -200,7 +225,19 @@ void BulkDataNTSenderFlow::stopSend()
 {
 	try
 	{
-		writeFrame(ACSBulkData::BD_STOP);
+		if (currentState_m==DataRcvState)
+		{
+			writeFrame(ACSBulkData::BD_STOP);
+		}
+		else // here we can be in stop or start state which is not so problematic, and we just log the error
+		{
+			SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+			swco.setSenderName(senderStream_m->getName().c_str()); swco.setFlowName(flowName_m.c_str());
+			swco.setCommand("stopSend");
+			swco.setState(state2String[currentState_m]);
+			swco.log(LM_WARNING);
+		}
+		currentState_m = StopState;
 	}catch(const ACSErr::ACSbaseExImpl &ex)
 	{
 		StopSendErrorExImpl ssEx(ex, __FILE__, __LINE__, __FUNCTION__);
