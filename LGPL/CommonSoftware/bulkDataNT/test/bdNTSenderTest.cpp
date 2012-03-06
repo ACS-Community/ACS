@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderTest.cpp,v 1.15 2012/02/02 07:23:42 bjeram Exp $"
+* "@(#) $Id: bdNTSenderTest.cpp,v 1.16 2012/03/06 16:23:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,14 @@ int main(int argc, char *argv[])
     	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
     	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
 
-    	flow1->sendData(data, dataSize);
+    	try
+    	{
+    		flow1->sendData(data, dataSize);
+    	}
+    	catch(ACSErr::ACSbaseExImpl &ex)
+    	{
+    		ex.log();
+    	}
 
     	for (unsigned int i=0; i<dataSize; i++)
     		data[i]=i%10;
@@ -104,13 +111,19 @@ int main(int argc, char *argv[])
     	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
     	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
 
-
-    	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
-    	start_time = ACE_OS::gettimeofday();
-    	flow1->sendData(data, dataSize);
-    	elapsed_time = ACE_OS::gettimeofday() - start_time;
-    	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-    	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
+    	try
+    	{
+    		ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
+    		start_time = ACE_OS::gettimeofday();
+    		flow1->sendData(data, dataSize);
+    		elapsed_time = ACE_OS::gettimeofday() - start_time;
+    		send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    		ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
+    	}
+    	catch(ACSErr::ACSbaseExImpl &ex)
+    	{
+    		ex.log();
+    	}
 
 
     	sleep(2);
