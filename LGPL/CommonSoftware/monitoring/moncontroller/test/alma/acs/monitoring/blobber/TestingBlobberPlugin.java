@@ -18,7 +18,7 @@
 
 /** 
  * @author  rtobar   
- * @version $Id: TestingBlobberPlugin.java,v 1.2 2011/12/01 15:51:24 hsommer Exp $
+ * @version $Id: TestingBlobberPlugin.java,v 1.3 2012/03/06 14:20:05 hsommer Exp $
  * @since    
  */
 
@@ -64,7 +64,7 @@ public class TestingBlobberPlugin extends BlobberPlugin {
 
 			// no-ops
 			@Override
-			public void openTransactionStore() throws AcsJException {
+			public void openTransactionStore(String transactionName) throws AcsJException {
 			}
 			
 			@Override
