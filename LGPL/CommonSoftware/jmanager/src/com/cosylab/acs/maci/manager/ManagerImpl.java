@@ -8225,8 +8225,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				AcsJBadParameterEx ex = new AcsJBadParameterEx();
 				ex.setParameter("componentSpec.Container");
-				ex.setParameterValue("COMPSPEC_ANY");
-				ex.setReason("Explicit Container Name expected");
+				ex.setParameterValue(componentSpec.getContainer());
+				ex.setReason("COMPSPEC_ANY expected");
 				throw ex;			
 			}
 			
