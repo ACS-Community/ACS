@@ -1,5 +1,0 @@
-2012-03-07T17:24:14.109 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 already exists!
-2012-03-07T17:24:14.270 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_CONTAINER_PORTS already exists!
-2012-03-07T17:24:14.346 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_NOTIFY_PORTS already exists!
-2012-03-07T17:24:14.361 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids already exists!
-2012-03-07T17:24:14.729 INFO Starting Logging Notify Service

@@ -1,9 +1,0 @@
-2012-03-07T17:30:34.935 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_ALARM_SERVICE_PID.
-2012-03-07T17:30:34.986 DEBUG Unable to find the process ID for a program using the '3013' TCP port
-2012-03-07T17:30:35.004 DEBUG Unable to determine the process ID from TCP port 3013.
-2012-03-07T17:30:35.018 ERROR Unable to determine AlarmService's process ID.
-2012-03-07T17:30:35.042 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 already exists!
-2012-03-07T17:30:35.057 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_CONTAINER_PORTS already exists!
-2012-03-07T17:30:35.073 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_NOTIFY_PORTS already exists!
-2012-03-07T17:30:35.089 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids already exists!
-2012-03-07T17:30:35.141 INFO Starting ACS AlarmService

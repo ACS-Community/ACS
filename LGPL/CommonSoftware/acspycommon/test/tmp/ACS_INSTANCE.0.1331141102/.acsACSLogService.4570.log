@@ -1,5 +1,0 @@
-2012-03-07T17:24:20.868 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 already exists!
-2012-03-07T17:24:20.888 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_CONTAINER_PORTS already exists!
-2012-03-07T17:24:20.903 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_NOTIFY_PORTS already exists!
-2012-03-07T17:24:20.919 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids already exists!
-2012-03-07T17:24:20.970 INFO Starting ACS Log service
