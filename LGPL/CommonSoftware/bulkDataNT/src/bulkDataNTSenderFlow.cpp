@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.40 2012/03/06 16:22:21 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.41 2012/03/07 08:46:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.40 2012/03/06 16:22:21 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.41 2012/03/07 08:46:08 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -205,10 +205,10 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 			if (iteration==(numOfIter-1) && restFrameSize>0)
 			{
 				// last frame
-				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration);
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration/*=0*/);
 			}else
 			{
-				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration/*, (iteration%100==0)*/);
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration, (iteration%100==0)/*we ask for ACKs*/);
 			}
 		}//for
 		// at this point we have sent all frames, we could wait for ACKs, but it is done in writeFrame
