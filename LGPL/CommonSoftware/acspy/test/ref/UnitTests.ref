@@ -43,40 +43,7 @@
 1 -   File "mock.py", line xxx, in __call__
 1 -     ret_val = self.side_effect(*args, **kwargs)
 1 - TypeError: raiser() takes no arguments (1 given)
-1 -   File "ACSCorba.py", line xxx, in getClient
-1 -     SINGLETON_CLIENT = _Client()
-1 -   File "mock.py", line xxx, in __call__
-1 -     ret_val = self.side_effect(*args, **kwargs)
-1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
-1 -     raise Exception("Boom!")
-1 - Exception: Boom!
-1 -   File "ACSCorba.py", line xxx, in getManager
-1 -     if MGR_REF != None and (not CORBA.is_nil(MGR_REF)):
-1 -   File "CORBA.py", line xxx, in is_nil
-1 -     raise BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, COMPLETED_NO)
-1 - BAD_PARAM: CORBA.BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, CORBA.COMPLETED_NO)
-1 -   File "ACSCorba.py", line xxx, in getORB
-1 -     ORB = CORBA.ORB_init(argv)
-1 -   File "mock.py", line xxx, in __call__
-1 -     ret_val = self.side_effect(*args, **kwargs)
-1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
-1 -     raise Exception("Boom!")
-1 - Exception: Boom!
-1 -   File "ACSCorba.py", line xxx, in getPOAManager
-1 -     POA_MANAGER = getPOARoot()._get_the_POAManager()
-1 -   File "mock.py", line xxx, in __call__
-1 -     ret_val = self.side_effect(*args, **kwargs)
-1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
-1 -     raise Exception("Boom!")
-1 - Exception: Boom!
-1 -   File "ACSCorba.py", line xxx, in getPOARoot
-1 -     POA_ROOT = getORB().resolve_initial_references("RootPOA")
-1 -   File "mock.py", line xxx, in __call__
-1 -     ret_val = self.side_effect(*args, **kwargs)
-1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
-1 -     raise Exception("Boom!")
-1 - Exception: Boom!
-1 - ...........................
+1 - ...
 1 - ======================================================================
 1 - ERROR: test_already_exists (test_Acspy_Container.TestActivateComponent)
 1 - ----------------------------------------------------------------------
@@ -1067,8 +1034,8 @@
 1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_no_package_found
 1 -     c = Acspy.Container.Container('TestContainer')
 1 -   File "Container.py", line xxx, in __init__
-1 -     self.configureComponentLogger(name)
-1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     self.getCDBInfo()
+1 -   File "Container.py", line xxx, in getCDBInfo
 1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
 1 - KeyError: 'maxLogsPerSecond'
 1 - -------------------- >> begin captured stdout << ---------------------
@@ -1088,8 +1055,8 @@
 1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_no_package_info
 1 -     c = Acspy.Container.Container('TestContainer')
 1 -   File "Container.py", line xxx, in __init__
-1 -     self.configureComponentLogger(name)
-1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     self.getCDBInfo()
+1 -   File "Container.py", line xxx, in getCDBInfo
 1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
 1 - IndexError: list index out of range
 1 - -------------------- >> begin captured stdout << ---------------------
@@ -1109,8 +1076,8 @@
 1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_package_found
 1 -     c = Acspy.Container.Container('TestContainer')
 1 -   File "Container.py", line xxx, in __init__
-1 -     self.configureComponentLogger(name)
-1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     self.getCDBInfo()
+1 -   File "Container.py", line xxx, in getCDBInfo
 1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
 1 - KeyError: 'maxLogsPerSecond'
 1 - -------------------- >> begin captured stdout << ---------------------
@@ -1536,10 +1503,28 @@
 1 - 
 1 - --------------------- >> end captured stdout << ----------------------
 1 - 
+1 - ======================================================================
+1 - FAIL: test_init_name (test_Acspy_Clients_SimpleClient.TestSimpleClient)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Clients_SimpleClient.py", line xxx, in test_init_name
+1 -     self.assertEqual('Foo', sc.name)
+1 - AssertionError: 'Foo' != 'Foo: initialized by javarias@griffin'
+1 - 
+1 - ======================================================================
+1 - FAIL: test_init_no_name (test_Acspy_Clients_SimpleClient.TestSimpleClient)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Clients_SimpleClient.py", line xxx, in test_init_no_name
+1 -     self.assertEqual('Python Client', sc.name)
+1 - AssertionError: 'Python Client' != 'Python Client: initialized by javarias@griffin'
+1 - 
 1 - ----------------------------------------------------------------------
 1 - Ran xx tests in x.xxxs
 1 - 
-1 - FAILED (errors=51)
+1 - FAILED (errors=51, failures=2)
 1 -   File "BaseClient.py", line xxx, in disconnect
 1 -     getManager().logout(self.token.h)
 1 -   File "maci_idl.py", line xxx, in logout
