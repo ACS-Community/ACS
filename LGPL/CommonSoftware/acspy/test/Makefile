@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.44 2012/01/24 01:00:04 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.45 2012/03/07 17:44:43 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -37,24 +37,12 @@
 #------------------------------------------------------------------------
 
 PY_SCRIPTS_L =	test_Acspy_Nc_CommonNC \
-		acspyTestUnitTimeHelper \
-		acspyTestUnitCDBAccess \
-		acspyTestUnitACSHandler \
 		acspyTestACSComponent \
-		acspyTestAcsCORBA \
 		acspyTestBaci \
-		acspyTestCallbacks \
-		acspyTestCDB \
 		acspyTestClientMinimum \
 		acspyTestComponentLifecycle \
 		acspyTestContainer \
 		acspyTestContainerServices \
-		acspyTestError \
-		acspyTestLogging \
-		acspyTestNameTree \
-		acspyTestTimehelper \
-		acspyTestEpochHelper \
-		acspyTestDurationHelper \
 		acspyTestAutoload \
 		acspyTestArchiveConsumer \
 		acspyTestArchiveSupplier \

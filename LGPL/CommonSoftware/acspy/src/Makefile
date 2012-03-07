@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.32 2009/10/12 09:46:05 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.33 2012/03/07 17:43:16 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@
 #------------------------------------------------------------------------
 
 PY_SCRIPTS  = ACSPyConsole ACSStartContainerPy ACSEventAdmin
-PY_PACKAGES = Acspy acsncImpl ACSImpl
+PY_PACKAGES = Acspy acsncImpl 
 
 SCRIPTS_L = 
 
