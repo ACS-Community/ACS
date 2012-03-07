@@ -1,0 +1,5 @@
+2012-03-06T17:43:26.044 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 already exists!
+2012-03-06T17:43:26.062 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_CONTAINER_PORTS already exists!
+2012-03-06T17:43:26.076 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_NOTIFY_PORTS already exists!
+2012-03-06T17:43:26.090 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids already exists!
+2012-03-06T17:43:26.137 INFO Starting Alarm Notify Service

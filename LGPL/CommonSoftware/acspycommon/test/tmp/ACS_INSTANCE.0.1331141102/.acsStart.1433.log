@@ -1,0 +1,43 @@
+2012-03-07T17:23:58.020 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 already exists!
+2012-03-07T17:23:58.111 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_MANAGER_PID.
+2012-03-07T17:23:58.173 DEBUG Unable to find the process ID for a program using the '3000' TCP port
+2012-03-07T17:23:58.201 DEBUG Unable to determine the process ID from TCP port 3000.
+2012-03-07T17:23:58.229 ERROR Unable to determine manager's process ID.
+2012-03-07T17:23:58.278 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_NAMING_SERVICE_PID.
+2012-03-07T17:23:58.341 DEBUG Unable to find the process ID for a program using the '3001' TCP port
+2012-03-07T17:23:58.369 DEBUG Unable to determine the process ID from TCP port 3001.
+2012-03-07T17:23:58.400 ERROR Unable to determine the naming service's process ID.
+2012-03-07T17:23:58.442 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_NOTIFY_SERVICE_PID.
+2012-03-07T17:23:58.512 DEBUG Unable to find the process ID for a program using the '3002' TCP port
+2012-03-07T17:23:58.540 DEBUG Unable to determine the process ID from TCP port 3002.
+2012-03-07T17:23:58.568 ERROR Unable to determine the notification service's process ID.
+2012-03-07T17:23:58.611 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_LOGGING_SERVICE_PID.
+2012-03-07T17:23:58.683 DEBUG Unable to find the process ID for a program using the '3003' TCP port
+2012-03-07T17:23:58.712 DEBUG Unable to determine the process ID from TCP port 3003.
+2012-03-07T17:23:58.740 ERROR Unable to determine the logging service's process ID.
+2012-03-07T17:23:58.781 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_IR_PID.
+2012-03-07T17:23:58.849 DEBUG Unable to find the process ID for a program using the '3004' TCP port
+2012-03-07T17:23:58.873 DEBUG Unable to determine the process ID from TCP port 3004.
+2012-03-07T17:23:58.902 ERROR Unable to determine the interface repository's process ID.
+2012-03-07T17:23:58.949 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_LOGGING_NOTIFY_SERVICE_PID.
+2012-03-07T17:23:59.018 DEBUG Unable to find the process ID for a program using the '3005' TCP port
+2012-03-07T17:23:59.047 DEBUG Unable to determine the process ID from TCP port 3005.
+2012-03-07T17:23:59.081 ERROR Unable to determine logging's notify service process ID.
+2012-03-07T17:23:59.128 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_ARCHIVE_NOTIFY_SERVICE_PID.
+2012-03-07T17:23:59.190 DEBUG Unable to find the process ID for a program using the '3006' TCP port
+2012-03-07T17:23:59.218 DEBUG Unable to determine the process ID from TCP port 3006.
+2012-03-07T17:23:59.250 ERROR Unable to determine archive notify service's process ID.
+2012-03-07T17:23:59.292 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_LOG_SERVICE_PID.
+2012-03-07T17:23:59.356 DEBUG Unable to find the process ID for a program using the '3011' TCP port
+2012-03-07T17:23:59.384 DEBUG Unable to determine the process ID from TCP port 3011.
+2012-03-07T17:23:59.411 ERROR Unable to determine acsLogSvc's process ID.
+2012-03-07T17:23:59.462 DEBUG Unable to determine the process ID from /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids/ACS_CDB_PID.
+2012-03-07T17:23:59.522 DEBUG Unable to find the process ID for a program using the '3012' TCP port
+2012-03-07T17:23:59.551 DEBUG Unable to determine the process ID from TCP port 3012.
+2012-03-07T17:23:59.581 ERROR Unable to determine CDB's process ID.
+2012-03-07T17:23:59.612 DEBUG All ACS processes appear to be dead for ACS_INSTANCE=0
+2012-03-07T17:23:59.662 INFO Starting ACS version 10.1.0
+2012-03-07T17:23:59.691 INFO Using ALMA Base Software tag WARNING: No ACS_TAG available
+2012-03-07T17:24:27.609 DEBUG The interface repository has finished loading.
+For this ACS session, please do an 'export ACS_INSTANCE=0' on all terminals running ACS clients.
+ACS is up and running

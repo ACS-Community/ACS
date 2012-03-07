@@ -1,0 +1,1547 @@
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 - AttributeError: 'int' object has no attribute 'h'
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     raise CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     self.corbaRef = self.containerPOA.servant_to_reference(self)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     raise CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 -   File "Container.py", line xxx, in getCDBInfo
+1 -     execfile(temp_package)
+1 - IOError: [Errno 2] No such file or directory: 'bin/package1'
+1 -   File "ContainerServices.py", line xxx, in __importComponentStubs
+1 -     [comp_class]) #import it
+1 - ImportError: No module named MockUnknown
+1 -   File "ContainerServices.py", line xxx, in __narrowComponentReference
+1 -     narrowed_ref = corba_obj._narrow(comp_class)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 - TypeError: raiser() takes no arguments (1 given)
+1 -   File "ACSCorba.py", line xxx, in getClient
+1 -     SINGLETON_CLIENT = _Client()
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getManager
+1 -     if MGR_REF != None and (not CORBA.is_nil(MGR_REF)):
+1 -   File "CORBA.py", line xxx, in is_nil
+1 -     raise BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, COMPLETED_NO)
+1 - BAD_PARAM: CORBA.BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, CORBA.COMPLETED_NO)
+1 -   File "ACSCorba.py", line xxx, in getORB
+1 -     ORB = CORBA.ORB_init(argv)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getPOAManager
+1 -     POA_MANAGER = getPOARoot()._get_the_POAManager()
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getPOARoot
+1 -     POA_ROOT = getORB().resolve_initial_references("RootPOA")
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 - ...........................
+1 - ======================================================================
+1 - ERROR: test_already_exists (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_bad_class_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_bad_class_type_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_bad_initialization (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_bad_type_name_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_constructor_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_corba_exception (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_corba_servant_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_dummy_class (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_exec_lifecycle_exception (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_exec_unexpected_exception (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_existing_module (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_import_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_init_lifecycle_exception (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_init_unexpected_exception (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_offshoot_poa_create_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_poa_create_fault (test_Acspy_Container.TestActivateComponent)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_component (test_Acspy_Container.TestDeactivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_module_reload (test_Acspy_Container.TestDeactivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_not_component (test_Acspy_Container.TestDeactivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_not_found (test_Acspy_Container.TestDeactivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_shutdown_exit (test_Acspy_Container.TestDestruction)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_shutdown_reboot (test_Acspy_Container.TestDestruction)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_shutdown_reload (test_Acspy_Container.TestDestruction)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_shutdown_unknown (test_Acspy_Container.TestDestruction)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_components_key_not_found (test_Acspy_Container.TestGetComponentInfo)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_components_keys (test_Acspy_Container.TestGetComponentInfo)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_components_no_keys (test_Acspy_Container.TestGetComponentInfo)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_no_components (test_Acspy_Container.TestGetComponentInfo)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_getCDBInfo_no_container_info (test_Acspy_Container.TestInitialization)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_no_container_info
+1 -     c = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Acspy.Container.CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/test/test_Acspy_Container.py', lineNum=XXXX, routine='raiser', host=xxxx, previousError=[]))
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_getCDBInfo_no_package_found (test_Acspy_Container.TestInitialization)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_no_package_found
+1 -     c = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - KeyError: 'maxLogsPerSecond'
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_getCDBInfo_no_package_info (test_Acspy_Container.TestInitialization)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_no_package_info
+1 -     c = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - IndexError: list index out of range
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_getCDBInfo_package_found (test_Acspy_Container.TestInitialization)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in test_getCDBInfo_package_found
+1 -     c = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - KeyError: 'maxLogsPerSecond'
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Defined logger is configured to the CDB values.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Partially-defined (local) logger is configured to the CDB values and not CENTRAL environment value.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Partially-defined (local) logger is configured to the CDB values and not STDOUT environment value.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Partially-defined (local) logger is configured to the CDB values.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Partially-defined (local) logger is configured to the CDB values.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Unknown logger is configured to the CDB values.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_get_logLevels_defined (test_Acspy_Container.TestLoggingConfigurableInterface)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Container log levels are correct when no CDB info present
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Exception is thrown when log levels are requested for undefined logger
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Container log levels are set correctly to CDB values.
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Container log levels are reset correctly when no CDB info or environment vars are present
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Container log levels are reset correctly when no CDB info and ACS_LOG_CENTRAL is present
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Container log levels are reset correctly when no CDB info and ACS_LOG_STDOUT is present
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Log levels for a named logger are set correctly
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: Exception is thrown when attempt to set log levels on an undefined logger
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.tc = Acspy.Container.Container('UnitTestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
+1 - TypeError: 'Mock' object does not support indexing
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_component_not_exist (test_Acspy_Container.TestOffShootActivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_object_not_offshoot_poa_fault (test_Acspy_Container.TestOffShootActivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ======================================================================
+1 - ERROR: test_object_not_offshoot_poa_ok (test_Acspy_Container.TestOffShootActivation)
+1 - ----------------------------------------------------------------------
+1 -   File "mock.py", line xxx, in patched
+1 -     return func(*args, **keywargs)
+1 -   File "test_Acspy_Container.py", line xxx, in setUp
+1 -     self.testcontainer = Acspy.Container.Container('TestContainer')
+1 -   File "Container.py", line xxx, in __init__
+1 -     self.configureComponentLogger(name)
+1 -   File "Container.py", line xxx, in configureComponentLogger
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
+1 -   File "CDBAccess.py", line xxx, in getElement
+1 -     parseString(self.getField(xml_name, caching), handler)
+1 -   File "__init__.py", line xxx, in parseString
+1 -     parser.parse(inpsrc)
+1 -   File "expatreader.py", line xxx, in parse
+1 -     xmlreader.IncrementalParser.parse(self, source)
+1 -   File "xmlreader.py", line xxx, in parse
+1 -     self.feed(buffer)
+1 -   File "expatreader.py", line xxx, in feed
+1 -     self._err_handler.fatalError(exc)
+1 -   File "handler.py", line xxx, in fatalError
+1 -     raise exception
+1 - SAXParseException: <unknown>:1:18: not well-formed (invalid token)
+1 - -------------------- >> begin captured stdout << ---------------------
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - 
+1 - --------------------- >> end captured stdout << ----------------------
+1 - 
+1 - ----------------------------------------------------------------------
+1 - Ran xx tests in x.xxxs
+1 - 
+1 - FAILED (errors=51)
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 -   File "maci_idl.py", line xxx, in logout
+1 -     return _omnipy.invoke(self, "logout", _0_maci.Manager._d_logout, args)
+1 - NoPermissionEx: maciErrType.NoPermissionEx(errorTrace=ACSErr.ErrorTrace(file='ManagerProxyImpl.java', lineNum=XXXX, routine='logout', host=xxxx, previousError=[])]))

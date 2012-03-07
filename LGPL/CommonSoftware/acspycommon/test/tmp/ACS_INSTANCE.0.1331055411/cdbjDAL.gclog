@@ -1,0 +1,430 @@
+Application time: 0.5591000 seconds
+Total time for which application threads were stopped: 0.0002360 seconds
+Application time: 0.0402310 seconds
+{Heap before GC invocations=0 (full 0):
+ def new generation   total 14784K, used 10993K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,  83% used [0x90250000, 0x90d0c7c8, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 0K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 5271K [0xb0250000, 0xb1250000, 0xb4250000)
+0.819: [Full GC (System) 0.819: [CMS: 0K->740K(49152K), 0.0478190 secs] 10993K->740K(63936K), [CMS Perm : 5271K->5266K(16384K)], 0.0479340 secs] [Times: user=0.02 sys=0.02, real=0.04 secs] 
+Heap after GC invocations=1 (full 1):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 740K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 5266K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0481800 seconds
+Application time: 0.0013830 seconds
+0.869: [GC [1 CMS-initial-mark: 740K(49152K)] 1246K(63936K), 0.0005990 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0009700 seconds
+0.870: [CMS-concurrent-mark-start]
+Application time: 0.1108620 seconds
+{Heap before GC invocations=1 (full 2):
+ def new generation   total 14784K, used 991K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   7% used [0x90250000, 0x90347d48, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 740K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 5784K [0xb0250000, 0xb1250000, 0xb4250000)
+1.035: [Full GC (System) 1.035: [CMS1.056: [CMS-concurrent-mark: 0.020/0.186 secs] [Times: user=0.09 sys=0.02, real=0.18 secs] 
+ (concurrent mode interrupted): 740K->932K(49152K), 0.0506010 secs] 1731K->932K(63936K), [CMS Perm : 5784K->5781K(16384K)], 0.0506900 secs] [Times: user=0.05 sys=0.00, real=0.05 secs] 
+Heap after GC invocations=2 (full 3):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 932K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 5781K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.1056950 seconds
+Application time: 0.1995000 seconds
+{Heap before GC invocations=2 (full 3):
+ def new generation   total 14784K, used 1766K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,  13% used [0x90250000, 0x904099d8, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 932K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7205K [0xb0250000, 0xb1250000, 0xb4250000)
+1.286: [Full GC (System) 1.286: [CMS: 932K->1283K(49152K), 0.0369250 secs] 2698K->1283K(63936K), [CMS Perm : 7205K->7200K(16384K)], 0.0370470 secs] [Times: user=0.04 sys=0.00, real=0.04 secs] 
+Heap after GC invocations=3 (full 4):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1283K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7200K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0373110 seconds
+Application time: 0.0002050 seconds
+1.323: [GC [1 CMS-initial-mark: 1283K(49152K)] 1283K(63936K), 0.0003320 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0005810 seconds
+1.324: [CMS-concurrent-mark-start]
+Application time: 0.0051440 seconds
+{Heap before GC invocations=3 (full 5):
+ def new generation   total 14784K, used 131K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   1% used [0x90250000, 0x90270f68, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1283K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7200K [0xb0250000, 0xb1250000, 0xb4250000)
+1.329: [Full GC (System) 1.329: [CMS1.352: [CMS-concurrent-mark: 0.023/0.028 secs] [Times: user=0.02 sys=0.00, real=0.03 secs] 
+ (concurrent mode interrupted): 1283K->1268K(49152K), 0.0566800 secs] 1415K->1268K(63936K), [CMS Perm : 7200K->7200K(16384K)], 0.0567680 secs] [Times: user=0.05 sys=0.00, real=0.05 secs] 
+Heap after GC invocations=4 (full 6):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1268K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7200K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0570300 seconds
+Application time: 0.0430770 seconds
+{Heap before GC invocations=4 (full 6):
+ def new generation   total 14784K, used 396K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   3% used [0x90250000, 0x902b3250, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1268K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7221K [0xb0250000, 0xb1250000, 0xb4250000)
+1.429: [Full GC (System) 1.429: [CMS: 1268K->1349K(49152K), 0.0335930 secs] 1664K->1349K(63936K), [CMS Perm : 7221K->7220K(16384K)], 0.0336810 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+Heap after GC invocations=5 (full 7):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1349K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7220K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0339090 seconds
+Application time: 0.0000760 seconds
+1.463: [GC [1 CMS-initial-mark: 1349K(49152K)] 1349K(63936K), 0.0003110 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0004670 seconds
+1.464: [CMS-concurrent-mark-start]
+Application time: 0.0003500 seconds
+{Heap before GC invocations=5 (full 8):
+ def new generation   total 14784K, used 131K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   1% used [0x90250000, 0x90270f68, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1349K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7220K [0xb0250000, 0xb1250000, 0xb4250000)
+1.464: [Full GC (System) 1.464: [CMS1.488: [CMS-concurrent-mark: 0.024/0.024 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] 
+ (concurrent mode interrupted): 1349K->1349K(49152K), 0.0569770 secs] 1481K->1349K(63936K), [CMS Perm : 7220K->7220K(16384K)], 0.0570650 secs] [Times: user=0.06 sys=0.00, real=0.06 secs] 
+Heap after GC invocations=6 (full 9):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1349K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7220K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0573670 seconds
+Application time: 0.0524730 seconds
+{Heap before GC invocations=6 (full 9):
+ def new generation   total 14784K, used 396K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   3% used [0x90250000, 0x902b3278, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1349K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7230K [0xb0250000, 0xb1250000, 0xb4250000)
+1.574: [Full GC (System) 1.574: [CMS: 1349K->1327K(49152K), 0.0341930 secs] 1745K->1327K(63936K), [CMS Perm : 7230K->7229K(16384K)], 0.0342810 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+Heap after GC invocations=7 (full 10):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1327K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7229K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0345370 seconds
+Application time: 0.0000760 seconds
+1.608: [GC [1 CMS-initial-mark: 1327K(49152K)] 1327K(63936K), 0.0004550 secs] [Times: user=0.00 sys=0.01, real=0.01 secs] 
+Total time for which application threads were stopped: 0.0006190 seconds
+1.609: [CMS-concurrent-mark-start]
+Application time: 0.0003640 seconds
+{Heap before GC invocations=7 (full 11):
+ def new generation   total 14784K, used 131K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   1% used [0x90250000, 0x90270f68, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1327K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7229K [0xb0250000, 0xb1250000, 0xb4250000)
+1.610: [Full GC (System) 1.610: [CMS1.633: [CMS-concurrent-mark: 0.024/0.024 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] 
+ (concurrent mode interrupted): 1327K->1327K(49152K), 0.0574440 secs] 1459K->1327K(63936K), [CMS Perm : 7229K->7229K(16384K)], 0.0575320 secs] [Times: user=0.05 sys=0.00, real=0.05 secs] 
+Heap after GC invocations=8 (full 12):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1327K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7229K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0577940 seconds
+Application time: 0.1036170 seconds
+{Heap before GC invocations=8 (full 12):
+ def new generation   total 14784K, used 396K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   3% used [0x90250000, 0x902b3250, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1327K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7231K [0xb0250000, 0xb1250000, 0xb4250000)
+1.771: [Full GC (System) 1.771: [CMS: 1327K->1328K(49152K), 0.0334080 secs] 1723K->1328K(63936K), [CMS Perm : 7231K->7230K(16384K)], 0.0334980 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+Heap after GC invocations=9 (full 13):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1328K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7230K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0337400 seconds
+Application time: 0.0000880 seconds
+1.805: [GC [1 CMS-initial-mark: 1328K(49152K)] 1328K(63936K), 0.0002780 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0005380 seconds
+1.805: [CMS-concurrent-mark-start]
+Application time: 0.0003720 seconds
+{Heap before GC invocations=9 (full 14):
+ def new generation   total 14784K, used 131K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   1% used [0x90250000, 0x90270f68, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1328K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7230K [0xb0250000, 0xb1250000, 0xb4250000)
+1.806: [Full GC (System) 1.806: [CMS1.829: [CMS-concurrent-mark: 0.024/0.024 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+ (concurrent mode interrupted): 1328K->1328K(49152K), 0.0568450 secs] 1460K->1328K(63936K), [CMS Perm : 7230K->7230K(16384K)], 0.0569310 secs] [Times: user=0.06 sys=0.00, real=0.06 secs] 
+Heap after GC invocations=10 (full 15):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1328K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7230K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0572060 seconds
+Application time: 3.4061320 seconds
+Total time for which application threads were stopped: 0.0003660 seconds
+Application time: 5.9554620 seconds
+Total time for which application threads were stopped: 0.0001120 seconds
+Application time: 0.0000750 seconds
+Total time for which application threads were stopped: 0.0000560 seconds
+Application time: 0.0000350 seconds
+Total time for which application threads were stopped: 0.0000540 seconds
+Application time: 0.0001220 seconds
+Total time for which application threads were stopped: 0.0000540 seconds
+Application time: 0.0000430 seconds
+Total time for which application threads were stopped: 0.0000530 seconds
+Application time: 0.0100420 seconds
+{Heap before GC invocations=10 (full 15):
+ def new generation   total 14784K, used 929K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   7% used [0x90250000, 0x90338628, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1328K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7293K [0xb0250000, 0xb1250000, 0xb4250000)
+11.236: [Full GC (System) 11.236: [CMS: 1328K->1346K(49152K), 0.0359700 secs] 2258K->1346K(63936K), [CMS Perm : 7293K->7292K(16384K)], 0.0360630 secs] [Times: user=0.04 sys=0.00, real=0.04 secs] 
+Heap after GC invocations=11 (full 16):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1346K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7292K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0363070 seconds
+Application time: 0.0003480 seconds
+11.272: [GC [1 CMS-initial-mark: 1346K(49152K)] 1346K(63936K), 0.0003330 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0004880 seconds
+11.273: [CMS-concurrent-mark-start]
+Application time: 0.0000910 seconds
+Total time for which application threads were stopped: 0.0000450 seconds
+Application time: 0.0000450 seconds
+Total time for which application threads were stopped: 0.0000410 seconds
+Application time: 0.0004000 seconds
+{Heap before GC invocations=11 (full 17):
+ def new generation   total 14784K, used 263K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   2% used [0x90250000, 0x90291ec0, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1346K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7292K [0xb0250000, 0xb1250000, 0xb4250000)
+11.273: [Full GC (System) 11.274: [CMS11.297: [CMS-concurrent-mark: 0.023/0.024 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] 
+ (concurrent mode interrupted): 1346K->1346K(49152K), 0.0573960 secs] 1610K->1346K(63936K), [CMS Perm : 7292K->7292K(16384K)], 0.0574920 secs] [Times: user=0.06 sys=0.00, real=0.06 secs] 
+Heap after GC invocations=12 (full 18):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1346K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7292K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0578180 seconds
+Application time: 2.1680810 seconds
+Total time for which application threads were stopped: 0.0001290 seconds
+Application time: 0.0016330 seconds
+Total time for which application threads were stopped: 0.0000760 seconds
+Application time: 0.0000400 seconds
+Total time for which application threads were stopped: 0.0000560 seconds
+Application time: 0.4366320 seconds
+Total time for which application threads were stopped: 0.0002130 seconds
+Application time: 0.0981110 seconds
+{Heap before GC invocations=12 (full 18):
+ def new generation   total 14784K, used 1597K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,  12% used [0x90250000, 0x903df6b0, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1346K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7400K [0xb0250000, 0xb1250000, 0xb4250000)
+14.036: [Full GC (System) 14.036: [CMS: 1346K->1411K(49152K), 0.0549900 secs] 2943K->1411K(63936K), [CMS Perm : 7400K->7398K(16384K)], 0.0550940 secs] [Times: user=0.01 sys=0.05, real=0.06 secs] 
+Heap after GC invocations=13 (full 19):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1411K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7398K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0554340 seconds
+Application time: 0.0004320 seconds
+14.092: [GC [1 CMS-initial-mark: 1411K(49152K)] 1675K(63936K), 0.0003980 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0005170 seconds
+14.093: [CMS-concurrent-mark-start]
+Application time: 0.0000820 seconds
+Total time for which application threads were stopped: 0.0000430 seconds
+Application time: 0.0000550 seconds
+Total time for which application threads were stopped: 0.0000440 seconds
+Application time: 0.0000300 seconds
+Total time for which application threads were stopped: 0.0000400 seconds
+Application time: 0.0000500 seconds
+Total time for which application threads were stopped: 0.0000430 seconds
+Application time: 0.0000300 seconds
+Total time for which application threads were stopped: 0.0000390 seconds
+Application time: 0.0000550 seconds
+Total time for which application threads were stopped: 0.0000420 seconds
+Application time: 0.0000350 seconds
+Total time for which application threads were stopped: 0.0000550 seconds
+Application time: 0.0000660 seconds
+Total time for which application threads were stopped: 0.0000440 seconds
+Application time: 0.0000310 seconds
+Total time for which application threads were stopped: 0.0000400 seconds
+Application time: 0.0000520 seconds
+Total time for which application threads were stopped: 0.0000420 seconds
+Application time: 0.0000300 seconds
+Total time for which application threads were stopped: 0.0000980 seconds
+Application time: 0.0001700 seconds
+{Heap before GC invocations=13 (full 20):
+ def new generation   total 14784K, used 263K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   2% used [0x90250000, 0x90291ec0, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1411K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7398K [0xb0250000, 0xb1250000, 0xb4250000)
+14.094: [Full GC (System) 14.094: [CMS14.117: [CMS-concurrent-mark: 0.023/0.025 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] 
+ (concurrent mode interrupted): 1411K->1405K(49152K), 0.0577740 secs] 1675K->1405K(63936K), [CMS Perm : 7398K->7398K(16384K)], 0.0579110 secs] [Times: user=0.06 sys=0.00, real=0.06 secs] 
+Heap after GC invocations=14 (full 21):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1405K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7398K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0581170 seconds
+Application time: 1.9685430 seconds
+{Heap before GC invocations=14 (full 21):
+ def new generation   total 14784K, used 530K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   4% used [0x90250000, 0x902d4ab0, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1405K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7399K [0xb0250000, 0xb1250000, 0xb4250000)
+16.121: [Full GC (System) 16.121: [CMS: 1405K->1405K(49152K), 0.0349570 secs] 1935K->1405K(63936K), [CMS Perm : 7399K->7398K(16384K)], 0.0350590 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+Heap after GC invocations=15 (full 22):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1405K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7398K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0353500 seconds
+Application time: 0.0000740 seconds
+16.156: [GC [1 CMS-initial-mark: 1405K(49152K)] 1405K(63936K), 0.0003250 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0004500 seconds
+16.157: [CMS-concurrent-mark-start]
+Application time: 0.0000930 seconds
+Total time for which application threads were stopped: 0.0000430 seconds
+Application time: 0.0000440 seconds
+Total time for which application threads were stopped: 0.0000400 seconds
+Application time: 0.0000350 seconds
+Total time for which application threads were stopped: 0.0000400 seconds
+Application time: 0.0000350 seconds
+Total time for which application threads were stopped: 0.0000390 seconds
+Application time: 0.0000290 seconds
+Total time for which application threads were stopped: 0.0000410 seconds
+Application time: 0.0002530 seconds
+{Heap before GC invocations=15 (full 23):
+ def new generation   total 14784K, used 263K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   2% used [0x90250000, 0x90291ec0, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1405K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7398K [0xb0250000, 0xb1250000, 0xb4250000)
+16.157: [Full GC (System) 16.157: [CMS16.181: [CMS-concurrent-mark: 0.023/0.024 secs] [Times: user=0.03 sys=0.00, real=0.03 secs] 
+ (concurrent mode interrupted): 1405K->1404K(49152K), 0.0573760 secs] 1669K->1404K(63936K), [CMS Perm : 7398K->7398K(16384K)], 0.0574660 secs] [Times: user=0.06 sys=0.00, real=0.06 secs] 
+Heap after GC invocations=16 (full 24):
+ def new generation   total 14784K, used 0K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,   0% used [0x90250000, 0x90250000, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1404K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7398K [0xb0250000, 0xb1250000, 0xb4250000)
+}
+Total time for which application threads were stopped: 0.0576930 seconds
+Application time: 5.5832000 seconds
+Total time for which application threads were stopped: 0.0000940 seconds
+Application time: 5.6266780 seconds
+Total time for which application threads were stopped: 0.0001380 seconds
+Application time: 0.0022800 seconds
+Total time for which application threads were stopped: 0.0000720 seconds
+Application time: 0.0000260 seconds
+Total time for which application threads were stopped: 0.0000410 seconds
+Application time: 0.0074030 seconds
+Total time for which application threads were stopped: 0.0009250 seconds
+Application time: 0.0001250 seconds
+Total time for which application threads were stopped: 0.0000630 seconds
+Application time: 0.0000350 seconds
+Total time for which application threads were stopped: 0.0000550 seconds
+Application time: 0.0012330 seconds
+Total time for which application threads were stopped: 0.0000770 seconds
+Application time: 0.0006160 seconds
+Total time for which application threads were stopped: 0.0000650 seconds
+Application time: 0.1115000 seconds
+27.550: [GC [1 CMS-initial-mark: 1404K(49152K)] 3500K(63936K), 0.0005100 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Total time for which application threads were stopped: 0.0006840 seconds
+27.550: [CMS-concurrent-mark-start]
+27.577: [CMS-concurrent-mark: 0.027/0.027 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] 
+27.577: [CMS-concurrent-preclean-start]
+27.578: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+27.579: [CMS-concurrent-abortable-preclean-start]
+27.579: [CMS-concurrent-abortable-preclean: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Application time: 0.0285570 seconds
+27.579: [GC[YG occupancy: 2095 K (14784 K)]27.579: [Rescan (non-parallel) 27.579: [grey object rescan, 0.0003900 secs]27.579: [root rescan, 0.0005370 secs], 0.0009830 secs]27.580: [weak refs processing, 0.0000220 secs] [1 CMS-remark: 1404K(49152K)] 3500K(63936K), 0.0013500 secs] [Times: user=0.00 sys=0.01, real=0.01 secs] 
+Total time for which application threads were stopped: 0.0015090 seconds
+Application time: 0.0001100 seconds
+Total time for which application threads were stopped: 0.0000810 seconds
+27.581: [CMS-concurrent-sweep-start]
+27.582: [CMS-concurrent-sweep: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+27.582: [CMS-concurrent-reset-start]
+27.594: [CMS-concurrent-reset: 0.012/0.012 secs] [Times: user=0.01 sys=0.00, real=0.01 secs] 
+Heap
+ def new generation   total 14784K, used 2358K [0x90250000, 0x91250000, 0x91250000)
+  eden space 13184K,  17% used [0x90250000, 0x9049dbc0, 0x90f30000)
+  from space 1600K,   0% used [0x90f30000, 0x90f30000, 0x910c0000)
+  to   space 1600K,   0% used [0x910c0000, 0x910c0000, 0x91250000)
+ concurrent mark-sweep generation total 49152K, used 1372K [0x91250000, 0x94250000, 0xb0250000)
+ concurrent-mark-sweep perm gen total 16384K, used 7418K [0xb0250000, 0xb1250000, 0xb4250000)
+Application time: 0.0140110 seconds

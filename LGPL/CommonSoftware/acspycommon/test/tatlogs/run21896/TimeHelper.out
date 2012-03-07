@@ -1,0 +1,7 @@
+1 - getTimeStamp is: acstime.Epoch(value=XXXXL)
+1 - January 1, 1970 is: 122192928000000000  in ACS time
+1 - January 1, 1970 is: 0  in Python time
+1 - October 15, 1582 is: 0  in ACS time
+1 - October 15, 1582 is: -12219292800  in Python time
+1 - 1000 seconds is: 10000000000  in ACS time
+1 - 1000 seconds is: 1000  in Python time

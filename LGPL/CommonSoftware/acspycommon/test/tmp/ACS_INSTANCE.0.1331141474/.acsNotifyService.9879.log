@@ -1,0 +1,5 @@
+2012-03-07T17:30:28.826 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 already exists!
+2012-03-07T17:30:28.846 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_CONTAINER_PORTS already exists!
+2012-03-07T17:30:28.860 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/USED_NOTIFY_PORTS already exists!
+2012-03-07T17:30:28.876 WARNING /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/pids already exists!
+2012-03-07T17:30:28.926 INFO Starting Archive Notify Service

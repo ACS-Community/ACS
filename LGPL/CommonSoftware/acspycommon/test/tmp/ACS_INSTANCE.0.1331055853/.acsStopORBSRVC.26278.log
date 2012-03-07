@@ -1,0 +1,3 @@
+2012-03-06T17:44:06.578 INFO Stopping the ORB Services and CDB using 'ACS_INSTANCE=0'
+2012-03-06T17:44:13.271 INFO Killing any rogue ACS processes...
+2012-03-06T17:44:13.452 INFO Freeing /diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0

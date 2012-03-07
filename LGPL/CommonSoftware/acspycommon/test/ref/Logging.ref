@@ -1,0 +1,20 @@
+1 -  
+1 - ============= Basic tests ============
+1 -  
+1 - ----------T--:--:--.--- None aFunction - Test INFO message from a function
+1 - ----------T--:--:--.--- None Main - Test ALERT message
+1 - ----------T--:--:--.--- None Main - Test CRITICAL message
+1 - ----------T--:--:--.--- None Main - Test DEBUG message
+1 - ----------T--:--:--.--- None Main - Test EMERGENCY message
+1 - ----------T--:--:--.--- None Main - Test ERROR message
+1 - ----------T--:--:--.--- None Main - Test ERROR message
+1 - ----------T--:--:--.--- None Main - Test INFO message
+1 - ----------T--:--:--.--- None Main - Test NOTICE message
+1 - ----------T--:--:--.--- None Main - Test WARNING message
+1 - ============= End basic tests ============
+1 - == Test logError
+1 -  
+1 - ============= Complex tests ============
+1 - == Logging INFO message in "aFunction"
+1 - ----------T--:--:--.--- None Error Trace
+1 - == The end __oOo__

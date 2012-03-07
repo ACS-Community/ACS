@@ -1,0 +1,6 @@
+2012-03-07T17:24:51.187 Local file logger: Cache saved to '/diska/home/almadev/workspace/acspycommon/test/tmp/log_cache.dat_maciManagerShutdown_5752'.
+2012-03-07T17:24:51.196 [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::192.168.176.130:3000/Manager'
+2012-03-07T17:24:51.215 [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::192.168.176.130:3000/Manager'
+2012-03-07T17:24:51.236 [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+2012-03-07T17:24:51.245 [GlobalLogger - ] Calling maci::Manager::shutdown()...
+2012-03-07T17:24:51.259 [GlobalLogger - ] Done.

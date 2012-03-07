@@ -1,0 +1,17 @@
+ --clientVM -- com.cosylab.cdb.DALShutdown -d corbaloc::192.168.176.130:3012/CDB
+2012-03-07T17:24:56.440 INFO [acsStartJava] Starting Java application: com.cosylab.cdb.DALShutdown -d corbaloc::192.168.176.130:3012/CDB
+2012-03-07T17:24:56.500 DEBUG [acsStartJava] exported CLASSPATH
+2012-03-07T17:24:56.514 DEBUG [acsStartJava] exported MANAGER_REFERENCE=corbaloc::192.168.176.130:3000/Manager
+2012-03-07T17:24:56.528 DEBUG [acsStartJava] ACS Manager: corbaloc::192.168.176.130:3000/Manager
+2012-03-07T17:24:56.548 DEBUG [acsStartJava] exported MANAGER_COMPUTER_NAME=192.168.176.130
+2012-03-07T17:24:56.562 DEBUG [acsStartJava] exported ACS_NAME_SERVICE=corbaloc::192.168.176.130:3001/NameService
+2012-03-07T17:24:56.576 DEBUG [acsStartJava] ACS Name Service: corbaloc::192.168.176.130:3001/NameService
+2012-03-07T17:24:56.591 DEBUG [acsStartJava] exported ACS_INTERFACE_REPOSITORY=corbaloc::192.168.176.130:3004/InterfaceRepository
+2012-03-07T17:24:56.608 DEBUG [acsStartJava] ACS Interface Repository: corbaloc::192.168.176.130:3004/InterfaceRepository
+2012-03-07T17:24:56.624 DEBUG [acsStartJava] Running the following command:
+2012-03-07T17:24:56.639 DEBUG [acsStartJava] java -classpath "/alma/ACS-10.1/ACSSW/lib/jACSUtil.jar::/alma/ACS-10.1/JacORB/lib/jacorb.jar:/alma/ACS-10.1/JacORB/lib/idl.jar:/alma/ACS-10.1/ant/lib/ant.jar:/alma/ACS-10.1/acsdata/config"  -Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton -Duser.timezone=UTC -DACS.manager=corbaloc::192.168.176.130:3000/Manager -DORBInitRef.NameService=corbaloc::192.168.176.130:3001/NameService  -DACS.repository=corbaloc::192.168.176.130:3004/InterfaceRepository -DACS.tmp=/diska/home/almadev/workspace/acspycommon/test/tmp -DACS.baseport=0 -DACS.data=/alma/ACS-10.1/acsdata -DACS.logstdout=3 -DACS.log.minlevel.remote= -DACS.loggingBin=false  -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs="../lib:/diska/home/almadev/introot/lib:/alma/ACS-10.1/ACSSW/lib" -Djava.util.logging.manager=alma.acs.logging.AcsLogManager -Dalma.acs.logging.useAcsLogServiceExtensions=1 -client -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0 -XX:ErrorFile=/diska/home/almadev/workspace/acspycommon/test/tmp/ACS_INSTANCE.0/jvm_fatal_error%p.log -showversion  com.cosylab.cdb.DALShutdown -d corbaloc::192.168.176.130:3012/CDB
+java version "1.6.0_22"
+Java(TM) SE Runtime Environment (build 1.6.0_22-b04)
+Java HotSpot(TM) Client VM (build 17.1-b03, mixed mode, sharing)
+
+2012-03-07T17:24:56.910 INFO [DALShutdown] Connecting with ior:corbaloc::192.168.176.130:3012/CDB
