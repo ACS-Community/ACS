@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.1.1.1 2012/03/07 17:40:45 acaproni Exp $
+# @(#) $Id: Log.py,v 1.2 2012/03/09 14:34:28 acaproni Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.1.1.1 2012/03/07 17:40:45 acaproni Exp $"
+__revision__ = "$Id: Log.py,v 1.2 2012/03/09 14:34:28 acaproni Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -56,6 +56,7 @@ from traceback import extract_stack
 from atexit import register
 import sched
 import threading
+import abc
 #--ACS Imports-----------------------------------------------------------------
 import maci
 from Acspy.Common.ACSHandler import ACSHandler
@@ -392,6 +393,21 @@ def isFlushRunning():
         return FLUSHTHREAD.isAlive()
     except:
         return False
+#------------------------------------------------------------------------------
+class LogThrottleAlarmerBase:
+    '''
+    Abstract base class for the LogThrottle to raise/clear alarms
+    '''
+    __metaclass__ = abc.ABCMeta
+    
+    @abc.abstractmethod
+    def sendThrottleAlarm(self, active):
+        '''
+        Send/Clear the alarm for the LogThrottle
+        
+        Raise the alarm if active=True and clear otherwise
+        '''
+        return
 #------------------------------------------------------------------------------
 class Logger(logging.Logger):
     '''
@@ -846,8 +862,12 @@ class Logger(logging.Logger):
 
     
     
-    def configureLogging(self, maxLogsPerSec):
-        CENTRALHANDLER.configureLogging(maxLogsPerSec)
+    def configureLogging(self, maxLogsPerSec, alarmSender=None):
+        '''
+        If alarmSender is not None, it must be a subclass of LogThrottleAlarmerBase
+        See also ACSHandler.configureLogging
+        '''
+        CENTRALHANDLER.configureLogging(maxLogsPerSec,alarmSender)
 #----------------------------------------------------------------------------
 # The Python logging module contains code to manage a hierarchy of loggers.
 # The root logger has a default level setting of WARNING and would return
