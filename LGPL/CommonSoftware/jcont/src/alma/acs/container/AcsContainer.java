@@ -649,11 +649,17 @@ public class AcsContainer extends ContainerPOA
 	public void activate_component_async(final int h, final long execution_id, final String name,
 			final String exe, final String type, final CBComponentInfo callback, final CBDescIn desc)
 	{
+		m_logger.finer("activate_component_async request received for '" + name + 
+				"', enqueueing (taskCount: " + threadPoolExecutor.getTaskCount() + ", active threads: " + 
+				threadPoolExecutor.getActiveCount() + ", maxPoolSize: " + threadPoolExecutor.getMaximumPoolSize() + ").");
+		
 		threadPoolExecutor.execute(new Runnable() {
 			
 			@Override
 			public void run() {
+				m_logger.finer("activate_component_async request for '" + name + "' is being processed now.");
 				CBDescOut descOut = new CBDescOut(0, desc.id_tag);
+
 				try
 				{
 					ComponentInfo componentInfo = activate_component(h, execution_id, name, exe, type);
