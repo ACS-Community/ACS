@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: __init__.py,v 1.5 2008/10/30 13:01:21 agrimstrup Exp $"
+# "@(#) $Id: __init__.py,v 1.6 2012/03/09 14:36:04 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -67,12 +67,16 @@ class AlarmSystemInterfaceFactory(object):
 
         # Parse the CDB to get the system type
         cdb = CDBAccess.CDBaccess()
-        ln = cdb.getField('Alarms/Administrative/AlarmSystemConfiguration','AlarmSystemConfiguration/configuration-property')
-        doc = AcsAlarmSystem_xsd.minidom.parseString(ln)
-        rootNode = doc.documentElement
-        rootObj = AcsAlarmSystem_xsd.alarm_system_configurationListType.factory()
-        rootObj.build(rootNode)
-        cls.systemtype = rootObj.get_configuration_property()[0].valueOf_
+        try:
+            ln = cdb.getField('Alarms/Administrative/AlarmSystemConfiguration','AlarmSystemConfiguration/configuration-property')
+            doc = AcsAlarmSystem_xsd.minidom.parseString(ln)
+            rootNode = doc.documentElement
+            rootObj = AcsAlarmSystem_xsd.alarm_system_configurationListType.factory()
+            rootObj.build(rootNode)
+            cls.systemtype = rootObj.get_configuration_property()[0].valueOf_
+        except:
+            cls.systemtype='ACS'
+        
         cls.logger.logDebug("Using %s alarm system" % cls.systemtype)
         cls.logger.logTrace("AlarmSystemInterfaceFactory::init() exiting.")
 
