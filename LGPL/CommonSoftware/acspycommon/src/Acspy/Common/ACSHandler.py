@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.1.1.1 2012/03/07 17:40:45 acaproni Exp $
+# @(#) $Id: ACSHandler.py,v 1.2 2012/03/09 14:31:49 acaproni Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.1.1.1 2012/03/07 17:40:45 acaproni Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.2 2012/03/09 14:31:49 acaproni Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -44,10 +44,13 @@ from atexit    import register
 import sched
 import threading
 import string
+import abc
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
 from log_audience            import NO_AUDIENCE
+import Acspy.Common.Log
+#------------------------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 import CORBA
@@ -190,13 +193,33 @@ class ACSHandler(logging.handlers.BufferingHandler):
         
         #log throttle, see http://jira.alma.cl/browse/COMP-4541
         self.logThrottle = LogThrottle(-1);
+        
+        # To notify when the logThrottle is in action so that
+        # it is possible to raise/clear an alarm
+        self.logThrottleAlarmSender=None
+        
+        # To avoid sending the logThrottle alarm if its state did not change
+        self.logThrottleAlarmActive=False
 
         #we want to make sure the buffer is flushed
         #before exiting the Python interpreter
         register(self.flush)
     #--------------------------------------------------------------------------
-    def configureLogging(self, maxLogPerTimeInterval):
+    def configureLogging(self, maxLogPerTimeInterval, alarmSender=None):
+        '''
+        Configure the logging
+        
+        maxLogPerTimeInterval: Max number of logs per second (see logThrottle)
+        logThrottleAlarmSender: to raise/clear alarms from thelogThrottle
+        
+        if alarmSender is not None, it must be a subclass of LogThrottleAlarmerBase
+        '''
         self.logThrottle.configureLogging(maxLogPerTimeInterval)
+        if alarmSender!=None:
+            # Is alarmSender a subclass of LogThrottleAlarmerBase?
+            if not isinstance(alarmSender, Acspy.Common.Log.LogThrottleAlarmerBase):
+                raise TypeError('The alarm sender is not a parent of LogThrottleAlarmerBase')
+        self.logThrottleAlarmSender=alarmSender
     #--------------------------------------------------------------------------
     def initFileHandler(self):
         '''
@@ -271,7 +294,16 @@ class ACSHandler(logging.handlers.BufferingHandler):
         Method which sends logs to the real ACS logging service.
         '''
         if(not self.logThrottle.checkPublishLogRecord()):
+            if self.logThrottleAlarmSender!=None and not self.logThrottleAlarmActive:
+                self.logThrottleAlarmActive=True
+                self.logThrottleAlarmSender.sendThrottleAlarm(True)
             return
+        else:
+            if self.logThrottleAlarmSender!=None and self.logThrottleAlarmActive:
+                self.logThrottleAlarmActive=False
+                self.logThrottleAlarmSender.sendThrottleAlarm(False)
+        
+        
         # Create an RTContext object
         rt_context = ACSLog.RTContext(str(record.threadName).replace("<", "").replace(">", ""),
                                       str(record.source).replace("<", "").replace(">", ""),
