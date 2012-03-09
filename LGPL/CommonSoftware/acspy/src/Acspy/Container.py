@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.55 2012/03/02 21:23:07 javarias Exp $
+# @(#) $Id: Container.py,v 1.56 2012/03/09 14:36:54 acaproni Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.55 2012/03/02 21:23:07 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.56 2012/03/09 14:36:54 acaproni Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.55 2012/03/02 21:23:07 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.56 2012/03/09 14:36:54 acaproni Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -62,6 +62,7 @@ from maciErrTypeImpl                   import CannotActivateComponentExImpl
 from maciErrTypeImpl                   import LoggerDoesNotExistExImpl
 #--ACS Imports-----------------------------------------------------------------
 import Acspy.Common.Log as Log
+import Acsalarmpy
 from Acspy.Common.CDBAccess                 import CDBaccess
 from cdbErrType                             import CDBRecordDoesNotExistEx
 from Acspy.Clients.BaseClient               import BaseClient
@@ -96,6 +97,19 @@ CORBAREF    = 'CORBAREF'
 COMPONENTINFO     = 'COMPONENTINFO'
 POAOFFSHOOT = 'POAOFFSHOOT'
 COMPMODULE  = 'COMPMODULE'
+#------------------------------------------------------------------------------
+class ContainerLogThrottleAlarmer(Log.LogThrottleAlarmerBase):
+    def __init__(self, cont):
+        '''
+        cont Is the container to invoke sendAlarm to send alarms
+        '''
+        self.container=cont
+        
+    def sendThrottleAlarm(self, active):
+        '''
+        See Log.LogThrottleAlarmerBase
+        '''
+        self.container.sendAlarm("Logging", self.container.name, 10, active)
 #------------------------------------------------------------------------------
 class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
     '''
@@ -138,6 +152,15 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #dictionary which maps package names to the number of active components
         #using said package
         self.compModuleCount = {}
+        
+        # Initialize the alarm factory
+        Acsalarmpy.AlarmSystemInterfaceFactory.init(ACSCorba.getManager())
+        # The alarm source
+        self.alarmSource = None
+        
+        # The interface to receive notification from the LogThrottle 
+        # for sending alarms
+        self.clta=ContainerLogThrottleAlarmer(self)
 
         #Configure CORBA
         print maci.Container.ContainerStatusORBInitBeginMsg
@@ -165,7 +188,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.isReady.set()
         print maci.Container.ContainerStatusStartupEndMsg
         sys.stdout.flush()
-
+        
     #--CLIENT IDL--------------------------------------------------------------
     def disconnect(self): # pragma: NO COVER
         '''
@@ -574,7 +597,6 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Parameters:
         name is the name of the component
         '''
-
         # Each component has an associated logger instance
         clogger = Log.getLogger(name)
 
@@ -789,6 +811,9 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 Log.stopPeriodicFlush()
         else:
             self.logger.logWarning("Unable to process 'shutdown' request at this time: " + str(action))
+        
+        # Close the alarm interface factory
+        Acsalarmpy.AlarmSystemInterfaceFactory.done()
 
     #----------------------------------------------------------------------------
     def set_component_shutdown_order(self, handles): # pragma: NO COVER
@@ -878,7 +903,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         except (CDBRecordDoesNotExistEx):
             # No value was supplied so default is used
             maxLogsPerSec = -1
-        self.logger.configureLogging(maxLogsPerSec)
+        self.logger.configureLogging(maxLogsPerSec,self.clta)
 
 
     #--------------------------------------------------------------------------
@@ -1120,3 +1145,26 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             return "AR"
         else:
             return "A"
+        
+    def sendAlarm(self, family, member, code, active):
+        '''
+        Raise or clear an alarm with the passed triplet
+
+        family: FaultFamily
+        member: FaultMember
+        code: FaultCode
+        active: if True raise the alarm otherwise clear the alarm
+        '''
+        if self.alarmSource==None:
+            self.alarmSource = Acsalarmpy.AlarmSystemInterfaceFactory.createSource("ALARM_SYSTEM_SOURCES")
+
+        # Create a test fault
+        fltstate = Acsalarmpy.AlarmSystemInterfaceFactory.createFaultState(family,member, code)
+        if active:
+            fltstate.descriptor = Acsalarmpy.FaultState.ACTIVE_STRING
+        else:
+            fltstate.descriptor = Acsalarmpy.FaultState.TERMINATE_STRING
+        fltstate.userTimestamp = Acsalarmpy.Timestamp.Timestamp()
+        
+        # The heart of the test
+        self.alarmSource.push(fltstate)
