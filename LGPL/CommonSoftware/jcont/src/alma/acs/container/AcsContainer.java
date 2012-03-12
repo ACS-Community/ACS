@@ -199,10 +199,14 @@ public class AcsContainer extends ContainerPOA
 			this.isEmbedded = isEmbedded;
 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
 			containerThreadFactory = new CleaningDaemonThreadFactory(m_containerName, m_logger, "Container");
-			threadPoolExecutor = new ThreadPoolExecutor(5, 5, 3, TimeUnit.MINUTES, 
+			
+			// @TODO: Use "jacorb.poa.thread_pool_max" for max number of activation threads, 
+			// but without direct coupling to jacorb-specific variable.
+			threadPoolExecutor = new ThreadPoolExecutor(10, 10, 3, TimeUnit.MINUTES, 
 					new LinkedBlockingQueue<Runnable>(), containerThreadFactory, 
 					new ThreadPoolExecutor.AbortPolicy());
-
+			threadPoolExecutor.allowCoreThreadTimeOut(true);
+			
 			m_activeComponentMap = new ComponentMap(m_logger);
 			m_acsCorba = acsCorba;
 
