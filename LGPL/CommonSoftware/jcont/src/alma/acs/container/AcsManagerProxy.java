@@ -162,7 +162,7 @@ public class AcsManagerProxy
 	 * 
 	 * TODO: replace with lock from concurrent lib
 	 */
-	protected java.lang.Object connectorLock = new java.lang.Object();
+	protected final java.lang.Object connectorLock = new java.lang.Object();
 
 	/**
 	 * This thread keeps retrying to log in to the manager.
