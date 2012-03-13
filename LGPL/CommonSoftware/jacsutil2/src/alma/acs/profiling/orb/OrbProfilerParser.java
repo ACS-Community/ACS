@@ -75,17 +75,21 @@ public class OrbProfilerParser
 		
 		String line = null;
 		int lineCount = 0;
-		while ((line = reader.readLine()) != null) {
-			lineCount++;
-			ProfilerMessage msg = parseLine(line);
-			if (msg == null) {
-//				System.out.println("Skipping line: " + line);
-			}
-			else {
-				messages.add(msg);
+		try {
+			while ((line = reader.readLine()) != null) {
+				lineCount++;
+				ProfilerMessage msg = parseLine(line);
+				if (msg == null) {
+	//				System.out.println("Skipping line: " + line);
+				}
+				else {
+					messages.add(msg);
+				}
 			}
 		}
-		reader.close();
+		finally {
+			reader.close();
+		}
 		logger.info("Parsed file " + stdoutLogFile.getAbsolutePath() + " in " + sw.getLapTimeMillis() + " ms, found " + lineCount + " lines total, and " + messages.size() + " orb profiler messages.");
 		
 		return messages;
