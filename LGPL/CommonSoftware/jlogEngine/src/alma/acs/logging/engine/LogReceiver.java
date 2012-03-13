@@ -40,8 +40,8 @@ import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import si.ijs.maci.Manager;
 
@@ -362,7 +362,7 @@ public class LogReceiver {
 		DelayedLogEntry(ILogEntry logEntry, long delayTimeMillis) {
 			logRecordIndex = logRecordCounter.incrementAndGet();
 			this.logEntry = logEntry;
-            this.delayTimeMillis = delayTimeMillis;
+			this.delayTimeMillis = delayTimeMillis;
 			Date logDate = new Date((Long)logEntry.getField(LogField.TIMESTAMP));
 			// if log record has a time stamp in the future (according to local machine time), then we clip it to the current time
 			long adjustedLogTimestamp = Math.min(System.currentTimeMillis(), logDate.getTime());
@@ -375,7 +375,7 @@ public class LogReceiver {
 		 */
 		private DelayedLogEntry(long delayTimeMillis) {
 			logRecordIndex = logRecordCounter.incrementAndGet();
-            this.delayTimeMillis = delayTimeMillis;
+			this.delayTimeMillis = delayTimeMillis;
 			triggerTimeMillis = System.currentTimeMillis() + delayTimeMillis;
 		}
 		
@@ -425,7 +425,8 @@ public class LogReceiver {
 		}
 		
 		/**
-		 * This method is used by the queue for sorting.
+		 * This method is used by the queue for sorting,
+		 * comparing timestamps and arrival order.
 		 */
 		public int compareTo(Delayed other) {
 			DelayedLogEntry otherDelayedLogEntry = (DelayedLogEntry) other;
@@ -457,12 +458,23 @@ public class LogReceiver {
 			if (other==null) {
 				return false;
 			}
-			if (other instanceof LogReceiver) {
+			if (!(other instanceof DelayedLogEntry)) {
 				return false;
 			}
 			DelayedLogEntry otherDelayedLogEntry = (DelayedLogEntry) other;
 			return ( otherDelayedLogEntry.triggerTimeMillis == triggerTimeMillis &&
 					otherDelayedLogEntry.logRecordIndex == logRecordIndex );
+		}
+
+		/**
+		 * hashCode method, since we already have equals.
+		 */
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + logRecordIndex;
+			result = prime * result + (int) (triggerTimeMillis ^ (triggerTimeMillis >>> 32));
+			return result;
 		}
 
 		long getDelayTimeMillis() {
