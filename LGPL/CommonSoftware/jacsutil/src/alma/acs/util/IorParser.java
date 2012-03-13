@@ -115,11 +115,12 @@ public class IorParser {
 	private static class CDR {
 
 		protected boolean _byteOrder;
-		protected int _byteLen, _bytePos = 1;
+		protected int _byteLen;
+		protected int _bytePos = 1;
 		protected char[] _CDRArray;
 
 		public char getChar () {
-			return (char) _CDRArray[_bytePos++];
+			return _CDRArray[_bytePos++];
 		}
 
 		public long getULong () {
@@ -263,8 +264,9 @@ public class IorParser {
 
 		protected long _numProfiles;
 
-		protected String _iorString, _prefix, // IOP::IOR.
-				_type_id; // IOP::IOR.
+		protected String _iorString;
+		protected String _prefix; // IOP::IOR.
+		protected String _type_id; // IOP::IOR.
 
 		// IOP::IOR. This vector contains the tags (ProfileId) and the profile_data
 		// (octet sequences).
