@@ -2,6 +2,7 @@
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] -------------------------------
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] component 'alma.demo.test.client.ArchiveConsumerTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='ArchivingChannel' ChannelId='xxx' Service='ArchiveNotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] receive method: b=no_device, c=no_param, d(type)=class java.lang.Double
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] receive method: b=no_device, c=no_param, d(type)=class java.lang.Float
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
