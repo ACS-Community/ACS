@@ -278,25 +278,6 @@ public class AcsLocations {
 	}
 
 	/**
-	 * Composes a ServicesDaemon corbaloc for the specified host and port.
-	 * @deprecated  because the daemon port is fixed.
-	 */
-	static public String convertToServicesDaemonLocation (String host, String port) {
-		return convertToServicesDaemonLocation(host, port, "");
-	}
-
-	/**
-	 * Composes a ServicesDaemon corbaloc for the specified host, port, and protocol.
-	 * @deprecated  because the daemon port is fixed.
-	 */
-	static public String convertToServicesDaemonLocation (String host, String port, String protocol) {
-		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + SERVICESDAEMON_SYMBOL;
-	}
-
-	
-// ACSContainerDaemon
-
-	/**
 	 * The suffix for a ContainerDaemon location.
 	 * <p>
 	 * Note that this string constant is also defined in acsdaemon.idl 
@@ -313,21 +294,5 @@ public class AcsLocations {
 		return "corbaloc::" + host.trim() + ":" + ACSPorts.getContainerDaemonPort() + "/" + CONTAINERDAEMON_SYMBOL;
 	}
 
-	/**
-	 * Composes a ContainerDaemon corbaloc for the specified host and port.
-	 * @deprecated  because the daemon port is fixed.
-	 */
-	static public String convertToContainerDaemonLocation (String host, String port) {
-		return convertToContainerDaemonLocation(host, port, "");
-	}
-
-	/**
-	 * Composes a ContainerDaemon corbaloc for the specified host, port, and protocol.
-	 * @deprecated  because the daemon port is fixed.
-	 */
-	static public String convertToContainerDaemonLocation (String host, String port, String protocol) {
-		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + CONTAINERDAEMON_SYMBOL;
-	}
-	
 }
 
