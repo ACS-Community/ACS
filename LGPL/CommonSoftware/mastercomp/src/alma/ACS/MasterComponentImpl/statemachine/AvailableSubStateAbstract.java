@@ -28,7 +28,7 @@ import alma.acs.genfw.runtime.sm.AcsState;
  */
 public abstract class AvailableSubStateAbstract implements AcsState 
 {
-	protected AlmaSubsystemContext m_superContext;
+	protected final AlmaSubsystemContext m_superContext;
 
     // the nested state AvailableState serves as both state class and context class for its substates
     protected AvailableState m_context;

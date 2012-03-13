@@ -35,7 +35,7 @@ public class ErrorState extends AvailableSubStateAbstract implements AcsSimpleSt
 	}
 
 	public void activate(String eventName) {
-		synchronized (m_superContext) {		
+		synchronized (m_superContext) {
 			m_context.setSubstate(this, eventName);
 		}
 	}

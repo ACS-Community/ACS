@@ -30,7 +30,7 @@ import alma.acs.logging.AcsLogger;
 public abstract class OfflineSubStateAbstract implements AcsState 
 {
 	protected final AcsLogger logger;
-	protected AlmaSubsystemContext m_superContext;
+	protected final AlmaSubsystemContext m_superContext;
 	protected OfflineState m_offlineContext;
 
     public OfflineSubStateAbstract(AlmaSubsystemContext superContext, OfflineState offlineContext, AcsLogger logger) {
