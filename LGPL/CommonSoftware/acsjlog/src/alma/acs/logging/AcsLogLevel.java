@@ -46,17 +46,17 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	/**
 	 * The resource bundle name to be used in localizing ACS level name.
 	 */
-	private final static String ACS_BUNDLE_NAME = AcsLogLevel.class.getPackage().getName();
+	private static final String ACS_BUNDLE_NAME = AcsLogLevel.class.getPackage().getName();
 
 	/**
 	 * List of all ACS levels, sorted automatically with lowest log level first.
 	 */
-	private static TreeSet<AcsLogLevel> known = new TreeSet<AcsLogLevel>();
+	private static final TreeSet<AcsLogLevel> known = new TreeSet<AcsLogLevel>();
 
 	/**
 	 * Fast lookup table mapping.
 	 */
-	private static Map<Level, AcsLogLevel> lookup = new HashMap<Level, AcsLogLevel>();
+	private static final Map<Level, AcsLogLevel> lookup = new HashMap<Level, AcsLogLevel>();
 
 	/******************** Java API ACS Levels ********************/
 
@@ -151,7 +151,7 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	{
 		super(name, value, ACS_BUNDLE_NAME);
 
-		// create entry name, so that is computent only once
+		// create entry name, so that is computed only once
 		entryName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 
 		this.acsCoreLevel = acsCoreLevel;
