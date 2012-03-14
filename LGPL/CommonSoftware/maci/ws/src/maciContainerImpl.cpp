@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.145 2012/03/14 11:22:54 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.146 2012/03/14 21:24:44 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -41,7 +41,7 @@
 
 #include <acserr.h>
 #include <acsQoS.h>
-
+#include <maciErrType.h>
 #include <cdb.h>
 
 #include <ace/ARGV.h>
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.145 2012/03/14 11:22:54 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.146 2012/03/14 21:24:44 javarias Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2232,116 +2232,112 @@ ContainerImpl::activate_component_async(maci::Handle h, maci::ExecutionId id,
 
 // ************************************************************************
 
-void
-ContainerImpl::deactivate_component (
-				maci::Handle h
+void ContainerImpl::deactivate_component(maci::Handle h
 
-				)
-{
+) {
 
+    ACS_TRACE("maci::ContainerImpl::deactivate_component");
 
-  ACS_TRACE("maci::ContainerImpl::deactivate_component");
+    // deactivation has to be allowed during shutdown...
 
-  // deactivation has to be allowed during shutdown...
+    //maci::stringSeq compNames;
+    //compNames.length(h.length());
+    // int idxCompNames = 0;
 
-   //maci::stringSeq compNames;
-   //compNames.length(h.length());
-   // int idxCompNames = 0;
+    ContainerComponentInfo info;
+    if (m_activeComponents.find(h, info) != -1
+            && !CORBA::is_nil(info.info.reference.in())) {
+        ACS_LOG(
+                LM_RUNTIME_CONTEXT,
+                "maci::ContainerImpl::deactivate_component",
+                (LM_DEBUG, "Deactivating component with handle %d (%s of type %s)", h, info.info.name.in(), info.info.type.in()));
 
-  ContainerComponentInfo info;
-    if (m_activeComponents.find(h, info)!=-1 &&
-	!CORBA::is_nil(info.info.reference.in()))
-      {
+        maciErrType::ComponentCleanUpExImpl *cleanEx = NULL;
+        CORBA::Object_ptr ref = CORBA::Object::_duplicate(
+                info.info.reference.in());
 
-	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		(LM_DEBUG,
-		 "Deactivating component with handle %d (%s of type %s)",
-		 h, info.info.name.in(), info.info.type.in()));
+        info.info.reference = CORBA::Object::_nil();
+        m_activeComponents.rebind(h, info); // update
 
-	CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
-
-	info.info.reference = CORBA::Object::_nil();
-	m_activeComponents.rebind(h, info);				// update
-
-	// Before really deactivating the component,
-	// we call the cleanUp() ComponentLifecycle termination method
-	// This gives the component time to cleanup itself, performin any needed
-	// CORBA activity before deactivation.
-	// This cannot be done in the destructor, since the destructor
+        // Before really deactivating the component,
+        // we call the cleanUp() ComponentLifecycle termination method
+        // This gives the component time to cleanup itself, performin any needed
+        // CORBA activity before deactivation.
+        // This cannot be done in the destructor, since the destructor
         // is called by the POA after having "disconnected" the Component
-	// from CORBA.
-	PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
-	if (acscomponent::ACSComponentImpl *tempComp =
-	    dynamic_cast<acscomponent::ACSComponentImpl*>(servant))
-	    {
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		    (LM_DEBUG, "Component '%s': calling cleanUp Lifecycle .", info.info.name.in()));
-        tempComp->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_DESTROYING);
+        // from CORBA.
+        PortableServer::Servant servant = poaContainer->reference_to_servant(
+                ref);
+        if (acscomponent::ACSComponentImpl *tempComp =
+        dynamic_cast<acscomponent::ACSComponentImpl*>(servant)) {
+            ACS_LOG(
+                    LM_RUNTIME_CONTEXT,
+                    "maci::ContainerImpl::deactivate_component",
+                    (LM_DEBUG, "Component '%s': calling cleanUp Lifecycle .", info.info.name.in()));
+            tempComp->getContainerServices()->getComponentStateManager()->setState(
+                    ACS::COMPSTATE_DESTROYING);
 
-        try
-        {
-	       tempComp->__cleanUp();
+            try {
+                tempComp->__cleanUp();
+            } catch (ACSErr::ACSbaseExImpl &ex) {
+                cleanEx = new maciErrType::ComponentCleanUpExImpl(ex.getErrorTrace(),
+                        __FILE__, __LINE__, __PRETTY_FUNCTION__);
+                cleanEx->log(LM_WARNING);
+            } catch (...) {
+                cleanEx = new maciErrType::ComponentCleanUpExImpl(__FILE__, __LINE__,
+                        __PRETTY_FUNCTION__);
+                cleanEx->addData("Reason", "Unknown Exception");
+                cleanEx->log(LM_WARNING);
+            }
+
+            if (tempComp->getContainerServices()) {
+                tempComp->getContainerServices()->getComponentStateManager()->setState(
+                        ACS::COMPSTATE_DEFUNCT);
+            }
+
+            // The containerServices is deleted by the component (it stores the
+            // ContainerServices into a smart pointer
+
         }
-        catch (ACSErr::ACSbaseExImpl ex)
-        {
-            ACS_SHORT_LOG((
-                LM_ERROR,
-                "maci::ContainerImpl::deactivate_component: got an exception executing %s",
-                info.info.name.in()));
-            ex.log();
-        }
-        catch (...)
-        {
-            ACS_SHORT_LOG((
-                LM_ERROR,
-                "maci::ContainerImpl::deactivate_component: got an exception executing %s",
-                info.info.name.in()));
-        }
+        servant->_remove_ref(); // Do not forget to signal we are not using the servant any more
 
-        if (tempComp->getContainerServices())
-        {
-            tempComp->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_DEFUNCT);
+        ACS_LOG(
+                LM_RUNTIME_CONTEXT,
+                "maci::ContainerImpl::deactivate_component",
+                (LM_DEBUG, "Component '%s' reference set to nil.", info.info.name.in()));
+
+        // Real deactivation.
+        // This will also cause the call of the destructor
+        // for the component
+        if (!deactivateCORBAObject(ref)) {
+            ACS_LOG(
+                    LM_RUNTIME_CONTEXT,
+                    "maci::ContainerImpl::deactivate_component",
+                    (LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)", h, info.info.name.in(), info.info.type.in()));
         }
 
-        // The containerServices is deleted by the component (it stores the
-        // ContainerServices into a smart pointer
+        CORBA::release(ref);
 
-	  }
-	servant->_remove_ref(); // Do not forget to signal we are not using the servant any more
+        ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
+                (LM_INFO, "Component '%s' deactivated.", info.info.name.in()));
 
-	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		(LM_DEBUG, "Component '%s' reference set to nil.", info.info.name.in()));
-
-	// Real deactivation.
-    // This will also cause the call of the destructor
-    // for the component
-	if (!deactivateCORBAObject(ref))
-	  {
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		    (LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)",
-		     h, info.info.name.in(), info.info.type.in()));
-	  }
-
-	CORBA::release(ref);
-
-	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		(LM_INFO, "Component '%s' deactivated.", info.info.name.in()));
-
-     //compNames[idxCompNames++] = info.info.name;
-      }
-     //compNames.length(idxCompNames);
-	//components_unavailable(compNames);
+        //compNames[idxCompNames++] = info.info.name;
+        if (cleanEx != NULL) {
+            maciErrType::ComponentCleanUpEx ex = cleanEx->getComponentCleanUpEx();
+            delete cleanEx;
+            throw ex;
+        }
+    }
+    //compNames.length(idxCompNames);
+    //components_unavailable(compNames);
 }
 
 // ************************************************************************
 
-CORBA::Object_ptr
-ContainerImpl::restart_component (maci::Handle h
-				  )
-{
+CORBA::Object_ptr ContainerImpl::restart_component(maci::Handle h) {
     if (m_shutdown) {
-      throw CORBA::NO_RESOURCES ();
-      return 0;
+        throw CORBA::NO_RESOURCES();
+        return 0;
     }
 
     throw CORBA::NO_IMPLEMENT();
