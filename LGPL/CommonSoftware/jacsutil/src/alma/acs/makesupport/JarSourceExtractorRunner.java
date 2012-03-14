@@ -100,15 +100,18 @@ public class JarSourceExtractorRunner
 				FileOutputStream out = new FileOutputStream(targetJarFile);
 				JarOutputStream jarOut = new JarOutputStream(out);
 				
-				for (int i = 0; i < jarFiles.length; i++)
-				{
-					JarFile jarFile = new JarFile(jarFiles[i]);
-					if (needsProcessing(jarFile)) {
-						extractor.extractJavaSourcesToJar(jarFile, jarOut);
+				try {
+					for (int i = 0; i < jarFiles.length; i++) {
+						JarFile jarFile = new JarFile(jarFiles[i]);
+						if (needsProcessing(jarFile)) {
+							extractor.extractJavaSourcesToJar(jarFile, jarOut);
+						}
 					}
 				}
-				jarOut.finish();
-				jarOut.close();
+				finally {
+					jarOut.finish();
+					jarOut.close();
+				}
 			}
 			else
 			{
