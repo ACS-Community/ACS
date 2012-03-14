@@ -58,8 +58,11 @@ public class IOSpecification
 		try
 		{
 			FileWriter fileWriter = new FileWriter(file);
-			fileWriter.write(contents);
-			fileWriter.close();
+			try {
+				fileWriter.write(contents);
+			} finally {
+				fileWriter.close();
+			}
 		}
 		catch (FileNotFoundException e)
 		{
