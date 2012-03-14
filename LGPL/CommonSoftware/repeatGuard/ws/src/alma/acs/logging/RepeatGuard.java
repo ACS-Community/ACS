@@ -67,7 +67,8 @@ public class RepeatGuard {
 
 	private int maxRepetitions;
 
-	private long endTimeNs, intervalNs;
+	private long endTimeNs;
+	private long intervalNs;
 
 	private int counter;
 
@@ -169,8 +170,10 @@ public class RepeatGuard {
 					return true;
 				}
 				return false;
+			
+			default:
+				throw new IllegalStateException("Unexpected value of RepeatGuard#evaluationMethod='" + evaluationMethod.toString() + "' found. Please report this bug to ACS.");
 		}
-		return false;
 	}
 
 	/**
