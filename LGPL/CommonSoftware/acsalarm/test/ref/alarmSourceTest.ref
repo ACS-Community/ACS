@@ -54,10 +54,10 @@
 1 - Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,19> TERMINATE
 1 - testAlarmQueuing: sending an alarm without queuing
 1 - Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,1> ACTIVE
-1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
 1 - tearDown
-1 - Thread stopped:AlarmsMap
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
 1 - Thread AlarmsourceImpl
+1 - Thread stopped:AlarmsMap
 1 - .testAlarmTimerQueuing
 1 - Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,0> ACTIVE
 1 - testAlarmTimerQueuing: Start queuing for 30 seconds
@@ -87,11 +87,11 @@
 1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,7> TERMINATE
 1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,8> ACTIVE
 1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,9> TERMINATE
-1 - Alarm sent: <AlarmTerminateAllFM,AlarmTerminateAllFM,0> TERMINATE
-1 - Alarm sent: <AlarmTerminateAllFM,AlarmTerminateAllFM,2> TERMINATE
-1 - Alarm sent: <AlarmTerminateAllFM,AlarmTerminateAllFM,4> TERMINATE
-1 - Alarm sent: <AlarmTerminateAllFM,AlarmTerminateAllFM,6> TERMINATE
-1 - Alarm sent: <AlarmTerminateAllFM,AlarmTerminateAllFM,8> TERMINATE
+1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,0> TERMINATE
+1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,2> TERMINATE
+1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,4> TERMINATE
+1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,6> TERMINATE
+1 - Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,8> TERMINATE
 1 - tearDown
 1 - Thread AlarmsourceImpl
 1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
