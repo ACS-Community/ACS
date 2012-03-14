@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.144 2012/02/21 11:30:20 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.145 2012/03/14 11:22:54 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.144 2012/02/21 11:30:20 acaproni Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.145 2012/03/14 11:22:54 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -331,7 +331,7 @@ ContainerImpl::ContainerImpl() :
 ContainerImpl::~ContainerImpl()
 {
 
-	if (m_logThrottleAlarm_p!=NULL) {
+	if (m_logThrottleAlarm_p!=NULL && m_loggerProxy!=NULL) {
 		m_loggerProxy->setAlarmSender(m_logThrottleAlarm_p);
 		delete m_logThrottleAlarm_p;
 	}
