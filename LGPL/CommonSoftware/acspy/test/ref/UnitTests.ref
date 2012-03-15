@@ -1503,28 +1503,10 @@
 1 - 
 1 - --------------------- >> end captured stdout << ----------------------
 1 - 
-1 - ======================================================================
-1 - FAIL: test_init_name (test_Acspy_Clients_SimpleClient.TestSimpleClient)
-1 - ----------------------------------------------------------------------
-1 -   File "mock.py", line xxx, in patched
-1 -     return func(*args, **keywargs)
-1 -   File "test_Acspy_Clients_SimpleClient.py", line xxx, in test_init_name
-1 -     self.assertEqual('Foo', sc.name)
-1 - AssertionError: 'Foo' != 'Foo: initialized by javarias@griffin'
-1 - 
-1 - ======================================================================
-1 - FAIL: test_init_no_name (test_Acspy_Clients_SimpleClient.TestSimpleClient)
-1 - ----------------------------------------------------------------------
-1 -   File "mock.py", line xxx, in patched
-1 -     return func(*args, **keywargs)
-1 -   File "test_Acspy_Clients_SimpleClient.py", line xxx, in test_init_no_name
-1 -     self.assertEqual('Python Client', sc.name)
-1 - AssertionError: 'Python Client' != 'Python Client: initialized by javarias@griffin'
-1 - 
 1 - ----------------------------------------------------------------------
 1 - Ran xx tests in x.xxxs
 1 - 
-1 - FAILED (errors=51, failures=2)
+1 - FAILED (errors=51)
 1 -   File "BaseClient.py", line xxx, in disconnect
 1 -     getManager().logout(self.token.h)
 1 -   File "maci_idl.py", line xxx, in logout

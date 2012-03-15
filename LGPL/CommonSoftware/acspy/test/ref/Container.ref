@@ -4,6 +4,7 @@
 2 - Deactivating components
 2 - The end __oOo__
 1 - ContainerStatusMsg: Startup begins
+1 - ----------T--:--:--.--- AlarmSystemInterfaceFactory init - Using ACS alarm system
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ContainerStatusMsg: Manager access initialization begins
@@ -13,20 +14,20 @@
 1 - ----------T--:--:--.--- pyContainer getCDBInfo - No container information found in the CDB
 1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
 1 - ContainerStatusMsg: Startup ends
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT4 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT4 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT4 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT4 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT4 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT4
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT5
 1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 3 of 3 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
@@ -58,18 +59,18 @@
 1 - </Manager>
 1 - getCDBElement is:  {}
 1 - ----------T--:--:--.--- TESTCOMPONENT testServices - the logger works
-1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
-1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT1
 1 - HelloWorld
 1 - name is:  TESTCOMPONENT1
@@ -93,30 +94,30 @@
 1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
-1 - ----------T--:--:--.--- TESTCOMPONENT1 testServices - the logger works
 1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" maxLogsPerSecond="-1" minLogLevelLocal="2"></LoggingConfig>
 1 - 
 1 - </Manager>
 1 - getCDBElement is:  {}
+1 - ----------T--:--:--.--- TESTCOMPONENT1 testServices - the logger works
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
-1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
 1 - HelloWorld
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT3
 1 - HelloWorld
 1 - HelloWorld
@@ -125,8 +126,8 @@
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT1
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT3
-1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyContainer' exited with code: 0.
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT5
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT4
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT
 1 - Goodbye
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyContainer' exited with code: 0.

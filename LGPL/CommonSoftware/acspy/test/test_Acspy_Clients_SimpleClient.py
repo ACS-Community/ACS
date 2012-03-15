@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Clients_SimpleClient.py,v 1.1 2010/02/04 21:45:16 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Clients_SimpleClient.py,v 1.2 2012/03/15 20:16:33 javarias Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -52,7 +52,7 @@ class TestSimpleClient(unittest.TestCase):
     def test_init_no_name(self, lgmock, cdbmock, refmock):
         refmock.return_value = True
         sc = SimpleClient.PySimpleClient()
-        self.assertEqual('Python Client', sc.name)
+        self.assertEqual(True, sc.name.startswith('Python Client'))
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
@@ -64,7 +64,7 @@ class TestSimpleClient(unittest.TestCase):
     def test_init_name(self, lgmock, cdbmock, refmock):
         refmock.return_value = True
         sc = SimpleClient.PySimpleClient('Foo')
-        self.assertEqual('Foo', sc.name)
+        self.assertEqual(True, sc.name.startswith('Foo'))
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
