@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.56 2012/03/09 14:36:54 acaproni Exp $
+# @(#) $Id: Container.py,v 1.57 2012/03/15 20:16:09 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.56 2012/03/09 14:36:54 acaproni Exp $"
+# "@(#) $Id: Container.py,v 1.57 2012/03/15 20:16:09 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.56 2012/03/09 14:36:54 acaproni Exp $"
+__revision__ = "$Id: Container.py,v 1.57 2012/03/15 20:16:09 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -78,6 +78,7 @@ from AcsContainerLogLTS                     import LOG_CompAct_Loading_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Instance_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Corba_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Init_OK
+from maciErrTypeImpl                        import ComponentDeactivationFailedExImpl, ComponentDeactivationUncleanExImpl
 #--GLOBALS---------------------------------------------------------------------
 #Manager commands to this container
 ACTIVATOR_RELOAD = 0
@@ -536,6 +537,8 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         void deactivate_component (in Handle h)
         '''
 
+        deactivationUncleanEx = None
+        deactivationFailedEx = None
         try:
             comp_entry = self.components[self.compHandles[handle]]
         except:
@@ -562,6 +565,9 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         except Exception, e:
             self.logger.logAlert("Failed to invoke 'cleanUp' LifeCycle method of: " + comp_entry[NAME])
             print_exc()
+            deactivationUncleanEx = ComponentDeactivationUncleanExImpl(exception = e)
+            deactivationUncleanEx.setCURL(self.compHandles[handle]);
+            deactivationUncleanEx.setReason("Failed to invoke 'cleanUp' LifeCycle method of: " + comp_entry[NAME]);
 
         #destroy the component's "personal" POA
         comp_entry[POA].destroy(FALSE, FALSE)
@@ -587,7 +593,10 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #Finally delete our references so the garbage collector can be used
         del self.components[self.compHandles[handle]]
         del self.compHandles[handle]
-
+        if deactivationFailedEx is not None:
+            raise deactivationFailedEx
+        if deactivationUncleanEx is not None:
+            raise deactivationUncleanEx
         return
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def configureComponentLogger(self, name):
