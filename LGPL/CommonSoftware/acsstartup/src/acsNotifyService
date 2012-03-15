@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.23 2012/01/25 23:26:23 javarias Exp $"
+# "@(#) $Id: acsNotifyService,v 1.24 2012/03/15 08:57:57 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -119,7 +119,7 @@ do
     -w)                           CL_WAIT=true ;; 
     --type)                       CL_NS_TYPE=$2; CL_NS_TYPE_SP="$2 " ; shift ;;
     -n)                           CL_NS_TYPE=$2; CL_NS_TYPE_SP="$2 " ; shift ;;
-    --) break ;;
+    --)                           if [ X"$2" != X ] ; then printUsage ; exit $EC_BADARGS ; fi ; break ;;
   esac
   shift
 done
