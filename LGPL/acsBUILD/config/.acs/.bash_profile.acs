@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.118 2012/01/17 22:02:18 tstaig Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.119 2012/03/15 23:13:58 javarias Exp $"
 #
 #
 #
@@ -1353,7 +1353,9 @@ CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$
 # the minor version number seem not used.
 # If I do it before, I get the system python and not the one we want to use.
 #
-PYTHONVER=`LD_LIBRARY_PATH=$PYTHON_ROOT/lib $PYTHON_ROOT/bin/python -c "import sys; print '%d.%d' % (sys.version_info[0],sys.version_info[1])"`
+if [ -e $PYTHON_ROOT/lib $PYTHON_ROOT/bin/python ]; then
+	PYTHONVER=`LD_LIBRARY_PATH=$PYTHON_ROOT/lib $PYTHON_ROOT/bin/python -c "import sys; print '%d.%d' % (sys.version_info[0],sys.version_info[1])"`
+fi
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
     PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
@@ -1362,7 +1364,9 @@ else
 fi
 export PATH LD_LIBRARY_PATH
 export PYTHONPATH
-PYTHONINC=`$PYTHON_ROOT/bin/python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
+if [ -e $PYTHON_ROOT/lib $PYTHON_ROOT/bin/python ]; then
+	PYTHONINC=`$PYTHON_ROOT/bin/python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
+fi
 
 
 if [ X"$ACSROOT" != X ] || [ X"$INTLIST" = X ]
