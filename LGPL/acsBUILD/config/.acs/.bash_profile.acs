@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.119 2012/03/15 23:13:58 javarias Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.120 2012/03/16 21:01:18 javarias Exp $"
 #
 #
 #
@@ -1353,7 +1353,7 @@ CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$
 # the minor version number seem not used.
 # If I do it before, I get the system python and not the one we want to use.
 #
-if [ -e $PYTHON_ROOT/lib $PYTHON_ROOT/bin/python ]; then
+if [ -e $PYTHON_ROOT/bin/python ]; then
 	PYTHONVER=`LD_LIBRARY_PATH=$PYTHON_ROOT/lib $PYTHON_ROOT/bin/python -c "import sys; print '%d.%d' % (sys.version_info[0],sys.version_info[1])"`
 fi
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
@@ -1364,7 +1364,7 @@ else
 fi
 export PATH LD_LIBRARY_PATH
 export PYTHONPATH
-if [ -e $PYTHON_ROOT/lib $PYTHON_ROOT/bin/python ]; then
+if [ -e $PYTHON_ROOT/bin/python ]; then
 	PYTHONINC=`$PYTHON_ROOT/bin/python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
 fi
 
