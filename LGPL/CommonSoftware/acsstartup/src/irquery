@@ -1,0 +1,126 @@
+#! /bin/bash
+. acsstartupAcsPorts 
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: irquery,v 1.1 2012/03/19 16:45:12 tstaig Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dfugate  2004-07-26  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+#     Runs JacORB's IFR explorer.
+#  
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+### store current ACS_INSTANCE
+ACE_INSTANCE_OLD=$ACS_INSTANCE
+COMMAND=`basename $0`
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=$ACS_INSTANCE
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:
+SHORTOPTS=hb:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Retruns Interface Repository information of a given IDL"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS] <IDL> "
+	echo "Options: "
+	echo "   -b | -baseport INSTANCE        the acs instance (0-9) where you want to check the IFR for the given definition"
+        echo "   -h | -help                     prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+export ACS_INSTANCE=$CL_BASEPORT
+
+# signal trap (if any)
+export HOST=`getIP`
+#Find the port number of the IR
+export ACS_IR_PORT=`getIRPort`
+
+if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
+  export IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository"
+else
+  export IRcorbaloc=$ACS_INTERFACE_REPOSITORY
+fi
+
+acsStartJava -DORBInitRef.InterfaceRepository=$IRcorbaloc org.jacorb.ir.QueryIR $*
+
+if [ $ACS_INSTANCE_OLD ]; then
+    export ACS_INSTANCE=$ACS_INSTANCE_OLD
+fi
+#
+# ___oOo___
