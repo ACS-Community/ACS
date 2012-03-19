@@ -56,6 +56,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -228,6 +229,10 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	
 	private final Object xmlNodeMonitor = new Object();
 	
+	private AtomicBoolean shutdown = new AtomicBoolean(false);
+	private AtomicLong lastSaveTime = new AtomicLong(0);
+	private AtomicBoolean saveRequest = new AtomicBoolean(false);
+	
 	/**
 	 * ctor that takes all command line args given to OracleServer
 	 * @param args
@@ -317,6 +322,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				System.exit(1);
 		}
 		
+		startRecoverySaver();
 		load();
 	}
 	
@@ -2953,6 +2959,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	 }
 
 	public void shutdown() {
+		shutdown.set(true);
 		orb.shutdown(false);
 	}
 
@@ -3087,54 +3094,105 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		}
 	}
 
+	static final long LISTENER_RECOVERY_FILE_SAVE_FREQ_MS = 10000;	// 10s
+	
+	private void startRecoverySaver()
+	{
+		if (lastSaveTime.compareAndSet(0, System.currentTimeMillis()))
+		{
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					saveLoop();
+				}
+			}, "recovery file saver").start();
+		}
+		
+	}
+	
+	private void saveLoop()
+	{
+		while (!shutdown.get())
+		{
+			// NOTE: solution with "sleep(LISTENER_RECOVERY_FILE_SAVE_FREQ_MS)"
+			// gives worst time of 2*LISTENER_RECOVERY_FILE_SAVE_FREQ_MS time between saves
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ie) { /* noop */ }
+			
+			long now = System.currentTimeMillis();
+			if ((now - lastSaveTime.get()) >= LISTENER_RECOVERY_FILE_SAVE_FREQ_MS)
+				saveListenersInternal();
+		}
+	}
+
 	/**
 	 * @return boolean
 	 */
 	public boolean saveListeners() {
-		String key, ior;
-		File storageFile = getStorageFile();
-		if (storageFile == null)
-			return false;
-		try {
-			OutputStream out = new FileOutputStream(storageFile);
-			//listenedCurls.store(new FileOutputStream(storageFile), "Listeners");
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-			// write listeners
-			synchronized (regListeners) {
-				Iterator reg = regListeners.keySet().iterator();
-				while (reg.hasNext()) {
-					Integer id = (Integer) reg.next();
-					writer.write(id.toString());
-					writer.newLine();
-					ior = orb.object_to_string(regListeners.get(id));
-					writer.write(ior);
-					writer.newLine();
-				}
-			}
-			// write listened curls
-			synchronized (listenedCurls) {
-				Iterator<String> iter = listenedCurls.keySet().iterator();
-				while (iter.hasNext()) {
-					key = iter.next();
-					ArrayList arr = listenedCurls.get(key);
-					if(arr.size() == 0 )
-						continue; // don't write curls without listeners
-					// separator
-					writer.newLine();
-					writer.write(key);
-					writer.newLine();
-					for (int i = 0; i < arr.size(); i++) {
-						writer.write(arr.get(i).toString());
+		saveRequest.set(true);
+		return true;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	private boolean saveListenersInternal() {
+		
+		synchronized (lastSaveTime)
+		{
+			if (!saveRequest.getAndSet(false))
+				return true;
+			
+			// set last time this method was called, also in case of failure
+			lastSaveTime.set(System.currentTimeMillis());
+			
+			String key, ior;
+			File storageFile = getStorageFile();
+			if (storageFile == null)
+				return false;
+			try {
+				OutputStream out = new FileOutputStream(storageFile);
+				//listenedCurls.store(new FileOutputStream(storageFile), "Listeners");
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+				// write listeners
+				synchronized (regListeners) {
+					Iterator reg = regListeners.keySet().iterator();
+					while (reg.hasNext()) {
+						Integer id = (Integer) reg.next();
+						writer.write(id.toString());
+						writer.newLine();
+						ior = orb.object_to_string(regListeners.get(id));
+						writer.write(ior);
 						writer.newLine();
 					}
 				}
+				// write listened curls
+				synchronized (listenedCurls) {
+					Iterator<String> iter = listenedCurls.keySet().iterator();
+					while (iter.hasNext()) {
+						key = iter.next();
+						ArrayList arr = listenedCurls.get(key);
+						if(arr.size() == 0 )
+							continue; // don't write curls without listeners
+						// separator
+						writer.newLine();
+						writer.write(key);
+						writer.newLine();
+						for (int i = 0; i < arr.size(); i++) {
+							writer.write(arr.get(i).toString());
+							writer.newLine();
+						}
+					}
+				}
+				writer.flush();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
 			}
-			writer.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			return true;
 		}
-		return true;
 	}
 
 	public int add_change_listener(DALChangeListener listener) {
