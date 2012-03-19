@@ -128,7 +128,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * Newly arrived logs are added to this vector and flushed into 
 	 * <code>rows</code> by the <code>TableUpdater</code> thread.
 	 */
-	protected Vector<ILogEntry> rowsToAdd = new Vector<ILogEntry>();
+	protected final Vector<ILogEntry> rowsToAdd = new Vector<ILogEntry>();
 	
 	/**
 	 * The thread to refresh the content of the table
