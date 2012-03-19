@@ -87,3 +87,23 @@
 1 -      Flow name: PIPO1
 1 -      Flow name: PIPO3
 1 - Parsing file: bdReceiverConfigs/receiverConfig-noStreamName.xml
+1 - Parsing file: bdReceiverConfigs/receiverConfig-differentNS-1.xml
+1 - Number of streams: 2
+1 -    Stream name: 'Name1'
+1 -    Number of flows: 2
+1 -      Flow name: Name5
+1 -      Flow name: Name3
+1 -    Stream name: 'Name7'
+1 -    Number of flows: 2
+1 -      Flow name: Name3
+1 -      Flow name: Name5
+1 - Parsing file: bdReceiverConfigs/receiverConfig-differentNS-2.xml
+1 - Number of streams: 2
+1 -    Stream name: 'Name1'
+1 -    Number of flows: 2
+1 -      Flow name: Name3
+1 -      Flow name: Name5
+1 -    Stream name: 'Name7'
+1 -    Number of flows: 2
+1 -      Flow name: Name3
+1 -      Flow name: Name5

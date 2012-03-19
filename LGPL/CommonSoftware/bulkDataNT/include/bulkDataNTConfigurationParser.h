@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.11 2012/01/19 13:58:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.12 2012/03/19 18:28:28 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,11 +47,12 @@ namespace AcsBulkdata
 	class XMLChSP {
 
 	public:
+		XMLChSP();
 		XMLChSP(char* xmlCh);
-
 		~XMLChSP();
-
 		char * get();
+		XMLChSP& operator=(const char*);
+		void release();
 
 	private:
 		char* xmlch_m;
