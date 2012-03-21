@@ -27,9 +27,8 @@ package alma.acs.util;
  */
 public class CmdLineOption
 {
-	protected String name;
-	protected String altName;
-		
+	protected final String name;
+	protected final String altName;
 	
 	CmdLineOption(String name) {
 		this(name, null);
@@ -44,11 +43,11 @@ public class CmdLineOption
 		this.altName = altName;
 	}
 	
-	String getName() {
+	public String getName() {
 		return name;
 	}
 	
-	String getAlternativeName() {
+	public String getAlternativeName() {
 		return altName;
 	}
 	
