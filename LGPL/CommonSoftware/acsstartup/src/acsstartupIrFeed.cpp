@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.8 2010/03/09 04:58:49 agrimstrup Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.9 2012/03/21 16:29:39 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.8 2010/03/09 04:58:49 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.9 2012/03/21 16:29:39 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -74,6 +74,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 using std::string;
 using std::list;
 using std::map;
+using std::multimap;
 using std::pair;
 using std::cout;
 
@@ -82,7 +83,7 @@ using std::cout;
  * to files list.
  */
 void addIdlFiles(std::string dirName,
-		 list<string> & files,
+		 map<string, string> & files,
 		 map<string, int> & seenFiles)
 {
     map<string, int>::iterator it;
@@ -112,7 +113,7 @@ void addIdlFiles(std::string dirName,
 	        if (t_file != "ACSIRSentinel.idl") {
 		    ret = seenFiles.insert(pair<string, int>(t_file, 0));
 	            if (ret.second == true) 
-		        files.push_back(t_file);
+					files.insert(pair<string, string>(t_file, dirName));
 		}
         } 
     }
@@ -123,11 +124,45 @@ void addIdlFiles(std::string dirName,
     closedir(dir);
 }
 
+int checkIncludeGuards(string idl, string idlPath, multimap<string, string> & includeGuards)
+{
+	string line, temp;
+	int offset;
+	if(idl == "ACSIRSentinel.idl")
+		return 0;
+	ifstream ifs((idlPath+string("/")+idl).c_str());
+	if(ifs.fail()) {
+		std::cout << "IDL file:\t'" << idl << "' was not found in '" << idlPath << "'" << std::endl;
+		return 1;
+	}
+	while(std::getline(ifs,line)) {
+		if((offset = line.find("#ifndef ")) != string::npos) {
+			temp = line.substr(offset+8);
+			while((offset = temp.find(" ")) != string::npos)
+				temp.erase(offset,1);
+			while((offset = temp.find("\t")) != string::npos)
+				temp.erase(offset,1);
+			pair<multimap<string, string>::iterator, multimap<string,string>::iterator> key = includeGuards.equal_range(temp);
+			if(key.first != key.second) {
+				std::cout << "IDL file:\t'" << idl << "' has include guard '" << key.first->first << "' already used in file(s): " << std::endl;
+				for(multimap<string, string>::iterator it = key.first; it != key.second; it++)
+					std::cout << "\t\t'" << it->second << "'" << std::endl;
+				includeGuards.insert(pair<string, string>(temp, idl));
+				return 2;
+			}
+			includeGuards.insert(pair<string, string>(temp, idl));
+			return 0;
+		}
+	}
+	std::cout << "IDL file:\t'" << idl << "' has no include guard" << std::endl;
+	return 3;
+}
+
 int main(int argc, char *argv[])
 {
-    list<string> idlFiles;
-
+    map<string, string> idlFiles;
     map<string, int> seenIdlFiles;
+    multimap<string, string> idlIncludeGuards;
     
     std::string aceRoot     = getenv("ACE_ROOT");
     std::string idlPath     = getenv("IDL_PATH");
@@ -182,7 +217,7 @@ int main(int argc, char *argv[])
         }
     }
  
-    idlFiles.push_back("ACSIRSentinel.idl");
+    idlFiles.insert(pair<string, string>("ACSIRSentinel.idl","."));
 
     file << "#ifndef acsIrfeedDyn_" << processId <<"_idl" << std::endl;
     file << "#define acsIrfeedDyn_" << processId <<"_idl" << std::endl;
@@ -202,10 +237,9 @@ int main(int argc, char *argv[])
     file << "#include <acserr.idl>" << std::endl;
     file << "" << std::endl;
 
-    while (idlFiles.empty() == false)
-	{
-	file << "#include <" << idlFiles.front() << ">" << std::endl;
-	idlFiles.pop_front();
+	for(map<string, string>::iterator it = idlFiles.begin(); it != idlFiles.end(); it++) {
+		checkIncludeGuards(it->first, it->second, idlIncludeGuards);
+		file << "#include <" << it->first << ">" << std::endl;
 	}
 
     for(int i=3 ; i < argc ;  i++)
