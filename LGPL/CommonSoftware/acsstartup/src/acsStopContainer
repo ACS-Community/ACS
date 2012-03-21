@@ -143,55 +143,66 @@ fi
 #maximum timeout for anything in this script to finish executing.
 MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 
+#------------------------------------------------------------------
+#finally we check to see if the container itself has really gone
+CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
+CONTAINER_PID_FILES=`ls $CONTAINER_PID_FILE 2> /dev/null| tr '\n' ' '`
+
 #try maciContainerShutdown command. 15 seconds should be more than
 #sufficient for this oneway command to run
 acsutilBlock -t $(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER )) -k maciContainerShutdown $@
 
+for i in $CONTAINER_PID_FILES; do
+    if [ -e $i ]; then
+        #get the PID
+        ACS_CONTAINER_PID=`cat $i`
+        #remove the file containing the PID
+        rm $i
+
+        #block until the container really goes away 
+        #or it times out. in the event of a timeout, let
+        #acsutilBlock kill the container
+        acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
+    fi
+done
+
 #------------------------------------------------------------------
-#finally we check to see if the container itself has really gone
-CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
+CONTAINER_TCP_FILE=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
+CONTAINER_NAMES=`echo $1 |sed s/\*/.*/g |sed "s/\?/.\\\\\{1\\\\\}/g"`
+LINES=`cat $CONTAINER_TCP_FILE | grep "^$CONTAINER_NAMES " 2> /dev/null`
 
-if [ -e $CONTAINER_PID_FILE ]
-then
-
-    #get the PID
-    ACS_CONTAINER_PID=`cat $CONTAINER_PID_FILE`
-    #remove the file containing the PID
-    rm $CONTAINER_PID_FILE
-
-    #block until the container really goes away 
-    #or it times out. in the event of a timeout, let
-    #acsutilBlock kill the container
-    acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
-
-else
-    #------------------------------------------------------------------
-    CONTAINER_TCP_FILE=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
-    LINE=`cat $CONTAINER_TCP_FILE | grep "$1 " 2> /dev/null`
-
-    #sanity check
-    if [ "$LINE" = "" ]
-	then
-	ACS_LOG_DEBUG "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
-	ACS_LOG_DEBUG "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
-	exit 1
+#sanity check
+if [ "$LINES" = "" ]; then
+    if [ "$CONTAINER_PID_FILES" = "" ]; then
+        ACS_LOG_DEBUG "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
+        ACS_LOG_DEBUG "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
     fi
-
-    CONTAINER_TCP=`echo $LINE | awk '{print $2}'`
-    CONTAINER_HOST=`echo $LINE | awk '{print $3}'`
-    THIS_HOST=`getIP`
-
-    #command used to kill the container
-    COMMAND="acsKillProc --port $CONTAINER_TCP"
-
-    if [ "$THIS_HOST" != "$CONTAINER_HOST" ] 
-    then
-	COMMAND="ssh $USER@$CONTAINER_HOST $COMMAND"
-    fi
-    
-    #sleep $MAX_TIMEOUT
-    if $COMMAND
-    then
-	ACS_LOG_ERROR "acsStopContainer" "The container, $1, hung and had to be killed. Please investigate!"
-    fi
+    exit 1
 fi
+IFS=$'\n'
+for LINE in $LINES; do
+    IFS=$' '
+    CONTAINER_NAME=`echo $LINE | awk '{print $1}'`
+    KILLED_CONTAINER=`echo $CONTAINER_PID_FILES |sed s/:/"\/"/g |grep "\/${CONTAINER_NAME}_PID"`
+    if [ "$KILLED_CONTAINER" = "" ]; then
+        CONTAINER_TCP=`echo $LINE | awk '{print $2}'`
+        CONTAINER_HOST=`echo $LINE | awk '{print $3}'`
+        THIS_HOST=`getIP`
+
+        #command used to kill the container
+        COMMAND="acsKillProc --port $CONTAINER_TCP"
+
+        if [ "$THIS_HOST" != "$CONTAINER_HOST" ] 
+        then
+            COMMAND="ssh $USER@$CONTAINER_HOST $COMMAND"
+        fi
+        
+        #sleep $MAX_TIMEOUT
+        if $COMMAND
+        then
+            ACS_LOG_ERROR "acsStopContainer" "The container, $CONTAINER_NAME, hung and had to be killed. Please investigate!"
+        fi
+    fi
+    IFS=$'\n'
+done
+#fi
