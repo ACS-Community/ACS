@@ -73,7 +73,7 @@ public class ComponentClient
     
     final boolean ownAcsCorba;
 
-    private ShutdownHookBase m_shutdownHook;
+    protected ShutdownHookBase m_shutdownHook;
     final private AtomicBoolean m_shuttingDown = new AtomicBoolean(false);
 
 
@@ -154,6 +154,17 @@ public class ComponentClient
 			initRemoteLogging();
 		}
 
+		registerShutdownHook();
+		
+		m_logger.fine("ready to talk with components!");
+	}
+
+
+	/**
+	 * Default shutdown hook is used to complain if the application forgot to call tearDown().
+	 * Can overwrite this, e.g. for cmd line tools. 
+	 */
+	protected void registerShutdownHook() {
 		m_shutdownHook = new ShutdownHookBase(m_logger, "ClientVM") {
 			protected void interruptDetected() {
 				try {
@@ -169,7 +180,6 @@ public class ComponentClient
 			}
 		};
 		Runtime.getRuntime().addShutdownHook(m_shutdownHook);
-		m_logger.fine("ready to talk with components!");
 	}
 
 	private void initAcs(String managerLoc, POA rootPOA) throws Exception
