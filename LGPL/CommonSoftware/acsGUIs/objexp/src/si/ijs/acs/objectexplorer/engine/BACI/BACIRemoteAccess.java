@@ -73,6 +73,7 @@ import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.UTCUtility;
+import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
 import alma.maciErrType.ComponentDeactivationUncleanEx;
@@ -2240,9 +2241,23 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
         /* 
          * We wrap into a specific exception and report up
          */
-		catch(Throwable e)
+		catch(CannotGetComponentEx e)
 		{
 			notifier.reportError("Connection to component '" + curl + "' failed.");
+			AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
+			acsjex.setCurl(curl);
+			throw acsjex;
+		}
+		catch(org.omg.CORBA.TRANSIENT e)
+		{
+			notifier.reportError("Connection to component '" + curl + "' failed.\nCouldn't connect to the manager.");
+			AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
+			acsjex.setCurl(curl);
+			throw acsjex;
+		}
+		catch(Throwable e)
+		{
+			notifier.reportError("Connection to component '" + curl + "' failed.\nUnknown Reason.");
 
 		    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
 		    acsjex.setCurl(curl);
