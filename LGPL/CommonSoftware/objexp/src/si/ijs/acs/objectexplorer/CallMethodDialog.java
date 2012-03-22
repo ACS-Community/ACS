@@ -210,7 +210,19 @@ private void generateSingleField(DataType type, String name) {
 			tempField = getParameterField(index);
 		} else
 			if (type.isArray()) {
-				typeName = "Array of " + type.getComponentType().toString();
+				switch(type.getArrayType()) {
+					case USEQ:
+						typeName = "USeq of " + type.getComponentType().toString();
+						break;
+					case BSEQ:
+						typeName = "BSeq of " + type.getComponentType().toString() + ": " + type.getArrayLength();
+						break;
+					case ARRAY:
+						typeName = "Array of " + type.getComponentType().toString() + ": " + type.getArrayLength();
+						break;
+					default:
+						System.out.println("Unexpected array type" + type.getArrayType());
+				}
 				getJPanel1().add(getTypeLabel(index, typeName), con2);
 				if ((type.getComponentType().isPrimitive())
 					|| ((typeName.indexOf("java.lang.") > -1)
@@ -872,6 +884,20 @@ private Object readSingleParameter(DataType type) throws ParseException {
 				if (type.isArray()) {
 					if ((type.getComponentType().isPrimitive()) || ((type.getName().indexOf("java.lang.") > -1) && (type.getName().indexOf("java.lang.Object") == -1))) {
 						param = arrayConvert(((JTextPane)parameterFields[index]).getText(), type.getType());
+						switch(type.getArrayType()) {
+							case USEQ:
+								break;
+							case BSEQ:
+								if(Array.getLength(param) > type.getArrayLength())
+									throw new IllegalArgumentException("The given sequence has more elements than the maximum size of the bounded sequence ("+type.getArrayLength()+")");
+								break;
+							case ARRAY:
+								if(Array.getLength(param) != type.getArrayLength())
+									throw new IllegalArgumentException("The given array has a different number of elements than array size ("+type.getArrayLength()+")");
+								break;
+							default:
+								System.out.println("Unexpected array type" + type.getArrayType());
+						}
 						index = index + 1;
 					} else {
 						param = java.lang.reflect.Array.newInstance(type.getComponentType().getType(),2);

@@ -6,6 +6,8 @@ import si.ijs.acs.objectexplorer.engine.DataElement;
 public class BACIDataType implements DataType {
 	private Class type;
 	private DataElement el = null;
+	private ArrayTypes arrayType = ArrayTypes.NOT;
+	private int arrayLength = -1;
 	public BACIDataType(Class type) {
 		this.type = type;
 	}
@@ -35,5 +37,27 @@ public class BACIDataType implements DataType {
 	}
 	public void setElement(DataElement el) {
 		this.el = el;
+	}
+	public void setArrayType(String type) {
+		if(type == null) {
+			arrayType = ArrayTypes.NOT;
+			arrayLength = -1; //Not an array.
+		} else if(type.equals("U")) {
+			arrayType = ArrayTypes.USEQ;
+			arrayLength = 0; //Unbounded sequence.
+		} else if(type.matches("B\\d+")) {
+			arrayType = ArrayTypes.BSEQ;
+			arrayLength = Integer.parseInt(type.substring(1)); //Bounded sequence
+		} else if(type.matches("A\\d+")) {
+			arrayType = ArrayTypes.ARRAY;
+			arrayLength = Integer.parseInt(type.substring(1)); //Array
+		} else
+			System.out.println("Incorrect arrayType: " + arrayType);
+	}
+	public ArrayTypes getArrayType() {
+		return arrayType;
+	}
+	public int getArrayLength() {
+		return arrayLength;
 	}
 }

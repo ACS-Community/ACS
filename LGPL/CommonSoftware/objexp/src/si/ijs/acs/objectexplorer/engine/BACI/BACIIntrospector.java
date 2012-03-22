@@ -614,6 +614,7 @@ public BACIOperation[] getOperations(BACIRemote target) {
 			names[j] = ps[j].name;
 			types[j] = new BACIDataType(getClassType(ps[j].type));
 			types[j].setElement(getDef(ps[j].type));
+			types[j].setArrayType(getArrayType(ps[j].type));
 			if (isOfType(ps[j].type, ID_CALLBACK)) 
 			{
 				if (cb != -1) throw new IntrospectionInconsistentException("Operation '" + operations[i].name + "' declares more than one callback parameter.");
@@ -1006,6 +1007,40 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 		} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	private String getArrayType(TypeCode tc) {
+		int value = tc.kind().value();
+		switch(value) {
+			case TCKind._tk_alias:
+				try {
+					return getArrayType(tc.content_type());
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				}
+			case TCKind._tk_sequence:
+				try {
+					if(tc.length() == 0)
+						return "U";
+					else
+						return ("B"+tc.length());
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				}
+			case TCKind._tk_array:
+				try {
+					return ("A"+tc.length());
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				}
+			default:
+				//Other types should have no array type.
+				//System.out.println("Type not supported: "+value);
+				return null;
 		}
 	}
 
