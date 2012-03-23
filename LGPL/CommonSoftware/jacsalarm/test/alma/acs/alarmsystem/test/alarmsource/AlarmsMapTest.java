@@ -22,6 +22,7 @@
 package alma.acs.alarmsystem.test.alarmsource;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
@@ -34,6 +35,12 @@ import alma.acs.component.client.ComponentClientTestCase;
  * <P>
  * The test is done entirely by junit by
  * means of assert.
+ * <P>
+ * <B>Note</B>: this test create and test an instrumented {@link AlarmsMap},
+ * i.e. a {@link AlarmsMapWithDump}.
+ * The {@link ComponentClientTestCase} initialize the alarm system
+ * and during the initialization, it creates a {@link AlarmsMap} too, but this
+ * is not the instance that this test checks.
  * 
  * @author acaproni
  *
@@ -93,6 +100,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		alarmsMap.shutdown();
+		alarmsMap=null;
 		super.tearDown();
 	}
 	
@@ -108,6 +116,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		assertEquals(10, alarmsMap.size());
 		alarmsMap.clear();
 		assertEquals(0, alarmsMap.size());
+		System.out.println("testClearMap done");
 	}
 	
 	/**
@@ -126,9 +135,13 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		for (int t=0; t<10; t++) {
 			alarmsMap.raise(keyBase+t);
 		}
+		Date d = new Date(System.currentTimeMillis());
 		assertEquals(alarmsMap.dump().toString(),10, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
-		assertEquals(0, alarmsMap.size());
+		// This sleep must be so long otherwise there is a unlucky case
+		// that some alarms are still in the queue
+		Thread.sleep(2*AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
+		d = new Date(System.currentTimeMillis());
+		assertEquals(d.toString()+"The map should be empty at this time....",0, alarmsMap.size());
 		// Now check if the timer selectively removes items
 		for (int t=0; t<10; t++) {
 			alarmsMap.raise(keyBase+t);
@@ -142,6 +155,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		assertEquals(alarmsMap.dump().toString(),20, alarmsMap.size());
 		Thread.sleep(2*AlarmsMap.ALARM_ACTIVITY_TIME*1000+3000);
 		assertEquals(alarmsMap.dump().toString(),0, alarmsMap.size());
+		System.out.println("testAutoRemoval done");
 	}
 	
 	/**
@@ -167,6 +181,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 			assertTrue("Key not in the map", alarmsMap.containsKey(keyBase+t));
 		}
 		assertEquals(11, alarmsMap.size());
+		System.out.println("testRaise done");
 	}
 	
 	/**
@@ -192,6 +207,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 			assertTrue("Key not in the map", alarmsMap.containsKey(keyBase+t));
 		}
 		assertEquals(11, alarmsMap.size());
+		System.out.println("testClear done");
 	}
 	
 	/**
@@ -217,6 +233,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		assertNotNull(info2);
 		assertTrue("The alarm shoud be active",info2.active);
 		assertTrue("time not updated", info.time!=info2.time);
+		System.out.println("testAlarmUpdate done");
 	}
 	
 	/**
@@ -241,6 +258,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		for (String active: actives) {
 			assertTrue(alarmsMap.get(active).active);
 		}
+		System.out.println("testAlarmReplacement done");
 	}
 
 }
