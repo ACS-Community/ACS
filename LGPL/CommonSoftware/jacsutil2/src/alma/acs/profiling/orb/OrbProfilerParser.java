@@ -33,7 +33,7 @@ import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 
 /**
- * Parser for output from {@link ORBRequestTimer} and also for additional profiler output 
+ * Parser for output from {@link AcsORBProfilerImplBase} and also for additional profiler output 
  * to be generated in the future.
  * @author hsommer
  */
@@ -119,22 +119,24 @@ public class OrbProfilerParser
 					// threadPoolSizeChanged: poaName=null, idleThreads=4, totalThreads=5, maxThreads=20
 	
 				}
-				else if (words[3].equals("requestStarted")) {
-					// 2011-09-12T15:40:47.568 INFO [CDB-RDB] requestStarted(1, dalPOA, _is_a)
+				else if (words[1].equals("requestStarted")) {
+					// 2012-03-20T16:47:58.833 requestStarted(30, dalPOA, get_string, 23)
 					ret = new ProfilerMessage(ProfilerMessage.Type.REQUEST_STARTED);
 					ret.timestamp = IsoDateFormat.parseIsoTimestamp(words[0]).getTime();
-					ret.requestId = Integer.parseInt(words[4]);
-					ret.poaName = words[5];
-					ret.operation = words[6];
+					ret.requestId = Integer.parseInt(words[2]);
+					ret.poaName = words[3];
+					ret.operation = words[4];
+					ret.threadId = Long.parseLong(words[5]);
 				}
-				else if (words[3].equals("requestFinished")) {
-					// 2011-09-12T15:40:47.572 INFO [CDB-RDB] requestFinished(1, dalPOA, _is_a) in 4 ms
+				else if (words[1].equals("requestFinished")) {
+					// 2012-03-20T16:47:58.833 requestFinished(30, dalPOA, get_string, 23) in 0 ms
 					ret = new ProfilerMessage(ProfilerMessage.Type.REQUEST_FINISHED);
 					ret.timestamp = IsoDateFormat.parseIsoTimestamp(words[0]).getTime();
-					ret.requestId = Integer.parseInt(words[4]);
-					ret.poaName = words[5];
-					ret.operation = words[6];
-					ret.timeElapsedMillis = Integer.parseInt(words[8]);
+					ret.requestId = Integer.parseInt(words[2]);
+					ret.poaName = words[3];
+					ret.operation = words[4];
+					ret.threadId = Long.parseLong(words[5]);
+					ret.timeElapsedMillis = Integer.parseInt(words[7]);
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
