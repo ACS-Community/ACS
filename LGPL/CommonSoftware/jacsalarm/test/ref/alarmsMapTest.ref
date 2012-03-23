@@ -5,6 +5,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] Alarm system type: ACS
 1 - testClearMap
+1 - testClearMap done
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] -------------------------------
@@ -13,6 +14,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] Alarm system type: ACS
 1 - testAutoRemoval
+1 - testAutoRemoval done
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] -------------------------------
@@ -21,6 +23,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] Alarm system type: ACS
 1 - testRaise
+1 - testRaise done
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] -------------------------------
@@ -29,6 +32,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] Alarm system type: ACS
 1 - testClear
+1 - testClear done
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] -------------------------------
@@ -37,6 +41,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] Alarm system type: ACS
 1 - testAlarmUpdate
+1 - testAlarmUpdate done
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] -------------------------------
@@ -44,8 +49,9 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] Alarm system type: ACS
-1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] about to log out from manager...
 1 - testAlarmReplacement
+1 - testAlarmReplacement done
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] logged out from manager.
 1 - 
 1 - 
