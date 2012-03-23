@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.22 2012/03/22 20:31:26 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.23 2012/03/23 13:28:16 tstaig Exp $"
 #
 # Makefile of Object Explorer
 #
@@ -32,10 +32,6 @@ oe_EXTRAS = device.gif domain.gif invocation.gif property.gif type.gif
 oe_JLIBS=objexpErrType
 
 ACSERRDEF = objexpErrType
-
-IDL_FILES = objexpTypesTest
-COMPONENT_HELPERS=on
-objexpTypesTestStubs_LIBS = acscomponentStubs
 
 #
 # Scripts (public and local)
