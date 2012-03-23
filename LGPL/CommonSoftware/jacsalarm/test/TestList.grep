@@ -26,3 +26,4 @@ successfully activated offshoot of type
 successfully deactivated offshoot of type
 ACS.log.minlevel.namedloggers not defined
 Using endorsed jar files in
+Caught a ConcurrentModificationException from ORB shutdown. This should be harmless
