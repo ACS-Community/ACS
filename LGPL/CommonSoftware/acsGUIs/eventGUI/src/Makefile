@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2010/06/30 15:19:08 jschwarz Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/03/26 12:56:11 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -203,6 +203,26 @@ endif
 #
 # TARGETS
 # -------
+#
+
+# Determine the host architecture and use it to decide which version of the
+# product should we install
+ARCH=$(shell getconf LONG_BIT)
+
+# We only support 32 and 64 bits builds
+ifneq ($(ARCH),32)
+ifneq ($(ARCH),64)
+	$(error Unsupported architecture: "$(ARCH)")
+endif
+endif
+
+# Deduce the zipfile suffix
+ifeq ($(ARCH), 32)
+   ZIP_SUFFIX=x86
+else
+   ZIP_SUFFIX=x86_64
+endif
+
 all:	do_all
 	ant init createJarsPlugin pde-build
 	@echo " . . . 'all' done" 
@@ -221,7 +241,7 @@ install : install_all
 	@INSTALL_DIR=$$(searchFile bin/eventGUI); \
 	 cd $$INSTALL_DIR/lib; \
 	 rm -rf ACS_eventGUI; \
-	 unzip -o $(PWD)/../object/headlessTemp/I.eventGUIBuild/eventGUIBuild-linux.gtk.x86.zip; \
+	 unzip -o $(PWD)/../object/headlessTemp/I.eventGUIBuild/eventGUIBuild-linux.gtk.$(ZIP_SUFFIX).zip; \
 	 cd ACS_eventGUI; \
 	 acsdata=$$(echo $$ACSDATA | sed s/\\//\\\\\\\//g); \
 	 sed s/ACSDATA-DIR/$$acsdata/g eventGUI.ini > eventGUI.ini.new; \
