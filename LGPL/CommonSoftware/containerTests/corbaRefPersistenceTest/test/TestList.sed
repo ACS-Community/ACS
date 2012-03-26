@@ -30,3 +30,4 @@ s/Time: .*/Time: xxx/g
 s/LoggingChannelBin/LogChannel_Name/g
 s/LoggingChannel/LogChannel_Name/g
 s/Manager login done.*/Manager login donee, handle 'xxxxxxxxxx' obtained./g
+s/: initialized by \w*@\w*//g
