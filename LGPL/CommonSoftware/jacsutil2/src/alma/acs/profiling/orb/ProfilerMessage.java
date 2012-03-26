@@ -29,6 +29,7 @@ public class ProfilerMessage implements Comparable<ProfilerMessage>
 	final Type type;
 	long timestamp;
 	int requestId;
+	long threadId; // When a thread is terminated, its thread ID may be reused.
 	String poaName;
 	// todo fields for pool/queue sizes
 	String operation;
