@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: alarmSourceTest.cpp,v 1.1 2011/06/22 21:51:40 acaproni Exp $"
+* "@(#) $Id: alarmSourceTest.cpp,v 1.2 2012/03/27 07:31:50 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,10 +77,8 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 
 	void tearDown()
 	{
-		std::cout<<"tearDown"<<std::endl;
 		alarmSource->tearDown();
 		ACSAlarmSystemInterfaceFactory::done();
-		std::cout<<"tearDown ACSAlarmSystemInterfaceFactory closed"<<std::endl;
 	}
 
 	/**
@@ -107,6 +105,7 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		for (int t=11; t<20; t++) {
 			alarmSource->setAlarm(ff,fm,t,t%2==0);
 		}
+		sleep(5);
 	}
 
 	/**
@@ -128,6 +127,10 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		alarmSource->enableAlarms();
 		// Send an alarm to check that the sending is working (this must appear)
 		alarmSource->raiseAlarm(ff,fm,1);
+		// Clear the alarms
+		alarmSource->clearAlarm(ff,fm,0);
+		alarmSource->clearAlarm(ff,fm,1);
+		sleep(5);
 	}
 
 	/**
@@ -156,7 +159,7 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		std::cout<<"testAlarmQueuing: sending an alarm without queuing"<<std::endl;
 		// This alarm will be sent immediately
 		alarmSource->raiseAlarm(ff,fm,1);
-
+		sleep(5);
 	}
 
 	/**
@@ -196,12 +199,17 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		std::string fm="AlarmTerminateAllFM";
 
 		// Send several alarms with set several times
-		for (int j=0; j<5; j++) {
-			for (int t=0; t<10; t++) {
-				alarmSource->setAlarm(ff,fm,t,t%2==0);
-			}
+		std::cout<<"Activating 10 alarms"<<std::endl;
+		for (int t=0; t<10; t++) {
+			alarmSource->raiseAlarm(ff,fm,t);
 		}
+		std::cout<<"Terminating alarm with code 5"<<std::endl;
+		// Remove alarm 5 to be sure it is not cleared again
+		alarmSource->clearAlarm(ff,fm,5);
+		sleep(3);
+		std::cout<<"Terminating all alarms i.e [0-4]+[6-9]"<<std::endl;
 		alarmSource->terminateAllAlarms();
+		sleep(5);
 	}
 
 	private:
@@ -215,9 +223,20 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AlarmSourceTestCase);
 
 int main(int argc, char *argv[])
 {
+	LoggingProxy::ProcessName("AlarmSourceTestCase");
+    LoggingProxy *m_logger = new LoggingProxy (0, 0, 31, 0);
+    LoggingProxy::init (m_logger);
+    ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created."));
+
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest( AlarmSourceTestCase::suite() );
 	runner.run();
+
+	ACS_SHORT_LOG((LM_INFO, "Flushing logs."));
+	m_logger->flush();
+	LoggingProxy::done();
+    delete m_logger;
+
 	return 0;
 }
 
