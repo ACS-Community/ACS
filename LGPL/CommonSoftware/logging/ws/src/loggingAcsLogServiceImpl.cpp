@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingAcsLogServiceImpl.cpp,v 1.14 2009/09/04 21:32:29 javarias Exp $"
+* "@(#) $Id: loggingAcsLogServiceImpl.cpp,v 1.15 2012/03/27 08:12:13 bjeram Exp $"
 */
 
 #include <typeinfo>
@@ -53,8 +53,14 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
          /*block until loggingSupplier_ is ready*/
          loggingSupplier_->send_event(logging_event);
       }catch(::CORBA::TRANSIENT &ex){
+    	  printf("Caught CORBA::TRANSIENT when invoking loggingSupplier_->send_event(logging_event) Length: %d\n", reclist->length());
          /*if the Notify Service is down the log records will be lost*/
+      }catch(::CORBA::SystemException &ex){
+    	  printf("Caught CORBA::SystemException: %s when invoking loggingSupplier_->send_event(logging_event) Length: %d\n", ex._info().c_str(), reclist->length());
+      }catch(...){
+    	  printf("Caught unknwon when invoking loggingSupplier_->send_event(logging_event) Length: %d\n", reclist->length());
       }
+
    }
    /*otherwise, send the log Records one by one*/
    else{
@@ -63,6 +69,11 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
          try{
             loggingSupplier_->send_event (logging_event);
          }catch(::CORBA::TRANSIENT &ex){
+        	 printf("Cought CORBA::TRANSIENT loggingSupplier_->send_event(logging_event).\n");
+         }catch(::CORBA::SystemException &ex){
+       	  printf("Caught CORBA::SystemException: %s when invoking loggingSupplier_->send_event(logging_event). \n", ex._info().c_str());
+         }catch(...){
+       	  printf("Caught unknwon when invoking loggingSupplier_->send_event(logging_event).\n");
          }
       }
    }
@@ -135,6 +146,7 @@ add(const ::Logging::XmlLogRecordSeq *reclist)
       waitCond_.signal();
 		while (size_ > 100 * BATCH_LEN)
 		{
+			usleep(1);
 			/*if the size of the batch is huge, wait for flush*/
 		}
    }
