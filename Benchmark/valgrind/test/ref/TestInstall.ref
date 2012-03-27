@@ -42,7 +42,7 @@
 1 -                               [use current 'ulimit' value]
 1 - 
 1 -   user options for Valgrind tools that replace malloc:
-1 -     --alignment=<number>      set minimum alignment of heap allocations [8]
+1 -     --alignment=<number>      set minimum alignment of heap allocations XX
 1 - 
 1 -   uncommon user options for all Valgrind tools:
 1 -     --fullpath-after=         (with nothing after the '=')
