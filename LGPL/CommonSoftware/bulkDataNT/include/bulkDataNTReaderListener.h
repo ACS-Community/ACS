@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.21 2012/01/27 14:28:51 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.22 2012/03/27 14:45:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,6 +49,14 @@ public:
 
   //destructor
   virtual ~BulkDataNTReaderListener (void);
+
+  /// Enables calling user's CB (cbStart, cbReceiver, cbStop)
+  void enableCallCB();
+
+  /// Disables calling user's CB (cbStart, cbReceiver, cbStop)
+  void disableCallCB();
+
+  // implementation of methods from #DDS::DataReaderListener
 
   virtual void on_requested_deadline_missed (DDS::DataReader* reader, const DDS::RequestedDeadlineMissedStatus& status);
     
@@ -88,8 +96,9 @@ private:
 
   ACSBulkData::BulkDataNTFrameDataReader *frameDataReader_mp; /// pointer to DDS reader
 
-   // pointer to user defined callback
-  BulkDataNTCallback* callback_mp;
+
+  BulkDataNTCallback* callback_mp; /// pointer to user defined callback
+  bool enableCB_m;  /// should be called user's callback or not ?
 
   ACE_Time_Value cbReceiveStartTime_m;  /// time just be4 cbReceive is going to be executed
   ACE_Time_Value cbReceiveElapsedTime_m;  /// elapsed time of cbReceive

@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.49 2012/02/03 15:33:06 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.50 2012/03/27 14:45:37 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTC
   dataLength_m(0),
   frameCounter_m(0),
   totalFrames_m(0),
-  callback_mp (cb)
+  callback_mp (cb), enableCB_m(true)
 {
   ACS_TRACE(__FUNCTION__);
   nextFrame_m=0;
@@ -102,7 +102,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                       frameCounter_m = 0;
                       currentState_m = DataRcvState;
                       message.data.to_array(tmpArray, message.data.length());
-                      BDNT_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) )
+                      if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) ) }
                       conseqErrorCount_m=0;
                     }
                   else //error
@@ -175,7 +175,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
                       cbReceiveStartTime_m = ACE_OS::gettimeofday();
                       message.data.to_array(tmpArray, message.data.length());
-                      BDNT_LISTENER_USER_ERR( callback_mp->cbReceive(tmpArray, message.data.length()) )
+                      if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbReceive(tmpArray, message.data.length()) ) }
                       conseqErrorCount_m=0;
                       cbReceiveElapsedTime_m = ACE_OS::gettimeofday() - cbReceiveStartTime_m;
                       cbReceiveElapsedTimeSec_m = cbReceiveElapsedTime_m.sec() + (cbReceiveElapsedTime_m.usec() / 1000000.0);
@@ -243,7 +243,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                           }//if-else
                       }
                   // in all above warning/error case we call  user's cbStop()
-                  BDNT_LISTENER_USER_ERR( callback_mp->cbStop() )
+                  if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbStop() ) }
                   conseqErrorCount_m=0;
                   break;
                 }//case ACSBulkData::BD_STOP
@@ -351,3 +351,18 @@ void BulkDataNTReaderListener::increasConseqErrorCount()
     }
 }//increasConseqErroCount
 
+void BulkDataNTReaderListener::enableCallCB()
+{
+	enableCB_m=true;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+			(LM_INFO, "Calling user's CB for flow: %s of the stream: %s has been ENABLED.",
+					callback_mp->getFlowName(), callback_mp->getStreamName()));
+}//enableCallCB
+
+void BulkDataNTReaderListener::disableCallCB()
+{
+	enableCB_m=true;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+			(LM_INFO, "Calling user's CB for flow: %s of the stream: %s has been DISABLED.",
+					callback_mp->getFlowName(), callback_mp->getStreamName()));
+}//disableCallCB
