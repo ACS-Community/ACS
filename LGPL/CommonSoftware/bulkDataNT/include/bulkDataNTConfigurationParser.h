@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.12 2012/03/19 18:28:28 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.13 2012/03/27 12:54:00 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -132,6 +132,8 @@ namespace AcsBulkdata
 		void cleanSenderConfigs();
 
 		void cleanConfig(ReceiverCfg *recvConfig, SenderCfg *senderConfig, ParsingType type);
+
+		std::string getElementLocalName(xercesc::DOMNode *node);
 
 	public:
 

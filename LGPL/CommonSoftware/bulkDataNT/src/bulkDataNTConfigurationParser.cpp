@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.31 2012/03/19 18:28:28 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.32 2012/03/27 12:54:00 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -118,7 +118,6 @@ BulkDataConfigurationParser::BulkDataConfigurationParser(const char *baseLibrary
 	m_parser = new XercesDOMParser();
 	m_parser->useScanner(XMLUni::fgWFXMLScanner); // just this, we don't need more than well-formedness checking
 	m_parser->setValidationScheme(XercesDOMParser::Val_Always);
-	m_parser->setDoNamespaces(true);
 
 }
 
@@ -174,6 +173,21 @@ void BulkDataConfigurationParser::parseReceiverConfig(const char *config) {
 	parseConfig(config, RECEIVER_PARSING_INFO);
 }
 
+string BulkDataConfigurationParser::getElementLocalName(DOMNode *node) {
+
+	XMLChSP nodeName = XMLString::transcode(node->getLocalName());
+	if( nodeName.get() == 0 )
+		nodeName = XMLString::transcode(node->getNodeName());
+
+	string nodeNameS = nodeName.get();
+	size_t pos = nodeNameS.find(':');
+	if( pos != string::npos ) {
+		return nodeNameS.substr(pos+1, nodeNameS.length() - pos);
+	}
+
+	return nodeName.get();
+}
+
 void BulkDataConfigurationParser::parseConfig(const char *config, const struct ParsingInfo &parsingInfo)
 {
 
@@ -220,11 +234,8 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 		if( streamNode->getNodeType() != DOMNode::ELEMENT_NODE )
 			continue;
 
-		XMLChSP nodeName = XMLString::transcode(streamNode->getLocalName());
-		if( nodeName.get() == 0 )
-			nodeName = XMLString::transcode(streamNode->getNodeName());
-
-		if( ACE_OS::strncmp(nodeName.get(), parsingInfo.reqStreamNodeName, ACE_OS::strlen(parsingInfo.reqStreamNodeName)) != 0 ) {
+		string nodeName = getElementLocalName(streamNode);
+		if( ACE_OS::strncmp(nodeName.c_str(), parsingInfo.reqStreamNodeName, ACE_OS::strlen(parsingInfo.reqStreamNodeName)) != 0 ) {
 			// Don't throw exception, just continue parsing
 			// The XML document might specify other things which are of no interest to us
 			continue;
@@ -280,12 +291,9 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 			if( streamChildNode->getNodeType() != DOMNode::ELEMENT_NODE )
 				continue;
 
-			XMLChSP childNodeName = XMLString::transcode(streamChildNode->getLocalName());
-			if( childNodeName.get() == 0 )
-				childNodeName = XMLString::transcode(streamChildNode->getNodeName());
-
 			// The Sender/ReceiverStreamQoS is appended to the str:// URI
-			if( ACE_OS::strcmp(childNodeName.get(), parsingInfo.reqStreamQoSNodeName) == 0 ) {
+			string childNodeName = getElementLocalName(streamChildNode);
+			if( ACE_OS::strcmp(childNodeName.c_str(), parsingInfo.reqStreamQoSNodeName) == 0 ) {
 
 				try {
 					if( parsingInfo.type == SENDER )
@@ -313,7 +321,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 			}
 
 			// Process the Flow nodes
-			else if( ACE_OS::strncmp(childNodeName.get(), parsingInfo.reqFlowNodeName, ACE_OS::strlen(parsingInfo.reqFlowNodeName)) == 0 ) {
+			else if( ACE_OS::strncmp(childNodeName.c_str(), parsingInfo.reqFlowNodeName, ACE_OS::strlen(parsingInfo.reqFlowNodeName)) == 0 ) {
 
 				const XMLCh * flowNameCh = getAttrValue(streamChildNode, "Name");
 				if( flowNameCh == 0 ) {
@@ -382,13 +390,11 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 					if( childFlowNode->getNodeType() != DOMNode::ELEMENT_NODE )
 						continue;
 
-					XMLChSP childFlowNodeName = XMLString::transcode(childFlowNode->getLocalName());
-					if( childFlowNodeName.get() == 0 )
-						childFlowNodeName = XMLString::transcode(childFlowNode->getNodeName());
-					if( ACE_OS::strcmp(childFlowNodeName.get(), parsingInfo.reqFlowQoSNodeName) != 0 ) {
+					string childFlowNodeName = getElementLocalName(childFlowNode);
+					if( ACE_OS::strcmp(childFlowNodeName.c_str(), parsingInfo.reqFlowQoSNodeName) != 0 ) {
 
 						stringstream s;
-						s << "Node name is different from '" << parsingInfo.reqFlowQoSNodeName << "': " << childFlowNodeName.get();
+						s << "Node name is different from '" << parsingInfo.reqFlowQoSNodeName << "': " << childFlowNodeName.c_str();
 
 						CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 						cdbProblemEx.setDetail(s.str().c_str());
