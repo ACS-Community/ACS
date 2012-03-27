@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.21 2012/01/19 13:18:27 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.22 2012/03/27 12:53:04 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,6 +114,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 			if(ACE_OS::strcmp(buf, "") != 0) {
 
 				ACE_Tokenizer addressToken(buf);
+				addressToken.delimiter('/');
 				defaultFlowsCount_m = 0;
 				while( addressToken.next() != 0 )
 					defaultFlowsCount_m++;
@@ -370,8 +371,8 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 
 		// Add the specified of flows
 		for(int i=0; i < defaultFlowsCount_m; i++) {
-			std::stringstream s("Flow");
-			s << i;
+			std::stringstream s;
+			s << "Flow" << i;
 			stream->createFlow(s.str().c_str());
 		}
 	}
