@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: CERNAlarmTestReceiver.py,v 1.1 2010/06/09 02:25:17 agrimstrup Exp $"
+# "@(#) $Id: CERNAlarmTestReceiver.py,v 1.2 2012/03/27 10:15:34 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@ msgCount = 0
 
 def alarmDataHandler(some_param):
     global msgCount
-    #print msgCount, some_param.text
+    print "Msg received",msgCount, some_param.text
     if some_param.text.find("<fault-state family=\"Mount\" member=\"ALARM_SOURCE_MOUNT\" code=\"1\">")!=-1:
         msgCount += 1
     return
