@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.cpp,v 1.3 2011/06/27 20:26:35 javarias Exp $"
+* "@(#) $Id: AlarmsMap.cpp,v 1.4 2012/03/27 07:26:06 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.3 2011/06/27 20:26:35 javarias Exp $"; 
+static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.4 2012/03/27 07:26:06 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <ctime>
@@ -62,7 +62,8 @@ AlarmInfo::AlarmInfo(const AlarmInfo& ai)
 
 
 AlarmsMap::AlarmsMap():
-		ACS::Thread("AlarmsMap", 10000000, 10000000)
+		ACS::Thread("AlarmsMap", 10000000, 10000000),
+		m_closed(false)
 {
 }
 
@@ -102,6 +103,7 @@ bool AlarmsMap::alarmSet(std::string alarmID, bool state)
 void AlarmsMap::start()
 {
 	alarmsMap.clear();
+	m_closed=false;
 	// Start the thread
 	resume();
 }
