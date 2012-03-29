@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.49 2012/01/20 22:07:43 tstaig Exp $"
+# "@(#) $Id: acsStart,v 1.50 2012/03/29 15:58:00 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -93,7 +93,7 @@ function printUsage {
    echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
    echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
    echo "        -nowaitifr                  does not wait for the CORBA Interface Repository to load before returning"
-   echo "        -noloadifr                  does not load the CORBA Interface Repository before returning"
+   echo "        -noloadifr                  does not load IDL files into the CORBA Interface Repository (but still uses IFR cache if available)"
    echo "   -l | -log                        automatically starts a loggingClient process writing XML logs to"
    echo "                                    \$ACS_TMP/ACS_INSTANCE.\$ACS_INSTANCE/"
    echo "   -r | -recoverClientConnections   force services to recover client connections"
