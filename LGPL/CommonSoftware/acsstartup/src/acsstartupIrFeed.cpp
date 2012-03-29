@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.9 2012/03/21 16:29:39 tstaig Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.10 2012/03/29 15:58:28 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.9 2012/03/21 16:29:39 tstaig Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.10 2012/03/29 15:58:28 hsommer Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
     file << "* ALMA Project" << std::endl;
     file << "*" << std::endl;
     file << "* This file is dynamically created by acsIrfeed to load" << std::endl;
-    file << "* in the Orbacus Interface Repository" << std::endl;
+    file << "* in the TAO (or mico) Interface Repository" << std::endl;
     file << "* the complete set of IDL interfaces" << std::endl;
     file << "*" << std::endl;
     file << "*/" << std::endl;
