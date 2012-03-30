@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.32 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.33 2012/03/30 15:31:28 acaproni Exp $"
 #
 #
 
@@ -26,11 +26,11 @@ os     = $(shell uname)
 MODULES_ACSLASER = alarmCommon \
 	laser-extlib \
 	acs-jms \
-	laser-source-cpp \
-	laser-source-python \
 	cmw-mom \
 	laser-util \
 	laser-source \
+	laser-source-cpp \
+	laser-source-python \
 	gp-openide \
       gp \
       laser-core \
