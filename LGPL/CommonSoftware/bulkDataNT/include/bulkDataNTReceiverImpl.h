@@ -186,7 +186,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
    	 *                false -> data will *not* be sent to the user's CB,
    	 *  @return void
    	*/
-    void fwdData2UserCB(CORBA::Boolean enable){}
+    void fwdData2UserCB(CORBA::Boolean enable);
 
   protected:
 

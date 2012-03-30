@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.22 2012/03/27 12:53:04 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.23 2012/03/30 13:51:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -478,3 +478,20 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 	ex.setStreamName(streamName);
 	throw ex;
 }//getReceiverStream
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::fwdData2UserCB(CORBA::Boolean enable)
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	typename StreamMap::iterator it = receiverStreams_m.begin();
+
+	if (enable)
+	{
+		for(; it != receiverStreams_m.end(); it++)
+			(it->second)->enableCallingCBforAllFlows();
+	}else
+	{
+		for(; it != receiverStreams_m.end(); it++)
+			(it->second)->disableCallingCBforAllFlows();
+	}//if-else
+}//fwdData2UserCB
