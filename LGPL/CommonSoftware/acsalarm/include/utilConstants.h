@@ -30,7 +30,6 @@ namespace acsalarm
 	const char* const DOUBLE_QUOTE = "\"";
 	const char* const FORWARD_SLASH = "/";
 	const char* const GREATER_THAN_SIGN = ">";
-	const char* const NEWLINE = "\n";
 
 	const char* const USER_TIMESTAMP_ELEMENT_NAME = "user-timestamp";
 	const char* const USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME = "seconds";
