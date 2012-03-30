@@ -112,63 +112,37 @@ FaultState & FaultState::operator=(const FaultState & rhs)
  */
 string FaultState::toXML(int amountToIndent)
 {
-	string retVal;
+	stringstream ret;
 
 	// generate the fault-state opening element
 	// e.g. <fault-state family="AlarmSource" member="ALARM_SOURCE_ANTENNA" code="1">
 	for(int x = 0; x < amountToIndent; x++)
 	{
-		retVal += SPACE;
+		ret << SPACE;
 	}
-	retVal += LESS_THAN_SIGN;
-	retVal += FAULT_STATE_ELEMENT_NAME;
-	retVal += SPACE;
+
+	ret << LESS_THAN_SIGN<<FAULT_STATE_ELEMENT_NAME<<SPACE;
 
 	// output the fault's family
-	retVal += FAULT_STATE_FAMILY_ATTRIBUTE_NAME;
-	retVal += EQUALS_SIGN;
-	retVal += DOUBLE_QUOTE;
-	retVal += getFamily();
-	retVal += DOUBLE_QUOTE;
-	retVal += SPACE;
+	ret << FAULT_STATE_FAMILY_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE<<getFamily()<<DOUBLE_QUOTE<<SPACE;
 
 	// output the fault's member
-	retVal += FAULT_STATE_MEMBER_ATTRIBUTE_NAME;
-	retVal += EQUALS_SIGN;
-	retVal += DOUBLE_QUOTE;
-	retVal += getMember();
-	retVal += DOUBLE_QUOTE;
-	retVal += SPACE;
+	ret << FAULT_STATE_MEMBER_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE<<getMember()<<DOUBLE_QUOTE<<SPACE;
 
 	// output the fault's code
-	retVal += FAULT_STATE_CODE_ATTRIBUTE_NAME;
-	retVal += EQUALS_SIGN;
-	retVal += DOUBLE_QUOTE;
-	stringstream strStream;
-	strStream << getCode();	
-	retVal.append(strStream.str());
-
-	retVal += DOUBLE_QUOTE;
-	retVal += GREATER_THAN_SIGN;
-	retVal += NEWLINE;
+	ret << FAULT_STATE_CODE_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE<<getCode()<<DOUBLE_QUOTE<<GREATER_THAN_SIGN<<std::endl;
 
 	// indent for readability
 	for(int x = 0; x < amountToIndent+3; x++)
 	{
-		retVal += SPACE;
+		ret<<SPACE;
 	}
 	
 	// generate the descriptor element
 	// e.g. <descriptor>TERMINATE</descriptor>
-	retVal += LESS_THAN_SIGN;
-	retVal += FAULT_STATE_DESCRIPTOR_ELEMENT_NAME;
-	retVal += GREATER_THAN_SIGN;
-	retVal += getDescriptor();
-	retVal += LESS_THAN_SIGN;
-	retVal += FORWARD_SLASH;
-	retVal += FAULT_STATE_DESCRIPTOR_ELEMENT_NAME;
-	retVal += GREATER_THAN_SIGN;
-	retVal += NEWLINE;
+	ret<< LESS_THAN_SIGN<<FAULT_STATE_DESCRIPTOR_ELEMENT_NAME<<GREATER_THAN_SIGN;
+	ret<< getDescriptor();
+	ret<< LESS_THAN_SIGN<<FORWARD_SLASH<<FAULT_STATE_DESCRIPTOR_ELEMENT_NAME<<GREATER_THAN_SIGN<<std::endl;
 
 	// generate the properties element
 	// e.g. 
@@ -179,11 +153,9 @@ string FaultState::toXML(int amountToIndent)
 	//		<property name="ASI_SUFFIX" value="suffix"/>
 	// </user-properties>
 
-	if(NULL == userProperties.get()) {
-		// TODO: throw an exception or log an error
-	}
-	else {
-		retVal += userProperties->toXML(amountToIndent+3);
+	if(userProperties.get()!=NULL)
+	{
+		ret<<userProperties->toXML(amountToIndent+3);
 	}
 
 	// generate the user timestamp element
@@ -193,22 +165,18 @@ string FaultState::toXML(int amountToIndent)
 		// TODO: throw an exception or log an error
 	}
 	else {
-		retVal += userTimestamp->toXML(USER_TIMESTAMP_ELEMENT_NAME, amountToIndent+3);
+		ret<<userTimestamp->toXML(USER_TIMESTAMP_ELEMENT_NAME, amountToIndent+3);
 	}
 
 	// generate the fault-state closing element
 	// e.g. </fault-state>
 	for(int x = 0; x < amountToIndent; x++)
 	{
-		retVal += SPACE;
+		ret<<SPACE;
 	}
-	retVal += LESS_THAN_SIGN;
-	retVal += FORWARD_SLASH;
-	retVal += FAULT_STATE_ELEMENT_NAME;
-	retVal += GREATER_THAN_SIGN;
-	retVal += NEWLINE;
+	ret << LESS_THAN_SIGN<<FORWARD_SLASH<<FAULT_STATE_ELEMENT_NAME<<GREATER_THAN_SIGN<<std::endl;
 
-	return retVal;
+	return ret.str();
 }
 
 /** 

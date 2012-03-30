@@ -22,8 +22,10 @@
 #include "utilConstants.h"
 #include <logging.h>
 #include <string>
+#include <sstream>
 
 using std::string;
+using std::stringstream;
 using std::map;
 using std::vector;
 using std::invalid_argument;
@@ -191,7 +193,7 @@ void Properties::setProperty(string key, string value) throw(invalid_argument)
  */
 string Properties::toXML(int amountToIndent)
 {
-	string retString;
+	stringstream ret;
 
 	if(0 != propertiesMap.size())
 	{
@@ -199,12 +201,9 @@ string Properties::toXML(int amountToIndent)
 		// e.g. <user-properties>
 		for(int x = 0; x < amountToIndent; x++)
 		{
-			retString += SPACE;
+			ret<<SPACE;
 		}
-		retString += LESS_THAN_SIGN;
-		retString += USER_PROPERTIES_ELEMENT_NAME;
-		retString += GREATER_THAN_SIGN;
-		retString += NEWLINE;
+		ret<<LESS_THAN_SIGN<<USER_PROPERTIES_ELEMENT_NAME<<GREATER_THAN_SIGN<<std::endl;
 	
 		// For each property, generate the appropriate XML, 
 		// e.g. <property name="ASI_PREFIX" value="prefix"/>
@@ -213,39 +212,22 @@ string Properties::toXML(int amountToIndent)
 		{
 			for(int x = 0; x < amountToIndent + 3; x++)
 			{
-				retString += SPACE;
+				ret<<SPACE;
 			}
-			retString += LESS_THAN_SIGN;
-			retString += USER_PROPERTIES_PROPERTY_ELEMENT_NAME;
-			retString += SPACE;
-			retString += USER_PROPERTIES_NAME_ATTRIBUTE_NAME;
-			retString += EQUALS_SIGN;
-			retString += DOUBLE_QUOTE;
-			retString += mapIter->first;
-			retString += DOUBLE_QUOTE;
-			retString += SPACE;
-			retString += USER_PROPERTIES_VALUE_ATTRIBUTE_NAME;
-			retString += EQUALS_SIGN;
-			retString += DOUBLE_QUOTE;
-			retString += mapIter->second;
-			retString += DOUBLE_QUOTE;
-			retString += FORWARD_SLASH;
-			retString += GREATER_THAN_SIGN;
-			retString += NEWLINE;
+			ret <<LESS_THAN_SIGN<<USER_PROPERTIES_PROPERTY_ELEMENT_NAME<<SPACE<<USER_PROPERTIES_NAME_ATTRIBUTE_NAME;
+			ret << EQUALS_SIGN<<DOUBLE_QUOTE<<mapIter->first<<DOUBLE_QUOTE<<SPACE;
+			ret << USER_PROPERTIES_VALUE_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE<< mapIter->second<<DOUBLE_QUOTE;
+			ret << FORWARD_SLASH<<GREATER_THAN_SIGN<<std::endl;
 		}
 
 		// Generate the user properties closing element tag
 		// e.g. </user-properties>
 		for(int x = 0; x < amountToIndent; x++)
 		{
-			retString += SPACE;
+			ret<<SPACE;
 		}
-		retString += LESS_THAN_SIGN;
-		retString += FORWARD_SLASH;
-		retString += USER_PROPERTIES_ELEMENT_NAME;
-		retString += GREATER_THAN_SIGN;
-		retString += NEWLINE;
+		ret << LESS_THAN_SIGN<<FORWARD_SLASH<<USER_PROPERTIES_ELEMENT_NAME<<GREATER_THAN_SIGN<<std::endl;
 	}
 
-	return retString;
+	return ret.str();
 }

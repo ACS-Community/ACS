@@ -103,39 +103,17 @@ int Timestamp::operator==(const Timestamp &rhs) const
  */
 string Timestamp::toXML(string elementName, int amountToIndent)
 {
-	string retVal;
+	stringstream ret;
 
 	for(int x = 0; x < amountToIndent; x++)
 	{
-		retVal += SPACE;
+		ret<<SPACE;
 	}
-	retVal += LESS_THAN_SIGN;
-	retVal += elementName;
-	retVal += SPACE;
-	retVal += USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME;
-	retVal += EQUALS_SIGN;
-	retVal += DOUBLE_QUOTE;
-
-	// declare a stringstream, then output the seconds
-	stringstream strStream;
-	strStream << getSeconds();	
-	retVal.append(strStream.str());
-
-	retVal += DOUBLE_QUOTE;
-	retVal += SPACE;
-	retVal += USER_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME;
-	retVal += EQUALS_SIGN;
-	retVal += DOUBLE_QUOTE;
-
-	// reset stream, then output the microseconds
-	strStream.str("");
-	strStream << getMicroSeconds();	
-	retVal.append(strStream.str());
-
-	retVal += DOUBLE_QUOTE;
-	retVal += FORWARD_SLASH;
-	retVal += GREATER_THAN_SIGN;
-	retVal += NEWLINE;
+	ret<<LESS_THAN_SIGN<<elementName<<SPACE<<USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE;
+	ret <<getSeconds();
+	ret << DOUBLE_QUOTE<<SPACE<<USER_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE;
+	ret<<getMicroSeconds();
+	ret<<DOUBLE_QUOTE<<FORWARD_SLASH<<GREATER_THAN_SIGN<<std::endl;
 	
-	return retVal;
+	return ret.str();
 }
