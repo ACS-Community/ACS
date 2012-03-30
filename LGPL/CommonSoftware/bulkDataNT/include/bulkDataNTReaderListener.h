@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.22 2012/03/27 14:45:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.23 2012/03/30 13:45:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,10 +51,10 @@ public:
   virtual ~BulkDataNTReaderListener (void);
 
   /// Enables calling user's CB (cbStart, cbReceiver, cbStop)
-  void enableCallCB();
+  void enableCallingCB();
 
   /// Disables calling user's CB (cbStart, cbReceiver, cbStop)
-  void disableCallCB();
+  void disableCallingCB();
 
   // implementation of methods from #DDS::DataReaderListener
 

@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.50 2012/03/27 14:45:37 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.51 2012/03/30 13:45:16 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -351,18 +351,18 @@ void BulkDataNTReaderListener::increasConseqErrorCount()
     }
 }//increasConseqErroCount
 
-void BulkDataNTReaderListener::enableCallCB()
+void BulkDataNTReaderListener::enableCallingCB()
 {
 	enableCB_m=true;
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 			(LM_INFO, "Calling user's CB for flow: %s of the stream: %s has been ENABLED.",
 					callback_mp->getFlowName(), callback_mp->getStreamName()));
-}//enableCallCB
+}//enableCallingCB
 
-void BulkDataNTReaderListener::disableCallCB()
+void BulkDataNTReaderListener::disableCallingCB()
 {
 	enableCB_m=true;
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 			(LM_INFO, "Calling user's CB for flow: %s of the stream: %s has been DISABLED.",
 					callback_mp->getFlowName(), callback_mp->getStreamName()));
-}//disableCallCB
+}//disableCallingCB
