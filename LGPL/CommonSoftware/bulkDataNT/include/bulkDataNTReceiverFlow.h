@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.15 2012/01/11 15:53:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.16 2012/03/30 13:47:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,6 +82,12 @@ public:
 	 */
 	template<class T>
 	T* getCallback() { return dynamic_cast<T*>(callback_m); }
+
+	/// Enables calling user's CB (cbStart, cbReceiver, cbStop)
+	void enableCallingCB();
+
+	/// Disables calling user's CB (cbStart, cbReceiver, cbStop)
+	void disableCallingCB();
 
 protected:
 	AcsBulkdata::BulkDataNTReceiverStreamBase *receiverStream_m;
