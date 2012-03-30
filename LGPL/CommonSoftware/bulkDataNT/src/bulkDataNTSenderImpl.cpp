@@ -44,6 +44,7 @@ BulkDataNTSenderImpl::~BulkDataNTSenderImpl()
 
 void BulkDataNTSenderImpl::initialize()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	CharacteristicComponentImpl::initialize();
 
 	// Read the configuration from the CDB and parse it as necessary
@@ -114,6 +115,7 @@ void BulkDataNTSenderImpl::initialize()
 			if(ACE_OS::strcmp(buf, "") != 0) {
 
 				ACE_Tokenizer addressToken(buf);
+				addressToken.delimiter('/');
 				defaultFlowsCount_m = 0;
 				while( addressToken.next() != 0 )
 					defaultFlowsCount_m++;
@@ -237,8 +239,8 @@ AcsBulkdata::BulkDataNTSenderStream* BulkDataNTSenderImpl::createDefaultSenderSt
 
 	// Add the specified of flows
 	for(int i=0; i < defaultFlowsCount_m; i++) {
-		std::stringstream s("Flow");
-		s << i;
+		std::stringstream s;
+		s << "Flow" << i;
 		stream->createFlow(s.str().c_str());
 	}
 
