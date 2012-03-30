@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.17 2012/01/11 15:29:55 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.18 2012/03/30 13:49:58 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -164,6 +164,13 @@ public:
 	 * @return number of flows
 	 */
 	unsigned int getFlowNumber();
+
+	/// Enables calling user's CB (cbStart, cbReceiver, cbStop) for All flows
+	void enableCallingCBforAllFlows();
+
+	/// Disables calling user's CB (cbStart, cbReceiver, cbStop) for All Flows
+	void disableCallingCBforAllFlows();
+
 
 
 	/** Subscribe to the Notification Mechanism

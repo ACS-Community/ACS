@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.21 2012/01/11 15:26:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.22 2012/03/30 13:49:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -210,3 +210,20 @@ unsigned int BulkDataNTReceiverStream<TReceiverCallback>::getFlowNumber()
 {
   return receiverFlows_m.size();
 }//getFlowNumber
+
+template<class TReceiverCallback>
+void BulkDataNTReceiverStream<TReceiverCallback>::enableCallingCBforAllFlows()
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
+	  for(;i!=receiverFlows_m.end(); i++) (i->second)->enableCallingCB();
+}//enableCallingCBforAllFlows
+
+template<class TReceiverCallback>
+void BulkDataNTReceiverStream<TReceiverCallback>::disableCallingCBforAllFlows()
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
+		  for(;i!=receiverFlows_m.end(); i++) (i->second)->disableCallingCB();
+}//disableCallingCBforAllFlows
+
