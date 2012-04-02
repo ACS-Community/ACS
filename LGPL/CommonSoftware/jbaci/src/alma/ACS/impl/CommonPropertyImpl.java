@@ -55,7 +55,9 @@ import alma.ACS.jbaci.PropertyInitializationFailed;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJOutOfBoundsEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
+import alma.ACSErrTypeCommon.wrappers.OutOfBoundsAcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -615,9 +617,21 @@ public abstract class CommonPropertyImpl
 	 * @see alma.ACSErr.Completion alma.ACS.RW<type>Operations#set_sync(<type>)
 	 */
 	protected Completion setSync(Object value) throws AcsJException {
-		// TODO should we check limits here
 		try
 		{
+			// check limits
+			if (value instanceof Comparable)
+			{
+				Comparable c = (Comparable)value;
+				if (c.compareTo(min_value()) < 0 || c.compareTo(max_value()) > 0)
+				{
+					OutOfBoundsAcsJCompletion compl = new OutOfBoundsAcsJCompletion();
+					compl.setMinValue(min_value());
+					compl.setMaxValue(max_value());
+					compl.setRequestedValue(value);
+					return compl.toCorbaCompletion();
+				}
+			}
 			CompletionHolder completionHolder = CompletionUtil.createCompletionHolder();
 			dataAccess.set(value, completionHolder);
 			// generate no-error completion, if not generated
