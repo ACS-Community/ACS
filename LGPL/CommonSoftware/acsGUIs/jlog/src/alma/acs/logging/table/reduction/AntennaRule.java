@@ -111,10 +111,12 @@ public class AntennaRule extends ReductionRule {
 	 * @Override
 	 */
 	public boolean applyRule(final ILogEntry logToReduce) {
-		if (!reducible) {
+		if (
+				!reducible || logToReduce==null) {
 			return false;
 		}
-		StringBuilder msg = new StringBuilder(logToReduce.getField(LogField.LOGMESSAGE).toString());
+		String msgStr=logToReduce.getField(LogField.LOGMESSAGE)!=null?(String)logToReduce.getField(LogField.LOGMESSAGE):"";
+		StringBuilder msg = new StringBuilder(msgStr);
 		
 		String antName=Antennae.matchAndReplaceAntenna(msg, placeHolder);
 

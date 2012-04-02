@@ -51,12 +51,28 @@ public class LogProcessor {
 		for (int t=0; t<logs.size(); t++) {
 			// This is the log that "could" reduce other logs
 			ILogEntry log = logs.get(t);
-			ReductionRule rule = new SourceAntennaRule(log);
-			if (!rule.isReducible()) {
-				rule = new AntennaRule(log);
+			if (log==null) {
+				// Should never happen
+				continue;
+			}
+			ReductionRule rule;
+			try {
+				rule = new SourceAntennaRule(log);
 				if (!rule.isReducible()) {
-					continue;
-				}	
+					rule = new AntennaRule(log);
+					if (!rule.isReducible()) {
+						continue;
+					}	
+				}
+			} catch (Throwable th) {
+				System.out.println("LogProcessor: error instantiating a Reduction rule: "+th.getMessage());
+				if (log==null) {
+					System.out.println("The problematic log is NULL");
+				} else {
+					System.out.println("Problematic log: "+log.toString());
+				}
+				th.printStackTrace();
+				continue;
 			}
 			// Now scan the remaining logs in the vector, apply the rule
 			// and if it is the case remove the reduced log.

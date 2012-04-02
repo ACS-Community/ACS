@@ -117,7 +117,7 @@ public class SourceAntennaRule extends ReductionRule {
 
 	@Override
 	public boolean applyRule(ILogEntry logToReduce) {
-		if (!isReducible) {
+		if (!isReducible ||logToReduce==null) {
 			return false;
 		}
 		// First check if the log messages are the same

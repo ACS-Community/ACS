@@ -59,6 +59,9 @@ public enum Antennae {
 	 * @return The antenna that matches with the message
 	 */
 	public static Antennae matchAntenna(String messageToMatch) {
+		if (messageToMatch==null || messageToMatch.isEmpty()) {
+			return NO_ANTENNA;
+		}
 		for (Antennae ant: Antennae.values()) {
 			if (ant==NO_ANTENNA) {
 				continue;
