@@ -102,6 +102,11 @@ if [ "$CL_HELP" ] ; then
    exit $EC_OK
 fi
 
+if [ "$1" = "" ]; then
+   printUsage
+	exit $EC_BADARGS;
+fi
+
 #
 # (Note: Rest of command line now in $@ )
 #
@@ -174,8 +179,8 @@ LINES=`cat $CONTAINER_TCP_FILE 2> /dev/null | grep "^$CONTAINER_NAMES "`
 #sanity check
 if [ "$LINES" = "" ]; then
     if [ "$CONTAINER_PID_FILES" = "" ]; then
-        ACS_LOG_ERROR "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
-        ACS_LOG_ERROR "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
+        ACS_LOG_DEBUG "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
+        ACS_LOG_DEBUG "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
     fi
     exit 1
 fi
