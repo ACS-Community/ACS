@@ -169,13 +169,13 @@ done
 #------------------------------------------------------------------
 CONTAINER_TCP_FILE=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
 CONTAINER_NAMES=`echo $1 |sed s/\*/.*/g |sed "s/\?/.\\\\\{1\\\\\}/g"`
-LINES=`cat $CONTAINER_TCP_FILE | grep "^$CONTAINER_NAMES " 2> /dev/null`
+LINES=`cat $CONTAINER_TCP_FILE 2> /dev/null | grep "^$CONTAINER_NAMES "`
 
 #sanity check
 if [ "$LINES" = "" ]; then
     if [ "$CONTAINER_PID_FILES" = "" ]; then
-        ACS_LOG_DEBUG "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
-        ACS_LOG_DEBUG "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
+        ACS_LOG_ERROR "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
+        ACS_LOG_ERROR "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
     fi
     exit 1
 fi
