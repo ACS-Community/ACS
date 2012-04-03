@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverTest.cpp,v 1.17 2012/01/16 10:42:17 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverTest.cpp,v 1.18 2012/04/03 13:57:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
 	char c;
 	unsigned int sleepPeriod=0;
 	ReceiverFlowConfiguration cfg; //just
+	//cfg.setEnableMulticast(false);
 	char *streamName = "DefaultStream";
 	list<char *> flows;
 
