@@ -1,8 +1,8 @@
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
 1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 1 - Autodelete thread
 1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
-1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
 1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::create] 
@@ -40,5 +40,6 @@
 1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::~TestACSThread] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::~ThreadBase] 

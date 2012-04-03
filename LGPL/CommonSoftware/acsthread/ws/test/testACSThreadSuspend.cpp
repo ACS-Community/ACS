@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadSuspend.cpp,v 1.2 2006/03/24 12:42:31 vwang Exp $"
+* "@(#) $Id: testACSThreadSuspend.cpp,v 1.3 2012/04/03 13:32:15 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include "acsThreadTest.h"
 
 
-static char *rcsId="@(#) $Id: testACSThreadSuspend.cpp,v 1.2 2006/03/24 12:42:31 vwang Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadSuspend.cpp,v 1.3 2012/04/03 13:32:15 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     LoggingProxy logger_m(0, 0, 31);
     LoggingProxy::init(&logger_m);
 
+    {
     ACS::ThreadManager tm;
 
     /*********************************************************
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Creating thread"));
     TestACSThread *a = tm.create<TestACSThread>("TestThreadA", 
-						5 * 10 * 1000000 /* 5s */, 
+						5 * 10 * 1000000 /* 5s */,
 						5 * 10 * 1000000 /* 5s */,
 						true);
     a->resume();
@@ -114,8 +115,9 @@ int main(int argc, char *argv[])
      */ 
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Done"));
+    }
+    sleep(2);
     return 0;
-
 }
 
 
