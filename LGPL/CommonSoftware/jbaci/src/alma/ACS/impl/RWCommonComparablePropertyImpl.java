@@ -33,6 +33,7 @@ import alma.ACS.jbaci.PropertyInitializationFailed;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.OutOfBoundsAcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -229,4 +230,38 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 		new IncrementAction(callback, desc).submit();
 	}
 
+	/*********************** [ RW<type> helpers ] ***********************/
+
+	/**
+	 * @see alma.ACSErr.Completion alma.ACS.RW<type>Operations#set_sync(<type>)
+	 */
+	protected Completion setSync(Object value) throws AcsJException {
+		try
+		{
+			// check limits
+			if (value instanceof Comparable)
+			{
+				Comparable c = (Comparable)value;
+				if (c.compareTo(minValue) < 0 || c.compareTo(maxValue) > 0)
+				{
+					OutOfBoundsAcsJCompletion compl = new OutOfBoundsAcsJCompletion();
+					compl.setMinValue(minValue.toString());
+					compl.setMaxValue(maxValue.toString());
+					compl.setRequestedValue(value.toString());
+					return compl.toCorbaCompletion();
+				}
+			}
+			CompletionHolder completionHolder = CompletionUtil.createCompletionHolder();
+			dataAccess.set(value, completionHolder);
+			// generate no-error completion, if not generated
+			if (completionHolder.value == null)
+				completionHolder.value = CompletionUtil.generateNoErrorCompletion();
+			return completionHolder.value;
+		}
+		catch (AcsJException acsex)
+		{
+			throw new AcsJCouldntPerformActionEx("Failed to set value.", acsex);
+		}
+	}
+	
 }

@@ -26,11 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import alma.acs.container.ContainerServices;
-
 
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.NO_RESOURCES;
@@ -55,9 +52,7 @@ import alma.ACS.jbaci.PropertyInitializationFailed;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJOutOfBoundsEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
-import alma.ACSErrTypeCommon.wrappers.OutOfBoundsAcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -71,7 +66,7 @@ public abstract class CommonPropertyImpl
 	/**
 	 * Logger variable
 	 */
-	private Logger m_logger;
+	protected Logger m_logger;
 	
 	/**
 	 * Default timer trigger (in 100ns units).
@@ -619,19 +614,6 @@ public abstract class CommonPropertyImpl
 	protected Completion setSync(Object value) throws AcsJException {
 		try
 		{
-			// check limits
-			if (value instanceof Comparable)
-			{
-				Comparable c = (Comparable)value;
-				if (c.compareTo(min_value()) < 0 || c.compareTo(max_value()) > 0)
-				{
-					OutOfBoundsAcsJCompletion compl = new OutOfBoundsAcsJCompletion();
-					compl.setMinValue(min_value());
-					compl.setMaxValue(max_value());
-					compl.setRequestedValue(value);
-					return compl.toCorbaCompletion();
-				}
-			}
 			CompletionHolder completionHolder = CompletionUtil.createCompletionHolder();
 			dataAccess.set(value, completionHolder);
 			// generate no-error completion, if not generated
@@ -646,7 +628,7 @@ public abstract class CommonPropertyImpl
 	}
 
 	/**
-	 * BACI action to invoke <code>setSync</code> asynchroniously.
+	 * BACI action to invoke <code>setSync</code> asynchronously.
 	 */
 	protected class SetAsyncAction extends BACIAction
 	{ 
