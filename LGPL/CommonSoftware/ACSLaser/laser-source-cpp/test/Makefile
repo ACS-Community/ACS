@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.17 2012/01/24 01:00:04 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.18 2012/04/05 13:23:34 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,7 @@ USER_LIB =
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = alarmSystemClient
-EXECUTABLES_L   = testDriver testDriverMultiThreaded FactoryTestCase
+EXECUTABLES_L   = testDriver testDriverMultiThreaded FactoryTestCase testXML testXML_2
 
 alarmSystemClient_OBJECTS	= alarmSystemClient
 alarmSystemClient_LIBS		= maciClient
@@ -74,6 +74,11 @@ testDriverMultiThreaded_LIBS      = AlarmTestMountMultiThreadedImpl testCppAlarm
 testDriver_OBJECTS   = testDriver
 testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AcsAlarmSystemStubs AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
 
+testXML_OBJECTS = acsalarmDOMErrorHandler testXML
+testXML_LIBS    = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType acscommonStubs laserSourceAcsSpecific
+
+testXML_2_OBJECTS = acsalarmDOMErrorHandler testXML_2
+testXML_2_LIBS    = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType acscommonStubs laserSourceAcsSpecific
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
