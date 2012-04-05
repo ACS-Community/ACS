@@ -23,6 +23,7 @@
 #include <dlfcn.h>
 #include <acserrACSbaseExImpl.h>
 #include "CERNAlarmSystemInterfaceProxy.h"
+#include "CERNASIMessage.h"
 #include "asiConfigurationConstants.h"
 #include "AcsAlarmPublisher.h"
 #include "logging.h"
@@ -139,7 +140,8 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 		ex.log();
 		return false;;
 	} catch (...) {
-		ACS_SHORT_LOG((LM_ERROR,"Error publishing source alarms %s: ",msg.toXML().c_str()));
+		CERNASIMessage cern_asi_message(msg);
+		ACS_SHORT_LOG((LM_ERROR,"Error publishing source alarms %s: ",cern_asi_message.toXML().c_str()));
 		return false;
 	}
 

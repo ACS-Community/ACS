@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.10 2011/11/23 13:46:23 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.11 2012/04/05 13:21:00 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -71,7 +71,11 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = CERNAlarmSystemInterfaceProxy.h AcsAlarmPublisher.h AlarmSupplier.h #AbstractAlarmPublisher.h
+INCLUDES        = 	CERNAlarmSystemInterfaceProxy.h \
+					AcsAlarmPublisher.h \
+					AlarmSupplier.h \
+					CERNASIMessage.h \
+					utilConstants.h
 
 #
 # Libraries (public and local)
@@ -80,7 +84,11 @@ LIBRARIES       = laserSourceAcsSpecific
 LIBRARIES_L     =
 
 # laserSourceAcsSpecific library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties
-laserSourceAcsSpecific_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy AcsAlarmPublisher AlarmSupplier
+laserSourceAcsSpecific_OBJECTS   = 	CERNASIMessage \
+									CERNAlarmSystemInterfaceFactory \
+									CERNAlarmSystemInterfaceProxy  \
+									AcsAlarmPublisher \
+									AlarmSupplier
 laserSourceAcsSpecific_LIBS = basenc ACSJMSMessageEntityStubs acsnc acsAlSysSource errTypeAlarmService 
 laserSourceAcsSpecific_LDFLAGS = --export-dynamic -dl -fpic
 

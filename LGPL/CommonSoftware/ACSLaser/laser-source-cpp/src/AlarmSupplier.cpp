@@ -16,44 +16,13 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.12 2009/12/20 15:08:37 acaproni Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.13 2012/04/05 13:21:00 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * dfugate  2005-11-15  created
 * sharring 2005-11-22  documented
 */
-
-/************************************************************************
-*   NAME
-*   
-* 
-*   SYNOPSIS
-*   
-* 
-*   DESCRIPTION
-*
-*   FILES
-*
-*   ENVIRONMENT
-*
-*   COMMANDS
-*
-*   RETURN VALUES
-*
-*   CAUTIONS 
-*
-*   EXAMPLES
-*
-*   SEE ALSO
-*
-*   BUGS   
-* 
-*------------------------------------------------------------------------
-*/
-
-// Uncomment this if you are using the VLT environment
-// #include "vltPort.h"
 
 #include "AlarmSupplier.h"
 #include "ACSJMSMessageEntityC.h"
@@ -62,6 +31,7 @@
 #include <acsncC.h>
 #include <acsncErrType.h>
 #include <ACSErrTypeCORBA.h>
+#include "CERNASIMessage.h"
 
 using acsalarm::ASIMessage;
 using std::string;
@@ -107,7 +77,8 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 	// populate event's filterable data with XML representation of the alarm
 	event.filterable_data.length(1);
 	com::cosylab::acs::jms::ACSJMSMessageEntity msgForNotificationChannel;
-	string xmlToSend = msg.toXML();
+	laserSource::CERNASIMessage cern_asi_message(msg);
+	string xmlToSend = cern_asi_message.toXML();
 	string xmlToLog = "AlarmSupplier::publishEvent()\n\nAbout to send XML of: \n\n" + xmlToSend + "\n\n";
 	ACS_SHORT_LOG((LM_TRACE, xmlToLog.c_str()));
 	msgForNotificationChannel.text = xmlToSend.c_str();
