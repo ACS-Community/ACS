@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.18 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/04/05 13:17:06 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -57,23 +57,19 @@ USER_LIB =
 # -----------------------------
 EXECUTABLES     = 
 EXECUTABLES_L   = TestAcsAlarmSending \
- 	              unitTestDriver \
- 	              unitTestDriver2 \
  	              FactoryTestCase \
  	              propertyTest \
  	              faultSateTest \
  	              alarmThrowTest \
  	              alarmsMapTest \
- 	              alarmSourceTest
+ 	              alarmSourceTest \
+ 	              testStructs
 
+testStructs_OBJECTS = testStructs
+testStructs_LIBS    = cppunit logging acsAlSysSource
+ 
 TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
 TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType acscommonStubs
-
-unitTestDriver_OBJECTS   = unitTestDriver acsalarmDOMErrorHandler
-unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType acscommonStubs
-
-unitTestDriver2_OBJECTS   = unitTestDriver2 MockManager acsalarmDOMErrorHandler
-unitTestDriver2_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType acscommonStubs
 
 FactoryTestCase_OBJECTS  = FactoryTestCase MockManager
 FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource maciErrType acscommonStubs 
