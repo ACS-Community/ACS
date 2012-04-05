@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = contquery
 SCRIPTS_L       =
 
 #
