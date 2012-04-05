@@ -87,33 +87,3 @@ int Timestamp::operator==(const Timestamp &rhs) const
 	}
 	return retVal;
 }
-
-/**
- * Returns an XML fragment (NOT a complete document) representing the timestamp, for
- * use in the message that is transported from alarm source to alarm server.
- *
- * @param elementName the element name when generating the XML fragment,
- *        for instance in the example below the elementName is "source-timestamp"
- *
- * For example:
- *
- * <source-timestamp seconds="1129902763" microseconds="132000"/>
- *
- * @param amountToIndent - used to specify a level of indentation (in spaces) for readability
- */
-string Timestamp::toXML(string elementName, int amountToIndent)
-{
-	stringstream ret;
-
-	for(int x = 0; x < amountToIndent; x++)
-	{
-		ret<<SPACE;
-	}
-	ret<<LESS_THAN_SIGN<<elementName<<SPACE<<USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE;
-	ret <<getSeconds();
-	ret << DOUBLE_QUOTE<<SPACE<<USER_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE;
-	ret<<getMicroSeconds();
-	ret<<DOUBLE_QUOTE<<FORWARD_SLASH<<GREATER_THAN_SIGN<<std::endl;
-	
-	return ret.str();
-}

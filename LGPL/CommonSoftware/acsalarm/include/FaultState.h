@@ -118,26 +118,6 @@ namespace acsalarm
 			*/
 			void  setMember(const std::string & newFaultMember);
 
-			/**
- 			 * Returns an XML representation of the fault state. NOTE: this 
- 			 * will not be a complete XML document, but just a fragment.
- 			 *
-			 * @param amountToIndent the amount (in spaces) to indent for readability
-			 *
- 			 * For example:
- 			 *
- 			 * <fault-state family="AlarmSource" member="ALARM_SOURCE_ANTENNA" code="1">
- 			 *     <descriptor>TERMINATE</descriptor>
- 			 *     <user-properties>
- 			 *        <property name="ASI_PREFIX" value="prefix"/>
- 			 *        <property name="TEST_PROPERTY" value="TEST_VALUE"/>
- 			 *        <property name="ASI_SUFFIX" value="suffix"/>
- 			 *     </user-properties>
- 			 *     <user-timestamp seconds="1129902763" microseconds="105000"/>
- 			 *  </fault-state>
- 			 */
-			virtual std::string toXML(int amountToIndent = 3);
-
 			/** User properties accessor method.
 			 * @param properties the user properties.
 			 */

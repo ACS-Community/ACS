@@ -58,15 +58,14 @@ namespace acsalarm
 			acsalarm::Timestamp & getSourceTimestamp() { return *sourceTimestamp; }
 			void setSourceTimestamp(std::auto_ptr<acsalarm::Timestamp> ts) { sourceTimestamp = ts; }
 
-			// builds the xml representation of the message which will be sent to the alarm server
-			std::string toXML();
-
 		private:
 			std::auto_ptr<std::vector<acsalarm::FaultState> > faultStates;
 			bool backup;
 			std::string version;
 			std::string sourceName;
 			std::string sourceHostname;
+
+		protected:
 			std::auto_ptr<acsalarm::Timestamp> sourceTimestamp;
 	};
 };

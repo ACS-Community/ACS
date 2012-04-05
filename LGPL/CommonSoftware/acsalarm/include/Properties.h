@@ -36,7 +36,7 @@ namespace acsalarm
 	 */
 	class Properties
 	{
-		private:
+		protected:
 
 			std::map<std::string, std::string> propertiesMap;
 
@@ -79,12 +79,6 @@ namespace acsalarm
 			 * @param value The value (not empty)
 			 */
 			void setProperty(std::string key, std::string value) throw(std::invalid_argument);
-
-			// Returns an XML fragment (NOT a complete document) representing all of 
-			// the properties contained in this table, for use in the message transported
-			// from an alarm source to the alarm server.
-			// @param amountToIndent - used to specify a level of indentation (in spaces) for readability
-			std::string toXML(int amountToIndent = 6);
 
 			/**
 			 * @return the size of the properties
