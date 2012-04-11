@@ -657,15 +657,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 	/**
 	 * List of all pending activations.
-	 * Needed for cyclid dependency checks, since non-fuly-activasted components
+	 * Needed for cyclic dependency checks, since non-fully-activated components
 	 * are not accessible via HandleDataStore iterator.
 	 */
-	private transient Map pendingActivations = null;
+	private transient Map<String, ComponentInfo> pendingActivations = null;
 
 	/**
 	 * List of all pending container shutdowns.
 	 */
-	private transient Set pendingContainerShutdown = null;
+	private transient Set<String> pendingContainerShutdown = null;
 
 	/**
 	 * New container logged in notification.
@@ -677,7 +677,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Entry is: (String type, String name).
 	 * @serial
 	 */
-	private Map defaultComponents = new HashMap();
+	private Map<String, ComponentInfo> defaultComponents = new HashMap<String, ComponentInfo>();
 
 	/**
 	 * Manager domain name.
@@ -712,7 +712,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Activation/deactivation synchronization mechanism.
 	 */
-	private transient Map activationSynchronization;
+	private transient Map<String, ReferenceCountingLock> activationSynchronization;
 
 	/**
 	 * Activation/deactivation synchronization mechanism.
@@ -868,7 +868,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Cache of non-local (federated) managers.
 	 */
-	private transient Map managerCache = null;
+	private transient Map<String, Manager> managerCache = null;
 
 	/**
 	 * Implementation of prevayler system.
@@ -950,7 +950,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		containerLoggedInMonitor = new Object();
 
-		activationSynchronization = new HashMap();
+		activationSynchronization = new HashMap<String, ReferenceCountingLock>();
 		activationPendingRWLock = new ReaderPreferenceReadWriteLock();
 		shutdown = new AtomicBoolean(false);
 		
@@ -959,10 +959,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				  new LinkedBlockingQueue(),
 				  new DaemonThreadFactory("managerThreadPool"));
 
-		managerCache = new HashMap();
+		managerCache = new HashMap<String, Manager>();
 
-		pendingActivations = new HashMap();
-		pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
+		pendingActivations = new HashMap<String, ComponentInfo>();
+		pendingContainerShutdown = Collections.synchronizedSet(new HashSet<String>());
 
 		clientMessageQueue = new HashMap<Client, LinkedList<ClientMessageTask>>();
 		
@@ -1114,7 +1114,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
-	 * Called from client code after all manager inicialization is done.
+	 * Called from client code after all manager initialization is done.
 	 */
 	public void initializationDone()
 	{
@@ -3539,7 +3539,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
-	 * Provices its own address to daemons.
+	 * Provides its own address to daemons.
+	 * <p>
+	 * @TODO: The manager should call this method regularly (e.g. once per minute),
+	 *        so that also restarted service daemons get the manager address.
+	 *        Or the daemons should resolve the naming service themselves and get it from there,
+	 *        with possible problems when using different subnets.
 	 */
 	private void initializeServiceDaemons()
 	{
@@ -5859,7 +5864,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			ComponentInfo pendingComponentInfo;
 			synchronized (pendingActivations)
 			{
-				pendingComponentInfo = (ComponentInfo)pendingActivations.get(requestedComponentName);
+				pendingComponentInfo = pendingActivations.get(requestedComponentName);
 			}
 
 			// if component is already completely activated, we allow cyclic dependencies (but their usage is discouraged)
@@ -6342,7 +6347,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// add to pending activation list
 				synchronized (pendingActivations)
 				{
-					componentInfo = (ComponentInfo)pendingActivations.put(name, data);
+					pendingActivations.put(name, data);
 				}
 
 				// add component to client component list to allow dependency checks
@@ -6590,8 +6595,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			boolean timeoutError) throws AcsJCannotGetComponentEx
 	{
 		// remove component from client component list, will be added later (first lots of checks has to be done)
-		if ((requestor & TYPE_MASK) == COMPONENT_MASK)
+		if ((requestor & TYPE_MASK) == COMPONENT_MASK) {
 			removeComponentOwner(h | COMPONENT_MASK, requestor);
+		}
 
 		// remove from pending activation list
 		synchronized (pendingActivations)
@@ -7845,7 +7851,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// first check default components table
 		synchronized (defaultComponents)
 		{
-			defaultComponentInfo = (ComponentInfo)defaultComponents.get(type);
+			defaultComponentInfo = defaultComponents.get(type);
 		}
 
 		if (defaultComponentInfo != null)
@@ -9020,7 +9026,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private String getRequestorName(int id)
 	{
 		// parse handle part
-		int handle	= id & HANDLE_MASK;
+		int reqHandle = id & HANDLE_MASK;
 
 		boolean invalidHandle = true;
 		StringBuffer name = new StringBuffer(30);
@@ -9031,9 +9037,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//name.append("Container ");
 				synchronized (containers)
 				{
-					if (containers.isAllocated(handle))
+					if (containers.isAllocated(reqHandle))
 					{
-						ContainerInfo info = (ContainerInfo)containers.get(handle);
+						ContainerInfo info = (ContainerInfo)containers.get(reqHandle);
 						if (info.getHandle() == id)
 						{
 							invalidHandle = false;
@@ -9047,9 +9053,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//name.append("Client ");
 				synchronized (clients)
 				{
-					if (clients.isAllocated(handle))
+					if (clients.isAllocated(reqHandle))
 					{
-						ClientInfo info = (ClientInfo)clients.get(handle);
+						ClientInfo info = (ClientInfo)clients.get(reqHandle);
 						if (info.getHandle() == id)
 						{
 							invalidHandle = false;
@@ -9063,9 +9069,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//name.append("Administrator ");
 				synchronized (administrators)
 				{
-					if (administrators.isAllocated(handle))
+					if (administrators.isAllocated(reqHandle))
 					{
-						ClientInfo info = (ClientInfo)administrators.get(handle);
+						ClientInfo info = (ClientInfo)administrators.get(reqHandle);
 						if (info.getHandle() == id)
 						{
 							invalidHandle = false;
@@ -9079,9 +9085,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//name.append("Component ");
 				synchronized (components)
 				{
-					if (components.isAllocated(handle))
+					if (components.isAllocated(reqHandle))
 					{
-						ComponentInfo info = (ComponentInfo)components.get(handle);
+						ComponentInfo info = (ComponentInfo)components.get(reqHandle);
 						// do additional preallocation check
 						if (info != null && info.getHandle() == id)
 						{
@@ -9256,7 +9262,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		synchronized (activationSynchronization)
 		{
 			// get synchronization object
-			lock = (ReferenceCountingLock)activationSynchronization.get(name);
+			lock = activationSynchronization.get(name);
 
 			// none is found, create and return new one
 			// increment references
@@ -9297,7 +9303,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		synchronized (activationSynchronization)
 		{
 			// get synchronization object
-			ReferenceCountingLock lock = (ReferenceCountingLock)activationSynchronization.get(name);
+			ReferenceCountingLock lock = activationSynchronization.get(name);
 
 			// release lock
 			if (lock != null)
@@ -9851,7 +9857,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     {
         // cache lookup
         if (managerCache.containsKey(domainName))
-            return (Manager)managerCache.get(domainName);
+            return managerCache.get(domainName);
 
 	    final Object obj = lookup(federationDirectory, dottedToHierarchical(domainName) + "/Manager", null);
 	    if (obj == null)
@@ -10042,7 +10048,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Returns the defaultComponents.
 	 * @return Map
 	 */
-	public Map getDefaultComponents()
+	public Map<String, ComponentInfo> getDefaultComponents()
 	{
 		return defaultComponents;
 	}
