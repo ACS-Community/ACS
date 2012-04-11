@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.69 2012/02/23 13:47:55 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.70 2012/04/11 12:09:31 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -53,9 +53,6 @@
 
 ###
 ### ----------- Command Line Parsing ---------------------
-
-# Fisrt dir of intlist
-INSTALL_ROOT=`echo $INTLIST | awk -F: '{print $1}'`
 
 #
 # These will contain the parsing results (CL_XXX, CL = command line)
