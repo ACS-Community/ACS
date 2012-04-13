@@ -397,7 +397,8 @@ public class SubsysResourceMonitor {
 			if (wasTimedOut) {
 				lastCheckSucceeded = false;
 				try {
-					logger.log(AcsLogLevel.DEBUG, "About to call error handler " + err.getClass().getName() + "#resourceUnreachable. Timeout detail: " + timedOutDescription);
+					logger.log(AcsLogLevel.DEBUG, "About to call error handler " + err.getClass().getSimpleName() + "#resourceUnreachable(" + resourceChecker.getResourceName() 
+							+ "). Timeout detail: " + timedOutDescription);
 					// notify the error handler
 					// TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
 					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
