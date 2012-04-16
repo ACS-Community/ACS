@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.5 2009/10/09 13:07:15 acaproni Exp $"
+* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.6 2012/04/16 08:35:36 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,6 +37,16 @@
 #include "AlarmSystemInterface.h"
 #include "FaultState.h"
 #include "maciS.h"
+
+namespace acsalarm
+{
+	#ifdef __CYGWIN__
+	   const char * const CERN_ALARM_SYSTEM_DLL_PATH = "liblaserSourceAcsSpecific.dll";
+	#else
+	   const char * const CERN_ALARM_SYSTEM_DLL_PATH = "liblaserSourceAcsSpecific.so";
+	#endif
+	   const char * const CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME = "getAlarmSystemInterfaceFactory";
+};
 
 /**
  * The abstract base class (actually just an interface) to create sources and fault states.
