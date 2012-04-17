@@ -149,7 +149,7 @@ void AcsAlarmTestCase::testTimestamp()
 	// test timestampToXML method
 	long secs=SECONDS_VALUE;
 	long usecs=MICROSECONDS_VALUE;
-	verifyTimestampXML(cernMsg.timestampToXML(secs, usecs,std::string("Timestamp"),3));
+	verifyTimestampXML(cernMsg.timestampToXML(secs, usecs,std::string("user-timestamp"),3));
 }
 
 /*
