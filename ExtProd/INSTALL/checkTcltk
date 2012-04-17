@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.12 2012/01/09 14:39:47 tstaig Exp $"
+# "@(#) $Id: checkTcltk,v 1.13 2012/04/17 11:55:54 jschwarz Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -132,6 +132,8 @@ then
      distro=`cat /etc/redhat-release | awk '{ print $1 $2 }'`
      if [ "X${distro}" = "XRedHat" ] ; then
           build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $3 $7 }'`
+     elif [ "X${distro}" = "XScientificLinux" ] ; then
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $(NF-1) }'`
      elif [ "X${distro}" = "XFedoraCore" ] ; then 
           build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
      fi   

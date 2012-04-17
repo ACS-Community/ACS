@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.22 2012/01/09 14:39:47 tstaig Exp $"
+# "@(#) $Id: buildTcltk,v 1.23 2012/04/17 11:55:54 jschwarz Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -214,6 +214,8 @@ then
      distro=`cat /etc/redhat-release | awk '{ print $1 $2 }'`
      if [ "X${distro}" = "XRedHat" ] ; then
           build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $3 $7 }'`
+     elif [ "X${distro}" = "XScientificLinux" ] ; then
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $(NF-1) }'`
      elif [ "X${distro}" = "XFedoraCore" ] ; then
           build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
      fi   
@@ -225,6 +227,7 @@ echo " Installing on $build_OS version $build_OSV"
 if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.2"  \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.3"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-ScientificLinux6.2"  \
      -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
    ]
 then
