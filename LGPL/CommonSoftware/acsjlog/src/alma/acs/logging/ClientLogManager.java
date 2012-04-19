@@ -83,7 +83,7 @@ public class ClientLogManager implements LogConfigSubscriber
 
 	
     /** The logging configurator shared by various classes of this package */  
-    private final LogConfig sharedLogConfig;
+    protected final LogConfig sharedLogConfig;
     
 	/** The (CORBA-) name of the remote logging service to which logs will be sent */
 	private volatile String logServiceName;
@@ -369,7 +369,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 *            logger to be set up for local logging
 	 * @return the local handler that was added to the logger.
 	 */
-	private StdOutConsoleHandler addLocalHandler(AcsLogger logger) {
+	protected StdOutConsoleHandler addLocalHandler(AcsLogger logger) {
 		StdOutConsoleHandler localHandler = null;
 		synchronized (loggers) {
 			String loggerName = logger.getLoggerName();
@@ -872,6 +872,10 @@ public class ClientLogManager implements LogConfigSubscriber
 	}
 
 	/**
+	 * Enables alarms to be raised by the logging classes. 
+	 * As of ACS 9.1, there is only one type of alarm, when the log throttle gets activated and logs are lost.
+	 * @param logAlarmHandler A user-supplied callback that actually raises and clears alarms, 
+	 *                        so that the logging classes do not get a dependency on the alarm system API.
 	 * @since ACS 9.1
 	 */
 	public void enableLoggingAlarms(LogAlarmHandler logAlarmHandler) {
