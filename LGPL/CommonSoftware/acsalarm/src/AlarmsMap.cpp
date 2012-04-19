@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.cpp,v 1.4 2012/03/27 07:26:06 acaproni Exp $"
+* "@(#) $Id: AlarmsMap.cpp,v 1.5 2012/04/19 14:55:47 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.4 2012/03/27 07:26:06 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.5 2012/04/19 14:55:47 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <ctime>
@@ -62,7 +62,6 @@ AlarmInfo::AlarmInfo(const AlarmInfo& ai)
 
 
 AlarmsMap::AlarmsMap():
-		ACS::Thread("AlarmsMap", 10000000, 10000000),
 		m_closed(false)
 {
 }
@@ -104,16 +103,12 @@ void AlarmsMap::start()
 {
 	alarmsMap.clear();
 	m_closed=false;
-	// Start the thread
-	resume();
 }
 
 void AlarmsMap::shutdown()
 {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	m_closed=true;
-	// Stop the thread
-	terminate();
 	// Clean the map
 	if (!alarmsMap.empty()) {
 		std::map<std::string,AlarmInfo*>::iterator it;
@@ -124,14 +119,14 @@ void AlarmsMap::shutdown()
 	}
 }
 
-void AlarmsMap::runLoop()
+void AlarmsMap::updateInternalDataStructs()
 {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	time_t nowTime = time(NULL);
 	// Clean the map
 	if (!alarmsMap.empty()) {
 		std::map<std::string,AlarmInfo*>::iterator it;
-		for (it=alarmsMap.begin(); it!=alarmsMap.end() && !m_closed && check(); it++) {
+		for (it=alarmsMap.begin(); it!=alarmsMap.end() && !m_closed; it++) {
 			if ((*it).second->acsTime_m + 30 < nowTime)
 			{
 				alarmsMap.erase(it);

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.h,v 1.3 2011/06/27 20:26:35 javarias Exp $"
+* "@(#) $Id: AlarmsMap.h,v 1.4 2012/04/19 14:55:47 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,19 +77,27 @@ struct AlarmInfo  {
  * <P>
  * Alarms older then a given number of seconds are deleted from the queue
  * so that they will be resend anyhow.
+ * This was initially achieved with a dedicated thread but since we have
+ * to reduce the number of thread to save memory, the updated is explicitly requested
+ * by an external entity executing updateInternalDataStructs().
  * <P>
  *  Life cycle: start() has to be called before using objects of this class;
  *  shutdown() has to be called when terminated.
  *  After shutdown is called, the class does not accept any new alarm
  *  and always returns false in clear(...) and raise(...)
  */
-class AlarmsMap: public ACS::Thread {
+class AlarmsMap {
 public:
 
 	/**
 	 * Constructor
 	 */
 	AlarmsMap();
+
+	/**
+	 * Destructor
+	 */
+	virtual ~AlarmsMap() {}
 
 	/**
 	 * Add an active alarm in the map and check if it has to be sent to the
@@ -130,10 +138,10 @@ public:
 	bool clear(std::string alarmID);
 
 	/**
-	 * The loop that removes the alarm older then KEEP_ALARMS_TIME
-	 * from the map
+	 * Removes the alarm older then KEEP_ALARMS_TIME
+	 * from the map.
 	 */
-	virtual void runLoop();
+	virtual void updateInternalDataStructs();
 
 	/**
 	 * @return the number of items in the map
