@@ -35,6 +35,15 @@
 
 #include <AlarmsMap.h>
 
+/**
+ * Tests the AlarmsMap.
+ *
+ * The updating of AlarmsMap internal data structures is normally
+ * done in a loop by the AlamsSourceImpl object.
+ * As this test does not own a AlarmSourceImpl object, the method is
+ * invoked explicitly.
+ *
+ */
 class AlarmsMapTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( AlarmsMapTest );
@@ -75,15 +84,18 @@ public:
     	std::string id=buildAlarmID(ff,fm,t);
     	CPPUNIT_ASSERT(map.raise(id));
     }
+    map.updateInternalDataStructs();
     CPPUNIT_ASSERT(map.size()==10);
     // Clear the same alarms
     for (int t=0; t<10; t++) {
 		std::string id=buildAlarmID(ff,fm,t);
 		CPPUNIT_ASSERT(map.clear(id));
 	}
+    map.updateInternalDataStructs();
 	CPPUNIT_ASSERT(map.size()==10);
 
 	sleep(40);
+	map.updateInternalDataStructs();
 	CPPUNIT_ASSERT(map.size()==0);
   }
 
@@ -106,7 +118,9 @@ public:
 	  std::string alClear=buildAlarmID("clearFF","clearFM",8);
 
 	  CPPUNIT_ASSERT(map.raise(alRaise));
+	  map.updateInternalDataStructs();
 	  CPPUNIT_ASSERT(map.clear(alClear));
+	  map.updateInternalDataStructs();
 	  CPPUNIT_ASSERT(map.size()==2);
 	  for (int j=0; j<5; j++) {
 		  for (int t=0; t<10; t++) {
@@ -114,9 +128,11 @@ public:
 			  CPPUNIT_ASSERT(!map.clear(alClear));
 		  }
 	  }
+	  map.updateInternalDataStructs();
 	  CPPUNIT_ASSERT(map.size()==2);
 
 	  sleep(40);
+	  map.updateInternalDataStructs();
 	  CPPUNIT_ASSERT(map.size()==0);
   }
 
