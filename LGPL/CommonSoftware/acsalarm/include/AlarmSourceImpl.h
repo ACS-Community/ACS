@@ -89,8 +89,19 @@ namespace acsalarm
 		/**
 		 * The map to avoid repeating alarms if their states did
 		 * not change.
+		 *
+		 * The map requires to be updated from time to time
+		 * (@see AlarmsMap documentation). The updating is explicitly requested
+		 * by the thread loop.
 		 */
 		AlarmsMap m_alarms;
+
+		/**
+		 * The updating of the AlarmMap m_alarms is not done
+		 * in each loop of the thread but every 10 iterations
+		 * i.e. once per second.
+		 */
+		int m_updateMap;
 
 		/**
 		 * The source to send alarms to the AS

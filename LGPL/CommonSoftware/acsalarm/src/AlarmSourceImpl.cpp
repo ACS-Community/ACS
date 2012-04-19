@@ -33,9 +33,9 @@ AlarmSourceImpl::AlarmSourceImpl():
 	ACS::Thread("AlarmsourceImpl", 10000000),
 	m_disabled(false),
 	m_queuing(false),
+	m_updateMap(0),
 	m_alarmSource_ap(NULL)
 {
-
 }
 
 AlarmSourceImpl::~AlarmSourceImpl() {
@@ -284,4 +284,11 @@ void AlarmSourceImpl::runLoop()
 {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	flushAlarms();
+
+	// Update the AlarmsMap internal data structures every
+	// 10 iterations i.e. once per second.
+	m_updateMap= (m_updateMap+1)%10;
+	if (m_updateMap==0) {
+		m_alarms.updateInternalDataStructs();
+	}
 }
