@@ -52,7 +52,7 @@ import alma.acs.exceptions.AcsJException;
  * @author Allen Farris
  * @deprecated since ACS 9.0, see http://jira.alma.cl/browse/COMP-4716
  */
-public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
+public class CorbaReceiver extends alma.acs.nc.Consumer {
 
 	/**
 	 * The list of receiver objects that process received events.
@@ -76,7 +76,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 	 * @param cs container services
     * @throws AcsJException
 	 */
-	CorbaReceiver (String channelName, ContainerServicesBase cs) throws AcsJException{
+	public CorbaReceiver (String channelName, ContainerServicesBase cs) throws AcsJException{
 		super (channelName, cs);
 		receivers = new ArrayList ();
 		isBegin = false;
@@ -262,7 +262,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 		*/
 				
 		// Make sure the receiver object has the proper method.
-		String err = CorbaNotificationChannel.checkReceiver(eventTypeName,receiver);
+		String err = checkReceiver(eventTypeName,receiver);
 		if (err != null)
 			throw new IllegalArgumentException(err);
 
@@ -353,6 +353,45 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 			receivers.clear();
 			isBegin = false;
 		}		
+	}
+
+	/**
+	 * Return an error message if the receiver object does not contain
+	 * a method of the type "receive(EventType)"; otherwise return null.
+	 * <p>
+	 * This method has been moved from here from the obsolete base class
+	 * AbstractNotificationChannel.
+	 * 
+	 * @param eventTypeName 	The name of the event type that this receiver 
+	 * 							wishes to receive.
+	 * @param receiver			An object that receives and processes this event.
+	 * 							It must have a public method of the form 
+	 * 							"receive(EventType)", where the EventType 
+	 * 							parameter in the method signature is the name 
+	 * 							of an IDL structure that defines the event.
+	 * @return Error message string if there's a problem.
+	 */
+	static String checkReceiver(String eventTypeName, Object receiver) {
+		// Make sure the receiver object has the proper method.
+		Class receiverClass = receiver.getClass();
+		Method receiveMethod = null;
+		Class[] parm = new Class [1];
+		try {
+			parm[0] = Class.forName(eventTypeName);
+			receiveMethod = receiverClass.getMethod("receive",parm);
+		} catch (ClassNotFoundException err) { 
+			return
+			"Invalid event type!  There is no class defining " + eventTypeName;
+		} catch (NoSuchMethodException err) { 
+			return
+			"Invalid receiver!  Class " + receiverClass.getName() + 
+			" has no such public method as receive(" + eventTypeName + ")";
+		} catch (SecurityException err) { 
+			return
+			"Invalid receiver!  Method receive(" + eventTypeName + ")" + 
+			" in Class " + receiverClass.getName() + " is not accessible.";
+		}
+		return null;
 	}
 
 }
