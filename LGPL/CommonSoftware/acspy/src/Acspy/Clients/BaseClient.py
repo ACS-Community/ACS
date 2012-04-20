@@ -1,4 +1,4 @@
-# @(#) $Id: BaseClient.py,v 1.15 2010/02/04 21:45:16 agrimstrup Exp $
+# @(#) $Id: BaseClient.py,v 1.16 2012/04/20 20:43:59 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaseClient.py,v 1.15 2010/02/04 21:45:16 agrimstrup Exp $"
+# "@(#) $Id: BaseClient.py,v 1.16 2012/04/20 20:43:59 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ designed to be used in all Python servant implementations derived from Client.
 BaseClient is more of a helper class than anything else.
 '''
 
-__revision__ = "$Id: BaseClient.py,v 1.15 2010/02/04 21:45:16 agrimstrup Exp $"
+__revision__ = "$Id: BaseClient.py,v 1.16 2012/04/20 20:43:59 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -45,7 +45,7 @@ import maci
 from maci__POA import Client
 from CORBA import TRUE
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Common.Log                 import getLogger
+from Acspy.Common.Log                 import getLogger, startPeriodicFlush
 from Acspy.Util.ACSCorba              import getManager, getClient
 from ACSErrTypeCommonImpl             import CORBAProblemExImpl
 from Acspy.Common.TimeHelper          import getTimeStamp
@@ -79,6 +79,7 @@ class BaseClient(Client):
             self.logger
         except:
             self.logger = getLogger(name)
+        startPeriodicFlush(3)
         #List of components manager says are active
         self.managerComponents = []
         #CORBA reference to ourself
