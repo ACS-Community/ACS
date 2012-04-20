@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -653,7 +654,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * List of all unavailable components.
 	 * @serial
 	 */
-	private Map unavailableComponents = new HashMap();
+	private Map unavailableComponents = new LinkedHashMap();
 
 	/**
 	 * List of all pending activations.
