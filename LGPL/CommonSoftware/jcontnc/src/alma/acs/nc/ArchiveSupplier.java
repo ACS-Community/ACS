@@ -25,6 +25,7 @@ import org.omg.CosNotification.StructuredEvent;
 
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.refactored.NCPublisher;
 import alma.acs.util.UTCUtility;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -33,9 +34,15 @@ import alma.acsnc.EventDescriptionHelper;
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.10 2009/09/16 23:03:49 javarias Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.11 2012/04/20 16:41:59 hsommer Exp $
  */
-public class ArchiveSupplier extends SimpleSupplier {
+public class ArchiveSupplier extends NCPublisher<Object> {
+	
+// TODO: ideally we delegate to an AcsEventPublisher created by ContainerServices, 
+//       but for now we must override getNotificationFactoryName and related methods
+//       and thus continue to subclass (now NCPublisher instead of SimpleSupplier).
+//	private final AcsEventPublisher pub; 
+	
 	/**
 	 * Creates a new instance of ArchiveSupplier
 	 * 
@@ -47,9 +54,10 @@ public class ArchiveSupplier extends SimpleSupplier {
 	 *            thrown by the ArchiveSupplier class. Instead, these are
 	 *            converted into an ACS Error System exception for the
 	 *            developer's convenience.
-	 */
+	 */	
 	public ArchiveSupplier(ContainerServicesBase services) throws AcsJException {
-		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services);
+		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services, Helper.getNamingServiceInitial(services));
+//		pub = services.createNotificationChannelPublisher(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, IDLEntity.class);
 	}
 
 	/**
@@ -57,6 +65,7 @@ public class ArchiveSupplier extends SimpleSupplier {
 	 * 
 	 * @return string
 	 */
+	@Override
 	protected String getChannelKind() {
 		return alma.acscommon.ARCHIVING_CHANNEL_KIND.value;
 	}
@@ -66,6 +75,7 @@ public class ArchiveSupplier extends SimpleSupplier {
 	 * 
 	 * @return string
 	 */
+	@Override
 	protected String getNotificationFactoryName() {
 		return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
 	}
@@ -75,6 +85,7 @@ public class ArchiveSupplier extends SimpleSupplier {
 	 * 
 	 * @return string
 	 */
+	@Override
 	protected String getChannelDomain() {
 		return alma.acscommon.ARCHIVING_DOMAIN.value;
 	}
@@ -88,8 +99,8 @@ public class ArchiveSupplier extends SimpleSupplier {
 	 * It could also be <code>null</code>, or come from an IDL-defined struct (thus implementing <code>IDLEntity</code>);
 	 * at least the latter should never occur since baci properties don't have complex values. 
 	 * 
-	 * @param customStruct
-	 *           An instance of the IDL struct (Java class) to be published.
+	 * @param value
+	 *           Value to be published.
 	 * @throws AcsJException
 	 *            There are an enormous amount of possibilities pertaining to why
 	 *            a subclass of AcsJException would be thrown by publishEvent.
@@ -99,14 +110,14 @@ public class ArchiveSupplier extends SimpleSupplier {
 		//the eventName consists of container named concatenated with the
 		//component and property names, delimited by ':'s.
 		String typeName = value.getClass().getName().substring(value.getClass().getName().lastIndexOf('.') + 1);
-		String containerName = m_services.getName();
+		String containerName = services.getName();
 		String param = "no_param";
 		String device = "no_device"; // @TODO use real component/device name
 		String eventName = containerName + ":" + device + ":" + param;
 
 		// event to send
 		StructuredEvent event = getCORBAEvent(typeName, eventName);
-		event.remainder_of_body = m_services.getAdvancedContainerServices().getAny();
+		event.remainder_of_body = services.getAdvancedContainerServices().getAny();
 
 		// get the useful data which includes the component's name, timestamp, and event count
 		long utcTime = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
@@ -115,9 +126,9 @@ public class ArchiveSupplier extends SimpleSupplier {
 		// store all data into the structured event
 		EventDescriptionHelper.insert(event.remainder_of_body, descrip);
 		event.filterable_data = new Property[2];
-		event.filterable_data[0] = new Property("time_stamp", m_anyAide.objectToCorbaAny(new Long(utcTime)));
-		event.filterable_data[1] = new Property("value", m_anyAide.objectToCorbaAny(value));
+		event.filterable_data[0] = new Property("time_stamp", anyAide.objectToCorbaAny(new Long(utcTime)));
+		event.filterable_data[1] = new Property("value", anyAide.objectToCorbaAny(value));
 
-		publishCORBAEvent(event, (IDLEntity)value);
+		publishCORBAEvent(event, value);
 	}
 }
