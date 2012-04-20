@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.13 2011/05/09 18:21:04 tstaig Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.14 2012/04/20 19:58:57 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -193,7 +193,17 @@ DAONode::DAONode(const char* nodeName, CDB::DAL_ptr dal, PortableServer::POA_ptr
     m_dalChangeListener->registerNode(this);
 
     // connect
-    connect(false);
+    try {
+        connect(false);
+    //Something went wrong we should unregister the claabak
+    } catch (...) {
+        m_dalChangeListener->unregisterNode(this);
+        try {
+            m_dalChangeListener->destroy();
+        } catch(...) {
+        }
+        throw;
+    }
 }
 
 DAONode::~DAONode()

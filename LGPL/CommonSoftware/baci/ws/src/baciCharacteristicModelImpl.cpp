@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.17 2008/10/09 06:18:16 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.18 2012/04/20 19:58:57 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,18 +75,36 @@ CharacteristicModelImpl::CharacteristicModelImpl(const ACE_CString& model_name, 
                            "does not exist. Continue assuming there are actually no "
                            "characteristics. This should then be just a simple ACSComponent", 
 		 model_name.c_str()));
+        if (m_daoNode_p != NULL) {
+            try {
+                delete m_daoNode_p;
+            } catch (...) {
+            }
+        }
 	}
     catch (ACSErr::ACSbaseExImpl& ex)
 	{
 	ex.log();
 	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::CharacteristicModelImpl::CharacteristicModelImpl",
 		(LM_ERROR, "Failed to create characteristic model for '%s'", model_name.c_str()));
+        if (m_daoNode_p != NULL) {
+            try {
+                delete m_daoNode_p;
+            } catch (...) {
+            }
+        }
 	return;
 	}
     catch (...)
 	{
 	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::CharacteristicModelImpl::CharacteristicModelImpl",
 		(LM_ERROR, "Failed to create characteristic model for '%s'", model_name.c_str()));
+        if (m_daoNode_p != NULL) {
+            try {
+                delete m_daoNode_p;
+            } catch (...) {
+            }
+        }
 	return;
 	}
 
