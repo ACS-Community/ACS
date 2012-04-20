@@ -31,89 +31,81 @@ import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.refactored.NCPublisher;
 import alma.acsnc.EventDescription;
 import alma.demo.SupplierCompOperations;
 
-/** Class designed for testing event suppliers.
+/**
+ * Class designed for testing event suppliers.
+ * 
  * @author dfugate
  */
 public class EventSupplierImpl extends ComponentImplBase implements SupplierCompOperations
 {
-   private SimpleSupplier m_supplier = null;
-   
-   /** Sends some events to an event channel.
-    * @param param number of events to send
-    */
-   public void sendEvents(short param)
-   {
-      System.out.println("Now sending simplesupplier events...");
-      try
-      {
-         //first send out some number of events.
-         EventDescription t_block = new EventDescription("no name", 32L, 64L);
-         for(short i=0; i<param; i++)
-         {
-            m_supplier.publishEvent(t_block);
-            Thread.sleep(1);
-         }         
-         
-	 //fake a subscription change
-	 m_supplier.subscription_change(new org.omg.CosNotification.EventType[]
-	     {}, new org.omg.CosNotification.EventType[]
-	     {});
-         
-      }
-      catch(Exception e)
-      {
-         System.err.println(e);
-      }
-   }
-   
-   /** Disconnects the supplier. */
-   public void cleanUp()
-   {
-      m_logger.info("cleanUp() called...");
-      
-      try
-      {
-      
-      //fake a consumer disconnecting...
-      m_supplier.disconnect_structured_push_supplier();
-      m_supplier.disconnect();
-      }
-      catch(Exception e)
-      {
-       e.printStackTrace();  
-      }
-   }
-   
-   
-   /** Sets up the SimpleSupplier.
-    * @param containerServices Services to components.
-    * @throws ComponentLifecycleException Not thrown.
-    */
-   public void initialize(ContainerServices containerServices)
-   throws ComponentLifecycleException
-   {
-      super.initialize(containerServices);
-      m_logger.info("initialize() called...");
-      
-      try
-      {
-         //Instantiate our supplier
-         m_supplier = new SimpleSupplier("blarIL",  //the channel's name
-         m_containerServices);
-      }
-      catch(Exception e)
-      {
-         e.printStackTrace(System.err);
-      }
-   }
+	private NCPublisher<EventDescription> m_supplier = null;
 
-   public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
-	   throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-   }
-   
+	/**
+	 * Sends some events to an event channel.
+	 * 
+	 * @param param
+	 *            number of events to send
+	 */
+	public void sendEvents(short param) {
+		System.out.println("Now sending simplesupplier events...");
+		try {
+			// first send out some number of events.
+			EventDescription t_block = new EventDescription("no name", 32L, 64L);
+			for (short i = 0; i < param; i++) {
+				m_supplier.publishEvent(t_block);
+				Thread.sleep(1);
+			}
+
+			// fake a subscription change
+			m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
+					new org.omg.CosNotification.EventType[] {});
+
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+	}
+
+	/** Disconnects the supplier. */
+	public void cleanUp() {
+		m_logger.info("cleanUp() called...");
+
+		try {
+
+			// fake a consumer disconnecting...
+			m_supplier.disconnect_structured_push_supplier();
+			m_supplier.disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Sets up the SimpleSupplier.
+	 * 
+	 * @param containerServices
+	 *            Services to components.
+	 * @throws ComponentLifecycleException
+	 *             Not thrown.
+	 */
+	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+		super.initialize(containerServices);
+		m_logger.info("initialize() called...");
+
+		try {
+			// Instantiate our supplier
+			m_supplier = (NCPublisher) m_containerServices.createNotificationChannelPublisher("cdb_channel", EventDescription.class);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			throw new ComponentLifecycleException(e);
+		}
+	}
+
+	public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+
 }
-
