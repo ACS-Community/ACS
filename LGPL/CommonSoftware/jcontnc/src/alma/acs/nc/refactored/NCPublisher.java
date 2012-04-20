@@ -410,11 +410,14 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
-	 * This method returns a constant character pointer to the notification
-	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN. The
-	 * sole reason this method is provided is to accomodate subclasses which
-	 * subscribe/publish non-ICD style events (ACS archiving channel for
-	 * example).In that case, the developer would override this method.
+	 * Returns the NC domain as defined in acscommon.idl. For all 'normal' NCs that we use 
+	 * to send and receive event data it is given by acscommon::ALMADOMAIN. 
+	 * Notice that this domain concept is not the same as the domain given in {@link #channelNotifyServiceDomainName},
+	 * where the latter sets up optional finer-grained domains used to map NCs to NotifyService instances, 
+	 * which are then all within the same domain of the kind returned by this method.
+	 * <p>
+	 * Subclasses which subscribe/publish non-ICD style events (ACS archiving channel for
+	 * example) may override this method. 
 	 * 
 	 * @return string
 	 */
