@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.37 2012/01/05 07:56:48 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.38 2012/04/20 13:31:37 acaproni Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -31,6 +31,7 @@
 
 #include <acsutil.h>
 #ifndef MAKE_VXWORKS
+#include <AlarmSourceImpl.h>
 #include <acsContainerServices.h>
 #endif
 #include <maciComponentStateManager.h>
@@ -314,7 +315,13 @@ class MACIContainerServices: public ContainerServices
     * @see alma.ACS.ComponentStates
     */
 #ifndef MAKE_VXWORKS
-   acsalarm::AlarmSource* getAlarmSource() { return m_alarmSource; }
+   acsalarm::AlarmSource* getAlarmSource() {
+	   if (m_alarmSource==NULL) {
+		   m_alarmSource = new acsalarm::AlarmSourceImpl();
+		   m_alarmSource->start();
+	   }
+	   return m_alarmSource;
+   }
 #endif
     void fireComponentsUnavailable(ACE_CString_Vector& compNames);
     void fireComponentsAvailable(ACE_CString_Vector& compNames);

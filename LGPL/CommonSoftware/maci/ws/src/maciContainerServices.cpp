@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.45 2012/01/31 08:01:29 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.46 2012/04/20 13:31:37 acaproni Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -29,7 +29,6 @@
 #include <maciContainerServices.h>
 #include <iostream>
 #include <ACSErrTypeCORBA.h>
-#include <AlarmSourceImpl.h>
 
 using namespace maci;
 using namespace acsErrTypeContainerServices;
@@ -52,8 +51,7 @@ MACIContainerServices::MACIContainerServices(
   m_offShootPOA = PortableServer::POA::_nil();
   componentStateManager_mp = new MACIComponentStateManager(name);
 #ifndef MAKE_VXWORKS
-  m_alarmSource = new acsalarm::AlarmSourceImpl();
-  m_alarmSource->start();
+  m_alarmSource=NULL;
 #endif
   m_poa = PortableServer::POA::_duplicate(m_containerImpl->getContainerPOA().in());
   m_componentType = ACE_CString(type);
@@ -72,8 +70,7 @@ MACIContainerServices::MACIContainerServices(
 	m_offShootPOA = PortableServer::POA::_nil();
 	componentStateManager_mp = new MACIComponentStateManager(name);
 #ifndef MAKE_VXWORKS
-  m_alarmSource = new acsalarm::AlarmSourceImpl();
-  m_alarmSource->start();
+	m_alarmSource=NULL;
 #endif
 }
 
@@ -86,8 +83,11 @@ MACIContainerServices::~MACIContainerServices()
   delete componentStateManager_mp;
   m_usedComponents.unbind_all();
 #ifndef MAKE_VXWORKS
-  m_alarmSource->tearDown();
-  delete m_alarmSource;
+  if (m_alarmSource!=NULL) {
+	  m_alarmSource->tearDown();
+	  delete m_alarmSource;
+	  m_alarmSource=NULL;
+  }
 #endif
 }
 
