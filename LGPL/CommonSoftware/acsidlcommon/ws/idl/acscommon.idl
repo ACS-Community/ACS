@@ -856,6 +856,7 @@ module acscommon
      * Domain for notification channels.
      * This domain is used for ICD-style events shared between ALMA subsystems. 
      * @todo Should this be renamed ALMA_DOMAIN?
+     * (Do not confuse this concept with the NC domains as used in Channels.xsd whose domains are all within this ALMADOMAIN here.)
      */
     const string ALMADOMAIN = "ALMA";
 
