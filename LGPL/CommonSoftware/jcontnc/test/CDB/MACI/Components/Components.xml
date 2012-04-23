@@ -31,21 +31,6 @@
    Container="frodoContainer" 
    ImplLang="java" />
 
-<_ Name="ABSTRACT_PUBLISHER"
-   Code="alma.demo.test.AbstractNC.NCPublisherHelper"
-   Type="IDL:alma/demo/NCPublisher:1.0"
-   Container="frodoContainer" 
-   ImplLang="java" />
-
-<_ Name="ABSTRACT_RECEIVER"
-   Code="alma.demo.test.AbstractNC.NCReceiverHelper"
-   Type="IDL:alma/demo/NCReceiver:1.0"
-   Container="frodoContainer" 
-   ImplLang="java" />
-
-<_ Name="TEST_PS_1"    Code="acsexmplPowerSupplyImpl"
-                       Type="IDL:alma/PS/PowerSupply:1.0"
-                       Container="archiveContainer" ImplLang="cpp" />
 </Components>
 
 
