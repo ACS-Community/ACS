@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.2 2012/03/09 14:34:28 acaproni Exp $
+# @(#) $Id: Log.py,v 1.3 2012/04/23 22:46:03 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.2 2012/03/09 14:34:28 acaproni Exp $"
+__revision__ = "$Id: Log.py,v 1.3 2012/04/23 22:46:03 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -333,6 +333,7 @@ def startPeriodicFlush(interval=DEFAULT_FLUSH_PERIOD):
             SCHEDULER = sched.scheduler(time.time,delay)
         NEXTEVENT = SCHEDULER.enter(INTERVAL,1,flush,())
         FLUSHTHREAD = threading.Thread(target=SCHEDULER.run)
+        FLUSHTHREAD.daemon = True
         FLUSHTHREAD.start()
 
         # To ensure a clean interpreter shutdown

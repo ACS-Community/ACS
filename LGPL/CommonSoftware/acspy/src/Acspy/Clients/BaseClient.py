@@ -1,4 +1,4 @@
-# @(#) $Id: BaseClient.py,v 1.16 2012/04/20 20:43:59 javarias Exp $
+# @(#) $Id: BaseClient.py,v 1.17 2012/04/23 22:45:14 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaseClient.py,v 1.16 2012/04/20 20:43:59 javarias Exp $"
+# "@(#) $Id: BaseClient.py,v 1.17 2012/04/23 22:45:14 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ designed to be used in all Python servant implementations derived from Client.
 BaseClient is more of a helper class than anything else.
 '''
 
-__revision__ = "$Id: BaseClient.py,v 1.16 2012/04/20 20:43:59 javarias Exp $"
+__revision__ = "$Id: BaseClient.py,v 1.17 2012/04/23 22:45:14 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -45,7 +45,8 @@ import maci
 from maci__POA import Client
 from CORBA import TRUE
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Common.Log                 import getLogger, startPeriodicFlush
+from Acspy.Common.Log                 import getLogger, startPeriodicFlush,\
+    stopPeriodicFlush
 from Acspy.Util.ACSCorba              import getManager, getClient
 from ACSErrTypeCommonImpl             import CORBAProblemExImpl
 from Acspy.Common.TimeHelper          import getTimeStamp
@@ -131,7 +132,7 @@ class BaseClient(Client):
         oneway void disconnect ();
         '''
         self.logger.logInfo('Shutdown called for client')
-        
+        stopPeriodicFlush()
         try:
             #here we literally log out of manager
             getManager().logout(self.token.h)
