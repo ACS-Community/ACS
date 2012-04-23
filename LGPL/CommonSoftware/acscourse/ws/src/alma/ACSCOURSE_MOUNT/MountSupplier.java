@@ -26,59 +26,64 @@
  */
 ////////////////////////////////////////////////////////////////////////////////
 package alma.ACSCOURSE_MOUNT;
+
 ////////////////////////////////////////////////////////////////////////////////
 import alma.acs.component.client.ComponentClient;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.container.ContainerServices;
+import alma.acs.nc.AcsEventPublisher;
+
 ////////////////////////////////////////////////////////////////////////////////
-/** MountSupplier is an event channel example that shows how to use the SimpleSupplier
- *  class.
+/**
+ * MountSupplier is an event channel example that shows how to use the NCPublisher class
+ * directly, without ContainerServices available.
+ * 
  * @author dfugate
  */
 public class MountSupplier extends Thread
 {
-    ////////////////////////////////////////////////////////////////////////////
-    /** In this example, the main function is all that is used.
-     * @param args Not used!
-     */    
-    public static void main(String[] args)
-	{
-	    try
-		{
-		//Setup an ACS Java client. This has little to do with the NC API
-		String managerLoc = System.getProperty("ACS.manager");
-		if (managerLoc == null)
-		    {
-		    System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-		    System.exit(-1);
-		    }
-		String clientName = "MountSupplierClient";
-		ComponentClient myClient = new ComponentClient(null, managerLoc, clientName);
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * In this example, the main function is all that is used.
+	 * 
+	 * @param args
+	 *            Not used!
+	 */
+	public static void main(String[] args) {
+		try {
+			// Setup an ACS Java client. This has little to do with the NC API
+			String managerLoc = System.getProperty("ACS.manager");
+			if (managerLoc == null) {
+				System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+				System.exit(-1);
+			}
+			String clientName = "MountSupplierClient";
+			ComponentClient myClient = new ComponentClient(null, managerLoc, clientName);
+			ContainerServices cs = myClient.getContainerServices();
+			
+			// Create and initialize the supplier
+			AcsEventPublisher<MountEventData> joe = cs.createNotificationChannelPublisher(
+					MOUNT_CHANNEL.value, // the channel's name
+					MountEventData.class
+				);
 
-		//Create and initialize the supplier
-		SimpleSupplier joe = new SimpleSupplier(MOUNT_CHANNEL.value,  //the channel's name 
-							myClient.getContainerServices());  //type of event to be published
+			// Create the event that will be published
+			MountEventData t_block = new MountEventData(3.14F, 43.0F);
 
-		//Create the event that will be published
-		MountEventData t_block = new MountEventData(3.14F, 43.0F);
-		
-		//Publish the event 50 times int 50 seconds
-		System.out.println("Now sending events...");
-		for(int i=0; i<50; i++)
-                    {		        
-		    joe.publishEvent(t_block);
-		    sleep(1000);
-                    }
+			// Publish the event 50 times int 50 seconds
+			System.out.println("Now sending events...");
+			for (int i = 0; i < 50; i++) {
+				joe.publishEvent(t_block);
+				sleep(1000);
+			}
 
-		//Must cleanly disconnect the supplier
-		joe.disconnect();
+			// Must cleanly disconnect the supplier
+			joe.disconnect();
 
-		//Must cleanly disconnect the client
-		myClient.tearDown();
-                }
-	    catch(Exception e)
-                {
-		e.printStackTrace(System.err);
-                }
-    }
-    ////////////////////////////////////////////////////////////////////////////
+			// Must cleanly disconnect the client
+			myClient.tearDown();
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+		}
+	}
+	// //////////////////////////////////////////////////////////////////////////
 }
