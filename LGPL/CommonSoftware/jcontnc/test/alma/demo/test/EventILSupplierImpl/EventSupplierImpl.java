@@ -26,6 +26,8 @@
  */
 package alma.demo.test.EventILSupplierImpl;
 
+import org.omg.CORBA.NO_IMPLEMENT;
+
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
@@ -50,6 +52,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 	 * @param param
 	 *            number of events to send
 	 */
+	@Override
 	public void sendEvents(short param) {
 		System.out.println("Now sending simplesupplier events...");
 		try {
@@ -60,14 +63,25 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 				Thread.sleep(1);
 			}
 
-			// fake a subscription change
-			m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
-					new org.omg.CosNotification.EventType[] {});
+			//fake a subscription change notification (should be disabled on the proxy consumer in the real system)
+			try {
+				m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
+						new org.omg.CosNotification.EventType[] {});
+				m_logger.warning("Call to 'subscription_change' did not produce the expected NO_IMPLEMENT exception.");
+			} catch (NO_IMPLEMENT ex) {
+				// expected
+			}
 
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
+
+	@Override
+	public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
+		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+
 
 	/** Disconnects the supplier. */
 	public void cleanUp() {
@@ -102,10 +116,6 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 			e.printStackTrace(System.err);
 			throw new ComponentLifecycleException(e);
 		}
-	}
-
-	public void sendEventsSpecial(NestedFridgeEvent[] eventData) throws CouldntPerformActionEx {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
 	}
 
 }

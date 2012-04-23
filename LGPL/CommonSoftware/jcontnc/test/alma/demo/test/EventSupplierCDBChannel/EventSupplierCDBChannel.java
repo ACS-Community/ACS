@@ -26,6 +26,8 @@
  */
 package alma.demo.test.EventSupplierCDBChannel;
 
+import org.omg.CORBA.NO_IMPLEMENT;
+
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
@@ -59,9 +61,14 @@ public class EventSupplierCDBChannel extends ComponentImplBase implements Suppli
 				m_supplier.publishEvent(t_block);
 			}
 
-			// fake a subscription change
-			m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
-					new org.omg.CosNotification.EventType[] {});
+			//fake a subscription change notification (should be disabled on the proxy consumer in the real system)
+			try {
+				m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
+						new org.omg.CosNotification.EventType[] {});
+				m_logger.warning("Call to 'subscription_change' did not produce the expected NO_IMPLEMENT exception.");
+			} catch (NO_IMPLEMENT ex) {
+				// expected
+			}
 
 		} catch (Exception e) {
 			System.err.println(e);
