@@ -71,6 +71,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"acscomponent.jar",
 		"acsCallbacksSupport.jar",
 		"jbaci.jar",
+		"cdbSchemaBindings.jar",
 		
 		"jManager.jar",
 		"jmanagerErrType.jar",
