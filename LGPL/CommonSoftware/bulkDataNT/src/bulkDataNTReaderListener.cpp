@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.51 2012/03/30 13:45:16 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.52 2012/04/24 10:43:40 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -91,7 +91,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
         {
           if (si.valid_data == true)
             {
-              switch(message.dataType)
+              switch(message.typeOfdata)
               {
               case ACSBulkData::BD_PARAM:
                 {
@@ -250,7 +250,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
               default:
                 conseqErrorCount_m++;
                 UnknownDataTypeCompletion udt(__FILE__, __LINE__, __FUNCTION__);
-                udt.setDataType(message.dataType);
+                udt.setDataType(message.typeOfdata);
                 udt.setFrameCount(frameCounter_m);
                 udt.setTotalFrameCount(totalFrames_m);
                 callback_mp->onError(udt);

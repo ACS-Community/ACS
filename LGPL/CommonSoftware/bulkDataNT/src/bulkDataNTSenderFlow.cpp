@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.41 2012/03/07 08:46:08 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.42 2012/04/24 10:43:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.41 2012/03/07 08:46:08 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.42 2012/04/24 10:43:40 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -259,7 +259,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	}//if
 
 	//frame
-	frame_m->dataType = dataType;
+	frame_m->typeOfdata = dataType;
 	frame_m->data.length(len);
 	frame_m->restDataLength = restFrameCount; //we need it just in some cases, but we can always set to 0
 	if (param!=0 && len!=0)
