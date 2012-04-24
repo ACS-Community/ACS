@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.36 2012/01/19 15:34:39 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.37 2012/04/24 12:31:25 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -162,7 +162,7 @@ void BulkDataNTStream::destroyDDSFactory()
   if(factory_m!=0)
     {
       factoryRefCount_m--;
-      if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
+     //TBD: cause problem if all streams are delated and new is created   if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
     }
 }//destroyDDSFactory
 
