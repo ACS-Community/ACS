@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.42 2012/04/24 10:43:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.43 2012/04/25 14:26:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.42 2012/04/24 10:43:40 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.43 2012/04/25 14:26:28 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -182,9 +182,9 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 
 	if (DDSConfiguration::debugLevel>0)
 	{
-		// the message can cause perfomance penality for small data sizes
-		ACS_SHORT_LOG((LM_DEBUG, "Going to send: %zd Bytes = %d*%d(=%d) + %d to flow: %s",
-			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize, flowName_m.c_str()));
+		// the message can cause performance penalty for small data sizes
+		ACS_SHORT_LOG((LM_DEBUG, "Going to send: %zd Bytes = %d*%d(=%d) + %d on flow: %s to %d receiver(s).",
+			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize, flowName_m.c_str(), getNumberOfReceivers()));
 	}//if
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
