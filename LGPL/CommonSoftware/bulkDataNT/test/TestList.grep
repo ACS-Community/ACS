@@ -2,3 +2,4 @@ Local file logge
 Using DLL path
 Recovery filename
 set_component_shutdown_order
+ContainerThreadHook
