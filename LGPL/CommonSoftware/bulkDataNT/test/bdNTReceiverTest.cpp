@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverTest.cpp,v 1.18 2012/04/03 13:57:54 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverTest.cpp,v 1.19 2012/04/25 13:48:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,6 +114,11 @@ int main(int argc, char *argv[])
 			case 'd':
 			{
 				TestCB::cbDealy = atoi(get_opts.opt_arg());
+				break;
+			}
+			default:
+			{
+				print_usage(argv);
 				break;
 			}
 		}

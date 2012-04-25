@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.1 2012/04/25 12:55:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.2 2012/04/25 13:53:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -130,6 +130,11 @@ void executeF()
 // flow1 will be deleted when senderStream1 is deleted
 }//executeF
 
+void print_usage(char *argv[]) {
+	cout << "Usage: " << argv[0] << " [-s data size in bytes] [-w end_test_wait_period]" << endl;
+	exit(1);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -150,6 +155,9 @@ int main(int argc, char *argv[])
     		break;
     	case 's':
     		dataSize = atoi(get_opts.opt_arg());
+    		break;
+    	default:
+    		print_usage(argv);
     		break;
     	}
     }//while
