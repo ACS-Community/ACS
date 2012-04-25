@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTLibMgmt.cpp,v 1.1 2012/04/25 12:28:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTLibMgmt.cpp,v 1.2 2012/04/25 12:58:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,13 +24,22 @@
 */
 
 #include "bulkDataNTDDSLoggable.h"
+#include "bulkDataNTStream.h"
+
+using namespace AcsBulkdata;
 
 /// function that will be called when bulkDataNT shared library is unloaded
-
 void __attribute__ ((destructor)) bulkDataNTunload(void);
 
 void  bulkDataNTunload(void)
 {
+	//first we finalize the DDS fgactory
+	if (BulkDataNTStream::factoryRefCount_m!=0)
+		printf("factoryRefCount_m!=0 (%d)\n", BulkDataNTStream::factoryRefCount_m);
+
+	DDS::DomainParticipantFactory::finalize_instance();
+
+	// then delete the loggingProxy
 	if(BulkDataNTDDSLoggable::logger_mp){
 		BulkDataNTDDSLoggable::logger_mp->flush();
 		delete BulkDataNTDDSLoggable::logger_mp; // ...  but we have just one proxy object for all DDS reader threads
