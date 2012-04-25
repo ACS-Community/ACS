@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.13 2011/12/15 11:36:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.14 2012/04/25 12:50:07 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -73,6 +73,8 @@ public:
 	void addDDSQoSProfile(const DDSConfiguration &cfg);
 
 	//void destroyFlow(const  char* flowName);
+
+	static unsigned int factoryRefCount_m; /// how many time / streams need the factory
 protected:
 
 	DDS::DomainParticipant* getDDSParticipant(){ return participant_m; }
@@ -90,7 +92,6 @@ protected:
 	void destroyDDSParticipant();
 
 	DDS::DomainParticipantFactory *factory_m;
-	static unsigned int factoryRefCount_m; /// how many time / streams need the factory
 	static unsigned int participantRefCount_m; /// how many streams do need the participant
 	/*static*/ DDS::DomainParticipant* participant_m;
 
