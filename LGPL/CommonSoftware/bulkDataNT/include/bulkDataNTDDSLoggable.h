@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSLoggable.h,v 1.3 2012/02/03 15:32:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSLoggable.h,v 1.4 2012/04/25 12:28:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,8 +65,7 @@ class BulkDataNTDDSLoggable
 {
 public:
   //Constructor
-	  BulkDataNTDDSLoggable (const std::string &loggerName) :	Logging::Loggable(loggerName),
-	  logger_mp(0), loggerInitCount_m(0){}
+	  BulkDataNTDDSLoggable (const std::string &loggerName) :	Logging::Loggable(loggerName){}
 
   //destructor
   virtual ~BulkDataNTDDSLoggable ();
@@ -77,10 +76,10 @@ public:
 
   /// we override getLogger, so that we can initialize logging system if needed
  virtual Logging::Logger::LoggerSmartPtr getLogger ();
-private:
-  LoggingProxy *logger_mp; //we need separate logger, because we are in separate thread  ...
+
+  static LoggingProxy *logger_mp; //we need separate logger, because we are in separate thread  ...
   // ... other is one logger for all DDS reader thread
-  unsigned int loggerInitCount_m; // we need to count how many time we call LoggerProxy::init
+  static unsigned int loggerInitCount_m; // we need to count how many time we call LoggerProxy::init
 };
 
 #endif //BULKDATA_NT_DDS_LOGGABLE

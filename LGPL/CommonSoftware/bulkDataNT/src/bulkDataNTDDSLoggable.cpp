@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSLoggable.cpp,v 1.3 2011/11/10 16:14:56 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSLoggable.cpp,v 1.4 2012/04/25 12:28:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,16 +25,28 @@
 
 #include "bulkDataNTDDSLoggable.h"
 
+/// function that will be called when bulkDataNT shared library is unloaded
+
+void __attribute__ ((destructor)) bulkDataNT_unload(void);
+
+void  bulkDataNT_unload(void)
+{
+	if(BulkDataNTDDSLoggable::logger_mp){
+		BulkDataNTDDSLoggable::logger_mp->flush();
+		delete BulkDataNTDDSLoggable::logger_mp; // ...  but we have just one proxy object for all DDS reader threads
+		BulkDataNTDDSLoggable::logger_mp = 0;
+	}//if
+}
+
+
+LoggingProxy *BulkDataNTDDSLoggable::logger_mp=0;
+
+unsigned int BulkDataNTDDSLoggable::loggerInitCount_m=0;
+
 BulkDataNTDDSLoggable::~BulkDataNTDDSLoggable ()
 {
 	ACS_TRACE(__FUNCTION__);
-	if(logger_mp)
-	{
-		// we have to call "done" as many times as we call "init" -1, because the done it is called another time in Proxy dtor !!
-		for(unsigned int i=1; i<loggerInitCount_m; i++)
-			LoggingProxy::done();
-		delete logger_mp; // ...  but we have just one proxy object for all DDS reader threads
-	}
+
 }//~BulkDataNTDDSLoggable
 
 
@@ -42,7 +54,8 @@ void BulkDataNTDDSLoggable::initalizeLogging()
 {
 	// this code is a bit dirty, but wee need to initialize loggerproxy per thread
 	//isThreadInit return 0 if it is initialized !!!
-	if (LoggingProxy::isInitThread() )
+	//printf("====> BulkDataNTDDSLoggable::initalizeLogging \n");
+	if (logger_mp==0 || LoggingProxy::isInitThread() )
 	{
 		//TBD here we have to set centralized loggger as well, but we need some support from logging
 		if (logger_mp==0) //if we do not have a logger we create one for all DDS threads
