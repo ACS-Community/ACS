@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.38 2012/01/26 15:44:15 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.39 2012/04/25 12:28:10 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -91,7 +91,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration bulkDataNTConfigurationParser \
-						bulkDataNT bulkDataNTSupport bulkDataNTPlugin bulkDataNTDDSLoggable
+						bulkDataNT bulkDataNTSupport bulkDataNTPlugin bulkDataNTDDSLoggable bulkDataNTLibMgmt
  
 bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c  nddscpp nddsc nddscore
 
