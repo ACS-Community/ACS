@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.52 2012/04/24 10:43:40 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.53 2012/04/25 14:19:25 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -71,26 +71,39 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
   unsigned char tmpArray[ACSBulkData::FRAME_MAX_LEN];
 
   initalizeLogging(); //force initialization of logging sys TBD changed
+  if (DDSConfiguration::debugLevel>3)
+  {
+	  // the message can cause performance penalty for small data sizes
+	  ACS_SHORT_LOG((LM_DEBUG, "Data arrived (on_data_available) for: %s", topicName_m.c_str()));
+  }//if
 
+  frameDataReader_mp = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
   if (frameDataReader_mp==NULL)
-    {
-      frameDataReader_mp = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
-      if  (  frameDataReader_mp==NULL) {
-          ACS_DDS_Errors::DDSNarrowFailedCompletion nerr(__FILE__, __LINE__, __FUNCTION__);
-          nerr.setVariable("frameDataReader_mp");
-          nerr.setNarrowType("ACSBulkData::BulkDataNTFrameDataReader");
-          callback_mp->onError(nerr);
-          return;
-      }//if
-    }//if
+  {
+	  ACS_DDS_Errors::DDSNarrowFailedCompletion nerr(__FILE__, __LINE__, __FUNCTION__);
+	  nerr.setVariable("frameDataReader_mp");
+	  nerr.setNarrowType("ACSBulkData::BulkDataNTFrameDataReader");
+	  callback_mp->onError(nerr);
+	  return;
+  }//if
 
-  message.data.maximum(ACSBulkData::FRAME_MAX_LEN); //TBD constant from
+
+  message.data.maximum(ACSBulkData::FRAME_MAX_LEN);
   while (	(retCode = frameDataReader_mp->take_next_sample(message, si)) != DDS::RETCODE_NO_DATA )
     {
       if (retCode == DDS::RETCODE_OK)
         {
           if (si.valid_data == true)
             {
+        	  if (DDSConfiguration::debugLevel>3)
+        	    {
+        	  	  // the message can cause performance penalty for small data sizes
+        	  	  ACS_SHORT_LOG((LM_DEBUG, "Got BulkDataNTFrame (on_data_available): typeOfdata: %d, restDataLength: %d, size %d for: %s",
+        	  			  message.typeOfdata,
+        	  			  message.restDataLength,
+        	  			  message.data.length(),
+        	  			  topicName_m.c_str()));
+        	    }//if
               switch(message.typeOfdata)
               {
               case ACSBulkData::BD_PARAM:
