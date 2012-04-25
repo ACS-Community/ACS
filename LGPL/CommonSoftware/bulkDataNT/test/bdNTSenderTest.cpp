@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderTest.cpp,v 1.16 2012/03/06 16:23:18 bjeram Exp $"
+* "@(#) $Id: bdNTSenderTest.cpp,v 1.17 2012/04/25 13:48:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,13 +29,119 @@
 
 using namespace AcsBulkdata;
 
+unsigned int sleepPeriod=0;
+unsigned int dataSize=65000;
+
+
+/*
+ * In this function we create a stream and two flows.
+ * If we want to test it deletion of streams/flows and thier recreation we run it severla (2) times
+ */
+void OneSenderFlowGo()
+{
+
+	try{
+		double send_time;
+
+		ACE_Time_Value start_time, elapsed_time;
+
+		SenderFlowConfiguration sndFlowCfg;
+		sndFlowCfg.setACKsTimeout(5.0);
+
+		BulkDataNTSenderStream senderStream1("DefaultStream");
+
+		BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00", sndFlowCfg);
+		BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01", sndFlowCfg);
+		std::string flow0Name= flow0->getName();
+		std::string flow1Name= flow1->getName();
+		ACS_SHORT_LOG((LM_INFO, "Flows: %s and %s have been created.", flow0Name.c_str(), flow1Name.c_str()));
+
+		sleep(1); //here we should wait for at least one receiver
+
+		unsigned char parm[]="123";
+
+
+
+		ACS_SHORT_LOG((LM_INFO, "Going to send parameter (invoking startSend) %s on flow: %s to %d receivers", parm, flow0Name.c_str(), flow0->getNumberOfReceivers()));
+		flow0->startSend(parm, 3);
+
+		ACS_SHORT_LOG((LM_INFO, "Going to send stop  (invoking stopSend) on flow: %s to %d receivers", flow0Name.c_str(), flow0->getNumberOfReceivers()));
+		flow0->stopSend();
+
+		ACS_SHORT_LOG((LM_INFO, "Let's try to delete the flow: %s ... ", flow0Name.c_str()));
+		delete flow0;
+
+		ACS_SHORT_LOG((LM_INFO, "... and then (re)create it (flow: %s) again ...", flow0Name.c_str()));
+		flow0 = senderStream1.createFlow("00");//, sndFlowCfg);
+		parm[0]='4';
+		ACS_SHORT_LOG((LM_INFO, "... and send parameter %s to (re)created flow: %s", parm, flow0Name.c_str()));
+		flow0->startSend(parm, 3);
+
+
+		ACS_SHORT_LOG((LM_INFO, "For test purpose we do not send a paramter (invoking startSend) on flow: %s", flow1Name.c_str()));
+		// for test purpose we do not invoke startSend
+		//  		strcpy(parm, "abc");
+		//		flow1->startSend(parm, 3);
+
+
+		unsigned char *data= new unsigned char[dataSize];
+		for (unsigned int i=0; i<dataSize; i++)
+			data[i]=i;
+
+		ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers on flow: %s", dataSize, flow0->getNumberOfReceivers(), flow0Name.c_str()));
+		start_time = ACE_OS::gettimeofday();
+		flow0->sendData(data, dataSize);
+		elapsed_time = ACE_OS::gettimeofday() - start_time;
+		send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+		ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f for flow: %s", (dataSize/(1024.0*1024.0))/send_time, flow0Name.c_str()));
+
+		try
+		{
+			ACS_SHORT_LOG((LM_INFO, "Because we did not send a paramter (invoking startSend) on flow: %s. We should get an error/exception", flow1Name.c_str()));
+			flow1->sendData(data, dataSize);
+		}
+		catch(ACSErr::ACSbaseExImpl &ex)
+		{
+			ex.log();
+		}
+
+		for (unsigned int i=0; i<dataSize; i++)
+			data[i]=i%10;
+
+		ACS_SHORT_LOG((LM_INFO, "Going to send again: %d Bytes to %d receivers on flow: %s", dataSize, flow0->getNumberOfReceivers(), flow0Name.c_str()));
+		start_time = ACE_OS::gettimeofday();
+		flow0->sendData(data, dataSize);
+		elapsed_time = ACE_OS::gettimeofday() - start_time;
+		send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+		ACS_SHORT_LOG((LM_INFO, "New transfer rate: %f for flow: %s", (dataSize/(1024.0*1024.0))/send_time, flow0Name.c_str()));
+
+		sleep(2);
+
+		ACS_SHORT_LOG((LM_INFO, "Now we send stopSend command to both flows ..."));
+		flow0->stopSend();
+		flow1->stopSend();
+
+		ACS_SHORT_LOG((LM_INFO, "... and explicilty delete/destroy flow: %s.", flow0Name.c_str()));
+		delete flow0;
+
+		ACS_SHORT_LOG((LM_INFO, "flow: %s will be deleted when 'DefaultStream' is deleted - when the stream object goes out of scope", flow1Name.c_str()));
+	}
+	catch(ACSErr::ACSbaseExImpl &ex)
+	{
+		ex.log();
+	}
+
+}//OneSenderFlowGo
+
+
+void print_usage(char *argv[]) {
+	cout << "Usage: " << argv[0] << " [-s data size in bytes] [-w end_test_wait_period]" << endl;
+	exit(1);
+}
+
 int main(int argc, char *argv[])
 {
 	char c;
-	double send_time;
-	unsigned int sleepPeriod=0;
-	unsigned int dataSize=65000;
-	ACE_Time_Value start_time, elapsed_time;
 
 	LoggingProxy m_logger(0, 0, 31, 0);
 
@@ -53,103 +159,37 @@ int main(int argc, char *argv[])
     	case 's':
     		dataSize = atoi(get_opts.opt_arg());
     		break;
+    	default:
+    		print_usage(argv);
+    		break;
     	}
     }//while
 
-    try{
+    ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
 
-    	ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
+    OneSenderFlowGo();
+    if (sleepPeriod>0)
+        {
+        	sleep(sleepPeriod);
+        }
+        else
+        {
+        	std::cout << "press a button for second go ..." << std::endl;
+        	getchar();
+        }
+    ACS_SHORT_LOG((LM_INFO, "And try it again to see if (re)creation of the stream/flows actaully works"));
+    OneSenderFlowGo();
 
-    	SenderFlowConfiguration sndFlowCfg;
-   		sndFlowCfg.setACKsTimeout(5.0);
-
-    	BulkDataNTSenderStream senderStream1("DefaultStream");
-
-    	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00", sndFlowCfg);
-    	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01", sndFlowCfg);
-
-    	sleep(1); //here we should wait for at least one receiver
-    	//std::cout << "press a key to start.." << std::endl;
-    	//getchar();
-
-    	unsigned char parm[]="123";
-
-    	flow0->startSend(parm, 3);
-
-    	// for test purpose we do not invoke startSend
-  //  		strcpy(parm, "abc");
-  //		flow1->startSend(parm, 3);
-
-    	//unsigned char data[]="Hello wrold !!!!";
-    	unsigned char *data= new unsigned char[dataSize];
-    	for (unsigned int i=0; i<dataSize; i++)
-    		data[i]=i;
-
-    	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
-    	start_time = ACE_OS::gettimeofday();
-    	flow0->sendData(data, dataSize);
-    	elapsed_time = ACE_OS::gettimeofday() - start_time;
-    	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-    	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
-
-    	try
-    	{
-    		flow1->sendData(data, dataSize);
-    	}
-    	catch(ACSErr::ACSbaseExImpl &ex)
-    	{
-    		ex.log();
-    	}
-
-    	for (unsigned int i=0; i<dataSize; i++)
-    		data[i]=i%10;
-
-    	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
-    	start_time = ACE_OS::gettimeofday();
-    	flow0->sendData(data, dataSize);
-    	elapsed_time = ACE_OS::gettimeofday() - start_time;
-    	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-    	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
-
-    	try
-    	{
-    		ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
-    		start_time = ACE_OS::gettimeofday();
-    		flow1->sendData(data, dataSize);
-    		elapsed_time = ACE_OS::gettimeofday() - start_time;
-    		send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-    		ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
-    	}
-    	catch(ACSErr::ACSbaseExImpl &ex)
-    	{
-    		ex.log();
-    	}
-
-
-    	sleep(2);
-
-    	flow0->stopSend();
-    	flow1->stopSend();
-
-
-    	if (sleepPeriod>0)
-    	{
-    		sleep(sleepPeriod);
-    	}
-    	else
-    	{
-    		std::cout << "press a key to exit.." << std::endl;
-    		getchar();
-    	}
-
-    	delete flow0;
-    }
-    catch(ACSErr::ACSbaseExImpl &ex)
+    if (sleepPeriod>0)
     {
-    	ex.log();
+    	sleep(sleepPeriod);
+    }
+    else
+    {
+    	std::cout << "press a key to exit.." << std::endl;
+    	getchar();
     }
 
-	m_logger.flush();
-// flow1 will be deleted when senderStream1 is deleted
+    m_logger.flush();
+};//main
 
-}
