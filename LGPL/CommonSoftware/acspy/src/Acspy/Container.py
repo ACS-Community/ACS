@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.57 2012/03/15 20:16:09 javarias Exp $
+# @(#) $Id: Container.py,v 1.58 2012/04/25 19:37:27 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.57 2012/03/15 20:16:09 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.58 2012/04/25 19:37:27 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.57 2012/03/15 20:16:09 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.58 2012/04/25 19:37:27 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -616,7 +616,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             #Get the global unnamed logging config to retrieve the maxLogsPerSecond attribute
             logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
             maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
-        except (CDBRecordDoesNotExistEx):
+        except (Exception):
             # No value was supplied so default is used
             maxLogsPerSec = -1
         
