@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.39 2012/04/25 12:28:10 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.40 2012/04/25 12:55:29 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -58,7 +58,7 @@ endif
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
+EXECUTABLES     =  bulkDataNTGenSender bulkDataNTGenReceiver 
 EXECUTABLES_L   = 
 
 #
@@ -105,6 +105,13 @@ bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber \
 							   bulkDataNTReaderListener bulkDataNTCallback
 bulkDataNTReceiver_LIBS = bulkDataNT RepeatGuard
+
+
+bulkDataNTGenSender_OBJECTS = bulkDataNTGenSender
+bulkDataNTGenSender_LIBS= bulkDataNTSender
+
+bulkDataNTGenReceiver_OBJECTS = bulkDataNTGenReceiver
+bulkDataNTGenReceiver_LIBS= bulkDataNTReceiver 
 
 #
 # Scripts (public and local)
