@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.18 2012/04/05 13:16:20 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.19 2012/04/26 12:42:53 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -77,7 +77,7 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 					faultStateConstants.h \
 			      AlarmSystemInterfaceFactory.h Properties.h Timestamp.h \
 					AlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h \
-					AlarmSource.h AlarmSourceImpl.h AlarmToQueue.h AlarmsMap.h
+					AlarmSourceThread.h AlarmSource.h AlarmSourceImpl.h AlarmToQueue.h AlarmsMap.h
 
 #
 # Libraries (public and local)
@@ -102,8 +102,8 @@ alSysSource_LIBS = acsThread logging loki ACE
 acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter 
 acsAlSysSource_LIBS = maciStubs alSysSource acsutil expat maciErrType loki  cdbErrType acsErrTypeAlarmSourceFactory cdb
 
-alarmSource_OBJECTS = AlarmToQueue AlarmsMap AlarmSourceImpl
-alarmSource_LIBS = alSysSource acsAlSysSource
+alarmSource_OBJECTS = AlarmSourceThread AlarmToQueue AlarmsMap AlarmSourceImpl
+alarmSource_LIBS = alSysSource acsAlSysSource acstime
 
 #
 # Scripts (public and local)
