@@ -86,16 +86,10 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl:::authenticate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - ContainerImpl::run] Container running...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::run] 
 1 - ContainerStatusMsg: Manager access initialization ends
@@ -134,17 +128,11 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbdNTReceiverLibTest.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - MACIContainerServices::getCDB] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::DAONode] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::readConfiguration] 
@@ -581,14 +569,8 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::destroy] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::unregisterNode] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::~ThreadBase] 
@@ -598,7 +580,6 @@
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] Component 'NEWCONFIG_RECEIVER' etherealized.
