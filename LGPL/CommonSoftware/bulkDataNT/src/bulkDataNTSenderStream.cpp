@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.14 2012/01/27 14:40:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.15 2012/04/26 15:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.14 2012/01/27 14:40:37 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.15 2012/04/26 15:04:27 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -47,10 +47,10 @@ BulkDataNTSenderStream::~BulkDataNTSenderStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	notRemoveFromMap_m = true; //elements should not be removed from the map
-	SenderFlowMap::iterator i = flows_m.begin();
-	for(;i!=flows_m.end(); i++)
+	SenderFlowMap::iterator i = senderFlows_m.begin();
+	for(;i!=senderFlows_m.end(); i++)
 		delete (i->second);
-	flows_m.clear();
+	senderFlows_m.clear();
  }//~BulkDataNTSenderStream
 
 BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, const SenderFlowConfiguration &cfg,
@@ -72,7 +72,7 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, c
 		callback = (cb==0) ? new BulkDataNTSenderFlowCallback() : cb;
 
 		flow = new BulkDataNTSenderFlow(this, flowName, cfg, callback, (cb==0)||releaseCB);
-		flows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
+		senderFlows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
 		return flow;
 	}catch(const ACSErr::ACSbaseExImpl &acsEx)
 	{
@@ -107,8 +107,8 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
-	SenderFlowMap::iterator iter = flows_m.find(flowName);
-	if ( iter != flows_m.end() )
+	SenderFlowMap::iterator iter = senderFlows_m.find(flowName);
+	if ( iter != senderFlows_m.end() )
 	{
 		return iter->second;
 	}
@@ -125,17 +125,17 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 bool BulkDataNTSenderStream::existFlow(const char* flowName)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	return ( flows_m.find(flowName) != flows_m.end() );
+	return ( senderFlows_m.find(flowName) != senderFlows_m.end() );
 }//existFlow
 
 void BulkDataNTSenderStream::removeFlowFromMap(const char* flowName)
 {
 	if (notRemoveFromMap_m) return;
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	SenderFlowMap::iterator iter = flows_m.find(flowName);
-	if ( iter != flows_m.end() )
+	SenderFlowMap::iterator iter = senderFlows_m.find(flowName);
+	if ( iter != senderFlows_m.end() )
 	{
-		flows_m.erase(iter);
+		senderFlows_m.erase(iter);
 	}
 	else
 	{
@@ -176,8 +176,24 @@ void BulkDataNTSenderStream::createMultipleFlowsFromConfig(const char *config)
 		printf("... ERROR in createMultipleFlows using fepsConfig\n");
 
 	}//try-catch
-}
+}//createMultipleFlowsFromConfig
 
+std::vector<std::string> BulkDataNTSenderStream::getFlowNames()
+{
+  std::vector<std::string> flowNames;
+
+  SenderFlowMap::iterator i = senderFlows_m.begin();
+  for(;i!=senderFlows_m.end(); i++)
+    flowNames.push_back(i->first);
+
+  return flowNames;
+}//getFlowNames
+
+
+unsigned int BulkDataNTSenderStream::getFlowNumber()
+{
+  return senderFlows_m.size();
+}//getFlowNumber
 
 
 /*___oOo___*/

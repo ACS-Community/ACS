@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.11 2012/01/27 14:40:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.12 2012/04/26 15:04:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,11 +98,22 @@ public:
 	 */
 	bool existFlow(const char* flowName);
 
+	/** Get the names of the all flows created by the stream
+	 *  @return vector<string>
+	 */
+	std::vector<std::string> getFlowNames();
+
+	/**
+	 * Returns number of flows in the stream.
+	 * @return unsigned int - number of flows
+	 */
+	unsigned int getFlowNumber();
+
 protected:
 	virtual void removeFlowFromMap(const char* flow);
 
 	typedef  std::map<std::string, BulkDataNTSenderFlow*> SenderFlowMap;
-	SenderFlowMap flows_m;
+	SenderFlowMap senderFlows_m;
 	// we need a flag that prevents elements to be removed from map when we delete flows from dtor
 	bool notRemoveFromMap_m;
 
