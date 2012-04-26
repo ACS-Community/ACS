@@ -36,8 +36,6 @@ $
 
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-#include <maciSimpleClient.h>
-
 class AlarmThrowTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( AlarmThrowTest );
