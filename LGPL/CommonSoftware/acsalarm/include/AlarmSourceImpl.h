@@ -104,7 +104,7 @@ namespace acsalarm
 		/**
 		 * The thread to update
 		 */
-		AlarmSourceThread* m_updaterThread_p;
+		const AlarmSourceThread* m_updaterThread_p;
 
 		/**
 		 * true if the thread is instantiated locally (empty constructor) and
@@ -132,7 +132,7 @@ namespace acsalarm
 		 *
 		 * @param updaterThread The thread to update the state of the object
 		 */
-		AlarmSourceImpl(AlarmSourceThread* updaterThread);
+		AlarmSourceImpl(const AlarmSourceThread* updaterThread);
 
 		/**
 		 * Constructor

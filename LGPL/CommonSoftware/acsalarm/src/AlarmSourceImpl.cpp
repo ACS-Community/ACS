@@ -40,7 +40,7 @@ AlarmSourceImpl::AlarmSourceImpl():
 	m_updaterThread_p= new AlarmSourceThread();
 }
 
-AlarmSourceImpl::AlarmSourceImpl(AlarmSourceThread* updaterThread):
+AlarmSourceImpl::AlarmSourceImpl(const AlarmSourceThread* updaterThread):
 	m_disabled(false),
 	m_queuing(false),
 	m_alarmSource_ap(NULL),
