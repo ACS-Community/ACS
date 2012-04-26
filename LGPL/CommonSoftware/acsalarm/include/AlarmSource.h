@@ -29,6 +29,7 @@
 #include <string>
 
 #include <acscommonC.h>
+#include <acstimeC.h>
 #include "Properties.h"
 
 namespace acsalarm
@@ -62,8 +63,10 @@ namespace acsalarm
 	 * alarms. It is left to developer the responsibility to enable/disable
 	 * the queuing at the right moment.
 	 * <BR>
-	 * If queueAlarms(long, TimeUnit) is called twice,
+	 * If queueAlarms(ACS::TimeInterval) is called twice,
 	 * the new time interval is used to flush the queue and the old one is discarded.
+	 * Note that the time when the alarms are flushed after being queued with queueAlarms(ACS::TimeInterval)
+	 * is not precise but a best-effort approximation.
 	 * <P>
 	 * Alarm sending can be inhibited by calling disableAlarms():
 	 * all the alarm events submitted after calling this method are discarded.
@@ -76,6 +79,11 @@ namespace acsalarm
 	 * start() must be called before using methods of this
 	 * class.  tearDown() must be called when finished
 	 * using this class.
+	 * <P>
+	 * The AlarmSource interface provides the update() method to update the state
+	 * of the object, if needed as in the default implementation update() body is empty and
+	 * the final implementation of this method depends on the concrete class.
+	 * Typically, update is invoked at regular time intervals by an external thread, AlarmSourceThread.
 	 *
 	 * @author acaproni
 	 */
@@ -256,6 +264,20 @@ namespace acsalarm
 		 * Life-cycle: tearDown must be called when terminated using this class
 		 */
 		virtual void tearDown()=0;
+
+		/**
+		 * update is invoked at regular time intervals by the AlarmSourceThread to update
+		 * its internal data structures.
+		 * It must be overloaded by the class extending this interface if needed.
+		 * <P>
+		 * For this method to be invoked by the AlarmSourceTherad, the object must be registered
+		 * by calling AlarmSourceThread::registerForUpdating(AlarmSource* src) and unregistered before
+		 * deletion (or when updating is not need anymore) by calling
+		 * AlarmSourceThread::unregisterFromUpdating(AlarmSource* src).
+		 *
+		 * @param now The actual time
+		 */
+		virtual void update(ACS::Time now) {}
 	};
 }
 
