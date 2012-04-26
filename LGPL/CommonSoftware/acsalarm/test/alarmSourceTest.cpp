@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: alarmSourceTest.cpp,v 1.2 2012/03/27 07:31:50 acaproni Exp $"
+* "@(#) $Id: alarmSourceTest.cpp,v 1.3 2012/04/26 12:47:12 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,14 +42,28 @@
 using namespace std;
 using acsalarm::AlarmSystemInterface;
 
+/**
+ * AlarmSourceTestCase tests the functioning of a single AlarmSource.
+ * <P>
+ * For the test to work, a AlarmSourceThread is also instantiated to update
+ * the AlarmSource
+ * <P>
+ * The test instantiates 2 source, one with an external thread (passed in the constructor)
+ * and another one with a local thread (empty constructor).
+ * testAlarmQueuingWithTimerLocalThread tests the object with a local thread even if
+ * the only difference between the 2 cases is the instanziation and deletion of the thread
+ * executed in the empty constructor and in the destructor.
+ */
 class AlarmSourceTestCase : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE(AlarmSourceTestCase);
 	CPPUNIT_TEST( testEnableDisable );
 	CPPUNIT_TEST( testAlarmSending );
 	CPPUNIT_TEST( testAlarmQueuing );
+	CPPUNIT_TEST( testAlarmQueuingStateChanged );
 	CPPUNIT_TEST( testAlarmQueuingWithTimer );
 	CPPUNIT_TEST( testTerminateAll );
+	CPPUNIT_TEST( testAlarmQueuingWithTimerLocalThread); // Only one test with the local thread
 	CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -58,7 +72,9 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		ACS_TRACE("AlarmSourceTestCase::AlarmSourceTestCase entering");
 
 		myMockMgr = new maci::MockManager();
-		alarmSource = new acsalarm::AlarmSourceImpl();
+		thread = new acsalarm::AlarmSourceThread();
+		alarmSource = new acsalarm::AlarmSourceImpl(thread);
+		alarmSourceLocalThread=new acsalarm::AlarmSourceImpl();
 
 		ACS_TRACE("AlarmSourceTestCase::AlarmSourceTestCase exiting");
 	}
@@ -66,6 +82,8 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 	~AlarmSourceTestCase()
 	{
 		delete alarmSource;
+		delete alarmSourceLocalThread;
+		delete thread;
 		delete myMockMgr;
 	}
 
@@ -73,11 +91,13 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 	{
 		ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 		alarmSource->start();
+		alarmSourceLocalThread->start();
 	}
 
 	void tearDown()
 	{
 		alarmSource->tearDown();
+		alarmSourceLocalThread->tearDown();
 		ACSAlarmSystemInterfaceFactory::done();
 	}
 
@@ -97,7 +117,15 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		for (int t=0; t<10; t++) {
 			alarmSource->raiseAlarm(ff,fm,t);
 		}
+		// Raise again == these alarm should not be published as their states did not change!
+		for (int t=0; t<10; t++) {
+			alarmSource->raiseAlarm(ff,fm,t);
+		}
 		// clear alarms
+		for (int t=0; t<10; t++) {
+			alarmSource->clearAlarm(ff,fm,t);
+		}
+		// Clear again == these alarm should not be published as their states did not change!
 		for (int t=0; t<10; t++) {
 			alarmSource->clearAlarm(ff,fm,t);
 		}
@@ -163,6 +191,47 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 	}
 
 	/**
+	 * Test the queueing of alarms but changing their state:
+	 * only the last state must be published
+	 */
+	void testAlarmQueuingStateChanged()
+	{
+		std::cout<<"testAlarmQueuingStateChanged"<<std::endl;
+		std::string ff="AlarmQueuingStateChangedFF";
+		std::string fm="AlarmQueuingStateChangedFF";
+
+		// This alarm will be sent immediately
+		alarmSource->raiseAlarm(ff,fm,0);
+
+		std::cout<<"testAlarmQueuingStateChanged: Start queuing"<<std::endl;
+		alarmSource->queueAlarms();
+		// Send several alarms with set several times
+		for (int j=0; j<5; j++) {
+			for (int t=11; t<20; t++) {
+				alarmSource->setAlarm(ff,fm,t,t%2==0);
+			}
+		}
+		// Clear the same alarms
+		for (int j=0; j<5; j++) {
+			for (int t=11; t<20; t++) {
+				alarmSource->setAlarm(ff,fm,t,t%2==0);
+			}
+		}
+		// Set the same alarms again: only these should be published
+		for (int j=0; j<5; j++) {
+			for (int t=11; t<20; t++) {
+				alarmSource->setAlarm(ff,fm,t,t%2==0);
+			}
+		}
+		std::cout<<"testAlarmQueuingStateChanged: Flushing queue"<<std::endl;
+		alarmSource->flushAlarms();
+		std::cout<<"testAlarmQueuingStateChanged: sending an alarm without queuing"<<std::endl;
+		// This alarm will be sent immediately
+		alarmSource->raiseAlarm(ff,fm,1);
+		sleep(5);
+	}
+
+	/**
 	 * Test the queueing of alarms
 	 */
 	void testAlarmQueuingWithTimer()
@@ -191,6 +260,34 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 		sleep(5);
 	}
 
+	/**
+	 * Test the queueing of alarms in the AlarmSource with the local thread
+	 */
+	void testAlarmQueuingWithTimerLocalThread()
+	{
+		std::cout<<"testAlarmQueuingWithTimerLocalThread"<<std::endl;
+		std::string ff="AlarmTimerQueuingLocalThreadFF";
+		std::string fm="AlarmTimerQueuingLocalThreadFM";
+
+		// This alarm will be sent immediately
+		alarmSourceLocalThread->raiseAlarm(ff,fm,0);
+
+		std::cout<<"testAlarmQueuingWithTimerLocalThread: Start queuing for 30 seconds"<<std::endl;
+		alarmSourceLocalThread->queueAlarms(300000000);
+		// Send several alarms with set several times
+		// After queuing they must appear only once when flushing!
+		for (int j=0; j<5; j++) {
+			for (int t=11; t<20; t++) {
+				alarmSourceLocalThread->setAlarm(ff,fm,t,t%2==0);
+			}
+		}
+		std::cout<<"testAlarmQueuingWithTimerLocalThread: waiting"<<std::endl;
+		sleep(35);
+		std::cout<<"testAlarmQueuingWithTimerLocalThread: sending an alarm without queuing"<<std::endl;
+		// This alarm will be sent immediately
+		alarmSourceLocalThread->raiseAlarm(ff,fm,1);
+		sleep(5);
+	}
 
 	void testTerminateAll()
 	{
@@ -215,8 +312,18 @@ class AlarmSourceTestCase : public CppUnit::TestFixture
 	private:
 		maci::MockManager * myMockMgr;
 
+		// The thread to update the AlarmSource
+		acsalarm::AlarmSourceThread* thread;
+
 		// The object to test
 		acsalarm::AlarmSource* alarmSource;
+
+		// The source without external thread to test
+		//
+		// Creation and deletion is th eonly real relevant test but
+		// this object is also tested in testAlarmQueuingWithTimerLocalThread
+		acsalarm::AlarmSource* alarmSourceLocalThread;
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AlarmSourceTestCase);

@@ -1,5 +1,19 @@
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Logging proxy successfully created.
 1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
 1 - testEnableDisable
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmEnDisFF,AlarmEnDisFM,0> ACTIVE
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmEnDisFF,AlarmEnDisFM,1> ACTIVE
@@ -50,10 +64,24 @@
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,19> TERMINATE
 1 - testAlarmQueuing: sending an alarm without queuing
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,1> ACTIVE
+1 - .testAlarmQueuingStateChanged
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,0> ACTIVE
+1 - testAlarmQueuingStateChanged: Start queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,11> TERMINATE
+1 - testAlarmQueuingStateChanged: Flushing queue
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,19> TERMINATE
+1 - testAlarmQueuingStateChanged: sending an alarm without queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,1> ACTIVE
 1 - .testAlarmTimerQueuing
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,0> ACTIVE
 1 - testAlarmTimerQueuing: Start queuing for 30 seconds
-1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
 1 - testAlarmTimerQueuing: waiting
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,11> TERMINATE
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,12> ACTIVE
@@ -90,5 +118,20 @@
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,7> TERMINATE
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,8> TERMINATE
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,9> TERMINATE
-1 - OK (5 tests)
+1 - .testAlarmQueuingWithTimerLocalThread
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,0> ACTIVE
+1 - testAlarmQueuingWithTimerLocalThread: Start queuing for 30 seconds
+1 - testAlarmQueuingWithTimerLocalThread: waiting
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,11> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,19> TERMINATE
+1 - testAlarmQueuingWithTimerLocalThread: sending an alarm without queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,1> ACTIVE
+1 - OK (7 tests)
 1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Flushing logs.
