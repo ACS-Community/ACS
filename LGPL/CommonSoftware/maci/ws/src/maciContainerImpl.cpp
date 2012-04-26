@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.146 2012/03/14 21:24:44 javarias Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.147 2012/04/26 15:11:04 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.146 2012/03/14 21:24:44 javarias Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.147 2012/04/26 15:11:04 acaproni Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2869,7 +2869,8 @@ ContainerImpl::instantiateContainerServices(
         ACE_CString& type,
         PortableServer::POA_ptr poa)
 {
-  return new MACIContainerServices(h,name,type,poa);
+
+  return new MACIContainerServices(h,name,type,poa,getAlarmSourceThread());
 }
 
 

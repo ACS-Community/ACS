@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.66 2012/02/21 11:30:20 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.67 2012/04/26 15:11:04 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,6 +27,8 @@
 #include <cdb.h>
 
 #include <logging.h>
+
+#include <AlarmSourceThread.h>
 
 #include <ace/Synch.h>
 #include <ace/Hash_Map_Manager.h>
@@ -124,7 +126,7 @@ private:
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.66 2012/02/21 11:30:20 acaproni Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.67 2012/04/26 15:11:04 acaproni Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -696,6 +698,17 @@ public:
     
   // activation thread-pool
   MethodRequestThreadPool* m_methodRequestThreadPool;
+
+  // The thread to update the AlarmSource's
+  std::auto_ptr<acsalarm::AlarmSourceThread> m_alarmSourceThread_ap;
+
+  const acsalarm::AlarmSourceThread* getAlarmSourceThread() {
+	  if (m_alarmSourceThread_ap.get()==NULL)
+	  {
+		  m_alarmSourceThread_ap=std::auto_ptr<acsalarm::AlarmSourceThread>(new acsalarm::AlarmSourceThread());
+	  }
+	  return m_alarmSourceThread_ap.get();
+  }
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
