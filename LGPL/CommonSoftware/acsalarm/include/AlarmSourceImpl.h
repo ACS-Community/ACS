@@ -34,10 +34,10 @@
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "AlarmToQueue.h"
 #include "AlarmsMap.h"
+#include "AlarmSourceThread.h"
 
-#include <acsThread.h>
-
-#include "maciS.h"
+#include <maciS.h>
+#include <acscommonC.h>
 
 #include "ace/Task.h"
 
@@ -60,7 +60,7 @@ namespace acsalarm
 	 * @see AlarmSource
 	 * @author acaproni
 	 */
-	class AlarmSourceImpl: public AlarmSource, ACS::Thread {
+	class AlarmSourceImpl: public AlarmSource {
 	private:
 		// true if the sending of alarms has been disabled
 		bool m_disabled;
@@ -97,23 +97,48 @@ namespace acsalarm
 		AlarmsMap m_alarms;
 
 		/**
-		 * The updating of the AlarmMap m_alarms is not done
-		 * in each loop of the thread but every 10 iterations
-		 * i.e. once per second.
-		 */
-		int m_updateMap;
-
-		/**
 		 * The source to send alarms to the AS
 		 */
 		auto_ptr<acsalarm::AlarmSystemInterface> m_alarmSource_ap;
+
+		/**
+		 * The thread to update
+		 */
+		AlarmSourceThread* m_updaterThread_p;
+
+		/**
+		 * true if the thread is instantiated locally (empty constructor) and
+		 * false otherwise.
+		 */
+		bool m_locallyInstantiatedThread;
+
+		/**
+		 * The time when the map needs to be updated
+		 */
+		ACS::Time m_nextMapUpdateTime;
+
+		/**
+		 * The time when the alarms must be flushed.
+		 *
+		 * @see AlarmSource.queueaAlarms(...)
+		 */
+		ACS::Time m_nextFlushTime;
+
 
 	public:
 
 		/**
 		 * Constructor
 		 *
-		 * @param manager The ACS manager
+		 * @param updaterThread The thread to update the state of the object
+		 */
+		AlarmSourceImpl(AlarmSourceThread* updaterThread);
+
+		/**
+		 * Constructor
+		 *
+		 * The thread to update the state of the object is instantiated by AlarmSourceImpl
+		 * and therefore will not be shared between different instances.
 		 */
 		AlarmSourceImpl();
 
@@ -197,9 +222,9 @@ namespace acsalarm
 		void enableAlarms();
 
 		/**
-		 * @see ACS::Thread
+		 * @see AlarmSource
 		 */
-		void runLoop();
+		virtual void update(ACS::Time now);
 
 		/**
 		 * @see AlarmSource

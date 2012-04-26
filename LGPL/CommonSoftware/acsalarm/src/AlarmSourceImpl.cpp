@@ -21,7 +21,7 @@
  */
 
 #include <sstream>
-
+#include <acstimeTimeUtil.h>
 #include "AlarmSourceImpl.h"
 #include <faultStateConstants.h>
 
@@ -30,16 +30,33 @@
 using namespace acsalarm;
 
 AlarmSourceImpl::AlarmSourceImpl():
-	ACS::Thread("AlarmsourceImpl", 10000000),
 	m_disabled(false),
 	m_queuing(false),
-	m_updateMap(0),
-	m_alarmSource_ap(NULL)
+	m_alarmSource_ap(NULL),
+	m_locallyInstantiatedThread(true),
+	m_nextMapUpdateTime(0),
+	m_nextFlushTime(0)
+{
+	m_updaterThread_p= new AlarmSourceThread();
+}
+
+AlarmSourceImpl::AlarmSourceImpl(AlarmSourceThread* updaterThread):
+	m_disabled(false),
+	m_queuing(false),
+	m_alarmSource_ap(NULL),
+	m_updaterThread_p(updaterThread),
+	m_locallyInstantiatedThread(false),
+	m_nextMapUpdateTime(0),
+	m_nextFlushTime(0)
 {
 }
 
 AlarmSourceImpl::~AlarmSourceImpl() {
 	m_alarmSource_ap.release();
+	if (m_locallyInstantiatedThread)
+	{
+		delete m_updaterThread_p;
+	}
 }
 
 void AlarmSourceImpl::raiseAlarm(
@@ -160,9 +177,10 @@ void AlarmSourceImpl::queueAlarms(ACS::TimeInterval time)
 {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	m_queuing=true;
-	// start the thread
-	setSleepTime(time);
-	resume();
+	// Set the time for flushing
+	ACE_Time_Value nowAceTime=ACE_OS::gettimeofday();
+	acstime::Epoch now=TimeUtil::ace2epoch(nowAceTime);
+	m_nextFlushTime=now.value+time;
 }
 
 /**
@@ -193,7 +211,8 @@ void AlarmSourceImpl::flushAlarms()
 		delete alarm;
 	}
 	m_queue.clear();
-	suspend(); // Suspend the thread
+	// Inhibit the next flush if already scheduled
+	m_nextFlushTime=0;
 }
 
 /**
@@ -222,6 +241,8 @@ void AlarmSourceImpl::start()
 	auto_ptr<acsalarm::AlarmSystemInterface> temp(ACSAlarmSystemInterfaceFactory::createSource());
 	m_alarmSource_ap= temp;
 	m_alarms.start();
+	// Start being called for updates
+	m_updaterThread_p->registerForUpdating(this);
 }
 
 /**
@@ -229,8 +250,8 @@ void AlarmSourceImpl::start()
  */
 void AlarmSourceImpl::tearDown()
 {
-	// Stop the thread
-	terminate();
+	// Stop being called for updates
+	m_updaterThread_p->unregisterFromUpdating(this);
 	m_alarms.shutdown();
 	m_activatedAlarms.clear();
 }
@@ -280,15 +301,18 @@ void AlarmSourceImpl::internalAlarmSender(
 	m_alarmSource_ap->push(*fltstate);
 }
 
-void AlarmSourceImpl::runLoop()
+void AlarmSourceImpl::update(ACS::Time now)
 {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
-	flushAlarms();
+	if (m_nextFlushTime!=0 && now>=m_nextFlushTime) {
+		flushAlarms();
 
-	// Update the AlarmsMap internal data structures every
-	// 10 iterations i.e. once per second.
-	m_updateMap= (m_updateMap+1)%10;
-	if (m_updateMap==0) {
+	}
+
+	// Update the AlarmsMap internal data structures
+	if (now>=m_nextMapUpdateTime) {
 		m_alarms.updateInternalDataStructs();
+		// Schedule the next update one second later
+		m_nextMapUpdateTime+=10000000;
 	}
 }
