@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSourceThread.cpp,v 1.1 2012/04/26 12:35:42 acaproni Exp $"
+* "@(#) $Id: AlarmSourceThread.cpp,v 1.2 2012/04/27 09:10:28 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,14 +28,13 @@
 #include <ace/OS.h>
 
 #include <ACSErrTypeCommon.h>
-#include <acstimeTimeUtil.h>
 #include "AlarmSourceThread.h"
 
 using namespace acsalarm;
 using namespace acsthreadErrType;
 
 AlarmSourceThread::AlarmSourceThread():
-	ACS::Thread("AlarmSourceThread", 10000000),
+	ACS::Thread("AlarmSourceThread", 1000000),
 	m_alarmSources()
 {
 	// Start the thread
@@ -57,9 +56,8 @@ void AlarmSourceThread::runLoop()
 	 for (it=m_alarmSources.begin(); it!=m_alarmSources.end() && check(); ++it)
 	 {
 		 ACE_Time_Value nowAceTime=ACE_OS::gettimeofday();
-		 acstime::Epoch now=TimeUtil::ace2epoch(nowAceTime);
 		 try {
-			 (*it)->update(now.value);
+			 (*it)->update(nowAceTime.msec());
 		 } catch (...) {
 			 ACS_SHORT_LOG((LM_CRITICAL,"Exception caught callin AlarmSource->update()"));
 			 ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, "AlarmSourceThread::runLoop");
