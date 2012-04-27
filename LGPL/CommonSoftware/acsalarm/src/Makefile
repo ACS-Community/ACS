@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.19 2012/04/26 12:42:53 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.20 2012/04/27 10:07:28 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -103,7 +103,7 @@ acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfac
 acsAlSysSource_LIBS = maciStubs alSysSource acsutil expat maciErrType loki  cdbErrType acsErrTypeAlarmSourceFactory cdb
 
 alarmSource_OBJECTS = AlarmSourceThread AlarmToQueue AlarmsMap AlarmSourceImpl
-alarmSource_LIBS = alSysSource acsAlSysSource acstime
+alarmSource_LIBS = alSysSource acsAlSysSource 
 
 #
 # Scripts (public and local)
