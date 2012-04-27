@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.cpp,v 1.5 2012/04/19 14:55:47 acaproni Exp $"
+* "@(#) $Id: AlarmsMap.cpp,v 1.6 2012/04/27 10:08:15 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.5 2012/04/19 14:55:47 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.6 2012/04/27 10:08:15 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <ctime>
@@ -34,9 +34,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <ace/Time_Value.h>
 
 #include "AlarmsMap.h"
-
-//TODO: acstime cannot be used here due the acstime module is not build yet
-//#include "acstimeTimeUtil.h"
 
 using namespace acsalarm;
 
