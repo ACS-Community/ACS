@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: moreAlarmSourcesTest.cpp,v 1.1 2012/04/26 12:43:46 acaproni Exp $"
+* "@(#) $Id: moreAlarmSourcesTest.cpp,v 1.2 2012/04/27 09:11:01 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -211,9 +211,9 @@ class AlarmSourcesTestCase : public CppUnit::TestFixture
 		alarmSource2->raiseAlarm(ff,fm2,0);
 
 		std::cout<<"testAlarmTimerQueuing: Start queuing source 1 for 20 seconds"<<std::endl;
-		alarmSource1->queueAlarms(200000000);
+		alarmSource1->queueAlarms(20000);
 		std::cout<<"testAlarmTimerQueuing: Start queuing source 2 for 30 seconds"<<std::endl;
-		alarmSource2->queueAlarms(300000000);
+		alarmSource2->queueAlarms(30000);
 		// Send several alarms
 		// After queuing they must appear only once when flushing!
 		for (int j=0; j<5; j++) {
