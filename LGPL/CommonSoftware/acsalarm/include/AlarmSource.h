@@ -29,7 +29,6 @@
 #include <string>
 
 #include <acscommonC.h>
-#include <acstimeC.h>
 #include "Properties.h"
 
 namespace acsalarm
