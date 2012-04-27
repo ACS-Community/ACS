@@ -21,7 +21,6 @@
  */
 
 #include <sstream>
-#include <acstimeTimeUtil.h>
 #include "AlarmSourceImpl.h"
 #include <faultStateConstants.h>
 
@@ -178,9 +177,7 @@ void AlarmSourceImpl::queueAlarms(ACS::TimeInterval time)
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	m_queuing=true;
 	// Set the time for flushing
-	ACE_Time_Value nowAceTime=ACE_OS::gettimeofday();
-	acstime::Epoch now=TimeUtil::ace2epoch(nowAceTime);
-	m_nextFlushTime=now.value+time;
+	m_nextFlushTime=ACE_OS::gettimeofday().msec()+time;
 }
 
 /**
@@ -306,13 +303,12 @@ void AlarmSourceImpl::update(ACS::Time now)
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	if (m_nextFlushTime!=0 && now>=m_nextFlushTime) {
 		flushAlarms();
-
 	}
 
 	// Update the AlarmsMap internal data structures
 	if (now>=m_nextMapUpdateTime) {
 		m_alarms.updateInternalDataStructs();
 		// Schedule the next update one second later
-		m_nextMapUpdateTime+=10000000;
+		m_nextMapUpdateTime+=1000;
 	}
 }
