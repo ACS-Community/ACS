@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.19 2012/04/05 13:17:06 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.20 2012/04/27 09:12:15 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -63,7 +63,8 @@ EXECUTABLES_L   = TestAcsAlarmSending \
  	              alarmThrowTest \
  	              alarmsMapTest \
  	              alarmSourceTest \
- 	              testStructs
+ 	              testStructs \
+ 	              moreAlarmSourcesTest
 
 testStructs_OBJECTS = testStructs
 testStructs_LIBS    = cppunit logging acsAlSysSource
@@ -81,13 +82,16 @@ faultSateTest_OBJECTS	= FaultStateTest
 faultSateTest_LIBS		= cppunit logging alSysSource
 
 alarmThrowTest_OBJECTS = alarmThrowTest
-alarmThrowTest_LIBS    = C++  cppunit  acsAlSysSource maciClient
+alarmThrowTest_LIBS    = C++  cppunit  acsAlSysSource 
 
 alarmsMapTest_OBJECTS = alarmsMapTest 
 alarmsMapTest_LIBS    = C++  cppunit alarmSource acsAlSysSource
 
 alarmSourceTest_OBJECTS = alarmSourceTest MockManager
 alarmSourceTest_LIBS    = C++  cppunit alarmSource acsAlSysSource
+
+moreAlarmSourcesTest_OBJECTS = moreAlarmSourcesTest MockManager
+moreAlarmSourcesTest_LIBS    = C++  cppunit alarmSource acsAlSysSource
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
