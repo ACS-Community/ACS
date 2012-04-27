@@ -3,7 +3,9 @@ SOURCE acsAlarmTATEnv
 1 FactoryTestCase "testFactory.sh"
 2 propertyTest "propertyTest"
 3 faultSateTest "faultSateTest"
-4 alarmThrowTest "alarmThrowTest"
-5 alarmsMapTest "alarmsMapTest"
-6 alarmSourceTest "alarmSourceTest"
-7 testStructs "testStructs"
+4 testStructs "testStructs"
+5 alarmThrowTest "alarmThrowTest"
+6 alarmsMapTest "alarmsMapTest"
+7 alarmSourceTest "alarmSourceTest"
+8 moreAlarmSourcesTest "moreAlarmSourcesTest"
+
