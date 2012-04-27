@@ -202,13 +202,14 @@ namespace acsalarm
 		/**
 		 * Start queuing the alarms.
 		 * <P>
-		 * The alarms are flushed when the passed time expires or flush gets called.
+		 * The alarms are flushed when the passed delay expires or flushAlarms()
+		 * gets called.
 		 * <P>
 		 * The purpose of the queuing is to avoid alarms flickering for example
 		 * during the initialization phase of a device where spurious states
 		 * could trigger the event of false alarms
 		 *
-		 * @param time The time to queue alarms in 100ns unit
+		 * @param time The time to queue alarms in msec
 		 */
 		virtual void queueAlarms(ACS::TimeInterval time)=0;
 
@@ -275,7 +276,7 @@ namespace acsalarm
 		 * deletion (or when updating is not need anymore) by calling
 		 * AlarmSourceThread::unregisterFromUpdating(AlarmSource* src).
 		 *
-		 * @param now The actual time
+		 * @param now The actual time in msec
 		 */
 		virtual void update(ACS::Time now) {}
 	};
