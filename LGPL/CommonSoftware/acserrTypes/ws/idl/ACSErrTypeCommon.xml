@@ -130,5 +130,13 @@
 			type="string"
 			description="What caused std::exception"/>
 	</ErrorCode>
+	
+	<ErrorCode name="CORBAUserException" 
+		shortDescription="CORBA User Exception" 
+		description="CORBA User Exception wrapper">
+		<Member name="Info" 
+			type="string" 
+			description="String containing information about the exception. Availability is ORB dependent and not CORBA compliant."/>
+	</ErrorCode>
 </Type>
 
