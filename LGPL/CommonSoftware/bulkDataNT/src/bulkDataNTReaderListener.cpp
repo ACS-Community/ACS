@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.54 2012/05/02 12:53:53 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.55 2012/05/02 12:56:32 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -74,7 +74,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
   if (DDSConfiguration::debugLevel>3)
   {
 	  // the message can cause performance penalty for small data sizes
-	  ACS_SHORT_LOG((LM_DEBUG, "Data arrived (on_data_available) for: %s", topicName_m.c_str()));
+	  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Data arrived (on_data_available) for: %s", topicName_m.c_str()));
   }//if
 
   frameDataReader_mp = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
@@ -98,7 +98,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
         	  if (DDSConfiguration::debugLevel>3)
         	    {
         	  	  // the message can cause performance penalty for small data sizes
-        	  	  ACS_SHORT_LOG((LM_DEBUG, "Got BulkDataNTFrame (on_data_available): typeOfdata: %d, restDataLength: %d, size %d for: %s",
+        		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Got BulkDataNTFrame (on_data_available): typeOfdata: %d, restDataLength: %d, size %d for: %s",
         	  			  message.typeOfdata,
         	  			  message.restDataLength,
         	  			  message.data.length(),
@@ -139,7 +139,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     	  if (DDSConfiguration::debugLevel>0)
                     	  {
                     		  // the message can cause perfomance penality for small data sizes
-                    		  ACS_SHORT_LOG((LM_DEBUG, "New sendData has arrived for: %s", topicName_m.c_str()));
+                    		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "New sendData has arrived for: %s", topicName_m.c_str()));
                     		  start_time = ACE_OS::gettimeofday();
                     	  }//if
                           totalFrames_m = message.restDataLength+1;
