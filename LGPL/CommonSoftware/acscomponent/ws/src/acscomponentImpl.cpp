@@ -21,7 +21,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acscomponentImpl.cpp,v 1.39 2011/11/18 15:10:42 rtobar Exp $"
+* "@(#) $Id: acscomponentImpl.cpp,v 1.40 2012/05/02 09:48:14 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    --------------------------------------------------
@@ -121,7 +121,38 @@ void ACSComponentImpl::__initialize()
     catch (ACSErr::ACSbaseExImpl &ex)
     {
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex, __FILE__,__LINE__,"ACSComponentImpl::__initialize");
+    }catch(const std::exception &stdex){
+    	ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+    	ex.setWhat(stdex.what());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: initialize can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+
+    }catch( CORBA::SystemException &_ex )
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+    	corbaProblemEx.setMinor(_ex.minor());
+    	corbaProblemEx.setCompletionStatus(_ex.completed());
+    	corbaProblemEx.setInfo(_ex._info().c_str());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(corbaProblemEx, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: initialize can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+    }catch( CORBA::UserException &_ex )
+    {
+    	ACSErrTypeCommon::CORBAUserExceptionExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+    	corbaProblemEx.setInfo(_ex._info());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(__FILE__,__LINE__, __FUNCTION__);
+
+    	lex.addData("WARNING:", "component lifecylce method: initialize can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+    }catch(...){
+
+    	ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: initialize can throw just ACS based exceptions. Please check your code.");
+        throw lex;
     }
+
 }
 
 void ACSComponentImpl::__execute()
@@ -142,7 +173,38 @@ so that all threads are just created in suspend mode and than startAllThreads wo
     catch (ACSErr::ACSbaseExImpl &ex)
     {
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__execute");
+    }catch(const std::exception &stdex){
+    	ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+    	ex.setWhat(stdex.what());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: execute can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+
+    }catch( CORBA::SystemException &_ex )
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+    	corbaProblemEx.setMinor(_ex.minor());
+    	corbaProblemEx.setCompletionStatus(_ex.completed());
+    	corbaProblemEx.setInfo(_ex._info().c_str());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(corbaProblemEx, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: execute can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+    }catch( CORBA::UserException &_ex )
+    {
+    	ACSErrTypeCommon::CORBAUserExceptionExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+    	corbaProblemEx.setInfo(_ex._info());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(__FILE__,__LINE__, __FUNCTION__);
+
+    	lex.addData("WARNING:", "component lifecylce method: execute can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+    }catch(...){
+
+    	ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: execute can throw just ACS based exceptions. Please check your code.");
+        throw lex;
     }
+
 }
 
 void ACSComponentImpl::__aboutToAbort()
@@ -160,7 +222,38 @@ void ACSComponentImpl::__aboutToAbort()
     catch (ACSErr::ACSbaseExImpl &ex)
     {
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__aboutToAbort");
+    }catch(const std::exception &stdex){
+    	ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+    	ex.setWhat(stdex.what());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: aboutToAbort can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+
+    }catch( CORBA::SystemException &_ex )
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+    	corbaProblemEx.setMinor(_ex.minor());
+    	corbaProblemEx.setCompletionStatus(_ex.completed());
+    	corbaProblemEx.setInfo(_ex._info().c_str());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(corbaProblemEx, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: aboutToAbort can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+    }catch( CORBA::UserException &_ex )
+    {
+    	ACSErrTypeCommon::CORBAUserExceptionExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+    	corbaProblemEx.setInfo(_ex._info());
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(__FILE__,__LINE__, __FUNCTION__);
+
+    	lex.addData("WARNING:", "component lifecylce method: aboutToAbort can throw just ACS based exceptions. Please check your code.");
+    	throw lex;
+    }catch(...){
+
+    	ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+    	acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+    	lex.addData("WARNING:", "component lifecylce method: aboutToAbort can throw just ACS based exceptions. Please check your code.");
+        throw lex;
     }
+
 }
 
 void ACSComponentImpl::__cleanUp()
@@ -172,13 +265,39 @@ void ACSComponentImpl::__cleanUp()
       cleanUp();
       }
   catch(ACSErr::ACSbaseExImpl &ex)
-      {
-      throw acsErrTypeLifeCycle::LifeCycleExImpl(ex, __FILE__,__LINE__,"ACSComponentImpl::__cleanUp");
-      }
-  catch(...)
-      {
-      throw acsErrTypeLifeCycle::LifeCycleExImpl( __FILE__,__LINE__,"ACSComponentImpl::__cleanUp");
-      }
+  {
+	  throw acsErrTypeLifeCycle::LifeCycleExImpl(ex, __FILE__,__LINE__,"ACSComponentImpl::__cleanUp");
+  }catch(const std::exception &stdex){
+	  ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+	  ex.setWhat(stdex.what());
+	  acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+	  lex.addData("WARNING:", "component lifecylce method: cleanUp can throw just ACS based exceptions. Please check your code.");
+	  throw lex;
+
+  }catch( CORBA::SystemException &_ex )
+  {
+	  ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+	  corbaProblemEx.setMinor(_ex.minor());
+	  corbaProblemEx.setCompletionStatus(_ex.completed());
+	  corbaProblemEx.setInfo(_ex._info().c_str());
+	  acsErrTypeLifeCycle::LifeCycleExImpl lex(corbaProblemEx, __FILE__,__LINE__, __FUNCTION__);
+	  lex.addData("WARNING:", "component lifecylce method: cleanUp can throw just ACS based exceptions. Please check your code.");
+	  throw lex;
+  }catch( CORBA::UserException &_ex )
+  {
+	  ACSErrTypeCommon::CORBAUserExceptionExImpl corbaProblemEx(__FILE__, __LINE__, __FUNCTION__);
+	  corbaProblemEx.setInfo(_ex._info());
+	  acsErrTypeLifeCycle::LifeCycleExImpl lex(__FILE__,__LINE__, __FUNCTION__);
+
+	  lex.addData("WARNING:", "component lifecylce method: cleanUp can throw just ACS based exceptions. Please check your code.");
+	  throw lex;
+  }catch(...){
+
+	  ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);
+	  acsErrTypeLifeCycle::LifeCycleExImpl lex(ex, __FILE__,__LINE__, __FUNCTION__);
+	  lex.addData("WARNING:", "component lifecylce method: cleanUp can throw just ACS based exceptions. Please check your code.");
+	  throw lex;
+  }
 
   // just in case if a user does not stop the threads we stop them here
   if (getContainerServices()->getThreadManager()->stopAll() == false)
