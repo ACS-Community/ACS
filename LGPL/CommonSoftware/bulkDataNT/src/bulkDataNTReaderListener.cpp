@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.53 2012/04/25 14:19:25 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.54 2012/05/02 12:53:53 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -220,7 +220,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   if (currentState_m==DataRcvState )
                     {
                       currentState_m = StopState;
-                      ACS_SHORT_LOG((LM_DEBUG, "sendStop has been received for: %s", topicName_m.c_str()));
+                      ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,(LM_DEBUG, "sendStop has been received for: %s", topicName_m.c_str()));
                       if (frameCounter_m==0)
                         {
                           ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
