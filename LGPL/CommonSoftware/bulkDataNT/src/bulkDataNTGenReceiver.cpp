@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.2 2012/05/02 12:19:47 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.3 2012/05/02 14:06:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,24 +35,24 @@ class  TestCB:  public BulkDataNTCallback
 public:
 	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "cbStart: got " << size << " :";
+		std::cout << "cbStart: got a paramter: ";
 		for(unsigned int i=0; i<size; i++)
 		{
 			std::cout <<  *(char*)(userParam_p+i);
 		}
-		std::cout << std::endl;
+		std::cout << " of size: " << size << std::endl;
 		return 0;
 	}
 
 	int cbReceive(unsigned char* data, unsigned  int size)
 	{
-		// std::cout << "cbReceive: got " << size << " :";
+		std::cout << "cbReceive: got data of size: " << size << " :";
 /*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
 		}
 	*/
-		//std::cout << std::endl;
+		std::cout << std::endl;
 
 		if (cbDealy>0) usleep(cbDealy);
 		return 0;
@@ -67,28 +67,25 @@ public:
 	static unsigned long cbDealy;
 };
 
+unsigned long TestCB::cbDealy = 0;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d sleep delay in cbReceive] [-w end_test_wait_period]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d sleep delay in cbReceive]" << endl;
 	exit(1);
 }
-
-
-unsigned long TestCB::cbDealy = 0;
 
 
 int main(int argc, char *argv[])
 {
 
 	char c;
-	unsigned int sleepPeriod=0;
 	ReceiverFlowConfiguration cfg; //just
 	//cfg.setEnableMulticast(false);
 	char *streamName = "DefaultStream";
 	list<char *> flows;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:w:d:");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:d:");
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
@@ -97,15 +94,10 @@ int main(int argc, char *argv[])
 				streamName = get_opts.opt_arg();
 				break;
 			}
-			case 'w':
-			{
-				sleepPeriod = atoi(get_opts.opt_arg());
-				break;
-			}
 			case 'f':
 			{
 				ACE_Tokenizer tok(get_opts.opt_arg());
-				tok.delimiter(',');
+				tok.delimiter_replace(',', 0);
 				for(char *p = tok.next(); p; p = tok.next())
 					flows.push_back(p);
 
@@ -135,20 +127,14 @@ int main(int argc, char *argv[])
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), cfg);
 		flow->getCallback<TestCB>();
 		std::vector<string> flowNames = receiverStream.getFlowNames();
-		std::cout << receiverStream.getFlowNumber() << ":[ ";
+		std::cout << "Wating on the following " << receiverStream.getFlowNumber() << " flow(s):[ ";
 		for(unsigned int i=0;i<flowNames.size(); i++)
 		  std::cout << flowNames[i] << " ";
-		std::cout << "]" << std::endl;
+		std::cout << "] of stream: " <<  streamName << std::endl;
 	}
 
-	if (sleepPeriod>0)
-	{
-		sleep(sleepPeriod);
-	}
-	else
-	{
-		std::cout << "press a key to exit.." << std::endl;
-		getchar();
-	}
+
+	std::cout << "Press a key to exit.." << std::endl;
+	getchar();
 
 }
