@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.1 2012/04/25 12:55:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.2 2012/05/02 12:19:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -122,9 +122,6 @@ int main(int argc, char *argv[])
 
 	if( flows.size() == 0 )
 		print_usage(argv);
-
-	if( !strcmp("DefaultStream", streamName) )
-		cerr << "Warning: using default stream name \"DefaultStream\"" << endl;
 
 	LoggingProxy m_logger(0, 0, 31, 0);
 	LoggingProxy::init (&m_logger);
