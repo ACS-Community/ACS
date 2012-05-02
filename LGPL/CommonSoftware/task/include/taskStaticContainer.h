@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.h,v 1.9 2012/01/21 22:48:11 tstaig Exp $"
+* "@(#) $Id: taskStaticContainer.h,v 1.10 2012/05/02 16:09:52 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,8 +34,11 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <memory>
+
 #include <maciContainerImpl.h>
 #include <maciLibraryManager.h>
+#include "AlarmSourceThread.h"
 #include <acserr.h>
 #include <ace/ARGV.h>
 
@@ -77,6 +80,10 @@ class StaticContainer
     ACE_CString componentName_m;
 
     ACE_ARGV containerArgv;
+
+    // The thread for the alarm source
+    std::auto_ptr<acsalarm::AlarmSourceThread> m_alarmThread_ap;
+
 };//class StaticContainer
 
 

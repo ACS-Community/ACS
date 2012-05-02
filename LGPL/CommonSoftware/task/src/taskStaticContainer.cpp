@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.cpp,v 1.17 2011/03/02 17:23:42 rtobar Exp $"
+* "@(#) $Id: taskStaticContainer.cpp,v 1.18 2012/05/02 16:09:52 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@ extern "C" PortableServer::Servant ConstructComponent(  maci::Handle h,
 #endif //_TASK_LIB
 
 StaticContainer::StaticContainer():
-    m_logger(0), services_m(true)
+    m_logger(0), services_m(true), m_alarmThread_ap(NULL)
 {
 }
 
@@ -339,7 +339,11 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 
     if (services_m == true)
 	{
-	acsCS =   new maci::MACIContainerServices(0/*handel*/, cmpName, cmpType, container_m.getContainerPOA().in());
+    // Create the thread for the AlarmSource to pass to the MACIContainerServices
+    if (m_alarmThread_ap.get()==NULL) {
+    	m_alarmThread_ap=std::auto_ptr<acsalarm::AlarmSourceThread>(new acsalarm::AlarmSourceThread());
+    }
+	acsCS =   new maci::MACIContainerServices(0/*handel*/, cmpName, cmpType, container_m.getContainerPOA().in(),m_alarmThread_ap.get());
 	if (acsCS==0)
 	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent",
