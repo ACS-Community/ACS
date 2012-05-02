@@ -18,3 +18,4 @@ s/New transfer rate: [0-9,.]*/New transfer rate: XY.Z/g
 s/Receiver Data Rate: [0-9,.]*/Receiver Data Rate: XY.Z/g
 s/in [0-9,.]* sec/in xy.z sec/g
 s/before waiting: [0-9]*/before waiting: XY/g
+s/Sub([0-9]*)/Sub(XXX)/g
