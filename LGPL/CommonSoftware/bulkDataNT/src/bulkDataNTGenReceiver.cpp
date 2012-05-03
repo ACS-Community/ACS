@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.3 2012/05/02 14:06:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.4 2012/05/03 09:28:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,7 +70,7 @@ public:
 unsigned long TestCB::cbDealy = 0;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d sleep delay in cbReceive]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in msec] [-u unicast mode] [-m multicast address]" << endl;
 	exit(1);
 }
 
@@ -79,16 +79,25 @@ int main(int argc, char *argv[])
 {
 
 	char c;
-	ReceiverFlowConfiguration cfg; //just
-	//cfg.setEnableMulticast(false);
+	ReceiverFlowConfiguration flowCfg;
 	char *streamName = "DefaultStream";
 	list<char *> flows;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:d:");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u");
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
+			case 'm':
+			{
+				flowCfg.setMulticastAddress(get_opts.opt_arg());
+				break;
+			}
+			case 'u':
+			{
+				flowCfg.setEnableMulticast(false);
+				break;
+			}
 			case 's':
 			{
 				streamName = get_opts.opt_arg();
@@ -100,7 +109,6 @@ int main(int argc, char *argv[])
 				tok.delimiter_replace(',', 0);
 				for(char *p = tok.next(); p; p = tok.next())
 					flows.push_back(p);
-
 				break;
 			}
 			case 'd':
@@ -108,9 +116,9 @@ int main(int argc, char *argv[])
 				TestCB::cbDealy = atoi(get_opts.opt_arg());
 				break;
 			}
-		}
+		}//case
 
-	}
+	}//while
 
 	if( flows.size() == 0 )
 		print_usage(argv);
@@ -123,11 +131,10 @@ int main(int argc, char *argv[])
 
 	list<char *>::iterator it;
 	for(it = flows.begin(); it != flows.end(); it++) {
-		ReceiverFlowConfiguration cfg;
-		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), cfg);
+		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg);
 		flow->getCallback<TestCB>();
 		std::vector<string> flowNames = receiverStream.getFlowNames();
-		std::cout << "Wating on the following " << receiverStream.getFlowNumber() << " flow(s):[ ";
+		std::cout << "Waiting on the following " << receiverStream.getFlowNumber() << " flow(s):[ ";
 		for(unsigned int i=0;i<flowNames.size(); i++)
 		  std::cout << flowNames[i] << " ";
 		std::cout << "] of stream: " <<  streamName << std::endl;
