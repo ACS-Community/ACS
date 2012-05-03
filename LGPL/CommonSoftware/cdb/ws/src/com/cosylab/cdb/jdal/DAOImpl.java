@@ -152,6 +152,8 @@ public class DAOImpl implements DAOOperations {
 			value = pNode.getElementNames();
 		} else if (fieldName.equals("_subnodes")) {
 			value = pNode.getSubNodeNames();
+		} else if (fieldName.equals("_name")) {
+			value = pNode.getName();
 		} else {
 			value = (String) pNode.m_fieldMap.get(fieldName);
 		}

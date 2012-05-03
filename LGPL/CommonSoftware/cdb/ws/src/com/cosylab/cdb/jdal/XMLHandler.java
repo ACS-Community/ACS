@@ -136,14 +136,16 @@ public class XMLHandler extends DefaultHandler {
 					}
 				}
 
+				String mapKey;
 				if (m_parent.m_subNodesMap.get(raw) != null) {
 					elementID++;
-					pNode.m_name = raw + elementID;
+					pNode.m_name = raw;
+					mapKey = raw + elementID;
 				}
 				else {
-					pNode.m_name = raw;
+					pNode.m_name = mapKey = raw;
 				}
-				m_parent.m_subNodesMap.put(pNode.m_name, pNode);
+				m_parent.m_subNodesMap.put(mapKey, pNode);
 				m_parent = pNode;
 			}
 		}
