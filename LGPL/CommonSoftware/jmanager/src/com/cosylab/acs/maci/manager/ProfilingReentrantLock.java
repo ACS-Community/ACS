@@ -82,9 +82,14 @@ public class ProfilingReentrantLock implements Lock
 	@Override
 	public void unlock() {
 		delegate.unlock();
-		LockInfo lockInfo = lockInfoMap.remove(Thread.currentThread().getId());
-		lockInfo.timeUnlocked = System.currentTimeMillis();
-		printProfilingMessage(lockInfo, Thread.currentThread().getName());
+		if (!delegate.isHeldByCurrentThread()) {
+			LockInfo lockInfo = lockInfoMap.remove(Thread.currentThread().getId());
+			lockInfo.timeUnlocked = System.currentTimeMillis();
+			printProfilingMessage(lockInfo, Thread.currentThread().getName());
+		}
+		else {
+			// no profiling for nested unlocking
+		}
 	}
 
 	@Override
