@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -63,6 +62,7 @@ import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
+import com.cosylab.acs.maci.Container.ComponentInfoCompletionCallback;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
@@ -81,7 +81,6 @@ import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.SynchronousAdministrator;
 import com.cosylab.acs.maci.TimeoutRemoteException;
 import com.cosylab.acs.maci.Transport;
-import com.cosylab.acs.maci.Container.ComponentInfoCompletionCallback;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
 import com.cosylab.acs.maci.manager.app.ManagerContainerServices;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
@@ -128,6 +127,7 @@ import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.ACSPorts;
+import alma.acs.util.IsoDateFormat;
 import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
 import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
@@ -619,9 +619,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 	/**
 	 * Components data.
+	 * Access must be protected using {@link #componentsLock}.
 	 * @serial
 	 */
 	private HandleDataStore components = new HandleDataStore(128, HANDLE_MASK);
+	
+	/**
+	 * This lock was introduced to debug thread contention for http://jira.alma.cl/browse/COMP-6488, 
+	 * replacing "synchronized (components)".
+	 * Once that problem is resolved, we can either hardcode the ReentrantLock here, or leave in this choice and simply
+	 * not define property <code>acs.enableReentrantLockProfiling</code> which would lead to using the ProfilingReentrantLock.
+	 */
+	private Lock componentsLock = ( ProfilingReentrantLock.isProfilingEnabled 
+									? new ProfilingReentrantLock("componentsLock")
+									: new ReentrantLock() );
 
 	public enum WhyUnloadedReason { REMOVED, TIMEOUT, DISAPPEARED, REPLACED };
 	/**
@@ -648,13 +659,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Handle data store to monitor released handles.
 	 * @serial
 	 */
-	private Map releasedHandles = new HashMap();
+	private Map<Integer, HandleMonitorEntry> releasedHandles = new HashMap<Integer, HandleMonitorEntry>();
 
 	/**
 	 * List of all unavailable components.
 	 * @serial
 	 */
-	private Map unavailableComponents = new LinkedHashMap();
+	private Map<String, ComponentInfo> unavailableComponents = new LinkedHashMap<String, ComponentInfo>();
 
 	/**
 	 * List of all pending activations.
@@ -1084,7 +1095,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Checks and registers load balancing strategy.
 	 * Load balancing strategy is defined as Java JVM system property named
-	 * <code>NAME_LOAD_BALANCING_STRATEGY</code> contaning class name of the
+	 * <code>NAME_LOAD_BALANCING_STRATEGY</code> containing class name of the
 	 * <code>LoadBalancingStrategy</code> implementation.
 	 */
 	private void checkLoadBalancingStrategy() {
@@ -1233,7 +1244,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			securityCheck(id, AccessRights.INTROSPECT_MANAGER);
 
 			// list of client matching search pattern
-			ArrayList list = new ArrayList();
+			ArrayList<ContainerInfo> list = new ArrayList<ContainerInfo>();
 
 			// check clients
 			synchronized (containers)
@@ -1332,7 +1343,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			securityCheck(id, AccessRights.INTROSPECT_MANAGER);
 
 			// list of clients matching search pattern
-			ArrayList list = new ArrayList();
+			ArrayList<ClientInfo> list = new ArrayList<ClientInfo>();
 
 			// check clients
 			synchronized (clients)
@@ -1498,11 +1509,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 			// map of components to be returned
-			Map map = new HashMap();
+			Map<String, ComponentInfo> map = new HashMap<String, ComponentInfo>();
 
 			// read active/registered components
-			synchronized (components)
-			{
+			componentsLock.lock();
+			try {
 				int h = components.first();
 				while (h != 0)
 				{
@@ -1519,6 +1530,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 					h = components.next(h);
 				}
+			} finally {
+				componentsLock.unlock();
 			}
 
 			// add also non-active, if requested
@@ -1810,8 +1823,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		logger.log(Level.FINE,"'" + requestorName + "' requested non-sticky component '" + curl + "'.");
 	
 		Component component = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			int h = components.first();
 			while (h != 0)
 		    {
@@ -1823,6 +1836,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				h = components.next(h);
 		    }
+		} finally {
+			componentsLock.unlock();
 		}
 	
 		// log info
@@ -1864,8 +1879,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		int h;
 		ComponentInfo componentInfo = null;
 
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			h = components.first();
 			while (h != 0)
 		    {
@@ -1902,6 +1917,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				logger.log(Level.INFO,"Component " + name + " was made immortal.");
 			}
+		} finally {
+			componentsLock.unlock();
 		}
 
 		// this must be done outside component sync. block
@@ -2153,8 +2170,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		int h = 0;
 
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 
 			// check if Component is already registred
 			// if it is, return existing info
@@ -2228,6 +2245,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			executeCommand(new ComponentCommandSet(handle, componentInfo));
 			// store info
 			//components.set(handle, componentInfo);
+		} finally {
+			componentsLock.unlock();
 		}
 
 
@@ -2932,9 +2951,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 		// used for fast lookups
-		Map activationRequests = new HashMap();
+		Map<String, Integer> activationRequests = new HashMap<String, Integer>();
 		// order is important, preserve it
-		ArrayList activationRequestsList = new ArrayList();
+		ArrayList<URI> activationRequestsList = new ArrayList<URI>();
 
 		// get CDB access daos
 		DAOProxy dao = getManagerDAOProxy();
@@ -3074,7 +3093,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// list of componentInfo to be cleaned up (cannot be immediately, due to lock)
-		ArrayList cleanupList = new ArrayList();
+		ArrayList<ComponentInfo> cleanupList = new ArrayList<ComponentInfo>();
 
 		//
 		// check unavailable components
@@ -3089,15 +3108,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 					synchronized (unavailableComponents)
 					{
-						Iterator iterator = unavailableComponents.keySet().iterator();
+						Iterator<String> iterator = unavailableComponents.keySet().iterator();
 						while (iterator.hasNext())
 						{
-							String name = (String)iterator.next();
+							String name = iterator.next();
 
 							boolean reactivate = false;
 
 							// dynamic component check
-							ComponentInfo componentInfo = (ComponentInfo)unavailableComponents.get(name);
+							ComponentInfo componentInfo = unavailableComponents.get(name);
 							if (componentInfo != null && componentInfo.isDynamic() &&
 							 	componentInfo.getDynamicContainerName() != null &&
 								componentInfo.getDynamicContainerName().equals(containerInfo.getName()))
@@ -3171,13 +3190,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (cleanupList.size() > 0)
 		{
-			Iterator iter = cleanupList.iterator();
+			Iterator<ComponentInfo> iter = cleanupList.iterator();
 			while (iter.hasNext())
 			{
-				ComponentInfo componentInfo = (ComponentInfo)iter.next();
+				ComponentInfo componentInfo = iter.next();
 
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					// remove from its owners list ...
 					int[] owners = componentInfo.getClients().toArray();
 					for (int j = 0; j < owners.length; j++)
@@ -3193,6 +3212,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						if (containerInfo.getComponents().contains(componentInfo.getHandle()))
 							executeCommand(new ContainerInfoCommandComponentRemove(containerInfo.getHandle() & HANDLE_MASK, componentInfo.getHandle()));
 					}
+				} finally {
+					componentsLock.unlock();
 				}
 
 				// unbind from remote directory
@@ -3211,15 +3232,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// activate startup components
 		int activated = 0;
 		StatusHolder status = new StatusHolder();
-		Iterator iterator = activationRequestsList.iterator();
+		Iterator<URI> iterator = activationRequestsList.iterator();
 		while (iterator.hasNext())
 		{
-			URI uri = (URI)iterator.next();
+			URI uri = iterator.next();
 			try
 			{
 				String name = extractName(uri);
 
-				int requestor = ((Integer)activationRequests.get(name)).intValue();
+				int requestor = activationRequests.get(name);
 
 				internalRequestComponent(requestor, uri, status);
 
@@ -3319,8 +3340,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (infos != null && infos.length > 0)
 		{
-			synchronized (components)
-			{
+			componentsLock.lock();
+			try {
 				// iterate through all handles
 				// phase 1: check for state consistency
 				for (int i = 0; i < infos.length; i++)
@@ -3362,7 +3383,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						   		AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 						   		npe.setReason("Inconsistent container state - components information do not match, rejecting container.");
 								npe.setID(containerInfo.getName());
-								npe.setProtectedResource(componentInfo.getName());
+								if (componentInfo != null) {
+									npe.setProtectedResource(componentInfo.getName());
+								}
 						   		throw npe;
 							}
 
@@ -3466,6 +3489,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				}
 
+			} finally {
+				componentsLock.unlock();
 			}
 		}
 
@@ -3485,8 +3510,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//containerInfo.getComponents().remove(componentHandle);
 
 			// marked as unavailable to be reactivated later (or discarded)
-			synchronized (components)
-			{
+			componentsLock.lock();
+			try {
 				int handle = componentHandle & HANDLE_MASK;
 
 				if (components.isAllocated(handle))
@@ -3529,6 +3554,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					logger.log(Level.SEVERE,"Internal state is not consistent.");
 				}
 
+			} finally {
+				componentsLock.unlock();
 			}
 
 
@@ -3596,7 +3623,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void autoStartComponents()
 	{
 		// order is important, preserve it
-		LinkedHashSet activationRequestsList = new LinkedHashSet();
+		LinkedHashSet<String> activationRequestsList = new LinkedHashSet<String>();
 
 		// get CDB access daos
 		DAOProxy dao = getManagerDAOProxy();
@@ -3681,10 +3708,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// by filtering out all components that are not hosted by auto-start containers
 		// leave only components that have "*" listed as container
 		LinkedHashSet startupContainers = new LinkedHashSet();
-		Iterator iterator = activationRequestsList.iterator();
+		Iterator<String> iterator = activationRequestsList.iterator();
 		while (iterator.hasNext())
 		{
-			String name = (String)iterator.next();
+			String name = iterator.next();
 
 			try
 			{
@@ -3740,7 +3767,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		iterator = activationRequestsList.iterator();
 		while (iterator.hasNext())
 		{
-			String name = (String)iterator.next();
+			String name = iterator.next();
 			try
 			{
                 URI uri = CURLHelper.createURI(name);
@@ -4009,8 +4036,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (markUnavailable.length > 0)
 		{
-			synchronized (components)
-			{
+			componentsLock.lock();
+			try {
 				synchronized (unavailableComponents)
 				{
 					for (int i = 0; i < markUnavailable.length; i++)
@@ -4024,8 +4051,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 					}
 				}
+			} finally {
+				componentsLock.unlock();
 			}
-
 
 		}
 
@@ -4194,7 +4222,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// no administrator to notify
 			if (len > 0)
 			{
-				ArrayList list = new ArrayList();
+				ArrayList<ClientInfo> list = new ArrayList<ClientInfo>();
 
 				int h = administrators.first();
 				while (h != 0)
@@ -4240,7 +4268,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// no containers to notify
 			if (len > 0)
 			{
-				ArrayList list = new ArrayList();
+				ArrayList<ContainerInfo> list = new ArrayList<ContainerInfo>();
 
 				int h = containers.first();
 				while (h != 0)
@@ -4272,7 +4300,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     private ClientInfo[] getClientInfo()
     {
 
-		ArrayList list = new ArrayList();
+		ArrayList<ClientInfo> list = new ArrayList<ClientInfo>();
 
     	// get clients
     	synchronized (clients)
@@ -4327,7 +4355,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// array of clients to be notified
 		ClientInfo[] clients = null;
 
-		ArrayList list = new ArrayList();
+		ArrayList<ClientInfo> list = new ArrayList<ClientInfo>();
 
 		for (int i = 0; i < handles.length; i++)
 			if (handles[i] != excludeHandle)
@@ -4378,11 +4406,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// needed since execute is sync. and action
 				// ComponentInfoCommandComponentRemove then sync. componentInfo
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					// !!! ACID 3
 					executeCommand(new ComponentInfoCommandComponentRemove(owner & HANDLE_MASK, componentHandle));
 					//ci.getComponents().remove(componentHandle);
+				} finally {
+					componentsLock.unlock();
 				}
 			}
 		}
@@ -4420,12 +4450,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// needed since execute is sync. and action
 				// ComponentInfoCommandComponentAdd then sync. componentInfo
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					// !!! ACID 3
 					if (!componentInfo.getComponents().contains(componentHandle))
 						executeCommand(new ComponentInfoCommandComponentAdd(owner & HANDLE_MASK, componentHandle));
 					//ci.getComponents().add(componentHandle);
+				} finally {
+					componentsLock.unlock();
 				}
 			}
 		}
@@ -5339,16 +5371,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 
-	/**
-	 * Sends an message to the client.
-	 * @param	client		client to receive the message, non-<code>null</code>
-	 * @param	message		message to be sent, non-<code>null</code>
-	 * @param	messageType	type of the message, non-<code>null</code>
-	 */
-	private void sendMessage(Client client, String message, MessageType messageType)
-	{
-	    sendMessage(client, message, messageType, (short)0);
-	}
+//	/**
+//	 * Sends an message to the client.
+//	 * @param	client		client to receive the message, non-<code>null</code>
+//	 * @param	message		message to be sent, non-<code>null</code>
+//	 * @param	messageType	type of the message, non-<code>null</code>
+//	 */
+//	private void sendMessage(Client client, String message, MessageType messageType)
+//	{
+//	    sendMessage(client, message, messageType, (short)0);
+//	}
 
 		/**
 		 * Task thats invokes <code>Client#message</code> method.
@@ -5454,11 +5486,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
-	 * ISO 8601 date formatter.
-	 */
-	private transient static SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-	/**
 	 * Performs security check on given handle and if check if owner has <code>rights</code> permissions granted.
 	 *
 	 * Validating means checking key part (KEY_MASK) of the handle.
@@ -5528,8 +5555,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				break;
 
 			case COMPONENT_MASK:
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					if (components.isAllocated(handle))
 					{
 						ComponentInfo info = (ComponentInfo)components.get(handle);
@@ -5537,6 +5564,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							invalidHandle = false;
 						grantedRights = AccessRights.REGISTER_COMPONENT;
 					}
+				} finally {
+					componentsLock.unlock();
 				}
 				break;
 
@@ -5556,7 +5585,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			
 			HandleMonitorEntry hme = getHandleReleaseLog(id);
 			if (hme != null) {
-				final String timeISO =  timeFormatter.format(new Date(hme.timestamp));
+				final String timeISO = IsoDateFormat.formatDate(new Date(hme.timestamp));
 				switch (hme.reason)
 				{
 					case REMOVED:
@@ -5695,10 +5724,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// info to be returned
 		ComponentInfo info = null;
 
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			if (components.isAllocated(handle))
 				info = (ComponentInfo)components.get(handle);
+		} finally {
+			componentsLock.unlock();
 		}
 
 		return info;
@@ -5801,10 +5832,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param requested	handle of requested component
 	 * @return if cycle is detected then path is returned, otherwise <code>null</code>
 	 */
-	private ArrayList doCycleCheck(int requestor, int requested)
+	private ArrayList<ComponentInfo> doCycleCheck(int requestor, int requested)
 	{
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			ComponentInfo info = (ComponentInfo)components.get(requested & HANDLE_MASK);
 			if (info == null)
 				return null;
@@ -5812,7 +5843,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (requested == requestor)
 			{
 				// detected
-				ArrayList list = new ArrayList();
+				ArrayList<ComponentInfo> list = new ArrayList<ComponentInfo>();
 				list.add(info);
 				return list;
 			}
@@ -5820,12 +5851,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			int[] subcomponents = info.getComponents().toArray();
 			for (int i = 0; i < subcomponents.length; i++)
 			{
-				ArrayList list = doCycleCheck(requestor, subcomponents[i]);
+				ArrayList<ComponentInfo> list = doCycleCheck(requestor, subcomponents[i]);
 				if (list != null) {
 					list.add(info);
 					return list;
 				}
 			}
+		} finally {
+			componentsLock.unlock();
 		}
 		return null;
 	}
@@ -5845,8 +5878,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// check if requested component is already activated (and pending activations)
 		ComponentInfo componentInfo = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			int h = components.first();
 			while (h != 0)
 			{
@@ -5880,7 +5913,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentInfo == null)
 				return;
 
-			ArrayList pathList = doCycleCheck(requestor, componentInfo.getHandle());
+			ArrayList<ComponentInfo> pathList = doCycleCheck(requestor, componentInfo.getHandle());
 			// no dependency detected
 			if (pathList == null)
 				return;
@@ -5888,7 +5921,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// stringify
 			StringBuffer pathBuffer = new StringBuffer();
 			for (int i = pathList.size()-1; i >= 0; i--)
-				pathBuffer.append(((ComponentInfo)pathList.get(i)).getName()).append(" -> ");
+				pathBuffer.append(pathList.get(i).getName()).append(" -> ");
 			pathBuffer.append(componentInfo.getName());
 			// TODO @todo no pathBuffer is used, printed-out
 			
@@ -5899,6 +5932,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			cde.setCURL(requestedComponentName);
 			cde.setRequestor(requestor);
 			throw cde;
+		} finally {
+			componentsLock.unlock();
 		}
 
 	}
@@ -6021,8 +6056,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		boolean reactivate = false;
 		ComponentInfo componentInfo = null;
 
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			h = components.first();
 			while (h != 0)
 			{
@@ -6113,6 +6148,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				h = components.next(h);
 			}
+		} finally {
+			componentsLock.unlock();
 		}
 		
 		// if we have to reactivate a dynamic component,
@@ -6318,8 +6355,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 
 		// obtain handle
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			// only preallocate (if necessary)
 			if (!reactivate)
 			{
@@ -6356,6 +6393,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					addComponentOwner(data.getHandle(), requestor);
 			}
 
+		} finally {
+			componentsLock.unlock();
 		}
 
 		//
@@ -6611,13 +6650,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			logger.log(Level.SEVERE,"Failed to activate component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ").");
 
-			synchronized (components)
-			{
+			componentsLock.lock();
+			try {
 				// !!! ACID 3
 				if (!reactivate)
 					executeCommand(new ComponentCommandDeallocate(h, h | COMPONENT_MASK,
 											timeoutError ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED, true));
 					//components.deallocate(h, true);
+			} finally {
+				componentsLock.unlock();
 			}
 
 			status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
@@ -6655,8 +6696,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		int clients[];
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 
 			//
 			// check if returned handle matches ours (given)
@@ -6783,6 +6824,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			componentInfo = data;
 
 			clients = componentInfo.getClients().toArray();
+		} finally {
+			componentsLock.unlock();
 		}
 		
 		if (!isOtherDomainComponent)
@@ -6814,8 +6857,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (!constructed)
 			{
 				// release Component
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					// !!! ACID 3
 					if (!reactivate)
 						executeCommand(new ComponentCommandDeallocate(h, componentInfo.getHandle(), WhyUnloadedReason.REMOVED));
@@ -6834,6 +6877,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 					status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 					throw bcex;
+				} finally {
+					componentsLock.unlock();
 				}
 			}
 		}
@@ -6942,8 +6987,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		String name = extractName(curl);
 
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			h = components.first();
 			while (h != 0)
 		    {
@@ -6955,6 +7000,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				h = components.next(h);
 		    }
+		} finally {
+			componentsLock.unlock();
 		}
 
 		// if found, delegate operation, otherwise do nothing
@@ -6981,8 +7028,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// resolve componentInfo from curl
 				ComponentInfo componentInfo = null;
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					int h = components.first();
 					while (h != 0)
 				    {
@@ -6997,6 +7044,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						h = components.next(h);
 				    }
+				} finally {
+					componentsLock.unlock();
 				}
 
 				// component is already gone, nothing to do
@@ -7042,8 +7091,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// extract name
 		String name = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			int handle = h & HANDLE_MASK;
 			ComponentInfo componentInfo = null;
 			if (components.isAllocated(handle))
@@ -7067,6 +7116,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			name = componentInfo.getName();
 
+		} finally {
+			componentsLock.unlock();
 		}
 
 		// try to acquire lock
@@ -7113,8 +7164,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		int owners = 0;
 
 		ComponentInfo componentInfo = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			if (components.isAllocated(handle))
 				componentInfo = (ComponentInfo)components.get(handle);
 
@@ -7177,6 +7228,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 
 			}
+		} finally {
+			componentsLock.unlock();
 		}
 
 		/****************** component deactivation ******************/
@@ -7399,10 +7452,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (owners == 0)
 			{
 				// deallocate Component
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					executeCommand(new ComponentCommandDeallocate(handle, componentInfo.getHandle(), WhyUnloadedReason.REMOVED));
 					//components.deallocate(handle);
+				} finally {
+					componentsLock.unlock();
 				}
 			}
 		}
@@ -7617,8 +7672,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		String name = extractName(curl);
 
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			h = components.first();
 			while (h != 0)
 			{
@@ -7630,6 +7685,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				h = components.next(h);
 			}
+		} finally {
+			componentsLock.unlock();
 		}
 
 		// if found, delegate operation, otherwise do nothing
@@ -7652,8 +7709,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// extract name
 		String name = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			int handle = h & HANDLE_MASK;
 			ComponentInfo componentInfo = null;
 			if (components.isAllocated(handle))
@@ -7668,6 +7725,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			name = componentInfo.getName();
 
+		} finally {
+			componentsLock.unlock();
 		}
 
 		// try to acquire lock
@@ -7713,8 +7772,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		int handle = h & HANDLE_MASK;
 
 		ComponentInfo componentInfo = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			if (components.isAllocated(handle))
 				componentInfo = (ComponentInfo)components.get(handle);
 
@@ -7736,6 +7795,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				throw npe;
 			}
 
+		} finally {
+			componentsLock.unlock();
 		}
 
 		/****************** restart component ******************/
@@ -8258,8 +8319,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		int h = 0;
 		ComponentInfo targetComponentInfo = null;
-		synchronized (components)
-		{
+		componentsLock.lock();
+		try {
 			h = components.first();
 			while (h != 0)
 			{
@@ -8271,6 +8332,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 				h = components.next(h);
 			}
+		} finally {
+			componentsLock.unlock();
 		}
 		
 		// if not found, check the CDB
@@ -9084,8 +9147,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			case COMPONENT_MASK:
 				//name.append("Component ");
-				synchronized (components)
-				{
+				componentsLock.lock();
+				try {
 					if (components.isAllocated(reqHandle))
 					{
 						ComponentInfo info = (ComponentInfo)components.get(reqHandle);
@@ -9096,6 +9159,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							name.append(info.getName());
 						}
 					}
+				} finally {
+					componentsLock.unlock();
 				}
 				break;
 
@@ -10021,7 +10086,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		final long now = System.currentTimeMillis();
 		synchronized (releasedHandles) {
 			// this simply overrides the old entry
-			releasedHandles.put(new Integer(handle), new HandleMonitorEntry(now, reason));
+			releasedHandles.put(handle, new HandleMonitorEntry(now, reason));
 		}
 	}
 
@@ -10032,7 +10097,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public HandleMonitorEntry getHandleReleaseLog(int handle) {
 		synchronized (releasedHandles) {
-			return (HandleMonitorEntry)releasedHandles.get(new Integer(handle));
+			return releasedHandles.get(handle);
 		}
 	}
 
