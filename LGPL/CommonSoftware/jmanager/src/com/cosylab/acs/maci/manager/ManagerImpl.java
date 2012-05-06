@@ -3108,10 +3108,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 					synchronized (unavailableComponents)
 					{
-						Iterator<String> iterator = unavailableComponents.keySet().iterator();
-						while (iterator.hasNext())
+						String[] names = unavailableComponents.keySet().toArray(new String[unavailableComponents.size()]);
+						// reverse
+						for (int i = names.length - 1; i >= 0; i--)
 						{
-							String name = iterator.next();
+							String name = names[i];
 
 							boolean reactivate = false;
 
@@ -4028,34 +4029,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		containerInfo.getTask().cancel();
 
 		// make all container components unavailable
-		int[] markUnavailable;
-		synchronized (containerInfo.getComponents())
-		{
-			markUnavailable = containerInfo.getComponents().toArray();
-		}
-
-		if (markUnavailable.length > 0)
-		{
-			componentsLock.lock();
-			try {
-				synchronized (unavailableComponents)
-				{
-					for (int i = 0; i < markUnavailable.length; i++)
-					{
-						int handle = markUnavailable[i] & HANDLE_MASK;
-						if (components.isAllocated(handle))
-						{
-							ComponentInfo componentInfo = (ComponentInfo)components.get(handle);
-							if (componentInfo != null)
-								makeUnavailable(componentInfo);
-						}
-					}
-				}
-			} finally {
-				componentsLock.unlock();
-			}
-
-		}
+		markContainersComponentsUnavailable(containerInfo);
 
 /// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
@@ -4067,6 +4041,39 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		logger.log(Level.INFO,"Container '" + containerInfo.getName() + "' logged out.");
 
+	}
+
+	private void markContainersComponentsUnavailable(
+			TimerTaskContainerInfo containerInfo) {
+		// make all container components unavailable
+		int[] markUnavailable;
+		synchronized (containerInfo.getComponents())
+		{
+			markUnavailable = containerInfo.getComponents().toArray();
+		}
+
+		if (markUnavailable.length > 0)
+		{
+			synchronized (components)
+			{
+				synchronized (unavailableComponents)
+				{
+					// add in reverse order (as deactivation procedure would do)
+					for (int i = markUnavailable.length - 1; i >= 0; i--)
+					{
+						int handle = markUnavailable[i] & HANDLE_MASK;
+						if (components.isAllocated(handle))
+						{
+							ComponentInfo componentInfo = (ComponentInfo)components.get(handle);
+							if (componentInfo != null)
+								makeUnavailable(componentInfo);
+						}
+					}
+				}
+			}
+
+
+		}
 	}
 
 	/**
