@@ -16,6 +16,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.omg.CORBA.ORB;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 import org.xml.sax.InputSource;
 
 import alma.acs.util.ACSPorts;
@@ -94,6 +97,11 @@ public class CDBAccess
 	 * Listener for CDB change.
 	 */
 	private ChangeListener changeListener = null;
+	
+	/**
+	 * Bypass 'resolve DAL from naming service' switch.
+	 */
+	private boolean bypassNameService = false;
 
 	/**
 	 * This private class will handle CDB restart or data change in the CDB.
@@ -364,6 +372,42 @@ public class CDBAccess
 	}
 
 	/**
+	 * @return the bypassNameService
+	 */
+	public boolean isBypassNameService() {
+		return bypassNameService;
+	}
+
+	/**
+	 * @param bypassNameService the bypassNameService to set
+	 */
+	public void setBypassNameService(boolean bypassNameService) {
+		this.bypassNameService = bypassNameService;
+	}
+
+	private DAL queryNSForDALReference()
+	{
+		try
+		{
+			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+			
+			NamingContext ncRef = NamingContextHelper.narrow(objRef);
+			
+			NameComponent path[] = { new NameComponent("CDB", "") };
+	
+	        org.omg.CORBA.Object objectReference = ncRef.resolve(path);
+	
+	        DAL dalRef = DALHelper.narrow(objectReference);
+	        
+	        return dalRef;
+		}
+		catch (Throwable th)
+		{
+			throw new RuntimeException("Failed to get DAL object from the naming service.", th);
+		}
+	}
+	
+	/**
 	 * Checks connection status (if already connected) and connects if necessary.
 	 */
 	private void checkDALConnection() {
@@ -376,12 +420,19 @@ public class CDBAccess
 				logger.info("Connecting to DAL '" + defaultDAL + "'...");
 		
 				// connect to DAL
-				dalReference = DALHelper.narrow(orb.string_to_object(defaultDAL));
-
-				if (dalReference == null)
-					// TODO @todo replace
-					throw new RuntimeException("Failed to connect to the DAL object with reference, got 'null' reference.");
-					
+				if (bypassNameService)
+				{
+					dalReference = DALHelper.narrow(orb.string_to_object(defaultDAL));
+	
+					if (dalReference == null)
+						// TODO @todo replace
+						throw new RuntimeException("Failed to connect to the DAL object with reference, got 'null' reference.");
+				}
+				else
+				{
+					dalReference = queryNSForDALReference();
+				}
+				
 				logger.info("Connected to DAL '" + defaultDAL + "'.");
 
 			}
