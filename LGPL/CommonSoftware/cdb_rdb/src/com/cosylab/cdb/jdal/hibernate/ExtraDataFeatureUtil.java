@@ -205,8 +205,22 @@ public class ExtraDataFeatureUtil {
 					changed = true;
 					break;
 				}
+				
+				// artificial name, try to get the real one
+				String elementName = element;
+				if (Character.isDigit(element.charAt(element.length()-1)))
+				{
+					try
+					{
+						elementName = dao.get_string(prefix + element + "/_name");
+					}
+					catch (Throwable th)
+					{
+						// TODO log debug
+					}
+				}
 
-				Element newElement = root.getOwnerDocument().createElement(/*removeNamespace(*/element/*)*/);
+				Element newElement = root.getOwnerDocument().createElement(/*removeNamespace(*/elementName/*)*/);
 				root.appendChild(newElement);
 				changed = true;
 

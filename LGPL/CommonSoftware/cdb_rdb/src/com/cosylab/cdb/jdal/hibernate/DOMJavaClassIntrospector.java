@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import alma.acs.util.XmlNormalizer;
@@ -376,6 +377,41 @@ public class DOMJavaClassIntrospector {
 		return subnodes.toArray(new String[subnodes.size()]);
 	}
 
+	public static void getAccessibleFieldsObjects(Object node, boolean primitivesOnly, ArrayList<NamedObject> subnodes) {
+		final Class nodeType = node.getClass();
+		Class type = nodeType;
+		while (type != null)
+		{
+			Field[] fields = type.getDeclaredFields();
+			for (Field field : fields)
+			{
+				boolean isPrimitive = isPrimitive(field.getType());
+				if ((isPrimitive ^ !primitivesOnly) && getAccessorMethod(nodeType, field.getName()) != null)
+				{
+					// do not add null non-primitives check
+					Object child = getChild(field.getName(), node);
+					if (isPrimitive || child != null)
+						subnodes.add(new NamedObject(field.getName(), child));
+				}
+			}
+			
+			type = type.getSuperclass();
+		}
+		
+		// and subnodesMap map
+		if (!primitivesOnly)
+		{
+			Object subnodesMap = getChild(SUBNODES_MAP_NAME, node);
+			if (subnodesMap instanceof Map)
+			{
+				Map map = (Map)subnodesMap;
+				Set keySet = map.keySet();
+				for (Object key : keySet)
+					subnodes.add(new NamedObject(key.toString(), map.get(key)));
+			}
+		}
+	}
+
 	public static String[] getElementFields(Object node) {
 		Set<String> subnodes = new LinkedHashSet<String>();
 		final Class nodeType = node.getClass();
@@ -523,7 +559,7 @@ public class DOMJavaClassIntrospector {
 					return fields;
 				
 				// concat and remove duplicates
-				HashSet<String> set = new HashSet<String>(Arrays.asList(fields));
+				LinkedHashSet<String> set = new LinkedHashSet<String>(Arrays.asList(fields));
 				for (String ef : extraFields)
 					if (!set.add(ef))
 						if (log != null) log.warning("Duplicate node '" + nodeName + "/" + ef + "'.");
@@ -534,6 +570,75 @@ public class DOMJavaClassIntrospector {
 				return getAccessibleFields(node, false);
 	}
 	
+	static class NamedObject
+	{
+		final String name;
+		final Object obj;
+		
+		NamedObject(String name, Object obj)
+		{
+			this.name = name;
+			this.obj = obj;
+		}
+	}
+	
+	public static NamedObject[] getNodesObjects(Object node, String nodeName, Logger log)
+	{
+        if (node instanceof DAOImpl)
+        {
+        	return getNodesObjects(((DAOImpl)node).getRootNode().getNodesMap(), null, null);
+        }
+        else if (node instanceof XMLTreeNode)
+        {
+       		 return getNodesObjects(((XMLTreeNode)node).getNodesMap(), null, null);
+        }
+        else if (node instanceof Map)
+		{
+        	ArrayList<NamedObject> subnodes = new ArrayList<NamedObject>();
+        	Map nodeMap = (Map)node;
+			Set keySet = nodeMap.keySet();
+			for (Object key : keySet)
+				subnodes.add(new NamedObject(key.toString(), nodeMap.get(key)));
+			return subnodes.toArray(new NamedObject[subnodes.size()]);
+		}
+		else if (node instanceof Element)
+		{
+			NodeList elements = ((Element)node).getChildNodes();
+			int size = elements.getLength();
+        	ArrayList<NamedObject> list = new ArrayList<NamedObject>(size);
+			for (int i = 0; i < size; i++)
+			{
+				Node nodeItem = elements.item(i);
+				if (nodeItem.getNodeType() == Element.ELEMENT_NODE)
+					list.add(new NamedObject(nodeItem.getNodeName(), (Element)nodeItem));
+			}
+			return list.toArray(new NamedObject[list.size()]);
+		}
+		else
+		{
+			ArrayList<NamedObject> list = new ArrayList<NamedObject>();
+			if (node instanceof ExtraDataFeature)
+			{
+				NamedObject[] extraFields = null;
+				Element extraData = ((ExtraDataFeature)node).getExtraData();
+				if (extraData != null)
+					extraFields = getNodesObjects(extraData, null, null);
+
+				getAccessibleFieldsObjects(node, false, list);
+				
+				if (extraFields != null)
+				{
+					for (NamedObject no : extraFields)
+						list.add(no);
+				}
+			}
+			else
+				getAccessibleFieldsObjects(node, false, list);
+			
+			return list.toArray(new NamedObject[list.size()]);
+		}
+	}
+
 	public static String[] getElements(Object node)
 	{
 		return getElements(node, null, null);
@@ -673,6 +778,7 @@ public class DOMJavaClassIntrospector {
 		}
 		buffer.append('>');
 		
+		/*
 		String[] subnodes = getNodes(node, nodeName, log);
 		for (String subnode : subnodes)
 		{
@@ -684,8 +790,7 @@ public class DOMJavaClassIntrospector {
 				continue;
 			}
 			boolean dashAsName = false;
-			/*if (childNode instanceof TypelessProperty || childNode instanceof BACIPropertyType);
-			else*/ if (getChild(SUBNODES_MAP_NAME, node) instanceof InternalElementsMap);
+			if (getChild(SUBNODES_MAP_NAME, node) instanceof InternalElementsMap);
 			else if (isMapSubnode(subnode, node))
 			{
 				dashAsName = true;
@@ -695,7 +800,34 @@ public class DOMJavaClassIntrospector {
 			}
 			buffer.append(toXML(getNodeXMLName(dashAsName ? "_" : subnode, childNode), childNode, (nodeName == null) ? null : nodeName + "/" + subnode, log));
 		}
+		*/
 		
+		NamedObject[] subnodes = getNodesObjects(node, nodeName, log);
+		for (NamedObject namedObject : subnodes)
+		{
+			final String subnode = namedObject.name;
+			final Object childNode = namedObject.obj;
+			
+			// TODO do we really need this?
+			if (subnode.indexOf('/') >= 0)
+			{
+				if (!subnode.equals("ComponentLogger"))
+					System.out.println("Warning: '/' in name, ignored:" + subnode);
+				continue;
+			}
+
+			boolean dashAsName = false;
+			if (getChild(SUBNODES_MAP_NAME, node) instanceof InternalElementsMap);
+			else if (isMapSubnode(subnode, node))
+			{
+				dashAsName = true;
+				Object subsubMap = getChild(SUBNODES_MAP_NAME, childNode);
+				if (subsubMap instanceof Map && ((Map)subsubMap).size() > 0)
+					dashAsName = false;
+			}
+			buffer.append(toXML(getNodeXMLName(dashAsName ? "_" : subnode, childNode), childNode, (nodeName == null) ? null : nodeName + "/" + subnode, log));
+		}
+
 		// element value
 		if (node instanceof ElementValueFeature)
 		{
