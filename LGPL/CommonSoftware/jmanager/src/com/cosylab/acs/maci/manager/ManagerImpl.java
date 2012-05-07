@@ -4054,8 +4054,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (markUnavailable.length > 0)
 		{
-			synchronized (components)
-			{
+			componentsLock.lock();
+			try {
 				synchronized (unavailableComponents)
 				{
 					// add in reverse order (as deactivation procedure would do)
@@ -4070,6 +4070,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 					}
 				}
+			} finally {
+				componentsLock.unlock();
 			}
 
 
