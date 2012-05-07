@@ -9,6 +9,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
+ * A Lock that internally delegates to a {@link ReentrantLock} and profiles the time 
+ * it takes a thread to acquire the lock, and the time for which the lock is held. 
+ * When a thread calls {@link #unlock()} then these times are printed, together with the code location 
+ * which used the lock.
+ * <p>
+ * This lock can be used as an alternative to "synchronized" blocks, when we want to detect lock contention.
+ * It may also be used as an alternative to some other {@link Lock}, although at the moment only methods {@link Lock#lock()}
+ * and {@link Lock#unlock()} are implemented. For the other Lock methods we throw {@link UnsupportedOperationException},
+ * but it should be easy enough to also implement them when needed.
+ * <p>
  * This class is added to jmanager for work on http://jira.alma.cl/browse/COMP-6488.
  * Later it should be moved to module jacsutil.
  * 
@@ -29,13 +39,36 @@ public class ProfilingReentrantLock implements Lock
 		this.delegate = new ReentrantLock();
 	}
 	
+	/**
+	 * Factory method that encapsulates the checking of property {@link #PROFILING_ENABLED_PROPERTYNAME}
+	 * and the corresponding creation of either a ProfilingReentrantLock or a ReentrantLock.
+	 * <p>
+	 * We return only the base type "Lock" to keep the implementation of ProfilingReentrantLock simple for the time being. 
+	 * Some methods of ReentrantLock are final, so that delegation anyway is easier than subtyping. 
+	 * If we really need the additional methods, we could refactor ProfilingReentrantLock to inherit from ReentrantLock 
+	 * and change the return type to ReentrantLock.
+	 * <p>
+	 * @TODO: Perhaps also pass a Logger and the "fair" boolean.
+	 * @param lockName Only used for the profiling variant, for log output.
+	 */
+	public static Lock createReentrantLock(String lockName) {
+		if (isProfilingEnabled) {
+			return new ProfilingReentrantLock(lockName);
+		}
+		else {
+			return new ReentrantLock();
+		}
+	}
+	
 	private static class LockInfo {
-		public LockInfo(String codeId, long timeAttempted) {
+		public LockInfo(String codeId, long timeAttempted, int queueLength) {
 			this.codeId = codeId;
 			this.timeAttempted = timeAttempted;
+			this.queueLength = queueLength;
 		}
 		final String codeId;
 		final long timeAttempted;
+		final int queueLength;
 		long timeLocked;
 		long timeUnlocked;
 	}
@@ -47,16 +80,17 @@ public class ProfilingReentrantLock implements Lock
 	
 	@Override
 	public void lock() {
-		if (!lockInfoMap.containsKey(Thread.currentThread().getId())) {
+		if (!delegate.isHeldByCurrentThread()) {
 			String codeId = createCodeId(1);
 			long t0 = System.currentTimeMillis();
-			LockInfo lockInfo = new LockInfo(codeId, t0);
+			int queueLength = delegate.getQueueLength();
+			LockInfo lockInfo = new LockInfo(codeId, t0, queueLength);
 			lockInfoMap.put(Thread.currentThread().getId(), lockInfo);
 			delegate.lock();
 			lockInfo.timeLocked = System.currentTimeMillis();
 		} 
 		else {
-			// no profiling for nested locking
+			// no profiling for nested locking, just lock
 			delegate.lock();
 		}
 	}
@@ -88,7 +122,7 @@ public class ProfilingReentrantLock implements Lock
 			printProfilingMessage(lockInfo, Thread.currentThread().getName());
 		}
 		else {
-			// no profiling for nested unlocking
+			// no profiling for nested unlocking when we still hold the lock
 		}
 	}
 
@@ -114,8 +148,8 @@ public class ProfilingReentrantLock implements Lock
 	}
 	
 	private void printProfilingMessage(LockInfo lockInfo, String threadName) {
-		System.out.println("Profiling for lock '" + lockName + "', code='" + lockInfo.codeId + "', thread='" + threadName 
-				+ "': acquiredMillis=" + (lockInfo.timeLocked - lockInfo.timeAttempted) + ", heldMillis=" + (lockInfo.timeUnlocked - lockInfo.timeLocked));
+		System.out.println("Profiling for lock '" + lockName + "' used in code='" + lockInfo.codeId + "', thread='" + threadName 
+				+ "': queueLength=" + lockInfo.queueLength + ", acquiredMillis=" + (lockInfo.timeLocked - lockInfo.timeAttempted) + ", heldMillis=" + (lockInfo.timeUnlocked - lockInfo.timeLocked));
 	}
 
 }
