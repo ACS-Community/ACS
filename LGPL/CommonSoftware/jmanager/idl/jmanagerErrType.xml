@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) 
-This has to be just temporary solution. 
-This file has to be moved into the TICS subsystem
--->
+
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="jmanagerErrType" type="26" _prefix="alma">
 
-			NoResourcesException nre = new NoResourcesException(this, "Cyclic dependency detected: ["+pathBuffer.toString()+"].");
-			nre.caughtIn(this, "checkCyclicDependency");
-			nre.putValue("requestedComponentName", requestedComponentName);
-			nre.putValue("requestor", new Integer(requestor));
-
 	<ErrorCode name="CyclicDependencyDetected"
-	    shortDescription="A cyclic dependency between components has been detected"
+	    shortDescription="Detected a cyclic dependency between components."
 	    description="A cyclic dependency between components has
 	    been detected this makes it impossible to properly
 	    deactivate components automatically and therefore is not allowed.">
@@ -24,8 +16,9 @@ This file has to be moved into the TICS subsystem
 			description="Requestor for the component."
 		/>
 	</ErrorCode>
+	
 	<ErrorCode name="SyncLockFailed"
-	    shortDescription="Failed to obtain Synchronisation Lock for component. Possible deadlock"
+	    shortDescription="Failed to obtain synchronisation lock for component."
 	    description="Failed to obtain synchronization lock for component.
 	                 Unexpected concurrent activities are taking
 	                 place and there is the possibility of a deadlock">
