@@ -923,18 +923,26 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	protected transient Map<Client, LinkedList<ClientMessageTask>> clientMessageQueue;
 
 	/**
-	 * Free threads precentage.
+	 * Free threads percentage. The manager will reject client logins when this value gets too large
+	 * (current threshold is 90).
+	 * @see #setConnectionThreadUsage(int)
 	 */
-	private transient AtomicInteger threadsUsedPrecentage;
+	private transient AtomicInteger threadsUsedPercentage;
 	
 	/**
 	 * Use sync. instead of async. activation of components.
 	 */
 	private static final String NAME_SYNC_ACTIVATE = "manager.sync_activate";
 
-	public void setThreadUsage(int precentage)
+	/**
+	 * Allows setting the current percentage of used connection threads, 
+	 * which would typically be updated by an ORB profiler.
+	 * @param percentage
+	 * @see #threadsUsedPercentage
+	 */
+	public void setConnectionThreadUsage(int percentage)
 	{
-		threadsUsedPrecentage.set(precentage);
+		threadsUsedPercentage.set(percentage);
 	}
 	
 	/**
@@ -980,7 +988,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		groupedNotifyTaskMap = new HashMap<Object, GroupedNotifyTask>();
 		
-		threadsUsedPrecentage = new AtomicInteger(0);
+		threadsUsedPercentage = new AtomicInteger(0);
 		
 		// create threads
 		threadPool.prestartAllCoreThreads();
@@ -3950,7 +3958,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		    }
 			
 			// check thread resources
-			int usage = threadsUsedPrecentage.get(); 
+			int usage = threadsUsedPercentage.get(); 
 			if (usage > 90)
 			{
 				throw new NoResourcesException("Thread usage too high (%" + usage + "), rejecting login.");
