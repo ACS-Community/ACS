@@ -1,0 +1,29 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupConstants
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+
+#Set the port numbers...
+ACS_MANAGER_PORT=`getManagerPort`
+ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
+export HOST=`getIP`
+
+if [ X"$MANAGER_REFERENCE" = X ]; then
+   export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
+fi
+
+ACS_LOG_DEBUG "acsStartJava" "ACS Manager: $MANAGER_REFERENCE"
+
+export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE |  awk -F: '{print $3}'`
+
+# If $ACS_NAME_SERVICE is not set, take the computer
+# where Manager is located
+
+if [ X"$ACS_NAME_SERVICE" = X ]; then
+   export ACS_NAME_SERVICE=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_NAMING_SERVICE_PORT/NameService
+fi
+
+ACS_LOG_DEBUG "acsStartJava" "ACS Name Service: $ACS_NAME_SERVICE"
+
+echo $ACS_NAME_SERVICE

@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsLoggingService,v 1.2 2011/07/14 14:52:16 tstaig Exp $"
+# "@(#) $Id: acsLoggingService,v 1.3 2012/05/08 08:01:06 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -245,10 +245,12 @@ then
     exit $EC_NOPORT
   fi
 
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+
   # SERVICE STARTUP
   # --------------------------------------------------------------------------
   ACS_LOG_INFO "$COMMAND" "Starting Logging Service${LOGPOSTFIX}"
-  loggingService  -ORBEndpoint iiop://$HOST:$LOGGING_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -ORBInitRef LoggingNotifyEventChannelFactory=corbaloc::$HOST:$LOGGING_NOTIFY_SERVICE_PORT/LoggingNotifyEventChannelFactory $ORBOPTS &> $LOGGING_OUT &
+  loggingService  -ORBEndpoint iiop://$HOST:$LOGGING_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -ORBInitRef LoggingNotifyEventChannelFactory=corbaloc::$HOST:$LOGGING_NOTIFY_SERVICE_PORT/LoggingNotifyEventChannelFactory $ORBOPTS &> $LOGGING_OUT &
 
   LOGGING_SERVICE_PID=$!
   echo $LOGGING_SERVICE_PID > $LOGGING_SERVICE_PIDFILE

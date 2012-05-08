@@ -1,0 +1,18 @@
+#! /bin/bash
+
+GREP_STRING="^+ $1:"
+
+ACS_NAME_SERVICE=`acsstartupNSRef`
+
+IOR=`$ACE_ROOT/TAO/utils/nslist/tao_nslist --ns $ACS_NAME_SERVICE --ior --max 0 2>&1 | grep "$GREP_STRING" | cut -d " " -f 5`
+if [ X"$IOR" = X ]; then
+   if [ X"$2" = X ]; then
+      exit 1
+   else
+      echo $2
+      exit 2
+   fi
+else
+   echo $IOR
+   exit 0
+fi

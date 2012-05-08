@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.8 2012/01/09 10:04:11 rtobar Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.9 2012/05/08 08:01:06 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -319,7 +319,8 @@ then
   # Now that the Naming Service and Interface Repository are both running, 
   # the Interface Repository is added to the Name Service
   # using the temporary file, that is afterwards deleted.
-  $ACE_ROOT/TAO/utils/nslist/tao_nsadd --name InterfaceRepository --ior `cat $IR_IOR` -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService $ORBOPTS &
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsadd --name InterfaceRepository --ior `cat $IR_IOR` -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
 fi
 
 if [ -e $IR_PIDFILE -a \( "$CL_WAIT" = "true" -o "$CL_START" = "true" \) -a "$CL_LOADIFR" = "true" ]

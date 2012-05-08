@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.24 2012/03/15 08:57:57 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.25 2012/05/08 08:01:06 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -171,7 +171,7 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #IOR locations
 #determine the TCP ports to be used
 NAMING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
-NAMING_SERVICE_PORT=`getNamingServicePort`
+export ACS_NAME_SERVICE=`acsstartupNSRef`
 case $CL_NS_TYPE in
   ""|"NotifyEventChannelFactory")
     CL_NS_TYPE=""
@@ -262,8 +262,9 @@ then
   # Check if Naming Service is running
   if [ ! -e $NAMING_SERVICE_PIDFILE ]
   then
-    ACS_LOG_ERROR "$COMMAND" "Naming Service must be running before starting a Notify Service!"
-    exit $EC_FAILURE
+    #ACS_LOG_ERROR "$COMMAND" "Naming Service must be running before starting a Notify Service!"
+    #exit $EC_FAILURE
+    ACS_LOG_INFO "$COMMAND" "Naming Service is not running locally, assuming remote Naming Service!"
   fi
 
   # Prevent from having the service started more than once on the same baseport
@@ -314,7 +315,7 @@ then
   # in order to get the correct svc.conf service configuration file.
   STARTUP_DIR=$PWD
   cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-  ($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
+  ($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
   cd $STARTUP_DIR
 fi
 
@@ -331,10 +332,10 @@ then
   if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
   then
     # Create the archiving channel now
-    acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
+    acsstartupCreateChannel --name_service $ACS_NAME_SERVICE --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
   fi
   # Register Monitor and Control Notify Service extension to the naming service
-  $ACE_ROOT/bin/tao_nsadd --ns corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --name MC_${CL_NS_TYPE}NotifyEventChannelFactory --ior `cat $INSTANCE_DIR/iors/${CL_NS_TYPE}NotifyMCIOR` 2>&1 | tee $NOTIFY_OUT
+  $ACE_ROOT/bin/tao_nsadd --ns $ACS_NAME_SERVICE --name MC_${CL_NS_TYPE}NotifyEventChannelFactory --ior `cat $INSTANCE_DIR/iors/${CL_NS_TYPE}NotifyMCIOR` 2>&1 | tee $NOTIFY_OUT
 fi
 
 

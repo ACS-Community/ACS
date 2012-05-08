@@ -3,7 +3,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: irquery,v 1.1 2012/03/19 16:45:12 tstaig Exp $"
+# "@(#) $Id: irquery,v 1.2 2012/05/08 08:01:06 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -112,7 +112,7 @@ export HOST=`getIP`
 export ACS_IR_PORT=`getIRPort`
 
 if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
-  export IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository"
+  export IRcorbaloc=`acsQueryNS InterfaceRepository corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository`
 else
   export IRcorbaloc=$ACS_INTERFACE_REPOSITORY
 fi

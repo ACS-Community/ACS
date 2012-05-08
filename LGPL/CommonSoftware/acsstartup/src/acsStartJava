@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.70 2012/04/11 12:09:31 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.71 2012/05/08 08:01:06 msekoran Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -470,7 +470,7 @@ ACS_LOG_DEBUG "acsStartJava" "ACS Name Service: $ACS_NAME_SERVICE"
 #is located
 
 if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
-   export ACS_INTERFACE_REPOSITORY=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository
+   export ACS_INTERFACE_REPOSITORY=`acsQueryNS InterfaceRepository corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository`
 fi
 
 ACS_LOG_DEBUG "acsStartJava" "ACS Interface Repository: $ACS_INTERFACE_REPOSITORY"
