@@ -20,11 +20,6 @@ import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
 import org.prevayler.implementation.SnapshotPrevayler;
 
-import si.ijs.maci.ManagerHelper;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.config.LogConfigException;
-
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.manager.ManagerImpl;
@@ -36,6 +31,13 @@ import com.cosylab.acs.maci.plug.ManagerProxyImpl;
 import com.cosylab.acs.maci.plug.NamingServiceRemoteDirectory;
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.util.FileHelper;
+
+import si.ijs.maci.ManagerHelper;
+
+import alma.acs.logging.AcsLogger;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
 
 /**
  * Engine of the Manager GUI application.
@@ -92,10 +94,10 @@ public class ManagerEngine
 	private String recoveryLocation = null;
 	
 	/**
-	 * Logger.
 	 * Default logger is global logger.
+	 * This default logger should never be used, since {@link #initializeManager()} will create and assign a proper ACS logger.
 	 */
-	private Logger logger = Logger.global;
+	private AcsLogger logger = AcsLogger.fromJdkLogger(Logger.global, "ur-logger");
 
 	/**
 	 * CORBA service.
@@ -253,7 +255,7 @@ public class ManagerEngine
 	    SnapshotPrevayler prevayler = new SnapshotPrevayler(manager, recoveryLocation);
 		
 		if( readRecovery.equalsIgnoreCase("false") ) {
-			// just to invalidate preavaylers message
+			// just to invalidate prevaylers message
 			System.out.println( "Skipping saved manager state!");
 		}
 
@@ -278,51 +280,17 @@ public class ManagerEngine
 		manager.initialize(prevayler, cdbAccess, context, logger, managerContainerServices);
 		manager.setShutdownImplementation(shutdownImplementation);
 
-	    // setup ORB profiling
-	    try
-	    {
+		// setup ORB profiling
+		try {
 			if (orb instanceof AcsProfilingORB) {
-				AcsORBProfiler profiler = new AcsORBProfiler()
-				{
-	
-					@Override
-					public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, 
-							int maxThreads) {
-						int freeThreadsPrecentage = (int)(((totalThreads-idleThreads)/(double)maxThreads)*100);
-						manager.setThreadUsage(freeThreadsPrecentage);
-					}
-	
-					@Override
-					public void requestFinished(int arg0, String arg1, String arg2) {
-						// noop
-					}
-	
-					@Override
-					public void requestQueueSizeChanged(int arg0, String arg1, int arg2, int arg3) {
-						// noop
-					}
-	
-					@Override
-					public void requestStarted(int arg0, String arg1, String arg2) {
-						// noop
-					}
-	
-					@Override
-					public void threadPoolSizeChanged(String arg0, int arg1, int arg2, int arg3) {
-						// noop
-					}
-	
-					@Override
-					public void undeliveredRequest(int arg0, String arg1, String arg2, boolean arg3) {
-						// noop
-					}
-				};
+				AcsORBProfiler profiler = new ManagerOrbProfiler(manager, logger);
 				((AcsProfilingORB)orb).registerAcsORBProfiler(profiler);
-			};
-	    } catch (Throwable th) {
-	    	logger.log(Level.WARNING, "Failed to setup ORB profiling.", th);
-	    }
-	    
+				logger.finer("Orb profiling set up, using class " + ManagerOrbProfiler.class.getName());
+			}
+		} catch (Throwable th) {
+			logger.log(Level.WARNING, "Failed to setup ORB profiling.", th);
+		}
+
 		FileHelper.setFileAttributes( "g+w", recoveryLocation );
 		// create new task for snapshoot creation,
 		final long MINUTE_IN_MS = 60*1000;
@@ -379,7 +347,7 @@ public class ManagerEngine
 			manager.setRemoteDirectoryComponentReference(obj);
 		}
 
-		// intitialize fedration here - after remote directory is set (if it is)
+		// intitialize federation here - after remote directory is set (if it is)
 		// (this is not a nice solution)
 		Hashtable federationDirectoryProperties = new Hashtable();
 		// set CosNamingFactory 
