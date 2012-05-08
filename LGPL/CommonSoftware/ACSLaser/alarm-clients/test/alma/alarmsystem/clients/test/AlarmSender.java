@@ -19,6 +19,7 @@
 package alma.alarmsystem.clients.test;
 
 import java.sql.Timestamp;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
@@ -86,6 +87,9 @@ public class AlarmSender extends Thread{
 	
 	// The alarm source
 	private ACSAlarmSystemInterface alarmSource;
+	
+	// To signal that the thread terminated
+	private final CountDownLatch latch = new CountDownLatch(1);
 	
 	/**
 	 * Constructor.
@@ -155,6 +159,7 @@ public class AlarmSender extends Thread{
 			for (AlarmsFromCDB alarm: AlarmsFromCDB.values()) {
 				// The time has elapsed
 				if (mode==SenderMode.TIME_LIMIT && System.currentTimeMillis()>endTime) {
+					latch.countDown();
 					return;
 				}
 				try {
@@ -164,6 +169,7 @@ public class AlarmSender extends Thread{
 				}
 				alarmsSent++;
 				if (mode==SenderMode.NUM_OF_ALARMS && alarmsSent>=numOfAlarms) {
+					latch.countDown();
 					return;
 				}
 				try {
@@ -172,6 +178,15 @@ public class AlarmSender extends Thread{
 			}
 			active=!active;
 		}
+		
+	}
+	
+	/**
+	 * wait until the thread terminates and close the client
+	 */
+	public void waitAndClose() throws Exception {
+		latch.await();
+		client.tearDown();
 	}
 	
 	/**
@@ -224,6 +239,13 @@ public class AlarmSender extends Thread{
         }
         // Start the thread
         sender.start();
+        
+        try {
+        	sender.waitAndClose();
+        } catch (Throwable t) {
+        	System.err.println("Exception caught closing the component client "+t.getMessage());
+        	t.printStackTrace(System.err);
+        }
 	}
 
 }
