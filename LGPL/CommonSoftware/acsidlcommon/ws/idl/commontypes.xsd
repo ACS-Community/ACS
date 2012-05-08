@@ -72,12 +72,12 @@ Defines a type for a string with minimal length 1.
 	<xs:simpleType name="shortDescriptionString">
 		<xs:annotation>
 			<xs:documentation>
-Short description string. Arbitrarily the maximal length is set at 50.
+Short description string. Arbitrarily the maximal length is set at 60.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="common:nonEmptyString">
 			<xs:minLength value="1"/>
-			<xs:maxLength value="50"/>
+			<xs:maxLength value="60"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="MemberTypes">
