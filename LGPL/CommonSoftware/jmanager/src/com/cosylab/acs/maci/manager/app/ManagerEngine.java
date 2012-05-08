@@ -104,6 +104,9 @@ public class ManagerEngine
 	 */
 	private DefaultCORBAService corbaService = null;
 
+	public static final String DISABLE_PREVAYLER = "acs.disablePrevayler";
+	private static final boolean isPrevaylerDisabled = Boolean.getBoolean(DISABLE_PREVAYLER);
+
 	/**
 	 * Constructor for ManagerEngine.
 	 * 
@@ -252,15 +255,23 @@ public class ManagerEngine
 			RecoveryFilesRemover.removeRecoveryFiles(new File(recoveryLocation));
 		}
 		
-	    SnapshotPrevayler prevayler = new SnapshotPrevayler(manager, recoveryLocation);
-		
-		if( readRecovery.equalsIgnoreCase("false") ) {
-			// just to invalidate prevaylers message
-			System.out.println( "Skipping saved manager state!");
+	    SnapshotPrevayler prevayler = null;
+		if (isPrevaylerDisabled)
+		{
+			System.out.println( "Prevayler disabled!");
 		}
-
-	    manager = (ManagerImpl)prevayler.system();
-
+		else
+		{
+			prevayler = new SnapshotPrevayler(manager, recoveryLocation);
+		
+			if( readRecovery.equalsIgnoreCase("false") ) {
+				// just to invalidate prevaylers message
+				System.out.println( "Skipping saved manager state!");
+			}
+	
+			manager = (ManagerImpl)prevayler.system();
+		}
+		
 	    CDBAccess cdbAccess = new CDBAccess(orb, logger);
 		
 	    LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
@@ -291,10 +302,13 @@ public class ManagerEngine
 			logger.log(Level.WARNING, "Failed to setup ORB profiling.", th);
 		}
 
-		FileHelper.setFileAttributes( "g+w", recoveryLocation );
-		// create new task for snapshoot creation,
-		final long MINUTE_IN_MS = 60*1000;
-		new RecoverySnapshotTask(prevayler, 1*MINUTE_IN_MS, recoveryLocation);
+		if (prevayler != null)
+		{
+			FileHelper.setFileAttributes( "g+w", recoveryLocation );
+			// create new task for snapshoot creation,
+			final long MINUTE_IN_MS = 60*1000;
+			new RecoverySnapshotTask(prevayler, 1*MINUTE_IN_MS, recoveryLocation);
+		}
 		
 		// initialize Manager CORBA Proxy (create servant)
 		managerProxy = new ManagerProxyImpl(manager, logger);
