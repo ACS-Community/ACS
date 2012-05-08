@@ -21,7 +21,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2011/11/23 10:11:10 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/05/08 14:19:56 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -86,7 +86,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = alarmSourceClient alarmCategoryClient
 SCRIPTS_L       =
 
 #
