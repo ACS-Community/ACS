@@ -1,7 +1,6 @@
-1 - 
-1 - 
-1 - 
 1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
 1 - *** Reading given schema files
 1 - *** Reading given XML files
 1 - *** Getting TargetNamespaces from schema files
@@ -64,7 +63,5 @@
 1 -     /PATH/defaultCDB/CDB/xml/TEST_PS_3/TEST_PS_3.xml[OK]
 1 -     /PATH/defaultCDB/CDB/xml/TEST_PS_5/TEST_PS_5.xml[OK]
 1 -     /PATH/defaultCDB/CDB/xml/TEST_PS_17/TEST_PS_17.xml[OK]
-1 - 
 1 - CDBChecker exiting. No errors found
-1 - 
 1 - return code is: 0

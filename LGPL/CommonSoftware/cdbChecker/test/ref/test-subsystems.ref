@@ -1,7 +1,6 @@
-1 - 
-1 - 
-1 - 
 1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
 1 - *** Reading given schema files
 1 - *** Reading given XML files
 1 - *** Getting TargetNamespaces from schema files
@@ -93,17 +92,13 @@
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
 1 - :15:3 [Fatal Error]
 1 - 	 The content of elements must consist of well-formed character data or markup.
-1 - 
 1 - ************Unrecoverable error, please don't trust any messages after this one.***********
-1 - 
 1 - [SAXException] The content of elements must consist of well-formed character data or markup.
 1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM002/ABM002.xml:14:55 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
 1 - :15:3 [Fatal Error]
 1 - 	 The content of elements must consist of well-formed character data or markup.
-1 - 
 1 - ************Unrecoverable error, please don't trust any messages after this one.***********
-1 - 
 1 - [SAXException] The content of elements must consist of well-formed character data or markup.
 1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/Test/Test.xml:14:55 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
@@ -111,9 +106,7 @@
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
 1 - :15:3 [Fatal Error]
 1 - 	 The content of elements must consist of well-formed character data or markup.
-1 - 
 1 - ************Unrecoverable error, please don't trust any messages after this one.***********
-1 - 
 1 - [SAXException] The content of elements must consist of well-formed character data or markup.
 1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_lkmLoader/ARTM/ARTM.xml:31:51 [Warning]
 1 - 	 SchemaLocation: schemaLocation value = 'urn:schemas-cosylab-com:LkmLoader:1.0' must have even number of URI's.
@@ -163,6 +156,4 @@
 1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/MACI/Components/SCHEDULING_MASTER_COMP/SCHEDULING_MASTER_COMP.xml[OK]
 1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/MACI/Components/SCHEDULING_MASTERSCHEDULER/SCHEDULING_MASTERSCHEDULER.xml[OK]
 1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/alma/SCHEDULING_MASTER_COMP/SCHEDULING_MASTER_COMP.xml[OK]
-1 - 
 1 - [Error] CDBChecker exiting. Errors were found
-1 - 

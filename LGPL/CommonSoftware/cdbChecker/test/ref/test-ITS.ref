@@ -1,7 +1,6 @@
-1 - 
-1 - 
-1 - 
 1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
 1 - *** Reading given schema files
 1 - *** Reading given XML files
 1 - *** Getting TargetNamespaces from schema files
@@ -199,7 +198,5 @@
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'SecondLO'.
 1 -     /PATH/ITS/config/CDB/alma/CONTROL_50/Default/Default.xml:6:60 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'FTS'.
-1 - 
 1 - [Error] CDBChecker exiting. Errors were found
-1 - 
 1 - return code is: 1

@@ -5,11 +5,10 @@ endorsed
 Starting Java
 Deleting Temporary files
 Downloaded file: 
-Downloading remote schemas
-Remote schemas succesfully downloaded
 Storing schemas in: 
 Searching for schema files in
 Will verify XML files in directory:
-MICO_HOME/bin/ird
 Will verify XSD files in directory:
 ACS.log.minlevel.namedloggers not defined
+processing /tmp/acsIrfeedDyn
+^1 - [0-9]*$
