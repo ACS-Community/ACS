@@ -18,11 +18,9 @@ ALMA - Atacama Large Millimiter Array
 */
 package alma.alarmsystem.dump;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.acs.component.client.AdvancedComponentClient;
-import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -91,6 +89,6 @@ public class AlarmCategoryDumper extends AlarmDumperBase implements AlarmSelecti
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		AlarmDumperBase.clientRunner(args, false);
+		AlarmDumperBase.clientRunner(args, false,0,null);
 	}
 }

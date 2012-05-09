@@ -22,6 +22,7 @@ package alma.alarmsystem.dump;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +48,9 @@ import alma.alarmsystem.clients.source.SourceListener;
  * </OL>call {@link #tearDown()}
  * <P>
  * {@link #receiveAlarms()} blocks until the user presses CTRL-C a signal is received 
- * or {@link #tearDown()} is called.
+ * or {@link #tearDown()} is called.<BR>
+ * {@link #receiveAlarms(long, TimeUnit)} can be used instead of {@link #receiveAlarms()}
+ * if the receiving has to terminate after the specified timeout.
  * <P>
  * {@link #tearDown()} must be called before terminating to cleanly exit.
  *  
@@ -122,7 +125,7 @@ public abstract class AlarmDumperBase extends AdvancedComponentClient  {
 	public abstract void startReceivingAlarms() throws Exception ;
 	
 	/**
-	 * Connect the {@link SourceClient}.
+	 * Connect the client
 	 * 
 	 * This method never stops.
 	 * 
@@ -134,6 +137,24 @@ public abstract class AlarmDumperBase extends AdvancedComponentClient  {
 		}
 		startReceivingAlarms();
 		m_latch.await();
+	}
+	
+	/**
+	 * Connect the client until the timeout elapses or the user presses CTRL-C
+	 * 
+	 * This method never when the timeout elapse or the user presses CTRL-C
+	 * 
+	 * @throws Exception In case of error connecting the {@link SourceClient}
+	 */
+	public void receiveAlarms(long timeout, TimeUnit timeUnit) throws Exception {
+		if (m_closed.get()) {
+			m_logger.log(Level.SEVERE, "AlarmSourceDump is closed.");
+		}
+		if (timeUnit==null) {
+			throw new IllegalArgumentException("Invalid NULL TimeUnit");
+		}
+		startReceivingAlarms();
+		m_latch.await(timeout,timeUnit);
 	}
 	
 	/**
@@ -198,8 +219,15 @@ public abstract class AlarmDumperBase extends AdvancedComponentClient  {
 	 * This block of code avoid code replication.
 	 * 
 	 * @param args Command line args
+	 * @param isSourceClient <code>true</code> if a source client must be instantiated,
+	 * 						 <code>false</code> for category client
+	 * @param timeout If greater then <code>0</code> the process waits until the timeout elapses
+	 * @param timeUnit The TimeUnit for the timeout (must be not <code>null</code> if the timeout is greater then <code>0</code>)
 	 */
-	public static void clientRunner(String[] args, boolean isSourceClient) {
+	public static void clientRunner(String[] args, boolean isSourceClient, long timeout, TimeUnit timeUnit) {
+		if (timeout>0 && timeUnit==null) {
+        	throw new IllegalArgumentException("Invalid parameters for timeout");
+        }
 		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AlarmSourceDump",true);
 		String managerLoc = System.getProperty("ACS.manager");
         if (managerLoc == null) {
@@ -219,7 +247,12 @@ public abstract class AlarmDumperBase extends AdvancedComponentClient  {
         	System.exit(-1);
         }
         try {
-        	dumper.receiveAlarms();
+        	if (timeout>0) {
+        		dumper.receiveAlarms(timeout,timeUnit);
+        	} else {
+        		// No timeout
+        		dumper.receiveAlarms();
+        	}
         } catch (Throwable t) {
         	logger.log(Level.SEVERE, "Error connecting the alarm source client", t);
         }

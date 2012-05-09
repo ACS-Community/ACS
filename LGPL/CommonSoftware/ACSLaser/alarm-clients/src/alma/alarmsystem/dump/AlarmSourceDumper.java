@@ -18,14 +18,12 @@ ALMA - Atacama Large Millimiter Array
 */
 package alma.alarmsystem.dump;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cern.laser.source.alarmsysteminterface.FaultState;
 import alma.acs.component.client.AdvancedComponentClient;
-import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.clients.SourceClient;
 import alma.alarmsystem.clients.source.SourceListener;
+import cern.laser.source.alarmsysteminterface.FaultState;
 
 /**
  * Dumps the alarms published by the sources
@@ -93,6 +91,6 @@ public class AlarmSourceDumper extends AlarmDumperBase implements SourceListener
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		AlarmDumperBase.clientRunner(args, true);
+		AlarmDumperBase.clientRunner(args, true,0,null);
 	}
 }
