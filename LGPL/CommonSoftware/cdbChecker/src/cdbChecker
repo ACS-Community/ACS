@@ -19,10 +19,9 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
-#*******************************************************************************
 # cdbChecker
 #
-# "@(#) $Id: cdbChecker,v 1.10 2011/11/18 15:13:39 rtobar Exp $"
+# "@(#) $Id: cdbChecker,v 1.11 2012/05/09 12:00:58 hsommer Exp $"
 #
 
 #************************************************************************
@@ -154,23 +153,22 @@ echo Searching for schema files in: $SCHEMA_PATH
 
 config_path=$(searchFile config/reqSchemas.xml)
 
-#Check if we have to check idl
+#Check if we have to check idl using the IFR
 for arg in "$@"
 do
     case $arg in
-	-c)	         CHECK_IDL=true ;;
-	--checkIdlTypes) CHECK_IDL=true ;;
+    -c)              CHECK_IDL=true ;;
+    --checkIdlTypes) CHECK_IDL=true ;;
     esac
 done
 if [ "X$CHECK_IDL" != "X" ]; then
-    ird_running=`ps -fea| grep "\/bin\/ird" `
+    ird_running=`ps -fea | grep "/TAO/orbsvcs/IFR_Service/" `
     if [ "X$ird_running" == "X" ]; then
-        echo Running Interface Repository and loading schemas
+# We may remove the automatic starting of the IFR in the future, see COMP-7232
+        echo Running Interface Repository and loading IDL files
         RUN_IR=true
-	LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
-	$MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:3004 &
-	PID_IR=$!
-	acsstartupLoadIFR
+        acsNamingService -s
+        acsInterfaceRepository -s -w
     fi
 fi
 
@@ -185,8 +183,9 @@ else
 fi
 
 if [ "X$RUN_IR" != "X" ]; then
-echo Killing Interface Repository
-kill -9 $PID_IR > /dev/null 2>&1
+echo Stopping Interface Repository
+acsInterfaceRepository -k
+acsNamingService -k
 fi
 
 # Final return code
