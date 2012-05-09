@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.43 2012/04/25 14:26:28 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.44 2012/05/09 10:17:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.43 2012/04/25 14:26:28 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.44 2012/05/09 10:17:26 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -311,7 +311,8 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		if (DDSConfiguration::debugLevel>0)
 		{
 			// the message can cause perfomance penality for small data sizes
-			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) before waiting: %d", dataType2String[dataType], status.unacknowledged_sample_count)); //RTI
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s before waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
 		}
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
 		if( ret != DDS::RETCODE_OK)
@@ -321,6 +322,11 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
 			throw ackToEx; //	ackToEx.log(LM_WARNING);
 		}//if
+		if (DDSConfiguration::debugLevel>1)
+		{
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s after waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
+		}
 	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
 
