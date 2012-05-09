@@ -21,7 +21,7 @@
 #*******************************************************************************
 # cdbChecker
 #
-# "@(#) $Id: cdbChecker,v 1.11 2012/05/09 12:00:58 hsommer Exp $"
+# "@(#) $Id: cdbChecker,v 1.12 2012/05/09 12:24:10 hsommer Exp $"
 #
 
 #************************************************************************
@@ -162,7 +162,7 @@ do
     esac
 done
 if [ "X$CHECK_IDL" != "X" ]; then
-    ird_running=`ps -fea | grep "/TAO/orbsvcs/IFR_Service/" `
+    ird_running=`ps -fea | grep -v grep | grep "/TAO/orbsvcs/IFR_Service/" `
     if [ "X$ird_running" == "X" ]; then
 # We may remove the automatic starting of the IFR in the future, see COMP-7232
         echo Running Interface Repository and loading IDL files
