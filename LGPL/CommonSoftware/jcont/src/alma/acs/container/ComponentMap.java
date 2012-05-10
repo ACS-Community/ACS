@@ -57,6 +57,11 @@ class ComponentMap
 	/**
 	 * Makes a reservation for a <code>ComponentAdapter</code> based on the component handle.
 	 * Can be used to avoid concurrent multiple activation of the same component (which also manager should prevent). 
+	 * <p>
+	 * @TODO: There seems to be an error case where the manager sends a second activation request for the same component curl,
+	 *        but using a different component handle. This seems to happen after the first activation request timed out
+	 *        from the point of view of the manager, but continues to run inside the container.
+	 *        See http://jira.alma.cl/browse/COMP-1863.
 	 * @param compHandle
 	 * @return true if this handle could be reserved
 	 */
