@@ -75,7 +75,7 @@ public class ComponentMapTest extends TestCase {
 		
 		DummyComponentAdapter(AcsLogger logger) throws Exception {
 			super("DummyComponent"+index_count, "DummyComponentType"+index_count, "dummycode", 
-					index_count, "dummyContainerName", null, null, null, logger, dummyAcsCorba);
+					index_count, "dummyContainerName", null, null, null, null, logger, dummyAcsCorba);
 			index_count++;
 		}
 
