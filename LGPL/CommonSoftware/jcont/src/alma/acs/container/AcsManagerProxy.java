@@ -560,27 +560,23 @@ public class AcsManagerProxy
 
 
 	/**
-	 * From maci IDL comments:
-	 * <i>
-	 * Gets a service, activating it if necessary (components). 
-	 * The client represented by id (the handle) must have adequate access rights to access the service.
-	 * This is untrue of components: components always have unlimited access rights to other components."
-	 * </i>
-	 * @param service_url  CURL of the service whose reference is to be retrieved.
-	 * @param activate  True if the service is to be activated in case it does not exist. 
-	 * 					If set to False, and the service does not exist, a nil reference is returned 
-	 * 					and status is set to <code>Manager.COMPONENT_NOT_ACTIVATED</code>.
-	 * @param status  Status of the request. One of <code>Manager.COMPONENT_ACTIVATED</code>, 
-	 * 					<code>Manager.COMPONENT_NONEXISTENT</code> and <code>Manager.COMPONENT_NOT_ACTIVATED</code>.
+	 * Note that in ACS 10.2 the meaning of the second parameter has slighly changed, but should be transparent.
+	 * Before it was the "activate" option which makes no sense for real services and would typically be "true" when using
+	 * this method for components rather than real services. Now "true" still means that the service should be activated,
+	 * but "false" has the new meaning that we don't use the client handle, but instead use dummy handle '0'. 
+	 * This allows the container to get the CDB reference before logging in to the manager.
+	 * 
 	 * @return org.omg.CORBA.Object  Reference to the service. If the service could not be activated, 
 	 * 			a nil reference is returned, and the status contains an error code detailing the cause of failure 
 	 * 			(one of the component_* constants).
 	 */
-	public Object get_service(String service_url, boolean activate) 
+	public Object get_service(String service_url, boolean includeComponents) 
 		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
+		int clientId = (includeComponents ? checkAndGetManagerHandle() : 0);
+		boolean activate = includeComponents;
 		try {
-			return m_manager.get_service(checkAndGetManagerHandle(), service_url, activate);		
+			return m_manager.get_service(clientId, service_url, activate);
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
