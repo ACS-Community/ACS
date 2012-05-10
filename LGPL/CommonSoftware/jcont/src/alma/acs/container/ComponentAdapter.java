@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+
 import si.ijs.maci.ComponentInfo;
 
 import alma.ACS.ComponentStates;
@@ -108,7 +110,7 @@ public class ComponentAdapter
 	ComponentAdapter(String compName, String type, String code,
 					int compHandle, String containerName,
 					ComponentLifecycle component,
-					AcsManagerProxy managerProxy, 
+					AcsManagerProxy managerProxy, DAL cdb,
 					ClassLoader componentClassLoader,
 					AcsLogger logger,
 					AcsCorba acsCorba)
@@ -140,7 +142,7 @@ public class ComponentAdapter
         m_managerProxy = managerProxy;
         
         m_containerServices = 
-			new ContainerServicesImpl(managerProxy, m_componentPOA, acsCorba, m_containerLogger, 
+			new ContainerServicesImpl(managerProxy, cdb, m_componentPOA, acsCorba, m_containerLogger, 
 					m_compHandle, m_compInstanceName, m_componentStateManager, m_threadFactory);
 	}
 
@@ -506,16 +508,6 @@ public class ComponentAdapter
 		return m_compHandle;
 	}
 
-// CDB hack
-//   /**
-//	* @param handle
-//	*/
-//   public void setHandle(int handle)
-//   {
-//	   m_compHandle = handle;
-//   }
-// end CDB hack
-	
 	/**
 	 * Returns the name.
 	 * @return String
