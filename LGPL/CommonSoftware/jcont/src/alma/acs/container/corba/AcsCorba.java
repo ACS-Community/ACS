@@ -182,37 +182,6 @@ public class AcsCorba
         m_logger = logger;
     }
     
-    
-//	/**
-//	 * Must be called before initCorba if the container is supposed to host the CDB component
-//	 * without the manager knowing about its component nature... 
-//	 * see {@link alma.acs.container.ContainerServicesImplCDBHack}.
-//	 * <p>
-//	 * In CDB mode, the container (ORB) will use port 5 0 0 0, which violates the MACI convention
-//	 * that the port for Containers must be between ($ACS_INSTANCE*100 + 3 0 5 0) and ($ACS_INSTANCE*100 + 3 0 9 9). 
-//	 * Since the container initiates all communication, this should not cause any problems.
-//	 * 
-//	 * @see com.cosylab.cdb.jdal.Server
-//	 */
-//	public void prepareCDBHack()
-//	{
-//		// since this is a temporary hack, we don't bother about different ORBs here.
-//		 
-//		Properties properties = System.getProperties();
-//		int portNumber = 5 0 0 0;
-//		properties.put("OAPort", Integer.toString(portNumber));
-//		properties.put("jacorb.implname", "ORB");
-//		/*
-//		 * by setting the following property, the ORB will
-//		 * accept client requests targeted at the object with
-//		 * key "CDB", so more readable corbaloc URLs
-//		 * can be used
-//		 */
-//		properties.put(
-//			"jacorb.orb.objectKeyMap.CDB",
-//			"ORB/ComponentPOA/ComponentPOACDB/CDB");
-//	}
-//	
 	
 	/**
 	 * Initializes the ORB and POAs to be used by a Java container.
@@ -271,7 +240,7 @@ public class AcsCorba
 				}
 			}
 			else {
-				m_logger.finer("Orb profiling was not selected.");
+				m_logger.finer("Orb profiling was not selected (see property '" + ORB_PROFILER_CLASS_PROPERTYNAME + "').");
 			}
 		} catch (Throwable th) {
 			m_logger.log(Level.WARNING, "Failed to set up ORB profiling, will run without it.", th);
@@ -1250,7 +1219,6 @@ public class AcsCorba
 		
 		// IFR access is generally discouraged but needed if clients such as the sampling manager call "get_interface"
 		// on a reference to a corba object inside this container.
-		// @TODO: Don't set this reference if CDB value Container#useIFR is false
 		orbConf.setORBInitRef("InterfaceRepository", System.getProperty("ACS.repository"));
 		// orbConf.setORBInitRef("NameService", System.getProperty("ACS.???")); // currently the JacORB-specific property ORBInitRef.NameService is set instead (acsStartJava)
 		
