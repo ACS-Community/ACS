@@ -560,64 +560,11 @@ public interface ContainerServices extends ContainerServicesBase
     /////////////////////////////////////////////////////////////
 
 	/**
-	 * Raises the alarm described by the given triplet.
-	 * 
-	 * Alarms are described with a unique triplet, which is composed by a <code>faultFamily</code>,
-	 * a <code>faultMember</code> and a <code>faultCode</code>, and referred to as <em>FaultState</em>.
-	 * A particular alarm is mapped by exactly one <em>FaultState</em>, and vice-versa.
-	 * <p>
-	 * The <code>faultFamily</code> field identifies a set of elements of the same kind, and that present
-	 * the same failures (e.g., all power supplies, which could be represented by the "PS" string).
-	 * <p>
-	 * The <code>faultMember</code> field identifies the particular instance of the given <code>faultFamily</code>
-	 * that is currently raising the alarm.
-	 * <p>
-	 * The <code>faultCode</code> field identifies the particular error that is being informed. Its value must
-	 * match the corresponding one stored in the Alarm Service configuration that describes the situation being reported
-	 * as faulty.
-	 * 
-	 * @param faultFamily The alarm's fault family  
-	 * @param faultMember The alarm's fault member
-	 * @param faultCode The alarm's fault code
-	 * @throws AcsJContainerServicesEx if anything goes wrong while raising the alarm
-	 *
-	 * @deprecated The new {@link #getAlarmSource()} method should be used instead,
-	 *  calling {@link AlarmSource#raiseAlarm(String, String, int)} on the returned object
-	 */
-	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx;
-
-	/**
-	 * Clears the alarm described by the given triplet.
-	 * 
-	 * Alarms are described with a unique triplet, which is composed by a <code>faultFamily</code>,
-	 * a <code>faultMember</code> and a <code>faultCode</code>, and referred to as <em>FaultState</em>.
-	 * A particular alarm is mapped by exactly one <em>FaultState</em>, and vice-versa.
-	 * <p>
-	 * The <code>faultFamily</code> field identifies a set of elements of the same kind, and that present
-	 * the same failures (e.g., all power supplies, which could be represented by the "PS" string).
-	 * <p>
-	 * The <code>faultMember</code> field identifies the particular instance of the given <code>faultFamily</code>
-	 * that is currently clearing the alarm.
-	 * <p>
-	 * The <code>faultCode</code> field identifies the particular error that is being informed. Its value must
-	 * match the corresponding one stored in the Alarm Service configuration that describes the situation being reported
-	 * as corrected.
-	 * 
-	 * @param faultFamily The alarm's fault family
-	 * @param faultMember The alarm's fault member
-	 * @param faultCode The alarm's fault code
-	 * @throws AcsJContainerServicesEx if anything goes wrong while clearing the alarm
-	 * 
-	 * @deprecated The new {@link #getAlarmSource()} method should be used instead,
-	 *  calling {@link AlarmSource#clearAlarm(String, String, int)} on the returned object
-	 */
-	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx;
-
-
-	/**
 	 * Returns the {@link AlarmSource} owned by this object. The {@link AlarmSource} object
 	 * allows to raise and clear alarms, among other advanced operations
-	 *
+	 * <p>
+	 * @TODO: We could remove the AcsJContainerServicesEx declaration, it is currently not needed.
+	 * 
 	 * @return The {@link AlarmSource} owned by this object
 	 * @throws AcsJContainerServicesEx if anything goes wrong
 	 */

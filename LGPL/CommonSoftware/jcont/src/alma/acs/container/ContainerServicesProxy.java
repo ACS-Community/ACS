@@ -309,16 +309,6 @@ public class ContainerServicesProxy implements ContainerServices
 		return delegate.createNotificationChannelPublisher(channelName, channelNotifyServiceDomainName, eventType);
 	}
 
-	@Override
-	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
-		delegate.raiseAlarm(faultFamily, faultMember, faultCode);
-	}
-
-	@Override
-	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
-		delegate.clearAlarm(faultFamily, faultMember, faultCode);
-	}
-
 
 	/**
 	 * Here the subclass can implement checks that get executed before any delegation call is made. 
