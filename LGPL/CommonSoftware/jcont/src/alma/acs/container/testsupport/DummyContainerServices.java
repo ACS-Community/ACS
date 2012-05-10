@@ -20,7 +20,9 @@
  *******************************************************************************/
 package alma.acs.container.testsupport;
 
+import java.util.Properties;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Object;
@@ -60,6 +62,7 @@ public class DummyContainerServices implements ContainerServices
 {
 	protected final String name;
 	protected final AcsLogger logger;
+	private AlarmSource alarmSource;
 
 	/**
 	 * @param name
@@ -73,6 +76,61 @@ public class DummyContainerServices implements ContainerServices
 		else {
 			this.logger = AcsLogger.fromJdkLogger(logger, null);
 		}
+		
+		alarmSource = new AlarmSource() {
+			
+			@Override
+			public void terminateAllAlarms() {
+			}
+			
+			@Override
+			public void tearDown() {
+			}
+			
+			@Override
+			public void start() {
+			}
+			
+			@Override
+			public void setAlarm(String faultFamily, String faultMember, int faultCode, Properties alarmProps, boolean active) {
+			}
+			
+			@Override
+			public void setAlarm(String faultFamily, String faultMember, int faultCode, boolean active) {
+			}
+			
+			@Override
+			public void raiseAlarm(String faultFamily, String faultMember, int faultCode, Properties properties) {
+			}
+			
+			@Override
+			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) {
+			}
+			
+			@Override
+			public void queueAlarms(long delayTime, TimeUnit unit) {
+			}
+			
+			@Override
+			public void queueAlarms() {
+			}
+			
+			@Override
+			public void flushAlarms() {
+			}
+			
+			@Override
+			public void enableAlarms() {
+			}
+			
+			@Override
+			public void disableAlarms() {
+			}
+			
+			@Override
+			public void clearAlarm(String faultFamily, String faultMember, int faultCode) {
+			}
+		};
 	}
 
 	///////////////////////////////////////
@@ -307,18 +365,8 @@ public class DummyContainerServices implements ContainerServices
 	}
 
 	@Override
-	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
-	}
-
-	@Override
-	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
-	}
-
-	@Override
 	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
+		return alarmSource;
 	}
 
 }
