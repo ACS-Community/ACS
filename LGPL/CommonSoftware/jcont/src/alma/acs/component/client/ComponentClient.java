@@ -29,7 +29,11 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.Client;
+
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
@@ -201,9 +205,11 @@ public class ComponentClient
 			
 			m_acsManagerProxy.loginToManager(m_managerClient, false);
 
+			DAL cdb = DALHelper.narrow(m_acsManagerProxy.get_service("CDB", false));
+
 			m_threadFactory = new CleaningDaemonThreadFactory(m_clientName, m_logger);
 
-			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
+			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, cdb, rootPOA, acsCorba,
 										m_logger, 0, m_clientName, null, m_threadFactory);
 			
 			clImpl.setContainerServices(m_containerServices);

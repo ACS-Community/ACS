@@ -28,6 +28,9 @@ import junit.framework.TestCase;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.Client;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -102,7 +105,7 @@ public class ComponentClientTestCase extends TestCase
 	 */
 	protected void runTest() throws Throwable {
 		try {
-			super.runTest();			
+			super.runTest();
 		}
 		catch (Throwable thr) {
 			if (m_logger != null) {
@@ -134,9 +137,10 @@ public class ComponentClientTestCase extends TestCase
 			rootPOA = acsCorba.initCorbaForClient(false);
 
 			connectToManager();
+			DAL cdb = DALHelper.narrow(m_acsManagerProxy.get_service("CDB", false));
 
 			m_threadFactory = new CleaningDaemonThreadFactory(m_namePrefix, m_logger);
-			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
+			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, cdb, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
 										this.getClass().getName(), null, m_threadFactory) {
 				public AcsLogger getLogger() {

@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.Client;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -100,7 +103,9 @@ public class AdvancedComponentClient extends ComponentClient {
 			acsManagerProxy.loginToManager(managerClient, true);
 			int clientHandle = acsManagerProxy.getManagerHandle();
 
-			ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba,
+			DAL cdb = DALHelper.narrow(m_acsManagerProxy.get_service("CDB", false));
+
+			ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, cdb, acsCorba.getRootPOA(), acsCorba,
 					acsLogger, clientHandle, clientName, null, threadFactory);
 			additionalContainerServices.put(cs, acsManagerProxy);
 			return cs;
