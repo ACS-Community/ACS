@@ -21,6 +21,7 @@
  */
 package alma.acs.container;
 
+import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -42,6 +43,9 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.CBComponentInfo;
 import si.ijs.maci.ClientOperations;
@@ -53,6 +57,7 @@ import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
@@ -82,6 +87,7 @@ import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 import alma.acs.util.UTCUtility;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.maci.containerconfig.types.ContainerImplLangType;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotRestartComponentEx;
@@ -92,9 +98,6 @@ import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -158,14 +161,20 @@ public class AcsContainer extends ContainerPOA
     private LogConfig logConfig;
     
     /**
-     * Cache for method {@link #getCDB()}. Don't use this field directly.
+     * This reference to the CDB is shared among container, components, alarm libs etc.
+     * No data cache is shared, and each of these CDB clients must register for updates as needed.
      */
-    private DAL cdb;
+    private DAL sharedCdbRef;
 
 	private final AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     /** see comments in {@link #authenticate(String)} */
     private boolean useRecoveryMode = true;
+    
+    /**
+     * Overrides {@link #useRecoveryMode} if non-null.
+     */
+    private Boolean recoveryModeOverride = null;
 
     /** actions for shutdown() */
     public static final int CONTAINER_RELOAD = 0;
@@ -230,12 +239,30 @@ public class AcsContainer extends ContainerPOA
 	/**
 	 * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
 	 * This is taken out of the ctor just to keep is lean and be able to instantiate a minimum container for testing.
-	 * 
-	 * @throws AcsJContainerServicesEx
+	 * @throws AcsJContainerServicesEx for any serious issue that should make container start fail.
 	 */
 	void initialize() throws AcsJContainerEx {
 
+		// CDB ref 
+		try {
+			org.omg.CORBA.Object dalObj = m_managerProxy.get_service("CDB", false);
+			sharedCdbRef = DALHelper.narrow(dalObj);
+		} catch (Exception ex) {
+			m_logger.log(Level.SEVERE, "Failed to access the CDB.", ex);
+			throw new AcsJContainerEx(ex);
+		}
+		if (sharedCdbRef == null) {
+			m_logger.log(Level.SEVERE, "Failed to access the CDB.");
+			throw new AcsJContainerEx();
+		}
+
+		// CDB container config (must be done before manager login)
+		initFromCdb(true);
+		// TODO: sharedCdbRef.add_change_listener / listen_for_changes and call initFromCdb(false) on change.
+		
+		// manager login
 		System.out.println(ContainerOperations.ContainerStatusMgrInitBeginMsg);
+		// TODO: Use CDB attributes ManagerRetry and Recovery for manager login.
 		loginToManager();
 		System.out.println(ContainerOperations.ContainerStatusMgrInitEndMsg);
 		
@@ -243,7 +270,7 @@ public class AcsContainer extends ContainerPOA
 		logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		// logConfig.setInternalLogger(m_logger);
 		logConfig.setCDBLoggingConfigPath("MACI/Containers/" + m_containerName);
-		logConfig.setCDB(getCDB());
+		logConfig.setCDB(sharedCdbRef);
 		try {
 			logConfig.initialize(false);
 		} catch (LogConfigException ex) {
@@ -251,20 +278,7 @@ public class AcsContainer extends ContainerPOA
 			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
 		}
 
-		double timeoutSeconds;
-		try {
-			// should give the configured timeout, or the schema default if the container config exists but no timeout is configured there.
-			timeoutSeconds = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout");
-		} catch (Exception ex) {
-			// container config does not exist at all. Use schema-defined default value. 
-			timeoutSeconds = new alma.maci.containerconfig.Container().getTimeout();
-		}
-		try {
-			m_acsCorba.setORBLevelRoundtripTimeout(timeoutSeconds);
-		} catch (Exception ex) {
-			m_logger.log(Level.WARNING, "No CDB timeout applied to the container.", ex);
-		}
-		
+
 		// init the alarm system
 		//
 		// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
@@ -272,9 +286,8 @@ public class AcsContainer extends ContainerPOA
 		// Currently the alarm system acts under the container name.
 		// Setting of static fields in the AS classes should be removed altogether.
 
-
 		// TODO: maybe we should pass a alarms@container logger instead of the normal one
-		m_alarmContainerServices = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"),
+		m_alarmContainerServices = new ContainerServicesImpl(m_managerProxy, sharedCdbRef, m_acsCorba.createPOAForComponent("alarmSystem"),
         		m_acsCorba, m_logger, 0, m_containerName, null, containerThreadFactory) {
 			private AcsLogger alarmLogger;
         	public AcsLogger getLogger() {
@@ -288,7 +301,7 @@ public class AcsContainer extends ContainerPOA
 
 		try {
 			ACSAlarmSystemInterfaceFactory.init(m_alarmContainerServices);
-		} catch (Throwable thr) {
+		} catch (Throwable thr) {	
 			AcsJContainerEx ex = new AcsJContainerEx(thr);
 			ex.setContextInfo("Error initializing the alarm system factory");
 			throw ex;
@@ -333,46 +346,83 @@ public class AcsContainer extends ContainerPOA
 		// unleash any waiting ORB threads that were held until container init has finished
 		containerStartOrbThreadGate.countDown();
 	}
-    
-    /**
-	 * Gets a reference to the CDB. Reuses the previously obtained reference.
-	 * Implemented as on-demand remote call, so always use this method instead
-	 * of directly accessing the field {@link #cdb}.
-	 * <p>
-	 * @TODO: reuse this CDB reference in ContainerServicesImpl for method getCDB()
-	 * <p>
-	 * @TODO: Perhaps register for change notification at {@link DAL#add_change_listener(com.cosylab.CDB.DALChangeListener)}.
-	 * (Currently Alma does not use live CDB updates, but the feature is there...)
-	 * 
-	 * @return the CDB reference, or <code>null</code> if it could not be obtained.
+
+	
+	/**
+	 * Retrieves the container configuration from the CDB and uses it to initialize the container.
+	 * If no such configuration can be obtained from the CDB, then XSD default values are used.
+	 * <ul>
+	 *   <li><code>Timeout</code> is applied for ORB-level client-side timeouts.
+	 *   <li><code>UseIFR</code>: The container never uses the IFR. The only indirect support is that method 
+	 *       {@link AcsCorba#createOrb(String[] args, Integer port)} sets the matching "-ORBInitRef" arg before ORB initialization, 
+	 *       to support "_get_interface()" calls by components such as the sampling system. 
+	 *       TODO: Should we suppress setting this initial service reference if useIFR==false? 
+	 *       According to Corba spec 4.5.1 we may call ORB#init again and possibly override the init ref setting that was given
+	 *       when initializing the ORB in the first place (before the CDB could be accessed).
+	 *   <li><code>Recovery</code>: Will be used during container login with the manager.
+	 *   <li><code>ManagerRetry</code>: TODO: use it
+	 *   <li><code>ServerThreads</code>: TODO: Can we override the orb.properties setting from within the application?
+	 *   <li><code>LoggingConfig</code> Is taken care of separately by the acsjlog code (class LogConfig) 
+	 *   <li>Other CDB attributes either don't apply to a java container or are meant to be read by the OMC or the manager
+	 *       instead of by the container: Autoload, DALtype, PingInterval, DeployInfo.{Flags/Host/KeepAliveTime/StartOnDemand/TypeModifiers}.
+	 * <ul>
+	 * @param isContainerStart Allows different treatment (for some container options) 
+	 *        between the first invocation during the container start and later invocations during CDB refreshs. 
 	 */
-    DAL getCDB() {
-        if (cdb != null) {
-            return cdb;
-        }
-        
-        try {
-            // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
-            org.omg.CORBA.Object dalObj = m_managerProxy.get_service("CDB", true);
-            cdb = DALHelper.narrow(dalObj);
-            if (cdb == null) {
-                m_logger.log(Level.WARNING, "Failed to access the CDB.");
-            }
-        }
-        catch (Exception e) {
-            m_logger.log(Level.WARNING, "Failed to access the CDB.", e);
-        }
-        
-        return cdb;
-    }
+	protected void initFromCdb(boolean isContainerStart) {
+		alma.maci.containerconfig.Container containerConfig = null;
+		boolean isDefaultConfig = false;
+		
+		// read config data
+		String cdbPath = "MACI/Containers/" + m_containerName;
+		try {
+			String xml = sharedCdbRef.get_DAO(cdbPath);
+			containerConfig = alma.maci.containerconfig.Container.unmarshalContainer(new StringReader(xml));
+		} catch (Exception ex) {
+			// use xsd defaults
+			containerConfig = new alma.maci.containerconfig.Container();
+			m_logger.warning("Failed to access container configuration data in the CDB. Will use XSD defaults.");
+			isDefaultConfig = true;
+		}
+		
+		// Apply corba client-side timeout
+		double timeoutSeconds = containerConfig.getTimeout();
+		try {
+			m_acsCorba.setORBLevelRoundtripTimeout(timeoutSeconds);
+		} catch (Exception ex) {
+			m_logger.log(Level.WARNING, "No CDB timeout applied to the container.", ex);
+		}
+		
+		// ImplLang: only validate
+		if (!isDefaultConfig) {
+			// Check for possible CDB misconfiguration
+			if (containerConfig.getImplLang() != ContainerImplLangType.JAVA) {
+				m_logger.warning("Bad CDB configuration for '" + cdbPath + "'. Should be ImplLang==java.");
+			}
+		}
+		
+		// Recovery
+		if (recoveryModeOverride != null) {
+			useRecoveryMode = recoveryModeOverride.booleanValue();
+			m_logger.fine("Component recovery = '" + useRecoveryMode + "' (from local setting overriding CDB/XSD)"); 
+		}
+		else {
+			useRecoveryMode = containerConfig.getRecovery();
+			m_logger.fine("Component recovery = '" + useRecoveryMode + "' (from CDB/XSD)"); 
+		}
+		
+		// @TODO: ManagerRetry etc
+	}
 
+	/**
+	 * Allows overriding the recovery mode, e.g. using command line options that override the CDB setting.
+	 * @param recoveryModeOverride May be <code>null</code> in which case it will not override anything.
+	 */
+	void setRecoveryModeOverride(Boolean recoveryModeOverride) {
+		this.recoveryModeOverride = recoveryModeOverride;
+	}
 
-    void setRecoveryMode(boolean recoveryStart) {
-        useRecoveryMode = recoveryStart;
-    }
-
-
-    /**
+	/**
 	 * To be called only once from the ctor.
 	 * 
 	 * @throws AcsJContainerEx
@@ -579,7 +629,7 @@ public class AcsContainer extends ContainerPOA
             //
 
             compAdapter = new ComponentAdapter(compName, type, exe, componentHandle,
-                    m_containerName, compImpl, m_managerProxy, compCL, m_logger, m_acsCorba);
+                    m_containerName, compImpl, m_managerProxy, sharedCdbRef, compCL, m_logger, m_acsCorba);
 
             // to support automatic offshoot translation for xml-binded offshoots, we need to pass the dynamic adaptor
             if( !operationsIFClass.isInstance(compImpl) ) {
