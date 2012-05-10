@@ -41,7 +41,6 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
 import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
@@ -119,7 +118,7 @@ public class ContainerServicesImpl implements ContainerServices
     private volatile AcsLogger componentLogger;
 
     // alarm source used by components when raising/clearing alarms
-    private final AlarmSource m_alarmSource;
+    private AlarmSource m_alarmSource;
 
 	// sync'd map, key=curl, value=corbaStub
 	private final Map<String, org.omg.CORBA.Object> m_usedComponentsMap;
@@ -188,7 +187,7 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * The cached CDB reference.
 	 */
-	private volatile DAL cdb;
+	private final DAL cdb;
 	
 	
 	/**
@@ -205,14 +204,19 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 									for a component client outside of a container
 	 * @param threadFactory to be used for <code>getThreadFactory</code>
 	 */
-	public ContainerServicesImpl(AcsManagerProxy acsManagerProxy, POA componentPOA, AcsCorba acsCorba,
+	public ContainerServicesImpl(AcsManagerProxy acsManagerProxy, DAL cdb, POA componentPOA, AcsCorba acsCorba,
 									AcsLogger logger, int componentHandle, String clientCurl, 
 									ComponentStateManager componentStateManager,
 									ThreadFactory threadFactory)
 	{
 		// The following fields are final. This guarantees that they will be copied to main thread memory,
 		// and thus be seen by other threads after this ctor has terminated.
+		// For the sake of test dummy implementations, we do not assert that all params be != null,
+		// even though normally they must be.
+		
 		m_acsManagerProxy = acsManagerProxy;
+		this.cdb = cdb;
+		
 		m_clientPOA = componentPOA;
 		this.acsCorba = acsCorba;
 		m_logger = logger;
@@ -238,9 +242,6 @@ public class ContainerServicesImpl implements ContainerServices
 		if (fakeUIDsForTesting) {
 			m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
 		}
-
-		m_alarmSource = new AlarmSourceImpl(this);
-		m_alarmSource.start();
 	}
 
 	void setComponentXmlTranslatorProxy(Object xmlTranslatorProxy) {
@@ -399,7 +400,14 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 		catch (Throwable thr) {
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-			ex.setContextInfo("failed to assign a UID to entity of type " + entity.getEntityTypeName());
+			String msg = "Failed to assign a UID to entity of type ";
+			if (entity.getEntityTypeName()!= null) {
+				msg += entity.getEntityTypeName();
+			}
+			else {
+				msg += entity.getClass().getSimpleName();
+			}
+			ex.setContextInfo(msg);
 			throw ex;
 		}
 	}
@@ -763,24 +771,6 @@ public class ContainerServicesImpl implements ContainerServices
 	 */
 	@Override
 	public DAL getCDB() throws AcsJContainerServicesEx {
-		synchronized (lazyCreationSync) {
-			if (cdb == null) {
-				String errMsg = "Failed to get the reference to the CDB component/service.";
-				try {
-					org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
-					cdb = DALHelper.narrow(dalObj);
-				} catch (AcsJmaciErrTypeEx ex) {
-					m_logger.log(Level.FINE, errMsg, ex);
-					throw new AcsJContainerServicesEx(ex);
-				} catch (Throwable thr) {
-					String msg = "Unexpectedly failed to get the CDB reference!";
-					m_logger.log(Level.FINE, msg, thr);
-					AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-					ex.setContextInfo(msg);
-					throw ex;
-				}
-			}
-		}
 		return cdb;
 	}
 
@@ -1275,7 +1265,9 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 
 		/* Cleanup the alarm source */
-		m_alarmSource.tearDown();
+		if (m_alarmSource != null) {
+			m_alarmSource.tearDown();
+		}
 	}
 
 	/**
@@ -1306,7 +1298,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 		try
 		{
-			org.omg.CORBA.Object nameServiceObj = m_acsManagerProxy.get_service("NameService", true);
+			org.omg.CORBA.Object nameServiceObj = m_acsManagerProxy.get_service("NameService", false);
 			nameService = NamingContextHelper.narrow(nameServiceObj);
 		} catch (AcsJmaciErrTypeEx ex) {
 			m_logger.log(Level.FINE, "Failed to get the reference to the NameService service", ex);
@@ -1430,33 +1422,14 @@ public class ContainerServicesImpl implements ContainerServices
 		return publisher;
 	}
 
-	/**
-	 * @deprecated remove along with raiseAlarm, clearAlarm
-	 */
-	private void submitAlarm(String faultFamily, String faultMember, int faultCode, boolean raise) throws AcsJContainerServicesEx {
-		m_alarmSource.setAlarm(faultFamily, faultMember, faultCode, raise);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @deprecated
-	 */
-	@Override
-	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
-		submitAlarm(faultFamily, faultMember, faultCode, true);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @deprecated
-	 */
-	@Override
-	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
-		submitAlarm(faultFamily, faultMember, faultCode, false);
-	}
-
 	@Override
 	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
+		synchronized (lazyCreationSync) {
+			if (m_alarmSource == null) {
+				m_alarmSource = new AlarmSourceImpl(this);
+				m_alarmSource.start();
+			}
+		}
 		return m_alarmSource;
 	}
 
