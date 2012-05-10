@@ -45,8 +45,8 @@ public class AcsEmbeddedContainerRunner {
     protected AcsCorba m_acsCorba;
 
     protected AcsContainer m_container;
-    protected boolean isEmbedded;
-    protected boolean useRecoveryMode;
+    protected final boolean isEmbedded;
+    protected final Boolean recoveryModeOverride;
 
     protected String m_containerName;
     protected String m_managerLoc;
@@ -64,9 +64,9 @@ public class AcsEmbeddedContainerRunner {
     /**
      * @param isEmbedded  false if this runner is not started by a separate application, but merely by some other runner.
      */
-    AcsEmbeddedContainerRunner(boolean isEmbedded, boolean useRecoveryMode) {
+    AcsEmbeddedContainerRunner(boolean isEmbedded, Boolean recoveryModeOverride) {
        this.isEmbedded = isEmbedded;
-       this.useRecoveryMode = useRecoveryMode;
+       this.recoveryModeOverride = recoveryModeOverride;
     }
 
     
@@ -166,7 +166,9 @@ public class AcsEmbeddedContainerRunner {
         m_logger.fine("creating the AcsContainer " + m_containerName);
         
         m_container = new AcsContainer(m_containerName, m_acsCorba, m_managerProxy, isEmbedded);
-        m_container.setRecoveryMode(useRecoveryMode);
+        if (recoveryModeOverride != null) {
+        	m_container.setRecoveryModeOverride(recoveryModeOverride);
+        }
         
         m_logger.fine("AcsContainer '" + m_containerName + "' created.");
     }

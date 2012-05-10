@@ -72,7 +72,11 @@ public class AcsContainerRunner
 	
 	protected String m_containerName;
     protected String m_managerLoc;
-    protected boolean m_useRecoveryMode;
+    
+    /**
+     * If non-null then this value should override any default or CDB values for component recovery upon container start.
+     */
+    protected Boolean m_recoveryModeOverride;
 
     protected AcsEmbeddedContainerRunner embeddedRunner;
 
@@ -99,7 +103,7 @@ public class AcsContainerRunner
 	 * 		CORBA loc for the Manager, e.g.
 	 * 		<code>corbaloc::myhost:xxxx/Manager</code>
 	 * 		(same as property <code>ACS.manager</code>, but with higher precedence);
-	 * 		if missing, it will be taken from CDB, or will default to localhost.</li>
+	 * 		if missing, it will be taken from property ACS.manager, or will default to localhost.</li>
 	 * <li><code>-containerName myContainerName</code><br>
 	 * 		name under which the container will introduce itself to the ACS Manager
 	 * 		(has precedence over the property <code>ACS.containerName</code>).</li>
@@ -152,7 +156,7 @@ public class AcsContainerRunner
 
 		setOptions(args);
 
-		embeddedRunner = new AcsEmbeddedContainerRunner(false, m_useRecoveryMode);
+		embeddedRunner = new AcsEmbeddedContainerRunner(false, m_recoveryModeOverride);
 		embeddedRunner.setContainerName(m_containerName);
 		embeddedRunner.setManagerLoc(m_managerLoc);
 
@@ -171,7 +175,7 @@ public class AcsContainerRunner
             }
         }
 
-		m_acsCorba.initCorba(args, m_containerPort);	
+		m_acsCorba.initCorba(args, m_containerPort);
 		m_acsCorba.runCorba();
 		
 		embeddedRunner.run(m_acsCorba);
@@ -204,21 +208,6 @@ public class AcsContainerRunner
     protected void initAcsLogging(final AcsManagerProxy managerProxy) {       
         Runnable cmd = new Runnable() {
             public void run() {
-                
-                // TODO: move to separate CDBConfigReader class and set logger data independently of
-                // AcsLogManager().init when the CDB becomes available.                
-                //                int cacheSize = -1;
-                //                int minCachePriority = AcsLogLevel.ACS_LEVEL_UNKNOWN;
-                //                int maxCachePriority = -1;
-                //                try {
-                //                    DAO dao = cdb.get_DAO_Servant("MACI/Containers/" + containerName);
-                //                    cacheSize = dao.get_long("cacheSize");
-                //                    minCachePriority = dao.get_long("minCachePriority");
-                //                    maxCachePriority = dao.get_long("maxCachePriority");
-                //                } catch (Throwable thr) {
-                //                    thr.printStackTrace();
-                //                }                 
-                
                 m_logger.finer("asynchronously calling ClientLogManager#initRemoteLogging()...");
                 boolean gotLogService = false;
                 try
@@ -255,27 +244,21 @@ public class AcsContainerRunner
 		// -- prepare arg parser
 		CmdLineArgs cmdArgs = new CmdLineArgs();
 		// container name
-		CmdLineRegisteredOption optContainerName =
-			new CmdLineRegisteredOption("-containerName", 1);
+		CmdLineRegisteredOption optContainerName = new CmdLineRegisteredOption("-containerName", 1);
 		cmdArgs.registerOption(optContainerName);
-		// container port; TODO unify port argument / property with CDB, C++, etc., abstract from ORB option 
-		CmdLineRegisteredOption optContainerPort =
-			new CmdLineRegisteredOption("-OAPort", "-OAport", 1);
+		// container port; TODO unify port argument / property with CDB, C++, etc., abstract from ORB option
+		CmdLineRegisteredOption optContainerPort = new CmdLineRegisteredOption("-OAPort", "-OAport", 1);
 		cmdArgs.registerOption(optContainerPort);
-//		CmdLineRegisteredOption optContainerPort2 =
-//			new CmdLineRegisteredOption("-OAport", 1);
-//		cmdArgs.registerOption(optContainerPort2);
+		// CmdLineRegisteredOption optContainerPort2 = new CmdLineRegisteredOption("-OAport", 1);
+		// cmdArgs.registerOption(optContainerPort2);
 		// manager reference
-		CmdLineRegisteredOption optManagerLoc =
-			new CmdLineRegisteredOption("-manager", "-m", 1);
+		CmdLineRegisteredOption optManagerLoc = new CmdLineRegisteredOption("-manager", "-m", 1);
 		cmdArgs.registerOption(optManagerLoc);
-		// recovery mode 
-		CmdLineRegisteredOption optRecoveryMode =
-			new CmdLineRegisteredOption("-recovery", "-r", 0);
+		// recovery mode
+		CmdLineRegisteredOption optRecoveryMode = new CmdLineRegisteredOption("-recovery", "-r", 0);
 		cmdArgs.registerOption(optRecoveryMode);
-		// no-recovery mode 
-		CmdLineRegisteredOption optNoRecoveryMode =
-			new CmdLineRegisteredOption("-norecovery", "-nr", 0);
+		// no-recovery mode
+		CmdLineRegisteredOption optNoRecoveryMode = new CmdLineRegisteredOption("-norecovery", "-nr", 0);
 		cmdArgs.registerOption(optNoRecoveryMode);
 
 		// -- parse and set args
@@ -294,47 +277,37 @@ public class AcsContainerRunner
 			}
 			
 			// -- container port
-			if (cmdArgs.isSpecified(optContainerPort))
-			{
+			if (cmdArgs.isSpecified(optContainerPort)) {
 				m_containerPort = Integer.parseInt(cmdArgs.getValues(optContainerPort)[0]);
-			}
-			else
-			{
-//				default port -- C++ container uses -ORBEndpoint, default 3 0 5 0
-				m_containerPort = OrbConfigurator.ORB_DEFAULT_PORT; 
+			} else {
+				// default port -- C++ container uses -ORBEndpoint, default 3 0 5 0
+				m_containerPort = OrbConfigurator.ORB_DEFAULT_PORT;
 			}
 			
 			// -- manager
-			if (cmdArgs.isSpecified(optManagerLoc))
-			{
+			if (cmdArgs.isSpecified(optManagerLoc)) {
 				m_managerLoc = cmdArgs.getValues(optManagerLoc)[0].trim();
-			}
-			else if (System.getProperty(MANAGER_PROPERTYNAME) != null)
-			{
+			} else if (System.getProperty(MANAGER_PROPERTYNAME) != null) {
 				m_managerLoc = System.getProperty(MANAGER_PROPERTYNAME).trim();
-			}
-			else
-			{
+			} else {
 				// default = localhost
 				m_managerLoc = AcsManagerProxy.getLocalManagerCorbaloc();
 			}
 			
-			// -- recovery mode: command line default is "-recovery", so only "-nr" or "-norecovery" is interesting.
-			//    For historical reasons we also have the "-r" or "-recovery" flag, and we check both to rule out a conflict.
-			//    As long as the java container does not evaluate the Recovery attribute from the CDB, 
-			//    we at least use the CDB default (instead of cmd line default which would be overwritten later).
-			if (!cmdArgs.isSpecified(optNoRecoveryMode) && !cmdArgs.isSpecified(optRecoveryMode)) {
-				m_useRecoveryMode = (new alma.maci.containerconfig.Container()).getRecovery();
+			if (cmdArgs.isSpecified(optRecoveryMode)) {
+				m_recoveryModeOverride = Boolean.TRUE;
+				if (cmdArgs.isSpecified(optNoRecoveryMode)) {
+					m_logger.warning("Conflicting command line options for recovery mode: both -r and -nr are specified. Will use -r.");
+				}
 			}
-			if (cmdArgs.isSpecified(optNoRecoveryMode) && cmdArgs.isSpecified(optRecoveryMode)) {
-				m_logger.warning("Conflicting command line options for recovery mode: both -r and -nr are specified. Will use -r.");
-				m_useRecoveryMode = true;
+			else if (cmdArgs.isSpecified(optNoRecoveryMode)) {
+				m_recoveryModeOverride = Boolean.FALSE;
 			}
 			
-            Integer starttimeDelayMillisProperty = Integer.getInteger(CONTAINER_STARTTIME_DELAY_MILLIS_PROPERTYNAME);
-            if (starttimeDelayMillisProperty != null) {
-                initialSleeptimeMillis = starttimeDelayMillisProperty.intValue();
-            }
+			Integer starttimeDelayMillisProperty = Integer.getInteger(CONTAINER_STARTTIME_DELAY_MILLIS_PROPERTYNAME);
+			if (starttimeDelayMillisProperty != null) {
+				initialSleeptimeMillis = starttimeDelayMillisProperty.intValue();
+			}
 		}
 		catch (Throwable thr)
 		{
