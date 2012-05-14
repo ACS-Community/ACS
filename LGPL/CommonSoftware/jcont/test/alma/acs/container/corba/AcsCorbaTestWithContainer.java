@@ -78,9 +78,6 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 	 * <p>
 	 * TODO: extend this scenario so that another collocated component issues the long lasting call.
 	 * This may not work due to a JacORB bug, which we should find out about. 
-	 * Confer the currently disabled test {@link alma.acs.container.corba.AcsCorbaTest#__testComponentPOALifecycleAsync()}.
-	 * 
-	 * @throws Exception
 	 */
 	public void testComponentPOALifecycleAsync() throws Exception { 
 		_testComponentPOALifecycle(true, 10);
@@ -94,7 +91,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 	 */
 	private void _testComponentPOALifecycle(boolean destroyWhileBusy, int iterations) throws Exception {
 		// times in milliseconds
-		final int remoteCallDurationMin = 2000;
+		final int remoteCallDurationMin = (destroyWhileBusy ? 2000 : 0);
 		final int callOverheadMax = 500;
 				
 		for (int i=0; i < iterations; i++) {
@@ -111,7 +108,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 			exceptionInThread = null;
 			
 			// make CORBA calls to the component, and have it destroyed
-			dummyComponent.dummyComponentsCanDoCloseToNothing();			
+			dummyComponent.dummyComponentsCanDoCloseToNothing();
 			
 			if (destroyWhileBusy) {
 				Runnable compMethodCallRunnable = new Runnable() {
@@ -131,18 +128,20 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 				Thread.sleep(callOverheadMax);
 			}
 			else {
-				dummyComponent.callThatTakesSomeTime(0);
+				dummyComponent.callThatTakesSomeTime(remoteCallDurationMin);
 			}
 			// we expect the releaseComponent call to take some time, because the container must wait for the 
 			// currently active call to finish before the component can be unloaded.
-			long timeBeforeRelease = System.currentTimeMillis(); 
+			long timeBeforeRelease = System.currentTimeMillis();
 			getContainerServices().releaseComponent(compName);
-			int timeReleaseCompCall = (int) (System.currentTimeMillis() - timeBeforeRelease); 
-			assertTrue(timeReleaseCompCall > remoteCallDurationMin-callOverheadMax);
-			
+			int timeReleaseCompCall = (int) (System.currentTimeMillis() - timeBeforeRelease);
+			if (destroyWhileBusy) {
+				assertTrue("Releasing component '" + compName + "' took only " + timeReleaseCompCall + " ms, when at least " + (remoteCallDurationMin-callOverheadMax) + " ms were expected.", 
+						timeReleaseCompCall > remoteCallDurationMin-callOverheadMax );
+			}
 			if (exceptionInThread != null) {
 				fail("asynchronous component call number " + i + " (callThatTakesSomeTime) failed: " + exceptionInThread.toString());
-			}					
+			}
 		}
 	}
 }
