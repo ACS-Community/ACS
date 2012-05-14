@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: SupplierTestComponent.java,v 1.5 2007/04/13 02:51:27 sharring Exp $
+ * @version $Id: SupplierTestComponent.java,v 1.6 2012/05/14 09:06:39 hsommer Exp $
  * @since    
  */
 
@@ -29,76 +29,63 @@
 
 package alma.perftest.SupplierTestComponent;
 
+import alma.perftest.charSeqStruct;
 import alma.perftest.BasePerfCompImpl.BasePerfCompImpl;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.AcsEventPublisher;
 
 /**
- * 
+ * Currently configured as "SUPJAVA01".
  * @author  dfugate
  */
 public class SupplierTestComponent extends BasePerfCompImpl
 {
-    private SimpleSupplier m_supplier = null;
+    private AcsEventPublisher<charSeqStruct> m_supplier = null;
 
-    public void initialize(ContainerServices containerServices)
-	throws ComponentLifecycleException
-	{
-	    super.initialize(containerServices);
-	    try
-		{
-		m_supplier = new SimpleSupplier("perf channel", m_containerServices);
-		}
-	    catch(alma.acs.exceptions.AcsJException ex)
-		{
-		throw new ComponentLifecycleException();
+	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+		super.initialize(containerServices);
+		try {
+			m_supplier = containerServices.createNotificationChannelPublisher("perf channel", charSeqStruct.class);
+		} catch (alma.acs.exceptions.AcsJException ex) {
+			throw new ComponentLifecycleException();
 		}
 	}
 
-    public void method()
-    {
-	m_profiler.reset();
-	
-	//populate the string to be used for logging
-	char[] tArray = new char[m_size];
-	for(int i=0; i<m_size; i++)
-	    {
-	    tArray[i] = '*';
-	    }
-	alma.perftest.charSeqStruct joe = new alma.perftest.charSeqStruct(tArray);
-	
-	try
-	    {
-	    for(int i=0; i<m_count; i++)
-		{
-		m_profiler.start();
-		m_supplier.publishEvent(joe);
-		m_profiler.stop();
-		waitAwhile();
+	public void method() {
+		m_profiler.reset();
+
+		// populate the string to be used for logging
+		char[] tArray = new char[m_size];
+		for (int i = 0; i < m_size; i++) {
+			tArray[i] = '*';
 		}
-	    
-	    m_profiler.fullDescription("Event Channel Event of Size '" + m_size + "' Bytes from within a CharacteristicComponent");
-	    return;
-	    }
-	catch(Exception ex)
-	    {
-	    System.err.println(ex);
-	    }
-    }
-    
-    /** Disconnects the supplier. */
-    public void cleanUp()
-	{
-	    m_logger.info("cleanUp() called...");
-	    
-	    try
-		{
-		m_supplier.disconnect();
+		alma.perftest.charSeqStruct joe = new charSeqStruct(tArray);
+
+		try {
+			for (int i = 0; i < m_count; i++) {
+				m_profiler.start();
+				m_supplier.publishEvent(joe);
+				m_profiler.stop();
+				waitAwhile();
+			}
+
+			m_profiler.fullDescription("Event Channel Event of Size '" + m_size
+					+ "' Bytes from within a CharacteristicComponent");
+			return;
+		} catch (Exception ex) {
+			System.err.println(ex);
 		}
-	    catch(Exception e)
-		{
-		e.printStackTrace();  
+	}
+
+	/** Disconnects the supplier. */
+	public void cleanUp() {
+		m_logger.info("cleanUp() called...");
+
+		try {
+			m_supplier.disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
