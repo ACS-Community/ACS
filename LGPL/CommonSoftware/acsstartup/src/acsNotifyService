@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.25 2012/05/08 08:01:06 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.26 2012/05/15 07:03:25 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -64,8 +64,8 @@ CL_NS_TYPE_SP=
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 # Intentionally includes all options supported by acsStartORBSRVC
 #
-LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nstype:
-SHORTOPTS=hskwrb:t:n:
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nstype:,nameService:
+SHORTOPTS=hskwrb:t:n:x:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -76,13 +76,14 @@ Starts or stops a Notify Service for Acs
 
 Usage: $COMMAND [OPTIONS]
 Options:
-   -s | -start                      start service
-   -k | -kill                       stop service
-   -w | -wait                       wait for service to get started and create the notify event channel
-   -b | -baseport INSTANCE          the acs instance (0-9) you want to use
-   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
-   -n | -nstype TYPE                type of notify service (i.e. Logging, Archive, Alarm)
-   -h | -help                       prints this help and exits
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started and create the notify event channel
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -n | --nstype TYPE                type of notify service (i.e. Logging, Archive, Alarm)
+   -x | --nameService REF           set name service reference via command-line
+   -h | --help                       prints this help and exits
 EOF
 }
 
@@ -119,6 +120,8 @@ do
     -w)                           CL_WAIT=true ;; 
     --type)                       CL_NS_TYPE=$2; CL_NS_TYPE_SP="$2 " ; shift ;;
     -n)                           CL_NS_TYPE=$2; CL_NS_TYPE_SP="$2 " ; shift ;;
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
     --)                           if [ X"$2" != X ] ; then printUsage ; exit $EC_BADARGS ; fi ; break ;;
   esac
   shift

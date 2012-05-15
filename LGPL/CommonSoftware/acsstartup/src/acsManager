@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsManager,v 1.4 2010/09/13 16:34:36 tstaig Exp $"
+# "@(#) $Id: acsManager,v 1.5 2012/05/15 07:03:25 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -61,8 +61,8 @@ CL_RECOVER=
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 # Intentionally includes all options supported by acsStartORBSRVC
 #
-LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,DALReference:
-SHORTOPTS=hskwrb:t:d:
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nameService:
+SHORTOPTS=hskwrb:t:d:x:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -73,14 +73,14 @@ Starts Interface Repository for Acs
 
 Usage: $COMMAND [OPTIONS]
 Options:
-   -s | -start                      start service
-   -k | -kill                       stop service
-   -w | -wait                       wait for service to get started
-   -b | -baseport INSTANCE          the acs instance (0-9) you want to use
-   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
-   -r | -recoverClientConnections   force services to recover client connections
-   -d | -DALReference REFERENCE	    force to use given DAL reference
-   -h | -help                       prints this help and exits
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -r | --recoverClientConnections   force services to recover client connections
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
 EOF
 }
 
@@ -107,8 +107,6 @@ do
     -b)                           CL_BASEPORT=$2 ; shift ;;
     --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
     -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
-    --DALReference)		  export DAL_REFERENCE=$2 ; shift ;;
-    -d)				  export DAL_REFERENCE=$2 ; shift ;;
     --recoverClientConnections)   CL_RECOVER=true ;; 
     -r)                           CL_RECOVER=true ;; 
     --help)                       CL_HELP=true ;; 
@@ -119,6 +117,8 @@ do
     -k)                           CL_STOP=true ;; 
     --wait)                       CL_WAIT=true ;; 
     -w)                           CL_WAIT=true ;; 
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
     --) break ;;
   esac
   shift

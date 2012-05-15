@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsConfigurationDatabase,v 1.6 2011/07/14 14:52:16 tstaig Exp $"
+# "@(#) $Id: acsConfigurationDatabase,v 1.7 2012/05/15 07:03:25 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -63,8 +63,8 @@ CL_RECOVER=
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 # Intentionally includes all options supported by acsStartORBSRVC
 #
-LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,xmlcdbdir:
-SHORTOPTS=hskwrb:t:d:
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,xmlcdbdir:,nameService:
+SHORTOPTS=hskwrb:t:d:x:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -75,14 +75,15 @@ Starts Interface Repository for Acs
 
 Usage: $COMMAND [OPTIONS]
 Options:
-   -s | -start                      start service
-   -k | -kill                       stop service
-   -w | -wait                       wait for service to get started
-   -b | -baseport INSTANCE          the acs instance (0-9) you want to use
-   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
-   -d | -xmlcdbdir ACS_CDB          the directory which contains the CDB directory, see env var ACS_CDB
-   -r | -recoverClientConnections   force services to recover client connections
-   -h | -help                       prints this help and exits
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -d | --xmlcdbdir ACS_CDB          the directory which contains the CDB directory, see env var ACS_CDB
+   -r | --recoverClientConnections   force services to recover client connections
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
 EOF
 }
 
@@ -121,6 +122,8 @@ do
     -w)                           CL_WAIT=true ;; 
     -xmlcdbdir)                   export ACS_CDB=$2 ; shift ;;
     -d)                           export ACS_CDB=$2 ; shift ;;
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
     --) break ;;
   esac
   shift

@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.9 2012/05/08 08:01:06 msekoran Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.10 2012/05/15 07:03:25 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -63,8 +63,8 @@ CL_LOADIFR=true
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 # Intentionally includes all options supported by acsStartORBSRVC
 #
-LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:
-SHORTOPTS=hskwrb:t:
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nameService:
+SHORTOPTS=hskwrb:t:x:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -75,13 +75,14 @@ Starts or stops Interface Repository for Acs
 
 Usage: $COMMAND [OPTIONS]
 Options:
-   -s | -start                      start service
-   -k | -kill                       stop service
-   -w | -wait                       wait for IFR to get loaded (only without -noloadIFR)
-   -b | -baseport INSTANCE          the acs instance (0-9) you want to use
-   -noloadIFR                       load the CORBA Interface Repository using all the IDL files
-   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
-   -h | -help                       prints this help and exits
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for IFR to get loaded (only without -noloadIFR)
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   --noloadIFR                       load the CORBA Interface Repository using all the IDL files
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
 EOF
 }
 
@@ -117,6 +118,8 @@ do
     -k)                           CL_STOP=true ;; 
     --wait)                       CL_WAIT=true ;; 
     -w)                           CL_WAIT=true ;; 
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
     --) break ;;
   esac
   shift
