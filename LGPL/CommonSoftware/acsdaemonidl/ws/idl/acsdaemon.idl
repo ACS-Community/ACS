@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.22 2012/02/28 12:54:12 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.23 2012/05/15 09:03:19 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -343,17 +343,24 @@ module acsdaemon
 	 */
 	enum ServiceState { NOT_EXISTING, DEFUNCT, DEGRADED, RUNNING };
 	
+	struct ServiceInfo {
+		string service_type; /** "Manager" or "NameService" */
+		string service_name; /** Used in case for named services (e.g. NotifyService-s) */
+		string service_reference; /** corbaloc or IOR */
+	};
+	
+	typedef sequence<ServiceInfo> ServiceInfoSeq;
+
 	/** 
 	 *  Base Imp interface.
 	 */
 	interface ImpBase
 	{
 		/**
-		 * Set corrensponding manager reference.
-                 * NOTE: this is used to initialize alarm system.
-                 */
-		void set_manager_reference(in short instance_number, in string ref);
-
+		 * Set configuration service (e.g. NameService, Manager) references.
+		 */
+		void set_configuration_reference(in short instance_number, in ServiceInfoSeq services_info);
+		
 		/** 
 		 * Heartbeat ping check.
 		 * @return boolean true if OK, false in case of malfunction
@@ -898,12 +905,10 @@ module acsdaemon
 		 */
 		void shutdown() raises (maciErrType::NoPermissionEx);
 
-                /**
-                 * Set corrensponding manager reference.
-                 * NOTE: this is used to initialize alarm system.
-                 */
-                void set_manager_reference(in short instance_number, in string ref);
-
+		/**
+		 * Set configuration service (e.g. NameService, Manager) references.
+		 */
+		void set_configuration_reference(in short instance_number, in ServiceInfoSeq services_info);
 	};
 
 };
