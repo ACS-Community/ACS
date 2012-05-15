@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.16 2011/07/14 06:53:42 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.17 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -180,8 +180,8 @@ bool ImpRequest::execute() {
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command.c_str()));
     ACE_OS::system(command.c_str());
     for (int i = 0; i <= 9; i++)
-      if (controller->getContext()->getManagerReference(i))
-        controller->setManagerReference(i, controller->getContext()->getManagerReference(i));
+      if (controller->getContext()->hasConfigurationReference(i))
+        controller->setConfigurationReference(i, controller->getContext()->getConfigurationReference(i));
     return true;
 }
 
@@ -237,9 +237,9 @@ acsdaemon::ServiceState ImpController::getActualState() {
     }
 }
 
-void ImpController::setManagerReference(const short instance_number, const char * ref) {
+void ImpController::setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info) {
     try {
-        ACS_SHORT_LOG((LM_DEBUG, "Setting manager reference '%s' at instance %d to Imp with Corba URI '%s'.", ref, instance_number, corbaloc.c_str()));
+        ACS_SHORT_LOG((LM_DEBUG, "Setting configuration reference at instance %d to Imp with Corba URI '%s'.", instance_number, corbaloc.c_str()));
         CORBA::Object_var obj = getContext()->getORB()->string_to_object(corbaloc.c_str());
         if (CORBA::is_nil(obj.in())) {
             ACS_SHORT_LOG((LM_ERROR, "Failed to parse Corba URI '%s' for Imp '%s'!", corbaloc.c_str(), acsServices[service].impname));
@@ -254,8 +254,8 @@ void ImpController::setManagerReference(const short instance_number, const char 
             return;
         }
 
-        imp->set_manager_reference(instance_number, ref);
-        ACS_SHORT_LOG((LM_DEBUG, "Manager reference at instance %d set to Imp '%s'.", instance_number, acsServices[service].impname));
+        imp->set_configuration_reference(instance_number, services_info);
+        ACS_SHORT_LOG((LM_DEBUG, "Configuration reference at instance %d set to Imp '%s'.", instance_number, acsServices[service].impname));
         return;
     } catch(CORBA::Exception &ex) {
         ACS_SHORT_LOG((LM_ERROR, "Failed to contact Imp '%s'.", acsServices[service].impname));
@@ -353,11 +353,11 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
     {
 
         // no reference yet, noop
-        if (!getContext()->getManagerReference(desc->getInstanceNumber()))
+        if (!getContext()->hasConfigurationReference(desc->getInstanceNumber(), acsServices[MANAGER].xmltag))
 	   return;
 
         try {
-           ACE_CString managerReference = getContext()->getManagerReference(desc->getInstanceNumber());
+           std::string managerReference = getContext()->getConfigurationReference(desc->getInstanceNumber(), acsServices[MANAGER].xmltag);
            ACS_SHORT_LOG((LM_DEBUG, "Initializing Alarm System using manager reference '%s'.", managerReference.c_str()));
            CORBA::Object_var obj = getContext()->getORB()->string_to_object(managerReference.c_str());
            if (CORBA::is_nil(obj.in())) {
@@ -481,17 +481,49 @@ ServiceController *ACSDaemonContext::getImpController(ACSServiceType service) {
     return impcontrollers[service];
 }
 
-void ACSDaemonContext::setImpControllersManagerReference(const short instance_number, const char * ref) {
+void ACSDaemonContext::setImpControllersConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info) {
     //m_mutex->acquire();
     if (impcontrollers == NULL)
        return;
 
     for (int i = 0; i < ACS_SERVICE_TYPES; i++)
        if (impcontrollers[i])
-           ((ImpController*)impcontrollers[i])->setManagerReference(instance_number, ref);
+           ((ImpController*)impcontrollers[i])->setConfigurationReference(instance_number, services_info);
 
     //m_mutex->release();
 }
+
+::acsdaemon::ServiceInfoSeq ACSDaemonContext::getConfigurationReference(const short instance_number)
+{
+    return configurationReferences[instance_number];
+}
+
+std::string ACSDaemonContext::getConfigurationReference(const short instance_number, const char* service_type)
+{
+    ::acsdaemon::ServiceInfoSeq infos = configurationReferences[instance_number];
+    for (CORBA::ULong i = 0; i < infos.length(); i++)
+        if (ACE_OS::strcmp(infos[i].service_type.in(), service_type) == 0)
+            return std::string(infos[i].service_reference.in());
+    return std::string("");
+}
+
+bool ACSDaemonContext::hasConfigurationReference(const short instance_number)
+{
+    return configurationReferences.find(instance_number) != configurationReferences.end();
+}
+
+bool ACSDaemonContext::hasConfigurationReference(const short instance_number, const char* service_type)
+{
+    if (!hasConfigurationReference(instance_number))
+        return false;
+
+    ::acsdaemon::ServiceInfoSeq infos = configurationReferences[instance_number];
+    for (CORBA::ULong i = 0; i < infos.length(); i++)
+        if (ACE_OS::strcmp(infos[i].service_type.in(), service_type) == 0)
+            return true;
+    return false;
+}
+
 
 ServiceController *ACSDaemonContext::getACSServiceController(ACSServiceRequestDescription *desc) {
     m_mutex->acquire();

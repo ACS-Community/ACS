@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.11 2012/02/03 12:57:33 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.12 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -405,7 +405,6 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     service = 0;
     m_logger = 0;
     bool unprotected = false;
-
 
     // Extract and validate command line arguments
     int c;

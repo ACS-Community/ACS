@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.22 2012/02/28 13:19:05 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.23 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -584,8 +584,14 @@ ACSServicesHandlerImpl::start_acs (
     std::string host = ACSPorts::getIP();
     std::string managerPort = ACSPorts::getManagerPort(instance_number);
     std::string managerLocalCorbaloc = "corbaloc::" + host + ":" + managerPort + "/Manager";
-
-    this->set_manager_reference(instance_number, managerLocalCorbaloc.c_str());
+    ::acsdaemon::ServiceInfoSeq infos;
+    infos.length(1);
+    ::acsdaemon::ServiceInfo info;
+    info.service_type = CORBA::string_dup("manager");
+    info.service_name = CORBA::string_dup("");
+    info.service_reference = CORBA::string_dup(managerLocalCorbaloc.c_str());
+    infos[0] = info;
+    this->set_configuration_reference(instance_number, infos);
 }
 
 

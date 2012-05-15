@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.10 2011/07/14 06:53:42 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.11 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,6 +33,7 @@
 #include <map>
 #include <string>
 #include <AcsAlarmSystemC.h>
+#include <acsdaemonC.h>
 
 const ACE_Time_Value TIME_PERIOD(15);
 
@@ -131,7 +132,7 @@ class ImpController : public ServiceController {
     ImpController(ACSDaemonContext *icontext, ACSServiceType iservice, bool iautostart = true);
     ACSServiceType getACSService() { return service; }
     virtual ACE_CString getServiceName();
-    void setManagerReference(const short instance_number, const char * ref);
+    void setConfigurationReference(const short instance_number, const acsdaemon::ServiceInfoSeq & services_info);
 };
 
 class ACSServiceController : public ServiceController {
@@ -163,9 +164,9 @@ class ACSDaemonContext {
     std::map<std::string, ServiceController **> acsservicecontrollersmap;
     ServiceController *getImpController(ACSServiceType service);
     ServiceController *getACSServiceController(ACSServiceRequestDescription *desc);
-    std::map<short, std::string> managerReferences;
+    std::map<short, ::acsdaemon::ServiceInfoSeq> configurationReferences;
     DetailedServiceStateProvider *detailedServiceStateProvider;
-    void setImpControllersManagerReference(const short instance_number, const char * ref);
+    void setImpControllersConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info);
   public:
     ACSDaemonContext(std::string name, DetailedServiceStateProvider *dssp = NULL);
     ~ACSDaemonContext();
@@ -178,8 +179,11 @@ class ACSDaemonContext {
     acsdaemon::ServiceState getACSServiceState(int instance_number, const char *name = NULL);
     acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) const {
 	return detailedServiceStateProvider ? detailedServiceStateProvider->getDetailedServiceState(desc, obj) : acsdaemon::RUNNING; };
-    void setManagerReference(const short instance_number, const char * ref) { managerReferences[instance_number] = ref; setImpControllersManagerReference(instance_number, ref); };
-    const char * getManagerReference(const short instance_number) { if (managerReferences.find(instance_number) != managerReferences.end()) return managerReferences[instance_number].c_str(); else return NULL; }
+    void setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info) { configurationReferences[instance_number] = services_info; setImpControllersConfigurationReference(instance_number, services_info); };
+    ::acsdaemon::ServiceInfoSeq getConfigurationReference(const short instance_number);
+    std::string getConfigurationReference(const short instance_number, const char* service_type);
+    bool hasConfigurationReference(const short instance_number);
+    bool hasConfigurationReference(const short instance_number, const char* service_type);
 };
 
 

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.14 2012/02/29 09:17:34 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.15 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -326,6 +326,7 @@ template <class R> class RequestChainContext {
 /*********************** ACS SERVICES SPECIFIC REQUESTS ***********************/
 
 class ACSServiceRequestChainContext;
+class ACSDaemonContext;
 
 class ACSServiceRequestDescription {
   private:
@@ -333,13 +334,13 @@ class ACSServiceRequestDescription {
     int instance_number;
     const char *host, *name, *corbalocName, *domain, *cdbxmldir;
     bool loadir, wait, recovery, async;
-    ACE_CString prepareCommand(ACSServiceRequestType request_type, bool log);
+    ACE_CString prepareCommand(ACSDaemonContext *context, ACSServiceRequestType request_type, bool log);
   public:
     ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number);
     ACSServiceRequestDescription(const ACSServiceRequestDescription &desc);
     ~ACSServiceRequestDescription();
-    ACSErr::Completion_var executeLocal(ACSServiceRequestType request_type);
-    ACSErr::Completion_var executeRemote(ACSServiceRequestType request_type, CORBA::ORB_ptr orb, acsdaemon::DaemonCallback_ptr cbptr, const char *corbaloc);
+    ACSErr::Completion_var executeLocal(ACSDaemonContext *context, ACSServiceRequestType request_type);
+    ACSErr::Completion_var executeRemote(ACSDaemonContext *context, ACSServiceRequestType request_type, CORBA::ORB_ptr orb, acsdaemon::DaemonCallback_ptr cbptr, const char *corbaloc);
     void setFromXMLAttributes(const char **atts);
     void setName(const char *iname) { name = iname == NULL ? NULL : strdup(iname); }
     void setCorbalocName(const char *iname) { corbalocName = iname == NULL ? NULL : strdup(iname); }
@@ -358,7 +359,6 @@ class ACSServiceRequestDescription {
     const ACSServiceType* getDependentService() { return acsServices[service].depententService; }
 };
 
-class ACSDaemonContext;
 
 class ACSServiceRequest : public ChainedRequest<ACSServiceRequest>, POA_acsdaemon::DaemonCallback {
   private:

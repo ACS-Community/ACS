@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.14 2012/02/28 13:01:06 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.15 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -398,16 +398,16 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
         ::maciErrType::NoPermissionEx
       ));
 
-    void set_manager_reference(
-        const short instance_number,
-        const char * ref
-        )
+
+    void set_configuration_reference (
+      ::CORBA::Short instance_number,
+      const ::acsdaemon::ServiceInfoSeq & services_info)
       ACE_THROW_SPEC ((
         CORBA::SystemException
       ))
    {
-	if (context)
-	   context->setManagerReference(instance_number, ref);
+       if (context)
+	   context->setConfigurationReference(instance_number, services_info);
    }
 
   private:

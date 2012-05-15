@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.10 2010/08/25 09:04:16 hsommer Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.11 2012/05/15 09:06:34 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -69,7 +69,21 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
         ACS_SHORT_LOG((LM_INFO, "DONE STARTING UP SERVICES."));
         
 	ACE_CString managerRef = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + ACSPorts::getManagerPort(1).c_str() + "/Manager";
-        daemon->set_manager_reference(1, managerRef.c_str()); 
+ACE_CString nsRef = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + ACSPorts::getNamingServicePort(1).c_str() + "/NameService";
+//        daemon->set_manager_reference(1, managerRef.c_str()); 
+   
+    ::acsdaemon::ServiceInfoSeq infos;
+    infos.length(2);
+    ::acsdaemon::ServiceInfo info;
+    info.service_type = CORBA::string_dup("manager");
+    info.service_name = CORBA::string_dup("");
+    info.service_reference = CORBA::string_dup(managerRef.c_str());
+    infos[0] = info;
+    info.service_type = CORBA::string_dup("naming_service");
+    info.service_name = CORBA::string_dup("");
+    info.service_reference = CORBA::string_dup(nsRef.c_str());
+    infos[1] = info;
+    daemon->set_configuration_reference(1, infos);
 
 //        printf("Please, press a key to start shutting down the services!");
 //        getchar();
@@ -259,12 +273,14 @@ main (int argc, char *argv[])
 			return -1;
 		}
 
+
+
                 ACS_SHORT_LOG((LM_INFO, "BUILDING SERVICE DEFINITION."));
 
 		acsdaemon::ServiceDefinitionBuilder *sdb = daemon->create_service_definition_builder(1);
 		sdb->add_naming_service(DAEMONHOST);
-		sdb->add_interface_repository(DAEMONHOST, false, false);
-		sdb->add_notification_service("NotifyEventChannelFactory", DAEMONHOST);
+                sdb->add_interface_repository(DAEMONHOST, false, false);
+                sdb->add_notification_service("NotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_notification_service("LoggingNotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_notification_service("AlarmNotifyEventChannelFactory", DAEMONHOST);
                 sdb->add_notification_service("ArchiveNotifyEventChannelFactory", DAEMONHOST);

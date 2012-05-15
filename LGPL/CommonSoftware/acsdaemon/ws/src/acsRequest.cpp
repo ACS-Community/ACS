@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.19 2012/02/29 09:17:34 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.20 2012/05/15 09:06:34 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -370,7 +370,7 @@ void ACSServiceRequestDescription::setFromXMLAttributes(const char **atts) {
     }
 }
 
-ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType request_type, bool log) {
+ACE_CString ACSServiceRequestDescription::prepareCommand(ACSDaemonContext *context, ACSServiceRequestType request_type, bool log) {
 	// TODO usage of snprintf
     char buffer[128];
     if (service == RDB_CDB)
@@ -390,6 +390,10 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
         ACS_SHORT_LOG ((LM_WARNING, "Domain parameter of Manager startup script is not yet supported!"));
     }
     if (cdbxmldir != NULL && service == CDB) commandline = commandline + " -d \"" + cdbxmldir + "\"";
+    if (service != NAMING_SERVICE && context->hasConfigurationReference(instance_number, acsServices[NAMING_SERVICE].xmltag)) {
+        commandline += " -x ";
+        commandline += context->getConfigurationReference(instance_number, acsServices[NAMING_SERVICE].xmltag).c_str();
+    }
     if (log) {
         ACE_CString logDirectory="~/.acs/commandcenter/";
         char * acsdata = ACE_OS::getenv("ACSDATA");
@@ -418,9 +422,9 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
     return commandline;
 }
 
-ACSErr::Completion_var ACSServiceRequestDescription::executeLocal(ACSServiceRequestType request_type) {
+ACSErr::Completion_var ACSServiceRequestDescription::executeLocal(ACSDaemonContext *context, ACSServiceRequestType request_type) {
     /* sinchronously executes a system command on the local machine */
-    ACE_CString command = prepareCommand(request_type, true);
+    ACE_CString command = prepareCommand(context, request_type, true);
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command.c_str()));
     int result = ACE_OS::system(command.c_str()) >> 8;
     if (result != EC_OK) {
@@ -452,7 +456,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeLocal(ACSServiceRequ
     return ok.returnCompletion(false);
 }
 
-ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceRequestType request_type, CORBA::ORB_ptr orb, acsdaemon::DaemonCallback_ptr cbptr, const char *corbaloc) {
+ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSDaemonContext *context, ACSServiceRequestType request_type, CORBA::ORB_ptr orb, acsdaemon::DaemonCallback_ptr cbptr, const char *corbaloc) {
     /* sinchronously or asinchronously propagates the request to another host */
     ACS_SHORT_LOG((LM_INFO, "Using Corba reference: '%s'", corbaloc));
     try {
@@ -692,12 +696,12 @@ bool ACSServiceRequest::execute() {
                 ACS_SHORT_LOG((LM_WARNING, "Failed to make a 'working' callback call for local request!"));
             }
         }
-        comp = desc->executeLocal(request_type);
+        comp = desc->executeLocal(context, request_type);
         completion = comp;
         complete();
         return true;
     }
-    comp = desc->executeRemote(request_type, context->getORB(), cbptr(), corbaloc.c_str());
+    comp = desc->executeRemote(context, request_type, context->getORB(), cbptr(), corbaloc.c_str());
     if (comp->previousError.length() == 0) {
         // wait for callback to return and release callback in case it failed to return in time (?)
         return false;
