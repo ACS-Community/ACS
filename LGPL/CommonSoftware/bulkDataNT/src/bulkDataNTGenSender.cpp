@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.3 2012/05/02 14:12:20 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.4 2012/05/16 14:28:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@ using namespace AcsBulkdata;
 using namespace std;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-b data size in bytes] [-p parameter]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-b data size in bytes] [-p parameter] [-l # of loops]" << endl;
 	exit(1);
 }
 
@@ -43,13 +43,19 @@ int main(int argc, char *argv[])
 	char *streamName = "DefaultStream";
 	std::string param="defalutParamter";
 	unsigned int dataSize=65000;
+	unsigned int loop=1;
 	list<char *> flowNames;
 	vector<BulkDataNTSenderFlow*> flows;
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:");
+    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:");
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
+    	case 'l':
+    	{
+    		loop = atoi(get_opts.opt_arg());
+    		break;
+    	}
     	case 'p':
     	{
     		param = get_opts.opt_arg();
@@ -121,20 +127,25 @@ int main(int argc, char *argv[])
     		flows[i]->startSend((const unsigned char*)param.c_str(), param.size());
     	}//for
 
-    	// then sendData
+		// then sendData
     	unsigned char *data= new unsigned char[dataSize];
     	for (unsigned int i=0; i<dataSize; i++)	data[i]=i;
-    	for(unsigned int i=0; i<numOfCreatedFlows; i++)
+
+    	for(unsigned int j=1; j<=loop; j++)
     	{
-        	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes of data on flow: %s to %d receiver(s)", dataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
-        	start_time = ACE_OS::gettimeofday();
-        	flows[i]->sendData(data, dataSize);
-        	elapsed_time = ACE_OS::gettimeofday() - start_time;
-        	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-        	ACS_SHORT_LOG((LM_INFO, "Transfer rate for flow %s: %f MBytes/sec",
-        			tmpFlowNames[i].c_str(),
-        			(dataSize/(1024.0*1024.0))/send_time));
-    	}//for
+    		std::cout << "Loop: " << j << " of " << loop << std::endl;
+    		for(unsigned int i=0; i<numOfCreatedFlows; i++)
+    		{
+    			ACS_SHORT_LOG((LM_INFO, "Going to send [%d/%d]: %d Bytes of data on flow: %s to %d receiver(s)", j, loop, dataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+    			start_time = ACE_OS::gettimeofday();
+    			flows[i]->sendData(data, dataSize);
+    			elapsed_time = ACE_OS::gettimeofday() - start_time;
+    			send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    			ACS_SHORT_LOG((LM_INFO, "Transfer rate for flow %s: %f MBytes/sec",
+    					tmpFlowNames[i].c_str(),
+    					(dataSize/(1024.0*1024.0))/send_time));
+    		}//for i
+    	}//for j
 
     	// and stopSend
     	for(unsigned int i=0; i<numOfCreatedFlows; i++)
