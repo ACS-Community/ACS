@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import alma.acsdaemon.ServiceInfo;
 import alma.acsdaemon.ServicesDaemonHelper;
 
 import com.cosylab.acs.maci.RemoteException;
@@ -53,11 +54,14 @@ public class ServiceDaemonProxy extends CORBAReferenceSerializator implements Se
 	public void setManagerReference(String reference) throws RemoteException {
 		try
 		{
-			daemon.set_manager_reference((short)alma.acs.util.ACSPorts.getBasePort(), reference);
+			ServiceInfo[] infos = new ServiceInfo[1];
+			infos[0] = new ServiceInfo("manager", "", reference);
+			daemon.set_configuration_reference((short)alma.acs.util.ACSPorts.getBasePort(), infos);
+			//daemon.set_manager_reference((short)alma.acs.util.ACSPorts.getBasePort(), );
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'start_container()' method.", ex);
+			RemoteException re = new RemoteException("Failed to invoke 'set_configuration_reference()' method.", ex);
 			throw re;
 		}
 	}
