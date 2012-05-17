@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.11 2012/05/15 09:06:34 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.12 2012/05/17 09:24:30 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -124,6 +124,7 @@ class ImpController : public ServiceController {
   private:
     ACSServiceType service;
     ACE_CString corbaloc;
+    bool firstCheck;
   protected:
     ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL);
     acsdaemon::ServiceState getActualState();
@@ -159,6 +160,7 @@ class ACSDaemonContext {
     RequestProcessorThread *reqproc;
     ControllerThread *ctrl;
     ACE_Thread_Mutex *m_mutex;
+    ACE_Recursive_Thread_Mutex m_configMutex;
     ServiceController **impcontrollers;
     ServiceController **acsservicecontrollers;
     std::map<std::string, ServiceController **> acsservicecontrollersmap;
@@ -179,7 +181,7 @@ class ACSDaemonContext {
     acsdaemon::ServiceState getACSServiceState(int instance_number, const char *name = NULL);
     acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) const {
 	return detailedServiceStateProvider ? detailedServiceStateProvider->getDetailedServiceState(desc, obj) : acsdaemon::RUNNING; };
-    void setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info) { configurationReferences[instance_number] = services_info; setImpControllersConfigurationReference(instance_number, services_info); };
+    void setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info) { ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex); configurationReferences[instance_number] = services_info; setImpControllersConfigurationReference(instance_number, services_info); };
     ::acsdaemon::ServiceInfoSeq getConfigurationReference(const short instance_number);
     std::string getConfigurationReference(const short instance_number, const char* service_type);
     bool hasConfigurationReference(const short instance_number);

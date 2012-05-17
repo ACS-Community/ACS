@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.20 2012/05/15 09:06:34 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.21 2012/05/17 09:24:30 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -457,7 +457,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeLocal(ACSDaemonConte
 }
 
 ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSDaemonContext *context, ACSServiceRequestType request_type, CORBA::ORB_ptr orb, acsdaemon::DaemonCallback_ptr cbptr, const char *corbaloc) {
-    /* sinchronously or asinchronously propagates the request to another host */
+    /* synchronously or asynchronously propagates the request to another host */
     ACS_SHORT_LOG((LM_INFO, "Using Corba reference: '%s'", corbaloc));
     try {
         CORBA::Object_var obj = orb->string_to_object(corbaloc);

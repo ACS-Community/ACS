@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.17 2012/05/15 09:06:34 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.18 2012/05/17 09:24:30 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -193,7 +193,7 @@ ImpRequest::ImpRequest(ImpController *icontroller, ACSServiceRequestType itype, 
 
 /******************************* ImpController ********************************/
 
-ImpController::ImpController(ACSDaemonContext *icontext, ACSServiceType iservice, bool iautostart) : ServiceController(icontext, iautostart), service(iservice) {
+ImpController::ImpController(ACSDaemonContext *icontext, ACSServiceType iservice, bool iautostart) : ServiceController(icontext, iautostart), service(iservice), firstCheck(true) {
     corbaloc = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + acsServices[service].impport + "/" + acsServices[service].imptype;
 }
 
@@ -207,6 +207,8 @@ ACE_CString ImpController::getServiceName()
 }
 
 acsdaemon::ServiceState ImpController::getActualState() {
+	bool wasFirstCheck = firstCheck;
+	firstCheck = false;
     try {
         ACS_SHORT_LOG((LM_DEBUG, "Evaluating state of Imp with Corba URI '%s'.", corbaloc.c_str()));
         CORBA::Object_var obj = getContext()->getORB()->string_to_object(corbaloc.c_str());
@@ -224,6 +226,15 @@ acsdaemon::ServiceState ImpController::getActualState() {
         }
         imp->ping();
         ACS_SHORT_LOG((LM_DEBUG, "Imp '%s' responded.", acsServices[service].impname));
+
+        // set configuration of prestarted imp
+        if (wasFirstCheck)
+        {
+            for (int i = 0; i <= 9; i++)
+              if (getContext()->hasConfigurationReference(i))
+                setConfigurationReference(i, getContext()->getConfigurationReference(i));
+        }
+
         return acsdaemon::RUNNING;
 //    } catch(CORBA::OBJECT_NOT_EXIST &ex) {
     } catch(CORBA::TRANSIENT &ex) {
@@ -495,12 +506,14 @@ void ACSDaemonContext::setImpControllersConfigurationReference(const short insta
 
 ::acsdaemon::ServiceInfoSeq ACSDaemonContext::getConfigurationReference(const short instance_number)
 {
-    return configurationReferences[instance_number];
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex);
+	return configurationReferences[instance_number];
 }
 
 std::string ACSDaemonContext::getConfigurationReference(const short instance_number, const char* service_type)
 {
-    ::acsdaemon::ServiceInfoSeq infos = configurationReferences[instance_number];
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex);
+	::acsdaemon::ServiceInfoSeq infos = configurationReferences[instance_number];
     for (CORBA::ULong i = 0; i < infos.length(); i++)
         if (ACE_OS::strcmp(infos[i].service_type.in(), service_type) == 0)
             return std::string(infos[i].service_reference.in());
@@ -509,12 +522,14 @@ std::string ACSDaemonContext::getConfigurationReference(const short instance_num
 
 bool ACSDaemonContext::hasConfigurationReference(const short instance_number)
 {
-    return configurationReferences.find(instance_number) != configurationReferences.end();
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex);
+	return configurationReferences.find(instance_number) != configurationReferences.end();
 }
 
 bool ACSDaemonContext::hasConfigurationReference(const short instance_number, const char* service_type)
 {
-    if (!hasConfigurationReference(instance_number))
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex);
+	if (!hasConfigurationReference(instance_number))
         return false;
 
     ::acsdaemon::ServiceInfoSeq infos = configurationReferences[instance_number];
