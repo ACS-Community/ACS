@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.26 2012/05/15 07:03:25 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.27 2012/05/17 06:52:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -265,9 +265,13 @@ then
   # Check if Naming Service is running
   if [ ! -e $NAMING_SERVICE_PIDFILE ]
   then
-    #ACS_LOG_ERROR "$COMMAND" "Naming Service must be running before starting a Notify Service!"
-    #exit $EC_FAILURE
-    ACS_LOG_INFO "$COMMAND" "Naming Service is not running locally, assuming remote Naming Service!"
+    if [ "X$ACS_NAME_SERVICE" = "X" ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "Naming Service must be running before starting a Notify Service!"
+      exit $EC_FAILURE
+    else
+      ACS_LOG_INFO "$COMMAND" "Naming Service is not running locally, assuming remote Naming Service!"
+    fi
   fi
 
   # Prevent from having the service started more than once on the same baseport

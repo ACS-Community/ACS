@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsACSLogService,v 1.6 2012/05/15 07:03:25 msekoran Exp $"
+# "@(#) $Id: acsACSLogService,v 1.7 2012/05/17 06:52:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -217,8 +217,13 @@ then
   # Check if Logging Service is running
   if [ ! -e $LOGGING_SERVICE_PIDFILE ]
   then
-    ACS_LOG_ERROR "$COMMAND" "Logging Service must be running before starting an ACS Log Service!"
-    exit $EC_FAILURE
+    if [ "X$ACS_NAME_SERVICE" = "X" ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "Logging Service must be running before starting an ACS Log Service!"
+      exit $EC_FAILURE
+    else
+      ACS_LOG_INFO "$COMMAND" "Logging Service is not running locally, assuming remote Naming Service and/or Logging Service!"
+    fi
   fi
 
   # Prevent from having the service started more than once on the same baseport
