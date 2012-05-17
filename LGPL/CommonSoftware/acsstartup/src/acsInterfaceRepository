@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.11 2012/05/17 06:52:29 msekoran Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.12 2012/05/17 07:22:21 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -328,7 +328,7 @@ then
   # the Interface Repository is added to the Name Service
   # using the temporary file, that is afterwards deleted.
   ACS_NAME_SERVICE=`acsstartupNSRef`
-  $ACE_ROOT/TAO/utils/nslist/tao_nsadd --name InterfaceRepository --ior `cat $IR_IOR` -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
+  $ACE_ROOT/TAO/utils/nslist/tao_nsadd --rebind --name InterfaceRepository --ior `cat $IR_IOR` -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
 fi
 
 if [ -e $IR_PIDFILE -a \( "$CL_WAIT" = "true" -o "$CL_START" = "true" \) -a "$CL_LOADIFR" = "true" ]

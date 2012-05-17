@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsLoggingService,v 1.4 2012/05/15 07:03:25 msekoran Exp $"
+# "@(#) $Id: acsLoggingService,v 1.5 2012/05/17 07:22:21 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -217,8 +217,13 @@ then
   # Check if Logging Notify Service is running
   if [ ! -e $LOGGING_NOTIFY_SERVICE_PIDFILE ]
   then
-    ACS_LOG_ERROR "$COMMAND" "Logging Notify Service must be running before starting a Logging Service!"
-    exit $EC_FAILURE
+    if [ "X$ACS_NAME_SERVICE" = "X" ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "Logging Notify Service must be running before starting a Logging Service!"
+      exit $EC_FAILURE
+    else
+      ACS_LOG_INFO "$COMMAND" "Logging Notify Service is not running locally, assuming remote Naming Service and/or Logging Notify Service!"
+    fi
   fi
 
   # Prevent from having the service started more than once on the same baseport
