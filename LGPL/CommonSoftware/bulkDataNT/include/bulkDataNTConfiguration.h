@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.32 2012/02/01 13:51:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.33 2012/05/18 13:26:22 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -80,10 +80,17 @@ public:
 	 */
 	static const char* const DEFAULT_RECEIVER_FLOW_PROFILE;
 
+	/**
+	 * Default qos_profile to use when we create QoS using API
+	 */
+	static const char* const DEFAULT_API_CREATE_PROFILE;
+
 	/// BulkData NT debug level. The value is read from env. variable BULKDATA_NT_DEBUG
 	/// now it effects the whole BD running in a single process, but
 	/// if needed can be later re-factor that can be set per stream/flow
 	static short debugLevel;
+
+	std::string getStringProfileQoS() { return stringProfileQoS; }
 
 protected:
 	/**
@@ -98,6 +105,21 @@ protected:
 
 	std::string libraryQos;  /// QoS configuration library
 	std::string profileQos;  /// QoS configuration profile in the library that should be used
+
+	/**
+	 * Sets configuration
+	 * @param cfg
+	 * @param defaultProfile
+	 */
+	void setStringProfileQoS(char* cfg, const char *defaultProfile);
+
+	 /**
+	  * * Sets configuration with profile name
+	  * @param profileName
+	  * @param cfg
+	  * @param defaultProfile
+	  */
+	void setStringProfileQoS(char* profileName, char* cfg, const char *defaultProfile);
 
 	std::string stringProfileQoS;  /// her goes DDS QoS Profile
 
@@ -136,6 +158,21 @@ class  SenderFlowConfiguration : public DDSConfiguration
 {
 public:
 	SenderFlowConfiguration();
+
+	/**
+	 * Sets DDS QoS directly using XML
+	 * @param cfg (same value that can be given to DDSReceiverFlowQoS elemtn in CDB
+	 */
+	void setDDSSenderFlowQoS(char *cfg);
+
+	/**
+	 * Sets DDS QoS directly using XML + profile name (if we need to have it unique)
+	 * @param profileName
+	 * @param cfg
+	 */
+	void setDDSSenderFlowQoS(char *profileName, char* cfg);
+
+
 	double getACKsTimeout() const;
     double getSendFrameTimeout() const;
     void setACKsTimeout(double acKsTimeout);
@@ -154,6 +191,20 @@ class SenderStreamConfiguration : public StreamConfiguration
 {
 public:
 	SenderStreamConfiguration();
+
+	/**
+	 * Sets DDS QoS directly using XML
+	 * @param cfg (same value that can be given to DDSReceiverFlowQoS elemtn in CDB
+	 */
+	void setDDSSenderStreamQoS(char *cfg);
+
+	/**
+	 * Sets DDS QoS directly using XML + profile name (if we need to have it unique)
+	 * @param profileName
+	 * @param cfg
+	 */
+	void setDDSSenderStreamQoS(char *profileName, char* cfg);
+
 
 	//	std::map<const char *, BulkDataNTSenderFlowConfiguration> flows;
 };
@@ -177,6 +228,19 @@ class ReceiverFlowConfiguration : public DDSConfiguration
 {
 public:
 	ReceiverFlowConfiguration();
+
+	/**
+	 * Sets DDS QoS directly using XML
+	 * @param cfg (same value that can be given to DDSReceiverFlowQoS elemtn in CDB
+	 */
+	void setDDSReceiverFlowQoS(char *cfg);
+
+	/**
+	 * Sets DDS QoS directly using XML + profile name (if we need to have it unique)
+	 * @param profileName
+	 * @param cfg
+	 */
+	void setDDSReceiverFlowQoS(char *profileName, char* cfg);
 
 	double getCbReceiveProcessTimeout() const;
     void setCbReceiveProcessTimeout(double cbReceiveProcessTimeout);
@@ -208,6 +272,20 @@ class ReceiverStreamConfiguration : public StreamConfiguration
 public:
 
 	ReceiverStreamConfiguration();
+
+	/**
+	 * Sets DDS QoS directly using XML
+	 * @param cfg (same value that can be given to DDSReceiverFlowQoS elemtn in CDB
+	 */
+	void setDDSReceiverStreamQoS(char *cfg);
+
+	/**
+	 * Sets DDS QoS directly using XML + profile name (if we need to have it unique)
+	 * @param profileName
+	 * @param cfg
+	 */
+	void setDDSReceiverStreamQoS(char *profileName, char* cfg);
+
 
 protected:
 	ReceiverType type;

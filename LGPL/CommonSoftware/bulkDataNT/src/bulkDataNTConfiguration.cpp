@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.19 2012/02/01 13:51:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.20 2012/05/18 13:26:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,7 @@ const char* const DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE = "SenderStrea
 const char* const DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE= "SenderFlowDefaultQosProfile";
 const char* const DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE = "ReceiverStreamDefaultQosProfile";
 const char* const DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE = "ReceiverFlowDefaultQosProfile";
+const char* const DDSConfiguration::DEFAULT_API_CREATE_PROFILE = "APICreateProfile";
 
 short DDSConfiguration::debugLevel = -1;
 unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
@@ -105,8 +106,41 @@ void DDSConfiguration::setDDSLogVerbosity()
 	}
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 			NDDS_CONFIG_LOG_CATEGORY_API,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
+	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
+				NDDS_CONFIG_LOG_CATEGORY_COMMUNICATION,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
+	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
+					NDDS_CONFIG_LOG_CATEGORY_ENTITIES,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
 
 }//setDDSLogVerbosity
+
+void DDSConfiguration::setStringProfileQoS(char *cfg, const char *defaultProfile)
+{
+	profileQos=DEFAULT_API_CREATE_PROFILE;
+
+	stringProfileQoS="<qos_profile name=\"";
+	stringProfileQoS+=profileQos;
+	stringProfileQoS+="\" base_name=\"";
+	stringProfileQoS+=DDSConfiguration::DEFAULT_LIBRARY;
+	stringProfileQoS+="::";
+	stringProfileQoS+=defaultProfile;
+	stringProfileQoS+="\">";
+	stringProfileQoS+=cfg;
+	stringProfileQoS+="</qos_profile>";
+}//setStringProfileQoS
+
+void DDSConfiguration::setStringProfileQoS(char*  profileName, char* cfg, const char *defaultProfile)
+{
+	profileQos=profileName;
+	stringProfileQoS="<qos_profile name=\"";
+	stringProfileQoS+=profileQos;
+	stringProfileQoS+="\" base_name=\"";
+	stringProfileQoS+=DDSConfiguration::DEFAULT_LIBRARY;
+	stringProfileQoS+="::";
+	stringProfileQoS+=defaultProfile;
+	stringProfileQoS+="\">";
+	stringProfileQoS+=cfg;
+	stringProfileQoS+="</qos_profile>";
+}//setStringProfileQoS
 
 /**************************************************************************************
  * 			StreamConfiguration
@@ -175,6 +209,16 @@ ReceiverStreamConfiguration::ReceiverStreamConfiguration()
 	profileQos=DEFAULT_RECEIVER_STREAM_PROFILE;
 }//ReceiverStreamConfiguration
 
+void ReceiverStreamConfiguration::setDDSReceiverStreamQoS(char *cfg)
+{
+	setStringProfileQoS(cfg, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
+}//setDDSReceiverStreamQoS
+
+void ReceiverStreamConfiguration::setDDSReceiverStreamQoS(char *profileName, char* cfg)
+{
+	setStringProfileQoS(profileName, cfg, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
+}//setDDSReceiverStreamQoS
+
 /**************************************************************************************
  * 			ReceiverFlowConfiguration
  **************************************************************************************/
@@ -185,6 +229,7 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 	enableMulticast = DEFAULT_ENABLE_MULTICAST;
 	multicastAddress = DEFAULT_MULTICAST_ADDRESS;
 }//ReceiverFlowConfiguration
+
 
 double ReceiverFlowConfiguration::getCbReceiveProcessTimeout() const
 {
@@ -216,6 +261,16 @@ void ReceiverFlowConfiguration::setMulticastAddress(std::string multicastAddress
     this->multicastAddress = multicastAddress;
 }
 
+void ReceiverFlowConfiguration::setDDSReceiverFlowQoS(char* cfg)
+{
+	setStringProfileQoS(cfg, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
+}//setDDSReceiverFlowQoS
+
+void ReceiverFlowConfiguration::setDDSReceiverFlowQoS(char* profileName, char* cfg)
+{
+	setStringProfileQoS(profileName, cfg, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
+}//setDDSReceiverFlowQoS
+
 /**************************************************************************************
  * 			SenderFlowConfiguration
  **************************************************************************************/
@@ -246,8 +301,15 @@ void SenderFlowConfiguration::setSendFrameTimeout(double frameTimeout)
     this->sendFrameTimeout = frameTimeout;
 }
 
+void SenderFlowConfiguration::setDDSSenderFlowQoS(char* cfg)
+{
+	setStringProfileQoS(cfg, DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE);
+}//setDDSReceiverFlowQoS
 
-
+void SenderFlowConfiguration::setDDSSenderFlowQoS(char* profileName, char* cfg)
+{
+	setStringProfileQoS(profileName, cfg, DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE);
+}//setDDSReceiverFlowQoS
 
 
 
