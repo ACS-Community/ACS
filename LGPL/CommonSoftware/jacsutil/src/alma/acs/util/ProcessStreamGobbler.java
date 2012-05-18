@@ -82,15 +82,14 @@ public class ProcessStreamGobbler
 	 * <p>
 	 * Use this method if you do not want to wait for the process to end.
 	 * The status can anyway be checked using {@link #hasTerminated()}.
-	 * 
-	 * @param timeout maximum time to wait for the process to finish
-	 * @param unit unit for the timeout
-	 * @return  <code>true</code> if returning because the process ended, 
-	 *          otherwise <code>false</code> if the timeout applied (in which case the streams will continue to be read though).
-	 * @throws InterruptedException 
 	 */
-	public void gobbleAsync() throws InterruptedException {
-		gobble(-1, null);
+	public void gobbleAsync() {
+		try {
+			gobble(-1, null);
+		} catch (InterruptedException ex) {
+			// this should never happen, since InterruptedException is only thrown while we would wait for the external process, which here we don't. 
+			ex.printStackTrace();
+		}
 	}
 
 	/**
