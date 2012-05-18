@@ -6,8 +6,6 @@ ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
 Logging to ACS log server.
-RTContext:
-SourceInfo:
-local manager from
 export
 alma.acs.testsupport.tat.TATJUnitRunner
+DEBUG \[acsStartJava\] ACS Interface Repository: IOR:
