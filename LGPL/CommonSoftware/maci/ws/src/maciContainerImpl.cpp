@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.147 2012/04/26 15:11:04 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.148 2012/05/18 06:54:42 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.147 2012/04/26 15:11:04 acaproni Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.148 2012/05/18 06:54:42 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -330,12 +330,12 @@ ContainerImpl::ContainerImpl() :
 
 ContainerImpl::~ContainerImpl()
 {
-
+#ifndef MAKE_VXWORKS
 	if (m_logThrottleAlarm_p!=NULL && m_loggerProxy!=NULL) {
 		m_loggerProxy->setAlarmSender(m_logThrottleAlarm_p);
 		delete m_logThrottleAlarm_p;
 	}
-
+#endif
     if (getLogger() != 0)   // we have to check if logger is there. ....
 	{                   // ....It can happened that Container is just created w/o using init method where the logger is "created"
 	ACS_TRACE("maci::ContainerImpl::~ContainerImpl");
@@ -1445,10 +1445,11 @@ ContainerImpl::connect()
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusMgrInitEndMsg);
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusStartupEndMsg);
 
+#ifndef MAKE_VXWORKS
       // Init the sending of alarms in the LoggingProxy
       m_logThrottleAlarm_p = new LogThrottleAlarmImpl(m_containerServices,m_container_name);
       m_loggerProxy->setAlarmSender(m_logThrottleAlarm_p);
-
+#endif
       return true;
 
 }
@@ -2869,8 +2870,11 @@ ContainerImpl::instantiateContainerServices(
         ACE_CString& type,
         PortableServer::POA_ptr poa)
 {
-
+#ifndef MAKE_VXWORKS
   return new MACIContainerServices(h,name,type,poa,getAlarmSourceThread());
+#else
+  return new MACIContainerServices(h,name,type,poa);
+#endif
 }
 
 

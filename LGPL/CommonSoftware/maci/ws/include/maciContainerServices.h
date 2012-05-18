@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.39 2012/04/26 15:11:41 acaproni Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.40 2012/05/18 06:54:45 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -134,8 +134,11 @@ class MACIContainerServices: public ContainerServices
     const maci::Handle componentHandle, 
     ACE_CString& name,
     ACE_CString& type,
-    PortableServer::POA_ptr poa,
-    const acsalarm::AlarmSourceThread* alarmSourceThread_p);
+    PortableServer::POA_ptr poa
+#ifndef MAKE_VXWORKS
+    ,const acsalarm::AlarmSourceThread* alarmSourceThread_p
+#endif
+    );
 
   /**
 	 * Constructor to be used in client instances

@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.67 2012/04/26 15:11:04 acaproni Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.68 2012/05/18 06:54:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,9 @@
 
 #include <acsContainerServices.h>
 #include "maciContainerThreadHook.h"
+#ifndef MAKE_VXWORKS
 #include "maciLogThrottleAlarmImpl.h"
+#endif
 
 #include <map>
 
@@ -126,7 +128,7 @@ private:
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.67 2012/04/26 15:11:04 acaproni Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.68 2012/05/18 06:54:45 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -536,8 +538,10 @@ public:
   /// logger
   static LoggingProxy * m_loggerProxy;
 
+#ifndef MAKE_VXWORKS
   // It is used by the logging proxy to clear/raise alarms
   LogThrottleAlarmImpl* m_logThrottleAlarm_p;
+#endif
 
   static int m_logLevelRefresh;
   static int m_logLevelConfigure;
