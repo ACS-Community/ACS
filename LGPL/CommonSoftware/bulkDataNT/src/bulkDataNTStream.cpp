@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.37 2012/04/24 12:31:25 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.38 2012/05/21 13:07:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -139,11 +139,13 @@ std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_
 */
 //	std::cout << "========> " << configuration_m.stringProfileQoS << std::endl;
 //	std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_m.profileQos << std::endl;
+
 	if (configuration_m.urlProfileQoS.length()>0)
 	{
 		factory_qos.profile.url_profile.ensure_length(1,1);
 		factory_qos.profile.url_profile[0] = DDS_String_dup(configuration_m.urlProfileQoS.c_str());
 	}//if
+
 	ret = factory_m->set_qos(factory_qos);
 	if (ret!=DDS::RETCODE_OK)
 	{
@@ -231,6 +233,17 @@ void BulkDataNTStream::destroyDDSParticipant()
 {
 	DDS::ReturnCode_t ret;
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+
+	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
+	ret = ACSBulkData::BulkDataNTFrameTypeSupport::unregister_type(participant_m, type_name);
+	if (ret != DDS::RETCODE_OK)
+	{
+		DDSUnregisterTypeProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setTypeName(type_name);
+		throw ex;
+	}
+
 	ret = factory_m->delete_participant(participant_m);
 	if (ret != DDS_RETCODE_OK)
 	{
