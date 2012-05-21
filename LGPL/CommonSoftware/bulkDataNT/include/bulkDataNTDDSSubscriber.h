@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.10 2012/01/20 11:54:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.11 2012/05/21 13:03:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,6 +75,8 @@ protected:
 	void operator=(const BulkDataNTDDSSubscriber&);
 	/// ALMA C++ coding standards state copy constructors should be disabled.
 	BulkDataNTDDSSubscriber(const BulkDataNTDDSSubscriber&);
+
+	//static DDS::Long unicastAddress_m;
 };//class BulkDataNTDDSPublisher
 
 };

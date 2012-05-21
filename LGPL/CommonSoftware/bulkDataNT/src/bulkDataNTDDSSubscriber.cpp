@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.22 2012/02/16 14:32:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.23 2012/05/21 13:03:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@ using namespace std;
 using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
+//DDS::Long BulkDataNTDDSSubscriber::unicastAddress_m=24000;
 
 BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const ReceiverFlowConfiguration &cfg) :
 		BulkDataNTDDS(p, cfg)
@@ -174,9 +175,11 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	}
 	else
 	{
-		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast address.", topicName_m.c_str()));
-		//TBD if we add support for setting unicast addreess
-		//dr_qos.unicast.value.ensure_length(1,1);
+/*
+		dr_qos.unicast.value.ensure_length(1,1);
+		dr_qos.unicast.value[0].receive_port = unicastAddress_m++;
+ */
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast port %d.", topicName_m.c_str(), dr_qos.unicast.value[0].receive_port));
 	}
 
 	// here we do not need the temporary DR
