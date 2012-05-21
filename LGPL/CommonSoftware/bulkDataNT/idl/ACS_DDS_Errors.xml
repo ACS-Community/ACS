@@ -23,6 +23,11 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSTopicDeleteProblem" shortDescription="Problem to delete DDS topic" description="Problem to delete DDS topic">
+        <Member name="Topic" type="string" description="Topic name" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="Problem to create DDS publisher">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
@@ -48,6 +53,10 @@
         <Member name="TypeName" type="string" description="Type name" />
     </ErrorCode>
     
+    <ErrorCode name="DDSUnregisterTypeProblem" shortDescription="Problem to unregister type" description="Problem to unregister type">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+        <Member name="TypeName" type="string" description="Type name" />
+    </ErrorCode>
     
     <ErrorCode name="DDSSubscriberCreateProblem" shortDescription="Problem to create DDS subscriber" description="Problem to create DDS subscriber">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
