@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.16 2012/01/26 14:48:49 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.17 2012/05/21 13:04:55 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,21 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 	return topic;
 }//createDDSTopic
 
+ void BulkDataNTDDS::destroyDDSTopic(DDS::Topic *topic)
+ {
+	 AUTO_TRACE(__PRETTY_FUNCTION__);
+	 DDS::ReturnCode_t ret;
 
+	ret = participant_m->delete_topic(topic);
+	if (ret != DDS::RETCODE_OK)
+	{
+		DDSTopicDeleteProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setTopic(topicName_m.c_str());
+		ex.setDDSTypeCode(ret);
+		throw ex;
+	}//if
+
+}//destroyDDSTopic
 
 /*___oOo___*/
 

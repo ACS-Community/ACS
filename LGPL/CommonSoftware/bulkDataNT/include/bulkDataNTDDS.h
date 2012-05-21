@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.13 2012/01/26 14:48:49 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.14 2012/05/21 13:04:55 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,11 +76,17 @@ public:
 	virtual ~BulkDataNTDDS();
 
 	/**
-	 * It creates topic with name topicName using participant given in CTOR
+	 * It creates topic (and register the type) with name topicName using participant given in CTOR
 	 * @param topicName
 	 * @return
 	 */
 	DDS::Topic* createDDSTopic(const char* topicName);
+
+	/**
+	 * It destroys topic and unregisters the type
+	 * @param topic
+	 */
+	void destroyDDSTopic(DDS::Topic *topic);
 
 protected:
 
