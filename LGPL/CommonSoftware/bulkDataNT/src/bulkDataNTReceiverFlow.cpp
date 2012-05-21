@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.20 2012/03/30 13:47:52 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.21 2012/05/21 13:06:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.20 2012/03/30 13:47:52 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.21 2012/05/21 13:06:08 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -73,6 +73,9 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	receiverStream_m->removeFlowFromMap(flowName_m.c_str());
+
+
+
 	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
 	DDS::DomainParticipant *participant = receiverStream_m->getDDSParticipant();
 	if (participant!=0)
@@ -80,11 +83,13 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 		ddsSubscriber_m->destroyDDSReader(ddsDataReader_m);
 		ddsDataReader_m = 0;
 		delete dataReaderListener_m;
-		participant->delete_topic(ddsTopic_m);
+
+		ddsSubscriber_m->destroyDDSTopic(ddsTopic_m);
+		ddsTopic_m = 0;
 	}
 	else
 	{
-		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data reader and topic participant is NULL"));
+		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data reader and topic because participant is NULL"));
 	}
 	delete ddsSubscriber_m;
 	if (releaseCB_m) delete callback_m;

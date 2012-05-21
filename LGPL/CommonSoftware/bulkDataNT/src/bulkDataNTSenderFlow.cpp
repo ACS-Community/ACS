@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.44 2012/05/09 10:17:26 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.45 2012/05/21 13:06:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.44 2012/05/09 10:17:26 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.45 2012/05/21 13:06:08 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -103,16 +103,13 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 		ddsDataWriter_m = 0;
 		delete writerReaderListener_m;
 		writerReaderListener_m = 0;
-		ret = participant->delete_topic(ddsTopic_m);
-		if (ret!=DDS::RETCODE_OK)
-		{
-			ACS_SHORT_LOG((LM_ERROR, "Problem deleting topic (%d)", ret));
-		}
+
+		ddsPublisher_m->destroyDDSTopic(ddsTopic_m);
 		ddsTopic_m=0;
 	}
 	else
 	{
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Problem deleting data write and topic participant is NULL"));
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Problem deleting data write and topic because participant is NULL"));
 	}
 	delete ddsPublisher_m;
 	ddsPublisher_m=0;
