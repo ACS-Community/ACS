@@ -240,7 +240,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 		sb.append("</" + levelName + ">");
 
 		String Log = sb.toString();
-		//		System.err.println("Logging XML log entry " + Log);
+		//		System.out.println("Logging XML log entry " + Log);
 		return Log;
 	}
 

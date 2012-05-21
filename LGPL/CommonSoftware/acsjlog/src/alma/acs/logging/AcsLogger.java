@@ -314,7 +314,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     		// Probably #createUnconfiguredLogger was used without setting parent logger nor log level. 
     		// Just to be safe I add the necessary checks and warning message that improve over a NPE.
     		if (!noLevelWarningPrinted) {
-	    		System.err.println("Logger configuration error: no log level found for logger " + getLoggerName() + 
+	    		System.out.println("Logger configuration error: no log level found for logger " + getLoggerName() + 
 	    				" or its ancestors. Will use Level.ALL instead.");
 	    		noLevelWarningPrinted = true;
     		}

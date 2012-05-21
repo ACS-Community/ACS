@@ -190,7 +190,7 @@ public class JacORBFilter implements Filter {
 			logLevel = level.intValue();
 		}
 //		else {
-//			System.err.println("&&&& JacORB filter got null level");
+//			System.out.println("&&&& JacORB filter got null level");
 //		}
 	}
 }

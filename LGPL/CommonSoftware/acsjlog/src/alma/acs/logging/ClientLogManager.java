@@ -183,7 +183,7 @@ public class ClientLogManager implements LogConfigSubscriber
             sharedLogConfig.initialize(false); // will determine the default values
             configureLogging(sharedLogConfig);
         } catch (LogConfigException ex) {
-            System.err.println("Failed to configure logging: " + ex.toString());
+            System.out.println("Failed to configure logging: " + ex.toString());
         }
         
         // parentRemoteLogger is not removed in method disableRemoteLogging, and thus does not need to be
@@ -307,7 +307,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	            	}
             	} catch (Throwable thr) {
             		// better just print to stderr because remote logging may be in a delicate state
-            		System.err.println("Unexpected exception while disabling remote logging for '" + loggerName + "': " + thr.toString());
+            		System.out.println("Unexpected exception while disabling remote logging for '" + loggerName + "': " + thr.toString());
             	}
             }
         }
@@ -491,7 +491,7 @@ public class ClientLogManager implements LogConfigSubscriber
                 }
             }
         } catch (Throwable thr) {
-            System.err.println("failed to create logger '" + loggerName + "'.");
+            System.out.println("failed to create logger '" + loggerName + "'.");
         }
         return loggerInfo.logger;
     }
@@ -524,17 +524,17 @@ public class ClientLogManager implements LogConfigSubscriber
 	public boolean initRemoteLogging(ORB orb, Manager manager, int managerHandle, boolean retry)
 	{
         if (logDispatcher != null) {
-            System.err.println("Ignoring call to ClientLogManager#init: already initialized!");
+            System.out.println("Ignoring call to ClientLogManager#init: already initialized!");
             // todo: or is there a case where we want to retrieve the log service again? 
             return false;
         }
         
         if (orb == null) {
-            System.err.println("Given ORB is null.");
+            System.out.println("Given ORB is null.");
             return false;
         }
 		if (manager == null || managerHandle <= 0) {
-            System.err.println("can't connect to log service: manager is null, or invalid handle " + managerHandle);
+            System.out.println("can't connect to log service: manager is null, or invalid handle " + managerHandle);
             return false;
 		}
         AcsLogServiceOperations logService = null;
@@ -596,16 +596,16 @@ public class ClientLogManager implements LogConfigSubscriber
             if (errMsg != null) {
             	// can't use the loggers, so println is ok here
             	if (retry) {
-            		System.err.println(errMsg + "Will try again in 10 seconds.");
+            		System.out.println(errMsg + "Will try again in 10 seconds.");
             		try {
 	                    Thread.sleep(10000);
 	                } catch (InterruptedException e) {
-	                	System.err.println("Abandoning ClientLogManager#initRemoteLogging retries because of thread interruption.");
+	                	System.out.println("Abandoning ClientLogManager#initRemoteLogging retries because of thread interruption.");
 	                    retry = false; 
 	                }
             	}
             	else {
-            		System.err.println(errMsg);
+            		System.out.println(errMsg);
             	}
             }
         } while (retry && count <= 5 && errMsg != null);

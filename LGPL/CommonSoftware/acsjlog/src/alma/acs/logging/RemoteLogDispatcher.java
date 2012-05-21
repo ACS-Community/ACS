@@ -112,7 +112,7 @@ class RemoteLogDispatcher {
             bufferSize = newBuffSize;
         }
         else {
-            System.err.println("RemoteLogDispatcher#setBufferSize: ignoring illegal value " + newBuffSize);
+            System.out.println("RemoteLogDispatcher#setBufferSize: ignoring illegal value " + newBuffSize);
         }
     }
 
@@ -242,7 +242,7 @@ class RemoteLogDispatcher {
 	}
 
 	/**
-	 * Alternative to {@link #writeRecords(Any[]) used when property {@code alma.acs.logging.useAcsLogServiceExtensions} is set.
+	 * Alternative to {@link #writeRecords(Any[])} used when property {@code alma.acs.logging.useAcsLogServiceExtensions} is set.
 	 * @param remoteLogRecords
 	 */
 	protected void writeRecords(XmlLogRecord[] remoteLogRecords) {
