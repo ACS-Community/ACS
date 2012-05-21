@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.17 2012/05/21 13:04:55 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.18 2012/05/21 13:20:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,14 +62,6 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 
 	/* Register the type before creating the topic */
 	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
-	ret = ACSBulkData::BulkDataNTFrameTypeSupport::register_type(participant_m, type_name);
-	if (ret != DDS::RETCODE_OK)
-	{
-		DDSRegisterTypeProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		ex.setDDSTypeCode(ret);
-		ex.setTypeName(type_name);
-		throw ex;
-	}
 
 	DDS::Topic *topic =  participant_m->create_topic_with_profile(topicName_m.c_str(),
 			type_name,

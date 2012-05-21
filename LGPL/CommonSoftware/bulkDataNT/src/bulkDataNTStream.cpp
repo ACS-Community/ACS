@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.38 2012/05/21 13:07:03 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.39 2012/05/21 13:20:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -227,6 +227,16 @@ void BulkDataNTStream::createDDSParticipant()
 	    ex.setDomainID(domainID);
 	    throw ex;
 	  }//if
+
+	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
+	ret = ACSBulkData::BulkDataNTFrameTypeSupport::register_type(participant_m, type_name);
+	if (ret != DDS::RETCODE_OK)
+	{
+		DDSRegisterTypeProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setTypeName(type_name);
+		throw ex;
+	}
 }//createDDSParticipant
 
 void BulkDataNTStream::destroyDDSParticipant()
