@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.20 2012/05/18 13:26:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.21 2012/05/21 12:15:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -106,11 +106,12 @@ void DDSConfiguration::setDDSLogVerbosity()
 	}
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 			NDDS_CONFIG_LOG_CATEGORY_API,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
+	/*
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 				NDDS_CONFIG_LOG_CATEGORY_COMMUNICATION,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 					NDDS_CONFIG_LOG_CATEGORY_ENTITIES,  (NDDS_Config_LogVerbosity)(DDSConfiguration::DDSLogVerbosity));
-
+*/
 }//setDDSLogVerbosity
 
 void DDSConfiguration::setStringProfileQoS(char *cfg, const char *defaultProfile)
