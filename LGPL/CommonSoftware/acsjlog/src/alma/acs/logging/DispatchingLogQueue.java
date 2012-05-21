@@ -30,6 +30,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -72,7 +73,7 @@ public class DispatchingLogQueue {
     
     private int currentFlushPeriod;
     
-    private boolean outOfCapacity;    
+    private final AtomicBoolean outOfCapacity;
     private int preOverflowFlushPeriod;
 
     // log dispatcher: initially null until set when remote log service is available
@@ -87,7 +88,7 @@ public class DispatchingLogQueue {
     private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     
     /**
-     * If true, them the queue does not drop any log records, but rather blocks loggers in {@link #log(LogRecord)} 
+     * If true, then the queue does not drop any log records, but rather blocks loggers in {@link #log(LogRecord)} 
      * until their request can be processed.
      * Default is <code>false</code>, because application performance is more important than logging.
      * For performance testing etc, setting this property may be useful though.
@@ -96,7 +97,7 @@ public class DispatchingLogQueue {
     
     
     DispatchingLogQueue() {
-        outOfCapacity = false;
+        outOfCapacity = new AtomicBoolean(false);
         preOverflowFlushPeriod = 0;
         currentFlushPeriod = 0;
         setMaxQueueSize(1000);
@@ -145,11 +146,11 @@ public class DispatchingLogQueue {
         	
         	
             // first time overflow? Then start periodic flushing attempts to drain the queue once the central logger comes up again
-            if (!outOfCapacity) {
+        	boolean firstTimeOverflow = !outOfCapacity.getAndSet(true);
+            if (firstTimeOverflow) {
                 preOverflowFlushPeriod = currentFlushPeriod;
                 setPeriodicFlushing(10000);
             }
-            outOfCapacity = true;
             
         	if (LOSSLESS) {
         		do {
@@ -159,21 +160,22 @@ public class DispatchingLogQueue {
 						// nada
 					}
 				} while (queue.size() >= maxQueueSize);
-        	}
-        	else {
-        		if (DEBUG || oldSize == maxQueueSize) {
-                    System.err.println("log queue overflow: log record with message '" + logRecord.getMessage() + 
-                    "' and possibly future log records will not be sent to the remote logging service.");
-        		}
-                return false;
-        	}
-        }
+			} else {
+				if (DEBUG || firstTimeOverflow) {
+					System.out.println("log queue overflow: log record with message '" + logRecord.getMessage()
+							+ "' and possibly future log records will not be sent to the remote logging service.");
+				}
+				return false;
+			}
+		}
 
-        // queue was full before, but now is better again
-        if (outOfCapacity) {
-            outOfCapacity = false;
+        if (outOfCapacity.getAndSet(false)) {
+        	// queue was full before, but now is better again
             setPeriodicFlushing(preOverflowFlushPeriod);
             preOverflowFlushPeriod = 0;
+            if (DEBUG) {
+            	System.out.println("log queue no longer overflowing.");
+            }
         }
         
         // drop less important messages if queue space gets scarce
@@ -182,7 +184,7 @@ public class DispatchingLogQueue {
 	
 	        if (oldSize >= filterThreshold && logRecord.getLevel().intValue() < Level.INFO.intValue()) {
 	            if (DEBUG) {
-	                System.err.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize + 
+	                System.out.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize + 
 	                                    "): low-level log record with message '" + logRecord.getMessage() +
 	                                    "' will not be sent to the remote logging service.");
 	            }
@@ -216,7 +218,7 @@ public class DispatchingLogQueue {
         }
         if (!hasRemoteDispatcher()) {
             if (DEBUG) {
-                System.err.println("ignoring call to DispatchingLogQueue#flushAllAndWait because the remote log service has not been supplied.");
+                System.out.println("ignoring call to DispatchingLogQueue#flushAllAndWait because the remote log service has not been supplied.");
             }
             return;
         }
@@ -230,7 +232,7 @@ public class DispatchingLogQueue {
             } catch (Exception e) {
                 flushSuccess = false;
                 if (DEBUG) {
-                    System.err.println("flushAll: exception occurred while waiting for flush thread. Will try again. " + e.toString());
+                    System.out.println("flushAll: exception occurred while waiting for flush thread. Will try again. " + e.toString());
                 }
                 try {
                     Thread.sleep(100);
@@ -322,7 +324,7 @@ public class DispatchingLogQueue {
         boolean flushedSomeRecords = false;
 
         if (!hasRemoteDispatcher()) {
-            System.err.println("failed to flush logging queue because remote logging service has not been made available.");
+            System.out.println("failed to flush logging queue because remote logging service has not been made available.");
         }
         else {
             flushLock.lock();
@@ -364,7 +366,7 @@ public class DispatchingLogQueue {
                 }
                 else {
                     if (DEBUG){
-                        System.err.println("flush(isScheduled=" + isScheduled + "): no log records found!");
+                        System.out.println("flush(isScheduled=" + isScheduled + "): no log records found!");
                     }
                 }
             } finally {
@@ -404,13 +406,13 @@ public class DispatchingLogQueue {
 
 			flushedSomeRecords = (sendFailures.size() < logRecords.length);
 			if (DEBUG) {
-				System.err.println("flushLogRecords: had to add back " + sendFailures.size()
+				System.out.println("flushLogRecords: had to add back " + sendFailures.size()
 						+ " send-failed log records to the queue.");
 			}
 		}
 		if (failures.hasSerializationFailures()) {
 			for (LogRecord logRecord : failures.getSerializationFailures()) {
-				System.err.println("Failed to translate log record for sending remotely. Log message = " + logRecord.getMessage());
+				System.out.println("Failed to translate log record for sending remotely. Log message = " + logRecord.getMessage());
 			}
 			// these records are not quite satisfactorily flushed, but gone from the queue, which matters here
 			flushedSomeRecords = true;
@@ -475,7 +477,7 @@ public class DispatchingLogQueue {
             return queue.size();
         } finally {
             flushLock.unlock();
-        }        
+        }
     }
 
     
@@ -501,7 +503,7 @@ public class DispatchingLogQueue {
      */
     void setPeriodicFlushing(final int periodMillisec) {
         if (!hasRemoteDispatcher()) {
-            System.err.println("DispatchingLogQueue#setPeriodicFlushing is ignored until setRemoteLogDispatcher() has been called!");
+            System.out.println("DispatchingLogQueue#setPeriodicFlushing is ignored until setRemoteLogDispatcher() has been called!");
             return;
         }        
         
@@ -532,19 +534,19 @@ public class DispatchingLogQueue {
                             try {
                                 flush(true);
                             } catch (Throwable thr) {
-                                System.err.println("Scheduled flushing of log buffer failed: " + thr.getMessage());
+                                System.out.println("Scheduled flushing of log buffer failed: " + thr.getMessage());
                                 // we swallow the error because otherwise future executions would be suppressed
                             }
                         }
                         else {
                             if (DEBUG) {
-                                System.err.println("Skipping a scheduled log flush because of another recent flush.");
+                                System.out.println("Skipping a scheduled log flush because of another recent flush.");
                             }
                         }
                     }
                     else {
                         if (DEBUG) {
-                            System.err.println("Skipping a scheduled log flush because log queue is empty.");
+                            System.out.println("Skipping a scheduled log flush because log queue is empty.");
                         }
                     }
                 }            
