@@ -439,8 +439,13 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		synchronized (rowsToAdd) {
 			if (!rowsToAdd.isEmpty()) {
 				// try to apply reduction rules only in OPERATOR mode
-				if (loggingClient.getEngine().getAudience().getInfo()==AudienceInfo.OPERATOR) {
-					logProcessor.reduce(rowsToAdd);
+				try {
+					if (loggingClient.getEngine().getAudience().getInfo()==AudienceInfo.OPERATOR) {
+						logProcessor.reduce(rowsToAdd);
+					}
+				} catch (Throwable t) {
+					System.out.println("Exception caught ("+t.getMessage()+")while reducing logs: reduction disabled this time");
+					t.printStackTrace();
 				}
 				synchronized (rows) {
 					for (ILogEntry log: rowsToAdd) {
