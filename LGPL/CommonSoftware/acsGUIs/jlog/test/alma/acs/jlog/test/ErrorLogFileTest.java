@@ -22,10 +22,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-import alma.acs.component.client.ComponentClientTestCase;
+import junit.framework.TestCase;
 import alma.acs.logging.dialogs.error.ErrorLogFile;
 
-public class ErrorLogFileTest extends ComponentClientTestCase {
+public class ErrorLogFileTest extends TestCase {
 	
 	/**
 	 * The object to test
