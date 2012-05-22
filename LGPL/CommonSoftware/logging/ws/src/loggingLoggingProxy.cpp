@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.87 2012/02/21 10:39:04 acaproni Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.88 2012/05/22 13:13:19 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.87 2012/02/21 10:39:04 acaproni Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.88 2012/05/22 13:13:19 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1111,6 +1111,8 @@ LoggingProxy::~LoggingProxy()
   m_doWorkCond.signal();
   if (m_threadCreated)
     m_threadShutdown.wait();
+
+  delete logThrottle;
 }
 
 void LoggingProxy::flush()
