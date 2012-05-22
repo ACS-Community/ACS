@@ -25,10 +25,10 @@
 	
 	<!-- globally unique id for entity objects (formatted hex string such as "uid://X1/Xa023/X1111111111111111111111") 
 	     Note that by the spec any of the three parts of the UID can be larger than a 64 bit variable if turned into numerical presentation,
-	     even though at the moment (2007-04) the archive does not generate such UIDs -->
+	     even though at the moment (2007-04) the archive does not generate such UIDs. -->
 	<xsd:simpleType name="EntityIdT">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="[uU][iI][dD]://[0-9a-zA-Z]+(/[xX][0-9a-fA-F]+){2}(#\\w{1,}){0,}"/>
+			<xsd:pattern value="(fake)?[uU][iI][dD]://[0-9a-zA-Z]+(/[xX][0-9a-fA-F]+){2}(#\\w{1,}){0,}"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	<!-- locally unique id for subnodes of entity objects (integer numbers);
@@ -39,6 +39,9 @@
 	     requirements for xsd:ID (see http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/datatypes#ID).
 	     As a recommendation, chose either the "X00000000" hex format known from the uid, 
 	     or a semantic name like "topLevelObsUnitSet".
+	     Since the OT creates fake UIDs in documents and these need to be validated, the schema now allows
+ 	     also for UIDs of the form fakeuid://.... Note that the Archive code will reject to store documents 
+	     with UIDs like this in the XMLstore.
 	     -->
 	<xsd:simpleType name="EntityPartIdT">
 		<xsd:restriction base="xsd:ID">
