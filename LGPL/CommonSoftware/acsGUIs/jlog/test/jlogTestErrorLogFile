@@ -21,4 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
-acsutilTATTestRunner acsStartJava -Duser.dir=$PWD -Djlog.cache.size=512 -Djlog.cache.writebuffersize=128 junit.textui.TestRunner alma.acs.jlog.test.ErrorLogFileTest
+acsStartJava -Duser.dir=$PWD -Djlog.cache.size=512 -Djlog.cache.writebuffersize=128 junit.textui.TestRunner alma.acs.jlog.test.ErrorLogFileTest

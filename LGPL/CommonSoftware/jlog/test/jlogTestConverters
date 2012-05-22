@@ -21,4 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
-acsutilTATTestRunner acsStartJava junit.textui.TestRunner alma.acs.jlog.test.tools.ConvertersTest
+acsStartJava junit.textui.TestRunner alma.acs.jlog.test.tools.ConvertersTest
