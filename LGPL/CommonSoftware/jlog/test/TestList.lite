@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.39 2011/11/11 16:47:23 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.40 2012/05/22 16:35:10 acaproni Exp $"
 #
 # TestList
 #
@@ -27,8 +27,6 @@
 # --------  --------  ----------------------------------------------
 # david 2002-10-04 commented out ENVIRONMENT
 # almamgr 2000-09-13 created
-SOURCE jlogTATEnvironment
-PROLOGUE jlogTATPrologue
 
 1  jlogTestCache "jlogTestCache"
 2  jlogTestDelete "jlogTestDelete"
@@ -41,4 +39,3 @@ PROLOGUE jlogTATPrologue
 9  jlogTestSourceAntennaReductionRule "jlogTestSourceAntennaReductionRule"
 10 jlogTestLogProcessor "jlogTestLogProcessor" 
 
-EPILOGUE acsutilTATEpilogue
