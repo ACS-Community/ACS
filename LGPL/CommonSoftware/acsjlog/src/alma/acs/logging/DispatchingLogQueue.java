@@ -173,9 +173,7 @@ public class DispatchingLogQueue {
         	// queue was full before, but now is better again
             setPeriodicFlushing(preOverflowFlushPeriod);
             preOverflowFlushPeriod = 0;
-            if (DEBUG) {
-            	System.out.println("log queue no longer overflowing.");
-            }
+            System.out.println("log queue no longer overflowing.");
         }
         
         // drop less important messages if queue space gets scarce
