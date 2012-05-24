@@ -83,10 +83,15 @@ void CERNAlarmSystemInterfaceProxy::init()
 
 	// TODO later: portability/platform-specific issues with using gethostname()?
 	char name[MAXHOSTNAMELEN + 1];
-	gethostname(name, MAXHOSTNAMELEN);
-	string nameStr(name);
-	hostName = (nameStr);
-
+	int ret=gethostname(name, MAXHOSTNAMELEN);
+	name[MAXHOSTNAMELEN]=0; // The behavior of gethostname does not always ensure to null-terminate the name array of chars.
+	if (ret!=-1) {
+		string nameStr(name);
+		hostName = (nameStr);
+	} else {
+		ACS_SHORT_LOG((LM_WARNING,"Error getting the host during initialization of CERNAlarmSystemInterfaceProxy"));
+		hostName = "";
+	}
 }
 
 // cleanup logic
