@@ -19,17 +19,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.2 2010/02/18 13:12:59 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.3 2012/05/24 14:59:03 acaproni Exp $"
 #
 # TestList
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # acaproni 2010-02-17 created
-SOURCE panelTATEnvironment
-PROLOGUE panelTATPrologue
 
 1 testAlarmContainer "testAlarmContainer"
 2 testSpecialAlarm "testSpecialAlarm"
-
-EPILOGUE acsutilTATEpilogue

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2010/07/27 21:54:59 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.5 2012/05/24 14:59:03 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 # jagonzal: These are shell scripts not python scripts
-SCRIPTS         =  panelTATPrologue testAlarmContainer testSpecialAlarm
+SCRIPTS         =  testAlarmContainer testSpecialAlarm
 SCRIPTS_L       =
 
 #
