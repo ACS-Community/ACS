@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.23 2012/05/21 13:03:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.24 2012/05/24 15:00:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -179,7 +179,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 		dr_qos.unicast.value.ensure_length(1,1);
 		dr_qos.unicast.value[0].receive_port = unicastAddress_m++;
  */
-		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast port %d.", topicName_m.c_str(), dr_qos.unicast.value[0].receive_port));
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast port", topicName_m.c_str()));
 	}
 
 	// here we do not need the temporary DR
