@@ -71,7 +71,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.34 2012/01/04 16:10:04 jschwarz Exp $
+ * $Id: EventModel.java,v 1.35 2012/05/24 09:21:58 hsommer Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -102,7 +102,6 @@ public class EventModel {
 	private NotifyServices notifyServices;
 
 	private EventModel() throws Exception {
-		
 		m_logger = setupAcsConnections();
 		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
 		lastConsumerAndSupplierCount = new HashMap<String, int[]>(MAX_NUMBER_OF_CHANNELS);
@@ -249,14 +248,14 @@ public class EventModel {
 				org.omg.CORBA.Object obj = null;
 				try {
 					obj = mproxy.get_service(id, false);
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (Exception ex) {
+					m_logger.log(AcsLogLevel.WARNING, "Failed to get service '" + id + "' from the manager.", ex);
 				}
 				if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
 	//				System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
 	//				System.out.println("Binding name[0].kind: "+binding.binding_name[0].kind);
 					String displayName = simplifyNotifyServiceName(id);
-					EventChannelFactory efact = EventChannelFactoryHelper.narrow(mproxy.get_service(id, false));
+					EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
 					efacts.add(efact);
 					efactNames.add(displayName);
 					notifyBindingNames.add(id);
@@ -269,7 +268,7 @@ public class EventModel {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					notifyServices.addService(new NotifyServiceData(displayName,id, efact, nsmc, new int[2], new int[2]));
+					notifyServices.addService(new NotifyServiceData(displayName, id, efact, nsmc, new int[2], new int[2]));
 				}
 			}
 	
@@ -291,8 +290,9 @@ public class EventModel {
 	}
 
 	public ArrayList<NotifyServiceData> getNotifyServiceTotals() throws AcsJException {
-		if (clist.isEmpty())
+		if (clist.isEmpty()) {
 			calculateNotifyServiceTotals();
+		}
 		return clist;
 	}
 
@@ -326,11 +326,9 @@ public class EventModel {
 							.get_all_consumeradmins().length;
 					nsuppliers += efact.get_event_channel(chans[j])
 							.get_all_supplieradmins().length;
-				} catch (ChannelNotFound e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (ChannelNotFound ex) {
+					m_logger.log(AcsLogLevel.WARNING, "Failed to get NC '" + chans[j] + "'.", ex);
 				}
-
 			}
 //			System.out.printf("%s consumers: %d\n", efactName, nconsumers);
 //			System.out.printf("%s suppliers: %d\n", efactName, nsuppliers);
