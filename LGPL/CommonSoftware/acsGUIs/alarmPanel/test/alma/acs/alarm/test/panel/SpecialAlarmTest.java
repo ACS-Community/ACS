@@ -20,15 +20,15 @@ package alma.acs.alarm.test.panel;
 
 import java.util.Properties;
 
-import cern.laser.client.data.Alarm;
-import alma.acs.component.client.ComponentClientTestCase;
+import junit.framework.TestCase;
 import alma.acsplugins.alarmsystem.gui.specialalarm.SpecialAlarm;
+import cern.laser.client.data.Alarm;
 /**
  * Test if the SpecialAlarm matches the specifications.
  * 
  * @author acaproni
  */
-public class SpecialAlarmTest extends ComponentClientTestCase {
+public class SpecialAlarmTest extends TestCase {
 	
 	// The fields to build/test the alarm
 	private static final String family="FaultFamily";

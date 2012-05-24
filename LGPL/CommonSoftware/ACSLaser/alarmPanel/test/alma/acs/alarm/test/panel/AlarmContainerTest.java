@@ -21,14 +21,13 @@ package alma.acs.alarm.test.panel;
 import java.util.Collection;
 import java.util.Vector;
 
-import cern.laser.client.data.Alarm;
-
-import alma.acs.component.client.ComponentClientTestCase;
+import junit.framework.TestCase;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableEntry;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer;
-import alma.acsplugins.alarmsystem.gui.table.AlarmsReductionContainer;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer.AlarmContainerException;
+import alma.acsplugins.alarmsystem.gui.table.AlarmsReductionContainer;
+import cern.laser.client.data.Alarm;
 
 /**
  * <code>AlarmContainerTest</code> tests {@link AlarmsContainer}
@@ -40,7 +39,7 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer.AlarmContainerExcep
  * @author acaproni
  *
  */
-public class AlarmContainerTest extends ComponentClientTestCase {
+public class AlarmContainerTest extends TestCase {
 	
 	/**
 	 * The max number of alarms in the container
