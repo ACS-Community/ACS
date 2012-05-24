@@ -110,7 +110,6 @@ public class ServiceSummaryView extends ViewPart {
 			if (serviceMonitoringThread != null) serviceMonitoringThread.interrupt();
 		}
 		public Object[] getElements(Object parent) {
-			NotifyServiceData[] a = new NotifyServiceData[4];
 			ArrayList<NotifyServiceData> cdlist = null;
 			try {
 				cdlist = em.getNotifyServiceTotals();
@@ -120,7 +119,7 @@ public class ServiceSummaryView extends ViewPart {
 			}
 			NotifyServiceData[] l;
 			if (cdlist != null)
-				l = cdlist.toArray(a);
+				l = cdlist.toArray(new NotifyServiceData[cdlist.size()]);
 			else
 				return new NotifyServiceData[]{};
 			Arrays.sort(l);
