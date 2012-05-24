@@ -126,6 +126,7 @@ import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.IsoDateFormat;
 import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
@@ -5514,121 +5515,126 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void securityCheck(int id, int requiredRights) throws AcsJNoPermissionEx
 	{
 
-		// check if already shutdown
-		if (id != this.getHandle() && shutdown.get())
-		{
-			// already shutdown
-			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-			npe.setID(HandleHelper.toString(id));
-			npe.setReason("Manager in shutdown state.");
-			throw npe;
-		}
-
-		// parse handle part
-		int handle	= id & HANDLE_MASK;
-
-		int grantedRights = 0;
-		boolean invalidHandle = true;
-
-		switch	(id & TYPE_MASK)
-		{
-			case CONTAINER_MASK:
-				synchronized (containers)
-				{
-					if (containers.isAllocated(handle))
-					{
-						ContainerInfo info = (ContainerInfo)containers.get(handle);
-						if (info.getHandle() == id)
-							invalidHandle = false;
-						grantedRights = CONTAINER_RIGHTS;
-					}
-				}
-				break;
-
-			case CLIENT_MASK:
-				synchronized (clients)
-				{
-					if (clients.isAllocated(handle))
-					{
-						ClientInfo info = (ClientInfo)clients.get(handle);
-						if (info.getHandle() == id)
-							invalidHandle = false;
-						grantedRights = info.getAccessRights();
-					}
-				}
-				break;
-
-			case ADMINISTRATOR_MASK:
-				synchronized (administrators)
-				{
-					if (administrators.isAllocated(handle))
-					{
-						ClientInfo info = (ClientInfo)administrators.get(handle);
-						if (info.getHandle() == id)
-							invalidHandle = false;
-						grantedRights = info.getAccessRights();
-					}
-				}
-				break;
-
-			case COMPONENT_MASK:
-				componentsLock.lock();
-				try {
-					if (components.isAllocated(handle))
-					{
-						ComponentInfo info = (ComponentInfo)components.get(handle);
-						if (info != null && info.getHandle() == id)
-							invalidHandle = false;
-						grantedRights = AccessRights.REGISTER_COMPONENT;
-					}
-				} finally {
-					componentsLock.unlock();
-				}
-				break;
-
-			case MANAGER_MASK:
-				invalidHandle = false;
-				grantedRights = AccessRights.REGISTER_COMPONENT |
-								AccessRights.SHUTDOWN_SYSTEM |
-								AccessRights.INTROSPECT_MANAGER;
-				break;
-		}
-
-		if (invalidHandle)
-		{
-			// NO_PERMISSION
-			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-			npe.setID(HandleHelper.toString(id));
-			
-			HandleMonitorEntry hme = getHandleReleaseLog(id);
-			if (hme != null) {
-				final String timeISO = IsoDateFormat.formatDate(new Date(hme.timestamp));
-				switch (hme.reason)
-				{
-					case REMOVED:
-						npe.setReason("Invalid handle, handle was properly removed at " + timeISO + ".");
-						break;
-					case TIMEOUT:
-						npe.setReason("Invalid handle, handle was removed due to timeout at " + timeISO + ".");
-						break;
-					case DISAPPEARED:
-						npe.setReason("Invalid handle, handle was removed due to client/container/component disappearing at " + timeISO + ".");
-						break;
-				}
+		try {
+			// check if already shutdown
+			if (id != this.getHandle() && shutdown.get())
+			{
+				// already shutdown
+				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+				npe.setID(HandleHelper.toString(id));
+				npe.setReason("Manager in shutdown state.");
+				throw npe;
 			}
-			else
-				npe.setReason("Invalid handle, handle was never known.");
-			
-			throw npe;
-		}
 
-		if ((grantedRights & requiredRights) != requiredRights)
-		{
-			// NO_PERMISSION
-			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-			npe.setID(HandleHelper.toString(id));
-			npe.setReason("Insufficient rights.");
-			throw npe;
+			// parse handle part
+			int handle	= id & HANDLE_MASK;
+
+			int grantedRights = 0;
+			boolean invalidHandle = true;
+
+			switch	(id & TYPE_MASK)
+			{
+				case CONTAINER_MASK:
+					synchronized (containers)
+					{
+						if (containers.isAllocated(handle))
+						{
+							ContainerInfo info = (ContainerInfo)containers.get(handle);
+							if (info.getHandle() == id)
+								invalidHandle = false;
+							grantedRights = CONTAINER_RIGHTS;
+						}
+					}
+					break;
+
+				case CLIENT_MASK:
+					synchronized (clients)
+					{
+						if (clients.isAllocated(handle))
+						{
+							ClientInfo info = (ClientInfo)clients.get(handle);
+							if (info.getHandle() == id)
+								invalidHandle = false;
+							grantedRights = info.getAccessRights();
+						}
+					}
+					break;
+
+				case ADMINISTRATOR_MASK:
+					synchronized (administrators)
+					{
+						if (administrators.isAllocated(handle))
+						{
+							ClientInfo info = (ClientInfo)administrators.get(handle);
+							if (info.getHandle() == id)
+								invalidHandle = false;
+							grantedRights = info.getAccessRights();
+						}
+					}
+					break;
+
+				case COMPONENT_MASK:
+					componentsLock.lock();
+					try {
+						if (components.isAllocated(handle))
+						{
+							ComponentInfo info = (ComponentInfo)components.get(handle);
+							if (info != null && info.getHandle() == id)
+								invalidHandle = false;
+							grantedRights = AccessRights.REGISTER_COMPONENT;
+						}
+					} finally {
+						componentsLock.unlock();
+					}
+					break;
+
+				case MANAGER_MASK:
+					invalidHandle = false;
+					grantedRights = AccessRights.REGISTER_COMPONENT |
+									AccessRights.SHUTDOWN_SYSTEM |
+									AccessRights.INTROSPECT_MANAGER;
+					break;
+			}
+
+			if (invalidHandle)
+			{
+				// NO_PERMISSION
+				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+				npe.setID(HandleHelper.toString(id));
+				
+				HandleMonitorEntry hme = getHandleReleaseLog(id);
+				if (hme != null) {
+					final String timeISO = IsoDateFormat.formatDate(new Date(hme.timestamp));
+					switch (hme.reason)
+					{
+						case REMOVED:
+							npe.setReason("Invalid handle, handle was properly removed at " + timeISO + ".");
+							break;
+						case TIMEOUT:
+							npe.setReason("Invalid handle, handle was removed due to timeout at " + timeISO + ".");
+							break;
+						case DISAPPEARED:
+							npe.setReason("Invalid handle, handle was removed due to client/container/component disappearing at " + timeISO + ".");
+							break;
+					}
+				}
+				else
+					npe.setReason("Invalid handle, handle was never known.");
+				
+				throw npe;
+			}
+
+			if ((grantedRights & requiredRights) != requiredRights)
+			{
+				// NO_PERMISSION
+				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+				npe.setID(HandleHelper.toString(id));
+				npe.setReason("Insufficient rights.");
+				throw npe;
+			}
+		} catch (AcsJNoPermissionEx ex) {
+			logger.log(AcsLogLevel.DELOUSE, "securityCheck fails with AcsJNoPermissionEx:", ex);
+			throw ex;
 		}
 
 	}
