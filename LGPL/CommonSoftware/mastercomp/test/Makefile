@@ -49,6 +49,7 @@ COMPONENTS_JARFILES = mastercompTestComp
 mastercompTestComp_DIRS = \
 	alma/ACS/MasterComponentImpl \
 	alma/ACS/SpecialTestMasterComponentImpl
+mastercompTestComp_JLIBS = mastercompTest_if
 
 #
 # java sources in Jarfile on/off
