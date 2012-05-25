@@ -71,6 +71,15 @@ else
     CONTAINERNAME=`echo $COMMANDLINE | awk '{print $2}'`
 fi
 
+# Check if the command line contains -h or --help because in this case
+# there is no container to start in the command line!
+HELP_REQUESTED=`echo $@|awk '/ *-h *| *--help */ {print "COMMAND_HELP_REQUESTED"}'`
+if [ "X$HELP_REQUESTED" != "X" ]
+then
+	acsstartupContainerPort -h
+	exit
+fi
+
 #-----------------------------------------------------------------------
 #--Save the this script's process ID so the container can be forceably
 #--killed (if needed) later.
