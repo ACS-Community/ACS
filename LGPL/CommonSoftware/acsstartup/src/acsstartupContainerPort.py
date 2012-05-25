@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.49 2010/06/29 12:31:44 rtobar Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.50 2012/05/25 13:54:08 acaproni Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -24,7 +24,7 @@
 ###############################################################################
 '''
 This script is designed to pick a free container port for ACS to run on using 
-ALL the arguments passed to the container. If theres a free port to run under,
+ALL the arguments passed to the container. If there is a free port to run under,
 it prints that to standard out. If the script encounters some error, it exits
 with status 1.
 
@@ -498,6 +498,9 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
     
     #go through every potential command-line switch
     for i in range(0, len(prog_args)):
+        if prog_args[i]=="-h" or prog_args[i]=="--help": 
+            parser.print_help()
+            return 0
         #if the switch is something like -managerReference change it
         #to --managerReference
         if len(prog_args[i])>2 and prog_args[i][0]=='-' and prog_args[i][1]!='-':
