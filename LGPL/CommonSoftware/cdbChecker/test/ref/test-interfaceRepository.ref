@@ -2,7 +2,7 @@
 1 - Running Interface Repository and loading IDL files
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
-1 - Bound ID: InterfaceRepository
+1 - ReBound ID: InterfaceRepository
 1 - ----------T--:--:--.--- INFO [acsstartupLoadIFR] Loading of IDL interfaces in Interface Repository completed OK
 1 - *** Downloading remote schemas
 1 - *** Remote schemas succesfully downloaded
@@ -15,7 +15,7 @@
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file
-1 - Bound ID: InterfaceRepository
+1 - ReBound ID: InterfaceRepository
 1 - *** Downloading remote schemas
 1 - *** Remote schemas succesfully downloaded
 1 - CDBChecker exiting. No errors found
