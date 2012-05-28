@@ -4,6 +4,8 @@
  
 package com.cosylab.acs.maci.test;
 
+import java.io.Serializable;
+
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.RemoteException;
 
@@ -13,7 +15,7 @@ import com.cosylab.acs.maci.RemoteException;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class TestComponent implements Component
+public class TestComponent implements Component, Serializable
 {
 
 	/**

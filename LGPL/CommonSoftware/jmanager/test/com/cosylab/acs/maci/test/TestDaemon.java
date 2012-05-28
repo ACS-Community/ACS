@@ -6,6 +6,8 @@
  */
 package com.cosylab.acs.maci.test;
 
+import java.io.Serializable;
+
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.ClientInfo;
@@ -19,7 +21,7 @@ import com.cosylab.acs.maci.RemoteException;
  * @todo To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class TestDaemon implements Daemon {
+public class TestDaemon implements Daemon, Serializable {
 
 	private boolean alwaysFail;
 	private Manager manager;

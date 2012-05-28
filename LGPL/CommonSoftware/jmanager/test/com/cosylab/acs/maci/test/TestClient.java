@@ -4,6 +4,7 @@
  
 package com.cosylab.acs.maci.test;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.cosylab.acs.maci.AuthenticationData;
@@ -20,7 +21,7 @@ import com.cosylab.acs.maci.RemoteException;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class TestClient implements Client
+public class TestClient implements Client, Serializable
 {
 	/**
 	 * Client name.
