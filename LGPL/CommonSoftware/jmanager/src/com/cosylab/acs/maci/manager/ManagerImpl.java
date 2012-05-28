@@ -10123,6 +10123,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			return releasedHandles.get(handle);
 		}
 	}
+	
+	/**
+	 * Get handle released map.
+	 * @return
+	 */
+	public Map<Integer, HandleMonitorEntry> getReleasedHandles()
+	{
+		return releasedHandles;
+	}
 
 	/**
 	 * Returns the unavailableComponents.
