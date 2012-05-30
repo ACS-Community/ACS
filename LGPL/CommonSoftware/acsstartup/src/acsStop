@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.26 2009/06/29 08:45:37 msekoran Exp $"
+# "@(#) $Id: acsStop,v 1.27 2012/05/30 16:34:04 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -44,7 +44,13 @@
 #------------------------------------------------------------------------
 #
 
-ACS_LOG_COMMAND $@
+# The following LOG has been delayed because acsStop tests if an instance is running checking if
+# the folder $ACSDATA/<hostName>./ACS_INSTANCE.$ACS_INSTANCE exists.
+#
+# The problem having ACS_LOG_COMMAND at the beginning of this script is that it creates the folder
+# so that the script fails (or better it believes that 
+# $ACSDATA/<hostName>./ACS_INSTANCE.$ACS_INSTANCE has been created by a running ACS)
+#ACS_LOG_COMMAND $@
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -112,7 +118,7 @@ unset POSIXLY_CORRECT
 
 if [ "$CL_HELP" ] ; then
    printUsage
-   exit $EC_OK
+   exit $EC_BADARGS
 fi
 
 #
@@ -121,12 +127,26 @@ fi
 ### ---------- End of Command Line Parsing -------------
 
 
-export HOST=`getIP`
+export HOST=`getIP`INSTANCE_DIR
 
 #Check command-line args for baseport option
 if [ "$CL_BASEPORT" ]
 then
     export ACS_INSTANCE=$CL_BASEPORT
+fi
+
+# Check if an ACS_INSTANCE or a base port have been set
+# and aborts with error in case they have not.
+#
+# The rationale behind this tests is that without ACS_INSTANCE or a base port
+# the script could potentially stop a wrong instance.
+# Another problem is that it writes the logs in a wrong folder named  
+# "$ACSDATA/<hostName>./ACS_INSTANCE.".
+if [ "X$ACS_INSTANCE" == "X" ]
+then
+	echo "acsStop can't run when neither \$ACS_INSTANCE nor the base port have been properly set!"
+	printUsage
+	exit $EC_BADARGS
 fi
 
 export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
@@ -136,17 +156,20 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #Cannot shutdown everything if we don't know the process IDs.
 if [ ! -d $INSTANCE_DIR ]
 then
+	ACS_LOG_COMMAND $@
     ACS_LOG_ERROR "acsStop" "The lock directory '$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
     ACS_LOG_INFO "acsStop" "Will continue trying to shutdown ACS although containers cannot be stopped."
 
 #Cannot shutdown everything if this user does not own the processes.
 elif [ ! -w $INSTANCE_DIR ]
 then
+	ACS_LOG_COMMAND $@
     ACS_LOG_ERROR "acsStop" "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 
 #instance directory exists
 else
+	ACS_LOG_COMMAND $@
     #Lock file specifically for the acsStop script
     if [ -e $INSTANCE_DIR/.stoplock ]
     then
@@ -157,7 +180,6 @@ else
 	touch $INSTANCE_DIR/.stoplock
     fi
 fi
-
 
 ACS_LOG_INFO "acsStop" "Stopping all ACS processes using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
