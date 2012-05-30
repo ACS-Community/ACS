@@ -5677,6 +5677,41 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
+	 * Get client info. (no sync version) for specified id of <code>Client</code> or <code>Administrator</code>.
+	 *
+	 * @param	id	handle of the client whose info. should be returned
+	 * @param	returns	requested info, <code>null</code> if client with requested handle does not exits
+	 */
+	public ClientInfo noSyncGetClientInfo(int id)
+	{
+
+		// parse handle part
+		int handle	= id & HANDLE_MASK;
+
+		// info to be returned
+		ClientInfo info = null;
+
+		switch	(id & TYPE_MASK)
+		{
+			case CLIENT_MASK:
+				{
+					if (clients.isAllocated(handle))
+						info = (ClientInfo)clients.get(handle);
+				}
+				break;
+
+			case ADMINISTRATOR_MASK:
+				{
+					if (administrators.isAllocated(handle))
+						info = (ClientInfo)administrators.get(handle);
+				}
+				break;
+		}
+
+		return info;
+	}
+
+	/**
 	 * Get container info. for specified id of <code>Container</code>.
 	 *
 	 * @param	id	handle of the container whose info. should be returned
@@ -6934,16 +6969,21 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
+		// COMMENTED OUT: this can lead to bad performance on slow FS
+		/*
 		// take snapshot of manager state
 		if( prevayler != null )
 		{
 			try {
-				((SnapshotPrevayler)prevayler).takeSnapshot();
+				synchronized (prevayler) {
+					((SnapshotPrevayler)prevayler).takeSnapshot();
+				}
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		*/
 
 		//
 		// bind to remote directory
@@ -10039,7 +10079,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (prevayler != null)
 		{
 			try {
-				final Serializable retVal = prevayler.executeCommand(command);
+				final Serializable retVal;
+				synchronized (prevayler) {
+					retVal = prevayler.executeCommand(command);
+				}
 				reportPrevaylerState(false, null);
 				return retVal;
 			} catch (IOException ioex) {

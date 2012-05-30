@@ -57,7 +57,7 @@ public class ClientInfoCommandComponentAdd implements Command {
 			info.getComponents().add(handle);
 		 */
 
-		ClientInfo clientInfo = ((ManagerImpl)system).getClientInfo(id);
+		ClientInfo clientInfo = ((ManagerImpl)system).noSyncGetClientInfo(id);
 		clientInfo.getComponents().add(handle);
 		return null;
 	}

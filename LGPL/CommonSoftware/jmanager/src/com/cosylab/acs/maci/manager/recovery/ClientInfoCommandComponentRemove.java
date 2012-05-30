@@ -34,7 +34,7 @@ public class ClientInfoCommandComponentRemove implements Command {
 	 * @see Command#execute(PrevalentSystem)
 	 */
 	public Serializable execute(PrevalentSystem system) throws Exception {
-		ClientInfo clientInfo = ((ManagerImpl)system).getClientInfo(id);
+		ClientInfo clientInfo = ((ManagerImpl)system).noSyncGetClientInfo(id);
 		clientInfo.getComponents().remove(handle);
 		return null;
 	}

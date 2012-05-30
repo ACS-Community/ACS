@@ -36,7 +36,9 @@ public class RecoverySnapshotTask extends TimerTask {
 	public void run() {
 		try {
 			// make new snapshot
-			prevayler.takeSnapshot();
+			synchronized (prevayler) {
+				prevayler.takeSnapshot();
+			}
 			//add rights to group in order to be able to start with '-n'
 			FileHelper.setFileAttributes( "g+w", recoveryLocation );
 			
