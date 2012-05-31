@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.28 2012/05/17 07:22:21 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.29 2012/05/31 15:03:11 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -37,8 +37,6 @@
 #
 #------------------------------------------------------------------------
 #
-
-ACS_LOG_COMMAND $@
 
 PID=$$
 export HOST=`getIP`
@@ -154,6 +152,8 @@ if [ "$CL_BASEPORT" ]
 then
   export ACS_INSTANCE="$CL_BASEPORT"
 fi
+
+ACS_LOG_COMMAND $@
 
 #Makes shure there is an initial value
 if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]

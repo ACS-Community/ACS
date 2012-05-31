@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.13 2012/05/31 10:00:56 jschwarz Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.14 2012/05/31 15:04:37 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -37,8 +37,6 @@
 #
 #------------------------------------------------------------------------
 #
-
-ACS_LOG_COMMAND $@
 
 PID=$$
 export HOST=`getIP`
@@ -153,7 +151,9 @@ then
   export ACS_INSTANCE="$CL_BASEPORT"
 fi
 
-#Makes shure there is an initial value
+ACS_LOG_COMMAND $@
+
+#Makes sure there is an initial value
 if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
 then
   ACS_STARTUP_TIMEOUT_MULTIPLIER=5
