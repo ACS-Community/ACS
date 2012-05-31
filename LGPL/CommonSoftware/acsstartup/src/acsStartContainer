@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #----------------------------------------------------------------------
-ACS_LOG_COMMAND $@
+ACS_COMMAND="$@"
 
 #----------------------------------------------------------------------
 #--Little hack to pickup $ACS_INSTANCE
@@ -39,6 +39,8 @@ then
     ACS_INSTANCE=${ACS_INSTANCE#*-baseport }
     export ACS_INSTANCE=${ACS_INSTANCE%% *}
 fi
+
+ACS_LOG_COMMAND $ACS_COMMAND
 
 #--Check out the directory structure
 

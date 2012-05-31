@@ -24,7 +24,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-ACS_LOG_COMMAND $@
+
 
 if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 
@@ -124,6 +124,8 @@ if [ "$CL_BASEPORT" ]
 then
     export ACS_INSTANCE="$CL_BASEPORT"
 fi
+
+ACS_LOG_COMMAND $@
 
 #Cannot do much if the directory doesn't exist
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]

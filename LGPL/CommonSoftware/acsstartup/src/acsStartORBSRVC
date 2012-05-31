@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.77 2009/10/13 12:52:43 msekoran Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.78 2012/05/31 14:56:22 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -53,7 +53,6 @@
 #------------------------------------------------------------------------
 #
 
-ACS_LOG_COMMAND $@
 COMMAND=`basename $0`
 PARAMS=$*
 
@@ -156,7 +155,7 @@ fi
 # Always use -ORBDottedDecimalAddresses=1
 ORBOPTS="-ORBDottedDecimalAddresses 1"
 
-
+ACS_LOG_COMMAND $@
 
 
 ################################
