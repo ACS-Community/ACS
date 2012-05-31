@@ -146,7 +146,7 @@ $MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:$ACS_IR_PORT --ior $IR_
 ACS_IR_PID=$!
 echo $ACS_IR_PID > $ACS_INSTANCE_DIR/ACS_IR_PID
 
-acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository
+acsstartupLoadIFR  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository
 
 #
 # ___oOo___

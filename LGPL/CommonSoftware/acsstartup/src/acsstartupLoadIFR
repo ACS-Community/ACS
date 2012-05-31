@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.9 2011/11/28 12:48:41 tstaig Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.10 2012/05/31 09:57:46 jschwarz Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -35,14 +35,14 @@
 
 #************************************************************************
 #   NAME
-#   acsIrfeed - Loads/checks IDL files for interface repository.
+#   acsstartupLoadIFR - Loads/checks IDL files for interface repository.
 # 
 #   SYNOPSIS
-#   acsIrfeed [-IRcorbaloc corbaloc::<HOST>:<port>/DefaultRepository] [files.idl]
+#   acsstartupLoadIFR [-IRcorbaloc corbaloc::<HOST>:<port>/DefaultRepository] [files.idl]
 #             [-c[heck]]
 #
 #   DESCRIPTION
-#   acsIrfeed loads all/checks idl files found in ../idl $INTROOT/idl and $ACSROOT.idl
+#   acsstartupLoadIFR loads all/checks idl files found in ../idl $INTROOT/idl and $ACSROOT.idl
 #   into the interface repository or just the files passed on the command line.
 #   If no file names are passed on the command line, it:
 #       - goes in all ../idl $INTROOT/idl and $ACSROOT.idl directories
