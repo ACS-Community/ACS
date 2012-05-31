@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.12 2012/05/17 07:22:21 msekoran Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.13 2012/05/31 10:00:56 jschwarz Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -79,7 +79,7 @@ Options:
    -k | --kill                       stop service
    -w | --wait                       wait for IFR to get loaded (only without -noloadIFR)
    -b | --baseport INSTANCE          the acs instance (0-9) you want to use
-   --noloadIFR                       load the CORBA Interface Repository using all the IDL files
+   --noloadIFR                       start the IFR without loading it; it can be loaded manually afterwards using the command acsstartupLoadIFR
    -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
    -x | --nameService REF            set name service reference via command-line
    -h | --help                       prints this help and exits
