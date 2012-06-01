@@ -7,6 +7,7 @@
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- WARNING [javaContainer] Failed to access container configuration data in the CDB. Will use XSD defaults.
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
