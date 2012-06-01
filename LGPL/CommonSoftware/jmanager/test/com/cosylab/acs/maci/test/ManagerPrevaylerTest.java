@@ -3,7 +3,10 @@
  */
 package com.cosylab.acs.maci.test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +26,7 @@ import com.cosylab.util.FileHelper;
 
 /**
  * ManagerImpl Prevayler tests.
+ * Make sure CDB is running.
  * 
  * @author Matej Sekoranja
  * @version @@VERSION@@
@@ -57,7 +61,8 @@ public class ManagerPrevaylerTest extends TestCase
 	}
 	
 	private DefaultCORBAService corbaServce;
-	
+	private SnapshotPrevayler prevayler = null;
+
 	/**
 	 * @see junit.framework.TestCase#setUp()
 	 */
@@ -66,9 +71,9 @@ public class ManagerPrevaylerTest extends TestCase
 		logger.setLevel(Level.OFF);
 		
 		manager = new ManagerImpl();
-	    SnapshotPrevayler prevayler = null;
 		if (isPrevaylerDisabled)
 		{
+			prevayler = null;
 			System.out.println( "Prevayler disabled!");
 		}
 		else
@@ -106,7 +111,14 @@ public class ManagerPrevaylerTest extends TestCase
 	}
 
 	static final int COMPONENTS = 100;
-	static final int CLIENTS = 10;
+	static final int CLIENTS = 100;
+	static final int COMPONENT_ACTIVATION_TIME_MS = 2000;
+	
+	static final int COUNT_REPORT_EVERY = 100;
+	static final int CLIENT_START_DELAY_MS = 100;
+
+	// some debug output
+	private AtomicInteger count = new AtomicInteger(0);
 
 	/**
 	 * Test getDynamicComponents.
@@ -114,13 +126,18 @@ public class ManagerPrevaylerTest extends TestCase
 	public void testGetDynamicComponents() throws Throwable
 	{
 			TestContainer dynContainer = new TestDynamicContainer("DynContainer");
+			dynContainer.setActivationTime(COMPONENT_ACTIVATION_TIME_MS); 
 			ClientInfo dynContainerInfo = manager.login(dynContainer);
 			assertNotNull(dynContainerInfo);
 			
 			// wait for container to startup
 			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
 
-			ArrayList<Thread> threads = new ArrayList<Thread>(CLIENTS);
+			final ArrayList<Thread> threads = new ArrayList<Thread>(CLIENTS);
+			final ArrayList<Integer> clientHandles = new ArrayList<Integer>(CLIENTS);
+			
+			long startTime = System.currentTimeMillis();
+			
 			for (int i = 0; i < CLIENTS; i++)
 			{
 				final String clientName = "client" + i;
@@ -130,7 +147,8 @@ public class ManagerPrevaylerTest extends TestCase
 					public void run() {
 						try
 						{
-							dynamicComponentClientInstance(clientName);
+							int clientHandle = dynamicComponentClientInstance(clientName);
+							clientHandles.add(clientHandle);
 						} catch (Throwable th) {
 							th.printStackTrace();
 						}
@@ -146,16 +164,41 @@ public class ManagerPrevaylerTest extends TestCase
 			// wait for all to complete
 			for (Thread thread : threads)
 				thread.join();
+			
+			
+			long endTime = System.currentTimeMillis() - CLIENT_START_DELAY_MS;
+			System.out.println((CLIENTS*COMPONENTS) + " components activated in " + (endTime-startTime)/1000 + " seconds");
+			
+			// bypass prevayler to get serialization size
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(buffer);
+			synchronized (prevayler) {
+				oos.writeObject(manager);
+			}
+			System.out.println("Manager object serialization size when all component are activated: " + buffer.size() + " bytes");
+			
+			// logout all the client
+			for (int h : clientHandles)
+				if (h != 0) manager.logout(h);
+			
+			manager.logout(dynContainerInfo.getHandle());
+			
+			buffer.reset();
+			oos.reset();
+			synchronized (prevayler) {
+				oos.writeObject(manager);
+			}
+			System.out.println("Manager object serialization size after full deactivation: " + buffer.size() + " bytes");
 	}
 
-	private void dynamicComponentClientInstance(final String clientInstance) throws Throwable
+	private int dynamicComponentClientInstance(final String clientInstance) throws Throwable
 	{
 		// simple trick to align all the threads
-		Thread.sleep(1000);
+		Thread.sleep(CLIENT_START_DELAY_MS);
 		
 		TestClient client = new TestClient(clientInstance);
 		ClientInfo info = manager.login(client);
-		
+
 		// all dynamic case
 		try
 		{
@@ -165,6 +208,10 @@ public class ManagerPrevaylerTest extends TestCase
 						new ComponentSpec(clientInstance + "-dynComponent-" + i, "java.lang.Object",
 								"java.lang.Object", "DynContainer"), true);
 				assertTrue(componentInfo != null);
+				
+				int nc = count.incrementAndGet() ; 
+				if (nc % COUNT_REPORT_EVERY == 0)
+					System.out.println(nc + " components activated until now...");
 			}
 		}
 		catch (Throwable ex)
@@ -172,6 +219,8 @@ public class ManagerPrevaylerTest extends TestCase
 			ex.printStackTrace();
 			fail();
 		}
+
+		return info.getHandle();
 	}
 	
 	public static TestSuite suite() {
