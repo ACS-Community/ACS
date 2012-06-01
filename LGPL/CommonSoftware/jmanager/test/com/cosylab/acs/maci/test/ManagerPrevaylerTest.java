@@ -4,6 +4,7 @@
 package com.cosylab.acs.maci.test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,6 +80,24 @@ public class ManagerPrevaylerTest extends TestCase
 		else
 		{
 			String recoveryLocation = FileHelper.getTempFileName(null, RECOVERY_DIR_NAME);
+
+			System.out.println( "Removing old recovery files.");
+			// remove old recovery files
+			// if we are not interested in recovery files just delete them
+			File recoveryDir = new File(recoveryLocation);
+			//recoveryDir.delete();
+			File[] files = recoveryDir.listFiles();
+			for (int i = 0; files != null && i < files.length; i++)
+				files[i].delete();
+			// Now check if there are log files left. Maybe user do not have enough permision
+			// or we are didn't set proper permission before Manager killed.
+			// That can lead to unwanted or illegal state so we will refuse to continue
+			files = recoveryDir.listFiles();
+			for (int i = 0; files != null && i < files.length; i++) {
+				if( files[i].getName().endsWith(".commandLog") )
+					throw new Exception("Some recovery files are left in recovery location probably because of permission\nUnable to start without recovery state!");
+			}
+
 			prevayler = new SnapshotPrevayler(manager, recoveryLocation);
 		
 			manager = (ManagerImpl)prevayler.system();
@@ -175,13 +194,13 @@ public class ManagerPrevaylerTest extends TestCase
 			synchronized (prevayler) {
 				oos.writeObject(manager);
 			}
-			System.out.println("Manager object serialization size when all component are activated: " + buffer.size() + " bytes");
+			System.out.println("Manager object serialization size: " + buffer.size() + " bytes");
 			
+			manager.logout(dynContainerInfo.getHandle());
+
 			// logout all the client
 			for (int h : clientHandles)
 				if (h != 0) manager.logout(h);
-			
-			manager.logout(dynContainerInfo.getHandle());
 			
 			buffer.reset();
 			oos.reset();
