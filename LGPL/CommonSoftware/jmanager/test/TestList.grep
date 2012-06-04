@@ -13,3 +13,5 @@ Bound ID: InterfaceRepository
 jacorb@CDB
 ACS.log.minlevel.namedloggers
 processing /tmp/acsIrfeedDyn.[0-9]*\.idl
+components activated in
+Manager object serialization size after full deactivation

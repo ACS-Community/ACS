@@ -34,6 +34,8 @@ acsStartJava -Dmanager.debug.rememberOldHandles alma.acs.testsupport.tat.NoDotJU
 # does not exit!!! 
 #acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplSerializationTest
 
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerPrevaylerTest
+
 ./jmanagerTATEpilogue
 
 # non-CORBA service tests
