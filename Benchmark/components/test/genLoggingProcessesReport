@@ -90,12 +90,6 @@ genplot ()
 	| sed -e s@CHANGE_X_LOCATION@$X_AXIS_POSITION@g | sed -e s@CHANGE_Y_LOCATION@$Y_AXIS_POSITION@g \
 	| sed -e s@CHANGE_GRAPH_TITLE@$LOG_FILE_NAME@g > $ACS_TEMP/gplot.tmp;
 	
-	# Make sure that /usr/local/bin is on the PATH so that we find gnuplot there. 
-	# NRI has a problem with some special settings used for ACS tests. 
-	# This is what Moreno explained on June 1: 
-	# "When NRI calls NRIDYN on te48 it forces to override the pecs env resourcing again the bash profile just retrieved from CVS
-	#  This bash profile does not contain "/usr/local/bin" since it is not activated " 
-    if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "/usr/local/bin") ; then PATH=$PATH:/usr/local/bin ; fi
     gnuplot $ACS_TEMP/gplot.tmp;
 }
 
@@ -336,6 +330,15 @@ COMPONENT_LANGUAGE=cpp
 NO_REDIRECTION=
 CSVFILE=/dev/null
 NO_REPORT=
+
+#
+# Make sure that /usr/local/bin is on the PATH so that we find gnuplot there. 
+# NRI has a problem with some special settings used for ACS tests. 
+# This is what Moreno explained on 2012-06-01: 
+# "When NRI calls NRIDYN on te48 it forces to override the pecs env resourcing again the bash profile just retrieved from CVS
+#  This bash profile does not contain "/usr/local/bin" since it is not activated "
+# 
+if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "/usr/local/bin") ; then PATH=$PATH:/usr/local/bin ; fi
 
 #
 # These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
