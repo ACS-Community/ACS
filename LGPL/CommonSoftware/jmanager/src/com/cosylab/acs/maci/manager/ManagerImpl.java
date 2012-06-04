@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -49,7 +50,24 @@ import org.omg.CORBA.IntHolder;
 import org.prevayler.Command;
 import org.prevayler.Prevayler;
 import org.prevayler.implementation.AbstractPrevalentSystem;
-import org.prevayler.implementation.SnapshotPrevayler;
+
+import si.ijs.maci.ClientOperations;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.acs.alarmsystem.source.AlarmSource;
+import alma.acs.alarmsystem.source.AlarmSourceImpl;
+import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.util.ACSPorts;
+import alma.acs.util.IsoDateFormat;
+import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
+import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Administrator;
@@ -117,25 +135,6 @@ import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.client.DAOProxy;
 import com.cosylab.cdb.client.DAOProxyConnectionListener;
 import com.cosylab.util.WildcharMatcher;
-
-import si.ijs.maci.ClientOperations;
-
-import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
-import alma.acs.alarmsystem.source.AlarmSource;
-import alma.acs.alarmsystem.source.AlarmSourceImpl;
-import alma.acs.concurrent.DaemonThreadFactory;
-import alma.acs.exceptions.AcsJException;
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.util.ACSPorts;
-import alma.acs.util.IsoDateFormat;
-import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
-import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * This class is an implementation of MACI com.cosylab.acs.maci.Manager.
@@ -844,10 +843,25 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private static final String NAME_HANDLE_MONITORING = "manager.debug.rememberOldHandles";
 
 	/**
+	 * Enable handle monitoring store duration property name.
+	 */
+	private static final String NAME_HANDLE_MONITORING_TIME = "manager.debug.rememberOldHandlesStoreDurationMin";
+
+	/**
+	 * Default andle monitoring store duration.
+	 */
+	private static final int HANDLE_MONITORING_TIME_MIN = 120;
+
+	/**
 	 * Handle monitoring flag. 
 	 */	
 	private transient boolean enableHandleMonitoring;
 	
+	/**
+	 * Handle monitoring duration in minutes. 
+	 */	
+	private transient int enableHandleMonitoringDurationMins = HANDLE_MONITORING_TIME_MIN;
+
 	/**
 	 * CURL URI schema
 	 */
@@ -951,7 +965,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	prevayler			implementation of prevayler system
 	 * @param	context				remote directory implementation
 	 */
-	public void initialize(Prevayler prevayler, CDBAccess cdbAccess, Context context, Logger logger, ManagerContainerServices managerContainerServices)
+	public void initialize(Prevayler prevayler, CDBAccess cdbAccess, Context context, final Logger logger, ManagerContainerServices managerContainerServices)
 	{
 		this.prevayler = prevayler;
 		this.remoteDirectory = context;
@@ -1026,6 +1040,22 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		// register ping tasks
 		initializePingTasks();
+		
+		// handle monitoring removal task
+		final long timeInMs = enableHandleMonitoringDurationMins*60L*1000;
+		if (enableHandleMonitoring && enableHandleMonitoringDurationMins > 0)
+		{
+			heartbeatTask.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						logHandleCleanup(timeInMs);
+					} catch (Throwable th) {
+						logger.log(Level.SEVERE, "Unexpected exception in handle log cleanup task.", th);
+					}
+				}
+			}, 0, timeInMs);
+		}
 
 		// start topology sort manager
 		topologySortManager = new ComponentInfoTopologicalSortManager(
@@ -5619,7 +5649,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 				}
 				else
-					npe.setReason("Invalid handle, handle was never known.");
+				{
+					if (enableHandleMonitoringDurationMins <= 0)
+						npe.setReason("Invalid handle, handle was never known.");
+					else
+						npe.setReason("Invalid handle, handle is not known for the last " + enableHandleMonitoringDurationMins + " minutes.");
+				}
 				
 				throw npe;
 			}
@@ -9476,7 +9511,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void readManagerConfiguration()
 	{
 		enableHandleMonitoring = System.getProperties().containsKey(NAME_HANDLE_MONITORING);
-
+		enableHandleMonitoringDurationMins = Integer.getInteger(NAME_HANDLE_MONITORING_TIME, HANDLE_MONITORING_TIME_MIN);
+		
 		DAOProxy managerDAO = getManagerDAOProxy();
 		if (managerDAO == null)
 			return;
@@ -10153,6 +10189,26 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		synchronized (releasedHandles) {
 			// this simply overrides the old entry
 			releasedHandles.put(handle, new HandleMonitorEntry(now, reason));
+		}
+	}
+
+	/**
+	 * Log handle cleanup (removes logs older than maxAgeMs).
+	 * @param maxAgeMs
+	 */
+	public void logHandleCleanup(long maxAgeMs) {
+		if (!enableHandleMonitoring)
+			return;
+		
+		final long now = System.currentTimeMillis();
+		synchronized (releasedHandles) {
+			ArrayList<Integer> toRemoveList = new ArrayList<Integer>();
+			for (Entry<Integer,HandleMonitorEntry> entry : releasedHandles.entrySet()) {
+				if ((now - entry.getValue().timestamp) > maxAgeMs)
+					toRemoveList.add(entry.getKey());
+			}
+			for (Integer key : toRemoveList)
+				releasedHandles.remove(key);
 		}
 	}
 
