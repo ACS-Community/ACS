@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.15 2012/05/15 09:06:34 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.16 2012/06/10 21:00:52 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -275,10 +275,11 @@ template <class R> class ChainedRequest : public Request {
 };
 
 template <class R> class RequestChainContext {
-  private:
-    RequestProcessorThread *rpt;
+  public:
     typedef std::deque<R*> Queue;
     Queue requests;
+  private:
+    RequestProcessorThread *rpt;
     R *curreq;
     bool inprocess;
 

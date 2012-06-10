@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.23 2012/05/15 09:06:34 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.24 2012/06/10 21:00:52 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -246,6 +246,46 @@ void ACSServicesHandlerImpl::start_services (
         ACS_SHORT_LOG ((LM_ERROR, "Failed to parse service definition XML!"));
     }
     XML_ParserFree(parser);
+
+    ///
+    /// set-up configuration references
+    ///
+
+    int instance_number = 0;
+    CORBA::ULong length = 0;
+    ::acsdaemon::ServiceInfoSeq infos(2);
+
+
+    for (ACSServiceRequestChainContext::Queue::iterator iter = rcc->requests.begin();
+    	 iter != rcc->requests.end();
+    	 iter++)
+    {
+    	ACSServiceRequestDescription* request = (*iter)->getDescription();
+
+    	ACSServiceType type = request->getACSService();
+		if (type == NAMING_SERVICE ||
+			type == MANAGER)
+		{
+			char str[256];
+			const ACSService *service = &acsServices[type];
+			instance_number = request->getInstanceNumber();
+			std::string port = service->svcport == NULL ? service->namedsvcport(instance_number, request->getName()) : service->svcport(instance_number);
+			const char * cname = request->getCorbalocName() == NULL ? request->getName() : request->getCorbalocName();
+			snprintf(str, 256, service->svccorbaurl, ACSPorts::getIP(), port.c_str(), cname == NULL ? "" : cname);
+
+			::acsdaemon::ServiceInfo info;
+			info.service_type = CORBA::string_dup(request->getACSServiceName());
+			info.service_name = CORBA::string_dup("");
+			info.service_reference = CORBA::string_dup(str);
+
+			infos.length(++length);
+			infos[length-1] = info;
+		}
+    }
+
+    if (length > 0)
+    	this->set_configuration_reference(instance_number, infos);
+
     rcc->startProcessing();
 }
     
