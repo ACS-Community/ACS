@@ -4,6 +4,8 @@
  
 package com.cosylab.acs.maci;
 
+import si.ijs.maci.HANDLE_MANAGER_MASK;
+
 /**
  * The Handle alias defines a universal handle used by MACI to uniquely tag the object instances.
  * 
@@ -51,9 +53,11 @@ public interface HandleConstants
 	public static final int CONTAINER_MASK = 0x04000000;
 
 	/**
-	 * Manager handle mask.
+	 * Manager handle mask 0x05000000.
+	 * We define it in IDL to allow operator clients to show in some special way 
+	 * that the manager is the client of an immortal or autostart component.
 	 */
-	public static final int MANAGER_MASK = 0x05000000;
+	public static final int MANAGER_MASK = HANDLE_MANAGER_MASK.value;
 	
 	/**
 	 * Type mask of the handle.
