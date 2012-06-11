@@ -125,7 +125,7 @@ export getLogFile
 function getTimeStamp
 {
 local TS
-TS=`date --utc +%Y-%m-%dT%H:%M:%S.%N | cut -c1-23`
+TS=`date --utc +%Y-%m-%dT%H:%M:%S.%3N`
 echo "$TS"
 }
 
