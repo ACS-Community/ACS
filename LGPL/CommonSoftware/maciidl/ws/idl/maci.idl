@@ -60,6 +60,15 @@ module maci {
 	*/
 	typedef unsigned long Handle;
 
+	/**
+	 * The internal structure of the handles assigned by the manager 
+	 * are usually an implementation secret of the manager.
+	 * However, we make the manager handle mask available so that tools such as the OMC
+	 * can show that it is the manager (and not some other client in the system)
+	 * who holds a component reference, for example in the case of immertal components.
+	 */
+	const Handle HANDLE_MANAGER_MASK = 0x05000000;
+
 	/** 
 	    Every component must have a unique designation, which clients use to
 	    identify that component. As a metaservice, MACI provides name
