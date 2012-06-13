@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.148 2012/05/18 06:54:42 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.149 2012/06/13 07:56:26 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.148 2012/05/18 06:54:42 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.149 2012/06/13 07:56:26 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -128,6 +128,10 @@ public:
     {
         ACS_TRACE ("maci::ActivationMethod::call");
         
+        char buf[256];
+        ACE_OS::snprintf(buf, 256, "Async. activation of component %s with descOut.id_tag = %d has started.", name_.c_str(), descOut_.id_tag);
+        ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "%s", buf);
+
         maci::ComponentInfo_var componentInfo;
         ACSErr::Completion completion = ACSErrTypeOK::ACSErrOKCompletion();
         
@@ -138,7 +142,7 @@ public:
         catch (maciErrType::CannotActivateComponentEx &_ex)
         {
             maciErrType::CannotActivateComponentExImpl exImpl(_ex);
-			completion = maciErrType::CannotActivateComponentCompletion(exImpl, __FILE__, __LINE__,
+            completion = maciErrType::CannotActivateComponentCompletion(exImpl, __FILE__, __LINE__,
                                                             "maci::ActivationMethod::call");
         }
         catch (ACSErr::ACSbaseExImpl &_ex)
@@ -170,7 +174,12 @@ public:
                 componentInfo->access = 0;
                 componentInfo->interfaces.length(0);                
             }
+            
+            ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Calling maci::CBComponentInfo::done with descOut.id_tag = %d.", descOut_.id_tag);
+            
             cb_->done(*componentInfo, completion, descOut_);
+
+            ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d completed.", descOut_.id_tag);
         }
         catch(...)
         {
