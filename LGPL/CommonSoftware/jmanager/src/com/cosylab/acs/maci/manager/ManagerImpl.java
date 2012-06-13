@@ -6668,6 +6668,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		@Override
 		public synchronized void done(ComponentInfo result) {
+
+			logger.log(AcsLogLevel.DEBUG, "Container responded with 'done' callback to indicate activation of a component '"+name+"'.");
+			
 			try
 			{
 				componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,

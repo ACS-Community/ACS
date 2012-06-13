@@ -159,7 +159,7 @@ public class ContainerProxy extends ClientProxy implements Container
 		@Override
 		public void done(si.ijs.maci.ComponentInfo info, Completion c,
 				CBDescOut desc) {
-			ComponentInfoCompletionCallback cb = unregister(desc.id_tag);;
+			ComponentInfoCompletionCallback cb = unregister(desc.id_tag);
 			if (cb != null)
 			{
 				ComponentInfo retVal = null;
@@ -178,6 +178,11 @@ public class ContainerProxy extends ClientProxy implements Container
 					cb.done(retVal);
 				else
 					cb.failed(retVal, ex);
+			}
+			else
+			{
+				// TODO use logger
+				System.err.println("Unknown 'desc.id_tag' (" + desc.id_tag + ") parameter for CBComponentInfo.done received.");
 			}
 			
 		}
