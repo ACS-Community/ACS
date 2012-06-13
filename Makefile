@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.191 2012/03/07 18:06:51 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.192 2012/06/13 14:47:28 jschwarz Exp $"
 #
 #
 
@@ -18,7 +18,17 @@ MODULES_KIT = vlt doc acs acstempl
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
 #
-MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor gmp gui xsddoc extidl vtd-xml oAW shunit2 log4cpp
+GMP = gmp
+
+ifeq ($(os),Linux)
+  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
+  ifeq ($(majorRelNo),6)
+    GMP =
+  endif
+endif
+
+MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) gui xsddoc extidl vtd-xml oAW shunit2 log4cpp
+
 MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acserridl acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent cdbBrowser errorBrowser recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task abeans acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine jlog logTools acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI eventGUI acssim bulkData bulkDataNT containerTests acscourse ACSLaser 
 ######## end Modules ###########################
 
