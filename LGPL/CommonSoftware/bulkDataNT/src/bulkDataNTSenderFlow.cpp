@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.45 2012/05/21 13:06:08 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.46 2012/06/13 09:31:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.45 2012/05/21 13:06:08 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.46 2012/06/13 09:31:24 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -78,7 +78,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     }//if
 
   setACKsTimeout(senderFlowCfg_m.getACKsTimeout());
-  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Sender Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Sender Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
 }//BulkDataNTSenderFlow
 
 
