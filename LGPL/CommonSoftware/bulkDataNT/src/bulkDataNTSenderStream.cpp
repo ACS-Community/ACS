@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.15 2012/04/26 15:04:27 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.16 2012/06/13 09:51:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.15 2012/04/26 15:04:27 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.16 2012/06/13 09:51:42 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -41,6 +41,7 @@ BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name, const SenderStr
 : BulkDataNTStream(name, cfg), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Sender Stream: %s has been created.", name));
 }//BulkDataNTSenderStream
 
 BulkDataNTSenderStream::~BulkDataNTSenderStream()

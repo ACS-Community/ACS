@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.22 2012/03/30 13:49:58 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.23 2012/06/13 09:51:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,6 +39,7 @@ BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char
 : BulkDataNTReceiverStreamBase(streamName, cfg), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Stream: %s has been created.", streamName));
 }
 
 
@@ -47,6 +48,7 @@ BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char
 : BulkDataNTReceiverStreamBase(receiverName, streamName, cfg), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Stream: %s with receiver name: %s has been created.", streamName, receiverName));
 }
 
 
