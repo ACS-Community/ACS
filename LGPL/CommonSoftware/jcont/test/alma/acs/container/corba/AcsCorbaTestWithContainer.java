@@ -123,7 +123,8 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 				};
 				m_logger.info("Will release component while active request is still running.");
 				(new Thread(compMethodCallRunnable)).start();
-				// todo use proper synchronization to wait until dymmyComponent has received the call to 'callThatTakesSomeTime'
+				// Sleep a bit so that we are sure the component method 'callThatTakesSomeTime' is executing (=sleeping).
+				// TODO: use proper synchronization to wait until dymmyComponent has received the call to 'callThatTakesSomeTime'
 				// this could be done using ACS callbacks.
 				Thread.sleep(callOverheadMax);
 			}
@@ -132,12 +133,21 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 			}
 			// we expect the releaseComponent call to take some time, because the container must wait for the 
 			// currently active call to finish before the component can be unloaded.
-			long timeBeforeRelease = System.currentTimeMillis();
+			// Without any call and container overhead, the component is busy already for as long as we slept (=callOverheadMax).
+			// In that case we should measure timeReleaseCompCall == remoteCallDurationMin-callOverheadMax.
+			// Any overhead in the 'callThatTakesSomeTime' and the return of 'releaseComponent' only increases the measured timeReleaseCompCall.
+			// When running the test, we still see occasional failures of returning a few milliseconds too early.
+			// 2012-06-13: Assuming that these errors come from granularity issues with the timer and that measuring nanoseconds 
+			// will improve this situation, we change from System.currentTimeMillis diffs to using System.nanoTime().
+			long timeBeforeRelease = System.nanoTime();
 			getContainerServices().releaseComponent(compName);
-			int timeReleaseCompCall = (int) (System.currentTimeMillis() - timeBeforeRelease);
+			int timeReleaseCompCallMillis = (int) ((System.nanoTime() - timeBeforeRelease) / 1000000);
+			int timeReleaseCompCallMillisExpectedMin = remoteCallDurationMin - callOverheadMax;
+			int timeReleaseCompCallMillisExpectedMax = timeReleaseCompCallMillisExpectedMin + 2 * callOverheadMax;
 			if (destroyWhileBusy) {
-				assertTrue("Releasing component '" + compName + "' took only " + timeReleaseCompCall + " ms, when at least " + (remoteCallDurationMin-callOverheadMax) + " ms were expected.", 
-						timeReleaseCompCall > remoteCallDurationMin-callOverheadMax );
+				assertTrue("Releasing component '" + compName + "' took " + timeReleaseCompCallMillis + " ms, when between " 
+							+ timeReleaseCompCallMillisExpectedMin + " ms and " + timeReleaseCompCallMillisExpectedMax + " were expected.", 
+						timeReleaseCompCallMillis >= remoteCallDurationMin-callOverheadMax && timeReleaseCompCallMillis <= timeReleaseCompCallMillisExpectedMax);
 			}
 			if (exceptionInThread != null) {
 				fail("asynchronous component call number " + i + " (callThatTakesSomeTime) failed: " + exceptionInThread.toString());
