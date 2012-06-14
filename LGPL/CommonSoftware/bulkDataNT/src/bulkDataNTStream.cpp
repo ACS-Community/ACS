@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.39 2012/05/21 13:20:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.40 2012/06/14 11:28:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,20 +32,21 @@ using namespace AcsBulkdata;
 
 unsigned int BulkDataNTStream::factoryRefCount_m = 0;
 unsigned int BulkDataNTStream::participantRefCount_m = 0;
+DDS::DomainParticipantFactory *BulkDataNTStream::factory_m=0;
 //DDS::DomainParticipant* BulkDataNTStream::participant_m=0;
 
 BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
-	    streamName_m(name), configuration_m(cfg), factory_m(0), participant_m(0)
+	    streamName_m(name), configuration_m(cfg), /*factory_m(0),*/ participant_m(0)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
 
 
   try
   {
-	  //   if (factoryRefCount_m==0)
-	  //     {
+	  if (factory_m==0)
+	       {
 	  createDDSFactory();  //it is enough to have one factory
-	  //     }
+	       }
 
 	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
@@ -75,7 +76,7 @@ BulkDataNTStream::~BulkDataNTStream()
   //if (participantRefCount_m==0)
   destroyDDSParticipant();
 
-  destroyDDSFactory();
+  destroyDDSFactory(); // we do not need to call, but .... it just decrease the counter
 }//~BulkDataNTStream
 
 
