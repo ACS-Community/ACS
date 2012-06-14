@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.40 2012/06/14 11:28:34 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.41 2012/06/14 12:40:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -102,8 +102,8 @@ void BulkDataNTStream::createDDSFactory()
 	factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
 
 	// if both values are true (default) we prevent that default values are taken from default places
-	factory_qos.profile.ignore_user_profile = configuration_m.ignoreUserProfileQoS;
-	factory_qos.profile.ignore_environment_profile = configuration_m.ignoreEnvironmentProfileQoS;
+	factory_qos.profile.ignore_user_profile = DDSConfiguration::ignoreUserProfileQoS;
+	factory_qos.profile.ignore_environment_profile = DDSConfiguration::ignoreEnvironmentProfileQoS;
 	//factory_qos.resource_limits.max_objects_per_thread = 4096; //if we want to have more than 10 participants
 
 /***
@@ -141,10 +141,10 @@ std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_
 //	std::cout << "========> " << configuration_m.stringProfileQoS << std::endl;
 //	std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_m.profileQos << std::endl;
 
-	if (configuration_m.urlProfileQoS.length()>0)
+	if (DDSConfiguration::urlProfileQoS.length()>0)
 	{
 		factory_qos.profile.url_profile.ensure_length(1,1);
-		factory_qos.profile.url_profile[0] = DDS_String_dup(configuration_m.urlProfileQoS.c_str());
+		factory_qos.profile.url_profile[0] = DDS_String_dup(DDSConfiguration::urlProfileQoS.c_str());
 	}//if
 
 	ret = factory_m->set_qos(factory_qos);
