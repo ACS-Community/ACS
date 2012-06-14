@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.33 2012/05/18 13:26:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.34 2012/06/14 12:27:41 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -124,11 +124,15 @@ protected:
 	std::string stringProfileQoS;  /// her goes DDS QoS Profile
 
 	// QoS that follow can be hardcoded, but is more flexible in this way.
-	bool ignoreUserProfileQoS; //when true USER_QOS_PROFILES.xml in current folder would not be loaded
-	bool ignoreEnvironmentProfileQoS; //when true NDDS_QOS_PROFILES will be ignored
+	static bool ignoreUserProfileQoS; //when true USER_QOS_PROFILES.xml in current folder would not be loaded
+	static bool ignoreEnvironmentProfileQoS; //when true NDDS_QOS_PROFILES will be ignored
 
 	static unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
-};
+
+	static const char* const DEFAULT_QoS_FILE;
+	static std::string urlProfileQoS;   // here we specify where it should be looked for default values = DEFAULT_QoS_FILE
+	void fillUrlProfileQoS(const char* envVar, const char *dilim="");
+};//DDSConfiguration
 
 
 /// common class for Sender and Receiver configuration
@@ -139,14 +143,9 @@ class StreamConfiguration : public DDSConfiguration
 public:
 	StreamConfiguration();
 
-	static const char* const DEFAULT_QoS_FILE;
-
 protected:
-	void fillUrlProfileQoS(const char* envVar, const char *dilim="");
-
 	bool participantPerStream;  /// TBD: not used yet - should flag if we have a participant per stream or just a single participant
-	std::string urlProfileQoS;   // here we specify where it should be looked for default values = DEFAULT_QoS_FILE
-};
+};//StreamConfiguration
 
 
 /****************************************/

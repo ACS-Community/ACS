@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.21 2012/05/21 12:15:26 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.22 2012/06/14 12:27:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,8 +39,6 @@ const char* const DDSConfiguration::DEFAULT_API_CREATE_PROFILE = "APICreateProfi
 short DDSConfiguration::debugLevel = -1;
 unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
 
-const char* const StreamConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
-
 double SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT=5.0;  //secs
 double SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT=1.0; //secs
 
@@ -48,6 +46,11 @@ const char* const ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS="225.3.2.
 double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT=0.01; //sec
 bool ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST=true;
 
+bool DDSConfiguration::ignoreUserProfileQoS = true;
+bool DDSConfiguration::ignoreEnvironmentProfileQoS = true;
+
+std::string DDSConfiguration::urlProfileQoS;
+const char* const DDSConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
 
 bool AcsBulkdata::isBulkDataNTEnabled()
 {
@@ -65,11 +68,44 @@ bool AcsBulkdata::isBulkDataNTEnabled()
  **************************************************************************************/
 DDSConfiguration::DDSConfiguration()
 {
+	char *envVarValue;
+
 	libraryQos=DDSConfiguration::DEFAULT_LIBRARY;
-	ignoreUserProfileQoS = true;
-	ignoreUserProfileQoS = true;
 	DDSConfiguration::setDebugLevelFromEnvVar();
-}
+
+	if (urlProfileQoS.empty())
+	{
+		urlProfileQoS = "[";
+		envVarValue = getenv("MODPATH");
+		if (envVarValue != NULL)
+		{
+			urlProfileQoS += "file://..";
+			urlProfileQoS += DEFAULT_QoS_FILE;
+			urlProfileQoS += "|";
+		}
+
+		fillUrlProfileQoS("MODROOT", "|");
+		fillUrlProfileQoS("INTROOT", "|");
+
+		envVarValue = getenv("INTLIST");
+		if (envVarValue != NULL) {
+			char *tmpEnvVarValue = strdup(envVarValue); // we have to make copy otherwise next time the INTLIST is corupted
+			char* tok = strtok(tmpEnvVarValue,":");
+			while (tok != NULL)
+			{
+				urlProfileQoS += "file://";
+				urlProfileQoS += tok;
+				urlProfileQoS += DEFAULT_QoS_FILE;
+				urlProfileQoS += "|";
+				tok = strtok(NULL, ":");
+			}//while
+			free(tmpEnvVarValue);
+		}//if
+
+		fillUrlProfileQoS("ACSROOT"); //for sure we have ACSROOT
+		urlProfileQoS+="]";
+	}//if
+}//DDSConfiguration
 
 void DDSConfiguration::setDebugLevelFromEnvVar()
 {
@@ -88,6 +124,18 @@ void DDSConfiguration::setDebugLevelFromEnvVar()
 		}
 	}
 }//setDebugLevelFromEnvVar
+
+void DDSConfiguration::fillUrlProfileQoS(const char* envVar, const char *dilim)
+{
+	char *envVarValue = getenv(envVar);
+	if (envVarValue != NULL)
+	{
+		urlProfileQoS += "file://";
+		urlProfileQoS += envVarValue;
+		urlProfileQoS += DEFAULT_QoS_FILE;
+		urlProfileQoS += dilim;
+	}
+}//fillUrlProfileQoS
 
 void DDSConfiguration::setDDSLogVerbosity()
 {
@@ -148,51 +196,8 @@ void DDSConfiguration::setStringProfileQoS(char*  profileName, char* cfg, const 
  **************************************************************************************/
 StreamConfiguration::StreamConfiguration()
 {
-	char *envVarValue;
-
-	urlProfileQoS = "[";
-
-	envVarValue = getenv("MODPATH");
-	if (envVarValue != NULL)
-	{
-		urlProfileQoS += "file://..";
-		urlProfileQoS += DEFAULT_QoS_FILE;
-		urlProfileQoS += "|";
-	}
-
-	fillUrlProfileQoS("MODROOT", "|");
-	fillUrlProfileQoS("INTROOT", "|");
-
-	envVarValue = getenv("INTLIST");
-	if (envVarValue != NULL) {
-		char *tmpEnvVarValue = strdup(envVarValue); // we have to make copy otherwise next time the INTLIST is corupted
-		char* tok = strtok(tmpEnvVarValue,":");
-		while (tok != NULL)
-		{
-			urlProfileQoS += "file://";
-			urlProfileQoS += tok;
-			urlProfileQoS += DEFAULT_QoS_FILE;
-			urlProfileQoS += "|";
-			tok = strtok(NULL, ":");
-		}//while
-		free(tmpEnvVarValue);
-	}//if
-
-	fillUrlProfileQoS("ACSROOT"); //for sure we have ACSROOT
-	urlProfileQoS+="]";
 }//StreamConfiguration
 
-void StreamConfiguration::fillUrlProfileQoS(const char* envVar, const char *dilim)
-{
-	char *envVarValue = getenv(envVar);
-	if (envVarValue != NULL)
-	{
-		urlProfileQoS += "file://";
-		urlProfileQoS += envVarValue;
-		urlProfileQoS += DEFAULT_QoS_FILE;
-		urlProfileQoS += dilim;
-	}
-}//fillUrlProfileQoS
 
 /**************************************************************************************
  * 			SenderStreamConfiguration
