@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.22 2012/06/14 12:27:41 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.23 2012/06/14 12:55:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,41 +68,13 @@ bool AcsBulkdata::isBulkDataNTEnabled()
  **************************************************************************************/
 DDSConfiguration::DDSConfiguration()
 {
-	char *envVarValue;
-
 	libraryQos=DDSConfiguration::DEFAULT_LIBRARY;
 	DDSConfiguration::setDebugLevelFromEnvVar();
 
 	if (urlProfileQoS.empty())
 	{
 		urlProfileQoS = "[";
-		envVarValue = getenv("MODPATH");
-		if (envVarValue != NULL)
-		{
-			urlProfileQoS += "file://..";
-			urlProfileQoS += DEFAULT_QoS_FILE;
-			urlProfileQoS += "|";
-		}
-
-		fillUrlProfileQoS("MODROOT", "|");
-		fillUrlProfileQoS("INTROOT", "|");
-
-		envVarValue = getenv("INTLIST");
-		if (envVarValue != NULL) {
-			char *tmpEnvVarValue = strdup(envVarValue); // we have to make copy otherwise next time the INTLIST is corupted
-			char* tok = strtok(tmpEnvVarValue,":");
-			while (tok != NULL)
-			{
-				urlProfileQoS += "file://";
-				urlProfileQoS += tok;
-				urlProfileQoS += DEFAULT_QoS_FILE;
-				urlProfileQoS += "|";
-				tok = strtok(NULL, ":");
-			}//while
-			free(tmpEnvVarValue);
-		}//if
-
-		fillUrlProfileQoS("ACSROOT"); //for sure we have ACSROOT
+		fillUrlProfileQoS("ACSDATA");
 		urlProfileQoS+="]";
 	}//if
 }//DDSConfiguration
