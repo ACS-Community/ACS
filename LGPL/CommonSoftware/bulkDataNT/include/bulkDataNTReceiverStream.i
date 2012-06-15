@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.23 2012/06/13 09:51:42 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.24 2012/06/15 14:39:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -61,6 +61,8 @@ BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 	for(;i!=receiverFlows_m.end(); i++)
 		delete (i->second);
 	receiverFlows_m.clear();
+
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Stream: %s has been destroyed.", streamName_m.c_str()));
 }//~BulkDataNTReceiverStream
 
 

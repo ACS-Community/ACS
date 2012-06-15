@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.22 2012/06/13 09:33:46 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.23 2012/06/15 14:39:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.22 2012/06/13 09:33:46 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.23 2012/06/15 14:39:02 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -72,9 +72,9 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
 BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	std::string streamName = receiverStream_m->getName();
+
 	receiverStream_m->removeFlowFromMap(flowName_m.c_str());
-
-
 
 	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
 	DDS::DomainParticipant *participant = receiverStream_m->getDDSParticipant();
@@ -93,6 +93,8 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 	}
 	delete ddsSubscriber_m;
 	if (releaseCB_m) delete callback_m;
+
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Flow: %s @ stream: %s has been destroyed.", flowName_m.c_str(), streamName.c_str()));
 }//~BulkDataNTReceiverFlow
 
 void BulkDataNTReceiverFlow::setReceiverName(char* recvName)

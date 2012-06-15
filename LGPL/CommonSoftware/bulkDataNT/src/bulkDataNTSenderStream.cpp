@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.16 2012/06/13 09:51:42 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.17 2012/06/15 14:39:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.16 2012/06/13 09:51:42 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.17 2012/06/15 14:39:02 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -52,6 +52,8 @@ BulkDataNTSenderStream::~BulkDataNTSenderStream()
 	for(;i!=senderFlows_m.end(); i++)
 		delete (i->second);
 	senderFlows_m.clear();
+
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Sender Stream: %s has been destroyed.", streamName_m.c_str()));
  }//~BulkDataNTSenderStream
 
 BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, const SenderFlowConfiguration &cfg,
