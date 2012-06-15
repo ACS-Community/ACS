@@ -19,3 +19,4 @@ s/Receiver Data Rate: [0-9,.]*/Receiver Data Rate: XY.Z/g
 s/in [0-9,.]* sec/in xy.z sec/g
 s/before waiting: [0-9]*/before waiting: XY/g
 s/Sub([0-9]*)/Sub(XXX)/g
+s/\/[a-z,A-Z,0-9,.,/,_,-]*\/config\/bulkDataNTDefaultQosProfiles.xml/----\/config\/bulkDataNTDefaultQosProfiles.xml/g
