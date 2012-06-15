@@ -254,7 +254,7 @@ public class CircularArrayList<T> extends AbstractList<T> implements List<T>, Se
 	}
 
 	@SuppressWarnings("unchecked")
-	private synchronized void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 		// Read in size of list and allocate array
 		head = 0;
 		size = tail = s.readInt();

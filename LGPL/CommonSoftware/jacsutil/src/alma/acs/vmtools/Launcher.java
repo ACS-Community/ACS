@@ -86,7 +86,7 @@ public class Launcher {
 		// --- run the launcher gui
 
 		try {
-			Launcher inst = new Launcher();
+			new Launcher();
 		} catch (Throwable exc) {
 			error("Failed to start VmTools Launcher: "+exc);
 		}
