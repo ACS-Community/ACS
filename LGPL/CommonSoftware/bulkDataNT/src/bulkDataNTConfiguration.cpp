@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.23 2012/06/14 12:55:47 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.24 2012/06/15 10:55:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,6 +76,12 @@ DDSConfiguration::DDSConfiguration()
 		urlProfileQoS = "[";
 		fillUrlProfileQoS("ACSDATA");
 		urlProfileQoS+="]";
+		// here we are sure that this is executed just once
+		char *envVar = getenv("NDDS_DISCOVERY_PEERS");
+		if (envVar && *envVar)
+		{
+			ACS_SHORT_LOG((LM_WARNING, "Env. variable NDDS_DISCOVERY_PEERS has been set to: %s, what could cause a problem to connect sender and receivers if it is not proprly used.", envVar));
+		}//if
 	}//if
 }//DDSConfiguration
 
