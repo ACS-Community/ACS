@@ -140,7 +140,7 @@ public class RemoteThreadsMonitor {
 			}
 		}
 		
-		if( rtc.connect() ) {
+		if( rtc != null && rtc.connect() ) {
 			System.out.println("Connected to the remote JVM");
 		} else {
 			System.err.println("Can't connect to the remote JVM");
