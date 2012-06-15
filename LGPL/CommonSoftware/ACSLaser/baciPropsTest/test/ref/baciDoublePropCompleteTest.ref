@@ -37,7 +37,7 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: LOW OFF
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <AnotherFF, TestFaultMember, 2> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <AnotherFF:TestFaultMember:2> ACTIVE=false
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' has successfully released  a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' has successfully released a component with curl=TEST_COMPONENT
 1 - 
 1 - 
 1 - OK (1 test)

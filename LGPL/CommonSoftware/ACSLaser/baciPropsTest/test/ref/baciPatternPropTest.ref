@@ -8,7 +8,7 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BaciPropTest#testPatternVar:TEST_COMPONENT:1> ACTIVE=true
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BaciPropTest#testPatternVar, TEST_COMPONENT, 1> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BaciPropTest#testPatternVar:TEST_COMPONENT:1> ACTIVE=false
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully released  a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully released a component with curl=TEST_COMPONENT
 1 - 
 1 - 
 1 - OK (1 test)

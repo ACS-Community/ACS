@@ -12,7 +12,7 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=true
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BaciPropTest#testEnumVar, TEST_COMPONENT, 1> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=false
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully released  a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully released a component with curl=TEST_COMPONENT
 1 - 
 1 - 
 1 - OK (1 test)
