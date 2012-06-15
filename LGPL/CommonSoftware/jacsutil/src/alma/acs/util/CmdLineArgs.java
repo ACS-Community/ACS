@@ -74,11 +74,12 @@ public class CmdLineArgs
 		}
 		else {
 			m_registeredOptions.put(opt.getName(), opt);
+			
+			if (opt.getAlternativeName() != null) {
+				m_registeredOptions.put(opt.getAlternativeName(), opt);
+			}
 		}
 		
-		if (opt.getAlternativeName() != null) {
-			m_registeredOptions.put(opt.getAlternativeName(), opt);
-		}
 	}
 
 	
