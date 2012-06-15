@@ -35,7 +35,7 @@ import java.util.StringTokenizer;
 import alma.acs.makesupport.AcsJarFileFinder;
 
 /**
- * Custom class loader which correctly handles multiple occurences of identical jar files in 
+ * Custom class loader which correctly handles multiple occurrences of identical jar files in 
  * "overlayed" directories. These directories would typically be ../lib, INTROOT/lib, ACSROOT/lib and ORB dirs.
  * <p>
  * The main purpose is to cut down the very long classpath produced otherwise by the ACS start scripts.
