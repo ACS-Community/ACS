@@ -3,6 +3,7 @@ package alma.acs.concurrent;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -265,7 +266,7 @@ public class ThreadLoopRunnerTest extends TestCase
 		private volatile CountDownLatch sync;
 		protected final int sleepMillis;
 		protected final Logger logger;
-		private volatile int count;
+		private final AtomicInteger count = new AtomicInteger(0);
 		
 		MyAction(CountDownLatch sync, int sleepMillis, Logger logger) {
 			this.sleepMillis = sleepMillis;
@@ -275,7 +276,7 @@ public class ThreadLoopRunnerTest extends TestCase
 		
 		void reset(CountDownLatch newSync) {
 			this.sync = newSync;
-			count = 0;
+			count.set(0);
 		}
 		
 		public void run() {
@@ -288,7 +289,7 @@ public class ThreadLoopRunnerTest extends TestCase
 			} 
 			finally {
 				logger.info("Woke up - " + count);
-				count++;
+				count.incrementAndGet();
 				sync.countDown();
 			}
 		}
@@ -298,7 +299,7 @@ public class ThreadLoopRunnerTest extends TestCase
 		}
 
 		int getCount() {
-			return count;
+			return count.get();
 		}
 	}
 
