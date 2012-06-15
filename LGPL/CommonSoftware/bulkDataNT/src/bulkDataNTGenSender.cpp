@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.4 2012/05/16 14:28:01 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.5 2012/06/15 13:07:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -118,7 +118,8 @@ int main(int argc, char *argv[])
 
     	unsigned int numOfCreatedFlows = senderStream.getFlowNumber();
 
-    	sleep(2);
+        std::cout << "press a key to send data (start/data/stop) to connected receivers ..." << std::endl;
+        getchar();
 
     	// first startSend
     	for(unsigned int i=0; i<numOfCreatedFlows; i++)
