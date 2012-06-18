@@ -1,0 +1,14 @@
+# A. Caproni
+#
+# 04/06/2012
+
+FF,FM,1
+
+ FF2,FM2, 3 # Alarm FM2
+FF3 , FM3, 0 Prop1=Val1
+FF3 , FM4, 1 Prop1=Val1, pro2=val2,pr03 = val3  ,pro4=  val4
+
+# A triplrt with a default fault member i.e. FM=*
+FaultFamiliyDef, *,1
+FaultFamiliyDef2, * 31 # Not an alarm
+FFDef, *   , 98 defpm=defpv
