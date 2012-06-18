@@ -45,10 +45,10 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.cosylab.CDB.DAOOperations;
-
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
+
+import com.cosylab.CDB.DAOOperations;
 
 public class ExtraDataFeatureUtil {
 	
@@ -208,7 +208,8 @@ public class ExtraDataFeatureUtil {
 				
 				// artificial name, try to get the real one
 				String elementName = element;
-				if (Character.isDigit(element.charAt(element.length()-1)))
+				// for maps we get Name attribute as element, so there is no easy way to detect this
+				//if (Character.isDigit(element.charAt(element.length()-1)))
 				{
 					try
 					{

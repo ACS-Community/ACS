@@ -63,7 +63,7 @@ public class XMLHandler extends DefaultHandler {
 	// will be used to store xmlns prefixes
 	private ArrayList prefixes = new ArrayList();
 	// should we mark arrays
-	private int markArrays = 0;
+	private int markArrays = 1;
 
 	// public fields for content and eventually error
 	public String m_errorString = null;

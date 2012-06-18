@@ -205,6 +205,23 @@ public class XMLTreeNode {
 		return m_name;
 	}
 
+	public String getRawName() {
+		if(isArrayNode() || isDynamicNode() || isMapNode()) 
+		{
+			if(m_nameSpace.length() == 0)
+				return "_";
+			else
+				return m_nameSpace + ":_";
+		}
+		else
+		{
+			if(m_nameSpace.length() == 0)
+				return m_name;
+			else
+				return m_nameSpace + ":" + m_name;
+		}
+	}
+
 	public String toString(boolean withMapNames){
 		return toString(0, withMapNames);
 	}
