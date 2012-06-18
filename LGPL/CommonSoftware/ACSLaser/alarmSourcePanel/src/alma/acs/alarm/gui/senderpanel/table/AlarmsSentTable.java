@@ -18,18 +18,18 @@
  */
 package alma.acs.alarm.gui.senderpanel.table;
 
-import java.awt.Dimension;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.JList;
 import javax.swing.JTable;
 
+import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
+
 /**
  * The table with the alarms sent
  * <P>
- * The easiset way is to use a simple {@link JList} but it is very 
+ * The easiest way is to use a simple {@link JList} but it is very 
  * ugly when initialized empty
  * 
  * @author acaproni
@@ -59,25 +59,25 @@ public class AlarmsSentTable extends JTable {
 	 * @return The number of alarms in the table
 	 * @see AlarmsSentTableModel#alarmSent(String, boolean)
 	 */
-	public int alarmSent(String triplet, boolean active) {
+	public int alarmSent(Triplet triplet, boolean active) {
 		return model.alarmSent(triplet, active);
 	}
 	
 	/**
 	 * @return the alarms in the table
 	 */
-	public Collection<String> getAlarms() {
+	public Collection<Triplet> getAlarms() {
 		return model.getAlarms();
 	}
 	
 	/**
 	 * @return the alarms in the table
 	 */
-	public Collection<String> getSelectedAlarms() {
-		Vector<String> ret= new Vector<String>();
+	public Collection<Triplet> getSelectedAlarms() {
+		Vector<Triplet> ret= new Vector<Triplet>();
 		int selectedRows[] =getSelectedRows();
 		for (int idx: selectedRows) {
-			ret.add((String)getValueAt(idx, 0));
+			ret.add((Triplet)model.getValueAt(idx, 0));
 		}
 		return ret;
 	}

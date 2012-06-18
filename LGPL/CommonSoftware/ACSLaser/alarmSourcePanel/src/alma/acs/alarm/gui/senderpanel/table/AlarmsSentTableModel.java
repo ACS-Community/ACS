@@ -24,8 +24,10 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
+import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
+
 /**
- * Th emodel for the table
+ * The model for the table
  * 
  * @author acaproni
  *
@@ -35,7 +37,7 @@ public class AlarmsSentTableModel extends AbstractTableModel {
 	/**
 	 * The alarms shown in the table
 	 */
-	private final Vector<String> alarms=new Vector<String>();
+	private final Vector<Triplet> alarms=new Vector<Triplet>();
 
 	@Override
 	public int getRowCount() {
@@ -60,7 +62,8 @@ public class AlarmsSentTableModel extends AbstractTableModel {
 	 * @param active The state of the alarm
 	 * @return The number of alarms in the table
 	 */
-	public int alarmSent(String triplet, boolean active) {
+	public int alarmSent(Triplet triplet, boolean active) {
+		System.out.println("Model: added "+triplet.toString()+" ACTIVE="+active);
 		if (!active && alarms.contains(triplet)) {
 			alarms.remove(triplet);
 		} else if (active && !alarms.contains(triplet)) {
@@ -68,16 +71,17 @@ public class AlarmsSentTableModel extends AbstractTableModel {
 		}
 		Collections.sort(alarms);
 		fireTableDataChanged();
+		System.out.println("\talarms size= "+alarms.size());
 		return alarms.size();
 	}
 	
 	/**
 	 * @return The alarms in the table
 	 */
-	public Collection<String> getAlarms() {
-		Vector<String> ret = new Vector<String>(alarms.size());
-		for (String alarm: alarms) {
-			ret.add(alarm);
+	public Collection<Triplet> getAlarms() {
+		Vector<Triplet> ret = new Vector<Triplet>(alarms.size());
+		for (Triplet triplet: alarms) {
+			ret.add(triplet);
 		}
 		return ret;
 	}

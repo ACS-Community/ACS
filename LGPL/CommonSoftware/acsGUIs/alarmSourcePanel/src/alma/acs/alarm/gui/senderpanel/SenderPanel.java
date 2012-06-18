@@ -38,31 +38,46 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import cern.laser.source.alarmsysteminterface.FaultState;
-
+import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.AlarmDescriptorType;
+import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
 import alma.acs.alarm.gui.senderpanel.table.AlarmsSentTable;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.ClientLogManager;
+import cern.laser.source.alarmsysteminterface.FaultState;
 
 /** 
  * A panel to send alarms.
  * 
- * The panel allows the user to send alarms with a simple GUI
+ * The panel allows the user to send alarms with a simple GUI,
+ * by triplet or selecting a file.
+ * 
+ * While sending by triplet the user defines the triplet, the activation mode
+ * and the user properties. There is a button to send the alarm.
+ * 
+ * To send by file, the user select a text file with the definition of the alarms then it has 3 options
+ * <UL>
+ * 	<LI>activate all the alarms of the file
+ *  <LI>terminate all the alarms of the file
+ *  <LI>randomly activate/clear the alarms of the file
+ * </UL>
+ * 
+ * The last option activates a thread that activates/clears the alarms defined in the the file. 
+ * The user has to press again the button to stop sending alarms in this way.
  * 
  * @author acaproni
- * 
- * TODO: add the properties
  */
-public class SenderPanel extends JFrame implements ActionListener, DocumentListener {
+public class SenderPanel extends JFrame implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener {
 	
 	/**
 	 * ACS component client
@@ -77,7 +92,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	/**
 	 * ContainerServices
 	 */
-	private ContainerServices contSvcs;
+	private final ContainerServices contSvcs;
 	
 	/**
 	 * The text file to insert the triplet
@@ -118,6 +133,26 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	private final JRadioButton instantRB = new JRadioButton("Instant");
 	
 	/**
+	 * Select the sending mode by triplet
+	 */
+	private final JRadioButton sendFromTripletRB = new JRadioButton("Triplet");
+	
+	/**
+	 * Select the sending mode by file
+	 */
+	private final JRadioButton sendFromFileRB = new JRadioButton("File");
+	
+	/**
+	 * Select the sending mode by file
+	 */
+	private final JRadioButton sendFromCdbRB = new JRadioButton("TM/CDB");
+	
+	/**
+	 * It contains the radio buttons for the mode of sending alarms
+	 */
+	private final ButtonGroup sendingBG = new ButtonGroup();
+	
+	/**
 	 * The array with the buttons to facilitate getting their state
 	 */
 	private final JRadioButton[] descriptorBtns = {
@@ -133,7 +168,52 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	/**
 	 * The button to send the alarm
 	 */
-	private final JButton sendBtn = new JButton("Send");
+	private final JButton sendTripletBtn = new JButton("Send");
+	
+	/**
+	 * The button to choose the file
+	 */
+	private final JButton chooseFiletBtn = new JButton("File");
+	
+	/**
+	 * The label with the name of the file
+	 */
+	private final JTextField fileNameTF = new JTextField();
+	
+	/**
+	 * The label with the number of alarms read from TM/CDB
+	 */
+	private final JTextField cdbAlarmsTF = new JTextField();
+	
+	/**
+	 * The button to activate all the alarms read from the file
+	 */
+	private final JButton activateFromFileBtn = new JButton("Activate all");
+	
+	/**
+	 * The button to terminate all the alarms read from the file
+	 */
+	private final JButton terminateFromFileBtn = new JButton("Terminate all");
+	
+	/**
+	 * The button to randomly activate/terminate the alarms contained in the file
+	 */
+	private final JToggleButton cycleFromFileBtn = new JToggleButton("Cycle");
+	
+	/**
+	 * The button to activate all the alarms read from TM/CDB
+	 */
+	private final JButton activateFromCdbBtn = new JButton("Activate all");
+	
+	/**
+	 * The button to terminate all the alarms read from TM/CDB
+	 */
+	private final JButton terminateFromCdbBtn = new JButton("Terminate all");
+	
+	/**
+	 * The button to randomly activate/terminate the alarms read from TM/CDB
+	 */
+	private final JToggleButton cycleFromCdbBtn = new JToggleButton("Cycle");
 	
 	/**
 	 * The list of the active alarms: the user can select
@@ -157,28 +237,80 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	private final JButton closeBtn = new JButton("Done");
 	
 	/**
-	 * The obkect to send alarms
+	 * The object to send alarms (ACS alarm sender)
 	 */
-	private AlarmSender alarmSender;
+	private final AlarmSender alarmSender;
+	
+	/**
+	 * The helper to send alarms read from a file
+	 */
+	private final FileSender fileSender;
+	
+	/**
+	 * The helper to send alarms read from TM/CDB
+	 */
+	private final CDBSender cdbSender;
+	
+	/**
+	 * The progress bar for long lasting operations from file
+	 */
+	private final JProgressBar fileTasksPB = new JProgressBar();
+	
+	/**
+	 * The progress bar for long lasting operations from TM/CDB
+	 */
+	private final JProgressBar cdbTasksPB = new JProgressBar();
+	
+	/**
+	 * The number of alarm read from the TM/CDB
+	 */
+	private volatile int numOfAlarmsFromCDB=0;
+	
+	/**
+	 * The number of alarm read from a file
+	 */
+	private volatile int numOfAlarmsFromFile=0;
+	
+	/**
+	 * The panel with the widgets to send larms by triplet
+	 */
+	private final JPanel tripletWdgtsPnl = new JPanel();
+	
+	/**
+	 * The panel with the widgets to send alarms by file
+	 */
+	private final JPanel fileWdgtsPnl = new JPanel();	
+	
+	/**
+	 * The panel with the widgets to send alarms by TM/CDB
+	 */
+	private final JPanel cdbWdgtsPnl = new JPanel();
 
 	/**
 	 * Constructor
 	 */
-	public SenderPanel() {
+	public SenderPanel() throws Exception {
 		super("Alarm sender panel");
 		try {
 			initACS();
 		} catch (Throwable t) {
-			JOptionPane.showMessageDialog(null, t.getMessage(), "Error initializing ACS", JOptionPane.ERROR_MESSAGE);	
+			JOptionPane.showMessageDialog(null, t.getMessage(), "Error initializing ACS", JOptionPane.ERROR_MESSAGE);
+			throw new Exception("Error intializing the ACS client",t);
 		}
-		alarmSender=null;
+		contSvcs=acsClient.getContainerServices();
 		try {
-			alarmSender = new AlarmSender(logger);
+			alarmSender = new AlarmSender(contSvcs);
 		} catch (Throwable t) {
-			alarmSender=null;
 			JOptionPane.showMessageDialog(null, t.getMessage(), "Error initializing AlarmSender", JOptionPane.ERROR_MESSAGE);
+			throw new Exception("Error intializing the alarm sender",t);
 		} 
 		initGUI();
+		alarmSender.addListener(this);
+		alarmSender.start();
+		fileSender=new FileSender(this,contSvcs,alarmSender);
+		fileSender.addSlowTaskListener(this);
+		cdbSender=new CDBSender(this,contSvcs,alarmSender);
+		cdbSender.addSlowTaskListener(this);
 	}
 	
 	/**
@@ -194,48 +326,171 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 				close();
 			}
 		});
+	
 		
+		/////////////////////////////////////////////////////////
+		// The panel to send alarms by triplet or file
+		//
+		// This panel contains:
+		//  * one panel to send alarms by triplet
+		//  * one to send alarms by file
+		//  * one to send alarms by CDB
+		// The user can select only one sending type by means
+		// of a radio button.
+		/////////////////////////////////////////////////////////
+		
+		/////////////////////////////////////////////////////////
+		// The panel to send alarm by writing the triplet
+		//
+		// The panel has a radio button to select the sending by 
+		// triplet and a panel that contains all the widgets 
+		// needed by this sending mode.
+		/////////////////////////////////////////////////////////
+		JPanel tripletPnl = new JPanel(new BorderLayout());
+		tripletPnl.add(sendFromTripletRB,BorderLayout.WEST);
+		sendTripletBtn.setEnabled(false);
+		
+		// The panel with all the widgets to send alarms by triplets
+		// It has 3 lines: triplet, descriptor and properties
+		tripletWdgtsPnl.setBorder(BorderFactory.createTitledBorder("Triplet sender"));
+		BoxLayout tripetWdgtsLayoout = new BoxLayout(tripletWdgtsPnl, BoxLayout.Y_AXIS);
+		tripletWdgtsPnl.setLayout(tripetWdgtsLayoout);
+		
+		// Line 1: triplet text field and send button
+		JPanel sendTripletPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		sendTripletPnl.add(tripletTF);
+		tripletTF.setColumns(40);
+		tripletTF.getDocument().addDocumentListener(this);
+		tripletTF.setToolTipText("Insert triplet: FaultFamily,FaultMember,1");
+		sendTripletBtn.setEnabled(false);
+		sendTripletBtn.addActionListener(this);
+		sendTripletPnl.add(sendTripletBtn);
+		
+		// Line 2: the descriptor
+		JPanel descriptorWdgtPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		descriptorWdgtPnl.add(new JLabel("Descriptor: "));
 		activeRB.setName(FaultState.ACTIVE);
 		terminateRB.setName(FaultState.TERMINATE);
 		changeRB.setName(FaultState.CHANGE);
 		instantRB.setName(FaultState.INSTANT);
-		
-		JPanel alrmSendPnl = new JPanel(new BorderLayout());
-		JPanel upperPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		upperPnl.add(new JLabel("Triplet: "));
-		upperPnl.add(tripletTF);
-		tripletTF.setColumns(40);
-		tripletTF.getDocument().addDocumentListener(this);
-		tripletTF.setToolTipText("Insert triplet: FaultFamily,FaultMember,1");
-		sendBtn.setEnabled(false);
-		sendBtn.addActionListener(this);
-		upperPnl.add(sendBtn);
-		alrmSendPnl.add(upperPnl, BorderLayout.NORTH);
-		
-		JPanel centerPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		centerPnl.add(new JLabel("Descriptor: "));
-		centerPnl.add(activeRB);
-		centerPnl.add(terminateRB);
-		centerPnl.add(changeRB);
-		centerPnl.add(instantRB);
-		activationBG.add(activeRB);
-		activationBG.add(changeRB);
-		activationBG.add(terminateRB);
-		activationBG.add(instantRB);
+		descriptorWdgtPnl.add(activeRB);
+		descriptorWdgtPnl.add(terminateRB);
+		descriptorWdgtPnl.add(changeRB);
+		descriptorWdgtPnl.add(instantRB);
 		activeRB.setSelected(true);
-		alrmSendPnl.add(centerPnl, BorderLayout.CENTER);
-		JPanel lowerPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		lowerPnl.add(new JLabel("Properties"));
-		lowerPnl.add(propsTF);
+		
+		// Line 3: the properties
+		JPanel propsWdgtsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		propsWdgtsPnl.add(new JLabel("Properties"));
+		propsWdgtsPnl.add(propsTF);
 		propsTF.setColumns(40);
 		propsTF.setToolTipText("User properties key=val, key2=val2,....");
-		alrmSendPnl.add(lowerPnl, BorderLayout.SOUTH);
-		alrmSendPnl.setBorder(BorderFactory.createTitledBorder("Send alarm"));
 		
-		add(alrmSendPnl,BorderLayout.NORTH);
+		// Add the three lines of widgets
+		tripletWdgtsPnl.add(sendTripletPnl);
+		tripletWdgtsPnl.add(descriptorWdgtPnl);
+		tripletWdgtsPnl.add(propsWdgtsPnl);
 		
+		tripletPnl.add(tripletWdgtsPnl,BorderLayout.CENTER);
+		
+		/////////////////////////////////////////////////////////
+		// The panel to send alarm by selecting a file
+		//
+		// The panel has a radio button to select the sending by 
+		// file and a panel that contains all the widgets 
+		// needed by this sending mode.
+		/////////////////////////////////////////////////////////
+		JPanel filePnl = new JPanel(new BorderLayout());
+		filePnl.add(sendFromFileRB,BorderLayout.WEST);
+		sendFromFileRB.setPreferredSize(sendFromTripletRB.getPreferredSize());
+		sendFromFileRB.setMinimumSize(sendFromTripletRB.getMinimumSize());
+		// The panel with all the widgets to send alarms by file
+		// It has 2 lines: one to select the file and another one with the control buttons
+		fileWdgtsPnl.setBorder(BorderFactory.createTitledBorder("File sender"));
+		BoxLayout fileWdgtsLayoout = new BoxLayout(fileWdgtsPnl, BoxLayout.Y_AXIS);
+		fileWdgtsPnl.setLayout(fileWdgtsLayoout);
+		
+		// Line 1: widgets to select the file
+		JPanel selectFilePnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		fileNameTF.setColumns(40);
+		fileNameTF.setEditable(false);
+		fileNameTF.setText("");
+		selectFilePnl.add(fileNameTF);
+		selectFilePnl.add(chooseFiletBtn);
+		
+		// Line 2: widgets to control the sending mode
+		JPanel ctrlsFilePnl = new JPanel(new BorderLayout());
+		JPanel ctrlsButtonsPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		ctrlsFilePnl.add(fileTasksPB,BorderLayout.CENTER);
+		fileTasksPB.setValue(0);
+		fileTasksPB.setIndeterminate(false);
+		ctrlsButtonsPnl.add(activateFromFileBtn);
+		ctrlsButtonsPnl.add(terminateFromFileBtn);
+		ctrlsButtonsPnl.add(cycleFromFileBtn);
+		ctrlsFilePnl.add(ctrlsButtonsPnl,BorderLayout.EAST);
+		
+		// Add the two lines of widgets
+		fileWdgtsPnl.add(selectFilePnl);
+		fileWdgtsPnl.add(ctrlsFilePnl);
+		
+		filePnl.add(fileWdgtsPnl,BorderLayout.CENTER);
+		
+		/////////////////////////////////////////////////////////
+		// The panel to send alarm read from TM/CDB
+		//
+		// The panel has a radio button to select the sending by 
+		// file and a panel that contains all the widgets 
+		// needed by this sending mode.
+		/////////////////////////////////////////////////////////
+		JPanel cdbPnl = new JPanel(new BorderLayout());
+		cdbPnl.add(sendFromCdbRB,BorderLayout.WEST);
+		sendFromCdbRB.setPreferredSize(sendFromTripletRB.getPreferredSize());
+		sendFromCdbRB.setMinimumSize(sendFromTripletRB.getMinimumSize());
+		// The panel with all the widgets to send alarms by file
+		// It has 2 lines: one to select the file and another one with the control buttons
+		cdbWdgtsPnl.setBorder(BorderFactory.createTitledBorder("TM/CDB sender"));
+		BoxLayout cdbWdgtsLayoout = new BoxLayout(cdbWdgtsPnl, BoxLayout.Y_AXIS);
+		cdbWdgtsPnl.setLayout(cdbWdgtsLayoout);
+		
+		// Line 1: widgets to show the number of alarms read from TM/CDB
+		JPanel showCdbPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		cdbAlarmsTF.setColumns(40);
+		cdbAlarmsTF.setEditable(false);
+		cdbAlarmsTF.setText("");
+		showCdbPnl.add(cdbAlarmsTF);
+		
+		// Line 2: widgets to control the sending mode
+		JPanel ctrlsCDBPnl = new JPanel(new BorderLayout());
+		JPanel ctrlsCDBButtonsPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		ctrlsCDBPnl.add(cdbTasksPB,BorderLayout.CENTER);
+		cdbTasksPB.setValue(0);
+		cdbTasksPB.setIndeterminate(false);
+		ctrlsCDBButtonsPnl.add(activateFromCdbBtn);
+		ctrlsCDBButtonsPnl.add(terminateFromCdbBtn);
+		ctrlsCDBButtonsPnl.add(cycleFromCdbBtn);
+		ctrlsCDBPnl.add(ctrlsCDBButtonsPnl,BorderLayout.EAST);
+		
+		// Add the two lines of widgets
+		cdbWdgtsPnl.add(showCdbPnl);
+		cdbWdgtsPnl.add(ctrlsCDBPnl);
+		
+		cdbPnl.add(cdbWdgtsPnl,BorderLayout.CENTER);
+		
+		// Finally add the triplet, the file and the CDB panels to the alarm sender panel
+		JPanel alrmSenderPnl = new JPanel(new BorderLayout());
+		alrmSenderPnl.add(tripletPnl,BorderLayout.NORTH);
+		JPanel fileAndCDBSenderPnl = new JPanel(new BorderLayout());
+		fileAndCDBSenderPnl.add(filePnl,BorderLayout.NORTH);
+		fileAndCDBSenderPnl.add(cdbPnl,BorderLayout.SOUTH);
+		alrmSenderPnl.add(fileAndCDBSenderPnl,BorderLayout.SOUTH);
+		alrmSenderPnl.setBorder(BorderFactory.createTitledBorder("Send alarm"));
+		add(alrmSenderPnl,BorderLayout.NORTH);
+		
+		/////////////////////////////////////////////////////////
+		// The panel to clear alarms
+		/////////////////////////////////////////////////////////
 		JPanel alarmClearingPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		alarmClearingPnl.setBorder(BorderFactory.createTitledBorder("Fast clearing"));
+		alarmClearingPnl.setBorder(BorderFactory.createTitledBorder("Alarm clearing"));
 		JScrollPane scrollPane = new JScrollPane(alarmsSent);
 		alarmsSent.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		alarmClearingPnl.add(scrollPane);
@@ -260,8 +515,32 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		closeBtn.addActionListener(this);
 		add(donePnl,BorderLayout.SOUTH);
 		
+		// Add the listeners
+		sendFromTripletRB.setSelected(true);
+		
+		sendFromFileRB.addActionListener(this);
+		sendFromTripletRB.addActionListener(this);
+		sendFromCdbRB.addActionListener(this);
+		chooseFiletBtn.addActionListener(this);
+		activateFromFileBtn.addActionListener(this);
+		terminateFromFileBtn.addActionListener(this);
+		cycleFromFileBtn.addActionListener(this);
+		activateFromCdbBtn.addActionListener(this);
+		terminateFromCdbBtn.addActionListener(this);
+		cycleFromCdbBtn.addActionListener(this);
+		
+		// Set the button groups
+		sendingBG.add(sendFromTripletRB);
+		sendingBG.add(sendFromFileRB);
+		sendingBG.add(sendFromCdbRB);
+		activationBG.add(activeRB);
+		activationBG.add(changeRB);
+		activationBG.add(terminateRB);
+		activationBG.add(instantRB);
+		
 		pack();
 		setVisible(true);
+		ratioSenderModeButtons();
 	}
 	
 	private void initACS() throws Exception {
@@ -273,13 +552,17 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
                 System.exit(-1);
         }
        	acsClient = new AdvancedComponentClient(logger,managerLoc,"SourcePanel");
-        contSvcs=acsClient.getContainerServices();
 	}
 	
 	private void close() {
+		if (cdbSender!=null) {
+			cdbSender.close();
+		}
+		if (fileSender!=null) {
+			fileSender.close();
+		}
 		if (alarmSender!=null) {
 			alarmSender.close();
-			alarmSender=null;
 		}
 		try {
 			if (acsClient!=null) {
@@ -295,33 +578,83 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		if (e.getSource()==closeBtn) {
 			setVisible(false);
 			this.dispose();
-		} else if (e.getSource()==sendBtn) {
+		} else if (e.getSource()==sendTripletBtn) {
 			sendAlarm(tripletTF.getText().trim(), getDescriptor(), propsTF.getText());
 		} else if (e.getSource()==clearAllBtn) {
 			clearAllAlarms();
 		} else if (e.getSource()==clearSelectedAlarmsBtn) {
 			clearSelectedAlarms();
+		} else if (e.getSource()==sendFromFileRB) {
+			ratioSenderModeButtons();
+		} else if (e.getSource()==sendFromCdbRB) {
+			ratioSenderModeButtons();
+		} else if (e.getSource()==sendFromTripletRB) {
+			ratioSenderModeButtons();
+		} else if (e.getSource()==chooseFiletBtn) {
+			fileSender.selectFile();
+			cycleFromFileBtn.setEnabled(fileSender.size()>0);
+			terminateFromFileBtn.setEnabled(fileSender.size()>0);
+			activateFromFileBtn.setEnabled(fileSender.size()>0);
+		} else if (e.getSource()==activateFromFileBtn) {
+			fileSender.sendAlarms(true);
+		} else if (e.getSource()==terminateFromFileBtn) {
+			fileSender.sendAlarms(false);
+		} else if (e.getSource()==cycleFromFileBtn) {
+			boolean selected=cycleFromFileBtn.isSelected();
+			if (selected) {
+				fileSender.startSendingRandomly();
+			} else {
+				fileSender.stopThread();
+			}
+			terminateFromFileBtn.setEnabled(!selected);
+			activateFromFileBtn.setEnabled(!selected);
+			chooseFiletBtn.setEnabled(!selected);
+			sendFromFileRB.setEnabled(!selected);
+			sendFromTripletRB.setEnabled(!selected);
+			sendFromCdbRB.setEnabled(!selected);
+		} else if (e.getSource()==activateFromCdbBtn) {
+			cdbSender.sendAlarms(true);
+		} else if (e.getSource()==terminateFromCdbBtn) {
+			cdbSender.sendAlarms(false);
+		} else if (e.getSource()==cycleFromCdbBtn) {
+			boolean selected=cycleFromCdbBtn.isSelected();
+			if (selected) {
+				cdbSender.startSendingRandomly();
+			} else {
+				cdbSender.stopThread();
+			}
+			terminateFromCdbBtn.setEnabled(!selected);
+			activateFromCdbBtn.setEnabled(!selected);
+			sendFromCdbRB.setEnabled(!selected);
+			sendFromFileRB.setEnabled(!selected);
+			sendFromTripletRB.setEnabled(!selected);
+		} else {
+			System.out.println("Unknown event source: "+e.getSource());
 		}
 	}
 	
 	public static void main(String[] args) {
-		new SenderPanel();
-		System.out.println("Done.");
+		try {
+			new SenderPanel();
+		} catch (Throwable t) {
+			System.err.println("Exception caught: "+t.getMessage());
+			t.printStackTrace();
+		}
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
-		sendBtn.setEnabled(e.getDocument().getLength()>0 && alarmSender!=null);
+		sendTripletBtn.setEnabled(SenderPanelUtils.isATriplet(tripletTF.getText()) && alarmSender!=null);
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
-		sendBtn.setEnabled(e.getDocument().getLength()>0 && alarmSender!=null);
+		sendTripletBtn.setEnabled(SenderPanelUtils.isATriplet(tripletTF.getText()) && alarmSender!=null);
 	}
 
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-		sendBtn.setEnabled(e.getDocument().getLength()>0 && alarmSender!=null);
+		sendTripletBtn.setEnabled(SenderPanelUtils.isATriplet(tripletTF.getText()) && alarmSender!=null);
 	}
 	
 	/**
@@ -332,47 +665,62 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	 * @param triplet The triplet in the format FF,FM,FC
 	 * @param descriptor The {@link FaultState} descriptor
 	 * @param props The user properties
-	 * @throws Exception
 	 */
 	private void sendAlarm(final String triplet, final String descriptor, final String props) {
-		Runnable r = new Runnable() {
-			public void run() {
-				try {
-					System.out.println("Sending "+triplet+", "+descriptor);
-					alarmSender.send(triplet, descriptor,getUserProperties());
-					if (descriptor.equals(FaultState.ACTIVE) || descriptor.equals(FaultState.TERMINATE)) {
-						final int nAlarms=alarmsSent.alarmSent(triplet, descriptor.equals(FaultState.ACTIVE));
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								clearAllBtn.setEnabled(nAlarms>0);
-								clearSelectedAlarmsBtn.setEnabled(nAlarms>0);
-							}
-						});	
-					}
-				} catch (Throwable t) {
-					t.printStackTrace();
-					JOptionPane.showMessageDialog(null, t.getMessage(), "Error sending alarm "+triplet, JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		};
-		Thread t = new Thread(r);
-		t.setDaemon(true);
-		t.start();
+		// Check if the triplet is well formed
+		if (!SenderPanelUtils.isATriplet(triplet)) {
+			JOptionPane.showMessageDialog(null, "Error building alarm triplet from "+triplet, "Syntax error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		// Check if the property string is well formed
+		if (props!=null && !props.trim().isEmpty() && !SenderPanelUtils.isAStringOfProperties(props)) {
+			JOptionPane.showMessageDialog(null, "Error building alarm props from "+props, "Syntax error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		// Get the properties and the Triplet
+		Triplet alarmTriplet = null;
+		Properties userProps=null;
+		
+		try {
+			alarmTriplet = SenderPanelUtils.tripletFromString(triplet);
+			userProps=SenderPanelUtils.propertiesFromString(props);	
+		} catch (Throwable t) {
+			// Should never happen!
+			JOptionPane.showMessageDialog(null, "Error building alarm props from "+triplet+", props="+props, "Unknown error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		AlarmDescriptorType alarmActivationType=null;
+		try {
+			alarmActivationType=AlarmDescriptorType.fromDescriptor(descriptor);
+		} catch (Throwable t) {
+			// Should never happen!
+			JOptionPane.showMessageDialog(null, "Error building alarm descriptor from "+descriptor, "Unknown error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		try {
+			alarmSender.send(alarmTriplet,alarmActivationType,userProps);
+		} catch (InterruptedException ie) {}
 	}
 	
 	private void clearAllAlarms() {
-		Collection<String> triplets= alarmsSent.getAlarms();
+		Collection<Triplet> triplets= alarmsSent.getAlarms();
 		System.out.println("Alarms to terminate "+triplets.size());
-		for (String triplet: triplets) {
-			sendAlarm(triplet, FaultState.TERMINATE, null);
+		for (Triplet triplet: triplets) {
+			String tripletStr=triplet.faultFamily+","+triplet.faultMember+","+triplet.faultCode;
+			sendAlarm(tripletStr, FaultState.TERMINATE, null);
 		}
 	}
 	
 	private void clearSelectedAlarms() {
-		Collection<String> triplets= alarmsSent.getSelectedAlarms();
+		Collection<Triplet> triplets= alarmsSent.getSelectedAlarms();
 		System.out.println("Alarms to terminate "+triplets.size());
-		for (String triplet: triplets) {
-			sendAlarm(triplet, FaultState.TERMINATE, null);
+		for (Triplet triplet: triplets) {
+			System.out.println("Terminating "+triplet);
+			String tripletStr=triplet.faultFamily+","+triplet.faultMember+","+triplet.faultCode;
+			sendAlarm(tripletStr, FaultState.TERMINATE, null);
 		}
 	}
 	
@@ -390,29 +738,152 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		throw new IllegalStateException("Descriptor not found");
 	}
 	
-	/**
-	 * Build the user properties from the text field 
-	 * 
-	 * @return the user properties or <code>null</code> if the
-	 *         user did not add props in the text field
+	
+	
+	/** 
+	 * Enable/disable the widgets depending on the sending mode
 	 */
-	private Properties getUserProperties() throws Exception {
-		String props= propsTF.getText().trim();
-		if (props.isEmpty()) {
-			return null;
-		}
-		Properties ret = new Properties();
-		String[] properties=props.split(",");
-		for (String str: properties) {
-			if (!str.contains("=")) {
-				throw new Exception("Invalid user properties\nUse: key=val, key2=val2,...");
+	private void ratioSenderModeButtons() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				tripletTF.setEnabled(sendFromTripletRB.isSelected());
+				sendTripletBtn.setEnabled(sendFromTripletRB.isSelected() && SenderPanelUtils.isATriplet(tripletTF.getText()));
+				activeRB.setEnabled(sendFromTripletRB.isSelected());
+				changeRB.setEnabled(sendFromTripletRB.isSelected());
+				terminateRB.setEnabled(sendFromTripletRB.isSelected());
+				instantRB.setEnabled(sendFromTripletRB.isSelected());
+				propsTF.setEnabled(sendFromTripletRB.isSelected());
+				
+				chooseFiletBtn.setEnabled(sendFromFileRB.isSelected());
+				fileNameTF.setEnabled(sendFromFileRB.isSelected());
+				activateFromFileBtn.setEnabled(sendFromFileRB.isSelected() && numOfAlarmsFromFile>0);
+				terminateFromFileBtn.setEnabled(sendFromFileRB.isSelected() && numOfAlarmsFromFile>0);
+				cycleFromFileBtn.setEnabled(sendFromFileRB.isSelected() && numOfAlarmsFromFile>0);
+				
+				cdbAlarmsTF.setEnabled(sendFromCdbRB.isSelected());
+				activateFromCdbBtn.setEnabled(sendFromCdbRB.isSelected() && numOfAlarmsFromCDB>0);
+				terminateFromCdbBtn.setEnabled(sendFromCdbRB.isSelected() && numOfAlarmsFromCDB>0);
+				cycleFromCdbBtn.setEnabled(sendFromCdbRB.isSelected() && numOfAlarmsFromCDB>0);
 			}
-			String[] pair = str.trim().split("=");
-			if (pair.length!=2) {
-				throw new Exception("Invalid user properties\nUse: key=val, key2=val2,...");
-			}
-			ret.put(pair[0], pair[1]);
+		});
+	}
+
+	@Override
+	public void alarmSent(Triplet triplet, AlarmDescriptorType descriptor, boolean success) {
+		if (success) {
+			final int nAlarms=alarmsSent.alarmSent(triplet, descriptor==AlarmDescriptorType.ACTIVE);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					clearAllBtn.setEnabled(nAlarms>0);
+					clearSelectedAlarmsBtn.setEnabled(nAlarms>0);
+				}
+			});	
+		} else {
+			String msg ="Error returned sending "+triplet.toString();
+			JOptionPane.showMessageDialog(null, msg, "Error sending alarm alarm", JOptionPane.ERROR_MESSAGE);
 		}
-		return ret;
+	}
+	
+	/**
+	 * Animate the passed progress bar 
+	 * 
+	 * @param bar The bar to animate
+	 * @param nSteps The number of steps to perform. 
+	 * 				 <code>null</code> means that the number is undefined
+	 */
+	private void animateProgressBar(final JProgressBar bar, final Integer nSteps) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (nSteps==null) {
+					bar.setIndeterminate(true);
+					bar.setMaximum(0);
+					bar.setMinimum(0);
+				} else {
+					bar.setIndeterminate(false);
+					bar.setMaximum(nSteps.intValue());
+					bar.setMinimum(0);
+				}
+				bar.setValue(0);		
+			}
+		});
+	}
+
+	/**
+	 * @see SlowTaskListener
+	 */
+	@Override
+	public void slowTaskStarted(Object source, Integer nSteps) {
+		if (source==fileSender) {
+			animateProgressBar(fileTasksPB, nSteps);
+		} else {
+			animateProgressBar(cdbTasksPB, nSteps);
+		}
+	}
+	
+	/**
+	 * Stop the passed progress bar
+	 * 
+	 * @param bar The bar to stop
+	 */
+	private void stopProgressBar(final JProgressBar bar) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				bar.setIndeterminate(false);
+				bar.setValue(0);
+		
+			}
+		});
+	}
+
+	/**
+	 * @see SlowTaskListener
+	 */
+	@Override
+	public void slowTaskFinished(Object source) {
+		if (source==fileSender) {
+			stopProgressBar(fileTasksPB);
+		} else {
+			stopProgressBar(cdbTasksPB);
+		}
+	}
+	
+	/**
+	 * Update the passed progress bar
+	 * 
+	 * @param bar The bar to update
+	 * @param step The current step
+	 */
+	private void updateProgressBar(final JProgressBar bar, final int step) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				bar.setValue(step);
+			}
+		});
+	}
+
+	/**
+	 * @see SlowTaskListener
+	 */
+	@Override
+	public void slowTaskProgress(Object source, int progess) {
+		if (source==fileSender) {
+			updateProgressBar(fileTasksPB,progess);
+		} else {
+			updateProgressBar(cdbTasksPB,progess);
+		}
+	}
+	
+	/**
+	 * @see SlowTaskListener
+	 */
+	@Override
+	public void alarmsRead(Object source, int numOfAlarmsRead) {
+		if (source==cdbSender) {
+			numOfAlarmsFromCDB=numOfAlarmsRead;
+			cdbAlarmsTF.setText(""+numOfAlarmsFromCDB+" alarms read from TM/CDB");
+		} else {
+			numOfAlarmsFromFile=numOfAlarmsRead;
+			fileNameTF.setText(fileSender.getFileName()+" - "+numOfAlarmsFromFile+" alarms loaded");
+		}
 	}
 }
