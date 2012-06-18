@@ -21,6 +21,7 @@
  */
 package alma.acs.entityutil;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.logging.Logger;
 
@@ -166,7 +167,7 @@ public class EntitySerializer
 	public String serializeEntityPart(Object entityPart) throws EntityException {
 		try {
             StringWriter wr = new StringWriter();
-            Marshaller marsh = new Marshaller(wr);
+            Marshaller marsh = createMarshaller(wr);
             marsh.setValidation(false);
             marsh.marshal(entityPart);
             return wr.toString();
@@ -174,6 +175,10 @@ public class EntitySerializer
 		catch (Exception e) {
 			throw new EntityException("failed to serialize entity part of type '" + entityPart.getClass().getName() + "'.", e);
         }
+	}
+
+	protected Marshaller createMarshaller(StringWriter wr) throws IOException {
+		return new Marshaller(wr);
 	}
 	
 	public void setVerbose(boolean verbose)
