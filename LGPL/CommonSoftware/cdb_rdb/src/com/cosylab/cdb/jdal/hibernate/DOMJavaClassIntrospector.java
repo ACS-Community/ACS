@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -477,7 +476,7 @@ public class DOMJavaClassIntrospector {
 					return fields;
 				
 				// concat and remove duplicates
-				HashSet<String> set = new HashSet<String>(Arrays.asList(fields));
+				Set<String> set = new LinkedHashSet<String>(Arrays.asList(fields));
 				for (String ef : extraFields)
 					if (!set.add(ef))
 						if (log != null) log.warning("Duplicate field '" + nodeName + "/" + ef +"'.");
@@ -692,7 +691,7 @@ public class DOMJavaClassIntrospector {
 					return fields;
 				
 				// concat and remove duplicates
-				HashSet<String> set = new HashSet<String>(Arrays.asList(fields));
+				Set<String> set = new LinkedHashSet<String>(Arrays.asList(fields));
 				for (String ef : extraFields)
 					if (!set.add(ef))
 						if (log != null) log.warning("Duplicate element '" + nodeName + "/" + ef + "'.");
