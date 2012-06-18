@@ -24,13 +24,13 @@
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER4_JAVA has received 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER5_JAVA has received 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER6_JAVA has received 15 blocks
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER1_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER2_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER3_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER4_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER5_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER6_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=SUPPLIER_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER1_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER2_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER3_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER4_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER5_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER6_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=SUPPLIER_JAVA
 1 - 
 1 - Time: <seconds>
 1 - 

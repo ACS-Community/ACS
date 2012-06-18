@@ -9,8 +9,8 @@
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] requesting SUPPLIER_PYTHON to sendBlocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] SUPPLIER_PYTHON has sent 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER1_PYTHON has received 15 blocks
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=CONSUMER1_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released  a component with curl=SUPPLIER_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER1_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=SUPPLIER_PYTHON
 1 - 
 1 - Time: <seconds>
 1 - 
