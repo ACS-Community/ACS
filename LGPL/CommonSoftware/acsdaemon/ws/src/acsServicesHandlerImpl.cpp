@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.24 2012/06/10 21:00:52 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.25 2012/06/18 12:58:17 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -271,7 +271,7 @@ void ACSServicesHandlerImpl::start_services (
 			instance_number = request->getInstanceNumber();
 			std::string port = service->svcport == NULL ? service->namedsvcport(instance_number, request->getName()) : service->svcport(instance_number);
 			const char * cname = request->getCorbalocName() == NULL ? request->getName() : request->getCorbalocName();
-			snprintf(str, 256, service->svccorbaurl, ACSPorts::getIP(), port.c_str(), cname == NULL ? "" : cname);
+			snprintf(str, 256, service->svccorbaurl, request->getHost(), port.c_str(), cname == NULL ? "" : cname);
 
 			::acsdaemon::ServiceInfo info;
 			info.service_type = CORBA::string_dup(request->getACSServiceName());
