@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.6 2012/06/15 13:47:06 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.7 2012/06/19 13:13:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -186,15 +186,6 @@ int main(int argc, char *argv[])
     				break;
     			}
     			}//switch
-    			/*
-    		if (c=='r')
-    		{
-    			getchar();
-    			continue;
-    		}
-    		else
-    			break;
-    			 */
     		}//while(sendData)
 
     	}catch(ACSErr::ACSbaseExImpl &ex)
