@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.23 2012/03/30 13:51:52 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.24 2012/06/25 13:55:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -389,7 +389,7 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 	{
 		typename StreamMap::iterator it;
 		for( it = receiverStreams_m.begin(); it != receiverStreams_m.end(); it++ ) {
-			ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream '%s'", it->first.c_str()));
+			ACS_SHORT_LOG((LM_INFO,"BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream '%s'", it->first.c_str()));
 			closeStream(it);
 		}
 	}
