@@ -54,7 +54,7 @@ Default QoS Profile for BulkDataNT.
                         </element>
                         <element>
                             <name>dds.transport.UDPv4.builtin.multicast_ttl</name>
-                            <value>1</value>
+                            <value>3</value>
                         </element>
                     </value>
                 </property> 
