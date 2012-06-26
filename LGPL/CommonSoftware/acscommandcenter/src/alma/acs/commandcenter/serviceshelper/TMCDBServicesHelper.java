@@ -20,28 +20,17 @@
  *******************************************************************************/
 package alma.acs.commandcenter.serviceshelper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.AcsLogger;
-import alma.acs.logging.ClientLogManager;
-
-import com.cosylab.cdb.jdal.hibernate.HibernateDBUtil;
-import com.cosylab.cdb.jdal.hibernate.HibernateUtil;
-
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.stat.CategorizedStatistics;
 
-import alma.acs.tmcdb.AcsService;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.AcsLogger;
 import alma.acs.tmcdb.AcsServiceServiceType;
-import alma.acs.tmcdb.Configuration;
 
 /** 
  * Objects of this class help retireving the list of services to start.
@@ -165,6 +154,7 @@ class TMCDBServicesHelper {
 	 * 
 	 * @throws HibernateException In case of error getting data from the TMCDB
 	 */
+	@SuppressWarnings("rawtypes")
 	public Collection getConfigurationNames() throws HibernateException {
 		Query query = session.createQuery("from Configuration");
 		List list= query.list();
@@ -179,6 +169,7 @@ class TMCDBServicesHelper {
 	 * @return The not <code>null</code> list of services to start for the passed configuration
 	 * @throws HibernateException In case of error getting data from the TMCDB
 	 */
+	@SuppressWarnings("rawtypes")
 	public List<AcsServiceToStart> getServicesList(String configurationName) throws HibernateException {
 		if (configurationName==null || configurationName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid null or empty name of configuration");
@@ -187,16 +178,16 @@ class TMCDBServicesHelper {
 		Query query = session.createSQLQuery(sqlQuery);
 		query.setString(namedParameterName, configurationName);
 		List svcs= query.list();
+		List<AcsServiceToStart> ret = new ArrayList<TMCDBServicesHelper.AcsServiceToStart>();
 		if (svcs!=null) {
 			AcsLogLevel lvl = (svcs.size()==0)?AcsLogLevel.WARNING:AcsLogLevel.DEBUG;
 			logger.log(lvl,"Got "+svcs.size()+" services from TMCDB");
+			for (Object s: svcs) {
+				ret.add(AcsServiceToStart.instanceFromDBRow((Object[])s));
+			}
 		} else {
 			logger.log(AcsLogLevel.WARNING,"Got a NULL list of services from TMCDB");
 		}
-		List<AcsServiceToStart> ret = new ArrayList<TMCDBServicesHelper.AcsServiceToStart>();
-		for (Object s: svcs) {
-        	ret.add(AcsServiceToStart.instanceFromDBRow((Object[])s));
-        }
 		return ret;
 	}
 	
