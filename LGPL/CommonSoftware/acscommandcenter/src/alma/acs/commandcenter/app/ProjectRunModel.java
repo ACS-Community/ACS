@@ -151,7 +151,7 @@ public class ProjectRunModel implements RunModel {
 	/**
 	 * The default allocation of the variables map is (an excerpt of) the System Properties. 
 	 */
-	@SuppressWarnings("unchecked") // JDK API not parameterized
+	@SuppressWarnings("rawtypes") // JDK API not parameterized
 	public void readDefaultVariables() {
 		
 		Map<String, Object> m = Collections.synchronizedMap(new HashMap<String, Object>());
@@ -176,7 +176,7 @@ public class ProjectRunModel implements RunModel {
    /**
     * Use given properties table for variable resolution
     */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void readVariables (Properties p) {
 		 Map m = Collections.synchronizedMap(new HashMap(p));
 		 variables = m;

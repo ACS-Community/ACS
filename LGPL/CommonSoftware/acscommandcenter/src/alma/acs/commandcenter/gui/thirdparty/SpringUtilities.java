@@ -38,7 +38,8 @@ public class SpringUtilities {
     * @param xPad x padding between cells
     * @param yPad y padding between cells
     */
-   public static void makeGrid(Container parent,
+   @SuppressWarnings("null")
+	public static void makeGrid(Container parent,
          int rows, int cols,
          int initialX, int initialY,
          int xPad, int yPad) {

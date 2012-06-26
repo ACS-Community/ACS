@@ -95,7 +95,7 @@ public class FeedbackTabs extends JTabbedPane {
 			
     		} finally {
 				try {
-					fw.close();
+					if (fw!=null) fw.close();
 				}catch(Exception exc){}
 			}
     		

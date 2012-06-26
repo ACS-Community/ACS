@@ -49,8 +49,10 @@ class EditCommandsPanel extends JPanel implements ActionListener {
                     s = (FieldStripe) getComponent(i);
                     setFieldValue(s);
                 } catch (Exception e) {
+               	 if (s!=null)
                     System.err.println("can't set field " + s.field
                             + " to value " + s.valueF.getText() + ": " + e);
+               	 else System.err.println("skipping field #"+i+": it is null");
                 }
             }
         }

@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 
 
+@SuppressWarnings("rawtypes")
 public class MapTableModel extends DefaultTableModel {
 	
 	public MapTableModel(String keyColumnName, String valueColumnName) {
@@ -18,14 +19,12 @@ public class MapTableModel extends DefaultTableModel {
 		this.init(keyColumnName, valueColumnName);
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void init(String keyColumnName, String valueColumnName) {
 		super.columnIdentifiers = new Vector(2);
 		super.columnIdentifiers.add(keyColumnName);
 		super.columnIdentifiers.add(valueColumnName);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void setData (Map m) {
 		Vector<Vector> data = new Vector<Vector>(m.size());
 		Iterator it = m.entrySet().iterator();

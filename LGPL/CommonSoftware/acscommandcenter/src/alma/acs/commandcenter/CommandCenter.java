@@ -191,7 +191,7 @@ public class CommandCenter {
    }
    
    
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
 	public static void dbg_printProps(Properties p, PrintStream s) {
       
       Set<Map.Entry<Object, Object>> e1 = p.entrySet();
