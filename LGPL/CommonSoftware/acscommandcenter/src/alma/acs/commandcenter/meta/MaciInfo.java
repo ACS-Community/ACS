@@ -271,7 +271,7 @@ public class MaciInfo extends DefaultTreeModel {
       protected SortingTreeNode() {
          super();
       }
-		protected SortingTreeNode(Object userObject) {
+		public SortingTreeNode(Object userObject) {
 			super(userObject);
 		}
 		

@@ -233,9 +233,10 @@ public class DeploymentTree extends JTree {
 
 		// no exception occurred, we have valid info
 
-		// the root of maciInfo is just a node with the boring string "Manager",
-		// the root of guiInfo will be a node holding the MaciSupervisor.
-		final DefaultMutableTreeNode managerNode = new DefaultMutableTreeNode(mrfotogen);
+		// the root of maciInfo is just a node with the boring string "Manager"...
+		final SortingTreeNode managerNode = ((SortingTreeNode)maciInfo.getRoot()).clone();
+		// ...but the root of guiInfo will be a node holding the MaciSupervisor
+		managerNode.setUserObject(mrfotogen);
 		DefaultTreeModel guiInfo = new DefaultTreeModel(managerNode);
 		ModelConverter mc = new ModelConverter(maciInfo, guiInfo);
 		modelConverters.add(mc);
@@ -454,7 +455,7 @@ public class DeploymentTree extends JTree {
 			} else if (userObject instanceof IMaciSupervisor) {
 				String mgrLoc = maciSupervisor(node).getManagerLocation();
 				String[] mgr = AcsLocations.convert(mgrLoc);
-				text = "Manager on " + mgr[0] + ", port " + mgr[1];
+				text = "Manager on " + mgr[0] + ":" + mgr[1];
 
 			} else if (userObject instanceof ContainerInfo) {
 				ContainerInfo casted = (ContainerInfo) userObject;
@@ -655,9 +656,11 @@ public class DeploymentTree extends JTree {
 				@Override protected MutableTreeNode create (TreeNode x) {
 					return  (DefaultMutableTreeNode) ((DefaultMutableTreeNode) x).clone();
 				}
-				
+
 				@Override protected void applyUpdate (TreeNode exist, TreeNode incom) {
 					((DefaultMutableTreeNode)exist).setUserObject(((DefaultMutableTreeNode)incom).getUserObject());
+					if (exist instanceof SortingTreeNode && incom instanceof SortingTreeNode) // always true?
+						((SortingTreeNode)exist).representedHandles = ((SortingTreeNode)incom).representedHandles;
 				}
 
 			};
