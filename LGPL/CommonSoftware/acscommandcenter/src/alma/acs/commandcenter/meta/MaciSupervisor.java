@@ -667,9 +667,9 @@ public class MaciSupervisor implements IMaciSupervisor {
 			ClientInfo casted = (ClientInfo) info;
 			if (allowInfoDetails) {
 				ret.add(createNode(new InfoDetail("location", extractLocation(casted.reference))));
-				ret.add(createNode(new InfoDetail("reference", casted.reference)));
-				ret.add(createNode(new InfoDetail("access", casted.access, false)));
 				ret.add(createNode(new InfoDetail("components", casted.components, true)));
+				ret.add(createNode(new InfoDetail("access", casted.access, false)));
+				ret.add(createNode(new InfoDetail("reference", casted.reference)));
 			}
 			if (casted.h != 0)
 				ret.representedHandles = new int[]{casted.h};
@@ -679,14 +679,14 @@ public class MaciSupervisor implements IMaciSupervisor {
 			// --- add some "detail" nodes
 			ComponentInfo casted = (ComponentInfo) info;
 			if (allowInfoDetails) {
+				ret.add(createNode(new InfoDetail("clients", casted.clients, true)));
+				ret.add(createNode(new InfoDetail("container", casted.container, true)));
+				ret.add(createNode(new InfoDetail("container_name", casted.container_name)));
+				ret.add(createNode(new InfoDetail("access", casted.access, false)));
+				ret.add(createNode(new InfoDetail("reference", casted.reference)));
+				ret.add(createNode(new InfoDetail("interfaces", casted.interfaces)));
 				ret.add(createNode(new InfoDetail("type", casted.type)));
 				ret.add(createNode(new InfoDetail("code", casted.code)));
-				ret.add(createNode(new InfoDetail("container_name", casted.container_name)));
-				ret.add(createNode(new InfoDetail("container", casted.container, true)));
-				ret.add(createNode(new InfoDetail("reference", casted.reference)));
-				ret.add(createNode(new InfoDetail("access", casted.access, false)));
-				ret.add(createNode(new InfoDetail("interfaces", casted.interfaces)));
-				ret.add(createNode(new InfoDetail("clients", casted.clients, true)));
 			}
 			if (casted.h != 0)
 				ret.representedHandles = new int[]{casted.h};

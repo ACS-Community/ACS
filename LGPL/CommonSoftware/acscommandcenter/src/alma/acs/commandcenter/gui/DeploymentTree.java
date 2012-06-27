@@ -9,15 +9,20 @@ import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -36,10 +41,9 @@ import javax.swing.tree.TreePath;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
+import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.meta.GuiMaciSupervisor;
 import alma.acs.commandcenter.meta.IMaciSupervisor;
-import alma.acs.commandcenter.meta.MaciInfo;
-import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CannotRetrieveManagerException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNoPermissionException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNotExistException;
@@ -47,9 +51,11 @@ import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaTransientException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaUnknownException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.NotConnectedToManagerException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.UnknownErrorException;
+import alma.acs.commandcenter.meta.MaciInfo;
 import alma.acs.commandcenter.meta.MaciInfo.FolderInfo;
 import alma.acs.commandcenter.meta.MaciInfo.InfoDetail;
 import alma.acs.commandcenter.meta.MaciInfo.SortingTreeNode;
+import alma.acs.commandcenter.meta.MaciSupervisor;
 import alma.acs.util.AcsLocations;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
@@ -98,6 +104,7 @@ public class DeploymentTree extends JTree {
 		this.setShowsRootHandles(true);
 
 		// --- cell renderer
+		ToolTipManager.sharedInstance().registerComponent(this);
 		this.setCellRenderer(cellRenderer = new Renderer());
 
 		// --- forward events from the MaciTree-Models
@@ -184,6 +191,46 @@ public class DeploymentTree extends JTree {
 				menu = folderComponentsContextMenu;
 			else
 				menu = folderContextMenu;
+		} else if (userObject instanceof InfoDetail) {
+			// msc 2012-06: help user navigate in large datasets (cf. COMP-3684)
+			// this menu is built dynamically from rather expensive information.
+			menu = new ContextMenu(false);
+			int[] selectedHandles = ((SortingTreeNode)target).representedHandles;
+			if (selectedHandles.length>0) {
+				menu.add(new JLabel(" Scroll to ..."));
+				menu.add(new JSeparator(JSeparator.HORIZONTAL));
+				SortingTreeNode mgrNode = (SortingTreeNode)target.getPath()[1];
+				List<Object> list = new ArrayList<Object>();
+				list.add(mgrNode);
+				for (Enumeration<?> toplevel = mgrNode.children(); toplevel.hasMoreElements();) {
+					SortingTreeNode top = (SortingTreeNode)toplevel.nextElement();
+					list.addAll(Collections.list(top.children()));
+				}
+				for (Object obj : list) {
+					final SortingTreeNode elem = (SortingTreeNode)obj;
+					for (int i=0; i<selectedHandles.length; i++) {
+						if (elem.represents(selectedHandles[i])) {
+							Object elemUserObject = elem.getUserObject();
+							String elemName=null;
+							if (elemUserObject instanceof ComponentInfo)
+								elemName = ((ComponentInfo)elemUserObject).name;
+							else if (elemUserObject instanceof ContainerInfo)
+								elemName = ((ContainerInfo)elemUserObject).name;
+							else if (elemUserObject instanceof ClientInfo)
+								elemName = ((ClientInfo)elemUserObject).name;
+							else if (elemUserObject instanceof MaciSupervisor)
+								elemName = "Manager";
+							if (elemName!=null) {
+								menu.add(new AbstractAction(selectedHandles[i]+" = "+elemName){
+									@Override public void actionPerformed (ActionEvent evt) {
+										DeploymentTree.this.scrollPathToVisible(new TreePath(elem.getPath()));
+									}
+								});
+							}
+						}
+					}
+				}
+			}
 
 		} else {
 			return;
@@ -421,7 +468,6 @@ public class DeploymentTree extends JTree {
 	//
 
 
-
 	/**
 	 * Provides appropriate treatment for all the node types.
 	 */
@@ -445,6 +491,7 @@ public class DeploymentTree extends JTree {
 			// ==== caption ====
 
 			String text; /* compiler will optimize the string operations */
+			String tooltip = null;
 
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			Object userObject = node.getUserObject();
@@ -491,6 +538,10 @@ public class DeploymentTree extends JTree {
 				else
 					text = casted.key + ": " + casted.value;
 
+				if (node instanceof SortingTreeNode) {
+					if (((SortingTreeNode)node).representedHandles.length > 0)
+						tooltip = "Right-click for Navigation";
+				}
 
 			} else if (userObject instanceof FolderInfo) {
 				text = ((FolderInfo) userObject).name;
@@ -500,6 +551,7 @@ public class DeploymentTree extends JTree {
 				text = String.valueOf(node);
 
 			this.setText(text);
+			this.setToolTipText(tooltip);
 
 
 			// ==== selection ====
@@ -524,13 +576,12 @@ public class DeploymentTree extends JTree {
 
 				if (node instanceof SortingTreeNode) {
 					SortingTreeNode casted = (SortingTreeNode) node;
-					search: for (int i = 0; i < currentlySelectedHandles.length; i++) {
-						for (int j = 0; j < casted.representedHandles.length; j++) {
-							if (currentlySelectedHandles[i] == casted.representedHandles[j]) {
-								border = graylineBorder;
-								backgroundNonSelectionColor = grayBackground;
-								break search;
-							}
+					search:
+					for (int i=0; i<currentlySelectedHandles.length; i++) {
+						if (casted.represents(currentlySelectedHandles[i])) {
+							border = graylineBorder;
+							backgroundNonSelectionColor = grayBackground;
+							break search;
 						}
 					}
 				}

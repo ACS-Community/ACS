@@ -34,8 +34,7 @@ public class MaciInfo extends DefaultTreeModel {
 		// grab reference as it is in this very moment, this is atomic.
 		List<SortingTreeNode> current = containerNodes_currentcopy; 
 
-		int size = current.size();
-		List<ContainerInfo> ret = new ArrayList<ContainerInfo>(size);
+		List<ContainerInfo> ret = new ArrayList<ContainerInfo>(current.size());
 		for (SortingTreeNode n : current) {
 			ContainerInfo info = (ContainerInfo) n.getUserObject();
 			ret.add(info);
@@ -44,7 +43,11 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 
 	public ContainerInfo getContainer (String name) {
-		for (ContainerInfo info : getContainers()) {
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = containerNodes_currentcopy; 
+
+		for (SortingTreeNode n : current) {
+			ContainerInfo info = (ContainerInfo) n.getUserObject();
 			if (info.name.equals(name))
 				return info;
 		}
@@ -52,19 +55,22 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 	
 	public ContainerInfo getContainer (int handle) {
-		for (ContainerInfo info : getContainers()) {
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = containerNodes_currentcopy; 
+
+		for (SortingTreeNode n : current) {
+			ContainerInfo info = (ContainerInfo) n.getUserObject();
 			if (info.h == handle)
 				return info;
 		}
 		return null;
 	}
-	
+
 	public List<ClientInfo> getClients() {
 		// grab reference as it is in this very moment, this is atomic.
 		List<SortingTreeNode> current = clientNodes_currentcopy;
 
-		int size = current.size();
-		List<ClientInfo> ret = new ArrayList<ClientInfo>(size);
+		List<ClientInfo> ret = new ArrayList<ClientInfo>(current.size());
 		for (SortingTreeNode n : current) {
 			ClientInfo info = (ClientInfo) n.getUserObject();
 			ret.add(info);
@@ -73,7 +79,11 @@ public class MaciInfo extends DefaultTreeModel {
 	}	
 
 	public ClientInfo getClient (String name) {
-		for (ClientInfo info : getClients()) {
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = clientNodes_currentcopy;
+
+		for (SortingTreeNode n : current) {
+			ClientInfo info = (ClientInfo) n.getUserObject();
 			if (info.name.equals(name))
 				return info;
 		}
@@ -81,7 +91,11 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 	
 	public ClientInfo getClient (int handle) {
-		for (ClientInfo info : getClients()) {
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = clientNodes_currentcopy;
+
+		for (SortingTreeNode n : current) {
+			ClientInfo info = (ClientInfo) n.getUserObject();
 			if (info.h == handle)
 				return info;
 		}
@@ -91,9 +105,8 @@ public class MaciInfo extends DefaultTreeModel {
 	public List<ComponentInfo> getComponents () {
 		// grab reference as it is in this very moment, this is atomic.
 		List<SortingTreeNode> current = componentNodes_currentcopy;
-		
-		int size = current.size();
-		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(size);
+
+		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(current.size());
 		for (SortingTreeNode n : current) {
 			ComponentInfo info = (ComponentInfo) n.getUserObject();
 			ret.add(info);
@@ -102,7 +115,11 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 
 	public ComponentInfo getComponent (String name) {
-		for (ComponentInfo info : getComponents()) {
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = componentNodes_currentcopy;
+
+		for (SortingTreeNode n : current) {
+			ComponentInfo info = (ComponentInfo) n.getUserObject();
 			if (info.name.equals(name))
 				return info;
 		}
@@ -110,19 +127,22 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 
 	public ComponentInfo getComponent (int handle) {
-		for (ComponentInfo info : getComponents()) {
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = componentNodes_currentcopy;
+
+		for (SortingTreeNode n : current) {
+			ComponentInfo info = (ComponentInfo) n.getUserObject();
 			if (info.h == handle)
 				return info;
 		}
 		return null;
 	}	
-	
+
 	public List<ComponentInfo> getStartedComponents () {
 		// grab reference as it is in this very moment, this is atomic.
 		List<SortingTreeNode> current = componentNodes_currentcopy;
-		
-		int size = current.size();
-		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(size);
+
+		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(current.size());
 		for (SortingTreeNode n : current) {
 			ComponentInfo info = (ComponentInfo) n.getUserObject();
 			if (info.h == 0) // skip non-activated components
@@ -276,8 +296,12 @@ public class MaciInfo extends DefaultTreeModel {
 		}
 		
 		public int[] representedHandles = new int[]{};
-		
-		
+		public boolean represents (int h) {
+			for (int i=0; i<representedHandles.length; i++)
+				if (representedHandles[i] == h) return true;
+			return false;
+		}
+
 		/**
 		 * Support for guis (deployment tree). This is not a deep-clone. The userobject and
 		 * representedHandles will be the same as in the source node but children and
