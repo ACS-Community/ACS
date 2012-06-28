@@ -6,6 +6,7 @@ package alma.acs.commandcenter.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,10 +17,12 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -77,7 +80,6 @@ public class DeploymentTree extends JTree {
 	protected ContextMenu clientContextMenu;
 	protected ContextMenu componentContextMenu;
 	protected ContextMenu folderContextMenu;
-	protected ContextMenu folderComponentsContextMenu;
 
 	protected TreeEventForwarder treeEventForwarder;
 	protected List<ModelConverter> modelConverters;
@@ -119,8 +121,6 @@ public class DeploymentTree extends JTree {
 		containerContextMenu = new ContainerContextMenu (allowControl);
 		componentContextMenu = new ComponentContextMenu (allowControl);
 		folderContextMenu = new FolderContextMenu (allowControl);
-		folderComponentsContextMenu = new FolderComponentsContextMenu (allowControl);
-
 
 		this.addMouseListener(new MouseAdapter() {
 
@@ -186,11 +186,7 @@ public class DeploymentTree extends JTree {
 		} else if (userObject instanceof ComponentInfo) {
 			menu = componentContextMenu;
 		} else if (userObject instanceof FolderInfo) {
-			String name = ((FolderInfo) userObject).name;
-			if (name.equals("Components"))
-				menu = folderComponentsContextMenu;
-			else
-				menu = folderContextMenu;
+			menu = folderContextMenu;
 		} else if (userObject instanceof InfoDetail) {
 			// msc 2012-06: help user navigate in large datasets (cf. COMP-3684)
 			// this menu is built dynamically from rather expensive information.
@@ -356,7 +352,7 @@ public class DeploymentTree extends JTree {
 	protected DefaultMutableTreeNode getManagerNode (String managerLoc) {
 		String toFind = managerLoc;
 
-		// iterate over root's children
+		// iterate over macisupervisor nodes
 		for (Enumeration<DefaultMutableTreeNode> en = getRoot().children(); en.hasMoreElements();) {
 			// inspect each child
 			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
@@ -479,23 +475,90 @@ public class DeploymentTree extends JTree {
 		Color grayBackground = Color.lightGray;
 
 		int[] currentlySelectedHandles = new int[]{};
+		
+		Component hiddenNode = Box.createRigidArea(new Dimension(0,0));
 
 		@Override
-		public Component getTreeCellRendererComponent (JTree tree, Object value, boolean selected, boolean expanded, boolean leaf,
-				int row, boolean hasFocus) {
+		public Component getTreeCellRendererComponent (JTree tree, Object value, boolean sel, boolean expand, boolean leaf, int row, boolean foc) {
 
-			super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+			super.getTreeCellRendererComponent(tree, value, sel, expand, leaf, row, foc);
 
 			this.setIcon(null);
 
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+
 			// ==== caption ====
+
+			String[] captions = getCaptions(node);
+			String text =  captions[0];
+			String tooltip = captions[1];
+
+			this.setText(text);
+			this.setToolTipText(tooltip);
+
+
+			// ==== tree filtering ====
+
+			// idea for this cheap filtering taken from:
+			// http://stackoverflow.com/questions/9234297/filtering-on-a-jtree
+			if (node instanceof SortingTreeNode)
+				if (((SortingTreeNode)node).filtered)
+					return hiddenNode;
+			
+			// ==== selection ====
+
+			/*
+			 * We want the real selection blue, and the "deputy"-selections gray. Since our
+			 * superclass implementation determines the selection background in paint() and
+			 * not in getRendererComponent(), we need to set the
+			 * "backgroundNonSelectionColor" property which is getting evaluated by paint()
+			 */
+
+			Border border = null;
+
+			if (sel) {
+				border = bluelineBorder;
+				if (node instanceof SortingTreeNode) {
+					currentlySelectedHandles = ((SortingTreeNode) node).representedHandles;
+				}
+			} else {
+
+				Color backgroundNonSelectionColor = null;
+
+				if (node instanceof SortingTreeNode) {
+					SortingTreeNode casted = (SortingTreeNode) node;
+					for (int i=0; i<currentlySelectedHandles.length; i++) {
+						if (casted.represents(currentlySelectedHandles[i])) {
+							border = graylineBorder;
+							backgroundNonSelectionColor = grayBackground;
+							break;
+						}
+					}
+				}
+
+				// sets the non-selection background to either "null" or "gray"
+				this.setBackgroundNonSelectionColor(backgroundNonSelectionColor);
+
+				if (border == null)
+					border = emptyBorder;
+			}
+
+			this.setBorder(border);
+
+			// === done ===
+
+			return this;
+		}
+		
+		/** @return (text,tooltip) */
+		String[] getCaptions (DefaultMutableTreeNode node) {
 
 			String text; /* compiler will optimize the string operations */
 			String tooltip = null;
 
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			Object userObject = node.getUserObject();
 
+			
 			if (userObject == null) {
 				text = "empty node (strange)";
 
@@ -520,6 +583,7 @@ public class DeploymentTree extends JTree {
 				text = "'" + casted.name + "' [id " + casted.h + "] : " + nClients + " client" + ((nClients == 1) ? "" : "s");
 
 			} else if (userObject instanceof InfoDetail) {
+				
 				/*
 				 * InfoDetail nodes are hanging below Components and Clients and Containers.
 				 * Thus, they all share the same visualization of, for instance, the info
@@ -538,70 +602,28 @@ public class DeploymentTree extends JTree {
 				else
 					text = casted.key + ": " + casted.value;
 
+				
 				if (node instanceof SortingTreeNode) {
 					if (((SortingTreeNode)node).representedHandles.length > 0)
-						tooltip = "Right-click for Navigation";
+						tooltip = "Right-Click for Navigation";
 				}
 
 			} else if (userObject instanceof FolderInfo) {
-				text = ((FolderInfo) userObject).name;
+				FolderInfo info = (FolderInfo) userObject;
+				text = info.name;
 				text = text + " (" + node.getChildCount() + ")";
+				if (info.hasFilter())
+					text += ", showing only '"+info.filter+"'";
+				tooltip = "Right-Click for Filtering";
 
 			} else
 				text = String.valueOf(node);
 
-			this.setText(text);
-			this.setToolTipText(tooltip);
-
-
-			// ==== selection ====
-
-			/*
-			 * We want the real selection blue, and the "deputy"-selections gray. Since our
-			 * superclass implementation determines the selection background in paint() and
-			 * not in getRendererComponent(), we need to set the
-			 * "backgroundNonSelectionColor" property which is getting evaluated by paint()
-			 */
-
-			Border border = null;
-
-			if (selected) {
-				border = bluelineBorder;
-				if (node instanceof SortingTreeNode) {
-					currentlySelectedHandles = ((SortingTreeNode) node).representedHandles;
-				}
-			} else {
-
-				Color backgroundNonSelectionColor = null;
-
-				if (node instanceof SortingTreeNode) {
-					SortingTreeNode casted = (SortingTreeNode) node;
-					search:
-					for (int i=0; i<currentlySelectedHandles.length; i++) {
-						if (casted.represents(currentlySelectedHandles[i])) {
-							border = graylineBorder;
-							backgroundNonSelectionColor = grayBackground;
-							break search;
-						}
-					}
-				}
-
-				// sets the non-selection background to either "null" or "gray"
-				this.setBackgroundNonSelectionColor(backgroundNonSelectionColor);
-
-				if (border == null)
-					border = emptyBorder;
-			}
-
-			this.setBorder(border);
-
-			// === done ===
-
-			return this;
+			return new String[] {text, tooltip};
 		}
+		
 	}
 
-	
 	/**
 	 * Listens on selection-changes in the tree to trigger a repaint-event.
 	 */
@@ -610,13 +632,33 @@ public class DeploymentTree extends JTree {
 		public void valueChanged (TreeSelectionEvent e) {
 			Object node = e.getPath().getLastPathComponent();
 			if (node instanceof SortingTreeNode)
-				cellRenderer.currentlySelectedHandles = ((SortingTreeNode) node).representedHandles;
+				if (!((SortingTreeNode)node).filtered)
+					cellRenderer.currentlySelectedHandles = ((SortingTreeNode) node).representedHandles;
 			repaint();
 		}
 
 	}
 
-	
+	void applyFilters (DefaultTreeModel tm) {
+		SortingTreeNode mgrNode = (SortingTreeNode)tm.getRoot();
+		for (Enumeration<?> toplevel = mgrNode.children(); toplevel.hasMoreElements();) {
+			SortingTreeNode folder = (SortingTreeNode)toplevel.nextElement();
+			applyFilter(folder);
+		}
+	}
+
+	void applyFilter (SortingTreeNode folder) {
+		FolderInfo folderInfo = (FolderInfo)folder.getUserObject();
+		for (Enumeration<?> en = folder.children(); en.hasMoreElements();) {
+		 	SortingTreeNode entry = (SortingTreeNode) en.nextElement();
+		 	String caption = cellRenderer.getCaptions(entry)[0];
+		 	boolean matches = caption.contains (folderInfo.filter);
+		 	for (Enumeration<?> subtree = entry.breadthFirstEnumeration(); subtree.hasMoreElements();) 
+		 		((SortingTreeNode)(subtree.nextElement())).filtered = !matches;
+		}
+	}
+
+
 	protected class ModelConverter implements TreeModelListener {
 
 		protected MaciInfo sourceModel;
@@ -654,6 +696,7 @@ public class DeploymentTree extends JTree {
 				return;
 			}
 			convertCompleteModel();
+			applyFilters (targetModel);
 		}
 
 
@@ -835,22 +878,45 @@ public class DeploymentTree extends JTree {
 
 	}
 
+	
 	protected class FolderContextMenu extends ContextMenu {
+
+		protected JTextField txtFilter = new JTextField(8);
 
 		protected FolderContextMenu (boolean allowControl) {
 			super (allowControl);
-			
-			this.add(new FolderSortByNameAction());
+
+			Box b = Box.createHorizontalBox();
+			b.add(new JLabel(" Show only "));
+			b.add(txtFilter);
+			b.add(new JLabel(" "));
+			this.add(b);
+			this.add(new JSeparator(JSeparator.HORIZONTAL));
+			this.add(new AbstractAction("Apply"){
+				@Override public void actionPerformed (ActionEvent e) {
+					((FolderInfo)target.getUserObject()).filter = txtFilter.getText().trim();
+					applyFilter((SortingTreeNode)target);
+
+					// this re-renders the tree, and collapses the subtrees.
+					getTreeModel().reload(target);
+				}
+			});
+			this.add(new AbstractAction("Reset"){
+				@Override public void actionPerformed (ActionEvent e) {
+					txtFilter.setText(null);
+					((FolderInfo)target.getUserObject()).filter = txtFilter.getText().trim();
+					applyFilter((SortingTreeNode)target);
+
+					// this re-renders the tree, and collapses the subtrees.
+					getTreeModel().reload(target);
+				}
+			});
 		}
 
-	}
-
-	protected class FolderComponentsContextMenu extends FolderContextMenu {
-
-		protected FolderComponentsContextMenu (boolean allowControl) {
-			super (allowControl);
-
-			this.add(new FolderSortByContainerNameAction());
+		// updates the menu gui before show
+		@Override protected void firePopupMenuWillBecomeVisible () {
+			txtFilter.setText(((FolderInfo)target.getUserObject()).filter);
+			super.firePopupMenuWillBecomeVisible();
 		}
 
 	}
@@ -1021,30 +1087,6 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class FolderSortByNameAction extends SwingAction {
-
-		protected FolderSortByNameAction() {
-			super("Sort by name");
-		}
-
-		@Override
-		public void actionPerformed () {
-			sortNode(target, "name");
-		}
-	}
-
-	protected class FolderSortByContainerNameAction extends SwingAction {
-
-		protected FolderSortByContainerNameAction() {
-			super("Sort by container needed");
-		}
-
-		@Override
-		public void actionPerformed () {
-			sortNode(target, "container_name");
-		}
-	}
-
 	protected class ContainerPingAction extends BackgroundAction {
 
 		protected ContainerPingAction() {
@@ -1160,7 +1202,7 @@ public class DeploymentTree extends JTree {
 	protected class ComponentRequestAction extends BackgroundAction {
 
 		protected ComponentRequestAction() {
-			super("Have activated");
+			super("Acquire reference ( Activate )");
 		}
 
 		@Override
@@ -1173,7 +1215,7 @@ public class DeploymentTree extends JTree {
 	protected class ComponentReleaseAction extends BackgroundAction {
 
 		protected ComponentReleaseAction() {
-			super("Release own reference");
+			super("Release reference");
 		}
 
 		@Override

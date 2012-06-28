@@ -274,8 +274,12 @@ public class MaciInfo extends DefaultTreeModel {
    */
    static public class FolderInfo {
 
-      public String name;  
-      
+      public String name;
+      public String filter;
+      public boolean hasFilter() {
+      	return filter!=null && !filter.isEmpty();
+      }
+
       protected FolderInfo(String name) {
        this.name = name;  
       }
@@ -302,6 +306,8 @@ public class MaciInfo extends DefaultTreeModel {
 			return false;
 		}
 
+		public boolean filtered;
+		
 		/**
 		 * Support for guis (deployment tree). This is not a deep-clone. The userobject and
 		 * representedHandles will be the same as in the source node but children and
