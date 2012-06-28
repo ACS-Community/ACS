@@ -21,3 +21,5 @@ ACS Container Daemon
 chmod: changing permissions of
 GlobalLogger
 Thread pool exhausted
+log queue overflow
+log queue no longer overflowing
