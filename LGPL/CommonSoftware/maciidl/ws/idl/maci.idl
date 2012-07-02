@@ -1431,6 +1431,14 @@ module maci {
 			)
                     raises (maciErrType::NoPermissionEx);
 
+                /** 
+                    Enable/disable state persistence subsystem.                */
+                void set_state_persistence(
+                        in Handle id,   ///< Identification of the caller.
+                        in boolean enable       ///< Enable/disable flag.
+                        )
+                    raises (maciErrType::NoPermissionEx);
+
 	};
 
 };
