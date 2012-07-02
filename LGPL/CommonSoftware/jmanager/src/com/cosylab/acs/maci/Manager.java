@@ -295,5 +295,13 @@ public interface Manager extends ManagerConstants
 	public Component getComponentNonSticky(int id, URI curl) 
 		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx;
 
+	/**
+	 * Enable/disable state persistence subsystem.
+	 * @param	id 				Identification of the caller.
+	 * @param	enable	enable/disable switch.
+	 * @throws AcsJNoPermissionEx
+	 */
+	public void setStatePersistence(int id, boolean enable)
+		throws AcsJNoPermissionEx;
 }
 

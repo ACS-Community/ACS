@@ -50,6 +50,7 @@ import org.omg.CORBA.IntHolder;
 import org.prevayler.Command;
 import org.prevayler.Prevayler;
 import org.prevayler.implementation.AbstractPrevalentSystem;
+import org.prevayler.implementation.SnapshotPrevayler;
 
 import si.ijs.maci.ClientOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
@@ -959,7 +960,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		threadsUsedPercentage.set(percentage);
 	}
-	
+
+	/**
+	 * Prevayler enabled/disabled (remotely) flag.
+	 */
+	private AtomicBoolean statePersitenceFlag = new AtomicBoolean(false);
+
 	/**
 	 * Initializes Manager.
 	 * @param	prevayler			implementation of prevayler system
@@ -10108,6 +10114,44 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 	}
 	
+	@Override
+	public void setStatePersistence(int id, boolean enable)
+			throws AcsJNoPermissionEx {
+		
+		// TODO introduce new rights
+		securityCheck(id, AccessRights.INTROSPECT_MANAGER);
+		
+		if (prevayler != null)
+		{
+			synchronized (prevayler) {
+				// on enable, first take current snapshot to start with clean state
+				if (enable)
+				{
+					try {
+						synchronized (prevayler) {
+							statePersitenceFlag.set(true);
+							((SnapshotPrevayler)prevayler).takeSnapshot();
+						}
+					}
+					catch (IOException e) {
+						// @todo better exception
+						throw new NoResourcesException("Failed to create current state snapshot: " + e.toString());
+						statePersitenceFlag.set(false);
+					}
+				}
+				else
+				{
+					statePersitenceFlag.set(false);
+				}
+			}
+		}
+	}
+
+	public AtomicBoolean getStatePersitenceFlag()
+	{
+		return statePersitenceFlag;
+	}
+	
 	/**
 	 * @param command
 	 * @return
@@ -10115,7 +10159,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 	private Serializable executeCommand(Command command) throws NoResourcesException
 	{
-		if (prevayler != null)
+		if (prevayler != null && statePersitenceFlag.get())
 		{
 			try {
 				final Serializable retVal;
