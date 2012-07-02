@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.32 2012/07/02 07:35:13 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.33 2012/07/02 12:43:46 acaproni Exp $
  * @since    
  */
 
@@ -684,6 +684,11 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			throw new IllegalArgumentException("The level can't be null");
 		}
 		autoAckLvl=lvl;
+		// Remove from the model al lthe alarms whose priority is equal
+		// or lower then the passed level.
+		if (lvl!=ComboBoxValues.NONE) {
+			autoAckAlarms(lvl.guiType);
+		}
 	}
 
 	/**
@@ -807,6 +812,29 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 				counters.get(AlarmGUIType.INACTIVE).decCounter();
 			}
 			fireTableDataChanged();
+		}
+	}
+	
+	/**
+	 * Auto-acknowledge the terminated alarms is priority is equal or lower then the 
+	 * passed priority.
+	 * <P>
+	 * This method delegates to {@link #removeInactiveAlarms(AlarmGUIType)} but it is 
+	 * called for each priority equal or lower then the passed priority.
+	 * 
+	 * @param priority
+	 * @return
+	 */
+	public synchronized void autoAckAlarms(AlarmGUIType type) {
+		if (type==null) {
+			throw new IllegalArgumentException("The type can't be null");
+		}
+		if (type==AlarmGUIType.PRIORITY_0 || type==AlarmGUIType.INACTIVE) {
+			throw new IllegalArgumentException("Invalid alarm type to auto-acknowledge: "+type);
+		}
+		int ret=0;
+		for (int t=type.ordinal(); t<=AlarmGUIType.PRIORITY_3.ordinal(); t++) {
+			removeInactiveAlarms(AlarmGUIType.values()[t]);
 		}
 	}
 	
