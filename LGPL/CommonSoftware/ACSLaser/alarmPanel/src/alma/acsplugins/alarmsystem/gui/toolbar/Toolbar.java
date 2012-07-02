@@ -417,6 +417,47 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	}
 	
 	/**
+	 * Set the auto acknowledge level to the passed priority.
+	 * <P>
+	 * The priority must be set accordingly to the rules explained in {@link CernSysPanel#AutoAckLevelPropName},
+	 * so the only valid values are -1,1,2,3
+	 * 
+	 * 
+	 * @param newLevel The new priority of the auto acknowledge
+	 * @see CernSysPanel#AutoAckLevelPropName
+	 */
+	public void setAutoAckLevel(int newLevel) {
+		ComboBoxValues ackLvl=null;
+		switch (newLevel) {
+		case 1: {
+			ackLvl=ComboBoxValues.PRIORITY1;
+			break;
+		}
+		case 2: {
+			ackLvl=ComboBoxValues.PRIORITY2;
+			break;
+		}
+		case 3: {
+			ackLvl=ComboBoxValues.PRIORITY3;
+			break;
+		}
+		case -1: {
+			ackLvl=ComboBoxValues.NONE;
+		}
+		default: {
+			throw new IllegalArgumentException("Invalid priority for auto acknowledge: "+newLevel);
+		}
+		}
+		final ComboBoxValues ackLvlToSet=ackLvl;
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// This trigger an ActionEvent too.
+				autoAckLevelCB.setSelectedItem(ackLvlToSet);
+			}
+		});
+	}
+	
+	/**
 	 * @see ActionListener
 	 */
 	public void actionPerformed(ActionEvent e) {
