@@ -50,6 +50,7 @@ import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
 
 /**
  * The toolbar for the alarm panel
@@ -114,13 +115,29 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	 */
 	public enum ComboBoxValues {
 		NONE("None",AlarmGUIType.INACTIVE),
-		PRIORITY3("Priority 3",AlarmGUIType.PRIORITY_3),
-		PRIORITY2("Priority 2",AlarmGUIType.PRIORITY_2),
-		PRIORITY1("Priority 1",AlarmGUIType.PRIORITY_1);
+		PRIORITY3(PriorityLabel.LOW.description,AlarmGUIType.PRIORITY_3),
+		PRIORITY2(PriorityLabel.MEDIUM.description,AlarmGUIType.PRIORITY_2),
+		PRIORITY1(PriorityLabel.HIGH.description,AlarmGUIType.PRIORITY_1);
 		
+		/**
+		 * The title of the value
+		 */
 		public final String title;
+		
+		/**
+		 * Normal renderer
+		 */
 		public final JLabel normalRenderer;
+		
+		/**
+		 * Normal renderer
+		 */
 		public final JLabel selectedRenderer;
+		
+		/**
+		 * The AlarmGUIType related to this ComboBox value
+		 */
+		public final AlarmGUIType guiType;
 		
 		// Width and height of the label
 		// They are calculated from the dimension of the strings
@@ -132,27 +149,28 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 		 * Constructor
 		 * 
 		 * @param title
-		 * @param color
+		 * @param guiType
 		 */
-		private ComboBoxValues(String tit, AlarmGUIType color) {
-			title=tit;
-			normalRenderer = new JLabel(tit);
-			normalRenderer.setBackground(color.backg);
-			normalRenderer.setForeground(color.foreg);
+		private ComboBoxValues(String title,AlarmGUIType guiType) {
+			this.guiType=guiType;
+			this.title=title;
+			normalRenderer = new JLabel(title);
+			normalRenderer.setBackground(guiType.backg);
+			normalRenderer.setForeground(guiType.foreg);
 			normalRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 			normalRenderer.setVerticalAlignment(SwingConstants.CENTER);
 			normalRenderer.setOpaque(true);
 			Font fnt = normalRenderer.getFont();
 			Font newFont = fnt.deriveFont(fnt.getSize()*80/100);
 			normalRenderer.setFont(newFont);
-			selectedRenderer = new JLabel(tit);
-			selectedRenderer.setBackground(color.foreg);
-			selectedRenderer.setForeground(color.backg);
+			selectedRenderer = new JLabel(title);
+			selectedRenderer.setBackground(guiType.foreg);
+			selectedRenderer.setForeground(guiType.backg);
 			selectedRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 			selectedRenderer.setVerticalAlignment(SwingConstants.CENTER);
 			selectedRenderer.setFont(newFont);
 			selectedRenderer.setOpaque(true);
-			selectedRenderer.setBorder(BorderFactory.createLineBorder(color.backg));
+			selectedRenderer.setBorder(BorderFactory.createLineBorder(guiType.backg));
 		}
 		
 		/**
