@@ -32,9 +32,7 @@ import javax.swing.JSplitPane;
 
 import org.omg.CORBA.ORB;
 
-import cern.laser.client.data.Alarm;
-import cern.laser.client.services.selection.AlarmSelectionListener;
-
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acsplugins.alarmsystem.gui.detail.AlarmDetailTable;
 import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
@@ -43,9 +41,10 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
-import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocumentedAlarmTable;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import cern.laser.client.data.Alarm;
+import cern.laser.client.services.selection.AlarmSelectionListener;
 
 /**
  * The panel shown while the CERN AS is in use and the 
@@ -160,6 +159,24 @@ public class CernSysPanel extends JPanel {
      * The panel to show messages while connecting
      */
     private final AlSysNotAvailPanel notAvaiPnl;
+    
+    /**
+     * The name of the system property to set to define to set the initial auto-acknowledge.
+     * <P> 
+     * The value of this property can be an integer in the range [1,3] because
+     * auto acknowledge is not allowed for the alarms with the highest priority (0).
+     * If a value of 0 is set then the auto acknowledge falls down to priority 1 and a warning log is issued.
+     * To disable auto acknowledge, the value of this property must be set to -1
+     * 
+     * @see CernSysPanel#getInitialAutoAckLevel()
+     */
+    public static final String AutoAckLevelPropName="alma.acs.alarmsystem.alarmpanel.initialAutoAckLevel";
+    
+    /**
+     * Default auto acknowledge set if {@value CernSysPanel#AutoAckLevelPropName} property has not
+     * been defined.
+     */
+    public static final Integer defaultAutoAckLevel=2;
        
     /**
      * Constructor
@@ -226,6 +243,9 @@ public class CernSysPanel extends JPanel {
 		
 		// Add the status line
 		add(statusLine,BorderLayout.SOUTH);
+		
+		// Set the initial auto ack level.
+		toolbar.setAutoAckLevel(getInitialAutoAckLevel());
 	}
 	
 	/**
@@ -439,5 +459,23 @@ public class CernSysPanel extends JPanel {
 		disconnectThread.setName("StopAlarmPanel");
 		disconnectThread.start();
 		close();
+	}
+	
+	/**
+	 * Get the initial auto-acknowledge level from the {@link CernSysPanel#AutoAckLevelPropName} java property.
+	 * 
+	 * @return The initial auto acknowledge level
+	 * @see CernSysPanel#AutoAckLevelPropName
+	 */
+	private int getInitialAutoAckLevel() {
+		int ackLevel=Integer.getInteger(AutoAckLevelPropName, 2);
+		if (ackLevel==0) {
+			logger.log(AcsLogLevel.WARNING, "Auto acknowledge for priority 0 alarms is not allaowed: falling back to priority 1");
+			ackLevel=1;
+		}
+		if (ackLevel<0 || ackLevel>3) {
+			ackLevel=-1;
+		}
+		return ackLevel;
 	}
 }
