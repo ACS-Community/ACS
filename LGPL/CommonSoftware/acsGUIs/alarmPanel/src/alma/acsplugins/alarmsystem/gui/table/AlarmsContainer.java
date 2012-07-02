@@ -272,7 +272,7 @@ public class AlarmsContainer {
 	 * @param type The type of the inactive alarms
 	 * @return The number of alarms removed
 	 */
-	public synchronized int removeInactiveAlarms(AlarmGUIType type) throws AlarmContainerException {
+	public synchronized int removeInactiveAlarms(AlarmGUIType type) {
 		if (type==null) {
 			throw new IllegalArgumentException("The type can't be null");
 		}
@@ -291,8 +291,13 @@ public class AlarmsContainer {
 			}
 			if (type==AlarmGUIType.INACTIVE || alarm.getPriority()==type.id) {
 				// Remove the alarm
-				remove(alarm);
-				ret++;
+				try {
+					remove(alarm);
+					ret++;
+				} catch (AlarmContainerException ace) {
+					System.err.println("Exception got removing "+alarm.getAlarmId()+" from the AlarmsContainer: "+ace.getMessage());
+					ace.printStackTrace();
+				}
 			}
 		}
 		return ret;
