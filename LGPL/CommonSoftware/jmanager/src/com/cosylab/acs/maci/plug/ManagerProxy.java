@@ -401,6 +401,14 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 	}
 	
 	/**
+	 * @see com.cosylab.acs.maci.Manager#setStatePersistence(int, boolean)
+	 */
+	public void setStatePersistence(int id, boolean enable)
+			throws AcsJNoPermissionEx {
+		/// @todo Not implemented
+	}
+
+	/**
 	 * Returns the manager.
 	 * @return si.ijs.maci.Manager
 	 */

@@ -10127,6 +10127,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// on enable, first take current snapshot to start with clean state
 				if (enable)
 				{
+					// already enabled check
+					if (statePersitenceFlag.get())
+						return;
+					
 					try {
 						synchronized (prevayler) {
 							statePersitenceFlag.set(true);
@@ -10135,8 +10139,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (IOException e) {
 						// @todo better exception
-						throw new NoResourcesException("Failed to create current state snapshot: " + e.toString());
 						statePersitenceFlag.set(false);
+						throw new NoResourcesException("Failed to create current state snapshot: " + e.toString());
 					}
 				}
 				else

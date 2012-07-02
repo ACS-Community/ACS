@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.prevayler.implementation.SnapshotPrevayler;
 
@@ -19,14 +20,16 @@ import com.cosylab.util.FileHelper;
  */
 public class RecoverySnapshotTask extends TimerTask {
 
-	private Timer t = new Timer(true);
-	private SnapshotPrevayler prevayler;
-	private String recoveryLocation;
+	private final Timer t = new Timer(true);
+	private final SnapshotPrevayler prevayler;
+	private final String recoveryLocation;
+	private final AtomicBoolean enableFlag;
 
-	public RecoverySnapshotTask( SnapshotPrevayler prevayler, long period, String recoveryLocation ) {
+	public RecoverySnapshotTask( SnapshotPrevayler prevayler, long period, String recoveryLocation, AtomicBoolean enableFlag ) {
 		super();
 		this.prevayler = prevayler;
 		this.recoveryLocation = recoveryLocation;
+		this.enableFlag = enableFlag;
 		t.schedule(this, period, period);
 	}
 
@@ -37,7 +40,8 @@ public class RecoverySnapshotTask extends TimerTask {
 		try {
 			// make new snapshot
 			synchronized (prevayler) {
-				prevayler.takeSnapshot();
+				if (enableFlag.get())
+					prevayler.takeSnapshot();
 			}
 			//add rights to group in order to be able to start with '-n'
 			FileHelper.setFileAttributes( "g+w", recoveryLocation );

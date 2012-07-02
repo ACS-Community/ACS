@@ -307,7 +307,7 @@ public class ManagerEngine
 			FileHelper.setFileAttributes( "g+w", recoveryLocation );
 			// create new task for snapshoot creation,
 			final long MINUTE_IN_MS = 60*1000;
-			new RecoverySnapshotTask(prevayler, 1*MINUTE_IN_MS, recoveryLocation);
+			new RecoverySnapshotTask(prevayler, 1*MINUTE_IN_MS, recoveryLocation, manager.getStatePersitenceFlag());
 		}
 		
 		// initialize Manager CORBA Proxy (create servant)

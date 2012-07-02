@@ -1910,6 +1910,54 @@ public class ManagerProxyImpl extends ManagerPOA
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see si.ijs.maci.ManagerOperations#set_state_persistence(int, boolean)
+	 */
+	public void set_state_persistence(int id, boolean enable)
+			throws NoPermissionEx {
+		pendingRequests.incrementAndGet();
+		try
+		{
+			// simply delegate
+			manager.setStatePersistence(id, enable);
+		}
+		catch (BadParametersException bpe)
+		{
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
+			reportException(hbpe);
+
+			// rethrow CORBA specific
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (NoResourcesException nre)
+		{
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
+			reportException(hnre);
+
+			// rethrow CORBA specific
+			throw new NO_RESOURCES(nre.getMessage());
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+			//reportException(npe);
+			
+			// rethrow CORBA specific
+			throw npe.toNoPermissionEx();
+		}
+		catch (Throwable ex)
+		{
+			CoreException hce = new CoreException(ex.getMessage(), ex);
+			reportException(hce);
+
+			// rethrow CORBA specific
+			throw new UNKNOWN(ex.getMessage());
+		}
+		finally
+		{
+			pendingRequests.decrementAndGet();
+		}
+	}
+
     /* ************************ LoggingConfigurable ************************ */
 
 	/**
