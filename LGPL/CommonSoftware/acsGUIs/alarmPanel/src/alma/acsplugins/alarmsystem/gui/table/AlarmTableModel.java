@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.31 2011/10/10 21:32:44 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.32 2012/07/02 07:35:13 acaproni Exp $
  * @since    
  */
 
@@ -27,6 +27,7 @@ package alma.acsplugins.alarmsystem.gui.table;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
@@ -578,7 +579,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * The auto acknowledge level
 	 */
-	private ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
+	private volatile ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
 
 	public int getRowCount() {
 		synchronized (items) {
@@ -945,7 +946,11 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					addAlarm(alarm);
 				}
 			}
-			fireTableDataChanged();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					fireTableDataChanged();
+				}
+			});
 		}
 	}
 	
