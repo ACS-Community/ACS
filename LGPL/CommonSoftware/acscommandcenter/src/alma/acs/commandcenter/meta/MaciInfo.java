@@ -4,10 +4,10 @@
 package alma.acs.commandcenter.meta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -203,17 +203,17 @@ public class MaciInfo extends DefaultTreeModel {
 			clientNode.add(n);
 
 		// we sort - for some great user experience
-		componentNode.sortChildrenByInfoDetail("name");
-		containerNode.sortChildrenByInfoDetail("name");
-		clientNode.sortChildrenByInfoDetail("name");
+		componentNode.sortChildrenByName();
+		containerNode.sortChildrenByName();
+		clientNode.sortChildrenByName();
 
 		// send out change event
 		nodeStructureChanged(managerNode);
    }
 
 
-
-   // wraps a single piece of info from ComponentInfo, each piece is to be shown in its own node.
+   // wraps a single piece of info from ComponentInfo,
+   // each piece is to be shown in its own node.
    static public class InfoDetail {
       public String key;
       public String value;
@@ -275,6 +275,7 @@ public class MaciInfo extends DefaultTreeModel {
    static public class FolderInfo {
 
       public String name;
+
       public String filter;
       public boolean hasFilter() {
       	return filter!=null && !filter.isEmpty();
@@ -307,7 +308,7 @@ public class MaciInfo extends DefaultTreeModel {
 		}
 
 		public boolean filtered;
-		
+
 		/**
 		 * Support for guis (deployment tree). This is not a deep-clone. The userobject and
 		 * representedHandles will be the same as in the source node but children and
@@ -321,93 +322,68 @@ public class MaciInfo extends DefaultTreeModel {
 		}
 		
 		
-      public void sortChildrenByInfoDetail (final String key) {
-
-      	if (children == null)
-      		return; // nothing to do
-      	
-         synchronized(children) {
-         	// make a working copy
-            Object[] copy = new Object[children.size()];
-            children.copyInto(copy);
-            // create a comparator for detail-values
-            Comparator<Object> c = new Comparator<Object>(){
-               public int compare(Object a, Object b) {
-                  String valA = ((SortingTreeNode)a).detailValue(key);
-                  String valB = ((SortingTreeNode)b).detailValue(key);
-                  return valA.compareTo(valB);
-               }
-            };
-            // sort working copy, then replace original data
-            Arrays.sort(copy, c);
-            for (int i = 0; i < copy.length; i++) {
-					children.set(i, copy[i]);
+		/** Syntactic sugar, for easy iteration over this node's children. */
+		public Iterable<SortingTreeNode> childrens() {
+			final Enumeration<?> orig = children();
+			return new Iterable<SortingTreeNode>() {
+				@Override public Iterator<SortingTreeNode> iterator () {
+					return new java.util.Iterator<SortingTreeNode>() {
+						@Override public boolean hasNext () {return orig.hasMoreElements();}
+						@Override public SortingTreeNode next () {return (SortingTreeNode)orig.nextElement();}
+						@Override public void remove () {throw new UnsupportedOperationException();}
+					};
 				}
-         }
-         
-      }
+			};
+		}
 
-      /**
-       * Looks through child nodes with info detail for the InfoDetail with the specified name.
-       * Used by the sort-method above.
-       */
-      protected String detailValue(String key) {
-
-         if (key.equals("name")) {
-
-            if (userObject instanceof ContainerInfo) {
-             return ((ContainerInfo)userObject).name;  
-            }
-            else
-            if (userObject instanceof ClientInfo) {
-               return ((ClientInfo)userObject).name;  
-            }
-            else
-            if (userObject instanceof ComponentInfo) {
-               return ((ComponentInfo)userObject).name;  
-            }
-            else return "";
-
-         } else {
-
-            for (Enumeration<Object> en = children(); en.hasMoreElements();) {
-
-            	try{
-               SortingTreeNode elem = (SortingTreeNode) en.nextElement();
-               InfoDetail info = (InfoDetail) elem.getUserObject();
-               if (key.equals(info.key))
-               	return info.value;
-               }catch(Exception exc){/*child is not a InfoDetail node, just continue*/}
-   			}
-         	return ""; // no InfoDetail nodes at all, or none with that key
-         }
-      }
-      
-      /** support for merge operations */
-      public boolean equals (SortingTreeNode other) {
-      	
-      	Object otherObject = other.getUserObject();
-      	if (!otherObject.getClass().equals(userObject))
-      		return false;
-
-      	if (userObject instanceof ContainerInfo) {
-      		return ((ContainerInfo)userObject).name.equals( ((ContainerInfo)otherObject).name);
-      	
-      	} else if (userObject instanceof ClientInfo) {
-      		return ((ClientInfo)userObject).h == ((ClientInfo)otherObject).h;
-      	
-      	} else if (userObject instanceof ComponentInfo) {
-      		return ((ComponentInfo)userObject).name.equals( ((ComponentInfo)otherObject).name);
-      	
-      	} else {
-      		return false;
+      public void sortChildrenByName () {
+      	if (children != null) {
+      		synchronized (children) {
+      			Collections.sort (children, byName);
+      		}
       	}
       }
 
+      // a comparator for names, needed for sorting
+      static Comparator<Object> byName = new Comparator<Object>(){
+         public int compare (Object a, Object b) {
+         	String valA = ((SortingTreeNode) a).infoName();
+         	String valB = ((SortingTreeNode) b).infoName();
+            return valA.compareTo(valB);
+         }
+      };
+
+      /**
+       * Read the 'name' value from the contained info struct.
+       */
+      protected String infoName () {
+         if (userObject instanceof ContainerInfo)
+         	return ((ContainerInfo)userObject).name;  
+         if (userObject instanceof ClientInfo)
+            return ((ClientInfo)userObject).name;  
+         if (userObject instanceof ComponentInfo)
+            return ((ComponentInfo)userObject).name;  
+         return "";
+      }
+
+      /** */
+      public boolean equals (SortingTreeNode other) {
+      	Object otherObject = other.getUserObject();
+
+      	if (userObject == null || otherObject == null)
+      		return false;
+      	if (userObject.getClass() != otherObject.getClass())
+      		return false;
+      	if (userObject instanceof ContainerInfo)
+      		return ((ContainerInfo)userObject).name.equals( ((ContainerInfo)otherObject).name);
+      	if (userObject instanceof ClientInfo)
+      		return ((ClientInfo)userObject).h == ((ClientInfo)otherObject).h;
+      	if (userObject instanceof ComponentInfo)
+      		return ((ComponentInfo)userObject).name.equals( ((ComponentInfo)otherObject).name);
+      	return false;
+      }
+
    }
-   
-   
-   
-	
+
 }
 

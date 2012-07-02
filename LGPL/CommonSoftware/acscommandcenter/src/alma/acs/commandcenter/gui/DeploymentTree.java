@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -101,7 +102,7 @@ public class DeploymentTree extends JTree {
 	// msc 2009-04: introducing "allowControl" flag for permission handling (used by OMC)
 	public DeploymentTree(DeploymentTreeController ctrl, boolean allowControl) {
 		
-		super(new DefaultMutableTreeNode("Deployment Info"));
+		super(new SortingTreeNode("Deployment Info"));
 		this.setRootVisible(false);
 		this.setShowsRootHandles(true);
 
@@ -171,9 +172,9 @@ public class DeploymentTree extends JTree {
 
 
 		// the supervisor (which is in the rootnode) for this subtree
-		selectedSupervisor = maciSupervisor(((DefaultMutableTreeNode) targetPath.getPathComponent(1)));
+		selectedSupervisor = maciSupervisor(((SortingTreeNode) targetPath.getPathComponent(1)));
 		// the node the mouse was clicked on
-		target = (DefaultMutableTreeNode) targetPath.getLastPathComponent();
+		target = (SortingTreeNode) targetPath.getLastPathComponent();
 		Object userObject = target.getUserObject();
 
 		ContextMenu menu;
@@ -198,10 +199,9 @@ public class DeploymentTree extends JTree {
 				SortingTreeNode mgrNode = (SortingTreeNode)target.getPath()[1];
 				List<Object> list = new ArrayList<Object>();
 				list.add(mgrNode);
-				for (Enumeration<?> toplevel = mgrNode.children(); toplevel.hasMoreElements();) {
-					SortingTreeNode top = (SortingTreeNode)toplevel.nextElement();
+				for (SortingTreeNode top : mgrNode.childrens())
 					list.addAll(Collections.list(top.children()));
-				}
+
 				for (Object obj : list) {
 					final SortingTreeNode elem = (SortingTreeNode)obj;
 					for (int i=0; i<selectedHandles.length; i++) {
@@ -240,8 +240,8 @@ public class DeploymentTree extends JTree {
 		return (GuiMaciSupervisor) managerNode.getUserObject();
 	}
 
-	protected DefaultMutableTreeNode getRoot () {
-		return (DefaultMutableTreeNode) super.getModel().getRoot();
+	protected SortingTreeNode getRoot () {
+		return (SortingTreeNode) super.getModel().getRoot();
 	}
 
 	protected DefaultTreeModel getTreeModel () {
@@ -337,9 +337,8 @@ public class DeploymentTree extends JTree {
 
 
 	public void refreshManagers () {
-		// iterate over root's children
-		for (Enumeration<DefaultMutableTreeNode> en = getRoot().children(); en.hasMoreElements();) {
-			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
+		// iterate over manager nodes
+		for (SortingTreeNode managerNode : getRoot().childrens()) {
 			shieldedRefreshManager(maciSupervisor(managerNode));
 		}
 	}
@@ -353,14 +352,11 @@ public class DeploymentTree extends JTree {
 		String toFind = managerLoc;
 
 		// iterate over macisupervisor nodes
-		for (Enumeration<DefaultMutableTreeNode> en = getRoot().children(); en.hasMoreElements();) {
-			// inspect each child
-			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
-			String managerLocation = maciSupervisor(managerNode).getManagerLocation();
+		for (SortingTreeNode managerNode : getRoot().childrens()) {
 			// compare corbalocs
-			if (managerLocation.equals(toFind)) {
+			String managerLocation = maciSupervisor(managerNode).getManagerLocation();
+			if (managerLocation.equals(toFind))
 				return managerNode;
-			}
 		}
 		return null;
 	}
@@ -403,19 +399,6 @@ public class DeploymentTree extends JTree {
 		// force the model to publish an event
 		// getTreeModel().nodeStructureChanged(getRoot()); // dramatic event, too coarse
 		getTreeModel().nodesWereRemoved(parent, new int[]{index}, new Object[]{node});
-	}
-
-	/**
-	 * Rearranges the node's children using the InfoDetail key.
-	 */
-	protected void sortNode (DefaultMutableTreeNode node, String key) {
-		// the nodes created by MaciSupervisor have a special capability:
-		// they can sort their kids
-		SortingTreeNode casted = (SortingTreeNode) node;
-		casted.sortChildrenByInfoDetail(key);
-		
-		// inform the model that something has changed
-		getTreeModel().nodeStructureChanged(casted);
 	}
 
 
@@ -641,20 +624,18 @@ public class DeploymentTree extends JTree {
 
 	void applyFilters (DefaultTreeModel tm) {
 		SortingTreeNode mgrNode = (SortingTreeNode)tm.getRoot();
-		for (Enumeration<?> toplevel = mgrNode.children(); toplevel.hasMoreElements();) {
-			SortingTreeNode folder = (SortingTreeNode)toplevel.nextElement();
+		for (SortingTreeNode folder : mgrNode.childrens()) {
 			applyFilter(folder);
 		}
 	}
 
 	void applyFilter (SortingTreeNode folder) {
 		FolderInfo folderInfo = (FolderInfo)folder.getUserObject();
-		for (Enumeration<?> en = folder.children(); en.hasMoreElements();) {
-		 	SortingTreeNode entry = (SortingTreeNode) en.nextElement();
+		for (SortingTreeNode entry : folder.childrens()) {
 		 	String caption = cellRenderer.getCaptions(entry)[0];
-		 	boolean matches = caption.contains (folderInfo.filter);
+		 	boolean passes = !folderInfo.hasFilter() || caption.contains (folderInfo.filter);
 		 	for (Enumeration<?> subtree = entry.breadthFirstEnumeration(); subtree.hasMoreElements();) 
-		 		((SortingTreeNode)(subtree.nextElement())).filtered = !matches;
+		 		((SortingTreeNode)(subtree.nextElement())).filtered = !passes;
 		}
 	}
 
@@ -759,6 +740,9 @@ public class DeploymentTree extends JTree {
 
 			};
 
+		/** Used to force data visibility between threads, as per Java Memory Model */
+		private AtomicBoolean jmmFlushRefresh = new AtomicBoolean();
+
 		protected void convertCompleteModel() {
 
 			treemerger.diff (targetModel, sourceModel);
@@ -769,9 +753,15 @@ public class DeploymentTree extends JTree {
 			 * them to the tree's underlying tree model.... using the swing thread... */
 			if (!treemerger.areEqual()) {
 
+				// flush
+				jmmFlushRefresh.set(true);
+
 				runSwingNow(new Runnable() {
 					public void run () {
-					/* System.out.println(treemerger.toString()); */ 
+
+						// refresh
+						jmmFlushRefresh.get();
+
 						treemerger.merge();
 					}
 				});
