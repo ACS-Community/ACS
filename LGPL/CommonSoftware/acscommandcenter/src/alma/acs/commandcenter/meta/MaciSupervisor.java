@@ -4,6 +4,8 @@
 package alma.acs.commandcenter.meta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,6 +17,7 @@ import org.omg.CORBA.SystemException;
 import org.omg.CORBA.TRANSIENT;
 
 import com.cosylab.acs.maci.HandleConstants;
+import com.xtmod.util.collections.ListDiff;
 
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOA;
@@ -37,6 +40,40 @@ import alma.maciErrType.NoPermissionEx;
  * @author mschilli
  */
 public class MaciSupervisor implements IMaciSupervisor {
+
+	private ListDiff<ComponentInfo, String, ComponentInfo> diffComponents =
+		new ListDiff<ComponentInfo, String, ComponentInfo>() {
+		@Override protected String identifyExisting (ComponentInfo x) {return x.name;}
+		@Override protected String identifyIncoming (ComponentInfo x) {return x.name;}
+		@Override protected boolean isUpdate (ComponentInfo e, ComponentInfo i) {
+			return !Arrays.deepEquals(
+				new Object[]{e.h, e.container, e.clients},
+				new Object[]{i.h, i.container, i.clients});
+		}
+	};
+
+	private ListDiff<ContainerInfo, String, ContainerInfo> diffContainers =
+		new ListDiff<ContainerInfo, String, ContainerInfo>() {
+		@Override protected String identifyExisting (ContainerInfo x) {return x.name;}
+		@Override protected String identifyIncoming (ContainerInfo x) {return x.name;}
+		@Override protected boolean isUpdate (ContainerInfo e, ContainerInfo i) {
+			return !Arrays.deepEquals(
+				new Object[]{e.h, e.components},
+				new Object[]{i.h, i.components});
+		}
+	};
+
+	private ListDiff<ClientInfo, Integer, ClientInfo> diffClientApps =
+		new ListDiff<ClientInfo, Integer, ClientInfo>() {
+		@Override protected Integer identifyExisting (ClientInfo x) {return x.h;}
+		@Override protected Integer identifyIncoming (ClientInfo x) {return x.h;}
+		@Override protected boolean isUpdate (ClientInfo e, ClientInfo i) {
+			return !Arrays.deepEquals(
+				new Object[]{e.name, e.components},
+				new Object[]{i.name, i.components});
+		}
+	};
+
 
 
 	protected String name = null;
@@ -520,92 +557,101 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * @throws UnknownErrorException 
 	 */
 	public void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
-		log.finer("refreshing maci info...");
+		log.finer("refresh maci info: retrieving acs deployment info from acs manager");
 
-		List<SortingTreeNode> newComponents = new ArrayList<SortingTreeNode>(); 
-		List<SortingTreeNode> newContainers = new ArrayList<SortingTreeNode>(); 
-		List<SortingTreeNode> newClients = new ArrayList<SortingTreeNode>();
-		
+		List<ComponentInfo> components = Collections.EMPTY_LIST;
+		List<ContainerInfo> containers = Collections.EMPTY_LIST;
+		List<ClientInfo>    clientApps = Collections.EMPTY_LIST;
+		List<SortingTreeNode> newComponents = Collections.EMPTY_LIST; 
+		List<SortingTreeNode> newContainers = Collections.EMPTY_LIST; 
+		List<SortingTreeNode> newClientApps = Collections.EMPTY_LIST;
+		boolean nothingChanged = false;
+
 		try {
-		
-			ComponentInfo[] components;
-			ContainerInfo[] containers;
-			ClientInfo[] clients;
-			
+	
 			try {
-
 				// retrieve data from manager
 				// -------------------------------
-	
-				components = this.retrieveComponentInfo("*");
-				containers = this.retrieveContainerInfo("*");
-				clients = this.retrieveClientInfo("*");
-	
+				components = Arrays.asList( this.retrieveComponentInfo("*"));
+				containers = Arrays.asList( this.retrieveContainerInfo("*"));
+				clientApps = Arrays.asList( this.retrieveClientInfo("*"));
 				
 			/* If the retrieval bails out it is (as far as i've seen)
 			 * always because the manager is not reachable at all.
 			 * thus, there's no need to try and retrieve e.g. the 
 			 * clients if the components have already failed. thus,
 			 * one exception handler for all retrievals is enough */
-
+	
 			} catch (NotConnectedToManagerException exc) {
-				log.fine("problems refreshing maci info: " + exc);
+				log.fine("refresh maci info: problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw exc;
-
+	
 			} catch (NoPermissionEx exc) {
-				log.fine("problems refreshing maci info: " + exc);
+				log.fine("refresh maci info: problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw exc;
-
+	
 			} catch (org.omg.CORBA.TRANSIENT exc) {
-				log.fine("problems refreshing maci info: " + exc);
+				log.fine("refresh maci info: problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw new CorbaTransientException(exc);
-
+	
 			} catch (org.omg.CORBA.OBJECT_NOT_EXIST exc) {
-				log.fine("problems refreshing maci info: " + exc);
+				log.fine("refresh maci info: problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw new CorbaNotExistException(exc);
-
+	
 			} catch (RuntimeException exc) {
-				log.fine("problems refreshing maci info: " + exc);
+				log.fine("refresh maci info: problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw new UnknownErrorException(exc);
 			}
 
+			diffComponents.diff(maciInfo.components_currentcopy, components);
+			diffContainers.diff(maciInfo.containers_currentcopy, containers);
+			diffClientApps.diff(maciInfo.clientApps_currentcopy, clientApps);
 
-			// make nodes from retrieved data
-			// -------------------------------
+			if (diffComponents.areEqual() 
+				&& diffContainers.areEqual() 
+				&& diffClientApps.areEqual()) {
+				log.finer("refresh maci info: refresh done, no change found");
+				nothingChanged = true;
 
-			for (ComponentInfo comp : components)
-				newComponents.add(createNode(comp));
+			} else {
 
-			for (ContainerInfo cont : containers) {
-				SortingTreeNode currentNode = createNode(cont);
-				newContainers.add(currentNode);
+				// make nodes from retrieved data
+				newComponents = new ArrayList<SortingTreeNode>(); 
+				newContainers = new ArrayList<SortingTreeNode>(); 
+				newClientApps = new ArrayList<SortingTreeNode>();
 
-				// look up components held by the container
-				for (ComponentInfo comp : components) {
-					if (comp.container == cont.h && comp.h != 0)
-						currentNode.add(createNode(comp, false));
+				for (ComponentInfo comp : components)
+					newComponents.add(createNode(comp));
+
+				for (ContainerInfo cont : containers) {
+					newContainers.add(createNode(cont));
+
+					// attach components that are active in this container
+					SortingTreeNode currentNode = newContainers.get(newContainers.size()-1);
+					for (ComponentInfo comp : components) {
+						if (comp.container == cont.h && comp.h != 0)
+							currentNode.add(createNode(comp, false));
+					}
 				}
+	
+				for (ClientInfo client : clientApps)
+					newClientApps.add(createNode(client));
 			}
 
-			for (ClientInfo client : clients)
-				newClients.add(createNode(client));
-
-
-
 		} finally {
-
-			// update the treemodel in any case
-			// ----------------------------------
-			maciInfo.setContents (newComponents, newContainers, newClients);
+			if (nothingChanged == false)
+				maciInfo.setContents (components, containers, clientApps,
+						newComponents, newContainers, newClientApps);
 		}
 
 	}
 
+	
 
 	/**
 	 * assigned in connectToManager()
