@@ -106,6 +106,9 @@ public class ManagerPrevaylerTest extends TestCase
 		corbaServce = new DefaultCORBAService(logger);
 		manager.initialize(prevayler, new CDBAccess(corbaServce.getORB(), logger), null, logger, null);
 		//manager.setDomain(domain);
+		
+		// enable prevayler (disabled by default)
+		manager.getStatePersitenceFlag().set(true);
 	
 		transport = new TestTransport();
 		manager.setTransport(transport);
