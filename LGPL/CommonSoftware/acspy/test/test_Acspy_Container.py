@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Container.py,v 1.4 2010/06/08 01:55:25 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Container.py,v 1.5 2012/07/03 16:54:56 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -40,6 +40,7 @@ import Acspy.Util.ACSCorba
 import maci
 import Acspy.Common.CDBAccess
 import Acspy.Container
+from mock import Mock
 
 
 class TestInitialization(unittest.TestCase):
@@ -532,7 +533,7 @@ class TestDeactivation(unittest.TestCase):
         
 
     def test_not_found(self):
-        self.assertEqual(True, self.testcontainer.deactivate_components([1]) is None)
+        self.assertEqual(True, self.testcontainer.deactivate_component(1) is None)
 
 
     def test_not_component(self):
@@ -542,12 +543,14 @@ class TestDeactivation(unittest.TestCase):
         componentdata[Acspy.Container.CORBAREF] = mock.Mock(spec=omniORB.PortableServer.POA)
         componentdata[Acspy.Container.POAOFFSHOOT] = mock.Mock(spec=omniORB.PortableServer.POA)
         componentdata[Acspy.Container.POA] = mock.Mock(spec=omniORB.PortableServer.POA)
-        componentdata[Acspy.Container.PYREF] = new.classobj('MockClass', (), {})() 
+        componentdata[Acspy.Container.PYREF] = new.classobj('MockClass', (Acspy.Container.ContainerServices,
+                                                                          Acspy.Container.ACSComponent,
+                                                                          Acspy.Container.ComponentLifecycle), {})()
         componentdata[Acspy.Container.COMPMODULE] = new.module('MockClass')
         self.testcontainer.compHandles[1] = componentdata[Acspy.Container.NAME]
         self.testcontainer.components[componentdata[Acspy.Container.NAME]] = componentdata
         self.testcontainer.compModuleCount[componentdata[Acspy.Container.COMPMODULE]] = 2
-        self.assertEqual(True, self.testcontainer.deactivate_components([1]) is None)
+        self.assertEqual(True, self.testcontainer.deactivate_component(1) is None)
 
 
     def test_component(self):
@@ -564,7 +567,7 @@ class TestDeactivation(unittest.TestCase):
         self.testcontainer.compHandles[1] = componentdata[Acspy.Container.NAME]
         self.testcontainer.components[componentdata[Acspy.Container.NAME]] = componentdata
         self.testcontainer.compModuleCount[componentdata[Acspy.Container.COMPMODULE]] = 2
-        self.assertEqual(True, self.testcontainer.deactivate_components([1]) is None)
+        self.assertEqual(True, self.testcontainer.deactivate_component(1) is None)
 
     def test_module_reload(self):
         componentdata = {}
@@ -580,7 +583,7 @@ class TestDeactivation(unittest.TestCase):
         self.testcontainer.compHandles[1] = componentdata[Acspy.Container.NAME]
         self.testcontainer.components[componentdata[Acspy.Container.NAME]] = componentdata
         self.testcontainer.compModuleCount[componentdata[Acspy.Container.COMPMODULE]] = 1
-        self.assertEqual(True, self.testcontainer.deactivate_components([1]) is None)
+        self.assertEqual(True, self.testcontainer.deactivate_component(1) is None)
 
 class TestGetComponentInfo(unittest.TestCase):
     
