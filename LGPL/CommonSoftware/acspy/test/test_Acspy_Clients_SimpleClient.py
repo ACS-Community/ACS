@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Clients_SimpleClient.py,v 1.2 2012/03/15 20:16:33 javarias Exp $"
+# "@(#) $Id: test_Acspy_Clients_SimpleClient.py,v 1.3 2012/07/04 16:45:46 acaproni Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -41,7 +41,7 @@ def manager_login_value_builder():
     return mockmanager
 
 class TestSimpleClient(unittest.TestCase):
-
+    
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
     @mock.patch_object(Acspy.Clients.BaseClient, 'getManager',
@@ -53,6 +53,7 @@ class TestSimpleClient(unittest.TestCase):
         refmock.return_value = True
         sc = SimpleClient.PySimpleClient()
         self.assertEqual(True, sc.name.startswith('Python Client'))
+        sc.disconnect()
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
@@ -65,6 +66,7 @@ class TestSimpleClient(unittest.TestCase):
         refmock.return_value = True
         sc = SimpleClient.PySimpleClient('Foo')
         self.assertEqual(True, sc.name.startswith('Foo'))
+        sc.disconnect()
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
