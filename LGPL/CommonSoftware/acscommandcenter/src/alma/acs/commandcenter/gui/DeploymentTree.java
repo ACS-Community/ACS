@@ -681,7 +681,7 @@ public class DeploymentTree extends JTree {
 		}
 
 
-			protected TreeMerge<String> treemerger = new TreeMerge<String>(){
+			protected final TreeMerge<String> treemerger = new TreeMerge<String>(){
 
 				@Override protected String identifyExisting (TreeNode x) {
 					return identify((DefaultMutableTreeNode)x);
