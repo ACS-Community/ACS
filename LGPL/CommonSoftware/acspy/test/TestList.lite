@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.30 2012/03/07 17:45:13 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.31 2012/07/04 16:44:26 acaproni Exp $"
 #
 # TestList
 #
@@ -31,7 +31,7 @@
 SOURCE acspyTATEnvironment
 PROLOGUE acspyTATPrologue
 #-------------------------------------------------------------------
-00   UnitTests           "acsutilTATTestRunner nosetests"
+00   UnitTests           "acsutilTATTestRunner nosetests -v"
 
 01   testQoSTimeout      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
 			"acsutilTATTestRunner acspyTestQoSTimeout" "@SLEEP 25" \
