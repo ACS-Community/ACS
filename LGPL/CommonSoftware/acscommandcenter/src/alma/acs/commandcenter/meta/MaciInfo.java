@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -16,6 +17,8 @@ import javax.swing.tree.DefaultTreeModel;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
+
+import com.cosylab.acs.maci.HandleConstants;
 
 
 
@@ -31,7 +34,7 @@ public class MaciInfo extends DefaultTreeModel {
 	
 	public List<ContainerInfo> getContainers() {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ContainerInfo> current = containers_currentcopy;
+		List<ContainerInfo> current = containers;
 
 		List<ContainerInfo> ret = new ArrayList<ContainerInfo>(current);
 		return ret;
@@ -39,7 +42,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public ContainerInfo getContainer (String name) {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ContainerInfo> current = containers_currentcopy;
+		List<ContainerInfo> current = containers;
 
 		for (ContainerInfo info : current)
 			if (info.name.equals(name))
@@ -49,7 +52,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public ContainerInfo getContainer (int handle) {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ContainerInfo> current = containers_currentcopy;
+		List<ContainerInfo> current = containers;
 
 		for (ContainerInfo info : current)
 			if (info.h == handle)
@@ -59,7 +62,7 @@ public class MaciInfo extends DefaultTreeModel {
 	
 	public List<ClientInfo> getClients() {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ClientInfo> current = clientApps_currentcopy;
+		List<ClientInfo> current = clientApps;
 
 		List<ClientInfo> ret = new ArrayList<ClientInfo>(current);
 		return ret;
@@ -67,7 +70,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public ClientInfo getClient (String name) {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ClientInfo> current = clientApps_currentcopy;
+		List<ClientInfo> current = clientApps;
 		
 		for (ClientInfo info : current)
 			if (info.name.equals(name))
@@ -77,7 +80,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public ClientInfo getClient (int handle) {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ClientInfo> current = clientApps_currentcopy;
+		List<ClientInfo> current = clientApps;
 		
 		for (ClientInfo info : current)
 			if (info.h == handle)
@@ -87,7 +90,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public List<ComponentInfo> getComponents () {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ComponentInfo> current = components_currentcopy;
+		List<ComponentInfo> current = components;
 		
 		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(current);
 		return ret;
@@ -95,7 +98,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public ComponentInfo getComponent (String name) {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ComponentInfo> current = components_currentcopy;
+		List<ComponentInfo> current = components;
 		
 		for (ComponentInfo info : current)
 			if (info.name.equals(name))
@@ -105,7 +108,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public ComponentInfo getComponent (int handle) {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ComponentInfo> current = components_currentcopy;
+		List<ComponentInfo> current = components;
 		
 		for (ComponentInfo info : current)
 			if (info.h == handle)
@@ -115,7 +118,7 @@ public class MaciInfo extends DefaultTreeModel {
 
 	public List<ComponentInfo> getStartedComponents () {
 		// grab reference as it is in this very moment, this is atomic.
-		List<ComponentInfo> current = components_currentcopy;
+		List<ComponentInfo> current = components;
 		
 		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(current.size());
 		for (ComponentInfo info : current)
@@ -125,10 +128,11 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 
 
-	// each of these references is written and read atomically
-   List<ComponentInfo> components_currentcopy = Collections.EMPTY_LIST;
-   List<ContainerInfo> containers_currentcopy = Collections.EMPTY_LIST;
-   List<ClientInfo> clientApps_currentcopy = Collections.EMPTY_LIST;
+	// when new data comes in, each of these references is rewritten,
+	// which is atomic per se and will trigger a memory flush.
+   volatile List<ComponentInfo> components = Collections.EMPTY_LIST;
+   volatile List<ContainerInfo> containers = Collections.EMPTY_LIST;
+   volatile List<ClientInfo> clientApps = Collections.EMPTY_LIST;
 
 	// ====================================================================
 	// Not-so-public API
@@ -136,52 +140,68 @@ public class MaciInfo extends DefaultTreeModel {
 	// MaciInfo, and by commandcenter's DeploymentTree to present it.
 	
 	
-	protected MaciInfo (SortingTreeNode root, SortingTreeNode conts, SortingTreeNode clients, SortingTreeNode comps) {
-		super(root);
-		managerNode = root;
-		managerNode.add(containerNode = conts);
-		managerNode.add(clientNode = clients);
-		managerNode.add(componentNode = comps);
+	protected MaciInfo () {
+		super(null);
+		root = managerNode = createNode("Manager");
+		managerNode.add(containerNode = createNode(new FolderInfo("Containers")));
+		managerNode.add(clientNode = createNode(new FolderInfo("Client Applications")));
+		managerNode.add(componentNode = createNode(new FolderInfo("Components")));
 	}
 
-   protected SortingTreeNode managerNode;
-   protected SortingTreeNode containerNode;
-   protected SortingTreeNode clientNode;
-   protected SortingTreeNode componentNode;
+   protected final SortingTreeNode managerNode;
+   protected final SortingTreeNode containerNode;
+   protected final SortingTreeNode clientNode;
+   protected final SortingTreeNode componentNode;
 
-   
+
 
    /**
     * Sets the components, containers, and clients.
     * The given lists must not be changed anymore (otherwise 
     * this method would have to make a copy of them).
     */
-   void setContents (
-   		List<ComponentInfo> components,
-   		List<ContainerInfo> containers,
-   		List<ClientInfo>    clientApps,
-   		List<SortingTreeNode> newComponents,
-   		List<SortingTreeNode> newContainers,
-   		List<SortingTreeNode> newClientApps) {
-
-   	// bend references, each assignment is atomic.
+   protected void setContents (
+   		List<ComponentInfo> newComponents,
+   		List<ContainerInfo> newContainers,
+   		List<ClientInfo>    newClientApps,
+   		Map<Object,String>  auxiliary) {
+		
+   	
+   	// bend references, each assignment is atomic and triggers a flush.
 		// note we shall not modify the lists anymore after this point! 
-		components_currentcopy = components;
-		containers_currentcopy = containers;
-		clientApps_currentcopy = clientApps;
+		this.components = newComponents;
+		this.containers = newContainers;
+		this.clientApps = newClientApps;
 
    	// re-populate the toplevel nodes
-		componentNode.removeAllChildren();
-		for (SortingTreeNode n : newComponents)
+   	// ---------------------------------------------
+
+   	componentNode.removeAllChildren();
+		for (ComponentInfo comp : newComponents) {
+			SortingTreeNode n = createNode(comp);
+			addInfoNodes(n, auxiliary);
 			componentNode.add(n);
-		
+		}
+
 		containerNode.removeAllChildren();
-		for (SortingTreeNode n : newContainers)
+		for (ContainerInfo cont : newContainers) {
+			SortingTreeNode n = createNode(cont);
+			addInfoNodes(n, auxiliary);
+			// attach components that are active in this container
+			for (ComponentInfo comp : newComponents) {
+				if (comp.container == cont.h && comp.h != 0)
+					n.add(createNode(comp));
+			}
 			containerNode.add(n);
+		}
 
 		clientNode.removeAllChildren();
-		for (SortingTreeNode n : newClientApps)
+		for (ClientInfo client : newClientApps) {
+			SortingTreeNode n = createNode(client);
+			addInfoNodes(n, auxiliary);
 			clientNode.add(n);
+		}
+
 
 		// we sort - for some great user experience
 		componentNode.sortChildrenByName();
@@ -191,6 +211,85 @@ public class MaciInfo extends DefaultTreeModel {
 		// send out change event
 		nodeStructureChanged(managerNode);
    }
+
+
+	/**
+	 * Factory method
+	 */
+	protected SortingTreeNode createNode (Object info) {
+		SortingTreeNode ret = new SortingTreeNode();
+
+		if (info instanceof ContainerInfo) {
+			ret.setUserObject(info);
+			ContainerInfo casted = (ContainerInfo) info;
+			if (casted.h != 0)
+				ret.representedHandles = new int[]{casted.h};
+			
+		} else
+		if (info instanceof ClientInfo) {
+			ret.setUserObject(info);
+			ClientInfo casted = (ClientInfo) info;
+			if (casted.h != 0)
+				ret.representedHandles = new int[]{casted.h};
+			
+		} else
+		if (info instanceof ComponentInfo) {
+			ret.setUserObject(info);
+			ComponentInfo casted = (ComponentInfo) info;
+			if (casted.h != 0)
+				ret.representedHandles = new int[]{casted.h};
+			
+		} else
+		if (info instanceof InfoDetail) {
+			InfoDetail casted = (InfoDetail) info;
+			ret.setUserObject(info);
+			ret.representedHandles = casted.representedHandles;
+			
+		} else 
+		if (info instanceof FolderInfo) {
+			ret.setUserObject(info);
+			
+		} else {
+			ret.setUserObject(info);
+			/* when a component is configured as "autostart", it will have
+			 * the manager as its first client.
+			 * matej email 2009-04: there is no way to retrieve the handle
+			 * of the manager... but it is always fixed. */
+			if ("Manager".equals(info)) // = 83886080
+				ret.representedHandles = new int[]{HandleConstants.MANAGER_MASK};
+		}
+		return ret;
+	}
+
+	protected void addInfoNodes (SortingTreeNode node, Map<Object,String> auxiliary) {
+		Object info = node.getUserObject();
+		int infokey = System.identityHashCode(info);
+
+		if (info instanceof ContainerInfo) {
+			//ContainerInfo casted = (ContainerInfo)info;
+			node.add(createNode(new InfoDetail("location", auxiliary.get(infokey+".location") )));
+
+	   } else
+		if (info instanceof ClientInfo) {
+			ClientInfo casted = (ClientInfo)info;
+			node.add(createNode(new InfoDetail("location", auxiliary.get(infokey+".location") )));
+			node.add(createNode(new InfoDetail("components", casted.components, true)));
+			node.add(createNode(new InfoDetail("access", casted.access, false)));
+			node.add(createNode(new InfoDetail("reference", casted.reference)));
+
+		} else
+		if (info instanceof ComponentInfo) {
+			ComponentInfo casted = (ComponentInfo)info;
+			node.add(createNode(new InfoDetail("clients", casted.clients, true)));
+			node.add(createNode(new InfoDetail("container", casted.container, true)));
+			node.add(createNode(new InfoDetail("container_name", casted.container_name)));
+			node.add(createNode(new InfoDetail("access", casted.access, false)));
+			node.add(createNode(new InfoDetail("reference", casted.reference)));
+			node.add(createNode(new InfoDetail("interfaces", casted.interfaces)));
+			node.add(createNode(new InfoDetail("type", casted.type)));
+			node.add(createNode(new InfoDetail("code", casted.code)));
+		}
+	}
 
 
    // wraps a single piece of info from ComponentInfo,

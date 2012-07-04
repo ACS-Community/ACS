@@ -3,10 +3,11 @@
  */
 package alma.acs.commandcenter.meta;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -15,9 +16,6 @@ import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
 import org.omg.CORBA.TRANSIENT;
-
-import com.cosylab.acs.maci.HandleConstants;
-import com.xtmod.util.collections.ListDiff;
 
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOA;
@@ -29,51 +27,16 @@ import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
-import alma.acs.commandcenter.meta.MaciInfo.FolderInfo;
-import alma.acs.commandcenter.meta.MaciInfo.InfoDetail;
-import alma.acs.commandcenter.meta.MaciInfo.SortingTreeNode;
 import alma.acs.util.AcsLocations;
 import alma.acs.util.UTCUtility;
 import alma.maciErrType.NoPermissionEx;
+
+import com.xtmod.util.collections.ListDiff;
 
 /**
  * @author mschilli
  */
 public class MaciSupervisor implements IMaciSupervisor {
-
-	private ListDiff<ComponentInfo, String, ComponentInfo> diffComponents =
-		new ListDiff<ComponentInfo, String, ComponentInfo>() {
-		@Override protected String identifyExisting (ComponentInfo x) {return x.name;}
-		@Override protected String identifyIncoming (ComponentInfo x) {return x.name;}
-		@Override protected boolean isUpdate (ComponentInfo e, ComponentInfo i) {
-			return !Arrays.deepEquals(
-				new Object[]{e.h, e.container, e.clients},
-				new Object[]{i.h, i.container, i.clients});
-		}
-	};
-
-	private ListDiff<ContainerInfo, String, ContainerInfo> diffContainers =
-		new ListDiff<ContainerInfo, String, ContainerInfo>() {
-		@Override protected String identifyExisting (ContainerInfo x) {return x.name;}
-		@Override protected String identifyIncoming (ContainerInfo x) {return x.name;}
-		@Override protected boolean isUpdate (ContainerInfo e, ContainerInfo i) {
-			return !Arrays.deepEquals(
-				new Object[]{e.h, e.components},
-				new Object[]{i.h, i.components});
-		}
-	};
-
-	private ListDiff<ClientInfo, Integer, ClientInfo> diffClientApps =
-		new ListDiff<ClientInfo, Integer, ClientInfo>() {
-		@Override protected Integer identifyExisting (ClientInfo x) {return x.h;}
-		@Override protected Integer identifyIncoming (ClientInfo x) {return x.h;}
-		@Override protected boolean isUpdate (ClientInfo e, ClientInfo i) {
-			return !Arrays.deepEquals(
-				new Object[]{e.name, e.components},
-				new Object[]{i.name, i.components});
-		}
-	};
-
 
 
 	protected String name = null;
@@ -100,11 +63,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		acImpl = new AdministratorImplementation();
 
 		// set up the invariable tree structure
-		SortingTreeNode root = createNode("Manager");
-		SortingTreeNode conts = createNode(new FolderInfo("Containers"));
-		SortingTreeNode clients = createNode(new FolderInfo("Client Applications"));
-		SortingTreeNode comps = createNode(new FolderInfo("Components"));
-		maciInfo = new MaciInfo(root, conts, clients, comps);
+		maciInfo = new MaciInfo();
 	}
 
 
@@ -117,9 +76,9 @@ public class MaciSupervisor implements IMaciSupervisor {
 		this.connectsAutomatically = b;
 	}
 	
-	protected boolean connectsAutomatically = true;
+	protected volatile boolean connectsAutomatically = true;
 	
-	protected ManagerConnectionExceptionHandler mcehandler;
+	protected volatile ManagerConnectionExceptionHandler mcehandler;
 
 	protected class ManagerConnectionExceptionHandler {
 
@@ -223,11 +182,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 			mcehandler.start();
 		}
 
-		if (refreshTask == null) {
-			refreshTask = new RefreshIfNeeded();
-			timer.schedule(refreshTask, 2000, 2000);
-		}
-
+		enableRefreshTask(true);
 
 		if (isConnected())
 			return;
@@ -264,11 +219,12 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * Tear down this instance.
 	 */
 	public synchronized void stop () {
-		mcehandler.stop();
-		mcehandler = null;
+		if (mcehandler!=null) {
+			mcehandler.stop();
+			mcehandler = null;
+		}
 
-		refreshTask.cancel();
-		refreshTask = null;
+		enableRefreshTask(false);
 
 		disconnectFromManager();
 	}
@@ -483,7 +439,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * Refresh every once in a while, even if there wasn't any
 	 * indication from the manager that something has changed.
 	 */
-	public void setRefreshesPeriodically (boolean b) {
+	public synchronized void setRefreshesPeriodically (boolean b) {
 		this.refreshCountdown = 0; // provoke refresh at next run (if refreshing enabled)
 		this.refreshWithoutACause = b;
 	}
@@ -491,12 +447,61 @@ public class MaciSupervisor implements IMaciSupervisor {
 	protected volatile boolean refreshWithoutACause;
 	protected volatile int refreshCountdown;
 
+	protected volatile int refreshCountFrom = 5;
+	protected volatile int refreshLag = 2;
+	
+	private synchronized void enableRefreshTask (boolean b) {
+		if (b==true && refreshTask==null) {
+			refreshTask = new RefreshIfNeeded();
+			timer.schedule (refreshTask, 2000, refreshLag*1000);
+		}
+		if (b==false && refreshTask!=null) {
+			refreshTask.cancel();
+			refreshTask = null;
+		}
+	}
+
+	/**
+	 * Configures the polling rate and responsiveness for updates from
+	 * the manager. Updates from the manager are not applied one-by-one
+	 * but are instead collected for a certain length of time (ie. the
+	 * <b>lag</b>) and then applied altogether. The manager does not
+	 * send notifications for all potential changes that happen in the
+	 * system. It is thus recommendable to poll the manager for new
+	 * information in regular intervals (ie. the <b>period</b>).
+	 *
+	 * @param lag - the <i>worst-case response time</i> before updates
+	 * from the manager will be adopted. Note that the <i>average response
+	 * time</i> is only 1/2 of this. By accepting a higher lag you can
+	 * reduce the load on the manager, and vice-versa.
+	 *
+	 * @param period - the interval by which the manager is polled for
+	 * new updates. By accepting a longer period you can reduce the load
+	 * on the manager, and vice-versa.
+	 */
+	public synchronized void setRefreshDelay (int lag, int period) {
+
+		if (lag != refreshLag) {
+			refreshLag = lag;
+			
+			// need to restart the task
+			enableRefreshTask(false);
+			enableRefreshTask(true);
+		}
+
+		int countfrom = period/lag;
+		if (countfrom != refreshCountFrom) {
+			refreshCountFrom = countfrom;
+			refreshCountdown = countfrom;
+		}
+	}
+
 	/*
 	 * We check 'refresh needed' regularly
 	 */
 	protected RefreshIfNeeded refreshTask;
 	protected Timer timer = new Timer("MaciSupervisor.Refresher", true);
-
+	
 
 	protected class RefreshIfNeeded extends TimerTask {
 
@@ -515,10 +520,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 				if (refreshCountdown > 0)
 					refreshCountdown--;
 
-				if (refreshCountdown <= 0) {
-					refreshCountdown = 5;
+				if (refreshCountdown <= 0)
 					infoShouldBeRefreshed = true;
-				}
 
 				if (!isConnected())
 					return;
@@ -530,6 +533,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 			 * poll info from a not-responding manager. */
 			if (infoShouldBeRefreshed) {
 				infoShouldBeRefreshed = false;
+				refreshCountdown = refreshCountFrom;
 				try {
 					refreshNow();
 				} catch (Throwable exc) {
@@ -556,15 +560,13 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * @throws CorbaNotExistException 
 	 * @throws UnknownErrorException 
 	 */
-	public void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
+	public synchronized void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
 		log.finer("refresh maci info: retrieving acs deployment info from acs manager");
 
-		List<ComponentInfo> components = Collections.EMPTY_LIST;
-		List<ContainerInfo> containers = Collections.EMPTY_LIST;
-		List<ClientInfo>    clientApps = Collections.EMPTY_LIST;
-		List<SortingTreeNode> newComponents = Collections.EMPTY_LIST; 
-		List<SortingTreeNode> newContainers = Collections.EMPTY_LIST; 
-		List<SortingTreeNode> newClientApps = Collections.EMPTY_LIST;
+		List<ComponentInfo> newComponents = Collections.EMPTY_LIST;
+		List<ContainerInfo> newContainers = Collections.EMPTY_LIST;
+		List<ClientInfo>    newClientApps = Collections.EMPTY_LIST;
+		Map<Object,String>  newAuxiliary  = Collections.EMPTY_MAP;
 		boolean nothingChanged = false;
 
 		try {
@@ -572,9 +574,9 @@ public class MaciSupervisor implements IMaciSupervisor {
 			try {
 				// retrieve data from manager
 				// -------------------------------
-				components = Arrays.asList( this.retrieveComponentInfo("*"));
-				containers = Arrays.asList( this.retrieveContainerInfo("*"));
-				clientApps = Arrays.asList( this.retrieveClientInfo("*"));
+				newComponents = Arrays.asList( this.retrieveComponentInfo("*"));
+				newContainers = Arrays.asList( this.retrieveContainerInfo("*"));
+				newClientApps = Arrays.asList( this.retrieveClientInfo("*"));
 				
 			/* If the retrieval bails out it is (as far as i've seen)
 			 * always because the manager is not reachable at all.
@@ -608,49 +610,41 @@ public class MaciSupervisor implements IMaciSupervisor {
 				throw new UnknownErrorException(exc);
 			}
 
-			diffComponents.diff(maciInfo.components_currentcopy, components);
-			diffContainers.diff(maciInfo.containers_currentcopy, containers);
-			diffClientApps.diff(maciInfo.clientApps_currentcopy, clientApps);
+			diffComponents.diff (maciInfo.components, newComponents);
+			diffContainers.diff (maciInfo.containers, newContainers);
+			diffClientApps.diff (maciInfo.clientApps, newClientApps);
 
 			if (diffComponents.areEqual() 
 				&& diffContainers.areEqual() 
 				&& diffClientApps.areEqual()) {
-				log.finer("refresh maci info: refresh done, no change found");
+				log.finer("refresh maci info: retrieval done, no change found");
 				nothingChanged = true;
 
 			} else {
 
-				// make nodes from retrieved data
-				newComponents = new ArrayList<SortingTreeNode>(); 
-				newContainers = new ArrayList<SortingTreeNode>(); 
-				newClientApps = new ArrayList<SortingTreeNode>();
-
-				for (ComponentInfo comp : components)
-					newComponents.add(createNode(comp));
-
-				for (ContainerInfo cont : containers) {
-					newContainers.add(createNode(cont));
-
-					// attach components that are active in this container
-					SortingTreeNode currentNode = newContainers.get(newContainers.size()-1);
-					for (ComponentInfo comp : components) {
-						if (comp.container == cont.h && comp.h != 0)
-							currentNode.add(createNode(comp, false));
-					}
+				// we provide some additional info over what is available in the manager's
+				// info structs. we must compute it upfront since you need an ORB to do it.
+				newAuxiliary = new HashMap<Object,String>();
+				
+				for (ContainerInfo info : newContainers) {
+					int infokey = System.identityHashCode(info);
+					newAuxiliary.put(infokey+".location", extractLocation(info.reference));
 				}
-	
-				for (ClientInfo client : clientApps)
-					newClientApps.add(createNode(client));
+				for (ClientInfo info : newClientApps) {
+					int infokey = System.identityHashCode(info);
+					newAuxiliary.put(infokey+".location", extractLocation(info.reference));
+				}
+				
 			}
 
 		} finally {
 			if (nothingChanged == false)
-				maciInfo.setContents (components, containers, clientApps,
-						newComponents, newContainers, newClientApps);
+				maciInfo.setContents (newComponents, newContainers, newClientApps, newAuxiliary);
 		}
 
 	}
 
+	
 	
 
 	/**
@@ -685,79 +679,40 @@ public class MaciSupervisor implements IMaciSupervisor {
 	protected volatile boolean infoShouldBeRefreshed;
 
 
-
-	/** Factory method */
-	protected SortingTreeNode createNode (Object info) {
-		return createNode(info, true);
-	}
-
-	/**
-	 * Factory method, the boolean parameter supresses auto-generated sub-nodes
-	 */
-	protected SortingTreeNode createNode (Object info, boolean allowInfoDetails) {
-		SortingTreeNode ret = new SortingTreeNode();
-
-		if (info instanceof ContainerInfo) {
-			ret.setUserObject(info);
-			ContainerInfo casted = (ContainerInfo) info;
-			if (allowInfoDetails) {
-				ret.add(createNode(new InfoDetail("location", extractLocation(casted.reference))));
-			}
-			if (casted.h != 0)
-				ret.representedHandles = new int[]{casted.h};
-			
-		} else
-		if (info instanceof ClientInfo) {
-			ret.setUserObject(info);
-			// --- add some "detail" nodes
-			ClientInfo casted = (ClientInfo) info;
-			if (allowInfoDetails) {
-				ret.add(createNode(new InfoDetail("location", extractLocation(casted.reference))));
-				ret.add(createNode(new InfoDetail("components", casted.components, true)));
-				ret.add(createNode(new InfoDetail("access", casted.access, false)));
-				ret.add(createNode(new InfoDetail("reference", casted.reference)));
-			}
-			if (casted.h != 0)
-				ret.representedHandles = new int[]{casted.h};
-		} else
-		if (info instanceof ComponentInfo) {
-			ret.setUserObject(info);
-			// --- add some "detail" nodes
-			ComponentInfo casted = (ComponentInfo) info;
-			if (allowInfoDetails) {
-				ret.add(createNode(new InfoDetail("clients", casted.clients, true)));
-				ret.add(createNode(new InfoDetail("container", casted.container, true)));
-				ret.add(createNode(new InfoDetail("container_name", casted.container_name)));
-				ret.add(createNode(new InfoDetail("access", casted.access, false)));
-				ret.add(createNode(new InfoDetail("reference", casted.reference)));
-				ret.add(createNode(new InfoDetail("interfaces", casted.interfaces)));
-				ret.add(createNode(new InfoDetail("type", casted.type)));
-				ret.add(createNode(new InfoDetail("code", casted.code)));
-			}
-			if (casted.h != 0)
-				ret.representedHandles = new int[]{casted.h};
-			
-		} else
-		if (info instanceof InfoDetail) {
-			InfoDetail casted = (InfoDetail) info;
-			ret.setUserObject(info);
-			ret.representedHandles = casted.representedHandles;
-			
-		} else 
-		if (info instanceof FolderInfo) {
-			ret.setUserObject(info);
-			
-		} else {
-			ret.setUserObject(info);
-			/* when a component is configured as "autostart", it will have
-			 * the manager as its first client.
-			 * matej email 2009-04: there is no way to retrieve the handle
-			 * of the manager... but it is always fixed. */
-			if ("Manager".equals(info)) // = 83886080
-				ret.representedHandles = new int[]{HandleConstants.MANAGER_MASK};
+	private final ListDiff<ComponentInfo, String, ComponentInfo> diffComponents =
+		new ListDiff<ComponentInfo, String, ComponentInfo>() {
+		@Override protected String identifyExisting (ComponentInfo x) {return x.name;}
+		@Override protected String identifyIncoming (ComponentInfo x) {return x.name;}
+		@Override protected boolean isUpdate (ComponentInfo e, ComponentInfo i) {
+			return !Arrays.deepEquals(
+				new Object[]{e.h, e.container, e.clients},
+				new Object[]{i.h, i.container, i.clients});
 		}
-		return ret;
-	}
+	};
+
+	private final ListDiff<ContainerInfo, String, ContainerInfo> diffContainers =
+		new ListDiff<ContainerInfo, String, ContainerInfo>() {
+		@Override protected String identifyExisting (ContainerInfo x) {return x.name;}
+		@Override protected String identifyIncoming (ContainerInfo x) {return x.name;}
+		@Override protected boolean isUpdate (ContainerInfo e, ContainerInfo i) {
+			return !Arrays.deepEquals(
+				new Object[]{e.h, e.components},
+				new Object[]{i.h, i.components});
+		}
+	};
+
+	private final ListDiff<ClientInfo, Integer, ClientInfo> diffClientApps =
+		new ListDiff<ClientInfo, Integer, ClientInfo>() {
+		@Override protected Integer identifyExisting (ClientInfo x) {return x.h;}
+		@Override protected Integer identifyIncoming (ClientInfo x) {return x.h;}
+		@Override protected boolean isUpdate (ClientInfo e, ClientInfo i) {
+			return !Arrays.deepEquals(
+				new Object[]{e.name, e.components},
+				new Object[]{i.name, i.components});
+		}
+	};
+
+
 
 	/**
 	 * Helper for createNode()
@@ -787,13 +742,13 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * assigned in connectToManager(). unassigned in disconnectFromManager(). This means,
 	 * this field indicates the "connected" status.
 	 */
-	protected ClientInfo administratorClientInfo = null;
+	protected volatile ClientInfo administratorClientInfo = null;
 
 	/**
 	 * Instantiated in constructor. The retrieved descriptor will be stored in field
 	 * administratorClientInfo.
 	 */
-	protected AdministratorImplementation acImpl;
+	protected volatile AdministratorImplementation acImpl;
 
 
 	/**
