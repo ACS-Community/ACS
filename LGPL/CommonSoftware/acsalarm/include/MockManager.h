@@ -352,6 +352,7 @@ namespace maci
 		virtual maci::stringSeq* get_logger_names() { return NULL; }
 		virtual char* domain_name() { return NULL; }
   	        virtual CORBA::Boolean ping() { return false; }
+		virtual void set_state_persistence(maci::Handle, CORBA::Boolean){}
 
 	};
 }
