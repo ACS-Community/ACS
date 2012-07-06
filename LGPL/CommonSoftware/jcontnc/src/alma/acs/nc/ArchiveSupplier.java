@@ -19,7 +19,6 @@
 
 package alma.acs.nc;
 
-import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 
@@ -34,7 +33,7 @@ import alma.acsnc.EventDescriptionHelper;
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.11 2012/04/20 16:41:59 hsommer Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.12 2012/07/06 15:08:29 hsommer Exp $
  */
 public class ArchiveSupplier extends NCPublisher<Object> {
 	

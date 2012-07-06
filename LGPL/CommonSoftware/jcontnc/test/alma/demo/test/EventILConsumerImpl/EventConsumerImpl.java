@@ -27,16 +27,12 @@
 
 package alma.demo.test.EventILConsumerImpl;
 
-import java.util.logging.Logger;
-
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.demo.ConsumerCompOperations;
 import alma.acs.nc.Consumer;
-
-
 import alma.acsnc.EventDescription;
+import alma.demo.ConsumerCompOperations;
 /**
  *
  * @author  dfugate
