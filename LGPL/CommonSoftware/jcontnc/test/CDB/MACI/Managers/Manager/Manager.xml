@@ -12,23 +12,21 @@
   </Startup>
 
   <ServiceComponents>
-	<cdb:_ string="Log"/>
-	<cdb:_ string="LogFactory"/>
-	<cdb:_ string="NotifyEventChannelFactory"/>
-	<cdb:_ string="ArchivingChannel"/>
-	<cdb:_ string="LoggingChannel"/>
-	<cdb:_ string="InterfaceRepository"/>
-	<cdb:_ string="CDB"/>
-	<cdb:_ string="ACSLogSvc"/>
-	<cdb:_ string="PDB"/>
+    <cdb:_ string="Log"/>
+    <cdb:_ string="NotifyEventChannelFactory" />
+    <cdb:_ string="MC_NotifyEventChannelFactory" />
+    <cdb:_ string="LoggingNotifyEventChannelFactory" />
+    <cdb:_ string="MC_LoggingNotifyEventChannelFactory" />
+    <cdb:_ string="AlarmNotifyEventChannelFactory" />
+    <cdb:_ string="MC_AlarmNotifyEventChannelFactory" />
+    <cdb:_ string="CDB" />
   </ServiceComponents>
 
-    <LoggingConfig
-    	minLogLevel="2"
-    	minLogLevelLocal="2"
-    	>
-    	<log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="5" />
-    </LoggingConfig>
+  <LoggingConfig
+      minLogLevel="2"
+      minLogLevelLocal="2" >
+    <log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="5" />
+  </LoggingConfig>
 
 </Manager>
 
