@@ -26,14 +26,12 @@
  */
 package alma.demo.test.EventILSupplierImpl;
 
-import org.omg.CORBA.NO_IMPLEMENT;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.refactored.NCPublisher;
+import alma.acs.nc.AcsEventPublisher;
 import alma.acsnc.EventDescription;
 import alma.demo.SupplierCompOperations;
 
@@ -44,7 +42,7 @@ import alma.demo.SupplierCompOperations;
  */
 public class EventSupplierImpl extends ComponentImplBase implements SupplierCompOperations
 {
-	private NCPublisher<EventDescription> m_supplier = null;
+	private AcsEventPublisher<EventDescription> m_supplier = null;
 
 	/**
 	 * Sends some events to an event channel.
@@ -62,16 +60,6 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 				m_supplier.publishEvent(t_block);
 				Thread.sleep(1);
 			}
-
-			//fake a subscription change notification (should be disabled on the proxy consumer in the real system)
-			try {
-				m_supplier.subscription_change(new org.omg.CosNotification.EventType[] {},
-						new org.omg.CosNotification.EventType[] {});
-				m_logger.warning("Call to 'subscription_change' did not produce the expected NO_IMPLEMENT exception.");
-			} catch (NO_IMPLEMENT ex) {
-				// expected
-			}
-
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -88,9 +76,6 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 		m_logger.info("cleanUp() called...");
 
 		try {
-
-			// fake a consumer disconnecting...
-			m_supplier.disconnect_structured_push_supplier();
 			m_supplier.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -111,7 +96,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 
 		try {
 			// Instantiate our supplier
-			m_supplier = (NCPublisher) m_containerServices.createNotificationChannelPublisher("cdb_channel", EventDescription.class);
+			m_supplier = m_containerServices.createNotificationChannelPublisher("blarIL", EventDescription.class);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 			throw new ComponentLifecycleException(e);
