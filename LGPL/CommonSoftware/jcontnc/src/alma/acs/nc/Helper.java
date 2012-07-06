@@ -337,6 +337,9 @@ public class Helper {
 					}
 				}
 			}
+//			else {
+//				System.out.println("*** Got NC " + channelName + " from the naming service");
+//			}
 		} while (retValue == null && --retryNumberAttempts >= 0);
 		
 		if (retValue == null) {
@@ -374,7 +377,7 @@ public class Helper {
 				AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx();
 				ex2.setInfo(reason);
 				throw ex2;
-			}catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
+			} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
 				// Think there is virtually no chance of this every happening but...
 				Throwable cause = new Throwable(e.getMessage());
 				throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
