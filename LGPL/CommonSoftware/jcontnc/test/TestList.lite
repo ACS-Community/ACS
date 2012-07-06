@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.30 2012/04/23 16:16:35 hsommer Exp $"
+# "@(#) $Id: TestList.lite,v 1.31 2012/07/06 15:03:31 hsommer Exp $"
 #
 # TestList
 #
@@ -38,7 +38,7 @@ PROLOGUE acsutilTATPrologue -l
 #Test so-called NC integration logs
 4 integrationLogs  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15" "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.EventILComponentTest" 
 
-5 testArchiveConsumer "acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 3" "acsutilTATTestRunner archiveeventsSupplier" "@SLEEP 30"
+5 testArchiveConsumer "acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 4" "acsutilTATTestRunner archiveeventsSupplier" "@SLEEP 30"
 
 #HSO 2009-05-19 TODO fix this, after having changed ArchiveConsumerTest to be a junit test, which now results in a "NoSuchMethodError: main"
 #6  testArchiveSupplier "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 3" "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveSupplierTest" "@SLEEP 30"
