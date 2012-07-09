@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.41 2012/06/14 12:40:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.42 2012/07/09 15:20:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -106,6 +106,7 @@ void BulkDataNTStream::createDDSFactory()
 	factory_qos.profile.ignore_environment_profile = DDSConfiguration::ignoreEnvironmentProfileQoS;
 	//factory_qos.resource_limits.max_objects_per_thread = 4096; //if we want to have more than 10 participants
 
+	factory_qos.resource_limits.max_objects_per_thread = 400;
 /***
 	if (configuration_m.stringProfileQoS.length()>0)
 	{
