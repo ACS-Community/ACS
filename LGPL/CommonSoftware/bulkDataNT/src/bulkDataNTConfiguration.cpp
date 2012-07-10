@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.24 2012/06/15 10:55:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.25 2012/07/10 09:15:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@ bool ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST=true;
 bool DDSConfiguration::ignoreUserProfileQoS = true;
 bool DDSConfiguration::ignoreEnvironmentProfileQoS = true;
 
-std::string DDSConfiguration::urlProfileQoS;
+std::string DDSConfiguration::urlProfileQoS="";
 const char* const DDSConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
 
 bool AcsBulkdata::isBulkDataNTEnabled()
