@@ -31,9 +31,9 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::init()] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr)] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::MethodRequestThreadPool] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Using ACS alarm system
@@ -47,9 +47,9 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Container 'newConfigRecvContainer' activated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Autoloading 'baci'
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libbaci.so'.
@@ -59,11 +59,11 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Executing DLLSetupCORBA
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/libbaci.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] DLLSetupCORBA executed
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CDBPropertySet::CDBPropertySet] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Executing DLLInitThreads
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] DLLInitThreads executed
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Container 'newConfigRecvContainer' initialized successfuly
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Connecting to the Manager...
@@ -83,8 +83,8 @@
 1 - ----------T--:--:--.--- (XXX|XXX) EXCEPTION, maci::ContainerImpl::init
 1 - user exception, ID 'IDL:alma/maciErrType/NoPermissionEx:1.0'
 1 - 
-1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl:::authenticate] 
 1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::create] 
@@ -112,8 +112,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
-2 - ----------T--:--:--.--- (XXX|XXX) EXCEPTION, maciSimpleClient::init
 2 - ----------T--:--:--.--- [GlobalLogger - ] Simple client are not going to use Centralized Logger (exception occured).
+2 - ----------T--:--:--.--- (XXX|XXX) EXCEPTION, maciSimpleClient::init
 2 - user exception, ID 'IDL:alma/maciErrType/NoPermissionEx:1.0'
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
@@ -134,12 +134,12 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbdNTReceiverLibTest.so'.
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
@@ -150,29 +150,29 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAOProxy::DAOProxy] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::BACIComponent] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::BACIComponent] Creating Component 'NEWCONFIG_RECEIVER'
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setRTResponseTime] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setMTResponseTime] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setRTResponseTime] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setRTSleepTime] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CDBPropertySet::getPropertySet] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::BulkDataNTReceiverImpl] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::initialize] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] BulkDataNT debug level read from env. var. BULKDATA_NT_DEBUG and set to 4
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::initThread] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::initThread] Thread name: 'NEWCONFIG_RECEIVER::actionThread'
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::actionThreadWorker] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::actionThreadWorker] NEWCONFIG_RECEIVER
@@ -185,11 +185,11 @@
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
-1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activate_component] Component 'NEWCONFIG_RECEIVER' activated.
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::initThread] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::initThread] Thread name: 'NEWCONFIG_RECEIVER::monitorThread'
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::monitorThreadWorker] NEWCONFIG_RECEIVER
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activate_component] Component 'NEWCONFIG_RECEIVER' activated.
 1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Calling maci::CBComponentInfo::done with descOut.id_tag = 1.
 1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done with descOut.id_tag = 1 completed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Opening stream 'no_existing_stream' (not in CDB)
@@ -211,36 +211,35 @@
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_XMLParser_parse_from_file:Loading : ----/config/bulkDataNTDefaultQosProfiles.xml
-1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
-1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
-1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
-1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
+1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
 1 - [CREATE Participant]DDS_DomainParticipantDiscovery_initialize:builtin discovery plugin PA Client disabled
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
 1 - [CREATE Participant]DDS_DomainParticipantMonitoring_initializeI:monitoring not configured
+1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - [CREATE Participant]DDS_DomainParticipantFactory_create_participant_disabledI:created participant: domain=0, index=-1
+1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 1 - [D0000|ENABLE]DDS_PropertySeq_ensure_length:memory allocation: original 0, new 32
+1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=0
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
 1 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTStream] Stream: no_existing_stream has been created.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverStream] Receiver Stream: no_existing_stream has been created.
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTStream] Stream: no_existing_stream has been created.
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream 'Name1' with configuration from CDB
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - void BulkDataNTReceiverImpl<TCallback>::openReceiverStreamCfg(const char*, const char*) [with TCallback = TestCB]] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char*) [with TCallback = TestCB]] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - ] Opening stream 'Name1' (in CDB)
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream 'Name1' with configuration from CDB
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Opening stream 'Name1' (in CDB)
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
 1 - [CREATE Participant]DDS_DomainParticipantDiscovery_initialize:builtin discovery plugin PA Client disabled
 1 - [CREATE Participant]DDS_DomainParticipantMonitoring_initializeI:monitoring not configured
@@ -252,15 +251,15 @@
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=1
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 1 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverStream] Receiver Stream: Name1 has been created.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTStream] Stream: Name1 has been created.
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: Name5 @ Stream: Name1 ...
@@ -276,28 +275,27 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
 1 - DDS_Subscriber_enable:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name5 - BulkDataNTReaderListener] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name1#Name5
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name1#Name5
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
 1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name1#Name5, type=ACSBulkData::BulkDataNTFrame
-1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name1#Name5
 1 - DDS_Topic_enable:enabled
-1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name5 - BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name1#Name5
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - createDDSReader] Stream#Flow: Name1#Name5 going to listen on multicast address: 225.3.2.1.
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - [D0100|Sub(XXX)|T=Name1#Name5|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name1#Name5
 1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name1#Name5
 1 - DDS_DataReader_enableI:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: Name5 @ Stream: Name1 has been created.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
@@ -310,33 +308,32 @@
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
-1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
-1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
-1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name1#Name3, type=ACSBulkData::BulkDataNTFrame
 1 - DDS_Subscriber_enable:enabled
-1 - DDS_Topic_enable:enabled
 1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name3 - BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name1#Name3
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - createDDSReader] Stream#Flow: Name1#Name3 going to listen on multicast address: 225.3.2.1.
-1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name1#Name3
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name1#Name3, type=ACSBulkData::BulkDataNTFrame
 1 - [D0100|Sub(XXX)|T=Name1#Name3|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name1#Name3
-1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name1#Name3
+1 - DDS_Topic_enable:enabled
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name1#Name3
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_DataReader_enableI:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream 'Name7' with configuration from CDB
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - void BulkDataNTReceiverImpl<TCallback>::openReceiver() [with TCallback = TestCB]] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: Name3 @ Stream: Name1 has been created.
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream 'Name7' with configuration from CDB
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - void BulkDataNTReceiverImpl<TCallback>::openReceiver() [with TCallback = TestCB]] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Opening all remaining streams (namely, Name7)
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
 1 - DDS_StringSeq_ensure_length:memory allocation: original 8, new 11
@@ -346,38 +343,37 @@
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
-1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
-1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
 1 - [CREATE Participant]DDS_DomainParticipantDiscovery_initialize:builtin discovery plugin PA Client disabled
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
 1 - [CREATE Participant]DDS_DomainParticipantMonitoring_initializeI:monitoring not configured
-1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
 1 - [CREATE Participant]DDS_DomainParticipantFactory_create_participant_disabledI:created participant: domain=0, index=-1
-1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
 1 - [D0000|ENABLE]DDS_PropertySeq_ensure_length:memory allocation: original 0, new 32
+1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
+1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=1...
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=2...
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=2...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=2
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTStream] Stream: Name7 has been created.
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverStream] Receiver Stream: Name7 has been created.
 1 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverStream] Receiver Stream: Name7 has been created.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: Name3 @ Stream: Name7 ...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: Name5 @ Stream: Name7 ...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.020000 sec
 1 - DDS_StringSeq_ensure_length:memory allocation: original 11, new 14
 1 - DDS_XMLParser_parse_from_file:Loading : ----/config/bulkDataNTDefaultQosProfiles.xml
 1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
@@ -386,44 +382,40 @@
 1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name7#Name5
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name7#Name3
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
-1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name7#Name3, type=ACSBulkData::BulkDataNTFrame
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name7#Name5, type=ACSBulkData::BulkDataNTFrame
 1 - DDS_Subscriber_enable:enabled
 1 - DDS_Topic_enable:enabled
-1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name3 - BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name5 - BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - createDDSReader] Stream#Flow: Name7#Name3 going to listen on multicast address: 225.3.2.1.
-1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name3
-1 - [D0200|Sub(XXX)|T=Name7#Name3|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name7#Name3
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - createDDSReader] Stream#Flow: Name7#Name5 going to listen on multicast address: 225.3.3.3 which is different from default: 225.3.2.1. Please make sure that the same multicast address is used for all receivers!
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - [D0200|Sub(XXX)|T=Name7#Name5|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name7#Name5
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name5
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name5
 1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
-1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name3
-1 - COMMENDLocalReaderRO_init:!create unicast entryPort
-1 - COMMENDBeReaderService_createReader:!init ro
+1 - DDS_DataReader_enableI:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: Name3 @ Stream: Name7 has been created.
-1 - PRESPsService_enableLocalEndpointWithCursor:!create Reader in berService
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
-1 - PRESPsService_enableLocalEndpoint:!enable local endpoint
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: Name5 @ Stream: Name7 has been created.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: Name5 @ Stream: Name7 ...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.020000 sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: Name3 @ Stream: Name7 ...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
 1 - DDS_StringSeq_ensure_length:memory allocation: original 14, new 17
 1 - DDS_XMLParser_parse_from_file:Loading : ----/config/bulkDataNTDefaultQosProfiles.xml
 1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
@@ -434,64 +426,60 @@
 1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
-1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
-1 - DDS_Subscriber_enable:enabled
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name7#Name5
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name7#Name3
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
-1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name5 - BulkDataNTReaderListener] 
 1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
-1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name7#Name5, type=ACSBulkData::BulkDataNTFrame
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=Name7#Name3, type=ACSBulkData::BulkDataNTFrame
+1 - DDS_Subscriber_enable:enabled
 1 - DDS_Topic_enable:enabled
+1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name3 - BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - createDDSReader] Stream#Flow: Name7#Name5 going to listen on multicast address: 225.3.3.3 which is different from default: 225.3.2.1. Please make sure that the same multicast address is used for all receivers!
-1 - [D0200|Sub(XXX)|T=Name7#Name5|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name7#Name5
-1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name5
-1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name5
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - createDDSReader] Stream#Flow: Name7#Name3 going to listen on multicast address: 225.3.2.1.
+1 - [D0200|Sub(XXX)|T=Name7#Name3|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name7#Name3
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name3
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=Name7#Name3
 1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
-1 - COMMENDLocalReaderRO_init:!create unicast entryPort
-1 - COMMENDSrReaderService_createReader:!init ro
-1 - PRESPsService_enableLocalEndpointWithCursor:!create Reader in srrService
+1 - DDS_DataReader_enableI:enabled
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: Name3 @ Stream: Name7 has been created.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: Name5 @ Stream: Name7 has been created.
-1 - PRESPsService_enableLocalEndpoint:!enable local endpoint
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping 10 seconds
 2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'name12'
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiverStream Receiver stream 'name12' is not opened, won't try to close it
-2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'Name1'
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiverStream Closing receiver stream 'Name1'
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'Name1'
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
 1 - [D0100|Sub(XXX)|T=Name1#Name3|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name1#Name3
-1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name3 - ~BulkDataNTDDSLoggable] 
 1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name3 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name3 - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: Name3 @ stream: Name1 has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: Name3 @ stream: Name1 has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - [D0100|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
 1 - [D0100|DELETE Topic|T=Name1#Name3]DDS_DomainParticipant_delete_topic:deleted topic: topic=Name1#Name3, type=ACSBulkData::BulkDataNTFrame
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name5 - ~BulkDataNTDDSLoggable] 
 1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name5 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
-1 - [D0100|Sub(XXX)|T=Name1#Name5|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name1#Name5
 1 - [D0100|DELETE Topic|T=Name1#Name5]DDS_DomainParticipant_delete_topic:deleted topic: topic=Name1#Name5, type=ACSBulkData::BulkDataNTFrame
+1 - [D0100|Sub(XXX)|T=Name1#Name5|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name1#Name5
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: Name5 @ stream: Name1 has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
@@ -503,111 +491,111 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
 1 - [D0100|DELETE Participant]DDS_DomainParticipantFactory_delete_participant:deleted participant: domain=0, index=1
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'no_existing_stream' (but now it does exist)
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiverStream Closing receiver stream 'no_existing_stream'
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverStream] Receiver Stream: no_existing_stream has been destroyed.
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'no_existing_stream' (but now it does exist)
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverStream] Receiver Stream: no_existing_stream has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
 1 - [D0000|DELETE Participant]DDS_DomainParticipantFactory_delete_participant:deleted participant: domain=0, index=0
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing remaining streams
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::closeReceiver] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream 'Name7'
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - ] Closing remaining streams
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name3 - ~BulkDataNTDDSLoggable] 
 1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name3 - ~BulkDataNTReaderListener] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
-1 - [D0200|DELETE Topic|T=Name7#Name3]DDS_DomainParticipant_delete_topic:deleted topic: topic=Name7#Name3, type=ACSBulkData::BulkDataNTFrame
 1 - [D0200|Sub(XXX)|T=Name7#Name3|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name7#Name3
+1 - [D0200|DELETE Topic|T=Name7#Name3]DDS_DomainParticipant_delete_topic:deleted topic: topic=Name7#Name3, type=ACSBulkData::BulkDataNTFrame
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: Name3 @ stream: Name7 has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - [D0200|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name5 - ~BulkDataNTDDSLoggable] 
 1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name5 - ~BulkDataNTReaderListener] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
-1 - [D0200|DELETE Topic|T=Name7#Name5]DDS_DomainParticipant_delete_topic:deleted topic: topic=Name7#Name5, type=ACSBulkData::BulkDataNTFrame
 1 - [D0200|Sub(XXX)|T=Name7#Name5|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=Name7#Name5
-1 - [D0200|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: Name5 @ stream: Name7 has been destroyed.
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverStream] Receiver Stream: Name7 has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - [D0200|DELETE Topic|T=Name7#Name5]DDS_DomainParticipant_delete_topic:deleted topic: topic=Name7#Name5, type=ACSBulkData::BulkDataNTFrame
+1 - [D0200|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ~BulkDataNTReceiverStream] Receiver Stream: Name7 has been destroyed.
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
 1 - [D0200|DELETE Participant]DDS_DomainParticipantFactory_delete_participant:deleted participant: domain=0, index=2
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'NEWCONFIG_RECEIVER'.
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::cancelActionThread] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Component 'NEWCONFIG_RECEIVER': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXX (NEWCONFIG_RECEIVER of type IDL:alma/bulkdata/BulkDataReceiver:1.0)
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::cancel] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::doneThread] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::cancelActionThread] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::cancel] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::doneThread] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::cancelMonitoringThread] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ThreadBase::cancel] Thread stopped:NEWCONFIG_RECEIVER::actionThread
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ThreadBase::cancel] Thread stopped:NEWCONFIG_RECEIVER::monitorThread
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ThreadBase::stop] Thread NEWCONFIG_RECEIVER::actionThread
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::cleanUp] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::closeReceiver] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ThreadBase::stop] Thread NEWCONFIG_RECEIVER::monitorThread
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ThreadBase::cancel] Thread stopped:NEWCONFIG_RECEIVER::monitorThread
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ThreadBase::stop] Thread NEWCONFIG_RECEIVER::actionThread
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ThreadBase::stop] Thread NEWCONFIG_RECEIVER::monitorThread
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Component 'NEWCONFIG_RECEIVER' reference set to nil.
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] Etherealizing 'NEWCONFIG_RECEIVER'
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::~BulkDataNTReceiverImpl] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::~BACIComponent] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] Etherealizing 'NEWCONFIG_RECEIVER'
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::~BACIComponent] Component 'NEWCONFIG_RECEIVER' destroyed.
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::~DAONode] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAOProxy::~DAOProxy] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::destroy] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAOProxy::~DAOProxy] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] Component 'NEWCONFIG_RECEIVER' etherealized.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libbdNTReceiverLibTest.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::etherealizeComponent] Component 'NEWCONFIG_RECEIVER' etherealized.
 1 - factoryRefCount_m!=0 (-2)
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbdNTReceiverLibTest.so'.
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Component 'NEWCONFIG_RECEIVER' deactivated.

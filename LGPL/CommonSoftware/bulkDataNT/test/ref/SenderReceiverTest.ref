@@ -9,31 +9,30 @@
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 1 - DDS_DomainParticipantFactory_initializeI:Welcome to NDDS nddscore1.5e.rev00-nddsc1.5e.rev00-nddscpp1.5e.rev00
 1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
-1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
-1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
-1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
-1 - DDS_XMLParser_parse_from_file:Loading : ----/config/bulkDataNTDefaultQosProfiles.xml
-1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - [CREATE Participant]DDS_DomainParticipantDiscovery_initialize:builtin discovery plugin PA Client disabled
 1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - [CREATE Participant]DDS_DomainParticipantMonitoring_initializeI:monitoring not configured
 1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - [CREATE Participant]DDS_DomainParticipantFactory_create_participant_disabledI:created participant: domain=0, index=-1
+1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - [D0000|ENABLE]DDS_PropertySeq_ensure_length:memory allocation: original 0, new 32
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
+1 - DDS_XMLParser_parse_from_file:Loading : ----/config/bulkDataNTDefaultQosProfiles.xml
+1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
+1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
+1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=0
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
+1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
 1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
-1 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
-1 - [CREATE Participant]DDS_DomainParticipantDiscovery_initialize:builtin discovery plugin PA Client disabled
-1 - [CREATE Participant]DDS_DomainParticipantMonitoring_initializeI:monitoring not configured
-1 - [CREATE Participant]DDS_DomainParticipantFactory_create_participant_disabledI:created participant: domain=0, index=-1
-1 - [D0000|ENABLE]DDS_PropertySeq_ensure_length:memory allocation: original 0, new 32
-1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
-1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
-1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=0
-1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
-1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
-1 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
 1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTStream] Stream: DefaultStream has been created.
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
@@ -51,8 +50,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
 1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
 1 - ----------T--:--:--.--- [GlobalLogger - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 1 - DDS_Subscriber_enable:enabled
+1 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
 1 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#00
 1 - DDS_Topic_enable:enabled
@@ -60,8 +59,8 @@
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
 1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=DefaultStream#00
-1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - ----------T--:--:--.--- [GlobalLogger - createDDSReader] Stream#Flow: DefaultStream#00 going to listen on multicast address: 225.3.2.1.
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 1 - [D0000|Sub(XXX)|T=DefaultStream#00|DELETE Reader]DDS_Subscriber_delete_datareader:deleted reader: topic=DefaultStream#00
 1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=DefaultStream#00
 1 - DDS_DataReader_enableI:enabled
@@ -81,8 +80,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
 1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
 1 - ----------T--:--:--.--- [GlobalLogger - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 1 - DDS_Subscriber_enable:enabled
+1 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 1 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#01
 1 - DDS_Topic_enable:enabled
@@ -111,8 +110,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 1 - [D0000|DELETE Topic|T=DefaultStream#00]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTReceiverFlow] Receiver Flow: 00 @ stream: DefaultStream has been destroyed.
 1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
@@ -122,14 +121,14 @@
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - ~BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - ~BulkDataNTDDSLoggable] 
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
-1 - [D0000|DELETE Topic|T=DefaultStream#01]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - [D0000|DELETE Topic|T=DefaultStream#01]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
 1 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTReceiverFlow] Receiver Flow: 01 @ stream: DefaultStream has been destroyed.
-1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTReceiverStream] Receiver Stream: DefaultStream has been destroyed.
+1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
@@ -169,7 +168,6 @@
 2 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
 2 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
 2 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
-2 - DDS_TransportUnicastSettingsSeq_ensure_length:memory allocation: original 0, new 1
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTStream] Stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
@@ -185,8 +183,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
 2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
-2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - DDS_Publisher_enable:enabled
+2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#00
 2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
@@ -196,9 +194,9 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
 2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#00
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
-2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - DDS_DataWriter_enableI:enabled
+2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 5 sec 0 nanosec
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
@@ -213,16 +211,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
 2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
-2 - DDS_Publisher_enable:enabled
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#01
+2 - DDS_Publisher_enable:enabled
 2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
-2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#01
 2 - DDS_Topic_enable:enabled
+2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
 2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#01
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
 2 - DDS_DataWriter_enableI:enabled
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
@@ -231,6 +229,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Flows: 00 and 01 have been created.
+1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send parameter (invoking startSend) 123 on flow: 00 to 0 receivers
@@ -254,8 +254,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 2 - [D0000|DELETE Topic|T=DefaultStream#00]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
-2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
+2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] ... and then (re)create it (flow: 00) again ...
@@ -267,10 +267,10 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
-2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
-2 - DDS_Publisher_enable:enabled
+2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+2 - DDS_Publisher_enable:enabled
 2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#00
 2 - DDS_Topic_enable:enabled
@@ -278,14 +278,14 @@
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
-2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#00
 2 - DDS_DataWriter_enableI:enabled
+2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#00
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
-2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] ... and send parameter 423 to (re)created flow: 00
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_PARAM) for flow: 00 before waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] For test purpose we do not send a paramter (invoking startSend) on flow: 01
@@ -298,20 +298,18 @@
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: XY.Z for flow: 00
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Because we did not send a paramter (invoking startSend) on flow: 01. We should get an error/exception
+2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: XY.Z for flow: 00
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 on flow: 01 to 0 receiver(s).
-2 - ----------T--:--:--.--- [GlobalLogger - sendData] Error to send BD data (type=57, code=14) SenderName="DefaultStream" TotalFrameCount="2" FrameCount="0" FlowName="01"
 2 - ----------T--:--:--.--- [GlobalLogger - sendData] Wrong sender command order (type=57, code=22) State="StartState" SenderName="DefaultStream" Command="sendData" FlowName="01"
+2 - ----------T--:--:--.--- [GlobalLogger - sendData] Error to send BD data (type=57, code=14) SenderName="DefaultStream" TotalFrameCount="2" FrameCount="0" FlowName="01"
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send again: 65000 Bytes to 0 receivers on flow: 00
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 on flow: 00 to 0 receiver(s).
@@ -329,16 +327,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - virtual void AcsBulkdata::BulkDataNTSenderStream::removeFlowFromMap(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - virtual void AcsBulkdata::BulkDataNTSenderStream::removeFlowFromMap(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
-2 - [D0000|Pub(508)|T=DefaultStream#00|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=DefaultStream#00
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
+2 - [D0000|Pub(508)|T=DefaultStream#00|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=DefaultStream#00
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - ~BulkDataNTDDSLoggable] 
+2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
 2 - [D0000|DELETE Topic|T=DefaultStream#00]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
-2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
+2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] flow: 01 will be deleted when 'DefaultStream' is deleted - when the stream object goes out of scope
@@ -346,17 +344,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
 2 - [D0000|Pub(408)|T=DefaultStream#01|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=DefaultStream#01
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - ~BulkDataNTDDSLoggable] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
-2 - [D0000|DELETE Topic|T=DefaultStream#01]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+2 - [D0000|DELETE Topic|T=DefaultStream#01]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
-2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTSenderFlow] Sender Flow: 01 @ stream: DefaultStream has been destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
+2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTSenderStream] Sender Stream: DefaultStream has been destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
@@ -375,10 +373,10 @@
 2 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
 2 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=0
 2 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
-2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTStream] Stream: DefaultStream has been created.
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
 2 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
 2 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTStream] Stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderStream::BulkDataNTSenderStream(const char*, const AcsBulkdata::SenderStreamConfiguration&)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderStream] Sender Stream: DefaultStream has been created.
@@ -391,14 +389,14 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
-2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
+2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
 2 - DDS_Publisher_enable:enabled
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#00
 2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
-2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 2 - DDS_Topic_enable:enabled
+2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
 2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#00
@@ -418,20 +416,20 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
-2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - DDS_Publisher_enable:enabled
-2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
+2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#01
-2 - DDS_Topic_enable:enabled
+2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+2 - DDS_Topic_enable:enabled
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
-2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#01
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
-2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
+2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#01
 2 - DDS_DataWriter_enableI:enabled
+2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 5 sec 0 nanosec
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Sender Flow: 01 @ stream: DefaultStream has been created.
@@ -474,57 +472,57 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
-2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#00
+2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
 2 - DDS_Publisher_enable:enabled
 2 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
-2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#00
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 2 - DDS_Topic_enable:enabled
+2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
 2 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=DefaultStream#00
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - DDS_DataWriter_enableI:enabled
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
+2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] ... and send parameter 423 to (re)created flow: 00
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_PARAM) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_PARAM) for flow: 00 before waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] For test purpose we do not send a paramter (invoking startSend) on flow: 01
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_PARAM) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes to 0 receivers on flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 on flow: 00 to 0 receiver(s).
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 on flow: 00 to 0 receiver(s).
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
+2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: XY.Z for flow: 00
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Because we did not send a paramter (invoking startSend) on flow: 01. We should get an error/exception
-2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: XY.Z for flow: 00
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 on flow: 01 to 0 receiver(s).
-2 - ----------T--:--:--.--- [GlobalLogger - sendData] Wrong sender command order (type=57, code=22) State="StartState" SenderName="DefaultStream" Command="sendData" FlowName="01"
 2 - ----------T--:--:--.--- [GlobalLogger - sendData] Error to send BD data (type=57, code=14) SenderName="DefaultStream" TotalFrameCount="2" FrameCount="0" FlowName="01"
+2 - ----------T--:--:--.--- [GlobalLogger - sendData] Wrong sender command order (type=57, code=22) State="StartState" SenderName="DefaultStream" Command="sendData" FlowName="01"
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send again: 65000 Bytes to 0 receivers on flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 on flow: 00 to 0 receiver(s).
+2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 before waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] New transfer rate: XY.Z for flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_DATA) for flow: 00 after waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Now we send stopSend command to both flows ...
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (BD_STOP) for flow: 00 before waiting for ACKs: 0
 2 - ----------T--:--:--.--- [GlobalLogger - stopSend] Wrong sender command order (type=57, code=22) State="StartState" SenderName="DefaultStream" Command="stopSend" FlowName="01"
@@ -540,24 +538,24 @@
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 2 - [D0000|DELETE Topic|T=DefaultStream#00]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#00, type=ACSBulkData::BulkDataNTFrame
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
-2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
+2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ] flow: 01 will be deleted when 'DefaultStream' is deleted - when the stream object goes out of scope
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
-2 - [D0000|Pub(408)|T=DefaultStream#01|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=DefaultStream#01
-2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
+2 - [D0000|Pub(408)|T=DefaultStream#01|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=DefaultStream#01
 2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - ~BulkDataNTDDSLoggable] 
+2 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
-2 - [D0000|DELETE Topic|T=DefaultStream#01]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
+2 - [D0000|DELETE Topic|T=DefaultStream#01]DDS_DomainParticipant_delete_topic:deleted topic: topic=DefaultStream#01, type=ACSBulkData::BulkDataNTFrame
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
 2 - ----------T--:--:--.--- [GlobalLogger - ~BulkDataNTSenderFlow] Sender Flow: 01 @ stream: DefaultStream has been destroyed.
@@ -567,6 +565,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
 2 - [D0000|DELETE Participant]DDS_DomainParticipantFactory_delete_participant:deleted participant: domain=0, index=0
-2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
 2 - factoryRefCount_m!=0 (-1)
