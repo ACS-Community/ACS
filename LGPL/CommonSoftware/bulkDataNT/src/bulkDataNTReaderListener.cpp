@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.55 2012/05/02 12:56:32 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.56 2012/07/10 13:32:11 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -107,28 +107,31 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
               switch(message.typeOfdata)
               {
               case ACSBulkData::BD_PARAM:
-                {
-                  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "startSend has been received on: %s with paramter size: %d", topicName_m.c_str(), message.data.length()));
-                  if (currentState_m==StartState || currentState_m==StopState || currentState_m==IgnoreDataState)
-                    {
-                      dataLength_m = 0;
-                      frameCounter_m = 0;
-                      currentState_m = DataRcvState;
-                      message.data.to_array(tmpArray, message.data.length());
-                      if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) ) }
-                      conseqErrorCount_m=0;
-                    }
-                  else //error
-                    {
-                      WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
-                      wfo.setDataType("BD_PARAM"); wfo.setState(state2String[currentState_m]);
-                      wfo.setStreamFlowName(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
-                      wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
-                      callback_mp->onError(wfo);
-                      increasConseqErrorCount();
-                    }//if-else
-                  break;
-                }//	case ACSBulkData::BD_PARAM:
+              {
+            	  if (DDSConfiguration::debugLevel>0)
+            	  {
+            		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "startSend has been received on: %s with paramter size: %d", topicName_m.c_str(), message.data.length()));
+            	  }
+            	  if (currentState_m==StartState || currentState_m==StopState || currentState_m==IgnoreDataState)
+            	  {
+            		  dataLength_m = 0;
+            		  frameCounter_m = 0;
+            		  currentState_m = DataRcvState;
+            		  message.data.to_array(tmpArray, message.data.length());
+            		  if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) ) }
+            		  conseqErrorCount_m=0;
+            	  }
+            	  else //error
+            	  {
+            		  WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
+            		  wfo.setDataType("BD_PARAM"); wfo.setState(state2String[currentState_m]);
+            		  wfo.setStreamFlowName(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
+            		  wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
+            		  callback_mp->onError(wfo);
+            		  increasConseqErrorCount();
+            	  }//if-else
+            	  break;
+              }//	case ACSBulkData::BD_PARAM:
               case ACSBulkData::BD_DATA:
                 {
                   if (currentState_m==IgnoreDataState) break; // in ignore data state just skip the freame
@@ -220,7 +223,10 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   if (currentState_m==DataRcvState )
                     {
                       currentState_m = StopState;
-                      ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,(LM_DEBUG, "sendStop has been received for: %s", topicName_m.c_str()));
+                      if (DDSConfiguration::debugLevel>0)
+                      {
+                    	  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,(LM_DEBUG, "sendStop has been received for: %s", topicName_m.c_str()));
+                      }
                       if (frameCounter_m==0)
                         {
                           ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
