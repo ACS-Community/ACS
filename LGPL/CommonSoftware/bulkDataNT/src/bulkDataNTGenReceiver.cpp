@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.4 2012/05/03 09:28:46 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.5 2012/07/11 09:05:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,6 +81,9 @@ int main(int argc, char *argv[])
 	char c;
 	ReceiverFlowConfiguration flowCfg;
 	char *streamName = "DefaultStream";
+	/*char unicastPortQoS[250];
+	unsigned int unicastPort=24000;
+	*/
 	list<char *> flows;
 
 	// Parse the args
@@ -131,6 +134,10 @@ int main(int argc, char *argv[])
 
 	list<char *>::iterator it;
 	for(it = flows.begin(); it != flows.end(); it++) {
+		/*
+		sprintf(unicastPortQoS, "<datareader_qos><unicast><value><element><receive_port>%ud</receive_port></element></value></unicast></datareader_qos>", unicastPort++);
+		flowCfg.setDDSReceiverFlowQoS((*it), unicastPortQoS);
+		*/
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg);
 		flow->getCallback<TestCB>();
 		std::vector<string> flowNames = receiverStream.getFlowNames();
