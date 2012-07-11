@@ -130,15 +130,6 @@ Default QoS Profile for BulkDataNT.
         
         <qos_profile name="ReceiverFlowDefaultQosProfile">
             <datareader_qos>
-                <unicast>
-                    <value>
-                        <element>
-                        <receive_port>
-                            24012
-                        </receive_port>
-                        </element>
-                    </value>
-                </unicast>
                 <reliability>
                     <kind>RELIABLE_RELIABILITY_QOS</kind>
                 </reliability>                
