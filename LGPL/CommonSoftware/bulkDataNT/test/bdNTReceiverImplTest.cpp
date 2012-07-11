@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverImplTest.cpp,v 1.6 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverImplTest.cpp,v 1.7 2012/07/11 08:46:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,50 +31,24 @@ class  TestCB:  public BulkDataNTCallback
 public:
 	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "=>cbStart[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
-		for(unsigned int i=0; i<size; i++)
-		{
-			std::cout <<  *(char*)(userParam_p+i);
-		}
-		std::cout << std::endl;
+		ACS_SHORT_LOG((LM_INFO, "=>cbStart[%s/%s]: got %d: %s", recvName_m.c_str(), flowName_m.c_str(), size, userParam_p));
+		//std::cout << "=>cbStart[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
+
 		return 0;
 	}
 
 	int cbReceive(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "=>cbReceive[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
-		/*		for(unsigned int i=0; i<frame_p->length(); i++)
-		{
-			std::cout <<  *(char*)(frame_p->base()+i);
-		}
-		 */	std::cout << std::endl;
-
-	/*	 if (sleep_period!=0)
-		 {
-			 cout << listName << " Rest:" << message.restDataLength << " Going sleep for: " << sleep_period << endl;
-			 //cout <<  message.data.length() << endl;
-			 //cout <<  message.restDataLength << endl;
-			 usleep(sleep_period);
-		 }
-		*/
-		 /* simulate seg fault
-    			if (data_length>100000) {
-    			char *tt=0;
-    			printf("XXX %s\n", tt);
-    			printf("crash\n");
-    			ACE_Time_Value *t=0;
-    			t->sec();
-    			DDS::DataReaderQos *ddr_qos=0;
-    			ddr_qos->reliability.kind = 0;
-    			printf("after crash\n");
-    			} */
+		//std::cout << "=>cbReceive[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
+		ACS_SHORT_LOG((LM_INFO, "=>cbStart[%s/%s]: got %d.", recvName_m.c_str(), flowName_m.c_str(), size));
 
 		 return 0;
 	}
 
 	int cbStop()
 	{
-		std::cout << "=>cbStop[" << recvName_m << "/" << flowName_m << "]" << std::endl;
+		//std::cout << "=>cbStop[" << recvName_m << "/" << flowName_m << "]" << std::endl;
+		ACS_SHORT_LOG((LM_INFO, "=>cbStop[%s/%s]", recvName_m.c_str(), flowName_m.c_str()));
 		return 0;
 	}
 
