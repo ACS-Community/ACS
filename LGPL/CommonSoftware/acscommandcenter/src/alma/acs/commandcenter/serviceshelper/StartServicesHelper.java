@@ -604,7 +604,7 @@ public class StartServicesHelper {
 					break;
 				}
 				case LOGGING: {
-					srvDefBuilder.add_logging_service(svc.hostName, null);
+					srvDefBuilder.add_logging_service(svc.hostName, "Log");
 					break;
 				}
 				case LOGPROXY: {
