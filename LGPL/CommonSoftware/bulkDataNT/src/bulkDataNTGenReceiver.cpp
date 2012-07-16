@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.6 2012/07/16 21:47:03 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.7 2012/07/16 22:34:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,6 +33,15 @@ using namespace std;
 class  TestCB:  public BulkDataNTCallback
 {
 public:
+	TestCB()
+	{
+		totalRcvData=0;
+	}
+
+	virtual ~TestCB()
+	{
+		std::cout << "Total received data for: " << getStreamName() << "#" << getFlowName()  << " : " << totalRcvData << std::endl;
+	}
 
 	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
@@ -60,6 +69,7 @@ public:
 		std::cout << std::endl;
 
 		if (cbDealy>0) usleep(cbDealy);
+		totalRcvData+=size;
 		return 0;
 	}
 
@@ -73,6 +83,7 @@ public:
 private:
 	std::string fn; ///flow Name
 	std::string sn; ///stream name
+	unsigned int totalRcvData; ///total size of all received data
 };
 
 unsigned long TestCB::cbDealy = 0;
