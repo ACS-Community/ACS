@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.5 2012/07/11 09:05:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.6 2012/07/16 21:47:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,9 +33,14 @@ using namespace std;
 class  TestCB:  public BulkDataNTCallback
 {
 public:
+
 	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "cbStart: got a paramter: ";
+		// we cannot initialize flow name and flow stream in ctor, because they are after CB object is created
+		fn = getFlowName();
+		sn = getStreamName();
+
+		std::cout << "cbStart[ " << sn << "#" << fn  << " ]: got a parameter: ";
 		for(unsigned int i=0; i<size; i++)
 		{
 			std::cout <<  *(char*)(userParam_p+i);
@@ -46,7 +51,7 @@ public:
 
 	int cbReceive(unsigned char* data, unsigned  int size)
 	{
-		std::cout << "cbReceive: got data of size: " << size << " :";
+		std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " :";
 /*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
@@ -60,11 +65,14 @@ public:
 
 	int cbStop()
 	{
-		std::cout << "cbStop" << std::endl;
+		std::cout << "cbStop[ " << sn << "#" << fn << " ]" << std::endl;
 		return 0;
 	}
 
 	static unsigned long cbDealy;
+private:
+	std::string fn; ///flow Name
+	std::string sn; ///stream name
 };
 
 unsigned long TestCB::cbDealy = 0;
