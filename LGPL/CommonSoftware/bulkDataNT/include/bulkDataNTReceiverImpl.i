@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.24 2012/06/25 13:55:04 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.25 2012/07/18 23:20:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 			parser_m = new AcsBulkdata::BulkDataConfigurationParser(name());
 			parser_m->parseReceiverConfig(xmlNode);
 			if( parser_m->getAllReceiverStreamNames().size() == 0 )
-				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::initialize No Receiver Streams configured, streams created in the future will have a default configuration"));
+				ACS_SHORT_LOG((LM_WARNING,"BulkDataNTReceiverImpl<>::initialize No Receiver Streams configured, streams created in the future will have a default configuration. PLEASE CHECK CDB CONFIGURATION."));
 
 		} catch(ACS_BD_Errors::CDBProblemExImpl &ex) {
 			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
