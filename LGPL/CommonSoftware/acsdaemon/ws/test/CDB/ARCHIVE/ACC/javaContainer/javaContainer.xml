@@ -16,8 +16,7 @@
               Host="gas01"
               Instance="0"
               Flags="" 
-              KeepAliveTime="-1"
-              TypeModifiers="archive"/>
+              KeepAliveTime="-1"/>
   <LoggingConfig centralizedLogger="Log"
                  minLogLevel="3"
                  minLogLevelLocal="4"
