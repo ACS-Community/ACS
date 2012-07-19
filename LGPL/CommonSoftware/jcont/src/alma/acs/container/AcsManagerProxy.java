@@ -78,7 +78,8 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
  */
 public class AcsManagerProxy 
 {
-	private Manager m_manager;
+	private volatile Manager m_manager;
+	
 	private final String m_managerLoc;
 	
 	/** 
@@ -560,7 +561,7 @@ public class AcsManagerProxy
 
 
 	/**
-	 * Note that in ACS 10.2 the meaning of the second parameter has slighly changed, but should be transparent.
+	 * Note that in ACS 10.2 the meaning of the second parameter has slightly changed, but should be transparent.
 	 * Before it was the "activate" option which makes no sense for real services and would typically be "true" when using
 	 * this method for components rather than real services. Now "true" still means that the service should be activated,
 	 * but "false" has the new meaning that we don't use the client handle, but instead use dummy handle '0'. 
