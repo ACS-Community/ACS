@@ -541,6 +541,10 @@ public class AcsManagerProxy
 		boolean active_only)
 		throws AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+		
 		ComponentInfo[] compInfos = null;
 		try {
 			compInfos = m_manager.get_component_info(checkAndGetManagerHandle(), componentHandles, name_wc, type_wc, active_only);
@@ -574,6 +578,10 @@ public class AcsManagerProxy
 	public Object get_service(String service_url, boolean includeComponents) 
 		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+		
 		int clientId = (includeComponents ? checkAndGetManagerHandle() : 0);
 		boolean activate = includeComponents;
 		try {
@@ -607,6 +615,10 @@ public class AcsManagerProxy
 	public Object get_component(int clientHandle, String component_url, boolean activate)
 	    throws AcsJCannotGetComponentEx, AcsJComponentNotAlreadyActivatedEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+		
 		try {
 			return m_manager.get_component(clientHandle, component_url, activate);
 		} catch (RuntimeException exc) {
@@ -624,23 +636,25 @@ public class AcsManagerProxy
 	}
 
 	
-	public Object get_component_non_sticky(int clientHandle, String component_url)
-    	throws AcsJCannotGetComponentEx, AcsJComponentNotAlreadyActivatedEx, AcsJNoPermissionEx
-    {
-	try {
-		return m_manager.get_component_non_sticky(clientHandle, component_url);
-	} catch (RuntimeException exc) {
-		handleRuntimeException(exc);
-		throw exc;
-	} catch (NoPermissionEx ex) {
-		throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
-	} catch (ComponentNotAlreadyActivatedEx ex) {
-		throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
-	} catch (CannotGetComponentEx ex) {
-		throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
-	}
-}
+	public Object get_component_non_sticky(int clientHandle, String component_url) throws AcsJCannotGetComponentEx,
+			AcsJComponentNotAlreadyActivatedEx, AcsJNoPermissionEx {
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
 
+		try {
+			return m_manager.get_component_non_sticky(clientHandle, component_url);
+		} catch (RuntimeException exc) {
+			handleRuntimeException(exc);
+			throw exc;
+		} catch (NoPermissionEx ex) {
+			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
+		} catch (ComponentNotAlreadyActivatedEx ex) {
+			throw AcsJComponentNotAlreadyActivatedEx.fromComponentNotAlreadyActivatedEx(ex);
+		} catch (CannotGetComponentEx ex) {
+			throw AcsJCannotGetComponentEx.fromCannotGetComponentEx(ex);
+		}
+	}
 
 	/**
 	 * Gets a component as a "weak client" who does not prevent component unloading in case
@@ -658,6 +672,10 @@ public class AcsManagerProxy
 	public Object getComponentNonSticky(int clientHandle, String component_url) 
 		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			return m_manager.get_component_non_sticky(clientHandle, component_url);
 		} catch (RuntimeException rtex) {
@@ -681,6 +699,10 @@ public class AcsManagerProxy
 	public ComponentInfo get_default_component(int clientHandle, String componentIDLType)
 	    throws AcsJNoDefaultComponentEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			return m_manager.get_default_component(clientHandle, componentIDLType);
 		} catch (RuntimeException exc) {
@@ -713,6 +735,10 @@ public class AcsManagerProxy
 	public ComponentInfo get_dynamic_component(int clientHandle, ComponentSpec c, boolean mark_as_default) 
 	    throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx,  AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			return m_manager.get_dynamic_component(clientHandle, c, mark_as_default);
 			
@@ -748,6 +774,10 @@ public class AcsManagerProxy
 	public ComponentInfo get_collocated_component(int clientHandle, ComponentSpec c, boolean mark_as_default, String target_component_url) 
 	    throws AcsJIncompleteComponentSpecEx, AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx, AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			return m_manager.get_collocated_component(clientHandle, c, mark_as_default, target_component_url);
 			
@@ -781,6 +811,10 @@ public class AcsManagerProxy
 	public int register_component(String component_url, String type, Object component)
 	    throws AcsJCannotRegisterComponentEx, AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			return m_manager.register_component(checkAndGetManagerHandle(), component_url, type, component);
 
@@ -817,6 +851,10 @@ public class AcsManagerProxy
 	 * @throws RuntimeException such as BAD_PARAM, NO_PERMISSION, NO_RESOURCES, OBJECT_NOT_EXIST, TIMEOUT, TRANSIENT UNKNOWN
 	 */
 	public void release_component(int clientHandle, String component_url, CBlong callback) throws AcsJNoPermissionEx {
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			// currently we use a dummy CBDescIn. Should take care of the "tag" if we want to reuse the CBlong object.
 			m_manager.release_component_async(clientHandle, component_url, callback, new CBDescIn());
@@ -837,6 +875,10 @@ public class AcsManagerProxy
 	 */
 	public int force_release_component(int clientHandle, String curl) throws AcsJNoPermissionEx
 	{
+		if (!isLoggedIn(false)) {
+			throw new IllegalStateException("Not logged in to the manager.");
+		}
+
 		try {
 			int clientNumber = m_manager.force_release_component(clientHandle, curl);
 			return clientNumber;
