@@ -128,8 +128,8 @@
         <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
         <Member name="ProcessTimeoutSec" type="double" description="cbReceive Process Timeout in Sec" />
         <Member name="ActualProcessTime" type="double" description="Actual  execution time of cbReceive" />
-        <Member name="RestFrames" type="long" description="Rest frame number" />
-        <Member name="FrameCount" type="long" description="Number of arrived frames" />        
+        <Member name="FrameCount" type="long" description="Number of arrived frames" />
+        <Member name="TotalFrameCount" type="long" description="Total frame count" />        
     </ErrorCode>
     
     <ErrorCode name="SenderWrongCmdOrder" shortDescription="Wrong sender command order" description="The command/method was not executed in the right order.">
