@@ -1939,6 +1939,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		Map<String, Object> rootMap = new RootMap<String, Object>();
 		rootNode = rootMap;
 		
+		// useful in case of reload (when rootNode was not null)
+		System.gc();
+		
 		try
 		{
 			Session session = hibernateUtil.getSession();
