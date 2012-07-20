@@ -578,11 +578,8 @@ public class AcsManagerProxy
 	public Object get_service(String service_url, boolean includeComponents) 
 		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
-		if (!isLoggedIn(false)) {
-			throw new IllegalStateException("Not logged in to the manager.");
-		}
-		
 		int clientId = (includeComponents ? checkAndGetManagerHandle() : 0);
+		
 		boolean activate = includeComponents;
 		try {
 			return m_manager.get_service(clientId, service_url, activate);
