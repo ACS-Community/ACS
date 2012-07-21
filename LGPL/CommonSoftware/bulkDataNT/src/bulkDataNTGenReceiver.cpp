@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.7 2012/07/16 22:34:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.8 2012/07/21 01:08:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -60,14 +60,16 @@ public:
 
 	int cbReceive(unsigned char* data, unsigned  int size)
 	{
-		std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " :";
-/*		for(unsigned int i=0; i<frame_p->length(); i++)
+		if (cbReceivePrint)
+		{
+			std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " :";
+			/*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
 		}
-	*/
-		std::cout << std::endl;
-
+			 */
+			std::cout << std::endl;
+		}
 		if (cbDealy>0) usleep(cbDealy);
 		totalRcvData+=size;
 		return 0;
@@ -80,6 +82,7 @@ public:
 	}
 
 	static unsigned long cbDealy;
+	static bool cbReceivePrint;
 private:
 	std::string fn; ///flow Name
 	std::string sn; ///stream name
@@ -87,9 +90,10 @@ private:
 };
 
 unsigned long TestCB::cbDealy = 0;
+bool TestCB::cbReceivePrint=true;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in msec] [-u unicast mode] [-m multicast address]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in msec] [-u unicast mode] [-m multicast address] [-n suppers printing in cbReceive]" << endl;
 	exit(1);
 }
 
@@ -106,10 +110,15 @@ int main(int argc, char *argv[])
 	list<char *> flows;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:un");
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
+			case 'n':
+			{
+				TestCB::cbReceivePrint=false;
+				break;
+			}
 			case 'm':
 			{
 				flowCfg.setMulticastAddress(get_opts.opt_arg());
