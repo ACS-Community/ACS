@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.57 2012/07/20 23:58:25 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.58 2012/07/21 16:47:23 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -53,8 +53,9 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTC
   nextFrame_m=0;
   frameDataReader_mp=0;
   conseqErrorCount_m=0;
-  maxConseqErrorCount_m = 4; //TBD now hardcoded, to be get from somewhere else
+  maxConseqErrorCount_m = 4; //TBD now hard-coded, to be get from somewhere else
   cbReceiveTimeoutSec_m = callback_mp->getCBReceiveProcessTimeout();
+  cbReceiveTotalSec_m = 0.0;  cbReceiveNumCalls_m =0;
 }//BulkDataNTReaderListener
 
 
@@ -117,6 +118,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
             		  dataLength_m = 0;
             		  frameCounter_m = 0;
             		  currentState_m = DataRcvState;
+            		  cbReceiveTotalSec_m = 0.0; cbReceiveNumCalls_m =0;
             		  message.data.to_array(tmpArray, message.data.length());
             		  if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) ) }
             		  conseqErrorCount_m=0;
@@ -172,7 +174,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                         {
                     	  if (DDSConfiguration::debugLevel>0)
                     	  {
-                    		  // the messages can cause perfomance penality for small data sizes
+                    		  // the messages can cause performance penalty for small data sizes
                     		  ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
                     		  double deltaTime = (elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
                     		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "All data from sendData has been received: %ld (Bytes) on: %s in %f sec. Receiver Data Rate: %f MBytes/sec",
@@ -195,6 +197,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                       conseqErrorCount_m=0;
                       cbReceiveElapsedTime_m = ACE_OS::gettimeofday() - cbReceiveStartTime_m;
                       cbReceiveElapsedTimeSec_m = cbReceiveElapsedTime_m.sec() + (cbReceiveElapsedTime_m.usec() / 1000000.0);
+                      cbReceiveTotalSec_m += cbReceiveElapsedTimeSec_m; cbReceiveNumCalls_m++;
                       if (cbReceiveElapsedTimeSec_m>cbReceiveTimeoutSec_m)
                       {
                     	  CBReceiveProcessTimeoutCompletion cbReceiveTO(__FILE__, __LINE__, __FUNCTION__);
@@ -264,6 +267,24 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   // in all above warning/error case we call  user's cbStop()
                   if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbStop() ) }
                   conseqErrorCount_m=0;
+                  if (cbReceiveNumCalls_m>0) // if we call cbReceive at least once we calculate the average
+                  {
+                	  cbReceiveAvgSec_m = cbReceiveTotalSec_m / cbReceiveNumCalls_m;
+                	  if (cbReceiveAvgSec_m > cbReceiveTimeoutSec_m) //TBD for time being we use cbReceiveTimeoutSec_m, but it should be another cfg paramter
+                	  {
+                		  CBReceiveAvgProcessTimeoutCompletion cbReceiveAvgTO(__FILE__, __LINE__, __FUNCTION__);
+                		  cbReceiveAvgTO.setStreamFlowName(topicName_m.c_str());
+                		  cbReceiveAvgTO.setAvgProcessTimeoutSec(cbReceiveTimeoutSec_m);cbReceiveAvgTO.setActualAvgProcessTime(cbReceiveAvgSec_m);
+                		  cbReceiveAvgTO.setCallsCount(cbReceiveNumCalls_m);
+                		  callback_mp->onError(cbReceiveAvgTO);
+                		  //TBD should we increase error counter here or not ?
+                	  }//if (cbReceiveAvgSec_m > cbReceiveTimeoutSec_m)
+                	  if (DDSConfiguration::debugLevel>0)
+                	  {
+                		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+                				  (LM_DEBUG, "Average processing time for %d call(s) of cbReceive(): %f. What corresponds to throughput of: %f MB/sec", cbReceiveNumCalls_m , cbReceiveAvgSec_m, (ACSBulkData::FRAME_MAX_LEN/(1024.0*1024.0)/cbReceiveAvgSec_m)));
+                	  }
+                  }//if (cbReceiveNumCalls_m>0)
                   break;
                 }//case ACSBulkData::BD_STOP
               default:

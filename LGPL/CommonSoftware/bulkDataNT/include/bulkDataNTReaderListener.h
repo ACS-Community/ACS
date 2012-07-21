@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.23 2012/03/30 13:45:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.24 2012/07/21 16:47:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -104,6 +104,11 @@ private:
   ACE_Time_Value cbReceiveElapsedTime_m;  /// elapsed time of cbReceive
   double cbReceiveElapsedTimeSec_m; /// elapsed time in sec
   double cbReceiveTimeoutSec_m; /// cbReceiver process timeout read from CDB (or default value)
+
+  // next members need we for calculating average cbReceive process time
+  double cbReceiveTotalSec_m;  /// total time all cbReceive calls between cbStart and cbStop
+  unsigned int cbReceiveNumCalls_m; /// how many times cbReceive was called  between cbStart and cbStop
+  double cbReceiveAvgSec_m; /// average process time for all cbReceive calls between cbStart and cbStop
 };
 
 };//namepsace AcsBulkdata
