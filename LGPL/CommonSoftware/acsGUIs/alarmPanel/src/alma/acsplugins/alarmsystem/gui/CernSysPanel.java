@@ -153,7 +153,7 @@ public class CernSysPanel extends JPanel {
     /**
      * The logger
      */
-    private AcsLogger logger;
+    private volatile AcsLogger logger;
     
     /**
      * The panel to show messages while connecting
@@ -470,7 +470,12 @@ public class CernSysPanel extends JPanel {
 	private int getInitialAutoAckLevel() {
 		int ackLevel=Integer.getInteger(AutoAckLevelPropName, 2);
 		if (ackLevel==0) {
-			logger.log(AcsLogLevel.WARNING, "Auto acknowledge for priority 0 alarms is not allaowed: falling back to priority 1");
+			String msg="Auto acknowledge for priority 0 alarms is not allowed: falling back to priority 1";
+			if (logger!=null) {
+				logger.log(AcsLogLevel.WARNING, msg);
+			} else {
+				System.out.println(msg);
+			}
 			ackLevel=1;
 		}
 		if (ackLevel<0 || ackLevel>3) {
