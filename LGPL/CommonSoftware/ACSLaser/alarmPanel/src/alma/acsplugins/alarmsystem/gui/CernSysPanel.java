@@ -468,7 +468,7 @@ public class CernSysPanel extends JPanel {
 	 * @see CernSysPanel#AutoAckLevelPropName
 	 */
 	private int getInitialAutoAckLevel() {
-		int ackLevel=Integer.getInteger(AutoAckLevelPropName, 2);
+		int ackLevel=Integer.getInteger(AutoAckLevelPropName, defaultAutoAckLevel);
 		if (ackLevel==0) {
 			String msg="Auto acknowledge for priority 0 alarms is not allowed: falling back to priority 1";
 			if (logger!=null) {
