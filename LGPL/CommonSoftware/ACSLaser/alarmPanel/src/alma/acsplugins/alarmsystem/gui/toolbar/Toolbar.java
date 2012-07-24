@@ -459,11 +459,8 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 			ackLvl=ComboBoxValues.PRIORITY3;
 			break;
 		}
-		case -1: {
-			ackLvl=ComboBoxValues.NONE;
-		}
 		default: {
-			throw new IllegalArgumentException("Invalid priority for auto acknowledge: "+newLevel);
+			ackLvl=ComboBoxValues.NONE;
 		}
 		}
 		final ComboBoxValues ackLvlToSet=ackLvl;
