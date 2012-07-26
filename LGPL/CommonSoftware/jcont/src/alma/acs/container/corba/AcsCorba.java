@@ -627,7 +627,7 @@ public class AcsCorba
 	 * </ul>
 	 * <p>
 	 * With ACS 8.0, this method no longer attempts to destroy policy objects, trusting that either an explicit call
-	 * to {@linkplain AcsCorba#shutdownORB(boolean, boolean)} or the abovementioned implicit call to {@linkplain ORB#shutdown(boolean)}
+	 * to {@link AcsCorba#shutdownORB(boolean, boolean)} or the abovementioned implicit call to {@link ORB#shutdown(boolean)}
 	 * takes care of this.
 	 * <p> 
 	 * See also problems reported in COMP-2632.

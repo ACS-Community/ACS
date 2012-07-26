@@ -42,7 +42,7 @@ import alma.acs.nc.AcsEventSubscriber;
 import alma.entities.commonentity.EntityT;
 
 /**
- * A proxy for {@linkplain ContainerServices} that is specifically meant to isolate implementations of the 
+ * A proxy for {@link ContainerServices} that is specifically meant to isolate implementations of the 
  * Alma OMC's <code>PluginContainerServices</code> interface (which extends ContainerServices) 
  * from changes in the ACS container services.
  * <p>

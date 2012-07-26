@@ -122,7 +122,6 @@ public class JacOrbConfigurator extends OrbConfigurator
 	 *       for newly createdIORs. Default is 2.</td>
 	 * <td>integer</td>
 	 * </tr>
-	 * <tr></tr>
 	 * <tr>
 	 * <td>jacorb.retries</td>
 	 * <td>Number of retries if connection cannot directly

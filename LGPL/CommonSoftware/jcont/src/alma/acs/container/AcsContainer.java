@@ -365,7 +365,7 @@ public class AcsContainer extends ContainerPOA
 	 *   <li><code>LoggingConfig</code> Is taken care of separately by the acsjlog code (class LogConfig) 
 	 *   <li>Other CDB attributes either don't apply to a java container or are meant to be read by the OMC or the manager
 	 *       instead of by the container: Autoload, DALtype, PingInterval, DeployInfo.{Flags/Host/KeepAliveTime/StartOnDemand/TypeModifiers}.
-	 * <ul>
+	 * </ul>
 	 * @param isContainerStart Allows different treatment (for some container options) 
 	 *        between the first invocation during the container start and later invocations during CDB refreshs. 
 	 */

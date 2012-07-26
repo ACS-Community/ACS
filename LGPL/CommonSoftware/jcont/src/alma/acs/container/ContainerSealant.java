@@ -84,7 +84,7 @@ public class ContainerSealant
 	 * @param componentContextCL  classloader used for {@link Thread#setContextClassLoader(java.lang.ClassLoader setContextClassLoader)}
 	 *        before component method gets invoked. (after the call, the old context CL will be restored.)
 	 * @param methodNamesExcludedFromInvocationLogging  
-	 * @return  an instance of <code>corbaInterface<code> that intercepts calls to
+	 * @return  an instance of <code>corbaInterface</code> that intercepts calls to
 	 *           <code>componentImpl</code> and forwards them if restrictions allow this.
 	 * @throws ContainerException if the given <code>component</code> Object does not implement the given <code>corbaInterface</code>. 
 	 */
