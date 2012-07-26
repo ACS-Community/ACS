@@ -654,7 +654,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * changes that cannot be undone by other log level changes. Generally remote logging remains enabled though, which
 	 * makes this method quite different from {@linkplain #suppressRemoteLogging()}.
 	 * <p>
-	 * <strong>Application code such as components must not call this method!<strong>
+	 * <strong>Application code such as components must not call this method!</strong>
 	 */
     public void suppressCorbaRemoteLogging() {
     	suppressCorbaRemoteLogging = true;
