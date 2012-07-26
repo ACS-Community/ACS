@@ -162,7 +162,13 @@ public class ACSAlarmSystemInterfaceFactory {
 	 *
 	 */
 	public static void done() {
-		useACSAlarmSystem=null;
+		if (useACSAlarmSystem!=null) {
+			if (source!=null) {
+				source.close();
+				source=null;
+			}
+			useACSAlarmSystem=null;
+		}
 	}
 	
 	/**
