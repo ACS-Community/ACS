@@ -116,8 +116,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::AlarmEventStrategy&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - AlarmEventStrategy&lt;&gt;::AlarmEventStrategy&lt;&gt;] Name is: 'BACIALARM:roPatternProperty_event'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Alarmpattern subscription created
-2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::suspend] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::ThreadBase] 
+2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::suspend] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::Thread] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::create] 
 2 - ----------T--:--:--.--- [actionThreadPattern - WorkerThreadPattern::WorkerThreadPattern] 
@@ -131,6 +131,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 10
 2 - rwPatternProperty: 10
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 3 (fourth bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: fourth bit
@@ -155,6 +156,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 2
 2 - rwPatternProperty: 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 3 (fourth bit) cleared. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: fourth bit
@@ -179,6 +181,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 1
 2 - rwPatternProperty: 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -200,6 +203,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -225,6 +229,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 3
 2 - rwPatternProperty: 3
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) cleared. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -249,6 +254,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 2
 2 - rwPatternProperty: 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) cleared. Value change to: 2
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -273,6 +279,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 9
 2 - rwPatternProperty: 9
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) raised. Value change to: 9
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -294,6 +301,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) raised. Value change to: 4
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -315,6 +323,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 3 (fourth bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: fourth bit
@@ -341,6 +350,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 2
 2 - rwPatternProperty: 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) cleared. Value change to: 2
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -362,6 +372,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) cleared. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -383,6 +394,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 3 (fourth bit) cleared. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: fourth bit
@@ -411,6 +423,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 1
 2 - rwPatternProperty: 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -432,6 +445,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -457,6 +471,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] ==> Going to test changing of FF and FM if we have a previous alarm.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) cleared. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -478,6 +493,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) cleared. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -499,6 +515,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <IFProc#roPatternProperty,BACIALARM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -520,6 +537,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,BACIALARM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -542,6 +560,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,BACIALARM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) cleared. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -563,6 +582,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,BACIALARM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) cleared. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -584,6 +604,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,BACIALARM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -605,6 +626,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -629,6 +651,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] ==> First we reset all alarms an wait that are actaully cleared.
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) cleared. Value change to: 2
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -650,6 +673,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) cleared. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -679,6 +703,7 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 1
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Stopped thread
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
@@ -700,6 +725,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <AnotherUserDefinedFF,AnotherUserDefinedFM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 1 (second bit) raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
@@ -712,6 +738,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Level and value: 0
+2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Property and value: BACIALARM:roPatternProperty
@@ -722,17 +749,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <AnotherUserDefinedFF,AnotherUserDefinedFM,1> ACTIVE
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_raised) Value: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_raised) Value: 0
-2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStop] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Alarm subscriptions deleted
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::~AlarmEventStrategy&lt;&gt;] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestAlarmClient: main thread, shutting down...
 2 - 
+2 - 
+2 - 
+2 - 
+2 - 
 1 - ----------T--:--:--.--- [BACIALARM - BaciTestAlarmClassImpl::shutdown] 
-2 - 
-2 - 
-2 - 
-2 - 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestAlarmServer: Destroying CharacteristicComponents.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestAlarmServer: Destroying "BACIALARM"

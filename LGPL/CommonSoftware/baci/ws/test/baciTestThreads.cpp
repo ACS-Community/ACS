@@ -19,12 +19,12 @@ static void initThread(const char * threadName)
 	LoggingProxy::init(g_logger);
     LoggingProxy::ThreadName(threadName);
 
-    ACS_SHORT_LOG((LM_INFO, "Starting thread '%s' [%llu].", threadName, ACE_Thread_Manager::instance()->thr_self()));
+    ACS_SHORT_LOG((LM_INFO, "Starting thread '%s' [%lu].", threadName, ACE_Thread_Manager::instance()->thr_self()));
 }
 
 static void doneThread()
 {
-    ACS_SHORT_LOG((LM_INFO, "Stopping thread [%llu].", ACE_Thread_Manager::instance()->thr_self()));
+    ACS_SHORT_LOG((LM_INFO, "Stopping thread [%lu].", ACE_Thread_Manager::instance()->thr_self()));
 }
 
 static void worker (void* param)

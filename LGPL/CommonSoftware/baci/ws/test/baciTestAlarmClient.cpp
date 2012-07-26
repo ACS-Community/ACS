@@ -18,14 +18,14 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $"
+ * "@(#) $Id: baciTestAlarmClient.cpp,v 1.5 2012/07/26 12:50:57 gchiozzi Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
  * oat      2008-02-02 created
  */
  
-static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $";
+static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.5 2012/07/26 12:50:57 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -57,7 +57,7 @@ using namespace BACI_TEST;
  * of done invocations as well as the name of the BACI property it's monitoring, receiving
  * an asynchronous value from, etc.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.5 2012/07/26 12:50:57 gchiozzi Exp $"
  */
 class CommonCallback
 {
@@ -96,7 +96,7 @@ class CommonCallback
  * property.  There are only two useful methods: alarm_raised and alarm_cleared.  They
  * do just what their names imply.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.5 2012/07/26 12:50:57 gchiozzi Exp $"
  */
 class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant stub
 		       protected CommonCallback
@@ -131,7 +131,7 @@ class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant 
 		  const ACSErr::Completion &c,
 		  const ACS::CBDescOut &desc)
 	{
-	    ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmpattern::alarm_raised) Value: %d", prop.c_str(), value));
+	    ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmpattern::alarm_raised) Value: %lld", prop.c_str(), value));
 	}
 
 	
@@ -150,7 +150,7 @@ class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant 
 		   const ACSErr::Completion &c,
 		   const ACS::CBDescOut &desc)
 	{
-	    ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmpattern::alarm_cleared) Value: %d", prop.c_str(), value));
+	    ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmpattern::alarm_cleared) Value: %lld", prop.c_str(), value));
 	}
 
 	    
@@ -383,7 +383,9 @@ int main (int argc, char **argv)
 
 	BACI_CORBA::getORB()->run(tv); 
 
+	ACE_OS::sleep(1);
 
+	
 	//Must cleanly destroy the alarm
 	ACS_SHORT_LOG((LM_INFO,"Alarm subscriptions deleted")); 
 	alarmSub->destroy();	

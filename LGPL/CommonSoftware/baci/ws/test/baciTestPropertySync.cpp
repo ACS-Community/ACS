@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestPropertySync.cpp,v 1.102 2006/10/16 07:56:40 cparedes Exp $"
+* "@(#) $Id: baciTestPropertySync.cpp,v 1.103 2012/07/26 12:50:57 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.102 2006/10/16 07:56:40 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestPropertySync.cpp,v 1.103 2012/07/26 12:50:57 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -123,7 +123,15 @@ void testRWSeq( T_property myProp, T_valueSeq new_value_ds, T_value new_value ) 
      ACS_SHORT_LOG((LM_INFO,"baciTestClient: .. value is (length %u):", orig_value_ds->length()));
       for (CORBA::ULong i = 0; i < orig_value_ds->length(); i++)
       {
-        ACS_SHORT_LOG((LM_INFO,"\t(%u): %f", i, orig_value_ds[i]));
+        /* GCH 20120726
+	 * This is a trick to be able to use a printf with orig_value_ds[i]
+	 * being a template.
+	 * In this test it can be both integer and double, so assigning it to a 
+	 * double and then making the printf of the double will work.
+	 * It might still fail with other types :-)
+	 */  
+        double getEveryNumber = orig_value_ds[i];
+        ACS_SHORT_LOG((LM_INFO,"\t(%u): %f", i, getEveryNumber));
       }
    }
 
