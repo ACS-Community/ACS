@@ -59,3 +59,11 @@ baci::AlarmSystemMonitor<TPROP>::~AlarmSystemMonitor()
 //    unsubscribe to event dispatcher
     eventDispatcher_mp->unsubscribe(this);
 }//~AlarmSystemMonitor
+
+template<class TPROP>
+void baci::AlarmSystemMonitor<TPROP>::sendAlarm(int code, bool active)
+{
+    ACS_TRACE("baci::AlarmSystemMonitor&lt;&gt;::sendAlarm");
+    if(property_mp->alarm_system_enabled())
+        AlarmSystemMonitorBase::sendAlarm(code, active);
+}//sendAlarm

@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baci.idl,v 1.12 2011/09/02 14:54:34 hsommer Exp $"
+* "@(#) $Id: baci.idl,v 1.13 2012/07/26 12:56:44 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,6 +33,7 @@
 #include <acscomponent.idl>
 #include <acscommon.idl>
 #include <acserr.idl>
+#include <baciErrTypeProperty.idl>
 
 #pragma prefix "alma"
 
@@ -110,6 +111,7 @@ module ACS {
     
     /** The name of the parent CharacteristicComponent */
     readonly attribute string characteristic_component_name;
+
     };
     
     /** The descriptor for a Property. A descriptor is an IDL structure that contains key 
@@ -1386,7 +1388,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in Alarmdouble cb,
 					     in CBDescIn desc);
 
-	/** above this value alarm is set */
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	};
 	
 	/** Here follow the property definitions that are actually used by the control system: RO 
@@ -1460,7 +1470,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in Alarmfloat cb,
 					     in CBDescIn desc);
 
-	/** above this value alarm is set */
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	};
 	
 	/** Here follow the property definitions that are actually used by the control system: RO 
@@ -1521,6 +1539,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in Alarmpattern cb,
 					     in CBDescIn desc);
 			
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	/** @eventable */
 	};
 
@@ -1562,6 +1589,16 @@ module ACS {
 	/** @roseuid 3AC90A280097 */
 	Subscription new_subscription_Alarm (in Alarmstring cb,
 					     in CBDescIn desc);
+
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	};
 	
 	/** See \ref ROdouble. */
@@ -1569,6 +1606,16 @@ module ACS {
 	/** @roseuid 3AC90A280097 */
 	Subscription new_subscription_Alarm (in AlarmstringSeq cb,
 					     in CBDescIn desc);
+
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	};
 
 	/** A sequence of ROdouble. */
@@ -1582,6 +1629,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in Alarmdouble cb,
 					     in CBDescIn desc);
 	
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	/** @static */	
 	};
 	
@@ -1627,6 +1683,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in Alarmfloat cb,
 					     in CBDescIn desc);
 	
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	/** @static */	
 	};
 	
@@ -1676,6 +1741,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in Alarmlong cb,
 					     in CBDescIn desc);
 			
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	/** @static */
 	};
 	
@@ -1721,6 +1795,15 @@ module ACS {
 		Subscription new_subscription_Alarm (in Alarmlong cb,
 						     in CBDescIn desc);
 			
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 		/** @static */
 	};
 	
@@ -1817,6 +1900,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in AlarmlongLong cb,
 					     in CBDescIn desc);
 			
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	/** @static */
 		
 	};
@@ -1911,6 +2003,15 @@ module ACS {
 	Subscription new_subscription_Alarm (in AlarmuLongLong cb,
 					     in CBDescIn desc);
 	
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+
 	/** @static */
 		
 	};

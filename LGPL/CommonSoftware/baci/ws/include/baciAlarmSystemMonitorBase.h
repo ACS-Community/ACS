@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.4 2011/09/02 11:39:00 bjeram Exp $"
+ * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.5 2012/07/26 12:55:35 gchiozzi Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -90,6 +90,8 @@ public:
 	 */
 	void setFaultMember(const char *fm);
 
+	int isAlarmRaised(){ return alarmRaised_m; }
+
 protected:
 
 	virtual void check(BACIValue &val,
@@ -101,7 +103,7 @@ protected:
 	 * @parm code alarm code
 	 * @parm active true-raise an alarm, false-clear an alarm
 	 */
-	void sendAlarm(int code, bool active);
+	virtual void sendAlarm(int code, bool active);
 
 
 	/**

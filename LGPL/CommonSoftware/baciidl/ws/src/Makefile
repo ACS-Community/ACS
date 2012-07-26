@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2012/03/02 13:12:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/07/26 12:56:44 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -118,7 +118,7 @@ IDL_FILES = baci
 TAO_IDLFLAGS = -GT
 IDL_EXTENSIONS = S_T.h S_T.cpp
 USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/
-baciStubs_LIBS = acscomponentStubs acscommonStubs acserrStubs
+baciStubs_LIBS = acscomponentStubs acscommonStubs acserrStubs baciErrTypePropertyStubs
 #
 # Jarfiles and their directories
 #

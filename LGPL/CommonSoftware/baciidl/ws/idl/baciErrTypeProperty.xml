@@ -52,5 +52,9 @@ type="20" _prefix="alma">
 	   description="Archive monitor could not archive a value of
 	   a property."
 />
+<ErrorCode name="DisableAlarmsError"
+           shortDescription="Failed to disable propagation of Property Alarms"
+	   description="Failed to disable the propagation of Property Alarms to the ACS Alarm System because an alarm is already raised."
+/>
 </Type>
 

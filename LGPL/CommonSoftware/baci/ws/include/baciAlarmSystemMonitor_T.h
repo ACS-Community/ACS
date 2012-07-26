@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.10 2012/01/24 01:00:04 tstaig Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.11 2012/07/26 12:55:35 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,7 +52,10 @@ class AlarmSystemMonitor : public AlarmSystemMonitorBase
     AlarmSystemMonitor(TPROP * property, EventDispatcher * eventDispatcher);
 
     virtual ~AlarmSystemMonitor();
+
+  protected:
     
+    void sendAlarm(int code, bool active);
     
   private:
     /**

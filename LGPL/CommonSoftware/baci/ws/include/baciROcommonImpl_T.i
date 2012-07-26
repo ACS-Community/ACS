@@ -23,7 +23,7 @@
 template<ACS_RO_C> 
 baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
-    monitorEventDispatcher_mp(0), alarmSystemMonitor_mp(0)
+    monitorEventDispatcher_mp(0), alarmSystemEnabled_m(true), alarmSystemMonitor_mp(0)
 {
   ACS_TRACE("baci::ROcommonImpl&lt;&gt;::ROcommonImpl");
   
@@ -79,7 +79,7 @@ baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACICompone
 template<ACS_RO_C> 
 baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO ) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
-    monitorEventDispatcher_mp(0), alarmSystemMonitor_mp(0)
+    monitorEventDispatcher_mp(0), alarmSystemEnabled_m(true), alarmSystemMonitor_mp(0)
 {
   ACS_TRACE("baci::ROcommonImpl&lt;&gt;::ROcommonImpl");
   ACE_UNUSED_ARG(init);
@@ -118,6 +118,30 @@ template<ACS_RO_C> baci::ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
       monitorEventDispatcher_mp = 0;
       }
 }//~ROcommonImpl
+
+template<ACS_RO_C> 
+void baci::ROcommonImpl<ACS_RO_TL>::enable_alarm_system()
+{
+	alarmSystemEnabled_m = true;
+}
+
+template<ACS_RO_C> 
+void baci::ROcommonImpl<ACS_RO_TL>::disable_alarm_system()
+{
+
+	if(alarmSystemEnabled_m) {
+		if(alarmSystemMonitor_mp->isAlarmRaised())
+			throw baciErrTypeProperty::DisableAlarmsErrorExImpl (__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::disable_alarm_system");
+		alarmSystemEnabled_m = false;
+	}
+}
+
+template<ACS_RO_C> 
+bool baci::ROcommonImpl<ACS_RO_TL>::alarm_system_enabled()
+{
+	return alarmSystemEnabled_m;
+}
+
 
 template<ACS_RO_C>
 void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultFamily(const char* ff)

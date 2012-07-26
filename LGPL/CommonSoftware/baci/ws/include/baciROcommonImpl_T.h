@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.30 2011/05/06 21:02:32 acaproni Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.31 2012/07/26 12:55:35 gchiozzi Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -97,6 +97,12 @@ public:
    */
   virtual ~ROcommonImpl();
 
+  virtual void enable_alarm_system();
+  
+  virtual void disable_alarm_system();
+
+  virtual bool alarm_system_enabled();
+
   /**
    * Sets alarm fault family
    * * @exception ACSErrTypeCommon::NullPointerExImpl
@@ -153,6 +159,7 @@ protected:
   ACE_CString alarmFaultFamily_m;
   ACE_CString alarmFaultMember_m;
   int alarmLevel_m;
+  bool alarmSystemEnabled_m;
 
   /**
    * monitor which sends information (alarms) to the alarm system.
