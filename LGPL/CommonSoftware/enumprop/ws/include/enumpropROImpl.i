@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.59 2011/03/25 10:33:40 rtobar Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.60 2012/07/26 13:46:55 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@ Alarmpattern
 template <ACS_ENUM_C>
 ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, baci::BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
-    initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
+    initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0), alarmSystemEnabled_m(true),
     monitorEventDispatcher_mp(0), alarmSystemMonitorEnumProp_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
     {
 
@@ -439,6 +439,28 @@ template <ACS_ENUM_C>
 char *ROEnumImpl<ACS_ENUM_T(T), SK>::characteristic_component_name ()
 {
   return CORBA::string_dup (property_mp->getComponent()->getName());
+}
+
+template<ACS_ENUM_C> 
+void ROEnumImpl<ACS_ENUM_T(T), SK>::enable_alarm_system()
+{
+  alarmSystemEnabled_m = true;
+}
+
+template<ACS_ENUM_C> 
+void ROEnumImpl<ACS_ENUM_T(T), SK>::disable_alarm_system()
+{
+  if(alarmSystemEnabled_m) {
+    if(alarmSystemMonitorEnumProp_mp->isAlarmRaised())
+      throw baciErrTypeProperty::DisableAlarmsErrorExImpl (__FILE__, __LINE__, "ROEnumImpl<>::disable_alarm_system");
+    alarmSystemEnabled_m = false;
+  }
+}
+
+template<ACS_ENUM_C> 
+bool ROEnumImpl<ACS_ENUM_T(T), SK>::alarm_system_enabled()
+{
+  return alarmSystemEnabled_m;
 }
 
 template <ACS_ENUM_C>

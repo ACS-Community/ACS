@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.51 2011/05/06 21:04:47 acaproni Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.52 2012/07/26 13:46:55 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -167,6 +167,12 @@ public:
 
 	virtual char * characteristic_component_name ();
 
+	virtual void enable_alarm_system();
+
+	virtual void disable_alarm_system();
+
+	virtual bool alarm_system_enabled();
+    
     /*
 	virtual CosPropertyService::PropertySet_ptr get_all_characteristics (
 	    
@@ -362,6 +368,7 @@ protected:
     ACE_CString alarmFaultFamily_m;
     ACE_CString alarmFaultMember_m;
     int alarmLevel_m;
+    bool alarmSystemEnabled_m;
 
 #ifdef MAKE_VXWORKS 
     baci::AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> a;

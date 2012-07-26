@@ -91,6 +91,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Waiting for requests ... 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
@@ -171,11 +172,11 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
 4 - ----------T--:--:--.--- [GlobalLogger - ] Setting current state to: ENABLED
 4 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ENABLED (1)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setLastValue] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::working) Value: ENABLED (1) Completion type: 1 code: 1
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setLastValue] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::working) Value: ENABLED (1) Completion type: 1 code: 1
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)
@@ -187,7 +188,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'EPTESTDEVICE1:currentStates_monitor' destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'EPTESTDEVICE1:currentStates_monitor' destroyed.
 1 - ----------T--:--:--.--- [GlobalLogger - BACI::Monitor&lt;&gt;::~Monitor] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - ] enumpropTestDeviceImpl::serverShutdown
