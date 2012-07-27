@@ -1229,7 +1229,6 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @since ACS 8.1.0
 	 */
 	public void cleanUp() {
-
 		/* Cleanup through externally registered callbacks */
 		for (CleanUpCallback cleanUpCallback : cleanUpCallbacks) {
 			try {
@@ -1238,6 +1237,11 @@ public class ContainerServicesImpl implements ContainerServices
 			catch (Throwable thr) {
 				m_logger.log(Level.WARNING, "Failed to clean up registered client object", thr);
 			}
+		}
+		
+		/* Cleanup the alarm source */
+		if (m_alarmSource != null) {
+			m_alarmSource.tearDown();
 		}
 
 		/* Disconnect NC subscribers */
@@ -1262,11 +1266,6 @@ public class ContainerServicesImpl implements ContainerServices
 			} catch (IllegalStateException e) {
 				// Silently ignore this exception, as the subscriber was already disconnected. Well done, developers! :)
 			}
-		}
-
-		/* Cleanup the alarm source */
-		if (m_alarmSource != null) {
-			m_alarmSource.tearDown();
 		}
 	}
 
