@@ -273,5 +273,29 @@ public class ROlongSeqImpl
 			return false;
 		}
 	}
+	
+	/**
+	 * @see alma.ACS.ROlongSeqOperations#enable_alarm_system()
+	 */
+	public void enable_alarm_system() {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
+	/**
+	 * @see alma.ACS.ROlongSeqOperations#disable_alarm_system() throws alma.baciErrTypeProperty.DisableAlarmsErrorEx
+	 */
+	public void disable_alarm_system() throws alma.baciErrTypeProperty.DisableAlarmsErrorEx {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
+	/**
+	 * @see alma.ACS.ROlongSeqOperations#alarm_system_enabled()
+	 */
+	public boolean alarm_system_enabled() {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
 
 }

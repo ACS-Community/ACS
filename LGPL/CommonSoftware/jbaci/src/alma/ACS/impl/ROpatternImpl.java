@@ -291,4 +291,28 @@ public class ROpatternImpl
 		return new Double(((Integer)value1).intValue() + val2);
 	}
 */
+	
+	/**
+	 * @see alma.ACS.ROpatternOperations#enable_alarm_system()
+	 */
+	public void enable_alarm_system() {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
+	/**
+	 * @see alma.ACS.ROpatternOperations#disable_alarm_system() throws alma.baciErrTypeProperty.DisableAlarmsErrorEx
+	 */
+	public void disable_alarm_system() throws alma.baciErrTypeProperty.DisableAlarmsErrorEx {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
+	/**
+	 * @see alma.ACS.ROpatternOperations#alarm_system_enabled()
+	 */
+	public boolean alarm_system_enabled() {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
 }
