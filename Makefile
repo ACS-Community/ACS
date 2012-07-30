@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.192 2012/06/13 14:47:28 jschwarz Exp $"
+# "@(#) $Id: Makefile,v 1.193 2012/07/30 16:33:17 acaproni Exp $"
 #
 #
 
@@ -29,7 +29,7 @@ endif
 
 MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) gui xsddoc extidl vtd-xml oAW shunit2 log4cpp
 
-MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acserridl acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent cdbBrowser errorBrowser recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task abeans acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine jlog logTools acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI eventGUI acssim bulkData bulkDataNT containerTests acscourse ACSLaser 
+MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acserridl acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent cdbBrowser errorBrowser recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task abeans acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine jlog logTools acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities objexp jcont jcontnc jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI eventGUI acssim bulkData bulkDataNT containerTests acscourse ACSLaser 
 ######## end Modules ###########################
 
 ###############################################
