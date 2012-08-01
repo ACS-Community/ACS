@@ -1,4 +1,4 @@
-1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files in: -Djavaendorseddirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-102/ACSSW/lib/endorsed:
+1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files
 1 - 
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] -------------------------------
@@ -54,9 +54,9 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] Alarm system type: ACS
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] [alarm_timer] task finished within the specified 1 seconds
 1 - testClear
 1 - testClear done
-1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] [alarm_timer] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] about to log out from manager
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] logged out from manager
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] AlarmSourceFactory closed
@@ -84,8 +84,8 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] Alarm system type: ACS
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
-1 - testAlarmReplacement
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] [alarm_timer] task finished within the specified 1 seconds
+1 - testAlarmReplacement
 1 - testAlarmReplacement done
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] about to log out from manager
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] logged out from manager

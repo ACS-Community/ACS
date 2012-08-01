@@ -18,3 +18,4 @@ s/\.The WriteBuffer stores [0-9]* logs/The WriteBuffer stores N logs/g
 s/.*\[ Connected to .*\]/[ Connected to XXX.XXX.XXX.XXX:PPPP ]/g
 s/\.//g
 s/Manager login done.*/Manager login done .../g
+s/Using endorsed jar files in.*/Using endorsed jar files/g

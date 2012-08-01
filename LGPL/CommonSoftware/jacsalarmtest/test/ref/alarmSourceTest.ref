@@ -1,4 +1,4 @@
-1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files in: -Djavaendorseddirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-102/ACSSW/lib/endorsed:
+1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files
 1 - 
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise] -------------------------------
@@ -27,8 +27,8 @@
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] Alarm system type: ACS
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
-1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] Alarm sent: &lt;ClearMultipleSend,ClearMultipleSendMember,1&gt; TERMINATE
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] [alarm_osci] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] [alarm_timer] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] about to log out from manager
@@ -42,10 +42,10 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Alarm system type: ACS
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Alarm sent: &lt;OscillationFF,OscillationFM,1&gt; ACTIVE
-1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Alarm sent: &lt;OscillationFF,OscillationFM,1&gt; ACTIVE
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] Alarm sent: &lt;OscillationFF,OscillationFM,1&gt; TERMINATE
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] [alarm_osci] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] [alarm_timer] task finished within the specified 1 seconds
@@ -60,9 +60,9 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] Alarm system type: ACS
-1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] Alarm sent: &lt;DisableFF,DisableFM,15&gt; ACTIVE
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] Alarm sent: &lt;DisableFF,DisableFM,15&gt; TERMINATE
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] [alarm_osci] task finished within the specified 1 seconds
@@ -78,32 +78,32 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm system type: ACS
-1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
-1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,15&gt; ACTIVE
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
 1 - Queueing alarms
 1 - Flushing alarms
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM2,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM0,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM8,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM3,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM5,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM6,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM7,20&gt; ACTIVE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM8,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM9,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM1,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM4,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,4&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM5,20&gt; ACTIVE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM7,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,1&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,4&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,5&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,8&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,0&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,15&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,3&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,6&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,8&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,9&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,15&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,2&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,6&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,7&gt; TERMINATE
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] [alarm_osci] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] [alarm_timer] task finished within the specified 1 seconds
@@ -118,33 +118,33 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm system type: ACS
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,15&gt; ACTIVE
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,15&gt; ACTIVE
 1 - Queueing alarms with timer
 1 - Waiting for the flush to happen
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM5,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM7,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM1,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM5,20&gt; ACTIVE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM4,20&gt; ACTIVE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM6,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM8,20&gt; ACTIVE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM9,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM0,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM2,20&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM3,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM4,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM6,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM9,20&gt; ACTIVE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,9&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,8&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,1&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,8&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,9&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,0&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,5&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,2&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,3&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,4&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,7&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,5&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,15&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,4&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,6&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,7&gt; TERMINATE
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] [alarm_osci] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] [alarm_timer] task finished within the specified 1 seconds
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] about to log out from manager
@@ -160,18 +160,18 @@
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm system type: ACS
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
 1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,15&gt; ACTIVE
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,15&gt; ACTIVE
 1 - Queueing alarms
 1 - Flushing alarms
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,1&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,0&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,1&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,4&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,5&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,6&gt; TERMINATE
+1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,7&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,2&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,3&gt; TERMINATE
-1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,7&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,8&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,9&gt; TERMINATE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] Alarm sent: &lt;QueueFFSA,QueueFMSA,15&gt; TERMINATE

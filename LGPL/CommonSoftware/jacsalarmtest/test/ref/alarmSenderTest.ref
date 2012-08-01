@@ -1,4 +1,4 @@
-1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files in: -Djavaendorseddirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-102/ACSSW/lib/endorsed:
+1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files
 1 - 
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] -------------------------------
