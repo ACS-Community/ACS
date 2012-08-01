@@ -81,7 +81,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = ThePrologue alarmsMapTest alarmSenderTest alarmSourceTest
+SCRIPTS         = 
 SCRIPTS_L       =
 
 #
@@ -133,8 +133,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= alarmSourceTest
-alarmSourceTest_DIRS=alma
+JARFILES= 
+jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
