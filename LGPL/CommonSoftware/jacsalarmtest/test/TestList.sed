@@ -19,3 +19,6 @@ s/.*\[ Connected to .*\]/[ Connected to XXX.XXX.XXX.XXX:PPPP ]/g
 s/\.//g
 s/Manager login done.*/Manager login done .../g
 s/Using endorsed jar files in.*/Using endorsed jar files/g
+s/exported ACS_INTERFACE_REPOSITORY=.*/exported ACS_INTERFACE_REPOSITORY=xxxx/g
+s/exported MANAGER_COMPUTER_NAME=.*/exported MANAGER_COMPUTER_NAME=xxx/g
+s/IOR:.*/IOR:xxx/g
