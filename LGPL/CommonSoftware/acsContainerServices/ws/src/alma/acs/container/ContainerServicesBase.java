@@ -204,7 +204,7 @@ public interface ContainerServicesBase
 	 * @param channelNotifyServiceDomainName The Notification Channel Service Domain name, 
 	 *        used to group notification channels in different domains and assign to them a NotifyService 
 	 *        in the configuration, based on the domain.
-	 * @see #createNotificationChannelSubscriber(String, Class)
+	 * @see #createNotificationChannelSubscriber(String, String)
 	 */
 	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx;
 
