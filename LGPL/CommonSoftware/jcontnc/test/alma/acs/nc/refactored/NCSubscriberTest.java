@@ -57,7 +57,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	private enum EventType {
 		statusBlock1,
 		statusBlock2
-	};
+	}
 
 	public NCSubscriberTest() throws Exception {
 		super("NCSubscriberTest");
@@ -110,8 +110,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		m_subscriber.addSubscription(new EventReceiver1());
 		m_subscriber.addSubscription(new EventReceiver1());
 		assertEquals(1, m_subscriber.subscriptionsFilters.size());
-		assertEquals(1, m_subscriber.receivers.size());
-		assertNull(m_subscriber.genericReceiver);
+		assertEquals(1, m_subscriber.getNumberOfReceivers());
+		assertFalse(m_subscriber.hasGenericReceiver());
 		assertEquals(2, m_subscriber.proxySupplier.get_all_filters().length);
 
 		m_subscriber.addSubscription(new EventReceiver2());
@@ -119,8 +119,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		m_subscriber.addSubscription(new EventReceiver2());
 		m_subscriber.addSubscription(new EventReceiver2());
 		assertEquals(2, m_subscriber.subscriptionsFilters.size());
-		assertEquals(2, m_subscriber.receivers.size());
-		assertNull(m_subscriber.genericReceiver);
+		assertEquals(2, m_subscriber.getNumberOfReceivers());
+		assertFalse(m_subscriber.hasGenericReceiver());
 		assertEquals(3, m_subscriber.proxySupplier.get_all_filters().length);
 
 		m_subscriber.addGenericSubscription(new GenericEventReceiver());
@@ -128,8 +128,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		m_subscriber.addGenericSubscription(new GenericEventReceiver());
 		m_subscriber.addGenericSubscription(new GenericEventReceiver());
 		assertEquals(3, m_subscriber.subscriptionsFilters.size());
-		assertEquals(2, m_subscriber.receivers.size());
-		assertNotNull(m_subscriber.genericReceiver);
+		assertEquals(2, m_subscriber.getNumberOfReceivers());
+		assertTrue(m_subscriber.hasGenericReceiver());
 		assertEquals(4, m_subscriber.proxySupplier.get_all_filters().length);
 
 	}
@@ -164,8 +164,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		m_subscriber.removeSubscription(statusBlockEvent1.class);
 		m_subscriber.removeSubscription(statusBlockEvent2.class);
 		assertEquals(0, m_subscriber.subscriptionsFilters.size());
-		assertEquals(0, m_subscriber.receivers.size());
-		assertNull(m_subscriber.genericReceiver);
+		assertEquals(0, m_subscriber.getNumberOfReceivers());
+		assertFalse(m_subscriber.hasGenericReceiver());
 
 		// After we remove all subscriptions, only the all-exclusive filter is set in the server
 		assertEquals(1, m_subscriber.proxySupplier.get_all_filters().length);
