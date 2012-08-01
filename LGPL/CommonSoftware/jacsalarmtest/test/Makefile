@@ -52,7 +52,7 @@ acsAlSysTest_DIRS = alma
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = testFaultState testFactory testProxy jacsalarmTATPrologue
+SCRIPTS_L       = testFaultState testFactory testProxy jacsalarmTATPrologue alarmsMapTest alarmSenderTest alarmSourceTest alarmSourceFactoryTest
 
 #>>>>> END OF standard rules
   

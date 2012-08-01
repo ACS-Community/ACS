@@ -10,7 +10,7 @@
 set ACS_TMP $env(PWD)/tmp
 set env(ACS_TMP) $ACS_TMP
 
-set ACS_LOG_STDOUT 1
+set ACS_LOG_STDOUT 2
 set env(ACS_LOG_STDOUT) $ACS_LOG_STDOUT
 #
 # ___oOo___

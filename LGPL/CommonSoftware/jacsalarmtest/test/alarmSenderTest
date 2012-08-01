@@ -1,8 +1,9 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
-# and Cosylab 2002, All rights reserved
+# (c) European Southern Observatory, 2011
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# and Cosylab 2011, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,22 +20,4 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id$"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# acaproni 2006-09-06 created
-SOURCE jacsalarmTATEnvironment
-PROLOGUE jacsalarmTATPrologue
-
-1 testFaultState 	"testFaultState"
-2 testFactory 		"testFactory"
-3 testProxy			"testProxy"
-4 alarmsMapTest	"alarmsMapTest"
-5 alarmSenderTest "alarmSenderTest"
-6 alarmSourceTest "alarmSourceTest"
-7 alarmSourceFactoryTest "alarmSourceFactoryTest"
-
-EPILOGUE acsutilTATEpilogue
+acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD junit.textui.TestRunner alma.alarmsystem.alarmsource.test.AlarmSenderTest
