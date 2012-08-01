@@ -76,7 +76,7 @@ public class SourceFactoryTest extends ComponentClientTestCase  {
 	}
 	
 	/**
-	 * Check that the factory return the same {@link AlarmSource} for the same name
+	 * Check that the factory return the same {@link AlarmSource} for different names
 	 */
 	public void testReferences() throws Exception {
 		System.out.println("SourceFactoryTest.testReferences");
