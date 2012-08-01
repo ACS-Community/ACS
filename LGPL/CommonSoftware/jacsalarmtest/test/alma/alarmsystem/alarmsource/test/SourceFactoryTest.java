@@ -56,7 +56,7 @@ public class SourceFactoryTest extends ComponentClientTestCase  {
 	@Override
 	protected void tearDown() throws Exception {
 		System.out.println("SourceFactoryTest.tearDown");
-		//factory.tearDown();
+		factory.tearDown();
 		super.tearDown();
 	}
 	
@@ -64,7 +64,7 @@ public class SourceFactoryTest extends ComponentClientTestCase  {
 	 * Check that the factory return the same {@link AlarmSource} for the same name
 	 */
 	public void testSameReference() throws Exception {
-		System.out.println("testSameReference");
+		System.out.println("SourceFactoryTest.testSameReference");
 		String name = "componentName";
 		AlarmSource src1=factory.getAlarmSource(name);
 		assertNotNull(src1);
@@ -72,26 +72,28 @@ public class SourceFactoryTest extends ComponentClientTestCase  {
 		assertNotNull(src2);
 		
 		assertTrue("The returned sources differ!", src1==src2);
+		System.out.println("SourceFactoryTest.testSameReference done");
 	}
 	
 	/**
 	 * Check that the factory return the same {@link AlarmSource} for the same name
 	 */
 	public void testReferences() throws Exception {
-		System.out.println("testReferences");
+		System.out.println("SourceFactoryTest.testReferences");
 		AlarmSource src1=factory.getAlarmSource("componentName1");
 		assertNotNull(src1);
 		AlarmSource src2=factory.getAlarmSource("componentName2");
 		assertNotNull(src2);
 		
 		assertTrue("The returned sources do NOT differ!", src1!=src2);
+		System.out.println("SourceFactoryTest.testReferences done");
 	}
 	
 	/**
 	 * Test that factory removes a source after calling release
 	 */
 	public void testGetRelease() {
-		System.out.println("testGetRelease");
+		System.out.println("SourceFactoryTest.testGetRelease");
 		String name = "componentName";
 		AlarmSource src1=factory.getAlarmSource(name);
 		assertNotNull(src1);
@@ -100,6 +102,7 @@ public class SourceFactoryTest extends ComponentClientTestCase  {
 		assertNotNull(src2);
 		
 		assertTrue("The returned sources do NOT differ!", src1!=src2);
+		System.out.println("SourceFactoryTest.testGetRelease done");
 	}
 	
 }
