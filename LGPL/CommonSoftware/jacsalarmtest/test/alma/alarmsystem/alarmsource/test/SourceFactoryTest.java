@@ -36,27 +36,27 @@ public class SourceFactoryTest extends ComponentClientTestCase  {
 	/**
 	 * The object to test
 	 */
-	private AlarmSourceFactory factory;
+	private AlarmSourceFactory factory=null;
 
 	/**
 	 * Constructor
 	 */
-	public SourceFactoryTest(String name) throws Exception  {
-		super(SourceFactoryTest.class.getName());
+	public SourceFactoryTest() throws Exception  {
+		super("AlarmSourceFactoryTest");
 	}
 	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		System.out.println("setUp");
+		System.out.println("SourceFactoryTest.setUp");
 		factory= new AlarmSourceFactory(this.getContainerServices());
 		assertNotNull(factory);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		System.out.println("tearDown");
-		factory.tearDown();
+		System.out.println("SourceFactoryTest.tearDown");
+		//factory.tearDown();
 		super.tearDown();
 	}
 	
