@@ -70,6 +70,7 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.entities.commonentity.EntityT;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
@@ -116,9 +117,6 @@ public class ContainerServicesImpl implements ContainerServices
     
     // logger given to component
     private volatile AcsLogger componentLogger;
-
-    // alarm source used by components when raising/clearing alarms
-    private AlarmSource m_alarmSource;
 
 	// sync'd map, key=curl, value=corbaStub
 	private final Map<String, org.omg.CORBA.Object> m_usedComponentsMap;
@@ -1239,11 +1237,6 @@ public class ContainerServicesImpl implements ContainerServices
 			}
 		}
 		
-		/* Cleanup the alarm source */
-		if (m_alarmSource != null) {
-			m_alarmSource.tearDown();
-		}
-
 		/* Disconnect NC subscribers */
 		for(String channel: m_subscribers.keySet()) {
 			AcsEventSubscriber subscriber = m_subscribers.get(channel);
@@ -1423,13 +1416,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 	@Override
 	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
-		synchronized (lazyCreationSync) {
-			if (m_alarmSource == null) {
-				m_alarmSource = new AlarmSourceImpl(this);
-				m_alarmSource.start();
-			}
-		}
-		return m_alarmSource;
+		return ACSAlarmSystemInterfaceFactory.getAlarmSource(this);
 	}
 
 }
