@@ -37,6 +37,8 @@ import org.xml.sax.InputSource;
 import com.cosylab.CDB.DAL;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.source.AlarmSource;
+import alma.acs.alarmsystem.source.AlarmSourceFactory;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
@@ -47,15 +49,20 @@ import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJFaultStateCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJSourceCreationErrorEx;
 
 /**
- * ACSAlarmSystemInterfaceFactory extends the CERN AlarmSystemInterfaceFactory
+ * <code>ACSAlarmSystemInterfaceFactory</code> extends the CERN AlarmSystemInterfaceFactory
  * to create sources with different implementations depending on the actual
  * configuration in the CDB.
- * 
+ * <P>
  * The type of implementation is in AlarmSystemConfiguration.xml: a property named
  * Implementation.
- * CERN implementation is used only if the property is CERN. 
- * If the property is not found, is ACS or the CDB record does not exist the 
+ * CERN implementation is used only if the value of such property is CERN. 
+ * If the property is not found, is ACS or the CDB record does not exist then the 
  * ACS implementation for sources is used.
+ * <P>
+ * <code>ACSAlarmSystemInterfaceFactory</code> owns the instances of the {@link AlarmSource}
+ * created by the component or containers. in this way it is possible to control the cleanup 
+ * of the alarm sources when a component is unloaded or the <code>ACSAlarmSystemInterfaceFactory</code>
+ * terminates.
  * 
  * @author acaproni
  *
@@ -63,7 +70,7 @@ import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJSourceCreationErrorEx;
 public class ACSAlarmSystemInterfaceFactory {
 	
 	/**
-	 * The path in the CDB of the AS configuraton
+	 * The path in the CDB of the AS configuration
 	 */
 	private static final String CONFIGURATION_PATH="Alarms/Administrative/AlarmSystemConfiguration";
 	
@@ -96,6 +103,11 @@ public class ACSAlarmSystemInterfaceFactory {
 	private static ContainerServicesBase containerServices;
 	
 	/**
+	 * The factory to keep track of all the existing {@link AlarmSource} objects.
+	 */
+	private static AlarmSourceFactory alarmSourceFactory;
+	
+	/**
 	 * Init the static variables of the class
 	 * This method has to be called before executing any other
 	 * method. 
@@ -114,7 +126,7 @@ public class ACSAlarmSystemInterfaceFactory {
 		if (logger==null || dal==null) {
 			throw new IllegalArgumentException("Invalid DAL or Logger from ContainerServicesBase");
 		}
-		
+		alarmSourceFactory = new AlarmSourceFactory(containerServices);
 		useACSAlarmSystem = retrieveImplementationType(dal);
 		if (logger!=null) {
 			if (useACSAlarmSystem) {
@@ -162,6 +174,10 @@ public class ACSAlarmSystemInterfaceFactory {
 	 *
 	 */
 	public static void done() {
+		if (containerServices==null) {
+			throw new IllegalStateException("Trying close with null ContainerServicesBase");
+		}
+		alarmSourceFactory.tearDown();
 		if (useACSAlarmSystem!=null) {
 			if (source!=null) {
 				source.close();
@@ -354,5 +370,26 @@ public class ACSAlarmSystemInterfaceFactory {
 			  throw new AcsJACSASFactoryNotInitedEx(e).toACSASFactoryNotInitedEx();
 		  }
 		  return ACSAlarmSystemInterfaceFactory.useACSAlarmSystem;
+	  }
+	  
+	  /**
+	   * Return the AlarmSource for the container whose name is retrieved from the passed
+	   * {@link ContainerServicesBase} by delegating to the {@link AlarmSourceFactory}.
+	   * 
+	   * @param contSvcs The ContainerServices
+	   * @return the AlarmSource
+	   */
+	  public static AlarmSource getAlarmSource(ContainerServicesBase contSvcs) {
+		  return alarmSourceFactory.getAlarmSource(contSvcs);
+	  }
+	  
+	  /**
+		 * Release the {@link AlarmSource} object of the component whose name is read from
+		 * passed the {@link ContainerServicesBase} by delegating to the {@link AlarmSourceFactory}.
+		 * 
+		 * @param containerServices The ContainerServices
+		 */
+	  public static void releaseAlarmSource(ContainerServicesBase contSvcs) {
+		  alarmSourceFactory.releaseAlarmSource(contSvcs);
 	  }
 }
