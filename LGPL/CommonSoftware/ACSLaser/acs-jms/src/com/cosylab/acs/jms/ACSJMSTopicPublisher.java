@@ -37,6 +37,8 @@ import javax.jms.TopicPublisher;
 
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.AcsLogger;
 import alma.acs.nc.AcsEventPublisher;
 
 /**
@@ -133,7 +135,12 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 			if (publisher==null) {
 				throw new IllegalStateException("Trying to close a null publisher");
 			}
-			publisher.disconnect();
+			try {
+				publisher.disconnect();
+			} catch (Throwable t) {
+				// Nothing to do... bu we log a warning
+				logger.log(AcsLogLevel.WARNING, "Ingnored error disconnecting the channel "+ncName+": "+t.getMessage());
+			}
 			publisher=null;
 		}
 
@@ -159,7 +166,12 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 	 * The key is the name of the NC (i.e. the name of the topic)
 	 * The value is the PublisherPoolItem
 	 */
-	private static HashMap<String, PublisherPoolItem> publishersPool = new HashMap<String, PublisherPoolItem>(); 
+	private static HashMap<String, PublisherPoolItem> publishersPool = new HashMap<String, PublisherPoolItem>();
+	
+	/** 
+	 * The logger
+	 */
+	private final AcsLogger logger;
 
 	/**
 	 * Constructor 
@@ -171,7 +183,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 	 */
 	public ACSJMSTopicPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		super(topic, containerServices);
-		
+		logger=containerServices.getLogger();
 		if(topic != null) {
 			if (topic.getTopicName()==null || topic.getTopicName().isEmpty()) {
 				throw new IllegalArgumentException("Invalid topic name");
