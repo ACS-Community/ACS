@@ -328,7 +328,11 @@ public class ComponentClient
 			m_acsManagerProxy.shutdownNotify();
 			
 			m_containerServices.releaseAllComponents();
-						
+			
+			ACSAlarmSystemInterfaceFactory.done();
+			
+			m_containerServices.cleanUp();
+			
 			m_acsManagerProxy.logoutFromManager();
 			
 			if (ownAcsCorba) {
@@ -337,9 +341,8 @@ public class ComponentClient
 				acsCorba.doneCorba();
 			}
 
-			m_containerServices.cleanUp();
 			m_threadFactory.cleanUp();
-			ACSAlarmSystemInterfaceFactory.done();
+			
 		}
 		catch (org.omg.CORBA.OBJECT_NOT_EXIST ex)
 		{
