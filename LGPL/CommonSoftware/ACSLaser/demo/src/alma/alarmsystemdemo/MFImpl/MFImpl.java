@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import alma.acs.component.ComponentImplBase;
+import alma.acs.component.ComponentLifecycleException;
 import alma.alarmsystemdemo.MFOperations;
 
 import alma.alarmsystem.source.ACSFaultState;
@@ -44,6 +45,19 @@ public class MFImpl extends ComponentImplBase implements MFOperations {
 	private ACSAlarmSystemInterface alarmSource=null;
 	private ACSFaultState[] faultStates=null;
 	
+	@Override
+	public void execute() throws ComponentLifecycleException {
+		// TODO Auto-generated method stub
+		super.execute();
+		try {
+			init(FF,FM,FC);
+		} catch (Exception e) {
+			System.out.println("Error initing alarm system objects: "+e.getMessage());
+			e.printStackTrace();
+			throw new ComponentLifecycleException("Failed initializing alarm system objects!",e);
+		}
+	}
+
 	/**
 	 * Init i.e. create the fault state and the source
 	 * 
