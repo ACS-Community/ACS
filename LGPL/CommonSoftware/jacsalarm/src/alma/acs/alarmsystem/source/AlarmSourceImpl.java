@@ -35,7 +35,9 @@ import alma.acs.concurrent.NamedThreadFactory;
 import alma.acs.concurrent.ThreadLoopRunner;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
+import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogLevel;
 
 /**
  * The implementation of {@link AlarmSource}.
@@ -48,6 +50,8 @@ import alma.acs.container.ContainerServicesBase;
  * the alarms.
  * This is avoided by copying the alarms in {@link AlarmSourceImpl#queue}
  * in a temporary immutable vector. 
+ * <P>
+ * Instances of {@link AlarmSource} objects should be get with {@link ContainerServices#getAlarmSource()}.
  * 
  * @author acaproni
  *
@@ -417,7 +421,7 @@ public class AlarmSourceImpl implements AlarmSource {
 			oscillationLoopShutdownOK = false;
 		}
 		if (!oscillationLoopShutdownOK) {
-			System.err.println("Error shutting down the oscillation timer task with a 2 s timeout.");
+			containerServices.getLogger().log(AcsLogLevel.ERROR,"Error shutting down the oscillation timer task with a 2 s timeout.");
 		}
 		
 		alarmSender.close();
