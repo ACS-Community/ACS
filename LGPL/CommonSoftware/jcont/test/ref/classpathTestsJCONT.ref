@@ -1,6 +1,6 @@
 1 - === running a Java container with prioritized jar files only
-1 - AcsSystemClassLoader running in test mode: will only use jar files from priority list.
 1 - Container will accept remote debuggers on port ----
+1 - AcsSystemClassLoader running in test mode: will only use jar files from priority list.
 1 - Listening for transport dt_socket at address: ----
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'AcsContainerRunner' and updated logger names.
@@ -9,8 +9,8 @@
 1 - ----------T--:--:--.--- FINER [testContainer] ORB initialized.
 1 - ----------T--:--:--.--- FINE [testContainer] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
-1 - ----------T--:--:--.--- FINEST [testContainer] ContainerPOA created.
 1 - ----------T--:--:--.--- FINEST [testContainer] ComponentPOA created.
+1 - ----------T--:--:--.--- FINEST [testContainer] ContainerPOA created.
 1 - ----------T--:--:--.--- FINER [testContainer] Orb profiling set up, using alma.acs.container.corba.ContainerOrbProfiler
 1 - ContainerStatusMsg: Startup begins
 1 - ----------T--:--:--.--- FINE [testContainer] Manager reference not available. Trying to resolve...
@@ -21,9 +21,9 @@
 1 - ----------T--:--:--.--- FINER [testContainer] AcsContainer successfully registered with the ORB as a Container
 1 - ----------T--:--:--.--- FINE [testContainer] AcsContainer 'testContainer' created.
 1 - ContainerStatusMsg: ORB initialization ends
-1 - ContainerStatusMsg: Manager access initialization begins
-1 - ----------T--:--:--.--- FINE [testContainer] Component recovery = 'true' (from CDB/XSD)
 1 - ----------T--:--:--.--- FINE [testContainer] Set ORB level roundtrip timeout to 30.0 seconds.
+1 - ----------T--:--:--.--- FINE [testContainer] Component recovery = 'true' (from CDB/XSD)
+1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- FINE [testContainer] call to name() answered with 'testContainer'.
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
@@ -41,10 +41,12 @@
 1 - </LoggingConfig> with env vars having precedence over CDB
 1 - ----------T--:--:--.--- DEBUG [testContainer] Alarm system type: ACS
 1 - ContainerStatusMsg: Startup ends
-1 - ----------T--:--:--.--- FINER [testContainer] asynchronously calling ClientLogManager#initRemoteLogging()...
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
+1 - ----------T--:--:--.--- FINER [testContainer] asynchronously calling ClientLogManager#initRemoteLogging()...
 1 - ----------T--:--:--.--- FINER [testContainer] done ClientLogManager#initRemoteLogging
 1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+1 - ----------T--:--:--.--- DELOUSE [testContainer] Closing the AlarmSourceFactory
+1 - ----------T--:--:--.--- DEBUG [testContainer] AlarmSourceFactory closed
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
 1 - ----------T--:--:--.--- FINER [testContainer] RETURN
