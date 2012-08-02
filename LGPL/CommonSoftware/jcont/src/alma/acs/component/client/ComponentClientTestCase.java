@@ -238,6 +238,7 @@ public class ComponentClientTestCase extends TestCase
 		try {
 			m_acsManagerProxy.shutdownNotify();
 			m_containerServices.releaseAllComponents();
+			ACSAlarmSystemInterfaceFactory.done();
 			if (logReceiver != null && logReceiver.isInitialized()) {
 				logReceiver.stop();
 			}
@@ -252,7 +253,6 @@ public class ComponentClientTestCase extends TestCase
 			throw e;
 		} 
 		finally {
-			ACSAlarmSystemInterfaceFactory.done();
 			m_threadFactory.cleanUp();
 			if (acsCorba != null) {
 				// @todo investigate COMP-2632 which happened here.
