@@ -27,3 +27,5 @@
 1 - Invoking methods on C++ components
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: ACTIVE
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
+1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] AlarmSourceFactory closed
+1 - ----------T--:--:--.--- DELOUSE [TestSendLaserSources] Closing the AlarmSourceFactory
