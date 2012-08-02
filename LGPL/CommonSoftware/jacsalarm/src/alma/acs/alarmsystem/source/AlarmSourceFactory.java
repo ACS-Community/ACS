@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import alma.acs.component.client.ComponentClient;
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -53,7 +51,7 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
  * component client).
  * 
  * @author  acaproni
- * @version $Id: AlarmSourceFactory.java,v 1.1 2012/08/02 09:27:10 acaproni Exp $
+ * @version $Id: AlarmSourceFactory.java,v 1.2 2012/08/02 12:51:47 acaproni Exp $
  * @since ACS 10.2    
  */
 public class AlarmSourceFactory {

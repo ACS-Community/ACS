@@ -35,7 +35,6 @@ import alma.acs.concurrent.NamedThreadFactory;
 import alma.acs.concurrent.ThreadLoopRunner;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 
