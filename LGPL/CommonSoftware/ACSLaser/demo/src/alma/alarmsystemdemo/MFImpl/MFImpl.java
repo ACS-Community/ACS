@@ -24,6 +24,7 @@ package alma.alarmsystemdemo.MFImpl;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.alarmsystemdemo.MFOperations;
@@ -36,110 +37,59 @@ import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
 import  alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 
+/**
+ * The component sends 5 alarms with triplets having the same fault family {@link MFImpl#FF} 
+ * and fault member {@link MFImpl#FM} and 5 different fault codes {@link MFImpl#FCs} .
+ * <P>
+ * The purpose of this alarms is to show the effect of the multiplicity reduction rule.
+ * 
+ * @author acaproni
+ *
+ */
 public class MFImpl extends ComponentImplBase implements MFOperations {
 	
+	/**
+	 * 
+	 */
 	private final String FF="MF";
 	private final String FM="ALARM_SOURCE_MF";
-	private final int FC=0;
+	private final int[] FCs= { 0, 1, 2, 3, 4};
 	
 	private ACSAlarmSystemInterface alarmSource=null;
 	private ACSFaultState[] faultStates=null;
 	
-	@Override
-	public void execute() throws ComponentLifecycleException {
-		// TODO Auto-generated method stub
-		super.execute();
-		try {
-			init(FF,FM,FC);
-		} catch (Exception e) {
-			System.out.println("Error initing alarm system objects: "+e.getMessage());
-			e.printStackTrace();
-			throw new ComponentLifecycleException("Failed initializing alarm system objects!",e);
-		}
-	}
-
 	/**
-	 * Init i.e. create the fault state and the source
-	 * 
-	 * @param family The FaultFamily
-	 * @param member The FaultMember
-	 * @param code The FaultCode
-	 */
-	private void init(String family, String member, int code) 
-		throws ACSASFactoryNotInitedEx, SourceCreationErrorEx, FaultStateCreationErrorEx {
-		if (alarmSource==null) {
-				alarmSource=ACSAlarmSystemInterfaceFactory.createSource(this.name());
-		}
-		if (faultStates==null) {
-			faultStates = new ACSFaultState[5];
-		}
-		for (int t=0; t<faultStates.length; t++) {
-			if (faultStates[t]==null) {
-				faultStates[t] = ACSAlarmSystemInterfaceFactory.createFaultState(
-						family, member, code+t);
-				if (faultStates[t]==null) {
-					throw new NullPointerException("Error creating the fault state");
-				}
-				Properties props = new Properties();
-				props.setProperty(ACSFaultState.ASI_PREFIX_PROPERTY, "prefix");
-				props.setProperty(ACSFaultState.ASI_SUFFIX_PROPERTY, "suffix");
-				props.setProperty("TEST_PROPERTY", "TEST_VALUE");
-				faultStates[t].setUserProperties(props);
-			}
-		}
-		
-		
-	}
-	
-	/**
-	 * Send nFaults ACTIVE alarms
-	 * 
-	 * @param nFaults The number of alarms to send
+	 * Raise the alarms
 	 */
 	public void multiFault() {
-		if (faultStates==null || alarmSource==null) {
+		for (int fc: FCs) {
 			try {
-				init(FF,FM,FC);
-			} catch (Exception e) {
-				System.out.println("Error initing alarm system objects: "+e.getMessage());
-				e.printStackTrace();
-				throw new IllegalStateException("The alarm system objects are not initialized!",e);
+				m_containerServices.getAlarmSource().raiseAlarm(FF, FM, fc);
+			} catch (AcsJContainerServicesEx ex) {
+				// This can never happen actually but the exception is still present in 
+				// ContainerServices.///
 			}
-		}
-		for (int t=0; t<faultStates.length; t++) {
-			faultStates[t].setDescriptor(ACSFaultState.ACTIVE);
-			faultStates[t].setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-			alarmSource.push(faultStates[t]);
+			// Give the user time to see what happens in the alarm panel
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(5000);
 			} catch (InterruptedException ie) {}
 		}
-		
-
 	}
 	
 	/**
-	 * Send nFaults TERMINATE alarms
-	 *
-	 * @param nFaults The number of alarms to send
+	 * Clear the alarms
 	 */
 	public void terminate_multiFault() {
-		if (faultStates==null || alarmSource==null) {
+		for (int fc: FCs) {
 			try {
-				init(FF,FM,FC);
-			} catch (Exception e) {
-				System.out.println("Error initing alarm system objects: "+e.getMessage());
-				e.printStackTrace();
-				throw new IllegalStateException("The alarm system objects are not initialized!",e);
+				m_containerServices.getAlarmSource().clearAlarm(FF, FM, fc);
+			} catch (AcsJContainerServicesEx ex) {
+				// This can never happen actually but the exception is still present in 
+				// ContainerServices.///
 			}
-		}
-		
-		for (int t=0; t<faultStates.length; t++) {
-			faultStates[t].setDescriptor(ACSFaultState.TERMINATE);
-			faultStates[t].setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-			alarmSource.push(faultStates[t]);
+			// Give the user time to see what happens in the alarm panel
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(5000);
 			} catch (InterruptedException ie) {}
 		}
 	}
