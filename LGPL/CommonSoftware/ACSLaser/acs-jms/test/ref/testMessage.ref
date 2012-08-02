@@ -5,18 +5,26 @@
 1 - ----------T--:--:--.--- INFO [MessageTest#testACSJMSMessage] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- DEBUG [MessageTest#testACSJMSMessage] Alarm system type: ACS
 1 - ----------T--:--:--.--- INFO [MessageTest#testACSJMSMessage] component 'alma.acsjms.test.MessageTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- DELOUSE [MessageTest#testACSJMSMessage] Closing the AlarmSourceFactory
+1 - ----------T--:--:--.--- DEBUG [MessageTest#testACSJMSMessage] AlarmSourceFactory closed
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [MessageTest#testTextMessage] -------------------------------
 1 - ----------T--:--:--.--- INFO [MessageTest#testTextMessage] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- DEBUG [MessageTest#testTextMessage] Alarm system type: ACS
+1 - ----------T--:--:--.--- DELOUSE [MessageTest#testTextMessage] Closing the AlarmSourceFactory
+1 - ----------T--:--:--.--- DEBUG [MessageTest#testTextMessage] AlarmSourceFactory closed
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [MessageTest#testObjectMessage] -------------------------------
 1 - ----------T--:--:--.--- INFO [MessageTest#testObjectMessage] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- DEBUG [MessageTest#testObjectMessage] Alarm system type: ACS
+1 - ----------T--:--:--.--- DEBUG [MessageTest#testObjectMessage] AlarmSourceFactory closed
+1 - ----------T--:--:--.--- DELOUSE [MessageTest#testObjectMessage] Closing the AlarmSourceFactory
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [MessageTest#testEntity] -------------------------------
 1 - ----------T--:--:--.--- INFO [MessageTest#testEntity] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- DEBUG [MessageTest#testEntity] Alarm system type: ACS
+1 - ----------T--:--:--.--- DELOUSE [MessageTest#testEntity] Closing the AlarmSourceFactory
+1 - ----------T--:--:--.--- DEBUG [MessageTest#testEntity] AlarmSourceFactory closed
 1 - 
 1 - 
 1 - OK (4 tests)
