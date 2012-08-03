@@ -269,6 +269,7 @@ baci::AlarmEventStrategy<T, TPROP, TALARM>::~AlarmEventStrategy()
   ACS_TRACE("baci::AlarmEventStrategy&lt;&gt;::~AlarmEventStrategy&lt;&gt;");
   // unsubscribe to event dispatcher
   eventDispatcher_mp->unsubscribe(this);
+  CORBA::release(callback_mp);
 }
 
 template<class T, class TPROP, class TALARM>
