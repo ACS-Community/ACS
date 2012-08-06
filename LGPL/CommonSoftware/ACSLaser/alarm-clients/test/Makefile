@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2010/07/27 21:48:22 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.6 2012/08/06 08:26:10 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -88,7 +88,8 @@ SCRIPTS         = clientTATPrologue \
                 testCategoryClientParents \
                 testCategoryClientChildren \
                 testCategoryClientActiveChildren \
-                testUserProps
+                testUserProps \
+                testSrcDumper
 
 SCRIPTS_L       =
 
