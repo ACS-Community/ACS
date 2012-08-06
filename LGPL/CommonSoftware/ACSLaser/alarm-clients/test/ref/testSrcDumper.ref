@@ -8,32 +8,15 @@
 1 - --non-ISO timestamp-- INFO  MomConfig          - loading configuration...
 1 - --non-ISO timestamp-- WARN  MomConfig          - could not load configuration, using defaults
 1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
-1 - SynchroBuffer.createCheckingThread iteration
 1 - ----------T--:--:--.--- testFamily1:TestMember1:12 ACTIVE
-1 - SynchroBuffer.createCheckingThread iteration
 1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [AlarmSenderForDumperTest] component 'AlarmSenderForDumperTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [AlarmSenderForDumperTest_2] Config issue for channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
 1 - ----------T--:--:--.--- testFamily3:TestMember3:40 ACTIVE
-1 - SynchroBuffer.createCheckingThread iteration
 1 - ----------T--:--:--.--- testFamily2:TestMember2:2 TERMINATE
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
-1 - SynchroBuffer.createCheckingThread iteration
 1 - AlarmSenderForDumperTest closing.
 1 - AlarmSenderForDumperTest.close()
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - closing...
-1 - SynchroBuffer.close()
-1 - ****** ACSJMSTopicPublisher.close()
-1 - 	****** ACSJMSTopicPublisher.close() disconnecting CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES
 1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - closed
-1 - SynchroBuffer.createCheckingThread thread terminated
 1 - AlarmSenderForDumperTest.close() terminated
 1 - AlarmSenderForDumperTest done.
