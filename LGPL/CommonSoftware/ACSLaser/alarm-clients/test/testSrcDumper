@@ -1,7 +1,8 @@
+#!/bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,22 +20,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.5 2012/08/06 08:25:58 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# acaproni 2008-12-02 created
-SOURCE clientTATEnvironment
-PROLOGUE clientTATPrologue
+export ACS_TMP=../test/tmp
+export ACS_LOG_STDOUT=99
+acsStartJava -endorsed alma.alarmsystem.dumpers.test.TestSourceDumper &
+acsStartJava -endorsed alma.alarmsystem.dumpers.test.AlarmSenderForDumperTest
 
-1 testCategoryClient "testCategoryClient"
-2 testCategoryClientThreshold "testCategoryClientThreshold"
-3 testCategoryClientParents "testCategoryClientParents"
-4 testCategoryClientChildren "testCategoryClientChildren"
-5 testCategoryClientActiveChildren "testCategoryClientActiveChildren"
-6 testUserProps "testUserProps"
-7 testSrcDumper "acsStartJava -endorsed alma.alarmsystem.dumpers.test.TestSourceDumper & acsStartJava -endorsed alma.alarmsystem.dumpers.test.AlarmSenderForDumperTest"
-
-EPILOGUE acsutilTATEpilogue
