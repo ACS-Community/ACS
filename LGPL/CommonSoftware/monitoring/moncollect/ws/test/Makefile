@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2012/03/02 14:03:10 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.7 2012/08/06 15:27:10 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -216,7 +216,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
-	rm -rf tmp 
+	rm -rf tmp tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

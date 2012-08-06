@@ -9,3 +9,4 @@ s/Line=[0-9]*/Line=XXXX/g
 s/Thread=RequestProcessor-[0-9]*/Thread=RequestProcessor-XX/g
 s/ime=[0-9]*L/ime=XXXX/g
 s/'time': [0-9]*L/'time': ------------------L/g
+s/Python Client.*Shutdown called for client/Python Client: initialized by nnn@hhh - Shutdown called for client/g

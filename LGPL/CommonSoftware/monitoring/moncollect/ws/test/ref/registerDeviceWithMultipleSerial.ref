@@ -133,4 +133,4 @@
 1 -                     Severity=Error,
 1 -                     Data: Name=Device, Value=TEST_PS_1; )
 1 - 
-1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client: initialized by nnn@hhh - Shutdown called for client
