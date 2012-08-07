@@ -206,10 +206,15 @@ public class EngineCache extends Thread {
 			f = itemToDel.getFile();
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("Error deleting "+itemToDel.fileName+" (key "+itemToDel.key+")");
+			System.err.println("Will try to notify the ILogQueuFileHandler anyhow...");
 			fnfe.printStackTrace(System.err);
-			return ;
 		}
-		fileHandler.fileProcessed(f,itemToDel.minDate(), itemToDel.maxDate());
+		try {
+			fileHandler.fileProcessed(f,itemToDel.minDate(), itemToDel.maxDate());
+		} catch (Throwable t) {
+			System.err.println("Error calling filePrcessed in the ILogQueueFileHandler: "+t.getMessage());
+			t.printStackTrace(System.err);
+		}
 	}
 	
 	/**
