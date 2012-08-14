@@ -141,7 +141,10 @@ public class ContainerSealant
 			this.name = name;
 			this.logger = logger;
 			this.methodNamesExcludedFromInvocationLogging = methodNamesExcludedFromInvocationLogging;
-			this.logLevel = isOffShoot ? AcsLogLevel.TRACE : AcsLogLevel.DEBUG;
+			// TODO: Now that component interception logs have been demoted from DEBUG to DELOUSE,
+			// shouldn't we also use DELOUSE for offshoot interception logs? Historically it is TRACE
+			// but also at that time we did not have the DELOUSE level available.
+			this.logLevel = ( isOffShoot ? AcsLogLevel.TRACE : AcsLogLevel.DELOUSE );
 		}
 		
 		@Override
@@ -162,7 +165,7 @@ public class ContainerSealant
 			// log invocation time
 			String qualMethodName = name + "#" + method.getName();
 			if (isLoggable) {
-				logger.log(this.logLevel, "returning from " + qualMethodName + " after " + methodInvWatch.getLapTimeMillis() + " ms.");
+				logger.log(logLevel, "returning from " + qualMethodName + " after " + methodInvWatch.getLapTimeMillis() + " ms.");
 			}
 
 			if (realThr != null) {
@@ -179,7 +182,7 @@ public class ContainerSealant
 					}
 					String msg = (declared ? "checked exception " : "unchecked user exception (should have been declared in IDL!) ");
 					msg += "was thrown in functional method '" + qualMethodName + "':";
-					Level exLogLevel = (declared ? AcsLogLevel.DEBUG : Level.WARNING);
+					Level exLogLevel = (declared ? logLevel : Level.WARNING);
 					
 					// log the exception including an optional embedded ErrorTrace (as chain of AcsJxxx exceptions), see COMP-3654
 					Throwable thrExpanded = CorbaExceptionConverter.convertHiddenErrorTrace(realThr);
