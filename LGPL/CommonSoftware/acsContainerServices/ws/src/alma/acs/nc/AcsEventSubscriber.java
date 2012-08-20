@@ -72,7 +72,7 @@ public interface AcsEventSubscriber {
 	 *  previously subscribed.
 	 */
 	public void removeSubscription(Class<?> structClass) 
-		throws SubscriptionNotFoundException;
+		throws SubscriptionNotFoundException; // TODO use AcsJ style ex
 
 	/**
 	 * Adds a generic handler for all types of events.
@@ -126,10 +126,14 @@ public interface AcsEventSubscriber {
 	 * Disconnects this subscriber from the Notification Channel, and releases all
 	 * the resources associated with it. After this call, all registered handlers
 	 * will stop receiving events, and this subscriber becomes unusable.
-	 * 
+	 * <p>
 	 * Calling this method over a subscriber object that has been already disconnected
 	 * will throw an {@link IllegalStateException}.
-	 *
+	 * <p>
+	 * TODO: Define better the semantics for disconnecting a subscriber that was never connected.
+	 * It seems that it should be called in this case because the constructor may already allocate resources
+	 * that must be released here. Yet we currently throw IllegalStateException.
+	 * 
 	 * @throws IllegalStateException If this method is called over an AcsEventSubscriber object
 	 * that has been already disconnected
 	 */
