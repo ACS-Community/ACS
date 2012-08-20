@@ -19,6 +19,8 @@
 
 package alma.acs.nc;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -28,10 +30,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.portable.IDLEntity;
-
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.MultipleRepeatGuard;
@@ -39,28 +40,25 @@ import alma.acs.logging.RepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
-import alma.acsnc.OSPushConsumerPOA;
 
 /**
- * 
+ * Base class for an event subscriber, that can be used for both Corba NC and for in-memory test NC.
+ * <p>
+ * We will have to see if it can also be used for DDS-based events, or if the required modifications will be too heavy.
+ * The parameterization (T) is an attempt to abstract away from the IDLEntity event base type.
  */
-public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA implements AcsEventSubscriber {
+public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscriber {
 	
-
 	/**
 	 * A name that identifies the client of this NCSubscriber, to be used
-	 * both for logging and also (if possible) as the supplier proxy name so that 
+	 * both for logging and also (if applicable) as the supplier proxy name so that 
 	 * looking at the proxy objects of the NC we can figure out who the clients are.
 	 */
 	protected final String clientName;
 
 	/** 
-	 * Used to time the execution of receive methods 
-	 * @TODO HSO: Is it thread-safe to share a profiler?
+	 * Provides access to the ACS logging system. 
 	 */
-	protected final StopWatch profiler;
-
-	/** Provides access to the ACS logging system. */
 	protected final Logger logger;
 
 	/**
@@ -77,11 +75,11 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 	 * The purpose is only to track down receivers that don't keep up with the event rate, and not to provide reliable event buffering, 
 	 * see http://jira.alma.cl/browse/COMP-5767.
 	 * <p>
-	 * Errors are logged using type-safe {@link LOG_NC_ReceiverTooSlow}, using also fields {@link #numEventsDiscarded} and {@link #receiverTooSlowLogRepeatGuard}.
+	 * Errors are logged, using also fields {@link #numEventsDiscarded} and {@link #receiverTooSlowLogRepeatGuard}.
 	 * <p>
 	 * The difference of this mechanism compared to the logs controlled by {@link #processTimeLogRepeatGuard} is that
 	 * here we take into account the actual event rate and check whether the receiver can handle it, 
-	 * whereas {@link #processTimeLogRepeatGuard} logs only compare the actual process times against pre-configured values.
+	 * whereas {@link #processTimeLogRepeatGuard} only compares the actual process times against pre-configured values.
 	 */
 	private final ThreadPoolExecutor eventHandlingExecutor;
 
@@ -91,7 +89,7 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 	private long numEventsDiscarded;
 
 	/**
-	 * Throttles {@link LOG_NC_ReceiverTooSlow} logs, see {@link #eventHandlingExecutor}.
+	 * Throttles logs from {@link #logEventProcessingTooSlowForEventRate(long, String, long)}.
 	 */
 	private final RepeatGuard receiverTooSlowLogRepeatGuard;
 
@@ -100,45 +98,53 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 	 * Contains a generic receiver to be used by the
 	 * {@link #addGenericSubscription()} method.
 	 */
-	protected AcsEventSubscriber.GenericCallback genericReceiver = null;
+	protected AcsEventSubscriber.GenericCallback genericReceiver;
 
 	/**
-	 * Contains a list of receiver functions to be invoked when an event of a
-	 * particular type is received.
+	 * Contains a list of receiver functions to be invoked when an event 
+	 * of a particular type is received.
 	 * <p>
-	 * key = the event type (IDL-defined struct, which is an {@link IDLEntity} subclass). <br>
+	 * key = the event type name (IDL-defined struct). <br>
 	 * value = the matching event handler.
 	 */
-	protected final Map<Class<? extends IDLEntity>, AcsEventSubscriber.Callback<? extends IDLEntity>> receivers = 
-							new HashMap<Class<? extends IDLEntity>, AcsEventSubscriber.Callback<? extends IDLEntity>>();
+	protected final Map<Class<? extends T>, AcsEventSubscriber.Callback<? extends T>> receivers = 
+							new HashMap<Class<? extends T>, AcsEventSubscriber.Callback<? extends T>>();
 	
 	/**
 	 * Contains a list of repeat guards for each different type of event.
 	 */
 	protected final MultipleRepeatGuard processTimeLogRepeatGuard;
 
-	protected final ReentrantLock disconnectLock = new ReentrantLock();
+	/**
+	 * Lock to make connection and disconnection activities thread-safe. 
+	 */
+	protected final ReentrantLock connectionLock = new ReentrantLock();
 
+	/**
+	 * Runtime version of type parameter T.
+	 * Extracted at runtime to spare the subclass from overriding an extra method,
+	 * and to enjoy accessing static generics information. 
+	 */
+	private final Class<?> typeParameter;
+
+	/**
+	 * @return <code>true</code> if events should be logged when they are received. 
+	 */
 	protected abstract boolean isTraceEventsEnabled();
 	
+	
 	/**
-	 * Creates a new instance of NCSubscriber.
-	 * Normally an ACS class such as container services will act as the factory for NCSubscriber objects, 
+	 * Base class constructor, to be called from subclass ctor.
+	 * <p>
+	 * Normally an ACS class such as container services will act as the factory for event subscriber objects, 
 	 * but for exceptional cases it is also possible to create one stand-alone, 
 	 * as long as the required parameters can be provided.
 	 * 
-	 * @param channelName
-	 *            Subscribe to events on this channel registered in the CORBA
-	 *            Naming Service. If the channel does not exist, it's
-	 *            registered.
-	 * @param channelNotifyServiceDomainName
-	 *            Channel domain name, which is being used to determine the 
-	 *            notification service that should host the NC.
-	 *            Passing <code>null</code> results in the default notify service "NotifyEventChannelFactory" being used.
 	 * @param services
 	 *            To get ACS logger, access to the CDB, etc.
-	 * @param namingService
-	 *            Must be passed explicitly, instead of the old hidden approach via <code>ORBInitRef.NameService</code> property.
+	 * @param clientName
+	 *            A name that identifies the client of this NCSubscriber. 
+	 *            TODO: Check if we still need this name to be specified separately from {@link services#getName()}.
 	 * @throws AcsJException
 	 *             Thrown on any <I>really bad</I> error conditions encountered.
 	 */
@@ -151,10 +157,22 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 			throw ex;
 		}
 
+		if (clientName == null) {
+			AcsJBadParameterEx ex = new AcsJBadParameterEx();
+			ex.setParameter("clientName");
+			ex.setParameterValue("null");
+			throw ex;
+		}
+
+		logger = services.getLogger();
 		this.clientName = clientName;
 		
-		profiler = new StopWatch();
-		logger = services.getLogger();
+		typeParameter = getTypeParameter();
+		if (typeParameter == null) {
+			AcsJCouldntCreateObjectEx ex = new AcsJCouldntCreateObjectEx();
+			// TODO set a detail text ex parameter, saying that the subscriber hierarchy is somehow messed up. 
+			throw ex;
+		}
 
 		// @TODO Set more realistic guarding parameters, e.g. max 1 identical log in 10 seconds
 		processTimeLogRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 1, Logic.COUNTER, 100);
@@ -167,27 +185,73 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 		
 	}
 
+	/**
+	 * Find out the type T (e.g. IDLEntity) that our non-abstract subclass statically provides.
+	 * <p>
+	 * @TODO: Allow longer inheritance hierarchies for concrete subscriber classes, 
+	 *        that should still find this base class by following the inheritance chain.
+	 * @see #typeParameter
+	 */
+	private Class<?> getTypeParameter() {
+		Type genericSuper = getClass().getGenericSuperclass();
+		if (genericSuper instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) genericSuper;
+			if (AcsEventSubscriberImplBase.class.equals(pt.getRawType())) {
+				return (Class<?>) pt.getActualTypeArguments()[0];
+			}
+		}
+		return null;
+	}
+	
+
+	/**
+	 * Gets the configured (or default) max time that a receiver may take to process an event,
+	 * regardless of the actual event rate.
+	 */
 	protected abstract double getMaxProcessTimeSeconds(String eventName);
 	
+	/**
+	 * Logs an exception thrown by an event handler (user code).
+	 */
 	protected abstract void logEventReceiveHandlerException(String eventName, String receiverClassName, Throwable thr);
 	
+	/**
+	 * Logs the error that event processing time was exceeded.
+	 */
 	protected abstract void logEventProcessingTimeExceeded(String eventName, long logOcurrencesNumber);
 	
+	/**
+	 * Logs the error that the receiver cannot keep up with the actual event rate,
+	 * in spite of the small event buffering done.
+	 */
 	protected abstract void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName, long logOcurrencesNumber);
 	
+	/**
+	 * Logs or ignores the fact that an event was received for which no receiver could be found.
+	 * <p>
+	 * The subclass must know whether such a condition is expected or not, 
+	 * e.g. because event filtering is set up outside of the subscriber
+	 * and only subscribed event types are expected to arrive. 
+	 */
 	protected abstract void logNoEventReceiver(String eventName);
 
+	/**
+	 * Logs the error that the local event buffer could not be emptied before shutting down the subscriber. 
+	 */
 	protected abstract void logQueueShutdownError(int timeoutMillis, int remainingEvents);
 
 	
 	/**
-	 * Asynchronously calls {@link #processEvent(IDLEntity, EventDescription)}, 
+	 * Asynchronously calls {@link #processEvent(Object, EventDescription)}, 
 	 * using {@link #eventHandlingExecutor}.
-	 * @param structuredEvent
-	 * @param eDescrip
+	 * <p>
+	 * This method should be called from the subclass-specific method that receives the event,
+	 * for example <code>push_structured_event</code> in case of Corba NC.
+	 *  
 	 * @param structToProcess
+	 * @param eDescrip
 	 */
-	protected void processEventAsync(final IDLEntity structToProcess, final EventDescription eDescrip) {
+	protected void processEventAsync(final T structToProcess, final EventDescription eDescrip) {
 
 		// to avoid unnecessary scary logs, we tolerate previous events up to half the queue size
 		boolean isReceiverBusyWithPreviousEvent = ( eventHandlingExecutor.getQueue().size() > EVENT_QUEUE_CAPACITY / 2 );
@@ -216,22 +280,28 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 
 
 	/**
-	 * Called from Corba (via push_structured_event).
+	 * This method should be called from the subclass-specific method that receives the event,
+	 * for example <code>push_structured_event</code> in case of Corba NC,
+	 * or preferably via {@link #processEventAsync(Object, EventDescription)}.
+	 * <p>
 	 * The implementation cannot assume any particular event type.
 	 * <p>
 	 * No exception is allowed to be thrown by this method, even if the receiver implementation throws a RuntimeExecption
 	 */
-	protected void processEvent(IDLEntity corbaData, EventDescription eventDescrip) {
+	protected void processEvent(T corbaData, EventDescription eventDescrip) {
 		
-		Class<? extends IDLEntity> eventType = corbaData.getClass();
+		@SuppressWarnings("unchecked")
+		Class<T> eventType = (Class<T>) corbaData.getClass();
+		
 		String eventName = eventType.getName();
 
 		// figure out how much time this event has to be processed (according to configuration)
 		double maxProcessTimeSeconds = getMaxProcessTimeSeconds(eventName);
 
-		// we give preference to a receiver that has registered for this concrete subtype of IDLEntity
+		StopWatch profiler = new StopWatch();
+		// we give preference to a receiver that has registered for this concrete subtype of T
 		if (receivers.containsKey(eventType)) {
-			AcsEventSubscriber.Callback<? extends IDLEntity> receiver = receivers.get(eventType);
+			AcsEventSubscriber.Callback<? extends T> receiver = receivers.get(eventType);
 
 			profiler.reset();
 			try {
@@ -250,7 +320,6 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 		// fallback to generic receive method
 		else if (genericReceiver != null) {
 			
-			// start timing
 			profiler.reset();
 			genericReceiver.receive(corbaData, eventDescrip);
 			double usedSecondsToProcess = (profiler.getLapTimeMillis() / 1000.0);
@@ -260,14 +329,11 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 				logEventProcessingTimeExceeded(eventName, processTimeLogRepeatGuard.counterAtLastExecution(eventName));
 			}
 		} 
-		// no receiver found 
-		// TODO: Check if the filtering for the subscribed events happens now really on the server side. 
-		// If so, then we should never get an event for which there is no receiver, and should thus
-		// log an error regardless of isTraceEventsEnabled
+		// no receiver found.
+		// This may be OK or not, depending on whether the subclass sets up filtering in the underlying notification framework
+		// that ensures that only subscribed event types reach the subscriber.
 		else {
-			if (isTraceEventsEnabled()) {
-				logNoEventReceiver(eventName);
-			}
+			logNoEventReceiver(eventName);
 		}
 	}
 
@@ -275,14 +341,14 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 	 * "Generic helper method" to enforce type argument inference by the compiler,
 	 * see http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ207
 	 */
-	private <T extends IDLEntity> void _process(AcsEventSubscriber.Callback<T> receiver, Object corbaData, EventDescription eventDescrip) {
-		T castCorbaData = null;
+	private <U extends T> void _process(AcsEventSubscriber.Callback<U> receiver, T eventData, EventDescription eventDescrip) {
+		U castCorbaData = null;
 		try {
-			castCorbaData = receiver.getEventType().cast(corbaData);
+			castCorbaData = receiver.getEventType().cast(eventData);
 		}
 		catch (ClassCastException ex) {
 			// This should never happen and would be an ACS error
-			logger.warning("Failed to deliver incompatible data '" + corbaData.getClass().getName() + 
+			logger.warning("Failed to deliver incompatible data '" + eventData.getClass().getName() + 
 					"' to subscriber '" + receiver.getEventType().getName() + "'. Fix data subscription handling in " + getClass().getName() + "!");
 		} 
 		// user code errors (runtime ex etc) we let fly up
@@ -303,7 +369,7 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 	 * @TODO: Couldn't this be fixed by creating the server-side filters on demand (see also javadoc class comment about lifecycle)?
 	 */
 	@Override
-	public void addGenericSubscription(GenericCallback receiver) throws CannotAddSubscriptionException {
+	public final void addGenericSubscription(GenericCallback receiver) throws CannotAddSubscriptionException {
 
 		// First time we create the filter and set the receiver
 		if( genericReceiver == null ) {
@@ -313,20 +379,13 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 		genericReceiver = receiver;
 	}
 
-	protected abstract void notifyFirstSubscription(Class<?> structClass) throws CannotAddSubscriptionException;
-	
-	protected abstract void notifySubscriptionRemoved(Class<?> structClass) throws SubscriptionNotFoundException;
-	
-	protected abstract void notifyNoSubscription();
-
-	
 	/**
 	 * Removes the generic receiver handler.
 	 * 
 	 * @throws AcsJCORBAProblemEx
 	 */
 	@Override
-	public void removeGenericSubscription() throws SubscriptionNotFoundException {
+	public final void removeGenericSubscription() throws SubscriptionNotFoundException {
 
 		if (genericReceiver == null ) {
 			throw new SubscriptionNotFoundException("Failed to remove generic subscription when not actually subscribed");
@@ -336,21 +395,30 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 		genericReceiver = null;
 	}
 
+	/**
+	 * @param structClass Can be <code>null</code> in case of generic subscription.
+	 */
+	protected abstract void notifyFirstSubscription(Class<?> structClass) throws CannotAddSubscriptionException;
+	
+	protected abstract void notifySubscriptionRemoved(Class<?> structClass) throws SubscriptionNotFoundException;
+	
+	protected abstract void notifyNoSubscription();
 
+	
 	@Override
 	@SuppressWarnings("unchecked")
-	public void addSubscription(AcsEventSubscriber.Callback<?> receiver) 
+	public final void addSubscription(AcsEventSubscriber.Callback<?> receiver) 
 			throws CannotAddSubscriptionException {
 
 		Class<?> structClass = receiver.getEventType();
 
-		if( structClass == null || !(IDLEntity.class.isAssignableFrom(structClass)) )
+		if( structClass == null || !(typeParameter.isAssignableFrom(structClass)) )
 			throw new CannotAddSubscriptionException("Receiver is returning a null or invalid event type. " +
 					"Check the getEventType() method implementation and try again");
 
 		// These casts are already safe now
-		Callback<? extends IDLEntity> typedReceiver = (Callback<? extends IDLEntity>)receiver;
-		Class<? extends IDLEntity> typedStructClass = (Class<? extends IDLEntity>)structClass;
+		Callback<? extends T> typedReceiver = (Callback<? extends T>)receiver;
+		Class<? extends T> typedStructClass = (Class<? extends T>)structClass;
 
 		// First time we create the filter and set the receiver
 		if (!receivers.containsKey(structClass)) {
@@ -360,8 +428,9 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 		receivers.put(typedStructClass, typedReceiver);
 	}
 
+	
 	@Override
-	public void removeSubscription(Class<?> structClass) throws SubscriptionNotFoundException {
+	public final void removeSubscription(Class<?> structClass) throws SubscriptionNotFoundException {
 
 		// Removing subscription from receivers list
 		if (structClass != null) {
@@ -382,22 +451,106 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 	}
 
 	/** 
-	 * @TODO: Implement this method and call into abstract Corba-specific methods 
-	 * implemented by the subclass. For the time being we rely on the subclass to implement the disconnect
-	 * method in a way that calls {@link #shutdownAsyncEventProcessing()}, which after the inversion we should do ourselves.
 	 * @see alma.acs.nc.AcsEventSubscriber#disconnect()
 	 */
 	@Override
-	public abstract void disconnect() throws IllegalStateException;
+	public final void disconnect() throws IllegalStateException {
+
+		connectionLock.lock();
+		try {
+			checkConnection();
+
+			// stop receiving events
+			try {
+				suspend();
+			} finally {
+				// An IllegalStateException we let fly, but still must call the rest
+				disconnect_ImplSpecific();
+				shutdownAsyncEventProcessing();
+			}
+		} 
+		finally {
+			connectionLock.unlock();
+		}
+	}
 	
+	/**
+	 * Called from {@link #disconnect()}.
+	 */
+	protected abstract void disconnect_ImplSpecific() throws IllegalStateException;
+	
+	
+	public final boolean isDisconnected() {
+		connectionLock.lock();
+		try {
+			return isDisconnected_ImplSpecific();
+		}
+		finally {
+			connectionLock.unlock();
+		}
+	}
+
+	/**
+	 * Called by {@link #isDisconnected()}, for the pub-sub technology specific part.
+	 */
+	protected abstract boolean isDisconnected_ImplSpecific();
+	
+
+	private void checkConnection() throws IllegalStateException {
+		if (isDisconnected()) {
+			throw new IllegalStateException("Subscriber already disconnected");
+		}
+	}
+
+	
+	@Override
+	public final void suspend() throws IllegalStateException {
+		connectionLock.lock();
+		try {
+			checkConnection();
+			suspend_ImplSpecific(); // currently may throw OBJECT_NOT_EXIST for NC
+		}
+		finally {
+			connectionLock.unlock();
+		}
+	}
+	
+	/**
+	 * Called by {@link #suspend()}, for the pub-sub technology specific part.
+	 * @throws IllegalStateException
+	 */
+	protected abstract void suspend_ImplSpecific() throws IllegalStateException;
+
+	
+	@Override
+	public final void resume() throws IllegalStateException {
+		connectionLock.lock();
+		try {
+			checkConnection();
+			resume_ImplSpecific();
+		}
+		finally {
+			connectionLock.unlock();
+		}
+	}
+
+	/**
+	 * Called by {@link #resume()}, for the pub-sub technology specific part.
+	 * @throws IllegalStateException
+	 */
+	protected abstract void resume_ImplSpecific() throws IllegalStateException;
 	
 	/**
 	 * Shuts down the event queue. 
 	 * Queued events may still be processed by the receivers afterwards, 
 	 * but here we wait for up to 500 ms to log it if it is the case.
+	 * <p>
+	 * Further events delivered to {@link #processEventAsync(Object, EventDescription)}
+	 * will cause an exception there.
+	 * 
 	 * @return <code>true</code> if all events in the queue were processed before returning.
 	 */
-	protected boolean shutdownAsyncEventProcessing() {
+	private boolean shutdownAsyncEventProcessing() {
 		eventHandlingExecutor.shutdown();
 		boolean queueOK = false;
 		try {
@@ -406,7 +559,7 @@ public abstract class AcsEventSubscriberImplBase extends OSPushConsumerPOA imple
 			// just leave queueOK == false
 		}
 		if (!queueOK) {
-			// timeout occurred, may still have events in the queue. Terminate with error message
+			// interrupted or timeout occurred, may still have events in the queue. Terminate with error message
 			int remainingEvents = eventHandlingExecutor.getQueue().size();
 			logQueueShutdownError(500, remainingEvents);
 		}
