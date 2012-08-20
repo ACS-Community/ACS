@@ -125,7 +125,7 @@ import alma.acsnc.OSPushConsumerPOATie;
  * 
  * @author jslopez, hsommer, rtobar
  */
-public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushConsumerOperations, ReconnectableSubscriber {
+public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implements OSPushConsumerOperations, ReconnectableSubscriber {
 	
 	/**
 	 * The default maximum amount of time an event handler is given to process
@@ -257,8 +257,18 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 		handlerTimeoutMap = helper.getEventHandlerTimeoutMap(this.channelName);
 
 		// get the admin object
+		
+		// The locking ensures thread memory sync for this non-final field.
+		// Note that the lock is not shared across subscribers and does not include the proxy supplier creation, 
+		// which means that concurrent creation of subscribers may produce too many (> PROXIES_PER_ADMIN) subscribers
+		// for the same admin object. The downside is a small uncertainty in the load balancing and occasional unit test failures,
+		// but we still prefer it over more extended local locking because then we can test from a single process
+		// the concurrent subscriber creation issues, which anyway can occur in practice with different processes creating 
+		// the subscribers.
+		connectionLock.lock(); 
 		sharedConsumerAdmin = getSharedAdmin();
-
+		connectionLock.unlock();
+		
 		// get the proxy Supplier
 		proxySupplier = createProxySupplier();
 
@@ -309,6 +319,8 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 	
 	@Override
 	protected void logNoEventReceiver(String eventName) {
+		// With server-side filtering set up, we should never get an unexpected event type.
+		// Thus we log this problem.
 		LOG_NC_EventReceive_NoHandler.log(logger, channelName, getNotificationFactoryName(), eventName);
 	}
 
@@ -331,6 +343,8 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 		boolean created = false;
 		int consumerAdminId = -1;
 
+		// @TODO (HSO): Why use a static lock here? This gives a false sense of safety in single-program unit tests,
+		// while in real life we can have concurrent admin creation requests from different processes.
 		synchronized(NCSubscriber.class) {
 
 			// Check if we can reuse an already existing consumer admin
@@ -612,31 +626,21 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 	}
 
 	@Override
-	public void disconnect() throws IllegalStateException {
+	protected void disconnect_ImplSpecific() throws IllegalStateException {
 
 		/*
 		 * TODO: (rtobar) Maybe this code can be written more nicely,
 		 *  but always taking care that, if not in an illegal state,
 		 *  then we should destroy the remove proxySupplier object
 		 */
-		disconnectLock.lock();
 		boolean success = false;
 		boolean shouldDestroyProxy = true;
 
 		try {
-
-			checkConnection();
-
-			// stop receiving events
-			suspend();
-
 			// remove all filters and destroy the proxy supplier
 			proxySupplier.remove_all_filters();
 
-			// Currently it's bad design that the subclass must call this super class method.
-			shutdownAsyncEventProcessing();
-
-			try{
+			try {
 				// clean-up CORBA stuff
 				if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
 					helper.getContainerServices().deactivateOffShoot(corbaObj);
@@ -648,9 +652,6 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 			logger.finer("Disconnected from NC '" + channelName + "'.");
 			success = true;
 			shouldDestroyProxy = true;
-
-		} catch (IllegalStateException ex) {
-			throw ex;
 		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
 			// this is OK, because someone else has already destroyed the remote resources
 			logger.fine("No need to release resources for channel " + channelName + " because the NC has been destroyed already.");
@@ -658,7 +659,7 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 			shouldDestroyProxy = false;
 		}
 		finally {
-
+			// TODO: Who nulls proxySupplier if we get OBJECT_NOT_EXIST here, or already in suspend?
 			if( shouldDestroyProxy && proxySupplier != null ) {
 				proxySupplier.disconnect_structured_push_supplier();
 				proxySupplier = null;
@@ -673,55 +674,45 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 				channel = null;
 			}
 			
-			disconnectLock.unlock();
 		}
 	}
 
-	public boolean isDisconnected() {
-		disconnectLock.lock();
-		boolean ret = (sharedConsumerAdmin == null);
-		disconnectLock.unlock();
-		return ret;
-	}
 
-	private void checkConnection() throws IllegalStateException {
-		if (isDisconnected()) {
-			throw new IllegalStateException("Consumer already disconnected");
-		}
+	protected boolean isDisconnected_ImplSpecific() {
+		// TODO: Shouldn't we also check proxySupplier==null ??
+		return ( sharedConsumerAdmin == null );
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>
-	 * The design of this implementation follows CORBA NC standard, as described in 
-	 * <it>Notification Service Specification, Version 1.1, formal/04-10-11, 3.4.13 The StructuredProxyPushSupplier Interface.</it>
+	 * Called by {@link #suspend()}.
 	 */
 	@Override
-	public void suspend() throws IllegalStateException {
-
-		checkConnection();
-
-		disconnectLock.lock();
-		try {
-			if (proxySupplier == null) {
-				throw new IllegalStateException("Consumer already disconnected");
-			}
-			proxySupplier.suspend_connection();
-		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
-			throw new IllegalStateException(e);
-		} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
-			throw new IllegalStateException(e);
+	protected void suspend_ImplSpecific() throws IllegalStateException {
+		if (proxySupplier == null) {
+			throw new IllegalStateException("Subscriber already disconnected");
 		}
-		finally {
-			disconnectLock.unlock();
+		try {
+			// See OMG NC spec 3.4.13.2. Server will continue to queue events.
+			proxySupplier.suspend_connection();
+		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive ex) {
+			throw new IllegalStateException(ex);
+		} catch (org.omg.CosNotifyChannelAdmin.NotConnected ex) {
+			throw new IllegalStateException(ex);
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex) {
+//			proxySupplier = null;  TODO once isDisconnected etc work with proxy supplier.
+			throw new IllegalStateException("Remote resources already destroyed.", ex);
 		}
 	}
 
-	@Override
-	public void resume() throws IllegalStateException {
 
-		checkConnection();
+	/**
+	 * Called by {@link #resume()}.
+	 */
+	@Override
+	protected void resume_ImplSpecific() throws IllegalStateException {
+		if (proxySupplier == null) {
+			throw new IllegalStateException("Subscriber already disconnected");
+		}
 		try {
 			proxySupplier.resume_connection();
 		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive e) {
@@ -730,6 +721,7 @@ public class NCSubscriber extends AcsEventSubscriberImplBase implements OSPushCo
 			throw new IllegalStateException(e);
 		}
 	}
+	
 
 	/**
 	 * This method is used to discard all events. Is called when there are no
