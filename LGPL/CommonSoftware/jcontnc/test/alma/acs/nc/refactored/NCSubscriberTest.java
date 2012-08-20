@@ -49,7 +49,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	/**
 	 * We'll use this publisher to publish events of different types
 	 * (statusBlockEvent1 and statusBlockEvent2).
-	 * Thus we cannot parametrize it to any one of these types, but have to use the 
+	 * Thus we cannot parameterize it to any one of these types, but have to use the 
 	 * generic base type IDLEntity or Object.
 	 */
 	private AcsEventPublisher<IDLEntity> m_publisher;
