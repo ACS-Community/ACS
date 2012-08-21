@@ -53,7 +53,7 @@ TABLE AssemblyType
     Data                    CLOB                    NULL
     KEY AssemblyTypeName
     CONSTRAINT AssemblyTypeLRUName FOREIGN KEY (LRUName) REFERENCES LRUType
-    CONSTRAINT AssemblyTypeBEType CHECK (BaseElementType IN ('Antenna', 'Pad', 'CorrHWConfiguration', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
+    CONSTRAINT AssemblyTypeBEType CHECK (BaseElementType IN ('Antenna', 'Pad', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
 ENDTABLE
 
 // This table stores the system XML Schemas. The ComponentType table
@@ -509,7 +509,7 @@ TABLE BaseElement
      ConfigurationId         INTEGER                     NOT NULL
      KEY BaseElementId GENERATED FROM BaseElementName ConfigurationId
      CONSTRAINT BEConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
-     CONSTRAINT BEType CHECK (BaseType IN ('Antenna', 'Pad', 'CorrHWConfiguration', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
+     CONSTRAINT BEType CHECK (BaseType IN ('Antenna', 'Pad', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
 ENDTABLE
 
 // The BaseElementOnline table provides a list of the base elements that are online.
@@ -563,16 +563,6 @@ TABLE Pad
      CONSTRAINT PadBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
 ENDTABLE
 
-// CorrHWConfiguration determines the type of correlator in use.  A configuration may have up to 4 quadrants depending on its type.
-TABLE CorrHWConfiguration
-     BaseElementId           INTEGER                     NOT NULL
-     CorrHWName              NAME                    NOT NULL
-     CorrHWType              LONGVARCHAR(30)             NOT NULL
-     KEY BaseElementId
-     CONSTRAINT CorrHWBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
-     CONSTRAINT CorrelatorHWType CHECK (CorrHWType IN ('CORRELATOR_12m_2ANTS','CORRELATOR_12m_1QUADRANT','CORRELATOR_12m_2QUADRANT','CORRELATOR_12m_4QUADRANT'))
-ENDTABLE
-
 // Correlator quadrant belongs here rather than Correlator because each quadrant can separately be on-line or off-line.
 // A correlator quadrant is composed of racks.  In addition, each correlator quadrant has a number, a CAN channel, 
 // number of antennas, and bins associated with it.  Quadrants may be turned on/off independetly within a HW configuration 
@@ -581,7 +571,6 @@ ENDTABLE
 // 
 TABLE CorrQuadrant
      CorrQuadrantId          INTEGER                     NOT NULL
-     CorrHWConfigId          INTEGER                     NOT NULL
      BaseElementId           INTEGER                     NOT NULL
      CorrName                NAME                    NOT NULL
      Quadrant                TINYINT                 NOT NULL
@@ -593,7 +582,6 @@ TABLE CorrQuadrant
      NumberOfBins            TINYINT                 NOT NULL
      Active                  BOOLEAN                 NOT NULL
      KEY CorrQuadrantId GENERATED FROM CorrName Quadrant BaseElementId
-     CONSTRAINT CorrHWConfig FOREIGN KEY (BaseElementId) REFERENCES CorrHWConfiguration
      CONSTRAINT CorrQuadNumber CHECK (Quadrant IN (0, 1, 2, 3))
 ENDTABLE
 
@@ -1085,7 +1073,7 @@ TABLE BaseElementStartup
       CONSTRAINT BEStartupId FOREIGN KEY (StartupId) REFERENCES Startup
       CONSTRAINT BEStartupIdBE FOREIGN KEY (BaseElementId) REFERENCES BaseElement
       CONSTRAINT BEStartupParent FOREIGN KEY (Parent) REFERENCES BaseElementStartup
-      CONSTRAINT BEStartupBEType CHECK (BaseElementType IN ('Antenna', 'Pad', 'CorrHWConfiguration', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
+      CONSTRAINT BEStartupBEType CHECK (BaseElementType IN ('Antenna', 'Pad', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
 ENDTABLE
 
 // The AssociatedBaseElement table specifies which base elements are associated with a given
