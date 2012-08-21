@@ -832,18 +832,6 @@ TABLE SBExecution
      CONSTRAINT SBExecutionArrayId FOREIGN KEY (ArrayId) REFERENCES Array
 ENDTABLE
 
-// The AntennaToCorr table gives the mapping of antennas to correlator quadrants.  The AntennaNumber is the number of that antenna within the correlator quadrant.
-TABLE AntennaToCorr
-     AntennaId               INTEGER                     NOT NULL
-     CorrId                  INTEGER                     NOT NULL
-     AntennaNumber           TINYINT                 NOT NULL
-     StartTime               TIME                    NOT NULL
-     EndTime                 TIME                    NULL
-     KEY AntennaId CorrId StartTime
-     CONSTRAINT AntToCorrAntennaId FOREIGN KEY (AntennaId) REFERENCES Antenna
-     CONSTRAINT AntToCorrId FOREIGN KEY (CorrId) REFERENCES CorrQuadrant
-ENDTABLE
-
 // The WeatherStationToPad table gives the pad that a weather station is on at the indicated time.  If the Planned flag is 'y', then it indicates this is a planned weather station and not an actual one.  Planned entries are ignored when determining what is or was actually online.
 TABLE WeatherStationToPad
      WeatherStationId        INTEGER                     NOT NULL
@@ -1088,7 +1076,7 @@ TABLE AssociatedBaseElement
      CONSTRAINT ABEStartupIdBE FOREIGN KEY (BaseElementId) REFERENCES BaseElement
      CONSTRAINT ABEStartupId FOREIGN KEY (StartupId) REFERENCES Startup
      CONSTRAINT ABEAssociated FOREIGN KEY (AssociatedId) REFERENCES BaseElement
-     CONSTRAINT ABEAssociationType CHECK (AssociationType IN ('AntennaToPad', 'AntennaToFrontEnd', 'AntennaToCorr'))
+     CONSTRAINT ABEAssociationType CHECK (AssociationType IN ('AntennaToPad', 'AntennaToFrontEnd'))
 ENDTABLE
 
 // The AssemblyStartup table specifies which assemblies are to be started.
