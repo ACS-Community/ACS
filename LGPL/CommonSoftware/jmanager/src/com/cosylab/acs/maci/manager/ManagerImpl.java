@@ -6684,12 +6684,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						break;
 					}
 				}
+				if (exception != null) {
+					throw exception;
+				}
+				
+				return componentInfo;
 			}
-			if (exception != null) {
-				throw exception;
-			}
-			
-			return componentInfo;
 		}
 		
 		@Override
@@ -6719,31 +6719,33 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		@Override
 		public void failed(ComponentInfo result, Throwable exception) {
-			try
-			{
-				// TODO: Who can this ever be a (locally java defined) TimeoutRemoteException
-				// when it comes from the container?
-				boolean timeoutError = (exception instanceof TimeoutRemoteException);
-				
-				AcsJCannotGetComponentEx bcex;
-				if (exception instanceof AcsJCannotGetComponentEx)
-					bcex = (AcsJCannotGetComponentEx)exception;
-				else
-					bcex = new AcsJCannotGetComponentEx(exception);
-				
-				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
-				
-				componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,
-						code, containerName, keepAliveTime, status, bcex,
-						isOtherDomainComponent, isDynamicComponent, h, reactivate,
-						result, container, containerInfo, executionId,
-						activationTime, timeoutError);
-			} catch (Throwable th) {
-				this.exception = th;
-			}
-			finally {
-				done = true;
-				sync.notifyAll();
+			synchronized (sync) {
+				try
+				{
+					// TODO: Who can this ever be a (locally java defined) TimeoutRemoteException
+					// when it comes from the container?
+					boolean timeoutError = (exception instanceof TimeoutRemoteException);
+					
+					AcsJCannotGetComponentEx bcex;
+					if (exception instanceof AcsJCannotGetComponentEx)
+						bcex = (AcsJCannotGetComponentEx)exception;
+					else
+						bcex = new AcsJCannotGetComponentEx(exception);
+					
+					logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+					
+					componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,
+							code, containerName, keepAliveTime, status, bcex,
+							isOtherDomainComponent, isDynamicComponent, h, reactivate,
+							result, container, containerInfo, executionId,
+							activationTime, timeoutError);
+				} catch (Throwable th) {
+					this.exception = th;
+				}
+				finally {
+					done = true;
+					sync.notifyAll();
+				}
 			}
 		}
 	}
