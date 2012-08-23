@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.omg.CORBA.TIMEOUT;
 
@@ -20,6 +21,7 @@ import alma.ACS.CBDescOut;
 import alma.ACSErr.Completion;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
@@ -57,15 +59,19 @@ public class ContainerProxy extends ClientProxy implements Container
 	 */
 	protected si.ijs.maci.Container container;
 
+	protected final Logger logger;
+
+	
 	/**
 	 * Constructor for ContainerProxy.
 	 * @param	container	CORBA reference, non-<code>null</code>.
 	 */
-	public ContainerProxy(si.ijs.maci.Container container)
+	public ContainerProxy(si.ijs.maci.Container container, Logger logger)
 	{
 		super(container);
 		
 		this.container = container;
+		this.logger = logger;
 		
 		this.ior = serialize(container);
 		
@@ -138,7 +144,8 @@ public class ContainerProxy extends ClientProxy implements Container
 		public CBDescIn register(ComponentInfoCompletionCallback cb) {
 			synchronized (lookupTable) {
 				// possible endless loop
-				while (lookupTable.containsKey(++id));
+				while (lookupTable.containsKey(++id))
+					;
 				lookupTable.put(id, cb);
 				return new CBDescIn(0, 0, id);
 			}
@@ -157,34 +164,43 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 
 		@Override
-		public void done(si.ijs.maci.ComponentInfo info, Completion c,
-				CBDescOut desc) {
-			ComponentInfoCompletionCallback cb = unregister(desc.id_tag);
-			if (cb != null)
-			{
-				ComponentInfo retVal = null;
-				if (info != null)
+		public void done(si.ijs.maci.ComponentInfo info, Completion c, CBDescOut desc) {
+			ComponentInfoCompletionCallback cb = null;
+			try {
+				cb = unregister(desc.id_tag);
+				if (cb != null)
 				{
-					retVal = new ComponentInfo(info.h, info.name, info.type, info.code,
-							info.reference != null ? new ComponentProxy(info.name, info.reference) : null);
-					retVal.setContainer(info.container);
-					retVal.setContainerName(info.container_name);
-					retVal.setAccessRights(inverseMapAccessRights(info.access));
-					retVal.setClients(new IntArray(info.clients));
-					retVal.setInterfaces(info.interfaces);
+					ComponentInfo retVal = null;
+					if (info != null)
+					{
+						retVal = new ComponentInfo(info.h, info.name, info.type, info.code,
+								info.reference != null ? new ComponentProxy(info.name, info.reference) : null);
+						retVal.setContainer(info.container);
+						retVal.setContainerName(info.container_name);
+						retVal.setAccessRights(inverseMapAccessRights(info.access));
+						retVal.setClients(new IntArray(info.clients));
+						retVal.setInterfaces(info.interfaces);
+					}
+					AcsJException ex = AcsJCompletion.fromCorbaCompletion(c).getAcsJException();
+					if (ex == null)
+						cb.done(retVal);
+					else
+						cb.failed(retVal, ex);
 				}
-				AcsJException ex = AcsJCompletion.fromCorbaCompletion(c).getAcsJException();
-				if (ex == null)
-					cb.done(retVal);
 				else
-					cb.failed(retVal, ex);
+				{
+					logger.log(AcsLogLevel.WARNING, "Unknown 'desc.id_tag' (" + desc.id_tag + ") parameter for CBComponentInfo.done received.");
+				}
 			}
-			else
-			{
-				// TODO use logger
-				System.err.println("Unknown 'desc.id_tag' (" + desc.id_tag + ") parameter for CBComponentInfo.done received.");
+			catch (Throwable thr) {
+				// See AIV-9450, AIV-11149: We may fail to call "cb.done" if some unexpected exception gets thrown here...
+				logger.log(AcsLogLevel.SEVERE, "Failed to process data about a freshly activated component.", thr);
+				
+				// best effort, to at least release the waiting requesting client.
+				if (cb != null) {
+					cb.failed(null, thr);
+				}
 			}
-			
 		}
 
 		@Override

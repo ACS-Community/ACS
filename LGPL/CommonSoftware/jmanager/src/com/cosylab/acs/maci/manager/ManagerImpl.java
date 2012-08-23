@@ -6554,7 +6554,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//
 
 			// log info
-			logger.log(Level.INFO,"Activating component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ") on container '" + containerInfo.getName() + "'.");
+			String handleReadable = HandleHelper.toString(h | COMPONENT_MASK);
+			logger.log(Level.INFO,"Activating component '"+name+"' (" + handleReadable + ") on container '" + containerInfo.getName() + "'.");
 
 			boolean callSyncActivate = System.getProperties().containsKey(NAME_SYNC_ACTIVATE);
 			if (containerInfo.getImplLang() == ImplLang.py)
@@ -6591,8 +6592,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							container, containerInfo, executionId,
 							activationTime);
 					container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
+					logger.log(AcsLogLevel.DELOUSE, "Asynchronous activation of component '"+name+"' (" + handleReadable + ") is running on container '" + containerInfo.getName() + "'.");
 					
-					return callback.waitUntilActivated(getLockTimeout());
+					ComponentInfo ret = callback.waitUntilActivated(getLockTimeout());
+					logger.log(AcsLogLevel.DELOUSE, "Asynchronous activation of component '"+name+"' (" + handleReadable + ") has finished on container '" + containerInfo.getName() + "'.");
+					return ret;
 				}
 				catch (Throwable ex)
 				{
@@ -6615,18 +6619,26 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 	private class ComponentInfoCompletionCallbackImpl implements ComponentInfoCompletionCallback
 	{
-		int requestor;
-		String name; String type; String code; String containerName;
-		int keepAliveTime; StatusHolder status;
-		boolean isOtherDomainComponent; boolean isDynamicComponent;
-		int h; boolean reactivate;
-		ComponentInfo componentInfo; Container container;
-		ContainerInfo containerInfo;
-		long executionId; long activationTime;
-		boolean timeoutError;
+		final int requestor;
+		final String name; final String type; final String code; final String containerName;
+		final int keepAliveTime; 
+		final StatusHolder status;
+		final boolean isOtherDomainComponent; final boolean isDynamicComponent;
+		final int h; final boolean reactivate;
+		final Container container;
+		final ContainerInfo containerInfo;
+		final long executionId; final long activationTime;
+		boolean timeoutError; // @TODO HSO: Do we need this field?
 		
-		Throwable exception = null;
-		boolean done = false;
+		// We use a sync object different from "this" to check if the missing done callback 
+		// reported in AIV-11149 and AIV-9450 may come from some other thread getting the monitor
+		// of this object and thus preventing waitUntilActivated from running after the notifyAll.
+		// TODO: Use concurrent lib instead of wait-notify.
+		private final Object sync = new Object();
+		
+		private volatile ComponentInfo componentInfo; 
+		private volatile Throwable exception = null;
+		private volatile boolean done = false;
 		
 		public ComponentInfoCompletionCallbackImpl(int requestor, String name,
 				String type, String code, String containerName,
@@ -6653,50 +6665,64 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			this.activationTime = activationTime;
 		}
 
-		public synchronized ComponentInfo waitUntilActivated(long timeToWait) throws Throwable
+		/**
+		 * @throws Throwable Either the exception delivered by the container via {@link #failed(ComponentInfo, Throwable)},
+		 *                   or InterruptedException if interrupted while waiting for done/failed callback.
+		 */
+		public ComponentInfo waitUntilActivated(long timeToWait) throws Throwable
 		{
-			while (!done)
-			{
-				try {
-				this.wait(timeToWait);
-				if (!done)
-					throw new TimeoutRemoteException("Activation did not finish in time.");
-				} catch (InterruptedException ex) {
-					exception = ex;
-					break;
+			synchronized (sync) {
+				while (!done)
+				{
+					try {
+						sync.wait(timeToWait);
+						if (!done) {
+							throw new TimeoutRemoteException("Activation did not finish in time.");
+						}
+					} catch (InterruptedException ex) {
+						exception = ex;
+						break;
+					}
 				}
 			}
-			
-			if (exception != null)
+			if (exception != null) {
 				throw exception;
+			}
+			
 			return componentInfo;
 		}
 		
 		@Override
-		public synchronized void done(ComponentInfo result) {
+		public void done(ComponentInfo result) {
 
 			logger.log(AcsLogLevel.DEBUG, "Container responded with 'done' callback to indicate activation of a component '"+name+"'.");
 			
-			try
-			{
-				componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,
-						code, containerName, keepAliveTime, status, null,
-						isOtherDomainComponent, isDynamicComponent, h, reactivate,
-						result, container, containerInfo, executionId,
-						activationTime, timeoutError);
-			} catch (Throwable th) {
-				exception = th;
-			}
-			finally {
-				done = true;
-				this.notifyAll();
+			synchronized (sync) {
+				try
+				{
+					componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,
+							code, containerName, keepAliveTime, status, null,
+							isOtherDomainComponent, isDynamicComponent, h, reactivate,
+							result, container, containerInfo, executionId,
+							activationTime, timeoutError); // todo: just pass 'false' instead of 'timeoutError' ?
+				} catch (Throwable th) {
+					exception = th;
+					// debug log is enough here, as the exception will be thrown by waitUntilActivated
+					logger.log(AcsLogLevel.DEBUG, "Failed to process the freshly activated '"+name+"' component's data.", th);  
+				}
+				finally {
+					done = true;
+					sync.notifyAll();
+				}
 			}
 		}
 
 		@Override
-		public synchronized void failed(ComponentInfo result, Throwable exception) {
+		public void failed(ComponentInfo result, Throwable exception) {
 			try
 			{
+				// TODO: Who can this ever be a (locally java defined) TimeoutRemoteException
+				// when it comes from the container?
 				boolean timeoutError = (exception instanceof TimeoutRemoteException);
 				
 				AcsJCannotGetComponentEx bcex;
@@ -6717,11 +6743,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			finally {
 				done = true;
-				this.notifyAll();
+				sync.notifyAll();
 			}
 		}
-		
-		
 	}
 
 	private ComponentInfo internalNoSyncRequestComponentPhase2(
