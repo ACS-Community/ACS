@@ -22,6 +22,7 @@ import alma.ACSErr.Completion;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
@@ -59,19 +60,18 @@ public class ContainerProxy extends ClientProxy implements Container
 	 */
 	protected si.ijs.maci.Container container;
 
-	protected final Logger logger;
+	protected static final Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Manager-ContainerProxy", true);
 
 	
 	/**
 	 * Constructor for ContainerProxy.
 	 * @param	container	CORBA reference, non-<code>null</code>.
 	 */
-	public ContainerProxy(si.ijs.maci.Container container, Logger logger)
+	public ContainerProxy(si.ijs.maci.Container container)
 	{
 		super(container);
 		
 		this.container = container;
-		this.logger = logger;
 		
 		this.ior = serialize(container);
 		
@@ -165,6 +165,7 @@ public class ContainerProxy extends ClientProxy implements Container
 
 		@Override
 		public void done(si.ijs.maci.ComponentInfo info, Completion c, CBDescOut desc) {
+			logger.log(AcsLogLevel.DEBUG, "CBComponentInfo.done called with desc.id_tag = " + desc.id_tag);
 			ComponentInfoCompletionCallback cb = null;
 			try {
 				cb = unregister(desc.id_tag);

@@ -696,7 +696,7 @@ public class ManagerProxyImpl extends ManagerPOA
 			{
 				if (reference._is_a(ContainerHelper.id()))
 				{
-					clientProxy = new ContainerProxy(ContainerHelper.narrow(reference), logger);
+					clientProxy = new ContainerProxy(ContainerHelper.narrow(reference));
 				}
 				else if (reference._is_a(SynchronousAdministratorHelper.id()))
 				{
