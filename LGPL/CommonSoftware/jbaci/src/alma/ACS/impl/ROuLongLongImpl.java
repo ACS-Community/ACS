@@ -5,7 +5,6 @@ import org.omg.CORBA.NO_IMPLEMENT;
 import alma.ACS.AlarmuLongLong;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
-import alma.ACS.CBlong;
 import alma.ACS.CBuLongLong;
 import alma.ACS.Callback;
 import alma.ACS.MonitorlongLongPOATie;
@@ -223,9 +222,9 @@ public class ROuLongLongImpl
 		try
 		{	
 			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBlong)callback).done(((Integer)value).intValue(), completion, desc);
+				((CBuLongLong)callback).done(((Long)value).longValue(), completion, desc);
 			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBlong)callback).working(((Integer)value).intValue(), completion, desc);
+				((CBuLongLong)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;
 				

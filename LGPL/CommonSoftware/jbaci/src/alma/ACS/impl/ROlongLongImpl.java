@@ -221,9 +221,9 @@ public class ROlongLongImpl
 		try
 		{	
 			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBlong)callback).done(((Integer)value).intValue(), completion, desc);
+				((CBlongLong)callback).done(((Long)value).longValue(), completion, desc);
 			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBlong)callback).working(((Integer)value).intValue(), completion, desc);
+				((CBlongLong)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;
 				

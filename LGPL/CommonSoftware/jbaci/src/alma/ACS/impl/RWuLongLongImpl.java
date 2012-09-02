@@ -2,7 +2,6 @@ package alma.ACS.impl;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
-import alma.ACS.CBlong;
 import alma.ACS.CBuLongLong;
 import alma.ACS.CBvoid;
 import alma.ACS.Callback;
@@ -227,9 +226,9 @@ public class RWuLongLongImpl
 		try
 		{	
 			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBlong)callback).done((int) ((Long)value).longValue(), completion, desc);
+				((CBuLongLong)callback).done(((Long)value).longValue(), completion, desc);
 			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBlong)callback).working((int) ((Long)value).longValue(), completion, desc);
+				((CBuLongLong)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;
 				
