@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.58 2012/07/21 16:47:23 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.59 2012/09/06 10:50:30 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -55,6 +55,7 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTC
   conseqErrorCount_m=0;
   maxConseqErrorCount_m = 4; //TBD now hard-coded, to be get from somewhere else
   cbReceiveTimeoutSec_m = callback_mp->getCBReceiveProcessTimeout();
+  cbReceiveAvgTimeoutSec_m = callback_mp->getCBReceiveAvgProcessTimeout();
   cbReceiveTotalSec_m = 0.0;  cbReceiveNumCalls_m =0;
 }//BulkDataNTReaderListener
 
@@ -62,6 +63,19 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTC
 BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 {
   ACS_TRACE(__FUNCTION__);
+/*  DDS::DataReaderProtocolStatus drps;
+  frameDataReader_mp->get_datareader_protocol_status(drps);
+  DDS::DataReaderCacheStatus drcs;
+  frameDataReader_mp->get_datareader_cache_status(drcs);
+
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+		  (LM_DEBUG, "Protocol Status (TOTAL): sample rcv: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld",
+				  drps.received_sample_count, drps.received_sample_bytes,
+				  drps.received_heartbeat_count, drps.received_heartbeat_bytes,
+				  drps.sent_ack_count, drps.sent_ack_bytes,
+				  drps.sent_nack_count, drps.sent_nack_bytes,
+				  drps.rejected_sample_count));
+*/
 }//~BulkDataNTReaderListener
 
 void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
@@ -141,7 +155,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     {
                       if (dataLength_m==0) // we get the first data frame
                         {
-                    	  if (DDSConfiguration::debugLevel>0)
+                    	  if (DDSConfiguration::debugLevel>1)
                     	  {
                     		  // the message can cause perfomance penality for small data sizes
                     		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "New sendData has arrived for: %s", topicName_m.c_str()));
@@ -172,7 +186,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                         }
                       else //message.restDataLength==0 what means we got the last frame
                         {
-                    	  if (DDSConfiguration::debugLevel>0)
+                    	  if (DDSConfiguration::debugLevel>1)
                     	  {
                     		  // the messages can cause performance penalty for small data sizes
                     		  ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
@@ -270,19 +284,38 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   if (cbReceiveNumCalls_m>0) // if we call cbReceive at least once we calculate the average
                   {
                 	  cbReceiveAvgSec_m = cbReceiveTotalSec_m / cbReceiveNumCalls_m;
-                	  if (cbReceiveAvgSec_m > cbReceiveTimeoutSec_m) //TBD for time being we use cbReceiveTimeoutSec_m, but it should be another cfg paramter
+                	  if (cbReceiveAvgSec_m > cbReceiveAvgTimeoutSec_m)
                 	  {
                 		  CBReceiveAvgProcessTimeoutCompletion cbReceiveAvgTO(__FILE__, __LINE__, __FUNCTION__);
                 		  cbReceiveAvgTO.setStreamFlowName(topicName_m.c_str());
-                		  cbReceiveAvgTO.setAvgProcessTimeoutSec(cbReceiveTimeoutSec_m);cbReceiveAvgTO.setActualAvgProcessTime(cbReceiveAvgSec_m);
-                		  cbReceiveAvgTO.setCallsCount(cbReceiveNumCalls_m);
+                		  cbReceiveAvgTO.setAvgProcessTimeoutSec(cbReceiveAvgTimeoutSec_m);cbReceiveAvgTO.setActualAvgProcessTime(cbReceiveAvgSec_m);
+                		  cbReceiveAvgTO.setCallsCount(cbReceiveNumCalls_m);cbReceiveAvgTO.setThroughput((ACSBulkData::FRAME_MAX_LEN/(1024.0*1024.0)/cbReceiveAvgSec_m));
                 		  callback_mp->onError(cbReceiveAvgTO);
                 		  //TBD should we increase error counter here or not ?
                 	  }//if (cbReceiveAvgSec_m > cbReceiveTimeoutSec_m)
                 	  if (DDSConfiguration::debugLevel>0)
                 	  {
                 		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-                				  (LM_DEBUG, "Average processing time for %d call(s) of cbReceive(): %f. What corresponds to throughput of: %f MB/sec", cbReceiveNumCalls_m , cbReceiveAvgSec_m, (ACSBulkData::FRAME_MAX_LEN/(1024.0*1024.0)/cbReceiveAvgSec_m)));
+                				  (LM_DEBUG, "Average processing time for: %s for %d call(s) of cbReceive(): %fs. What corresponds to throughput of: %fMB/sec",
+                						  topicName_m.c_str(), cbReceiveNumCalls_m , cbReceiveAvgSec_m, (ACSBulkData::FRAME_MAX_LEN/(1024.0*1024.0)/cbReceiveAvgSec_m)));
+
+                		  DDS::DataReaderProtocolStatus drps;
+                		  frameDataReader_mp->get_datareader_protocol_status(drps);
+                		  DDS::DataReaderCacheStatus drcs;
+                		  frameDataReader_mp->get_datareader_cache_status(drcs);
+
+                		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+                				  (LM_DEBUG, "Protocol Status for: %s [sample rcv: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
+                						  topicName_m.c_str(),
+                						  drps.received_sample_count_change, drps.received_sample_bytes_change,
+                						  drps.received_heartbeat_count_change, drps.received_heartbeat_bytes_change,
+                						  drps.sent_ack_count_change, drps.sent_ack_bytes_change,
+                						  drps.sent_nack_count_change, drps.sent_nack_bytes_change,
+                						  drps.rejected_sample_count_change));
+
+                		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+                				  (LM_DEBUG, "Cache Status: sample count (peak): %lld (%lld)", drcs.sample_count, drcs.sample_count_peak));
+
                 	  }
                   }//if (cbReceiveNumCalls_m>0)
                   break;
@@ -401,7 +434,7 @@ void BulkDataNTReaderListener::enableCallingCB()
 
 void BulkDataNTReaderListener::disableCallingCB()
 {
-	enableCB_m=true;
+	enableCB_m=false;
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 			(LM_INFO, "Calling user's CB for flow: %s of the stream: %s has been DISABLED.",
 					callback_mp->getFlowName(), callback_mp->getStreamName()));

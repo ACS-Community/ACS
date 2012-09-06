@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.34 2012/06/14 12:27:41 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.35 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -244,6 +244,9 @@ public:
 	double getCbReceiveProcessTimeout() const;
     void setCbReceiveProcessTimeout(double cbReceiveProcessTimeout);
 
+    double getCbReceiveAvgProcessTimeout() const;
+    void setCbReceiveAvgProcessTimeout(double cbReceiveAvgProcessTimeout);
+
     bool isEnableMulticast() const;
     void setEnableMulticast(bool enableMulticast);
 
@@ -256,10 +259,14 @@ public:
     /// default cbReceiveProcessTimeout value
     static double DEFAULT_CBRECEIVE_PROCESS_TIMEOUT;
 
+    /// default cbReceiveAvgProcessTimeout value
+    static double DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT;
+
     /// default enableMulticast value
     static bool DEFAULT_ENABLE_MULTICAST;
 protected:
     double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
+    double cbReceiveAvgProcessTimeout; /// how long should in avergae take execution of cbReceive
     bool enableMulticast; /// is multicast enabled, otherwise unicast
     std::string multicastAddress; /// mutlicas address, used only if multicast is anbel (enableMulticast==true)
 };

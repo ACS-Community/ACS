@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.26 2012/02/03 14:25:15 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.27 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,6 +65,18 @@ public:
 	 * @return timeout in sec
 	 */
 	double getCBReceiveProcessTimeout() { return cbReceiveProcessTimeout_m; }
+
+	/**
+	 * setter method for cbReceiveAvgProcessTimeout_m
+	 * @param to - average cbReceiver process time in sec
+	 */
+	void setCBReceiveAvgProcessTimeout(double to);
+
+	/**
+	 * * getter for cbReceiveAvgProcessTimeout_m
+	 * @return timeout in sec
+	 */
+	double getCBReceiveAvgProcessTimeout() { return cbReceiveAvgProcessTimeout_m; }
 
 	/*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
@@ -144,6 +156,7 @@ protected:
 	ACE_CString recvName_m;
 
 	double cbReceiveProcessTimeout_m;
+	double cbReceiveAvgProcessTimeout_m;
 	/*
     bool fwdData2UserCB_m;
 

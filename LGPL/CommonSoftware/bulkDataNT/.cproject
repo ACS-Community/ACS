@@ -31,6 +31,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ACSROOT}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${NDDSHOME}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${NDDSHOME}/include/ndds&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ACE_ROOT}/ace&quot;"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.737352345" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>

@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.24 2012/07/21 16:47:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.25 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -109,6 +109,7 @@ private:
   double cbReceiveTotalSec_m;  /// total time all cbReceive calls between cbStart and cbStop
   unsigned int cbReceiveNumCalls_m; /// how many times cbReceive was called  between cbStart and cbStop
   double cbReceiveAvgSec_m; /// average process time for all cbReceive calls between cbStart and cbStop
+  double cbReceiveAvgTimeoutSec_m; /// cbReceiver avergae process timeout read from CDB (or default value)
 };
 
 };//namepsace AcsBulkdata

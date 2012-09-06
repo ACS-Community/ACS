@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.cpp,v 1.11 2012/01/12 10:51:42 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.cpp,v 1.12 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,12 @@ void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double to){
 	cbReceiveProcessTimeout_m=to;
 	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "cbReceiveProcessTimeout set to: %f sec",
 			cbReceiveProcessTimeout_m));
+}
+
+void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double to){
+	cbReceiveAvgProcessTimeout_m=to;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "cbReceiveAvgProcessTimeout set to: %f sec",
+			cbReceiveAvgProcessTimeout_m));
 }
 
 void AcsBulkdata::BulkDataNTCallback::onDataLost(unsigned long frameCount, unsigned long totalFrames, ACSErr::CompletionImpl &error)

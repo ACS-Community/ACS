@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.24 2012/06/15 14:39:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.25 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,8 +35,8 @@ using namespace AcsBulkdata;
 using namespace ACS_BD_Errors;
 
 template<class TReceiverCallback>
-BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg)
-: BulkDataNTReceiverStreamBase(streamName, cfg), notRemoveFromMap_m(false)
+BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg, bool enabledCallingCBforAllFlows)
+: BulkDataNTReceiverStreamBase(streamName, cfg), notRemoveFromMap_m(false), enabledCallingCBforAllFlows_m(enabledCallingCBforAllFlows_m)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Stream: %s has been created.", streamName));
@@ -44,8 +44,8 @@ BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char
 
 
 template<class TReceiverCallback>
-BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* receiverName, const char* streamName, const ReceiverStreamConfiguration &cfg)
-: BulkDataNTReceiverStreamBase(receiverName, streamName, cfg), notRemoveFromMap_m(false)
+BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* receiverName, const char* streamName, const ReceiverStreamConfiguration &cfg, bool enabledCallingCBforAllFlows)
+: BulkDataNTReceiverStreamBase(receiverName, streamName, cfg), notRemoveFromMap_m(false), enabledCallingCBforAllFlows_m(enabledCallingCBforAllFlows_m)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Stream: %s with receiver name: %s has been created.", streamName, receiverName));
@@ -84,6 +84,8 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(
 		callback = (cb==0) ? new TReceiverCallback() : cb;
 		flow = new BulkDataNTReceiverFlow(this, flowName, cfg, callback, (cb==0)||releaseCB);
 		receiverFlows_m.insert(std::pair<std::string, BulkDataNTReceiverFlow*>(flowName, flow));
+		if (enabledCallingCBforAllFlows_m==false)
+			flow->disableCallingCB();
 		return flow;
 	}catch(const ACSErr::ACSbaseExImpl &acsEx)
 	{
@@ -219,15 +221,18 @@ template<class TReceiverCallback>
 void BulkDataNTReceiverStream<TReceiverCallback>::enableCallingCBforAllFlows()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
-	  for(;i!=receiverFlows_m.end(); i++) (i->second)->enableCallingCB();
+	for(;i!=receiverFlows_m.end(); i++) (i->second)->enableCallingCB();
+	enabledCallingCBforAllFlows_m=true;
 }//enableCallingCBforAllFlows
 
 template<class TReceiverCallback>
 void BulkDataNTReceiverStream<TReceiverCallback>::disableCallingCBforAllFlows()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
-		  for(;i!=receiverFlows_m.end(); i++) (i->second)->disableCallingCB();
-}//disableCallingCBforAllFlows
 
+	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
+	for(;i!=receiverFlows_m.end(); i++) (i->second)->disableCallingCB();
+	enabledCallingCBforAllFlows_m=false;
+}//disableCallingCBforAllFlows

@@ -20,3 +20,5 @@ s/in [0-9,.]* sec/in xy.z sec/g
 s/before waiting: [0-9]*/before waiting: XY/g
 s/Sub([0-9]*)/Sub(XXX)/g
 s/\/[a-z,A-Z,0-9,.,/,_,-]*\/config\/bulkDataNTDefaultQosProfiles.xml/----\/config\/bulkDataNTDefaultQosProfiles.xml/g
+s/cbReceive(): [0-9,.]*s. What corresponds to throughput of: [0-9,.]*MB\/sec/cbReceive(): X.Ys. What corresponds to throughput of: Z.XXXMB\/sec/g
+s/sample rcv: [0-9]* ([0-9]*) HB: [0-9]* ([0-9]*) ACKs: [0-9]* ([0-9]*) NACKs: [0-9]* ([0-9]*) Rejected: 0/sample rcv: XX (YYYYY) HB: XX (YYYYY) ACKs: XX (YYYYY) NACKs: X (YY) Rejected: 0 /g

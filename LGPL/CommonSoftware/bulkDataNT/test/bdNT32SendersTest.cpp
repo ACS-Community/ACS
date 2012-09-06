@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bdNT32SendersTest.cpp,v 1.3 2012/01/04 10:43:44 bjeram Exp $"
+ * "@(#) $Id: bdNT32SendersTest.cpp,v 1.4 2012/09/06 10:50:30 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
   SenderStreamConfiguration rcvCfg;
   //rcvCfg.DDSLogVerbosity= NDDS_CONFIG_LOG_VERBOSITY_STATUS_ALL;
-  BulkDataNTSenderStream  senderStream("TestSenderSTream");
+  //BulkDataNTSenderStream  senderStream("TestSenderSTream");
 
 
   char buf[]="00";
@@ -69,10 +69,10 @@ int main(int argc, char *argv[])
       sprintf(buf, "%d", i);
       std::string streamName("Stream");
       streamName += buf;
-//      std::cout << "Going to create stream: " << streamName << std::endl;
-      //    senderStreams[i] = new BulkDataNTSenderStream(streamName.c_str(), rcvCfg);
-      //     std::cout << "Stream: " << streamName << " has been created. Going to create a flow inside the stream" << std::endl;
-      senderStream.createFlow(streamName.c_str());
+      std::cout << "Going to create stream: " << streamName << std::endl;
+          senderStreams[i] = new BulkDataNTSenderStream(streamName.c_str(), rcvCfg);
+           std::cout << "Stream: " << streamName << " has been created. Going to create a flow inside the stream" << std::endl;
+      senderStreams[i]->createFlow("00"/*streamName.c_str()*/);
     }
 
   getchar();

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.32 2012/03/27 12:54:00 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.33 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -373,6 +373,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 						senderCfg.flowsCfgMap[flowName.get()]->setACKsTimeout(getDoubleFromAttribute(streamChildNode, "ACKsTimeoutSec", SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT));
 					}else {
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT));
+						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveAvgProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveAvgProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT));
 						receiverCfg.flowsCfgMap[flowName.get()]->setEnableMulticast(getBooleanFromAttribute(streamChildNode, "enableMulticast", ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST));
 						receiverCfg.flowsCfgMap[flowName.get()]->setMulticastAddress(getStringFromAttribute(streamChildNode, "multicastAddress", ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS));
 					}

@@ -136,7 +136,8 @@
         <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
         <Member name="AvgProcessTimeoutSec" type="double" description="cbReceive AVG Process Timeout in Sec" />
         <Member name="ActualAvgProcessTime" type="double" description="Actual AVG execution time of cbReceive" />
-        <Member name="CallsCount" type="long" description="Number of cbReceive calls" />        
+        <Member name="CallsCount" type="long" description="Number of cbReceive calls" />
+        <Member name="Throughput" type="double" description="Coresponding Throughput in MB/sec" />        
     </ErrorCode>
     
     <ErrorCode name="SenderWrongCmdOrder" shortDescription="Wrong sender command order" description="The command/method was not executed in the right order.">

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.7 2012/06/19 13:13:42 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.8 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
 	unsigned int dataSize=65000;
 	unsigned int loop=1;
 	list<char *> flowNames;
+
 
 	// Parse the args
     ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:");
@@ -101,6 +102,9 @@ int main(int argc, char *argv[])
     {
     	try
     	{
+    		double throuhgput=0;
+    		double sumThrouhgput=0;
+    		vector<double> 	throughputSums;
     		vector<BulkDataNTSenderFlow*> flows;
     		// first we need a stream
     		BulkDataNTSenderStream senderStream(streamName);
@@ -126,6 +130,8 @@ int main(int argc, char *argv[])
     		getchar();
     		sendData=true;
 
+    		throughputSums.resize(numOfCreatedFlows);
+
     		while(sendData)
     		{
     			// first startSend
@@ -133,8 +139,9 @@ int main(int argc, char *argv[])
     			{
     				ACS_SHORT_LOG((LM_INFO, "Going to send paramter: '%s' to flow: '%s' to %d receiver(s)", param.c_str(), tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
     				flows[i]->startSend((const unsigned char*)param.c_str(), param.size());
+    				throughputSums[i]=0.0;
     			}//for
-
+    			sumThrouhgput=0.0;
     			// then sendData
     			unsigned char *data= new unsigned char[dataSize];
     			for (unsigned int i=0; i<dataSize; i++)	data[i]=i;
@@ -149,18 +156,27 @@ int main(int argc, char *argv[])
     					flows[i]->sendData(data, dataSize);
     					elapsed_time = ACE_OS::gettimeofday() - start_time;
     					send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    					throuhgput = (dataSize/(1024.0*1024.0))/send_time;
     					ACS_SHORT_LOG((LM_INFO, "Transfer rate for flow '%s': %f MBytes/sec",
-    							tmpFlowNames[i].c_str(),
-    							(dataSize/(1024.0*1024.0))/send_time));
+    							tmpFlowNames[i].c_str(), throuhgput));
+    					sumThrouhgput+=throuhgput;
+    					throughputSums[i]+=throuhgput;
     				}//for i
     			}//for j
+
 
     			// and stopSend
     			for(unsigned int i=0; i<numOfCreatedFlows; i++)
     			{
-    				ACS_SHORT_LOG((LM_INFO, "Going to send stop to flow: '%s' to %d receiver(s)", tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+    				ACS_SHORT_LOG((LM_INFO, "Average transfer rate for flow '%s': %f MBytes/sec",
+    										tmpFlowNames[i].c_str(), throughputSums[i]/loop));
+    				ACS_SHORT_LOG((LM_INFO, "Going to send stop to flow: '%s' to %d receiver(s)",
+    										tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
     				flows[i]->stopSend();
     			}//for
+
+    			ACS_SHORT_LOG((LM_INFO, "Average transfer rate for all the flow(s): %f MBytes/sec",
+    			    					sumThrouhgput/(loop*numOfCreatedFlows)));
 
     			std::cout << "press 'r' for re-send data, 'c' for re-create stream+flow(s), and any other key for exit + ENTER" << std::endl;
     			int c=getchar();

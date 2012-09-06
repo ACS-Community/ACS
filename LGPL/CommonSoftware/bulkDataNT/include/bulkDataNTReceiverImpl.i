@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.25 2012/07/18 23:20:19 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.26 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,8 @@ template<class TCallback>
 BulkDataNTReceiverImpl<TCallback>::BulkDataNTReceiverImpl(const ACE_CString& name,maci::ContainerServices* containerServices) :
 	CharacteristicComponentImpl(name,containerServices),
 	parser_m(0),
-	defaultFlowsCount_m(-1)
+	defaultFlowsCount_m(-1),
+	fwdData2UserCBenabled_m(true)
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::BulkDataNTReceiverImpl");
 }//BulkDataNTReceiverImpl
@@ -297,12 +298,14 @@ template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::openReceiverFlow (const char * stream_name, const char * flow_name)
 {
 	ACS_TRACE(__PRETTY_FUNCTION__);
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<TCallback>::openReceiverFlow  NOT implemented yet."));
 }
 
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::openReceiverFlowCfg (const char * stream_name, const char * flow_name, const char * flow_cfg)
 {
 	ACS_TRACE(__PRETTY_FUNCTION__);
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<TCallback>::openReceiverFlowCfg  NOT implemented yet."));
 }
 
 template<class TCallback>
@@ -315,7 +318,7 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 
 	// Create the stream with the configuration object
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
-	stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>(stream_name, *cfg);
+	stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>(stream_name, *cfg, fwdData2UserCBenabled_m);
 
 	// Create also all the necessary flows that have been configured in the CDB *for the given configuration name*
 	std::set<const char *> flowNames = parser_m->getAllReceiverFlowNames(stream_cfg);
@@ -353,7 +356,7 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 	// If a configuration has been given, use it to get the flows to be created
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
 	if( cfg != 0 ) {
-		stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream", *cfg);
+		stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream", *cfg, fwdData2UserCBenabled_m);
 
 		std::set<const char *> flowNames = parser_m->getAllReceiverFlowNames(stream_cfg);
 		std::set<const char *>::iterator it;
@@ -367,7 +370,8 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 		}
 	}
 	else {
-		stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream");
+		AcsBulkdata::ReceiverStreamConfiguration defaultCfg;
+		stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream", defaultCfg, fwdData2UserCBenabled_m);
 
 		// Add the specified of flows
 		for(int i=0; i < defaultFlowsCount_m; i++) {
@@ -493,5 +497,6 @@ void BulkDataNTReceiverImpl<TCallback>::fwdData2UserCB(CORBA::Boolean enable)
 	{
 		for(; it != receiverStreams_m.end(); it++)
 			(it->second)->disableCallingCBforAllFlows();
+		fwdData2UserCBenabled_m=false;
 	}//if-else
 }//fwdData2UserCB

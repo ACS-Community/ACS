@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.18 2012/03/30 13:49:58 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.19 2012/09/06 10:50:30 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ public:
 	 * @param cfg configuration (optional)
 	 * @exception #StreamCreateProblemExImpl
 	 */
-	BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
+	BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration(), bool enabledCallingCBforAllFlows=true);
 
 	/**
 	 * Receiver stream constructor where we specify receiver name.
@@ -104,7 +104,8 @@ public:
 	BulkDataNTReceiverStream(
 			const char* receiverName,
 			const char* streamName,
-			const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
+			const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration(),
+			bool enabledCallingCBforAllFlows=true);
 
 	/**
 	 * Receiver Stream destructor. It destroys also all flows belonging to the stream.
@@ -214,6 +215,8 @@ protected:
 	ReceiverFlowMap receiverFlows_m;
 	// we need a flag that prevents elements to be removed from map when we delete flows from dtor
 	bool notRemoveFromMap_m;
+
+	bool enabledCallingCBforAllFlows_m;
 
 	/// disable default - empty constructor
 	BulkDataNTReceiverStream();

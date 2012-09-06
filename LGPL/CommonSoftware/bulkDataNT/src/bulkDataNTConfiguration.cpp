@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.25 2012/07/10 09:15:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.26 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,10 +40,11 @@ short DDSConfiguration::debugLevel = -1;
 unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
 
 double SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT=5.0;  //secs
-double SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT=1.0; //secs
+double SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT=2.0; //secs
 
 const char* const ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS="225.3.2.1";
-double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT=0.01; //sec
+double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT=0.01; //sec => 6.4 MB/sec
+double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT=0.005; //sec => ~ 12MB/sec
 bool ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST=true;
 
 bool DDSConfiguration::ignoreUserProfileQoS = true;
@@ -210,6 +211,7 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 {
 	profileQos=DEFAULT_RECEIVER_FLOW_PROFILE;
 	cbReceiveProcessTimeout =DEFAULT_CBRECEIVE_PROCESS_TIMEOUT;
+	cbReceiveAvgProcessTimeout =DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT;
 	enableMulticast = DEFAULT_ENABLE_MULTICAST;
 	multicastAddress = DEFAULT_MULTICAST_ADDRESS;
 }//ReceiverFlowConfiguration
@@ -223,6 +225,17 @@ double ReceiverFlowConfiguration::getCbReceiveProcessTimeout() const
 void ReceiverFlowConfiguration::setCbReceiveProcessTimeout(double cbReceiveProcessTimeout)
 {
     this->cbReceiveProcessTimeout = cbReceiveProcessTimeout;
+}
+
+
+double ReceiverFlowConfiguration::getCbReceiveAvgProcessTimeout() const
+{
+    return cbReceiveAvgProcessTimeout;
+}
+
+void ReceiverFlowConfiguration::setCbReceiveAvgProcessTimeout(double cbReceiveAvgProcessTimeout)
+{
+    this->cbReceiveAvgProcessTimeout = cbReceiveAvgProcessTimeout;
 }
 
 std::string ReceiverFlowConfiguration::getMulticastAddress() const

@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.48 2012/06/15 14:39:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.49 2012/09/06 10:50:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.48 2012/06/15 14:39:02 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.49 2012/09/06 10:50:30 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -173,6 +173,10 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
 
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
+	//double send_time;
+	//ACE_Time_Value start_time, elapsed_time;
+
+
 	unsigned int iteration=0;
 	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: should be configurable ?
 
@@ -198,17 +202,52 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 			throw swco;
 		}
 
-		//	start_time = ACE_OS::gettimeofday();
 		for(; iteration<numOfIter; iteration++)
 		{
+
 			if (iteration==(numOfIter-1) && restFrameSize>0)
 			{
 				// last frame
-				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration/*=0*/);
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration, true/*=0*/);
 			}else
 			{
-				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration, (iteration%100==0)/*we ask for ACKs*/);
+			//	start_time = ACE_OS::gettimeofday();
+				// if we wait for ACKs for example after: (iteration%50==0) then we have more NACKS than if we do not wait !!
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration, 0/*we do not ask for ACKs*/);
+				// here we wait for less than msec
+			/*	elapsed_time = ACE_OS::gettimeofday() - start_time;
+				while (elapsed_time.usec() <  800)
+				{
+					elapsed_time = ACE_OS::gettimeofday() - start_time;
+				}
+*/
 			}
+/*
+			elapsed_time = ACE_OS::gettimeofday() - start_time;
+			//send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+			//std::cout << "elapsed : " << elapsed_time.usec() << " " << std::endl;
+
+			while (elapsed_time.usec() <  800)
+			{
+				//std::cout << "sleep for: " << elapsed_time.usec()<< std::endl;
+				elapsed_time = ACE_OS::gettimeofday() - start_time;
+			}
+*/
+/*
+			if ( elapsed_time.usec() < 670 )
+			{
+				timespec t,tr;
+				t.tv_sec =0;
+				t.tv_nsec = 1000;//(670-elapsed_time.usec()) * 100000;
+				int a = nanosleep(&t, 0);
+				//std::cout << "sleep for: " << elapsed_time.usec()-670 << " " << std::endl;
+				//int a =usleep(670-elapsed_time.usec());
+
+				if (a!=0)
+					std::cout << "sleep return: " << a << std::endl;
+
+			}
+*/
 		}//for
 		// at this point we have sent all frames, we could wait for ACKs, but it is done in writeFrame
 	}catch(const ACSErr::ACSbaseExImpl &ex)
