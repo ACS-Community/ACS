@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.121 2012/05/11 14:28:16 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.122 2012/09/11 12:51:19 bjeram Exp $"
 #
 #
 #
@@ -529,9 +529,9 @@ fi
 ##################
 # RTI DDS #
 ##################
-if [ -d $ALMASW_INSTDIR/RTI/ndds.4.5e ]
+if [ -d $ALMASW_INSTDIR/RTI/ndds.4.5f ]
 then
-    export NDDSHOME=$ALMASW_INSTDIR/RTI/ndds.4.5e
+    export NDDSHOME=$ALMASW_INSTDIR/RTI/ndds.4.5f
 fi
 
 ##################
