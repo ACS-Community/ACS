@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/commons-scxml-0.9-src/src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-el-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jsp-api-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/myfaces-api-1.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-2.4.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xalan.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-digester-2.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-jexl-1.1.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
+</classpath>
