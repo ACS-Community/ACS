@@ -34,7 +34,7 @@ import alma.acs.nc.Helper;
  * 
  */
 public class NCPublisherTest extends ComponentClientTestCase {
-	private NCPublisher publisher = null;
+	private NCPublisher<statusBlockEvent1> publisher = null;
 	private ContainerServices services = null;
 	private Logger logger = null;
 	
@@ -54,7 +54,7 @@ public class NCPublisherTest extends ComponentClientTestCase {
 	public void testPublisherSendingEvents() throws Exception {
 		// Creating a new Publisher
 		int numEvents = 1000;
-		publisher = new NCPublisher("testingChannel", services, Helper.getNamingServiceInitial(getContainerServices()));
+		publisher = new NCPublisher<statusBlockEvent1>("testingChannel", services, Helper.getNamingServiceInitial(getContainerServices()));
 		assertTrue(publisher != null);
 
 		// Sending numEvents;
