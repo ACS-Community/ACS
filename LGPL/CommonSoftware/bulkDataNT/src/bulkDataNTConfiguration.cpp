@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.26 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.27 2012/09/13 14:02:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -175,6 +175,8 @@ void DDSConfiguration::setStringProfileQoS(char*  profileName, char* cfg, const 
  **************************************************************************************/
 StreamConfiguration::StreamConfiguration()
 {
+
+	participantPerStream=false;
 }//StreamConfiguration
 
 

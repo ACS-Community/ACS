@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.26 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.27 2012/09/13 14:02:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -493,6 +493,7 @@ void BulkDataNTReceiverImpl<TCallback>::fwdData2UserCB(CORBA::Boolean enable)
 	{
 		for(; it != receiverStreams_m.end(); it++)
 			(it->second)->enableCallingCBforAllFlows();
+		fwdData2UserCBenabled_m=true;
 	}else
 	{
 		for(; it != receiverStreams_m.end(); it++)

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.16 2012/09/13 10:58:56 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.17 2012/09/13 14:02:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,12 +88,13 @@ protected:
 	void createDDSFactory();
 	void destroyDDSFactory();
 
-	void createDDSParticipant();
-	void destroyDDSParticipant();
+	DDS::DomainParticipant* createDDSParticipant();
+	void destroyDDSParticipant(DDS::DomainParticipant* domainParticipant);
 
 	static DDS::DomainParticipantFactory *factory_m;
-	static unsigned int participantRefCount_m; /// how many streams do need the participant
-	/*static*/ DDS::DomainParticipant* participant_m;
+	static unsigned int globalParticipantRefCount_m; /// how many streams do need the participant
+	static DDS::DomainParticipant* globalParticipant_m; /// if we use just one participant
+	DDS::DomainParticipant* participant_m; /// could be a newly created per stream or used global one
 
 };//class BulkDataNTStream
 

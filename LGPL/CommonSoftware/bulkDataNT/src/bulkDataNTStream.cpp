@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.43 2012/07/10 09:24:45 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.44 2012/09/13 14:02:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,32 +31,52 @@ using namespace ACS_DDS_Errors;
 using namespace AcsBulkdata;
 
 unsigned int BulkDataNTStream::factoryRefCount_m = 0;
-unsigned int BulkDataNTStream::participantRefCount_m = 0;
 DDS::DomainParticipantFactory *BulkDataNTStream::factory_m=0;
-//DDS::DomainParticipant* BulkDataNTStream::participant_m=0;
+
+unsigned int BulkDataNTStream::globalParticipantRefCount_m = 0;
+DDS::DomainParticipant* BulkDataNTStream::globalParticipant_m=0;
 
 BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
-	    streamName_m(name), configuration_m(cfg), /*factory_m(0),*/ participant_m(0)
+	    streamName_m(name), configuration_m(cfg), participant_m(0)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
-
 
   try
   {
 	  if (factory_m==0)
-	       {
-	  createDDSFactory();  //it is enough to have one factory
-	       }
+	  {
+		  createDDSFactory();  //it is enough to have one factory
+	  }
 
 	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
-	  //    if (participantRefCount_m==0)
-	  //     {
-	  // TBD: for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
-	  // also a participant per stream
-	  createDDSParticipant();     //should be somewhere else in initialize or createStream
-	  //   }
-	  // participantRefCount_m++;   // but we need to know how many users of participant do we have
+	  if (participant_m!=NULL)
+	  {
+		  printf("participant already exists\n");
+		  return;
+	  }
+
+	  if (configuration_m.participantPerStream)
+	  {
+		  //we have a participant per stream
+		  participant_m = createDDSParticipant();
+	  }
+	  else
+	  {
+		  // for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
+		  // also a participant per stream
+		  if (BulkDataNTStream::globalParticipantRefCount_m==0 && BulkDataNTStream::globalParticipant_m==0)
+		  {
+			  participant_m = BulkDataNTStream::globalParticipant_m = createDDSParticipant();
+		  }
+		  else
+		  {
+			  participant_m = BulkDataNTStream::globalParticipant_m;
+		  }
+		  BulkDataNTStream::globalParticipantRefCount_m++;   // but we need to know how many users of participant do we have
+		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to use global participant for stream: %s.", streamName_m.c_str()));
+	  }
+
 	  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream: %s has been created.", streamName_m.c_str()));
   }catch(const ACSErr::ACSbaseExImpl &e)
   {
@@ -72,10 +92,21 @@ BulkDataNTStream::~BulkDataNTStream()
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
 
-  //participantRefCount_m--;
-  //if (participantRefCount_m==0)
-  destroyDDSParticipant();
+  if (configuration_m.participantPerStream)
+  {
+	  destroyDDSParticipant(participant_m);
+  }else
+  {
+	  BulkDataNTStream::globalParticipantRefCount_m--;
+	  if (BulkDataNTStream::globalParticipantRefCount_m==0)
+	  {
+		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to destroy global participant of stream: %s.", streamName_m.c_str()));
+		  destroyDDSParticipant(BulkDataNTStream::globalParticipant_m);
+		  BulkDataNTStream::globalParticipant_m=0;
+	  }
+  }
 
+  participant_m=0;
   destroyDDSFactory(); // we do not need to call, but .... it just decrease the counter
 }//~BulkDataNTStream
 
@@ -168,24 +199,19 @@ void BulkDataNTStream::destroyDDSFactory()
     }
 }//destroyDDSFactory
 
-void BulkDataNTStream::createDDSParticipant()
+DDS::DomainParticipant* BulkDataNTStream::createDDSParticipant()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 	DDS::DomainParticipantQos participant_qos;
 	int domainID=0; //TBD: where to get domain ID
+	DDS::DomainParticipant* domainParticipant;
 
 	if (factory_m==NULL)
 	{
 		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setVariable("factory_m");
 		throw ex;
-	}
-
-	if (participant_m!=NULL)
-	{
-		printf("participant already created\n");
-		return;
 	}
 
 	// If the profileQoS set on the configuration corresponds to a default stream profile,
@@ -211,15 +237,15 @@ void BulkDataNTStream::createDDSParticipant()
 	// we make sure that what participant creates is created disabled
 	participant_qos.entity_factory.autoenable_created_entities=DDS_BOOLEAN_FALSE;
 
-	participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
-	if (participant_m==NULL)
+	domainParticipant =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
+	if (domainParticipant==NULL)
 	{
 		DDSParticipantCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDomainID(domainID);
 		throw ex;
 	}
 
-	ret = participant_m->enable();
+	ret = domainParticipant->enable();
 	if (ret!=DDS::RETCODE_OK)
 	  {
 	    DDSParticipantEnableProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -229,7 +255,7 @@ void BulkDataNTStream::createDDSParticipant()
 	  }//if
 
 	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
-	ret = ACSBulkData::BulkDataNTFrameTypeSupport::register_type(participant_m, type_name);
+	ret = ACSBulkData::BulkDataNTFrameTypeSupport::register_type(domainParticipant, type_name);
 	if (ret != DDS::RETCODE_OK)
 	{
 		DDSRegisterTypeProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -237,15 +263,17 @@ void BulkDataNTStream::createDDSParticipant()
 		ex.setTypeName(type_name);
 		throw ex;
 	}
+
+	return domainParticipant;
 }//createDDSParticipant
 
-void BulkDataNTStream::destroyDDSParticipant()
+void BulkDataNTStream::destroyDDSParticipant(DDS::DomainParticipant* domainParticipant)
 {
 	DDS::ReturnCode_t ret;
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
 	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
-	ret = ACSBulkData::BulkDataNTFrameTypeSupport::unregister_type(participant_m, type_name);
+	ret = ACSBulkData::BulkDataNTFrameTypeSupport::unregister_type(domainParticipant, type_name);
 	if (ret != DDS::RETCODE_OK)
 	{
 		DDSUnregisterTypeProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -254,12 +282,13 @@ void BulkDataNTStream::destroyDDSParticipant()
 		throw ex;
 	}
 
-	ret = factory_m->delete_participant(participant_m);
+	ret = factory_m->delete_participant(domainParticipant);
 	if (ret != DDS_RETCODE_OK)
 	{
 		DDSParticipantDestroyProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.log();
 	}//if
+	domainParticipant=0;
 }//destroyDDSParticipant
 
 

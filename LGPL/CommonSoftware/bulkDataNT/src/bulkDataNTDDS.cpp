@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.18 2012/05/21 13:20:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.19 2012/09/13 14:02:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,26 +55,37 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
+	DDS::Topic *topic;
+	DDS::Duration_t to;
 
 	topicName_m = topicName;
-	//TBD: check if topic already exists find_topic ??
 	//TBD: type name could be a parameter of the method or class member
 
-	/* Register the type before creating the topic */
-	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
+	to.sec = 0;
+	to.nanosec = 5000000; //5ms
+	topic = participant_m->find_topic(topicName, to);
 
-	DDS::Topic *topic =  participant_m->create_topic_with_profile(topicName_m.c_str(),
-			type_name,
-			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
-			NULL,
-			DDS::STATUS_MASK_NONE
-	);
-	if (topic==0)
+	if (topic==0) // we could not find a topic so we have to create it
 	{
-		DDSTopicCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		ex.setTopic(topicName_m.c_str());
-		throw ex;
-	}//if
+		/* Register the type before creating the topic */
+		const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
+
+		topic =  participant_m->create_topic_with_profile(topicName_m.c_str(),
+				type_name,
+				ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
+				NULL,
+				DDS::STATUS_MASK_NONE
+		);
+		if (topic==0)
+		{
+			DDSTopicCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			ex.setTopic(topicName_m.c_str());
+			throw ex;
+		}//if
+	}else
+	{
+		ACS_SHORT_LOG((LM_DEBUG, "Already creaded DDS topic: %s will be taken", topicName_m.c_str()));
+	}
 
 	ret = topic->enable();
 	if ( ret != DDS::RETCODE_OK )
