@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.15 2012/06/14 11:28:34 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.16 2012/09/13 10:58:56 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,7 +83,7 @@ protected:
 
 	std::string streamName_m;
 
-	const StreamConfiguration  &configuration_m; //configuration
+	const StreamConfiguration  configuration_m; //configuration
 	// those two methods and members should probably go to another class  ??
 	void createDDSFactory();
 	void destroyDDSFactory();
