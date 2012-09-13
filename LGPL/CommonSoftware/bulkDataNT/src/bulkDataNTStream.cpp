@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.44 2012/09/13 14:02:38 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.45 2012/09/13 14:58:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,23 +43,14 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 
   try
   {
-	  if (factory_m==0)
-	  {
-		  createDDSFactory();  //it is enough to have one factory
-	  }
+	  if (factory_m==0)	  createDDSFactory();  //it is enough to have one factory
+	  factoryRefCount_m++;
 
 	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
-	  if (participant_m!=NULL)
-	  {
-		  printf("participant already exists\n");
-		  return;
-	  }
-
 	  if (configuration_m.participantPerStream)
 	  {
-		  //we have a participant per stream
-		  participant_m = createDDSParticipant();
+		  participant_m = createDDSParticipant(); //we have a participant per stream
 	  }
 	  else
 	  {
@@ -75,7 +66,7 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 		  }
 		  BulkDataNTStream::globalParticipantRefCount_m++;   // but we need to know how many users of participant do we have
 		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to use global participant for stream: %s.", streamName_m.c_str()));
-	  }
+	  }//if-else (configuration_m.participantPerStream)
 
 	  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream: %s has been created.", streamName_m.c_str()));
   }catch(const ACSErr::ACSbaseExImpl &e)
@@ -100,7 +91,7 @@ BulkDataNTStream::~BulkDataNTStream()
 	  BulkDataNTStream::globalParticipantRefCount_m--;
 	  if (BulkDataNTStream::globalParticipantRefCount_m==0)
 	  {
-		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to destroy global participant of stream: %s.", streamName_m.c_str()));
+		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to destroy global participant."));
 		  destroyDDSParticipant(BulkDataNTStream::globalParticipant_m);
 		  BulkDataNTStream::globalParticipant_m=0;
 	  }
@@ -118,7 +109,7 @@ void BulkDataNTStream::createDDSFactory()
 	DDS::DomainParticipantFactoryQos factory_qos;
 
 	factory_m = DDS::DomainParticipantFactory::get_instance();
-	factoryRefCount_m++; //anyway we have to increase the counter that we know when to call finalize_instance,
+	//factoryRefCount_m++; //anyway we have to increase the counter that we know when to call finalize_instance,
 	// ... so it must be right after call get_instance call
 
 	// needed by RTI only
@@ -136,40 +127,6 @@ void BulkDataNTStream::createDDSFactory()
 	factory_qos.profile.ignore_user_profile = DDSConfiguration::ignoreUserProfileQoS;
 	factory_qos.profile.ignore_environment_profile = DDSConfiguration::ignoreEnvironmentProfileQoS;
 	factory_qos.resource_limits.max_objects_per_thread = 4096; //if we want to have more than 10 participants (at the moment can not be set in XML)
-/***
-	if (configuration_m.stringProfileQoS.length()>0)
-	{
-	    unsigned int profLen=factory_qos.profile.string_profile.length();
-	    std::cout << "string_profile length: " << factory_qos.profile.string_profile.length() << std::endl;
-	    std::cout << "string_profile max: " << factory_qos.profile.string_profile.maximum() << std::endl;
-	    if (profLen!=0)
-	      {
-	        factory_qos.profile.string_profile.ensure_length(profLen+1, profLen+1);
-
-	      }
-	    else
-	      {
-	        factory_qos.profile.string_profile.ensure_length(3,3);
-	        factory_qos.profile.string_profile[0] = DDS_String_dup("<dds><qos_library name=\"DynamicLib\">");
-	        profLen=2;
-
-	      }
-              factory_qos.profile.string_profile[profLen-1]=DDS_String_dup(configuration_m.stringProfileQoS.c_str());
-              factory_qos.profile.string_profile[profLen] = DDS_String_dup("</qos_library></dds>");
-
-//		factory_qos.profile.string_profile.ensure_length(1,1);
-//		factory_qos.profile.string_profile[0] = DDS_String_dup("<dds><qos_library name=\"DynamicLib\">");
-//              factory_qos.profile.string_profile.ensure_length(3,3);
-//		factory_qos.profile.string_profile[1] = DDS_String_dup(configuration_m.stringProfileQoS.c_str());
-std::cout << "========> " << configuration_m.stringProfileQoS << std::endl;
-std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_m.profileQos << std::endl;
-//		factory_qos.profile.string_profile[2] = DDS_String_dup("</qos_library></dds>");
-
-		//cout << "string_profile: " << configuration_m.stringProfileQoS << endl;
-	}//if
-*/
-//	std::cout << "========> " << configuration_m.stringProfileQoS << std::endl;
-//	std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_m.profileQos << std::endl;
 
 	if (DDSConfiguration::urlProfileQoS.length()>0)
 	{
@@ -191,11 +148,11 @@ std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_
 
 void BulkDataNTStream::destroyDDSFactory()
 {
-  // if factory_m is not NULL means that get_instance was sucessful , and that factoryRefCount_m was also increased
+  // if factory_m is not NULL means that get_instance was successful , and that factoryRefCount_m was also increased
   if(factory_m!=0)
     {
       factoryRefCount_m--;
-     //TBD: cause problem if all streams are delated and new is created   if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
+     //TBD: cause problem if all streams are deleted and new is created   if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
     }
 }//destroyDDSFactory
 
