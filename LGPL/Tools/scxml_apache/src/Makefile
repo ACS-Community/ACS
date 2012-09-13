@@ -65,7 +65,7 @@ install : install_all
 
 # We construct the classpath outside of ANT to avoid that the build.xml script will try to download the required jar files from the web.
 # See "build.sysclasspath=only" below. An alternative would be to patch the build.xml file.
-REMOTE_JARS_CLASSPATH = $(ACSROOT)/lib/commons-logging-1.1.1.jar:$(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/commons-digester-2.1.jar:$(ACSROOT)/lib/commons-beanutils-1.8.3.jar:$(ACSROOT)/lib/commons-jexl-1.1.jar
+REMOTE_JARS_CLASSPATH = $(ACSROOT)/lib/commons-logging-1.1.1.jar:$(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/commons-digester-2.1.jar:$(ACSROOT)/lib/commons-beanutils-1.8.3.jar:$(ACSROOT)/lib/commons-jexl-1.1.jar
 
 # For the local path we need a few jars that do not need to be installed though. 
 # Uncomment the next 3 lines to include all of these jars, whereas now we just list them explicitly.
@@ -89,6 +89,10 @@ buildScxml :
 	@echo ". . . building apache scxml . . . "
 
 	cd $(SCXML_DIR); CLASSPATH=$(LOCAL_JARS_CLASSPATH):$(REMOTE_JARS_CLASSPATH); ant -Dbuild.sysclasspath=only jar
+	
+	cp -r --preserve=timestamps $(SCXML_DIR)/src/main/java $(SCXML_DIR)/target; cd $(SCXML_DIR)/target; mv java src
+	cd $(SCXML_DIR)/target; jar uf $(SCXML_JAR) src
+	
 	cp $(SCXML_DIR)/target/$(SCXML_JAR) ../lib
 
 #___oOo___
