@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.203 2012/01/13 18:54:47 tstaig Exp $" 
+# "@(#) $Id: acsMakefile,v 1.204 2012/09/14 14:09:01 eallaert Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -124,6 +124,9 @@
 #   C_PLUS_PLUS_FLAGS  C++ compilation flags
 #   CCDEP     compiler used to extract automatic dependencies (gcc -MM -ansi)
 #
+#   SEARCHPATH basic search path, set to MODROOT:INTROOT:INTLIST:ACSROOT
+#             whereby the directories in INTROOT, INTLIST and ACSROOT will
+#             have "/vw" appended to them if MAKE_VXWORKS is set.
 #   VLTINC    VLT includes  (integration area, if defined, and then root)
 #   VLTLIB    VLT libraries (integration area, if defined, and then root)
 #   RTINC     rtap includes
@@ -406,7 +409,7 @@
 #     VLTROOT      VLT Software root directory
 #     INTROOT      Current Integration area. If defined, it becomes the target 
 #                  directory for "install" operation
-#     INTLIST      ":"-separeted list of Auxiliary Integration areas. If defined, 
+#     INTLIST      ":"-separated list of Auxiliary Integration areas. If defined, 
 #                  are used to build include and lib search paths.
 #                  Used ONLY if INTROOT is defined!
 #     USER_CFLAGS  list of additional C compilation flags
@@ -1202,6 +1205,7 @@ ifdef ACSROOT
     ifdef MAKE_VXWORKS
         VLTINC := -I$(ACSROOT)$(VW)/include $(VLTINC)
     endif
+    SEARCHPATH = $(ACSROOT)$(VW)
     VLTLIB  = -L$(ACSROOT)$(VW)/$(LIBDIR) -L$(ALMASW_INSTDIR)/boost/lib
     PRJTOP  = $(ACSROOT)$(VW)
     INSTALL_ROOT = $(ACSROOT)
@@ -1232,6 +1236,10 @@ ifdef INTLIST
     ifdef MAKE_VXWORKS
         VLTINC := $(foreach dir, $(DIRLIST), -I$(dir)$(VW)/include) $(VLTINC)
     endif
+    #SEARCHPATH := $(strip $(INTLIST)):$(SEARCHPATH)
+    empty:=
+    space:= $(empty) $(empty)
+    SEARCHPATH := $(subst $(space),:,$(foreach dir, $(DIRLIST),$(dir)$(VW))):$(SEARCHPATH)
     VLTLIB  := $(foreach dir, $(DIRLIST), -L$(dir)$(VW)/$(LIBDIR)) $(VLTLIB)
     PRJTOP  = $(word 1, $(DIRLIST))$(VW)
     INSTALL_ROOT = $(word 1, $(DIRLIST))
@@ -1258,6 +1266,7 @@ ifdef INTROOT
     ifdef MAKE_VXWORKS
         VLTINC := -I$(INTROOT)$(VW)/include $(VLTINC)
     endif
+    SEARCHPATH := $(INTROOT)$(VW):$(SEARCHPATH)
     VLTLIB := -L$(INTROOT)$(VW)/$(LIBDIR) $(VLTLIB)
     PRJTOP  = $(INTROOT)$(VW)
     INSTALL_ROOT = $(INTROOT)
@@ -1347,6 +1356,7 @@ MODINC = -I../include -I../object $(if $(VLTSW_ROOT_DIR),-I../gen,)
 MODLIB = -L../lib 
 MODIDL = -I../idl
 
+SEARCHPATH := $(shell dirname $(PWD)):$(SEARCHPATH)
 ####
 #### GCH, 2004-05-28
 #### Temporary patch: 
