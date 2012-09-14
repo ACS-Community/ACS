@@ -36,7 +36,7 @@ import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
  * 
  * Tests the notification of {@link EngineCache} through {@link ILogQueueFileHandler}.
  * 
- * @version $Id: EngineCacheNotification.java,v 1.1 2012/08/07 14:25:24 acaproni Exp $
+ * @version $Id: EngineCacheNotification.java,v 1.2 2012/09/14 08:15:38 acaproni Exp $
  * @since ACS 10.2    
  */
 public class EngineCacheNotification extends TestCase {
@@ -98,11 +98,17 @@ public class EngineCacheNotification extends TestCase {
 			fileHandler.fileProcessed(filePointer, minTime, maxTime);
 			if (checkNotification) {
 				System.out.print("Notification received: checking for correctness... ");
-				assertEquals("Youngest date differ", youngestDate,minTime);
-				assertEquals("Oldest date differ", oldestDate,maxTime);
-				System.out.println("OK");
-				if (notificationArrived!=null) {
-					notificationArrived.countDown();
+				try {
+					assertEquals("Youngest date differ", youngestDate,minTime);
+					assertEquals("Oldest date differ", oldestDate,maxTime);
+					System.out.println("OK");
+				} catch (Throwable t) {
+					System.out.println("Ops...");
+					t.printStackTrace();
+				} finally {
+					if (notificationArrived!=null) {
+						notificationArrived.countDown();
+					}					
 				}
 			}
 		}
