@@ -20,8 +20,10 @@ package alma.acs.jlog.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +38,7 @@ import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
  * 
  * Tests the notification of {@link EngineCache} through {@link ILogQueueFileHandler}.
  * 
- * @version $Id: EngineCacheNotification.java,v 1.3 2012/09/14 10:03:02 acaproni Exp $
+ * @version $Id: EngineCacheNotification.java,v 1.4 2012/09/14 14:52:56 acaproni Exp $
  * @since ACS 10.2    
  */
 public class EngineCacheNotification extends TestCase {
@@ -146,6 +148,84 @@ public class EngineCacheNotification extends TestCase {
 	}
 	
 	/**
+	 * A class to hold the dates of the log in each cache file.
+	 * 
+	 * @author acaproni
+	 */
+	private class LogDates {
+		/**
+		 * The date of the youngest log in cache
+		 */
+		public long minDate;
+		
+		/**
+		 * The date of the oldest log in cache
+		 */
+		public long maxDate;
+
+		/**
+		 * Constructor 
+		 * @param minDate The date of the youngest log in cache
+		 * @param maxDate The date of the oldest log in cache
+		 */
+		public LogDates(long minDate, long maxDate) {
+			super();
+			this.minDate = minDate;
+			this.maxDate = maxDate;
+		}
+		
+		/**
+		 * Constructor 
+		 */
+		public LogDates() {
+			super();
+			minDate = -1;
+			maxDate = -1;
+		}
+		
+		
+		/**
+		 * Constructor 
+		 * @param initialTimestamp The date of the youngest and oldest logs in cache
+		 */
+		public LogDates(long initialTimestamp) {
+			super();
+			minDate = initialTimestamp;
+			maxDate = initialTimestamp;
+		}
+		
+		public void updateTimestamps(long timestamp) {
+			if (minDate==-1 || timestamp<minDate) {
+				minDate=timestamp;
+			}
+			if (maxDate==-1 || timestamp>maxDate) {
+				maxDate=timestamp;
+			}
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder ret = new StringBuilder();
+			ret. append('[');
+			if (minDate==-1) {
+				ret.append(minDate);
+			} else {
+				ret.append(formatDate(minDate));
+			}
+			ret.append(", ");
+			if (maxDate==-1) {
+				ret.append(maxDate);
+			} else {
+				ret.append(formatDate(maxDate));
+			}
+			ret. append(']');
+			return ret.toString();
+		}
+		
+		
+	}
+	
+	/**
 	 * The cache used to stress the file handler
 	 */
 	private EngineCache engineCache;
@@ -216,22 +296,24 @@ public class EngineCacheNotification extends TestCase {
 	public void testNotifiedDatesOrdered() throws Exception {
 		System.out.println("testNotifiedDatesOrdered");
 		long startDate=System.currentTimeMillis();
-		String youngestDateStr=formatDate(startDate);
-		String oldestDateStr=null;
 		long lastTimestamp = startDate;
-		int logsInCache=0;
+		
+		LogDates logDates = new LogDates();
+		LogDates notUsedlogDates = new LogDates();
+		// Add the first log before the loop because it triggers
+    	// the creation of a new cache file
+		addLogToCache(lastTimestamp, new LogDates(), logDates);
+		int logsInCache=1;
+		
+		
 		while (engineCache.getActiveFilesSize()<=1) {
-			engineCache.push(generateLog(lastTimestamp));
-			if (engineCache.getActiveFilesSize()<=1) {
-				// This log is in the first cache file
-				oldestDateStr=formatDate(lastTimestamp);
-			}
+			addLogToCache(lastTimestamp, logDates,notUsedlogDates);
 			lastTimestamp+=250;
 			logsInCache++;
 			assertEquals(logsInCache, engineCache.size());
 		}
 		// Pop logs to trigger the notification
-		testFileHandler.setExpectedDates(youngestDateStr, oldestDateStr);
+		testFileHandler.setExpectedDates(formatDate(logDates.minDate), formatDate(logDates.maxDate));
 		notificationArrived=new CountDownLatch(1);
 		for (int t=0; t<logsInCache; t++) {
 			assertNotNull(engineCache.pop());
@@ -255,26 +337,24 @@ public class EngineCacheNotification extends TestCase {
 	public void testNotifiedDatesNotOrdered() throws Exception {
 		System.out.println("testNotifiedDatesNotOrdered");
 		long timestamp = System.currentTimeMillis();
-		long oldestTime=-1;
-		long youngestTime=-1;
-		int logsInCache=0;
 		Random rnd = new Random(System.currentTimeMillis()); // For the new timestamp
+		
+		LogDates logDates = new LogDates();
+		LogDates notUsedlogDates = new LogDates();
+		// Add the first log before the loop because it triggers
+    	// the creation of a new cache file
+		addLogToCache(timestamp+rnd.nextInt(), new LogDates(), logDates);
+		int logsInCache=1;
 		
 		while (engineCache.getActiveFilesSize()<=1) {
 			int timeStampInc=rnd.nextInt();
 			timestamp=timestamp+timeStampInc;
-			engineCache.push(generateLog(timestamp));
+			addLogToCache(timestamp, logDates,notUsedlogDates);
 			logsInCache++;
-			if (youngestTime==-1 || timestamp<youngestTime) {
-				youngestTime=timestamp;
-			}
-			if (oldestTime==-1 || timestamp>oldestTime) {
-				oldestTime=timestamp;
-			}
 			assertEquals(logsInCache, engineCache.size());
 			//System.out.println("\t=>"+timeStampInc+", actual="+formatDate(timestamp)+"youngest="+formatDate(youngestTime)+", oldest="+formatDate(oldestTime));
 		}
-		testFileHandler.setExpectedDates(formatDate(youngestTime), formatDate(oldestTime));
+		testFileHandler.setExpectedDates(formatDate(logDates.minDate), formatDate(logDates.maxDate));
 		notificationArrived=new CountDownLatch(1);
 		// Pop logs to trigger the notification
 		while (engineCache.size()>0) {
@@ -296,46 +376,34 @@ public class EngineCacheNotification extends TestCase {
 	public void testNotificationsWithSeveralFiles() throws Exception {
 		System.out.println("testNotificationsWithSeveralFiles");
 		
-		String[] oldestTimes = new String[3];
-		String[] youngestTimes = new String[3];
-		int[] logsInCache = new int[3];
+		// The vector will contain one LogDates for each file of the cache
+		Vector<LogDates> logDatesVector = new Vector<EngineCacheNotification.LogDates>();
+
+		// The number of logs in each file of the cache
+ 		int[] logsInCache = new int[3];
 		
 		long timestamp = System.currentTimeMillis();
-		long youngTime=-1;
-		long oldTime=-1;
 		Random rnd = new Random(System.currentTimeMillis()); // For the new timestamp
+		
+		LogDates actualFileLogDates = new LogDates();
+		LogDates newFileLogDates = new LogDates();
 		
 		while (engineCache.getActiveFilesSize()<=3) {
 			int timeStampInc=rnd.nextInt();
 			timestamp=timestamp+timeStampInc;
-			int filesInCache=engineCache.getActiveFilesSize();
-			
-			String log=generateLog(timestamp);
-			// System.out.println("Adding ["+log+"]");
-			engineCache.push(log);
-			
-			if (engineCache.getActiveFilesSize()<=3) {
-				if (engineCache.getActiveFilesSize()>filesInCache) {
-					// The log is the first log added to a new cache file
-					youngestTimes[engineCache.getActiveFilesSize()-1]=formatDate(timestamp);
-					oldestTimes[engineCache.getActiveFilesSize()-1]=formatDate(timestamp);
-					youngTime=timestamp;
-					oldTime=timestamp;
-				} else {
-					if (timestamp<youngTime) {
-						youngTime=timestamp;
-						youngestTimes[engineCache.getActiveFilesSize()-1]=formatDate(timestamp);
-					}
-					if (timestamp>oldTime) {
-						oldTime=timestamp;
-						oldestTimes[engineCache.getActiveFilesSize()-1]=formatDate(timestamp);
-					}
-				}
+			boolean newFileCreated=addLogToCache(timestamp, actualFileLogDates, newFileLogDates);
+			if (newFileCreated) {
+				logDatesVector.add(actualFileLogDates);
+				actualFileLogDates=newFileLogDates;
+				newFileLogDates = new LogDates();
 			}
 		}
+		
 		// Pop the logs to trigger a notification for each of the files in cache
-		int idx=0;
-		testFileHandler.setExpectedDates(youngestTimes[idx], oldestTimes[idx]);
+		int idx=1; // Skip index 0 created when the first log has been inserted
+		testFileHandler.setExpectedDates(
+				formatDate(logDatesVector.get(idx).minDate), 
+				formatDate(logDatesVector.get(idx).maxDate));
 		while (engineCache.size()>0) {
 			notificationArrived=new CountDownLatch(1);
 			int filesInCache=engineCache.getActiveFilesSize();
@@ -347,10 +415,12 @@ public class EngineCacheNotification extends TestCase {
 					throw new Exception("Notification (fileProcessed) never called!");
 				}
 				idx++;
-				if (idx>=logsInCache.length) {
+				if (idx>=logDatesVector.size()) {
 					continue;
 				}
-				testFileHandler.setExpectedDates(youngestTimes[idx], oldestTimes[idx]);
+				testFileHandler.setExpectedDates(
+						formatDate(logDatesVector.get(idx).minDate), 
+						formatDate(logDatesVector.get(idx).maxDate));
 			}
 		}
 		System.out.println("testNotificationsWithSeveralFiles done");
@@ -380,7 +450,7 @@ public class EngineCacheNotification extends TestCase {
 	 * @param time The time of the log in msec
 	 * @return A string representing the date
 	 */
-	private String formatDate(long time) {
+	public static String formatDate(long time) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(time);
 		return String.format("%4d-%02d-%02dT%02d:%02d:%02d.%03d",
@@ -391,6 +461,40 @@ public class EngineCacheNotification extends TestCase {
 				cal.get(Calendar.MINUTE),
 				cal.get(Calendar.SECOND),
 				cal.get(Calendar.MILLISECOND));
+	}
+	
+	/**
+	 * Add a new log to the cache signaling if a new cache file has been created.
+	 * <P>
+	 * The new log to add is automatically generated by {@link #generateLog(long)} starting from 
+	 * the passed timestamp.
+	 * <P>
+	 * The method returns a flag to signal if a new cache file has been created.<BR>
+	 * <code>addLogToCache</code> updates the dates in the LogDates objects passed in the constructor depending 
+	 * if a new file has been created or not. If no new file has been created the the dates are stored in
+	 * <code>logDates</code>. If a new file is created then the dates are updated in <code>newLogDates</code>.
+	 * 
+	 * @param timestamp The timestamp of the log to add to the cache
+	 * @param logDates The dates of the logs in the file of the cache updated only if no new file has been created
+	 * @param newLogDates The dates of the logs in the file of the cache updated only if a new file has been created
+	 * @return <code>true</code> if a new cache file has been created
+	 * throws Exception if the cache returned an error while adding a new log
+	 */
+	private boolean addLogToCache(long timestamp, LogDates logDates, LogDates newLogDates) throws Exception {
+		if (logDates==null || newLogDates==null) {
+			throw new InvalidParameterException("LogDates params can't be null");
+		}
+		int numoOfLogFilesBefore=engineCache.getActiveFilesSize();
+		String newLog=generateLog(timestamp);
+		engineCache.push(newLog);
+		int numoOfLogFilesAfter=engineCache.getActiveFilesSize();
+		boolean aNewFileHasBeenCreated=numoOfLogFilesBefore!=numoOfLogFilesAfter;
+		if (!aNewFileHasBeenCreated) {
+			logDates.updateTimestamps(timestamp);
+		} else {
+			newLogDates.updateTimestamps(timestamp);
+		}
+		return aNewFileHasBeenCreated;
 	}
 	
 }
