@@ -36,7 +36,7 @@ import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
  * 
  * Tests the notification of {@link EngineCache} through {@link ILogQueueFileHandler}.
  * 
- * @version $Id: EngineCacheNotification.java,v 1.2 2012/09/14 08:15:38 acaproni Exp $
+ * @version $Id: EngineCacheNotification.java,v 1.3 2012/09/14 10:03:02 acaproni Exp $
  * @since ACS 10.2    
  */
 public class EngineCacheNotification extends TestCase {
@@ -81,6 +81,11 @@ public class EngineCacheNotification extends TestCase {
 		 */
 		private String youngestDate;
 		
+		/**
+		 * Track the number of notifications received.
+		 */
+		private int receivedNotifications=0;
+		
 		public TestFileHandler() {
 			fileHandler=new LogQueueFileHandlerImpl(cacheFileSize);
 			youngestDate=oldestDate=null;
@@ -95,9 +100,10 @@ public class EngineCacheNotification extends TestCase {
 		@Override
 		public void fileProcessed(File filePointer, String minTime,
 				String maxTime) {
+			receivedNotifications++;
 			fileHandler.fileProcessed(filePointer, minTime, maxTime);
 			if (checkNotification) {
-				System.out.print("Notification received: checking for correctness... ");
+				System.out.print("Notification "+receivedNotifications+" received: checking for correctness... ");
 				try {
 					assertEquals("Youngest date differ", youngestDate,minTime);
 					assertEquals("Oldest date differ", oldestDate,maxTime);
@@ -304,7 +310,9 @@ public class EngineCacheNotification extends TestCase {
 			timestamp=timestamp+timeStampInc;
 			int filesInCache=engineCache.getActiveFilesSize();
 			
-			engineCache.push(generateLog(timestamp));
+			String log=generateLog(timestamp);
+			// System.out.println("Adding ["+log+"]");
+			engineCache.push(log);
 			
 			if (engineCache.getActiveFilesSize()<=3) {
 				if (engineCache.getActiveFilesSize()>filesInCache) {
@@ -325,24 +333,24 @@ public class EngineCacheNotification extends TestCase {
 				}
 			}
 		}
-		// Pop the logs to trigger the notification for all the files
+		// Pop the logs to trigger a notification for each of the files in cache
 		int idx=0;
 		testFileHandler.setExpectedDates(youngestTimes[idx], oldestTimes[idx]);
-		notificationArrived=new CountDownLatch(1);
 		while (engineCache.size()>0) {
+			notificationArrived=new CountDownLatch(1);
 			int filesInCache=engineCache.getActiveFilesSize();
 			assertNotNull(engineCache.pop());
 			if (filesInCache!=engineCache.getActiveFilesSize()) {
-				idx++;
-				if (idx>=logsInCache.length) {
-					continue;
-				}
-				testFileHandler.setExpectedDates(youngestTimes[idx], oldestTimes[idx]);
 				// wait for the notification
 				if (!notificationArrived.await(2, TimeUnit.MINUTES)) {
 					// Timeout :-(
 					throw new Exception("Notification (fileProcessed) never called!");
 				}
+				idx++;
+				if (idx>=logsInCache.length) {
+					continue;
+				}
+				testFileHandler.setExpectedDates(youngestTimes[idx], oldestTimes[idx]);
 			}
 		}
 		System.out.println("testNotificationsWithSeveralFiles done");
