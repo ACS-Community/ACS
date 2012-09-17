@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.204 2012/09/14 14:09:01 eallaert Exp $" 
+# "@(#) $Id: acsMakefile,v 1.205 2012/09/17 13:47:01 eallaert Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -126,7 +126,9 @@
 #
 #   SEARCHPATH basic search path, set to MODROOT:INTROOT:INTLIST:ACSROOT
 #             whereby the directories in INTROOT, INTLIST and ACSROOT will
-#             have "/vw" appended to them if MAKE_VXWORKS is set.
+#             have "/vw" appended to them if MAKE_VXWORKS is set. MODROOT will
+#             be set to ".." if the environment variable MODPATH is set to 1;
+#             otherwise it will not be part of SEARCHPATH.
 #   VLTINC    VLT includes  (integration area, if defined, and then root)
 #   VLTLIB    VLT libraries (integration area, if defined, and then root)
 #   RTINC     rtap includes
@@ -1356,7 +1358,11 @@ MODINC = -I../include -I../object $(if $(VLTSW_ROOT_DIR),-I../gen,)
 MODLIB = -L../lib 
 MODIDL = -I../idl
 
-SEARCHPATH := $(shell dirname $(PWD)):$(SEARCHPATH)
+ifdef MODPATH 
+    ifeq ($(MODPATH), 1)
+        SEARCHPATH := ..:$(SEARCHPATH)
+    endif
+endif
 ####
 #### GCH, 2004-05-28
 #### Temporary patch: 
