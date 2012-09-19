@@ -191,6 +191,33 @@ public class QueryDlg extends JDialog implements ActionListener {
 		public void changedUpdate(DocumentEvent e) {}
 		
 	}
+	
+	/**
+	 * Some of the inout fields whose value could be wrong.
+	 *  
+	 * @author acaproni
+	 *
+	 */
+	public enum FieldState {
+		OK("OK"), // All the inoput fields contain valid data
+		FROMDATE_ERROR("Start date"), // At least one of the field of the starting date is wrong
+		TODATE_ERROR("End date"),// At least one of the field of the ending date is wrong
+		LOGNUM_ERROR("Max num. of logs to read"); // Max number of logs to retrieve is wrong
+		
+		/**
+		 * The description
+		 */
+		public final String desc;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param desc The description
+		 */
+		private FieldState(String desc) {
+			this.desc=desc;
+		}
+	}
 
 	/**
 	 * Constructor
@@ -307,6 +334,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		
 		// Add the input widgets
 		fromYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
+		fromYY.setName(fromLbl.getText());
 		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,0);
 		fromYY.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromYY,c);
@@ -314,6 +342,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=2; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,0,5,0);
 		optionsPnl.add(separatorF1,c);
 		fromMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
+		fromMM.setName(fromLbl.getText());
 		c.gridx=3; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		fromMM.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromMM,c);
@@ -321,6 +350,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=4; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(separatorF2,c);
 		fromDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
+		fromDD.setName(fromLbl.getText());
 		c.gridx=5; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		fromDD.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromDD,c);
@@ -328,6 +358,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=6; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(tlbl,c);
 		fromHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
+		fromHr.setName(fromLbl.getText());
 		c.gridx=7; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		fromHr.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromHr,c);
@@ -335,6 +366,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=8; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(comaF1Lbl,c);
 		fromMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
+		fromMin.setName(fromLbl.getText());
 		c.gridx=9; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		fromMin.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromMin,c);
@@ -342,11 +374,13 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=10; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(comaF2Lbl,c);
 		fromSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
+		fromSec.setName(fromLbl.getText());
 		c.gridx=11; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER; 
 		fromSec.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromSec,c);
 		
 		toYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
+		toYY.setName(toLbl.getText());
 		c.gridx=1; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,0);
 		toYY.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toYY,c);
@@ -354,6 +388,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=2; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,0,5,0);
 		optionsPnl.add(separatorTo1,c);
 		toMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
+		toMM.setName(toLbl.getText());
 		c.gridx=3; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		toMM.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toMM,c);
@@ -361,6 +396,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=4; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(separatorTo2,c);
 		toDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
+		toDD.setName(toLbl.getText());
 		c.gridx=5; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		toDD.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toDD,c);
@@ -368,6 +404,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=6; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(t2lbl,c);
 		toHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
+		toHr.setName(toLbl.getText());
 		c.gridx=7; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		toHr.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toHr,c);
@@ -375,6 +412,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=8; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(comaTo1Lbl,c);
 		toMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
+		toMin.setName(toLbl.getText());
 		c.gridx=9; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		toMin.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toMin,c);
@@ -382,11 +420,14 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=10; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(comaTo2Lbl,c);
 		toSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
+		toSec.setName(toLbl.getText());
 		c.gridx=11; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;
 		toSec.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toSec,c);
 		
 		rowLimit = new JTextField("10000",20);
+		rowLimit.setName(maxLogs.getText());
+		rowLimit.setToolTipText("Valid range  is [0, "+(Integer.MAX_VALUE-1)+"]");
 		rowLimit.getDocument().addDocumentListener(new IntegerDocumentListener());
 		c.gridx=1; c.gridy=0; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(10,5,5,5);
 		optionsPnl.add(rowLimit,c);
@@ -460,8 +501,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 *
 	 */
 	private void submitQuery() {
-		if (!checkFields()) {
-			JOptionPane.showMessageDialog(this,"<HTML>Error getting values from the form!<BR>Check the values in the text fields.","Input error!",JOptionPane.ERROR_MESSAGE);
+		FieldState chekResult=checkFields();
+		if (chekResult!=FieldState.OK) {
+			JOptionPane.showMessageDialog(this,"<HTML>Error getting values from the form!<BR>Check the values of "+chekResult.desc,"Input error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		loggingClient.reportStatus("Submitting a query");
@@ -583,64 +625,95 @@ public class QueryDlg extends JDialog implements ActionListener {
 	
 	/**
 	 * Check the fields in the GUI before executing a query.
-	 * It makes only some checks...
+	 * <P>
+	 * <code>checkFields</code> makes only some basic checks.
+	 * The state returned is OK or the first error found while checking.
 	 * 
-	 * @return <code>true</code> if the values in the fields are ok
+	 * @return The error state or OK if all the input fields are valid
 	 */
-	private boolean checkFields() {
+	private FieldState checkFields() {
+		
 		boolean ret = 
 			Pattern.matches("[0-9]+",fromYY.getText()) &&
 			Pattern.matches("[0-9]+",fromMM.getText()) &&
 			Pattern.matches("[0-9]+",fromMM.getText()) &&
 			Pattern.matches("[0-9]+",fromHr.getText()) &&
 			Pattern.matches("[0-9]+",fromMin.getText()) &&
-			Pattern.matches("[0-9]+",fromSec.getText()) &&
+			Pattern.matches("[0-9]+",fromSec.getText()); 
+		if (!ret) {
+			return FieldState.FROMDATE_ERROR;
+		}
+		ret=
 			Pattern.matches("[0-9]+",toYY.getText()) &&
 			Pattern.matches("[0-9]+",toMM.getText()) &&
 			Pattern.matches("[0-9]+",toDD.getText()) &&
 			Pattern.matches("[0-9]+",toHr.getText()) &&
 			Pattern.matches("[0-9]+",toMin.getText()) &&
-			Pattern.matches("[0-9]+",toSec.getText()) &&
-			Pattern.matches("[0-9]+",rowLimit.getText());
+			Pattern.matches("[0-9]+",toSec.getText());
+		if (!ret) {
+			return FieldState.TODATE_ERROR;
+		}
+		if (!Pattern.matches("[0-9]+",rowLimit.getText())) {
+			return FieldState.LOGNUM_ERROR;
+		}
 			
 		int fromY, fromD,fromM, from_h,from_m,from_s;
-		int toY, toM, toD, to_h, to_m, to_s;
-		long rLimit;
-		try {fromY = Integer.parseInt(fromYY.getText());
+		try {
+			fromY = Integer.parseInt(fromYY.getText());
 			fromM= Integer.parseInt(fromMM.getText());
 			fromD=Integer.parseInt(fromDD.getText());
 			from_h=Integer.parseInt(fromHr.getText());
 			from_m=Integer.parseInt(fromMin.getText());
 			from_s=Integer.parseInt(fromSec.getText());
+		} catch (Exception e) {
+			// An error parsing so at least one field contains a invalid number
+			return FieldState.FROMDATE_ERROR;
+		}
+		int toY, toM, toD, to_h, to_m, to_s;
+		try {
 			toY=Integer.parseInt(toYY.getText());
 			toM=Integer.parseInt(toMM.getText());
 			toD=Integer.parseInt(toDD.getText());
 			to_h=Integer.parseInt(toHr.getText());
 			to_m=Integer.parseInt(toMin.getText());
 			to_s=Integer.parseInt(toSec.getText());
+		} catch (Exception e) {
+			// An error parsing so at least one field contains a invalid number
+			return FieldState.TODATE_ERROR;
+		}	
+		long rLimit;
+		try {
 			rLimit = Long.parseLong(rowLimit.getText());
 		} catch (Exception e) {
 			// An error parsing so at least one field contains a invalid number
-			return false;
+			return FieldState.LOGNUM_ERROR;
 		}
 		
-		ret = ret && fromY>=2000 && fromY<2100;
-		ret = ret && toY>=2000 && toY<2100;
+		ret = fromY>=2000 && fromY<2100;
 		ret = ret && fromM>=1 && fromM<=12;
-		ret = ret && toM>=1 && toM<=12;
 		ret = ret && fromD>=1 && fromD<=31;
-		ret = ret && toD>=1 && toD<=31;
-		
 		ret = ret && from_h>=0 && from_h<24;
-		ret = ret && to_h>=0 && to_h<24;
 		ret = ret && from_m>=0 && from_m<60;
-		ret = ret && to_m>=0 && to_m<60;
 		ret = ret && from_s>=0 && from_s<60;
+		if (!ret) {
+			return FieldState.FROMDATE_ERROR;
+		}
+		
+		ret = toY>=2000 && toY<2100;
+		ret = ret && toM>=1 && toM<=12;
+		ret = ret && toD>=1 && toD<=31;
+		ret = ret && to_h>=0 && to_h<24;
+		ret = ret && to_m>=0 && to_m<60;
 		ret = ret && to_s>=0 && to_s<60;
-		ret = ret && rLimit>0 && rLimit<Integer.MAX_VALUE;
+		if (!ret) {
+			return FieldState.TODATE_ERROR;
+		}
+		if (rLimit<=0 || rLimit>=Integer.MAX_VALUE) {
+			return FieldState.LOGNUM_ERROR;
+		}
 		
 			
-        return ret;
+        return FieldState.OK;
 	}
 	
 	/**
