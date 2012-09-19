@@ -31,9 +31,11 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -48,6 +50,11 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.BadLocationException;
 
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
 import alma.acs.logging.engine.parser.ACSLogParser;
@@ -120,6 +127,70 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 * Signal the thread that get logs from the DB that the user pressed cancel to abort
 	 */
 	private volatile boolean terminateThread;
+
+	/**
+	 * Objects of the <code>IntegerDocumentListener</code> checks that the user only inserts numbers
+	 * in the text field and if it is not the case, removes invalid characters from the 
+	 * document.
+	 * 
+	 * @author acaproni
+	 * since ACS 10.2
+	 */
+	private class IntegerDocumentListener implements DocumentListener {
+		
+		/**
+		 * The matcher to check that the inserted string contains only numbers
+		 */
+		private final Pattern pattern = Pattern.compile("[0-9]+");
+		
+		/**
+		 * This method is invoked when the user adds a new character in the text field.
+		 * We check that the new string matches with the regular expression and,
+		 * if it is not the case, remove the character from the text field.
+		 * 
+		 * @see DocumentListener#insertUpdate(DocumentEvent)
+		 */
+		@Override
+		public void insertUpdate(final DocumentEvent e) {
+			
+			String insertedText = null;
+			try {
+				insertedText=e.getDocument().getText(e.getOffset(), e.getLength());
+			} catch (BadLocationException ble) {
+				ble.printStackTrace();
+			}
+			if (insertedText==null || insertedText.isEmpty()) {
+				// Nothing to do in this rare case
+				return;
+			}
+			Matcher m = pattern.matcher(insertedText);
+			if (!m.matches()) {
+				// The test does not match with the regular expression so 
+				// we remove the string from the text field
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							e.getDocument().remove(e.getOffset(), e.getLength());
+						} catch (BadLocationException ble) {
+							// In case something strange happened removing the character, we clear the whole text
+							// to be sure we do not have spurious data in the text field.
+							try {
+								e.getDocument().remove(0, e.getDocument().getLength());
+							} catch (BadLocationException ble2) {}
+							
+						}
+					}
+				});
+			}
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {}
+		
+	}
 
 	/**
 	 * Constructor
@@ -237,73 +308,86 @@ public class QueryDlg extends JDialog implements ActionListener {
 		// Add the input widgets
 		fromYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
 		c.gridx=1; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,0);
+		fromYY.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromYY,c);
 		JLabel separatorF1 = new JLabel("-");
 		c.gridx=2; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,0,5,0);
 		optionsPnl.add(separatorF1,c);
 		fromMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
 		c.gridx=3; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
+		fromMM.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromMM,c);
 		JLabel separatorF2 = new JLabel("-");
 		c.gridx=4; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(separatorF2,c);
 		fromDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
 		c.gridx=5; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
+		fromDD.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromDD,c);
 		JLabel tlbl = new JLabel("T");
 		c.gridx=6; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(tlbl,c);
 		fromHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
 		c.gridx=7; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
+		fromHr.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromHr,c);
 		JLabel comaF1Lbl = new JLabel(":");
 		c.gridx=8; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(comaF1Lbl,c);
 		fromMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
 		c.gridx=9; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
+		fromMin.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromMin,c);
 		JLabel comaF2Lbl = new JLabel(":");
 		c.gridx=10; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; 
 		optionsPnl.add(comaF2Lbl,c);
 		fromSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
-		c.gridx=11; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;  
+		c.gridx=11; c.gridy=1; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER; 
+		fromSec.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(fromSec,c);
 		
 		toYY = new JTextField(Integer.toString(calendar.get(Calendar.YEAR)),4);
 		c.gridx=1; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,0);
+		toYY.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toYY,c);
 		JLabel separatorTo1 = new JLabel("-");
 		c.gridx=2; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,0,5,0);
 		optionsPnl.add(separatorTo1,c);
 		toMM = new JTextField(Integer.toString(calendar.get(Calendar.MONTH)+1),2);
 		c.gridx=3; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		toMM.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toMM,c);
 		JLabel separatorTo2 = new JLabel("-");
 		c.gridx=4; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(separatorTo2,c);
 		toDD= new JTextField(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)),2);
 		c.gridx=5; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		toDD.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toDD,c);
 		JLabel t2lbl = new JLabel("T");
 		c.gridx=6; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(t2lbl,c);
 		toHr= new JTextField(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)),2);
 		c.gridx=7; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		toHr.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toHr,c);
 		JLabel comaTo1Lbl = new JLabel(":");
 		c.gridx=8; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(comaTo1Lbl,c);
 		toMin = new JTextField(Integer.toString(calendar.get(Calendar.MINUTE)),2);
 		c.gridx=9; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
+		toMin.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toMin,c);
 		JLabel comaTo2Lbl = new JLabel(":");
 		c.gridx=10; c.gridy=2; c.gridwidth=GridBagConstraints.RELATIVE; c.anchor=GridBagConstraints.LAST_LINE_START;
 		optionsPnl.add(comaTo2Lbl,c);
 		toSec= new JTextField(Integer.toString(calendar.get(Calendar.SECOND)),2);
 		c.gridx=11; c.gridy=2; c.anchor=GridBagConstraints.LAST_LINE_START; c.gridwidth=GridBagConstraints.REMAINDER;
+		toSec.getDocument().addDocumentListener(new IntegerDocumentListener());
 		optionsPnl.add(toSec,c);
 		
 		rowLimit = new JTextField("10000",20);
+		rowLimit.getDocument().addDocumentListener(new IntegerDocumentListener());
 		c.gridx=1; c.gridy=0; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(10,5,5,5);
 		optionsPnl.add(rowLimit,c);
 		routineName = new JTextField("*",20);
