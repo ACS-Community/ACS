@@ -461,7 +461,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 */
 	private void submitQuery() {
 		if (!checkFields()) {
-			JOptionPane.showMessageDialog(this,"Error getting values from the form","Input error!",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this,"<HTML>Error getting values from the form!<BR>Check the values in the text fields.","Input error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		loggingClient.reportStatus("Submitting a query");
@@ -585,7 +585,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 * Check the fields in the GUI before executing a query.
 	 * It makes only some checks...
 	 * 
-	 * @return true if the vaules in the fields are ok
+	 * @return <code>true</code> if the values in the fields are ok
 	 */
 	private boolean checkFields() {
 		boolean ret = 
@@ -605,18 +605,24 @@ public class QueryDlg extends JDialog implements ActionListener {
 			
 		int fromY, fromD,fromM, from_h,from_m,from_s;
 		int toY, toM, toD, to_h, to_m, to_s;
-		fromY = Integer.parseInt(fromYY.getText());
-		fromM= Integer.parseInt(fromMM.getText());
-		fromD=Integer.parseInt(fromDD.getText());
-		from_h=Integer.parseInt(fromHr.getText());
-		from_m=Integer.parseInt(fromMin.getText());
-		from_s=Integer.parseInt(fromSec.getText());
-		toY=Integer.parseInt(toYY.getText());
-		toM=Integer.parseInt(toMM.getText());
-		toD=Integer.parseInt(toDD.getText());
-		to_h=Integer.parseInt(toHr.getText());
-		to_m=Integer.parseInt(toMin.getText());
-		to_s=Integer.parseInt(toSec.getText());
+		long rLimit;
+		try {fromY = Integer.parseInt(fromYY.getText());
+			fromM= Integer.parseInt(fromMM.getText());
+			fromD=Integer.parseInt(fromDD.getText());
+			from_h=Integer.parseInt(fromHr.getText());
+			from_m=Integer.parseInt(fromMin.getText());
+			from_s=Integer.parseInt(fromSec.getText());
+			toY=Integer.parseInt(toYY.getText());
+			toM=Integer.parseInt(toMM.getText());
+			toD=Integer.parseInt(toDD.getText());
+			to_h=Integer.parseInt(toHr.getText());
+			to_m=Integer.parseInt(toMin.getText());
+			to_s=Integer.parseInt(toSec.getText());
+			rLimit = Long.parseLong(rowLimit.getText());
+		} catch (Exception e) {
+			// An error parsing so at least one field contains a invalid number
+			return false;
+		}
 		
 		ret = ret && fromY>=2000 && fromY<2100;
 		ret = ret && toY>=2000 && toY<2100;
@@ -631,6 +637,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		ret = ret && to_m>=0 && to_m<60;
 		ret = ret && from_s>=0 && from_s<60;
 		ret = ret && to_s>=0 && to_s<60;
+		ret = ret && rLimit>0 && rLimit<Integer.MAX_VALUE;
 		
 			
         return ret;
