@@ -267,12 +267,18 @@ public class QueryDlg extends JDialog implements ActionListener {
 		if (e.getSource()==submitBtn) {
 			Thread t = new Thread() {
 				public void run() {
-					submitBtn.setEnabled(false);
 					loggingClient.animateProgressBar("Loading from DB");
 					terminateThread=false;
-					submitQuery();
-					loggingClient.freezeProgressBar();
-					submitBtn.setEnabled(true);
+					enableInputFields(false);
+					try {
+						submitQuery();
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						enableInputFields(true);
+						loggingClient.freezeProgressBar();
+						submitBtn.setEnabled(true);
+					}
 				}
 			};
 			t.setDaemon(false);
@@ -768,7 +774,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			setLocation(loggingPos);
 			toFront();
 		}
-		// Refresh the state of the switches to disconnec and clear the table
+		// Refresh the state of the switches to disconnect and clear the table
 		guiSwitches.checkControlsState();
 	}
 	
@@ -782,4 +788,39 @@ public class QueryDlg extends JDialog implements ActionListener {
 		dispose();
 	}
 	
+	/**
+	 * Enable/disable the input fields
+	 * @param enable if <code>true</code> the widgets are enabled otherwise disabled
+	 */
+	private void enableInputFields(final boolean enable) {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				fromYY.setEnabled(enable);
+				fromDD.setEnabled(enable);
+				fromMM.setEnabled(enable);
+				fromHr.setEnabled(enable);
+				fromMin.setEnabled(enable);
+				fromSec.setEnabled(enable);
+				
+				toYY.setEnabled(enable);
+				toMM.setEnabled(enable);
+				toDD.setEnabled(enable);
+				toHr.setEnabled(enable);
+				toMin.setEnabled(enable);
+				toSec.setEnabled(enable);
+				
+				rowLimit.setEnabled(enable);
+				
+				routineName.setEnabled(enable);
+				procName.setEnabled(enable);
+				sourceName.setEnabled(enable);
+				minLogLevelCB.setEnabled(enable);
+				maxLogLevelCB.setEnabled(enable);
+				submitBtn.setEnabled(enable);
+			}
+		});
+		} catch (Throwable t) {}
+	}
 }
