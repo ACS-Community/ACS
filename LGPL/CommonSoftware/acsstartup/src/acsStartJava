@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.71 2012/05/08 08:01:06 msekoran Exp $"
+# "@(#) $Id: acsStartJava,v 1.72 2012/09/20 12:37:25 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -395,19 +395,23 @@ then
 #
 elif [ X"$CL_NCL" = X ]
 then
-   # 
-   # Sets the class loader and adds ACSUtil.jar to the CLASSPATH
-   # 
-   JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs=\"$CL_JARPATH\""
+  # 
+  # Sets the class loader and adds ACSUtil.jar to the CLASSPATH
+  # 
+  # TODO: Perhaps replace CL_JARPATH with the new acsSearchPath, see http://jira.alma.cl/browse/COMP-5690
+  JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader \
+   -Dacs.system.classpath.jardirs=\"$CL_JARPATH\" \
+   -Dacs.system.path=\"`acsSearchPath`\"" 
+  echo $JAVA_OPTIONS
 
-   JACSUTIL_JAR=`acsGetSpecificJars ${PATH_SEP} jACSUtil.jar`
-   if [ X"$JACSUTIL_JAR" = X ]
-   then    
-       ACS_LOG_ERROR "acsStartJava" "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
-       exit $EC_FAILURE
-   fi
-   
-   CLASSPATH="$JACSUTIL_JAR${PATH_SEP}$CLASSPATH"
+  JACSUTIL_JAR=`acsGetSpecificJars ${PATH_SEP} jACSUtil.jar`
+  if [ X"$JACSUTIL_JAR" = X ]
+  then    
+    ACS_LOG_ERROR "acsStartJava" "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
+    exit $EC_FAILURE
+  fi
+  
+  CLASSPATH="$JACSUTIL_JAR${PATH_SEP}$CLASSPATH"
 fi
 
 #
