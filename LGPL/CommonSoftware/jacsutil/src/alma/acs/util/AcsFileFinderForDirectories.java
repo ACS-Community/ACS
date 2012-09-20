@@ -80,9 +80,13 @@ public class AcsFileFinderForDirectories
 	/**
 	 * Searches for a single file with a known name.
 	 * 
-	 * @param relativePath The path underneath $INTROOT, $ACSROOT, for example "config" or "lib/oracle/hiddenJars" or "".
-	 * @param fileName The file name (without path), e.g. "myConfigFile.txt". 
+	 * @param relativePath
+	 *            The path underneath $INTROOT, $ACSROOT, for example "config" or "lib/oracle/hiddenJars" or "".
+	 * @param fileName
+	 *            The file name (without path), e.g. "myConfigFile.txt".
 	 * @return The file found, or <code>null</code> if it wasn't found.
+	 * @throws NullPointerException
+	 *             If <code>fileName</code> is <code>null</code>
 	 */
 	public File findFile(String relativePath, String fileName) {
 		if (relativePath == null) {
@@ -117,6 +121,9 @@ public class AcsFileFinderForDirectories
 	 *         then the first occurrence (from the less permanent location) is taken.
 	 */
 	public List<File> findFiles(String relativePath, FilenameFilter filter) {
+		if (relativePath == null) {
+			relativePath = "";
+		}
 		Map<String, File> foundFiles = new LinkedHashMap<String, File>();
 		for (File rootDir : rootDirs) {
 			File dir = new File(rootDir, relativePath);
