@@ -33,7 +33,6 @@ import alma.acs.logging.table.reduction.LogProcessor;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
-import com.cosylab.logging.engine.audience.Audience;
 import com.cosylab.logging.engine.audience.Audience.AudienceInfo;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
@@ -152,6 +151,16 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	private final LogProcessor logProcessor = new LogProcessor();
 	
 	/**
+	 * HTML open TAG for the string in the table
+	 */
+	private static final String htmlStartTAG="<html>";
+	
+	/**
+	 * HTML close TAG for the string in the table
+	 */
+	private static final String htmlCloseTAG="<html>";
+	
+	/**
 	 * Constructor
 	 */
 	public LogEntryTableModelBase(LoggingClient client) throws Exception {
@@ -246,7 +255,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			if (column == 0) {
 				return Boolean.valueOf(log.hasDatas());
 			} else {
-				return log.getField(LogField.values()[column-1]);
+				return htmlStartTAG+log.getField(LogField.values()[column-1]).toString()+htmlCloseTAG;
 			}
 		}
 		}
