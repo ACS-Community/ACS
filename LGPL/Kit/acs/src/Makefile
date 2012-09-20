@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.96 2010/09/20 14:25:08 mzampare Exp $" 
+# "@(#) $Id: Makefile,v 1.97 2012/09/20 12:09:55 eallaert Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -9,6 +9,7 @@
 # --------  ----------  ----------------------------------------------
 # psivera   2000-10-06  created 
 # psivera   2001-06-27  added Makefile_LCU and Makefile_WS templates
+# eallaert  2012-09-18  added acsSearchPath python script/function
 #
 
 #*******************************************************************************
@@ -74,9 +75,10 @@ acsReplace_TCLSH = tcl
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         = acsConfigReport \
-                     acsGetAllJars acsGetSpecificJars
+                     acsGetAllJars acsGetSpecificJars \
+                     acsSearchPath
 
-PY_MODULES         =
+PY_MODULES         = acsSearchPath
 PY_MODULES_L       =
 
 PY_PACKAGES        =    acsConfigReportModule
