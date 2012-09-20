@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.72 2012/09/20 12:37:25 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.73 2012/09/20 16:12:06 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -434,6 +434,13 @@ fi
 # Here we can overrule this by uncommenting the following line.
 #
 #JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.log.loggerFactory="
+
+#
+# Set up apache commons logging to use the ACS adapter.
+# This is currently uesd by the SCXML engine (COMP-7929) but works flexible enough
+# to support also other frameworks that used commons logging.
+#
+JAVA_OPTIONS="$JAVA_OPTIONS -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory"
 
 
 #
