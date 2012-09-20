@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.8 2012/09/18 16:39:36 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.9 2012/09/20 11:14:00 hsommer Exp $"
 #
 # Makefile of jacscommon
 #
@@ -200,6 +200,7 @@ all:	do_all
 	@echo " . . . 'all' done"
 
 clean : clean_all
+	rm -rf tatlogs
 	rm -rf AcsFileFinderForDirs_Sandbox
 	@echo " . . . clean done"
 
