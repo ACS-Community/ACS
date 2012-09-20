@@ -1,16 +1,16 @@
 package alma.acs.util;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import junit.framework.JUnit4TestAdapter;
@@ -73,7 +73,7 @@ public class AcsFileFinderForDirectoriesTest
 		AcsFileFinderForDirectories fileFinder = new AcsFileFinderForDirectories(logger, false);
 		List<File> rootDirs = fileFinder.getRootDirs();
 		List<File> expectedRootDirs = Arrays.asList(rootDir1, rootDir2, rootDir3);
-		assertThat(rootDirs, is(expectedRootDirs));
+		assertThat(rootDirs, equalTo(expectedRootDirs));
 		
 		String testFileName = "testFile1.txt"; // exists multiple times under the root and config dirs
 		File testFile = fileFinder.findFile("", testFileName);
@@ -116,15 +116,30 @@ public class AcsFileFinderForDirectoriesTest
 		};
 		
 		List<File> fileList = fileFinder.findFiles("config", filter);
-		
-		Set<File> fileSetActual = new HashSet<File>(fileList);
-		Set<File> fileSetExpected = new HashSet<File>();
-		fileSetExpected.add(new File(rootDir1, "config" + File.separator + "testFile1.txt"));
-		fileSetExpected.add(new File(rootDir1, "config" + File.separator + "testFile2.txt"));
-		fileSetExpected.add(new File(rootDir1, "config" + File.separator + "testFile3.txt"));
-		fileSetExpected.add(new File(rootDir2, "config" + File.separator + "testFile4.txt"));
-		assertThat(fileSetActual, equalTo(fileSetExpected));
+		assertThat(fileList, containsInAnyOrder(
+					new File(rootDir1, "config" + File.separator + "testFile1.txt"),
+					new File(rootDir1, "config" + File.separator + "testFile2.txt"),
+					new File(rootDir1, "config" + File.separator + "testFile3.txt"),
+					new File(rootDir2, "config" + File.separator + "testFile4.txt")
+				));
 	}
 
+	@Test
+	public void testInputParamHandling() {
+		
+		AcsFileFinderForDirectories fileFinder = new AcsFileFinderForDirectories(logger, true);
+		
+		assertThat("null relative path should be treated like empty relative path", 
+				fileFinder.findFile(null, "testFile1.txt"), equalTo(fileFinder.findFile("", "testFile1.txt")));
+		
+		try {
+			fileFinder.findFile("", null);
+			fail("findFile with null file name should throw NPE");
+		} catch (NullPointerException ex) {
+			// expected
+		}
+		
+		// TODO: Also for FilenameFilter
+	}
 
 }
