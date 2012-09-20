@@ -23,7 +23,6 @@ package alma.acs.makesupport;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 /**
@@ -45,9 +44,7 @@ public class AcsJarFileFinder extends AcsFileFinder
 	public String getClasspath()
 	{
 		StringBuffer cp = new StringBuffer();
-		for (Iterator iter = m_fileMap.values().iterator(); iter.hasNext();)
-		{
-			File jarfile = (File) iter.next();
+		for (File jarfile : m_fileMap.values()) {
 			cp.append(jarfile.getAbsolutePath() + File.pathSeparator);
 		}
 		return cp.toString();

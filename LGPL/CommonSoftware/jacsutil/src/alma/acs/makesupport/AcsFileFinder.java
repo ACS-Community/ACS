@@ -24,7 +24,6 @@ package alma.acs.makesupport;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +38,11 @@ import java.util.logging.Logger;
  */
 public class AcsFileFinder
 {
+	
 	protected boolean verbose = false;
 	
 	/** key = filename without path; value = File object */
-	protected Map m_fileMap;
+	protected Map<String, File> m_fileMap;
 	
 	protected Logger m_logger;
 
@@ -66,7 +66,7 @@ public class AcsFileFinder
 	 * 
 	 * @param dirs  the directories to search files in, e.g. $INTROOT/lib and $ACSROOT/lib;
 	 * 				Files that appear under more than one directory will be taken at their first
-	 * 				occurence.
+	 * 				occurrence.
 	 * @param logger  logger to be used by this class
 	 */
 	public AcsFileFinder(File[] dirs, FilenameFilter filenameFilter, Logger logger)
@@ -96,7 +96,7 @@ public class AcsFileFinder
 	 */
 	private void scanDirs(File[] dirs, FilenameFilter filenameFilter)
 	{
-		m_fileMap = new LinkedHashMap(); 
+		m_fileMap = new LinkedHashMap<String, File>();
 
 		if (dirs == null || dirs.length == 0)
 		{
@@ -131,7 +131,7 @@ public class AcsFileFinder
 				}
 				
 //				URL url = new URL("file", null, file.getCanonicalPath());
-				File existing = (File) m_fileMap.get(filename);
+				File existing = m_fileMap.get(filename);
 				if (existing != null)
 				{
 					if (verbose) {
@@ -146,30 +146,26 @@ public class AcsFileFinder
 					}
 					m_fileMap.put(filename, file);
 				}
-			}			
+			}
 		}
 	}
 	
 	public File[] getAllFiles()
 	{
-		File[] files = (File[]) m_fileMap.values().toArray(new File[m_fileMap.size()]);
+		File[] files = m_fileMap.values().toArray(new File[m_fileMap.size()]);
 		return files;
 	}
 	
 	public File[] getFiles(FilenameFilter filter)
 	{
-		List fileList = new ArrayList();
-		
-		for (Iterator iter = m_fileMap.values().iterator(); iter.hasNext();)
-		{
-			File file = (File) iter.next();
-			if (filter.accept(file.getParentFile(), file.getName()))
-			{
+		List<File> fileList = new ArrayList<File>();
+	
+		for (File file : m_fileMap.values()) {
+			if (filter.accept(file.getParentFile(), file.getName())) {
 				fileList.add(file);
 			}
 		}
 		
-		File[] files = (File[]) fileList.toArray(new File[fileList.size()]);
-		return files;
+		return fileList.toArray(new File[fileList.size()]);
 	}
 }
