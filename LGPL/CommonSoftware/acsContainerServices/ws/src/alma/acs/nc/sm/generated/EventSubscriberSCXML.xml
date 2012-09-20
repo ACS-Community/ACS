@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scxml xmlns="http://www.w3.org/2005/07/scxml" xmlns:customActionDomain="http://my.custom-actions.domain/CUSTOM" version="1.0" initial="EnvironmentUnknown">  
+  <state id="EnvironmentCreated"> 
+    <initial>
+      <transition target="EnvironmentCreated::Disconnected"/>
+    </initial>  
+    <state id="EnvironmentCreated::Connected"> 
+      <initial>
+        <transition target="EnvironmentCreated::Connected::Active"/>
+      </initial>  
+      <state id="EnvironmentCreated::Connected::Suspended"> 
+        <transition event="resume" target="EnvironmentCreated::Connected::Active"> 
+          <customActionDomain:ConnectionResumer name="ConnectionResumer"/> 
+        </transition> 
+      </state>  
+      <state id="EnvironmentCreated::Connected::Active"> 
+        <transition event="suspend" target="EnvironmentCreated::Connected::Suspended"> 
+          <customActionDomain:ConnectionSuspender name="ConnectionSuspender"/> 
+        </transition> 
+      </state>  
+      <onentry> 
+        <customActionDomain:ConnectionCreator name="ConnectionCreator"/> 
+      </onentry>  
+      <onexit> 
+        <customActionDomain:ConnectionDestructor name="ConnectionDestructor"/> 
+      </onexit>  
+      <transition event="stopReceivingEvents" target="EnvironmentCreated::Disconnected"/> 
+    </state>  
+    <state id="EnvironmentCreated::Disconnected"> 
+      <transition event="startReceivingEvents" target="EnvironmentCreated::Connected"/> 
+    </state>  
+    <onentry> 
+      <customActionDomain:EnvironmentCreator name="EnvironmentCreator"/> 
+    </onentry>  
+    <onexit> 
+      <customActionDomain:EnvironmentDestructor name="EnvironmentDestructor"/> 
+    </onexit>  
+    <transition event="cleanUpEnvironment" target="EnvironmentUnknown"/> 
+  </state>  
+  <state id="EnvironmentUnknown"> 
+    <transition event="setUpEnvironment" target="EnvironmentCreated"/> 
+  </state> 
+</scxml>
