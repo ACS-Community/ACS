@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.73 2012/09/20 16:12:06 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.74 2012/09/21 08:35:47 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -402,7 +402,6 @@ then
   JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader \
    -Dacs.system.classpath.jardirs=\"$CL_JARPATH\" \
    -Dacs.system.path=\"`acsSearchPath`\"" 
-  echo $JAVA_OPTIONS
 
   JACSUTIL_JAR=`acsGetSpecificJars ${PATH_SEP} jACSUtil.jar`
   if [ X"$JACSUTIL_JAR" = X ]
