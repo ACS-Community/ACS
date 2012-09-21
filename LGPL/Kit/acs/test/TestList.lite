@@ -31,3 +31,5 @@
 5 SOURCE acsSearchPath4.tcl acsSearchPath4 "acsSearchPath \" \"   \" \""
 # completely empty env vars should give blank search path
 6 SOURCE acsSearchPath5.tcl acsSearchPath5 "acsSearchPath"
+# env vars with non-existing dirs should give blank search path if clean-up is requested
+7 SOURCE acsSearchPath6.tcl acsSearchPath6 "acsSearchPath -c lib"

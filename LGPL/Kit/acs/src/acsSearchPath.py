@@ -19,7 +19,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsSearchPath.py,v 1.1 2012/09/20 12:09:55 eallaert Exp $"
+# "@(#) $Id: acsSearchPath.py,v 1.2 2012/09/21 11:34:23 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,13 +36,14 @@
 #   whereby the options and arguments are:
 #   -p: prepend PATH to the result. Default: empty
 #   -a: append PATH to the result. Default: empty
+#   -c: clean-up - remove non-existing dirs from path-list
 #   -v: verbose output. Default: terse
 #   SUBDIRx: sub-directory to append to each individual directory of
 #       $INTROOT, $INTLIST and $ACSROOT. Default: empty
 #
 #   Note that this can also be invoked as a function, with the following
 #   synopsis:
-#     acsSearchPath(prepend, subdirList, append)
+#     acsSearchPath(prepend, append, subdirList, cleanup)
 #
 #   whereby the arguments are all optional, with defaults as above.
 #
@@ -151,7 +152,7 @@
 import os
 import re;  # regular expressions
 
-def acsSearchPath(prepend="", subdirs=[], append=""):
+def acsSearchPath(prepend="", append="", subdirs=[], cleanup=False):
     dirList = []
 
     # os.pathsep is the opsys-dependent component separator used in $PATH etc (":" on unix)
@@ -160,8 +161,10 @@ def acsSearchPath(prepend="", subdirs=[], append=""):
     # First the prepend
     for dir in prepend.split(ps):
         if (len(dir) > 0):
-            ##if (not os.path.exists(dir)):
+            ##if (verbose and not os.path.exists(dir)):
             ##    print >> sys.stderr, "WARNING: prepend dir \"" + dir + "\" does not exist on this host."
+            # if this dir doesn't exist, surely its SUBDIRx neither
+            ##if (not cleanup or os.path.exists(dir)):
             dirList.append(dir)
 
     # The module-root dir should only be appended if MODPATH is set to 1
@@ -174,39 +177,46 @@ def acsSearchPath(prepend="", subdirs=[], append=""):
 
     # Now deal with INTROOT-INTLIST-ACSROOT
     try:
-        ##introot = os.environ['INTROOT']
-        ##if (not os.path.exists(introot)):
+        introot = os.environ['INTROOT']
+        ##if (verbose and not os.path.exists(introot)):
         ##    print >> sys.stderr, "WARNING: INTROOT dir \"" + introot + "\" does not exist on this host."
-        dirList.append(os.environ['INTROOT'])
+        ##if (not cleanup or os.path.exists(introot)):
+        dirList.append(introot)
     except KeyError:
-        ##print >> sys.stderr, "INTROOT not set"
+        ##if (verbose):
+        ##    print >> sys.stderr, "INTROOT not set"
         pass
 
     try:
         for dir in os.environ['INTLIST'].split(ps):
             if (len(dir) > 0):
-                ##if (not os.path.exists(dir)):
+                ##if (verbose and not os.path.exists(dir)):
                 ##    print >> sys.stderr, "WARNING: INTLIST dir \"" + dir + "\" does not exist on this host."
+                ##if (not cleanup or os.path.exists(dir)):
                 dirList.append(dir)
     except KeyError:
-        ##print >> sys.stderr, "INTLIST not set"
+        ##if (verbose):
+        ##    print >> sys.stderr, "INTLIST not set"
         pass
 
     try:
-        ##acsroot = os.environ['ACSROOT']
-        ##if (not os.path.exists(acsroot)):
+        acsroot = os.environ['ACSROOT']
+        ##if (verbose and not os.path.exists(acsroot)):
         ##    print >> sys.stderr, "WARNING: ACSROOT dir \"" + acsroot + "\" does not exist on this host."
-        dirList.append( os.environ['ACSROOT'])
+        ##if (not cleanup or os.path.exists(acsroot)):
+        dirList.append(acsroot)
     except KeyError:
-        ##print >> sys.stderr, "ACSROOT not set"
+        ##if verbose:
+        ##    print >> sys.stderr, "ACSROOT not set"
         pass
 
     # Finally the append
     for dir in append.split(ps):
         if (len(dir) > 0):
-            ##if (not os.path.exists(dir)):
+            if (not cleanup or os.path.exists(dir)):
+                dirList.append(dir)
+            ##if (verbose and not os.path.exists(dir)):
             ##    print >> sys.stderr, "WARNING: append dir \"" + dir + "\" does not exist on this host."
-            dirList.append(dir)
 
     # Now for this intermediate result, append the subdirs,
     # and put the result into a typical PATH-list string.
@@ -215,11 +225,18 @@ def acsSearchPath(prepend="", subdirs=[], append=""):
     path = ""
     for dir in dirList:
         if (len(subdirs) == 0):
-            path += dir + ps
+            if (not cleanup or os.path.exists(dir)):
+                path += dir + ps
+            ## else:
+                ##print >> sys.stderr, "WARNING: dir \"" + dir + "\" does not exist on this host."
             
         else:
             for subdir in subdirs:
-                path += dir + "/" + subdir + ps
+                extdir = dir + "/" + subdir 
+                if (not cleanup or os.path.exists(extdir)):
+                    path += extdir + ps
+                ##else:
+                ##    print >> sys.stderr, "WARNING: dir \"" + extdir + "\" does not exist on this host."
 
     if (len(path) > 0):
         # clean-up: remove double colons, double slashes, slash before colon, trailing colon
@@ -238,6 +255,7 @@ if __name__ == "__main__":
     parser = optparse.OptionParser(usage="%prog -p PATH -a PATH SUBDIR1 SUBDIR2 ...")
     parser.add_option("-p", "--prepend", dest = "prepend", type = "str", default = "", help = "path to prepend to result.", metavar = "PATH")
     parser.add_option("-a", "--append", dest = "append", type = "str", default = "", help = "path to append to result.", metavar = "PATH")
+    parser.add_option("-c", "--cleanup", dest = "cleanup", action = "store_true", help = "remove non-existing dirs from pathlist")
     parser.add_option("-v", "--verbose", dest = "verbose", action = "store_true", help = "show execution time and run-string")
 
     (options, subdirs) = parser.parse_args()
@@ -261,4 +279,4 @@ if __name__ == "__main__":
             # avoid that, do a flush.                                                   
             sys.stdout.flush()
 
-    print acsSearchPath(options.prepend, subdirs, options.append)
+    print acsSearchPath(options.prepend, options.append, subdirs, options.cleanup)
