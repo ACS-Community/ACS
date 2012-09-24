@@ -128,7 +128,7 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
         try {
         	// illegal event "start" in "AVAILABLE/OFFLINE/PREINITIALIZED"
 			m_context.start();
-			fail("AcsStateIllegalEventException expected!");
+			fail("AcsJIllegalStateEventEx expected!");
 		}
 		catch (AcsJIllegalStateEventEx e) {
 			assertEquals("OFFLINE", e.getState());
