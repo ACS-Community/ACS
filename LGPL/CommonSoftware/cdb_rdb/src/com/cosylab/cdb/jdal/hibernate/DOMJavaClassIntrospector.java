@@ -193,8 +193,52 @@ public class DOMJavaClassIntrospector {
 				NodeList nodeList = element.getElementsByTagName(name);
 				if (nodeList.getLength() > 0)
 					return (Element)nodeList.item(0);
+				
+				// only digit is not allowed
+				if (name.length() <= 1)
+					return null;
+				
+				// "<name><index>" support for XML sequences, where index > 0
+				// ends with digit?
+				int pos = name.length()-1;
+				if (Character.isDigit(name.charAt(pos)))
+				{
+					pos--;
 					
-				return null;
+					// extract digit
+					while (Character.isDigit(name.charAt(pos)))
+						pos--;
+					
+					// point to the first digit
+					pos++;
+					
+					String dig = name.substring(pos);
+					name = name.substring(0, pos);
+					try
+					{
+						int ix = Integer.parseInt(dig);
+						if (ix > 0)
+						{
+							nodeList = element.getElementsByTagName(name);
+							if (nodeList.getLength() > ix)
+							{
+								return (Element)nodeList.item(ix);
+							}
+							else
+								return null;	// index out of range or no such elements
+						}
+						else
+							return null;	// ix <= 0
+					} 
+					catch (Throwable th)
+					{
+						// bad index
+						return null;
+					}
+				}
+				else
+					return null; // does not end with digit
+				
 			}
 			else
 			{
