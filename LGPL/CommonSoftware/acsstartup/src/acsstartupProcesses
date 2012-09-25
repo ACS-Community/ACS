@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupProcesses,v 1.11 2012/01/20 22:07:43 tstaig Exp $"
+# "@(#) $Id: acsstartupProcesses,v 1.12 2012/09/25 10:32:05 bjeram Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -239,12 +239,12 @@ if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
         PID=`ps h |sed s/I/" "/ |awk '{printf("%s %s\n", $1, $4)}' |grep "[0-9]* $PID" |awk '{printf("%s",$1)}'`
     fi
 else
-    PID=`netstat -t -p -e -e -n -a 2> /dev/null| grep ":$PORT "`
+    PID=`netstat -t -p -e -e -n -a 2> /dev/null|  awk '{printf("%s %s\n", $4, $9)}'  | grep "maciCo" | grep ":$PORT"
     if [ "$PID" = "" ]; then
         #unable to kill a process using the port...error condition
         return 1
     else
-        PID=`echo $PID | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+        PID=`echo $PID | awk '{printf("%s", $2)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
     fi
 fi
 
