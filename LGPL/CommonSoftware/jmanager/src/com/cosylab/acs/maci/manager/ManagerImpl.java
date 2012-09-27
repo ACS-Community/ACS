@@ -580,7 +580,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                       	new ObjectStreamField("unavailableComponents", Map.class),
 						new ObjectStreamField("defaultComponents", Map.class),
 						new ObjectStreamField("domains", HashSet.class),
-    					new ObjectStreamField("activeAlarms", HashSet.class)};
+    					new ObjectStreamField("activeAlarms", HashSet.class),
+    					new ObjectStreamField("statePersitenceFlag", AtomicBoolean.class)};
 
 	/**
 	 * Interdomain manager handle mask.
@@ -961,10 +962,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		threadsUsedPercentage.set(percentage);
 	}
 
+	public static final String STATE_PERSISTENCE_DEFAULT = "manager.statePersistance";
+
 	/**
 	 * Prevayler enabled/disabled (remotely) flag.
 	 */
-	private AtomicBoolean statePersitenceFlag = new AtomicBoolean(false);
+	private AtomicBoolean statePersitenceFlag = new AtomicBoolean(Boolean.getBoolean(STATE_PERSISTENCE_DEFAULT));
 
 	/**
 	 * Initializes Manager.
@@ -1067,6 +1070,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		topologySortManager = new ComponentInfoTopologicalSortManager(
 				components, containers, activationPendingRWLock,
 				pendingContainerShutdown, threadPool, logger);
+		
+		String enDis = statePersitenceFlag.get() ? "enabled" : "disabled";
+		logger.info("Manager initialized with state persistence " + enDis + ".");
 	}
 
 	/**
