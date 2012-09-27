@@ -1071,6 +1071,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				components, containers, activationPendingRWLock,
 				pendingContainerShutdown, threadPool, logger);
 		
+		if (prevayler == null)
+			statePersitenceFlag.set(false);
+		
 		String enDis = statePersitenceFlag.get() ? "enabled" : "disabled";
 		logger.info("Manager initialized with state persistence " + enDis + ".");
 	}
