@@ -32,38 +32,27 @@ public class EventSubscriberStateMachine extends EventSubscriberSignalDispatcher
 	
 	private final AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction> stateMachine;
 
-	public EventSubscriberStateMachine(Logger logger) {
+	public EventSubscriberStateMachine(Logger logger, 
+										EnvironmentActionHandler environmentActionHandler, 
+										ConnectionActionHandler connectionActionHandler,
+										SuspendResumeActionHandler suspendResumeActionHandler ) {
 		this.logger = logger;
-		
-		AcsScxmlActionDispatcher<EventSubscriberAction> actionDispatcher = createActionDispatcher();
-		
-		// The AcsScxmlEngine constructor loads the scxml file and starts the state machine
-		stateMachine = new AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction>(scxmlFileName, logger, actionDispatcher);
-	}
-
-	/**
-	 * Sets up action handlers.
-	 * p:
-	 * TODO: Modify action ctors to require notify service objects
-	 * 
-	 * @return
-	 */
-	protected AcsScxmlActionDispatcher<EventSubscriberAction> createActionDispatcher() {
+	
 		AcsScxmlActionDispatcher<EventSubscriberAction> actionDispatcher = 
 				new AcsScxmlActionDispatcher<EventSubscriberAction>(logger, EventSubscriberAction.class);
 		
-		EnvironmentActionHandler environmentActionHandler = new EnvironmentActionHandler(logger);
 		actionDispatcher.registerActionHandler(EnvironmentCreator, environmentActionHandler);
 		actionDispatcher.registerActionHandler(EnvironmentDestructor, environmentActionHandler);
 		
-		ConnectionActionHandler connectionActionHandler = new ConnectionActionHandler(logger);
 		actionDispatcher.registerActionHandler(ConnectionCreator, connectionActionHandler);
 		actionDispatcher.registerActionHandler(ConnectionDestructor, connectionActionHandler);
 		
-		SuspendResumeActionHandler suspendResumeActionHandler = new SuspendResumeActionHandler(logger);
 		actionDispatcher.registerActionHandler(ConnectionSuspender, suspendResumeActionHandler);
 		actionDispatcher.registerActionHandler(ConnectionResumer, suspendResumeActionHandler);
-		return actionDispatcher;
+		
+		// The AcsScxmlEngine constructor loads the scxml file and starts the state machine
+		stateMachine = new AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction>(
+				scxmlFileName, logger, actionDispatcher, EventSubscriberSignal.class);
 	}
 
 	@Override
@@ -72,9 +61,11 @@ public class EventSubscriberStateMachine extends EventSubscriberSignalDispatcher
 	}
 	
 	/**
-	 * Convenience method, delegates to
+	 * Convenience method, delegates to the underlying AcsScxmlEngine.
+	 * @return The state name. Hierarchical states are separated by ":", with outer state first, e.g. "EnvironmentCreated::Connected::Suspended"
 	 */
 	public String getCurrentState() {
 		return stateMachine.getCurrentState();
 	}
+	
 }
