@@ -10,7 +10,7 @@
 			description="Value of the CORBA reference is nil">
 			<Member name="Variable"
 				type="string"
-				description="Name of varable / reference which value is nil"/>
+				description="Name of varable / reference whose value is nil"/>
 			<Member name="Context"
 				type="string"
 				description="Free text context description."/>
