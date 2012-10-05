@@ -85,7 +85,7 @@ public class ContinuousNcPublisher extends ComponentClient
 			cmdArgs.registerOption(optEventsPerBurst);
 			CmdLineRegisteredOption optDelayBurstsMillis = new CmdLineRegisteredOption("-delayBurstsMillis", 1);
 			cmdArgs.registerOption(optDelayBurstsMillis);
-			CmdLineRegisteredOption optLogAfterBurst = new CmdLineRegisteredOption("-optLogAfterBurst", 1);
+			CmdLineRegisteredOption optLogAfterBurst = new CmdLineRegisteredOption("-logAfterBurst", 1);
 			cmdArgs.registerOption(optLogAfterBurst);
 			
 			cmdArgs.parseArgs(args);
