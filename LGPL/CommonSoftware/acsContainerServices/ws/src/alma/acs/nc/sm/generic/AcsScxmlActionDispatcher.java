@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.scxml.ErrorReporter;
@@ -16,6 +17,8 @@ import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.semantics.ErrorConstants;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
+
 
 /**
  * The user-supplied dispatcher that will be invoked by an 
@@ -26,32 +29,56 @@ import org.apache.commons.scxml.semantics.ErrorConstants;
  * Handlers must be registered using {@link #registerActionHandler(Enum, AcsScxmlActionExecutor)}.
  * 
  * @author hsommer
- * @param <E> The SM action enumeration. 
+ * @param <A> The SM action enumeration. 
  */
-public class AcsScxmlActionDispatcher<E extends Enum<E>> 
+public class AcsScxmlActionDispatcher<A extends Enum<A>> 
 {
 	public static final String CUSTOM_ACTIONS_DOMAIN_NAME = "http://my.custom-actions.domain/CUSTOM";
 	
 	protected final Logger logger;
-	private final Class<E> actionType;
-	private final Map<E, AcsScxmlActionExecutor<E>> actionMap;
+	private final Class<A> actionType;
+	private final Map<A, AcsScxmlActionExecutor<A>> actionMap;
 
-	public AcsScxmlActionDispatcher(Logger logger, Class<E> actionType) {
+	/**
+	 * Optionally set by method {@link #setActionExceptionHandler(ActionExceptionHandler)}.
+	 */
+	private volatile ActionExceptionHandler actionExceptionHandler;
+
+	public AcsScxmlActionDispatcher(Logger logger, Class<A> actionType) {
 		this.logger = logger;
 		this.actionType = actionType;
-		actionMap = new EnumMap<E, AcsScxmlActionExecutor<E>>(actionType);
+		actionMap = new EnumMap<A, AcsScxmlActionExecutor<A>>(actionType);
 	}
 
 	/**
 	 * Generic action handler, dispatches to the right handler based on action type.
+	 * <p>
+	 * TODO: org.apache.commons.scxml.env.SimpleErrorReporter#onError prints the class name of the "Object errCtx".
+	 *       Currently we'd get NPE or useless info.
 	 */
-	public void execute(E action, final EventDispatcher evtDispatcher, final ErrorReporter errRep, final SCInstance scInstance,
+	public void execute(A action, final EventDispatcher evtDispatcher, final ErrorReporter errRep, final SCInstance scInstance,
 			final Collection<TriggerEvent> derivedEvents) throws ModelException, SCXMLExpressionException {
-		AcsScxmlActionExecutor<E> handler = getActionHandler(action);
+		AcsScxmlActionExecutor<A> handler = getActionHandler(action);
 		if (handler != null) {
-			boolean handledAction = handler.execute(action, evtDispatcher, errRep, scInstance, derivedEvents);
+			boolean handledAction = false;
+			try {
+				handledAction = handler.execute(action, evtDispatcher, errRep, scInstance, derivedEvents);
+			} catch (AcsJStateMachineActionEx ex) {
+				handledAction = true;
+				
+				if (actionExceptionHandler != null) { // handler is optional
+					// ex will be thrown at the user
+					actionExceptionHandler.setActionException(ex);
+				}
+				else {
+					logger.log(Level.WARNING, "Handler " + handler.getClass() + " failed to execute action " + action.name(), ex);
+				}
+				
+				// TODO: define and fire a standardized internal error event so that the state machine
+				// can reflect the problem and can be maneuvered out of the error again by the user 
+			}
 			if (!handledAction) {
-				errRep.onError(ErrorConstants.UNKNOWN_ACTION, "Handler " + handler.getClass() + " handler unexpectedly did not handle action " + action.name(), null);
+				errRep.onError(ErrorConstants.UNKNOWN_ACTION, "Handler " + handler.getClass() + " handler unexpectedly did not handle action ", action);
 			}
 		}
 		else {
@@ -64,7 +91,7 @@ public class AcsScxmlActionDispatcher<E extends Enum<E>>
 	 * where the handler can be accessed and stored directly.
 	 * Using this approach may bring a tiny performance advantage, but probably should be removed again..
 	 */
-	public AcsScxmlActionExecutor<E> getActionHandler(E action) {
+	public AcsScxmlActionExecutor<A> getActionHandler(A action) {
 		return actionMap.get(action);
 	}
 	
@@ -76,7 +103,7 @@ public class AcsScxmlActionDispatcher<E extends Enum<E>>
 	 * @param action
 	 * @param handler
 	 */
-	public void registerActionHandler(E action, AcsScxmlActionExecutor<E> handler) {
+	public void registerActionHandler(A action, AcsScxmlActionExecutor<A> handler) {
 		actionMap.put(action, handler);
 	}
 	
@@ -100,7 +127,7 @@ public class AcsScxmlActionDispatcher<E extends Enum<E>>
 	 * @return true if for all SM actions we have a registered handler.
 	 */
 	public boolean isActionMappingComplete() {
-		for (E action : actionType.getEnumConstants()) {
+		for (A action : actionType.getEnumConstants()) {
 			if (!actionMap.containsKey(action)) {
 				logger.warning("No handler has been registered for SM action " + action.name() + ".");
 				return false;
@@ -113,7 +140,7 @@ public class AcsScxmlActionDispatcher<E extends Enum<E>>
 	 * Used by an {@link AcsScxmlDispatchingAction} object to convert its action name to the corresponding enum value.
 	 * (This type information cannot be passed directly because Apache SCXML creates the action with an empty constructor.)
 	 */
-	public Class<E> getActionType() {
+	public Class<A> getActionType() {
 		return actionType;
 	}
 	
@@ -127,10 +154,22 @@ public class AcsScxmlActionDispatcher<E extends Enum<E>>
 	protected List<CustomAction> getScxmlActionMap() {
 		List<CustomAction> ret = new ArrayList<CustomAction>();
 		
-		for (E action : actionMap.keySet()) {
+		for (A action : actionMap.keySet()) {
 			ret.add(new CustomAction(CUSTOM_ACTIONS_DOMAIN_NAME, action.name(), AcsScxmlDispatchingAction.class));
 		}
 		return ret;
+	}
+
+	public static interface ActionExceptionHandler {
+		/**
+		 * Callback method, which only gets called if an action terminates with an exception.
+		 * @param ex
+		 */
+		public void setActionException(AcsJStateMachineActionEx ex);
+	}
+	
+	public void setActionExceptionHandler(ActionExceptionHandler handler) {
+		actionExceptionHandler = handler;
 	}
 
 }
