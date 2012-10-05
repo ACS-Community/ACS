@@ -90,25 +90,6 @@ public class EntityDeserializer
 	 * @param xmlString  the stringified xml. 
 	 * @param entityClass  the binding class of which we want an instance
 	 *                      filled with the xml data.
-	 * @return  the binding class instance (should be casted by the caller).
-	 * @deprecated  use {@link #deserializeEntity(XmlEntityStruct, Class)} instead.
-	 *              With the addition of timestamp to <code>EntityT</code>,
-	 *              this method will produce binding classes whose XML data can't be stored
-	 *              in the archive. 
-	 */
-	public Object deserializeEntity(String xmlString, Class entityClass)
-		throws EntityException
-	{
-		return deserializeEntity(xmlString, entityClass, null);
-	}
-
-
-	/**
-	 * Deserializes (parses) an entity xml and instantiates the binding objects.
-	 * 
-	 * @param xmlString  the stringified xml. 
-	 * @param entityClass  the binding class of which we want an instance
-	 *                      filled with the xml data.
 	 * @param timestamp  the timestamp to be stored in the entity object, for later serialization.
 	 * @return  the binding class instance (should be casted by the caller).
 	 * @throws EntityException if the binding class instance can't be constructed from the xml. 
