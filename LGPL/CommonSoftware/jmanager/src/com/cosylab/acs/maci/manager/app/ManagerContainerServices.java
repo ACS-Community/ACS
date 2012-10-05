@@ -336,14 +336,14 @@ public class ManagerContainerServices implements ContainerServicesBase,
 
 
 	@Override
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, Class<T> eventType)
+			throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
 	}
 
 	@Override
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName,
-			String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName,
+			String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
 	}
-
 }
