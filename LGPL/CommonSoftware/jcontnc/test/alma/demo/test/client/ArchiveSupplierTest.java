@@ -20,9 +20,9 @@
 package alma.demo.test.client;
 
 import java.util.logging.Logger;
+
 import alma.acs.component.client.ComponentClient;
 import alma.acs.nc.ArchiveSupplier;
-//import alma.ACS.impl.ROdoubleImpl;
 
 /**
  * Client application that accesses the HelloDemo component. It demonstrates

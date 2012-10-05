@@ -1,8 +1,6 @@
 package alma.acs.nc;
 
 
-import org.omg.CORBA.Any;
-
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.AdvancedContainerServices;
 
