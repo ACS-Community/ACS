@@ -6,9 +6,7 @@ import java.util.logging.Logger;
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
 import org.apache.commons.scxml.SCInstance;
-import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.TriggerEvent;
-import org.apache.commons.scxml.model.ModelException;
 
 import alma.acs.nc.sm.generated.EventSubscriberAction;
 import alma.acs.nc.sm.generic.AcsScxmlActionExecutor;
@@ -28,8 +26,7 @@ public class SuspendResumeActionHandler implements AcsScxmlActionExecutor<EventS
 
 	@Override
 	public boolean execute(EventSubscriberAction action, EventDispatcher evtDispatcher, ErrorReporter errRep,
-			SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
-					throws ModelException, SCXMLExpressionException {
+			SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
 		switch (action) {
 		case ConnectionSuspender:
 			suspend(evtDispatcher, errRep, scInstance, derivedEvents);
