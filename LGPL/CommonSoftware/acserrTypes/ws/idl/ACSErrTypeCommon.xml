@@ -48,6 +48,13 @@
 		<Member name="State" type="string" description="Name of the current state that could not accept the event."/>
 	</ErrorCode>
 
+	<ErrorCode name="StateMachineAction" 
+		shortDescription="Error in state machine action." 
+		description="An error occurred in the execution of a state machine action, either in user-supplied callbacks or in the ACS action handling layer.">
+		<Member name="Action" type="string" description="Name of the action."/>
+		<Member name="Context" type="string" description="Context description, e.g. about triggering event, transition."/>
+	</ErrorCode>
+
 	<ErrorCode name="NotImplemented" 
 		shortDescription="Method or feature not implemented" 
 		description="The specified feature is not implemented. If none is specified, the whole method is not implemented.">
