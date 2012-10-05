@@ -337,14 +337,15 @@ public class DummyContainerServices implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
 	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+	
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx();
 	}
 
 	/**
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
 	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx();
 	}
 

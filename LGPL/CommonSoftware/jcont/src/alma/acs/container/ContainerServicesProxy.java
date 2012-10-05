@@ -282,15 +282,15 @@ public class ContainerServicesProxy implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
 	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
-		return delegate.createNotificationChannelSubscriber(channelName);
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelSubscriber(channelName, eventType);
 	}
 
 	/**
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
 	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
-		return delegate.createNotificationChannelSubscriber(channelName, channelNotifyServiceDomainName);
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelSubscriber(channelName, channelNotifyServiceDomainName, eventType);
 	}
 
 	/**

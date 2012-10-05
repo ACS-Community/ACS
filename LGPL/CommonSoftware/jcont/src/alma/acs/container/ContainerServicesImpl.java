@@ -53,7 +53,6 @@ import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.source.AlarmSource;
-import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.callbacks.RequesterUtil;
 import alma.acs.callbacks.ResponseReceiver;
 import alma.acs.component.ComponentDescriptor;
@@ -163,7 +162,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 	private final List<CleanUpCallback> cleanUpCallbacks;
 
-	private final Map<String, AcsEventSubscriber> m_subscribers;
+	private final Map<String, AcsEventSubscriber<?>> m_subscribers;
 	private final Map<String, AcsEventPublisher<?>> m_publishers;
 	
 	/**
@@ -230,7 +229,7 @@ public class ContainerServicesImpl implements ContainerServices
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
 		m_activatedOffshootsMap = Collections.synchronizedMap(new HashMap<Object, Servant>());
 
-		m_subscribers = new HashMap<String, AcsEventSubscriber>();
+		m_subscribers = new HashMap<String, AcsEventSubscriber<?>>();
 		m_publishers  = new HashMap<String, AcsEventPublisher<?>>();
 
 		m_threadFactory = threadFactory;
@@ -1239,7 +1238,7 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		/* Disconnect NC subscribers */
 		for(String channel: m_subscribers.keySet()) {
-			AcsEventSubscriber subscriber = m_subscribers.get(channel);
+			AcsEventSubscriber<?> subscriber = m_subscribers.get(channel);
 			try {
 				subscriber.disconnect();
 				String tmp[] = channel.split("/");
@@ -1310,17 +1309,19 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
 	 */
 	@Override
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
-		return createNotificationChannelSubscriber(channelName, null); //TODO (rtobar): Is this fine? I'm only 99% sure
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
+		return createNotificationChannelSubscriber(channelName, null, eventType); //TODO (rtobar): Is this fine? I'm only 99% sure
 	}
 	
 	/**
+	 * @TODO: once we support notification over other frameworks, check that configuration 
+	 * and instantiate some class other than NCSubscriber.
 	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
 	 */
 	@Override
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
 
-		AcsEventSubscriber subscriber = null;
+		AcsEventSubscriber<T> subscriber = null;
 
 		try {
 			Object[] args = new Object[]{
@@ -1328,11 +1329,14 @@ public class ContainerServicesImpl implements ContainerServices
 					channelNotifyServiceDomainName,
 					this,
 					getNameService(),
-					m_clientName
+					m_clientName,
+					eventType
 			};
-			Class<?> clazz = Class.forName(CLASSNAME_NC_SUBSCRIBER);
-			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class, String.class);
-			subscriber = (AcsEventSubscriber)constructor.newInstance(args);
+			
+			@SuppressWarnings("unchecked")
+			Class<AcsEventSubscriber<T>> clazz = (Class<AcsEventSubscriber<T>>) Class.forName(CLASSNAME_NC_SUBSCRIBER);
+			Constructor<AcsEventSubscriber<T>> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class, String.class, Class.class);
+			subscriber = constructor.newInstance(args);
 		} catch(ClassNotFoundException e) {
 			// TODO: maybe we could prevent future NCSubscriber creation tries, since the class isn't and will not be loaded
 			//       The same applies for the next "catch" block
@@ -1365,6 +1369,9 @@ public class ContainerServicesImpl implements ContainerServices
 
 	
 	/**
+	 * @TODO: once we support notification over other frameworks, check that configuration 
+	 * and instantiate some class other than NCPublisher.
+	 * 
 	 * @see ContainerServices#createNotificationChannelPublisher(String, String)
 	 */
 	@Override
