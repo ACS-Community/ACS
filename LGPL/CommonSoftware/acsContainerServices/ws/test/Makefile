@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.3 2012/10/05 15:26:17 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -74,6 +74,15 @@ CSOURCENAMES = \
 	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
 	$(foreach rtos, $(RTAI_MODULES) , $($(rtos)_OBJECTS)) \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+
+#
+# Java stuff
+# -----------------------------
+DEBUG=on
+JARFILES = acsContainerServicesTest
+acsContainerServicesTest_DIRS = alma
+
 
 #
 #>>>>> END OF standard rules
