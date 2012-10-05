@@ -19,8 +19,6 @@
 
 package alma.acs.nc;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -32,12 +30,15 @@ import java.util.logging.Logger;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
+import alma.acs.nc.sm.ConnectionActionHandler;
+import alma.acs.nc.sm.EnvironmentActionHandler;
+import alma.acs.nc.sm.EventSubscriberStateMachine;
+import alma.acs.nc.sm.SuspendResumeActionHandler;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 
@@ -47,7 +48,7 @@ import alma.acsnc.EventDescription;
  * We will have to see if it can also be used for DDS-based events, or if the required modifications will be too heavy.
  * The parameterization (T) is an attempt to abstract away from the IDLEntity event base type.
  */
-public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscriber {
+public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscriber<T> {
 	
 	/**
 	 * A name that identifies the client of this NCSubscriber, to be used
@@ -61,6 +62,13 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 */
 	protected final Logger logger;
 
+	/**
+	 * State machine for the subscriber lifecycle. 
+	 * It is not used for data handling itself, even though the measured overhead of less than 0.1 ms 
+	 * per signal might allow this.
+	 */
+	protected final EventSubscriberStateMachine stateMachine;
+	
 	/**
 	 * Event queue should hold at least two events to avoid unnecessary scary logs about slow receivers,
 	 * but must be short enough to get receivers to actually implement their own queue and discard mechanism
@@ -107,8 +115,8 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * key = the event type name (IDL-defined struct). <br>
 	 * value = the matching event handler.
 	 */
-	protected final Map<Class<? extends T>, AcsEventSubscriber.Callback<? extends T>> receivers = 
-							new HashMap<Class<? extends T>, AcsEventSubscriber.Callback<? extends T>>();
+	protected final Map<Class<? extends T>, Callback<? extends T>> receivers = 
+							new HashMap<Class<? extends T>, Callback<? extends T>>();
 	
 	/**
 	 * Contains a list of repeat guards for each different type of event.
@@ -120,12 +128,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 */
 	protected final ReentrantLock connectionLock = new ReentrantLock();
 
-	/**
-	 * Runtime version of type parameter T.
-	 * Extracted at runtime to spare the subclass from overriding an extra method,
-	 * and to enjoy accessing static generics information. 
-	 */
-	private final Class<?> typeParameter;
+	protected final Class<T> eventType;
 
 	/**
 	 * @return <code>true</code> if events should be logged when they are received. 
@@ -135,6 +138,11 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	
 	/**
 	 * Base class constructor, to be called from subclass ctor.
+	 * IMPORTANT: Subclasses MUST call "stateMachine.setUpEnvironment()" at the end of their constructors.
+	 * This is because Java does not support template method design for constructors 
+	 * (see for example http://stackoverflow.com/questions/2906958/running-a-method-after-the-constructor-of-any-derived-class)
+	 * and since the subclasses are all meant to be produced within ACS I did not want to go for dirty tricks to work around this.
+	 * We also don't want user code to call a public init() method after constructing the subscriber. 
 	 * <p>
 	 * Normally an ACS class such as container services will act as the factory for event subscriber objects, 
 	 * but for exceptional cases it is also possible to create one stand-alone, 
@@ -148,7 +156,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * @throws AcsJException
 	 *             Thrown on any <I>really bad</I> error conditions encountered.
 	 */
-	public AcsEventSubscriberImplBase(ContainerServicesBase services, String clientName) throws AcsJException {
+	public AcsEventSubscriberImplBase(ContainerServicesBase services, String clientName, Class<T> eventType) throws AcsJException {
 		
 		if (services == null) {
 			AcsJBadParameterEx ex = new AcsJBadParameterEx();
@@ -166,14 +174,13 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 
 		logger = services.getLogger();
 		this.clientName = clientName;
+		this.eventType = eventType;
 		
-		typeParameter = getTypeParameter();
-		if (typeParameter == null) {
-			AcsJCouldntCreateObjectEx ex = new AcsJCouldntCreateObjectEx();
-			// TODO set a detail text ex parameter, saying that the subscriber hierarchy is somehow messed up. 
-			throw ex;
-		}
-
+		stateMachine = new EventSubscriberStateMachine(logger, 
+									createEnvironmentActionHandler(),
+									createConnectionActionHandler(),
+									createSuspendResumeActionHandler() );
+		
 		// @TODO Set more realistic guarding parameters, e.g. max 1 identical log in 10 seconds
 		processTimeLogRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 1, Logic.COUNTER, 100);
 
@@ -183,24 +190,28 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 		eventHandlingExecutor = new ThreadPoolExecutor(0, 1, 1L, TimeUnit.MINUTES,
 				new ArrayBlockingQueue<Runnable>(EVENT_QUEUE_CAPACITY), services.getThreadFactory(), new ThreadPoolExecutor.AbortPolicy() );
 		
+		
 	}
 
 	/**
-	 * Find out the type T (e.g. IDLEntity) that our non-abstract subclass statically provides.
-	 * <p>
-	 * @TODO: Allow longer inheritance hierarchies for concrete subscriber classes, 
-	 *        that should still find this base class by following the inheritance chain.
-	 * @see #typeParameter
+	 * Subclasses can override EnvironmentActionHandler
 	 */
-	private Class<?> getTypeParameter() {
-		Type genericSuper = getClass().getGenericSuperclass();
-		if (genericSuper instanceof ParameterizedType) {
-			ParameterizedType pt = (ParameterizedType) genericSuper;
-			if (AcsEventSubscriberImplBase.class.equals(pt.getRawType())) {
-				return (Class<?>) pt.getActualTypeArguments()[0];
-			}
-		}
-		return null;
+	protected EnvironmentActionHandler createEnvironmentActionHandler() {
+		return new EnvironmentActionHandler(logger);
+	}
+
+	/**
+	 * Subclasses can override ConnectionActionHandler
+	 */
+	protected ConnectionActionHandler createConnectionActionHandler() {
+		return new ConnectionActionHandler(logger);
+	}
+
+	/**
+	 * Subclasses can override SuspendResumeActionHandler
+	 */
+	protected SuspendResumeActionHandler createSuspendResumeActionHandler() {
+		return new SuspendResumeActionHandler(logger);
 	}
 	
 
@@ -301,7 +312,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 		StopWatch profiler = new StopWatch();
 		// we give preference to a receiver that has registered for this concrete subtype of T
 		if (receivers.containsKey(eventType)) {
-			AcsEventSubscriber.Callback<? extends T> receiver = receivers.get(eventType);
+			Callback<? extends T> receiver = receivers.get(eventType);
 
 			profiler.reset();
 			try {
@@ -341,7 +352,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * "Generic helper method" to enforce type argument inference by the compiler,
 	 * see http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ207
 	 */
-	private <U extends T> void _process(AcsEventSubscriber.Callback<U> receiver, T eventData, EventDescription eventDescrip) {
+	private <U extends T> void _process(Callback<U> receiver, T eventData, EventDescription eventDescrip) {
 		U castCorbaData = null;
 		try {
 			castCorbaData = receiver.getEventType().cast(eventData);
@@ -360,7 +371,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * Subscribes to all events. The latest generic receiver displaces the previous one. 
 	 * <p>
 	 * If in addition to this generic subscription we also have specific subscriptions via
-	 * {@link #addSubscription(Class, alma.acs.nc.AcsEventSubscriber.Callback)},
+	 * {@link #addSubscription(Class, Callback)},
 	 * then those more specific subscriptions will take precedence in receiving an event.
 	 * <p>
 	 * Notice though that any server-side filters previously created for the event type specific 
@@ -406,31 +417,26 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public final void addSubscription(AcsEventSubscriber.Callback<?> receiver) 
+	public final <U extends T> void addSubscription(Callback<U> receiver) 
 			throws CannotAddSubscriptionException {
 
-		Class<?> structClass = receiver.getEventType();
+		Class<U> structClass = receiver.getEventType();
 
-		if( structClass == null || !(typeParameter.isAssignableFrom(structClass)) )
+		if (structClass == null || !(eventType.isAssignableFrom(structClass)) )
 			throw new CannotAddSubscriptionException("Receiver is returning a null or invalid event type. " +
 					"Check the getEventType() method implementation and try again");
-
-		// These casts are already safe now
-		Callback<? extends T> typedReceiver = (Callback<? extends T>)receiver;
-		Class<? extends T> typedStructClass = (Class<? extends T>)structClass;
 
 		// First time we create the filter and set the receiver
 		if (!receivers.containsKey(structClass)) {
 			notifyFirstSubscription(structClass);
 		}
 		// After the filter is created, we just replace the corresponding receivers
-		receivers.put(typedStructClass, typedReceiver);
+		receivers.put(structClass, receiver);
 	}
 
 	
 	@Override
-	public final void removeSubscription(Class<?> structClass) throws SubscriptionNotFoundException {
+	public final <U extends T> void removeSubscription(Class<U> structClass) throws SubscriptionNotFoundException {
 
 		// Removing subscription from receivers list
 		if (structClass != null) {
