@@ -48,7 +48,7 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 	 */
 	private AcsEventPublisher<IDLEntity> m_publisher;
 	
-	private AcsEventSubscriber m_subscriber;
+	private AcsEventSubscriber<EventDescription> m_subscriber;
 	
 	private ComponentClient m_client;
 
@@ -64,7 +64,7 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 			try {
 				m_client = new ComponentClient(m_logger, System.getProperty("ACS.manager"), "SimpleSupplierConsumerClient");
 
-				m_subscriber = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+				m_subscriber = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, EventDescription.class);
 				m_subscriber.addSubscription(this);
 				m_publisher = m_client.getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
 			} catch (AcsJContainerServicesEx e) {

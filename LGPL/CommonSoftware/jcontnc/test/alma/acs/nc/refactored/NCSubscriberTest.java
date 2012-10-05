@@ -40,11 +40,10 @@ import alma.acsnc.EventDescription;
  * 
  * @author rtobar
  */
-@SuppressWarnings("deprecation")
 public class NCSubscriberTest extends ComponentClientTestCase {
 
 	private static String CHANNEL_NAME = "pink-floyd";
-	private NCSubscriber m_subscriber;
+	private NCSubscriber<IDLEntity> m_subscriber;
 	
 	/**
 	 * We'll use this publisher to publish events of different types
@@ -66,7 +65,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		m_publisher = getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 
 		// This is the all-exclusive filter
 		assertEquals(1, m_subscriber.proxySupplier.get_all_filters().length);
@@ -203,7 +202,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0, c2.getCount());
 
 		// Overriding case: 1 receiver per event type, 2nd receiver is overridden
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		c1 = new CountDownLatch(nEvents);
 		c2 = new CountDownLatch(nEvents);
 		CountDownLatch c3 = new CountDownLatch(nEvents);
@@ -224,7 +223,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0,  c3.getCount());
 
 		// Overriding case 2: 1 receiver per event type, 2nd receiver is overridden two times, but second time is invalid
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		c1 = new CountDownLatch(nEvents);
 		c2 = new CountDownLatch(nEvents);
 		c3 = new CountDownLatch(nEvents);
@@ -270,7 +269,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0, c1.getCount());
 
 		// Overriding case: generic subscriber, then overridden by a different one
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		c1 = new CountDownLatch(2*nEvents);
 		CountDownLatch c2 = new CountDownLatch(2*nEvents);
 		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
@@ -287,7 +286,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0, c2.getCount());
 
 		// Add/remove case: add generic subscription, then remove it, then listen: nothing should arrive
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		c1 = new CountDownLatch(2*nEvents);
 		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
 		m_subscriber.removeGenericSubscription();
@@ -301,7 +300,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(2*nEvents, c1.getCount());
 
 		// Mixed case: a generic receiver + receiver for event type 1
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		c1 = new CountDownLatch(2*nEvents);
 		c2 = new CountDownLatch(nEvents);
 		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
@@ -338,7 +337,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		} catch(IllegalStateException e) { }
 
 		// We need to create it again, since after disconnect() the object is not usable anymore
-		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		m_subscriber.startReceivingEvents();
 		assertFalse(m_subscriber.isDisconnected());
 
@@ -435,7 +434,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		}
 	}
 
-	private class EventReceiver1 extends EventReceiverWithCounter implements Callback {
+	private class EventReceiver1 extends EventReceiverWithCounter implements Callback<statusBlockEvent1> {
 
 		public EventReceiver1() {
 			super(null);
@@ -445,17 +444,16 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			super(c);
 		}
 
-		public void receive(Object event, EventDescription eventDescrip) {
+		public void receive(statusBlockEvent1 event, EventDescription eventDescrip) {
 			super.receive(eventDescrip);
 		}
 
 		public Class<statusBlockEvent1> getEventType() {
 			return statusBlockEvent1.class;
 		}
-
 	}
 
-	private class EventReceiver2 extends EventReceiverWithCounter implements Callback {
+	private class EventReceiver2 extends EventReceiverWithCounter implements Callback<statusBlockEvent2> {
 
 		public EventReceiver2() {
 			super(null);
@@ -465,7 +463,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			super(c);
 		}
 
-		public void receive(Object event, EventDescription eventDescrip) {
+		public void receive(statusBlockEvent2 event, EventDescription eventDescrip) {
 			super.receive(eventDescrip);
 		}
 

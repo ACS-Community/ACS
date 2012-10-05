@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
@@ -53,11 +54,11 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	@SuppressWarnings("deprecation")
 	public void testSharedAdminReuse() throws Exception {
 
-		List<AcsEventSubscriber> subscriberList = new ArrayList<AcsEventSubscriber>();
+		List<AcsEventSubscriber<IDLEntity>> subscriberList = new ArrayList<AcsEventSubscriber<IDLEntity>>();
 		for(int i=1; i<=10; i++) {
 			// Create the maximum number of proxies per admin 
 			for(int j=0; j!=NCSubscriber.PROXIES_PER_ADMIN; j++) {
-				subscriberList.add(getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME));
+				subscriberList.add(getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class));
 			}
 			// verify that all all "j loop" subscribers caused only the automatic creation of one admin object
 			assertEquals(i, channel.get_all_consumeradmins().length);
@@ -69,7 +70,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 			assertEquals(NCSubscriber.PROXIES_PER_ADMIN, channel.get_consumeradmin(adminID).push_suppliers().length - 1);
 		}
 		
-		for(AcsEventSubscriber subscriber : subscriberList) {
+		for(AcsEventSubscriber<IDLEntity> subscriber : subscriberList) {
 			try { 
 				subscriber.disconnect();
 				fail("Expected IllegalStateException when disconnecting a subscriber for which we never called startReceivingEvents().");
@@ -96,7 +97,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 			// Also, per every NCSubscriber, create an old Consumer
 			AcsEventSubscriber[] subscribers = new AcsEventSubscriber[NCSubscriber.PROXIES_PER_ADMIN];
 			for(int j=0; j!=NCSubscriber.PROXIES_PER_ADMIN; j++) {
-				subscribers[j] = getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+				subscribers[j] = getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 				Consumer c = new Consumer(CHANNEL_NAME, getContainerServices());
 				consumers.add(c);
 			}
@@ -144,7 +145,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 
 		m_logger.info("Setting up " + subscribersNum + " concurrent subscriber creations...");
 		
-		final List<AcsEventSubscriber> subscribers = Collections.synchronizedList(new ArrayList<AcsEventSubscriber>());
+		final List<AcsEventSubscriber<IDLEntity>> subscribers = Collections.synchronizedList(new ArrayList<AcsEventSubscriber<IDLEntity>>());
 
 		// Create all the tasks first
 		ThreadBurstExecutorService executor = new ThreadBurstExecutorService(getContainerServices().getThreadFactory());
@@ -155,7 +156,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 				public void run() {
 					try {
 						// create subscriber, and add it to the list
-						subscribers.add( getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME) );
+						subscribers.add( getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class) );
 					} catch (Exception e) {
 						m_logger.log(Level.WARNING, "Failed to create a subscriber.", e);
 					}
