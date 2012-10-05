@@ -205,18 +205,29 @@ public class EventSubscriberSmEngineTest
 	@Test
 	public void testGetApplicableSignals() {
 		Set<EventSubscriberSignal> signals = engine.getScxmlEngine().getApplicableSignals();
-		assertThat(signals, allOf(
-				hasSize(1), 
-				hasItem(setUpEnvironment)
-				));
+// The following works in Eclipse with J2SE 7, but not with ACS's JDK from the Makefile. Dunno why.
+//		assertThat(signals, allOf(
+//				hasSize(1), 
+//				hasItem(setUpEnvironment)
+//				));
+// Comile error: cannot find symbol
+//		symbol  : method allOf(org.hamcrest.Matcher<java.util.Collection<? extends java.lang.Object>>,org.hamcrest.Matcher<java.lang.Iterable<? super alma.acs.nc.sm.generated.EventSubscriberSignal>>
+// Instead, use two asserts as a workaround:
+		assertThat(signals, hasSize(1)); 
+		assertThat(signals, hasItem(setUpEnvironment));
 		
 		engine.fireSignal(setUpEnvironment);
 		signals = engine.getScxmlEngine().getApplicableSignals();
-		assertThat(signals, allOf(
-				hasSize(2), 
-				hasItem(cleanUpEnvironment),
-				hasItem(startReceivingEvents)
-				));
+//		assertThat(signals, allOf(
+//				hasSize(2), 
+//				hasItem(cleanUpEnvironment),
+//				hasItem(startReceivingEvents)
+//				));
+// Same workaround again:
+		assertThat(signals, hasSize(2)); 
+		assertThat(signals, hasItem(cleanUpEnvironment));
+		assertThat(signals, hasItem(startReceivingEvents));
+
 	}
 
 	/**
