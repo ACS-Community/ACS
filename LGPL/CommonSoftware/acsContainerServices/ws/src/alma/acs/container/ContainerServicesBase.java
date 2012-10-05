@@ -204,6 +204,7 @@ public interface ContainerServicesBase
 	 * @param channelNotifyServiceDomainName The Notification Channel Service Domain name, 
 	 *        used to group notification channels in different domains and assign to them a NotifyService 
 	 *        in the configuration, based on the domain.
+	 * @param eventType
 	 * @see #createNotificationChannelSubscriber(String, String)
 	 */
 	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx;
@@ -212,32 +213,34 @@ public interface ContainerServicesBase
 	 * Creates a new {@link AcsEventSubscriber} object, which is the abstraction of a Notification Channel subscriber (consumer),
 	 * for the given channel name.
 	 * The created subscriber will be automatically disconnected when the component or client that created it through this method
-	 * is finished, unless the user doesn't explicitly do it before.
+	 * is finished, in case the user doesn't explicitly do it before.
 	 * 
 	 * @param channelName The Notification Channel name to listen to
+	 * @param eventType The type of event that can be sent using the AcsEventSubscriber, e.g. "MySchedulingEvent.class". 
+	 *                  The specific event type should be used unless more than one event type must be received by this publisher,
+	 *                  in which case you can specify a common base type (e.g. "IDLEntity.class" in case of different IDL-generated structs),
+	 *                  or just "Object" for total type freedom (though the underlying pub-sub framework may later throw runtime exceptions
+	 *                  if unsupported event types are received).
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
-	 * @deprecated This method is not meant to be used yet. Future releases of ACS will remove this deprecation,
-	 *   providing a new generation of container-managed NC subscribers.
 	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx;
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, Class<T> eventType) throws AcsJContainerServicesEx;
 
 	/**
 	 * Creates a new {@link AcsEventSubscriber} object, which is the abstraction of a Notification Channel subscriber (consumer),
 	 * for the given channel name and notify service domain name.
 	 * The created subscriber will be automatically disconnected when the component or client that created it through this method
-	 * is finished, unless the user doesn't explicitly do it before.
+	 * is finished, in case the user doesn't explicitly do it before.
 	 * 
 	 * @param channelName The Notification Channel name to listen to
 	 * @param channelNotifyServiceDomainName The Notification Channel Service Domain name, used to group notification channels
 	 *   in different domains.
+	 * @param eventType See {@link #createNotificationChannelPublisher(String, Class)}.
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
-	 * @deprecated This method is not meant to be used yet. Future releases of ACS will remove this deprecation,
-	 *   providing a new generation of container-managed NC subscribers.
 	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx;
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx;
 
 }
