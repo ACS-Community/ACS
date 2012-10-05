@@ -19,10 +19,15 @@
 
 package alma.acs.nc.refactored;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.scxml.ErrorReporter;
+import org.apache.commons.scxml.EventDispatcher;
+import org.apache.commons.scxml.SCInstance;
+import org.apache.commons.scxml.TriggerEvent;
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.NO_IMPLEMENT;
@@ -58,6 +63,8 @@ import gov.sandia.NotifyMonitoringExt.NameMapError;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerAdminObtained_OK;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerAdmin_Overloaded;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_FAIL;
@@ -84,6 +91,7 @@ import alma.acs.nc.CannotStartReceivingEventsException;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
 import alma.acs.nc.SubscriptionNotFoundException;
+import alma.acs.nc.sm.EnvironmentActionHandler;
 import alma.acs.ncconfig.EventDescriptor;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -123,9 +131,11 @@ import alma.acsnc.OSPushConsumerPOATie;
  * Note about refactoring: NCSubscriber gets instantiated in module jcont using java reflection.
  * Thus if you change the package, name, or constructor of this class, make sure to fix the corresponding "forName" call in jcont.
  * 
+ * @param <T>
+ * 
  * @author jslopez, hsommer, rtobar
  */
-public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implements OSPushConsumerOperations, ReconnectableSubscriber {
+public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBase<T> implements OSPushConsumerOperations, ReconnectableSubscriber {
 	
 	/**
 	 * The default maximum amount of time an event handler is given to process
@@ -221,15 +231,27 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 	 *            To get ACS logger, access to the CDB, etc.
 	 * @param namingService
 	 *            Must be passed explicitly, instead of the old hidden approach via <code>ORBInitRef.NameService</code> property.
+	 * @param clientName
+	 * @param eventType
 	 * @throws AcsJException
 	 *             Thrown on any <I>really bad</I> error conditions encountered.
 	 */
 	public NCSubscriber(String channelName, String channelNotifyServiceDomainName, 
-			ContainerServicesBase services, NamingContext namingService, String clientName) 
+			ContainerServicesBase services, NamingContext namingService, String clientName, Class<T> eventType) 
 			throws AcsJException {
 		
-		super(services, clientName);
+		super(services, clientName, eventType);
 		
+		// This class will be instantiated through reflection, with an ugly cast,
+		// so that in spite of the declaration "NCSubscriber<T extends IDLEntity>" we must verify that eventType is an IDLEntity.
+		if (!IDLEntity.class.isAssignableFrom(eventType)) {
+			AcsJBadParameterEx ex = new AcsJBadParameterEx();
+			ex.setParameter("eventType");
+			ex.setParameterValue(eventType.getName());
+			ex.setReason("For NCSubscriber, 'eventType' must be (a subtype of) IDLEntity.");
+			throw ex;
+		}
+
 		if (channelName == null) {
 			AcsJBadParameterEx ex = new AcsJBadParameterEx();
 			ex.setParameter("channelName");
@@ -250,39 +272,9 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 		anyAide = new AnyAide(services);
 		helper = new Helper(services, namingService);
 
-		// get the channel
-		channel = helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
-
 		// populate the map with the maxProcessTime an event receiver processing should take
 		handlerTimeoutMap = helper.getEventHandlerTimeoutMap(this.channelName);
 
-		// get the admin object
-		
-		// The locking ensures thread memory sync for this non-final field.
-		// Note that the lock is not shared across subscribers and does not include the proxy supplier creation, 
-		// which means that concurrent creation of subscribers may produce too many (> PROXIES_PER_ADMIN) subscribers
-		// for the same admin object. The downside is a small uncertainty in the load balancing and occasional unit test failures,
-		// but we still prefer it over more extended local locking because then we can test from a single process
-		// the concurrent subscriber creation issues, which anyway can occur in practice with different processes creating 
-		// the subscribers.
-		connectionLock.lock(); 
-		sharedConsumerAdmin = getSharedAdmin();
-		connectionLock.unlock();
-		
-		// get the proxy Supplier
-		proxySupplier = createProxySupplier();
-
-		// Just check if our shared consumer admin is handling more proxies than it should, and log it
-		// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
-		int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
-		if( currentProxies > PROXIES_PER_ADMIN )
-			LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
-					currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
-
-		// The user might create this object, and startReceivingEvents() without attaching any receiver
-		// If so, it's useless to get all the events, so we start setting the all-exclusive filter
-		// in the server
-		discardAllEvents();
 
 		isTraceNCEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
@@ -290,6 +282,66 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 		// if the factory is null, the reconnection callback is not registered
 		channelReconnectionCallback = new AcsNcReconnectionCallback(this);
 		channelReconnectionCallback.init(services, helper.getNotifyFactory());
+		
+		// this call is mandatory, see base class ctor comment.
+		// It will lead to a call to 'EnvironmentActionHandler#create', 
+		// see 'createEnvironmentActionHandler' below.
+		try {
+			stateMachine.setUpEnvironment();
+		} catch (AcsJStateMachineActionEx ex) {
+			throw new AcsJCouldntCreateObjectEx(ex);
+		}
+	}
+
+	
+	@Override
+	protected EnvironmentActionHandler createEnvironmentActionHandler() {
+		return new EnvironmentActionHandler(logger) {
+			
+			@Override
+			public void create(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+					throws AcsJStateMachineActionEx {
+				try {
+					// get the channel
+					channel = helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
+
+					// get the admin object
+					
+					// The locking ensures thread memory sync for this non-final field.
+					// Note that the lock is not shared across subscribers and does not include the proxy supplier creation, 
+					// which means that concurrent creation of subscribers may produce too many (> PROXIES_PER_ADMIN) subscribers
+					// for the same admin object. The downside is a small uncertainty in the load balancing and occasional unit test failures,
+					// but we still prefer it over more extended local locking because then we can test from a single process
+					// the concurrent subscriber creation issues, which anyway can occur in practice with different processes creating 
+					// the subscribers.
+					connectionLock.lock(); 
+					sharedConsumerAdmin = getSharedAdmin();
+					connectionLock.unlock();
+					
+					// get the proxy Supplier
+					proxySupplier = createProxySupplier();
+
+					// Just check if our shared consumer admin is handling more proxies than it should, and log it
+					// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
+					int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
+					if( currentProxies > PROXIES_PER_ADMIN )
+						LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
+								currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
+
+					// The user might create this object, and startReceivingEvents() without attaching any receiver
+					// If so, it's useless to get all the events, so we start setting the all-exclusive filter
+					// in the server
+					discardAllEvents();
+				} catch (Throwable thr) {
+					throw new AcsJStateMachineActionEx(thr);
+				}
+			}
+			
+			@Override
+			public void destroy(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
+				logger.info("EnvironmentDestructor action called, in the user-supplied action dispatcher");
+			}
+		};
 	}
 
 	@Override
@@ -593,7 +645,7 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 	 * @return FilterID (see OMG NotificationService spec 3.2.4.1)
 	 * @throws AcsJCORBAProblemEx
 	 */
-	private int addFilter(String eventType) throws AcsJCORBAProblemEx {
+	private int addFilter(String eventTypeName) throws AcsJCORBAProblemEx {
 
 		try {
 			// Create the filter
@@ -602,7 +654,7 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 
 			// Information needed to construct the constraint expression object
 			// (any domain, THE type)
-			EventType[] t_info = { new EventType("*", eventType) };
+			EventType[] t_info = { new EventType("*", eventTypeName) };
 
 			// Add constraint expression object to the filter
 			ConstraintExp[] cexp = { new ConstraintExp(t_info, "") };
@@ -612,12 +664,12 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 			return proxySupplier.add_filter(filter);
 
 		} catch (org.omg.CosNotifyFilter.InvalidGrammar e) {
-			Throwable cause = new Throwable("'" + eventType
+			Throwable cause = new Throwable("'" + eventTypeName
 					+ "' filter is invalid for the '" + channelName
 					+ "' channel: " + e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosNotifyFilter.InvalidConstraint e) {
-			Throwable cause = new Throwable("'" + eventType
+			Throwable cause = new Throwable("'" + eventTypeName
 					+ "' filter is invalid for the '" + channelName
 					+ "' channel: " + e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
@@ -822,7 +874,8 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 
 		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
-		if (convertedAny == null || !(convertedAny instanceof IDLEntity)) {
+		// TODO: Get Class<T> in ctor, store it, 
+		if (convertedAny == null || !eventType.isInstance(convertedAny)) {
 			// @TODO: compare with ACS-NC specs and C++ impl, and perhaps call generic receiver with null data,
 			//        if the event does not carry any data.
 			// @TODO: check that we do not somewhere in ACS allow also *sequences of IDL structs* as event data,
@@ -837,7 +890,8 @@ public class NCSubscriber extends AcsEventSubscriberImplBase<IDLEntity> implemen
 		}
 		else {
 			// got good event data, will give it to the registered receiver
-			IDLEntity struct = (IDLEntity) convertedAny;
+			@SuppressWarnings("unchecked")
+			T struct = (T) convertedAny;
 			
 			if (isTraceEventsEnabled()) {
 				LOG_NC_EventReceive_OK.log(
