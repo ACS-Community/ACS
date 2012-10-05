@@ -37,9 +37,12 @@ import alma.acsnc.EventDescription;
  *   <li>TODO: We need to check if this API actually works for DDS.
  *   <li>An in-memory shortcutting (simulated channel/topic) could be useful, for testing without external processes running.
  * </ul>
- * @author jslopez
+ * @param <T> The event (base) type. If all events are of the same type then that type should be used; otherwise a common
+ *          base type for all applicable events should be used, such as Object or IDLEntity. 
+ *          
+ * @author jslopez, hsommer
  */
-public interface AcsEventSubscriber {
+public interface AcsEventSubscriber<T> {
 
 	/*===========================================*/
 	/*   Subscription management methods         */
@@ -57,7 +60,7 @@ public interface AcsEventSubscriber {
 	 * @throws CannotAddSubscriptionException If there is a problem and the receiver cannot
 	 *  be added
 	 */
-	public void addSubscription(Callback<?> receiver) 
+	public <U extends T> void addSubscription(Callback<U> receiver) 
 		throws CannotAddSubscriptionException;
 
 	/**
@@ -71,7 +74,7 @@ public interface AcsEventSubscriber {
 	 * @throws SubscriptionNotFoundException if the specified event type has not been
 	 *  previously subscribed.
 	 */
-	public void removeSubscription(Class<?> structClass) 
+	public <U extends T> void removeSubscription(Class<U> structClass) 
 		throws SubscriptionNotFoundException; // TODO use AcsJ style ex
 
 	/**
@@ -168,9 +171,9 @@ public interface AcsEventSubscriber {
 	 * This ACS-defined interface replaces the runtime search for the
 	 * "receive(...)" method that works with Java introspection.
 	 */
-	public static interface Callback<T> {
+	public static interface Callback<U> {
 		
-		public void receive(T event, EventDescription eventDescrip);
+		public void receive(U event, EventDescription eventDescrip);
 		
 		/**
 		 * This method is needed for adding event-specific subscriptions 
@@ -182,12 +185,14 @@ public interface AcsEventSubscriber {
 		 * }
 		 * </pre>
 		 */
-		public Class<T> getEventType();
+		public Class<U> getEventType();
 	}
 	
 	/**
 	 * This ACS-defined interface replaces the runtime search for the
 	 * "receive(...)" method that works with Java introspection.
+	 * <p>
+	 * TODO: Use T instead of Object, but does not work right away...
 	 */
 	public static interface GenericCallback {
 		public void receive(Object event, EventDescription eventDescrip);
