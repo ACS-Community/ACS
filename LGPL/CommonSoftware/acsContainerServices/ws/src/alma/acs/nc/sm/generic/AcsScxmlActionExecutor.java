@@ -9,7 +9,9 @@ import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.TriggerEvent;
 import org.apache.commons.scxml.model.ModelException;
 
-public interface AcsScxmlActionExecutor<E extends Enum<E>>
+import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
+
+public interface AcsScxmlActionExecutor<A extends Enum<A>>
 {
 	/**
 	 * @param action
@@ -20,9 +22,10 @@ public interface AcsScxmlActionExecutor<E extends Enum<E>>
 	 * @return true if the <code>action</code> was recognized.
 	 * @throws ModelException
 	 * @throws SCXMLExpressionException
+	 * @throws AcsJStateMachineActionEx
 	 */
-	public boolean execute(E action, EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+	public boolean execute(A action, EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
 			Collection<TriggerEvent> derivedEvents) 
-					throws ModelException, SCXMLExpressionException;
+					throws ModelException, SCXMLExpressionException, AcsJStateMachineActionEx;
 
 }
