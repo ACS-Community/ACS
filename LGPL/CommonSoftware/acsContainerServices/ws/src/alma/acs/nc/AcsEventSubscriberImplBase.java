@@ -299,24 +299,24 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * <p>
 	 * No exception is allowed to be thrown by this method, even if the receiver implementation throws a RuntimeExecption
 	 */
-	protected void processEvent(T corbaData, EventDescription eventDescrip) {
+	protected void processEvent(T eventData, EventDescription eventDescrip) {
 		
 		@SuppressWarnings("unchecked")
-		Class<T> eventType = (Class<T>) corbaData.getClass();
+		Class<T> incomingEventType = (Class<T>) eventData.getClass();
 		
-		String eventName = eventType.getName();
+		String eventName = incomingEventType.getName();
 
 		// figure out how much time this event has to be processed (according to configuration)
 		double maxProcessTimeSeconds = getMaxProcessTimeSeconds(eventName);
 
 		StopWatch profiler = new StopWatch();
 		// we give preference to a receiver that has registered for this concrete subtype of T
-		if (receivers.containsKey(eventType)) {
-			Callback<? extends T> receiver = receivers.get(eventType);
+		if (receivers.containsKey(incomingEventType)) {
+			Callback<? extends T> receiver = receivers.get(incomingEventType);
 
 			profiler.reset();
 			try {
-				_process(receiver, corbaData, eventDescrip);
+				_process(receiver, eventData, eventDescrip);
 			} 
 			catch (Throwable thr) {
 				logEventReceiveHandlerException(eventName, receiver.getClass().getName(), thr);
@@ -332,7 +332,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 		else if (genericReceiver != null) {
 			
 			profiler.reset();
-			genericReceiver.receive(corbaData, eventDescrip);
+			genericReceiver.receive(eventData, eventDescrip);
 			double usedSecondsToProcess = (profiler.getLapTimeMillis() / 1000.0);
 
 			// warn the end-user if the receiver is taking too long 
