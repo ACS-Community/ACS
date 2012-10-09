@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testArchiveSupplier.cpp,v 1.3 2006/10/09 06:06:00 gchiozzi Exp $"
+* "@(#) $Id: testArchiveSupplier.cpp,v 1.4 2012/10/09 14:32:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@
 
 using namespace maci;
 
-static char *rcsId="@(#) $Id: testArchiveSupplier.cpp,v 1.3 2006/10/09 06:06:00 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testArchiveSupplier.cpp,v 1.4 2012/10/09 14:32:23 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 template<class T> 
@@ -111,17 +111,23 @@ int main(int argc, char *argv[])
     //long
     sendEvent<CORBA::Long>(1);
     
+    //unsigned long
+    sendEvent<ACS::uLong>(2);
+    
     //pattern
-    sendEvent<ACS::pattern>(2);
+    sendEvent<ACS::pattern>(3);
     
     //long long
-    sendEvent<ACS::longLong>(3);
+    sendEvent<ACS::longLong>(4);
     
     //unsigned long long
-    sendEvent<ACS::uLongLong>(4);
+    sendEvent<ACS::uLongLong>(5);
     
     //string
     sendEvent<const char*>((const char*)"a string");
+
+    //boolean
+    sendEvent<CORBA::Boolean>(true);
     
     //double seqence
     {
@@ -150,6 +156,15 @@ int main(int argc, char *argv[])
     sendEvent<ACS::longSeq>(mySeq);
     }
     
+    //uLong seqence
+    {
+    ACS::uLongSeq mySeq(1);
+    mySeq.length(1);
+    
+    mySeq[0] = (ACS::uLong)1;
+    sendEvent<ACS::uLongSeq>(mySeq);
+    }
+    
     //string seqence
     {
     ACS::stringSeq mySeq(1);
@@ -159,6 +174,15 @@ int main(int argc, char *argv[])
     sendEvent<ACS::stringSeq>(mySeq);
     }
 
+    //boolean seqence
+    {
+    ACS::booleanSeq mySeq(1);
+    mySeq.length(1);
+    
+    mySeq[0] = true;
+    sendEvent<ACS::booleanSeq>(mySeq);
+    }
+    
     client.logout();
     return 0;
 }
