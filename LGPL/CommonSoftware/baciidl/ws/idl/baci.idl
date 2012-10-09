@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baci.idl,v 1.13 2012/07/26 12:56:44 gchiozzi Exp $"
+* "@(#) $Id: baci.idl,v 1.14 2012/10/09 09:06:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -111,7 +111,6 @@ module ACS {
     
     /** The name of the parent CharacteristicComponent */
     readonly attribute string characteristic_component_name;
-
     };
     
     /** The descriptor for a Property. A descriptor is an IDL structure that contains key 
@@ -571,6 +570,71 @@ module ACS {
 			    out boolean enable);
     };
 	
+    /** The Monitor for Properties that have value of type uLong or uLongSeq. On 
+     * creation, the only trigger present will be the timer trigger. Calling the set_value_trigger 
+     * method determines the behaviour of the value trigger. The enable parameter determines whether 
+     * the value trigger is active or not . Value 0 assigned to delta trigger means that a notification 
+     * should be sent on every change of the monitored value. Invalid values (out-of-limits) are treated 
+     * as valid extremes (a delta trigger below the min_delta_trigger found in the ACS CDB is treated as 
+     * min_delta_trigger).
+     */
+    interface MonitoruLong : ACS::Monitor {
+	
+    /**
+     * set_value_trigger is a method used to enable or disable on-change monitors. When enabled,the monitor
+     * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by delta at some point in time inbetween T0 and T1 (where 
+     *    T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250075 
+     * <br><hr>
+     */
+    void set_value_trigger (in uLong delta,
+			    in boolean enable);
+    
+    /**
+     * Returns the current on-change delta value and a boolean value which tells whether on-change
+     * monitors are being utilized.
+     * @param delta Current on-change delta value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A250078 
+     * <br><hr>
+     */
+    void get_value_trigger (out uLong delta,
+			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
+			    out boolean enable);
+    };
+
     /** The Monitor for Properties that have value of type longLong. On 
      * creation, the only trigger present will be the timer trigger. Calling the set_value_trigger 
      * method determines the behaviour of the value trigger. The enable parameter determines whether 
@@ -701,6 +765,70 @@ module ACS {
 			    out boolean enable);
     };
 
+    /** The Monitor for Properties that have value of type boolean or booleanSeq. On 
+     * creation, the only trigger present will be the timer trigger. Calling the set_value_trigger 
+     * method determines the behaviour of the value trigger. The enable parameter determines whether 
+     * the value trigger is active or not . Value 0 assigned to delta trigger means that a notification 
+     * should be sent on every change of the monitored value. Invalid values (out-of-limits) are treated 
+     * as valid extremes (a delta trigger below the min_delta_trigger found in the ACS CDB is treated as 
+     * min_delta_trigger).
+     */
+    interface Monitorboolean : ACS::Monitor {
+	
+    /**
+     * set_value_trigger is a method used to enable or disable on-change monitors. When enabled,the monitor
+     * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by delta at some point in time inbetween T0 and T1 (where 
+     *    T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250075 
+     * <br><hr>
+     */
+    void set_value_trigger (in boolean delta,
+			    in boolean enable);
+    
+    /**
+     * Returns the current on-change delta value and a boolean value which tells whether on-change
+     * monitors are being utilized.
+     * @param delta Current on-change delta value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A250078 
+     * <br><hr>
+     */
+    void get_value_trigger (out boolean delta,
+			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
+			    out boolean enable);
+    };
 
     //Property interfaces///////////////////////////////////////////////////////////////////////////
 
@@ -900,7 +1028,7 @@ module ACS {
 				   in CBDescOut desc);
 	};
 	
-	/** Alarms for float values. See \ref Alarmpattern. */
+	/** Alarms for long values. See \ref Alarmpattern. */
 	interface Alarmlong : Callback {
 	
 	/** @roseuid 3AC90A260167 */
@@ -910,6 +1038,21 @@ module ACS {
 			
 	/** @roseuid 3AC90A26016B */
 	oneway void alarm_cleared (in long value,
+				   in ACSErr::Completion c,
+				   in CBDescOut desc);
+			
+	};
+
+	/** Alarms for uLong values. See \ref Alarmpattern. */
+	interface AlarmuLong : Callback {
+
+	/** @roseuid 3AC90A260167 */
+	oneway void alarm_raised (in uLong value,
+				  in ACSErr::Completion c,
+				  in CBDescOut desc);
+			
+	/** @roseuid 3AC90A26016B */
+	oneway void alarm_cleared (in uLong value,
 				   in ACSErr::Completion c,
 				   in CBDescOut desc);
 			
@@ -927,6 +1070,21 @@ module ACS {
 	oneway void alarm_cleared (in string value,
 				   in ACSErr::Completion c,
 				   in CBDescOut desc);
+	};
+	
+	/** Alarms for boolean values. See \ref Alarmpattern. */
+	interface Alarmboolean : Callback {
+
+	/** @roseuid 3AC90A260167 */
+	oneway void alarm_raised (in boolean value,
+				  in ACSErr::Completion c,
+				  in CBDescOut desc);
+			
+	/** @roseuid 3AC90A26016B */
+	oneway void alarm_cleared (in boolean value,
+				   in ACSErr::Completion c,
+				   in CBDescOut desc);
+			
 	};
 	
 	/** Alarms for sequence strubg values. See \ref Alarmpattern. */
@@ -1132,6 +1290,40 @@ module ACS {
 		/** @static */
 	};
 	
+	/** See \ref Pdouble */
+	interface PuLong : TypelessProperty {
+		readonly attribute TimeInterval default_timer_trigger;
+		readonly attribute TimeInterval min_timer_trigger;
+		readonly attribute uLong min_delta_trigger;
+		readonly attribute uLong default_value;
+		readonly attribute uLong graph_min;
+		readonly attribute uLong graph_max;
+		readonly attribute uLong min_step;
+		
+		/** @roseuid 3AC90A26035B */
+		uLong get_sync (out ACSErr::Completion c);
+				
+		/** @roseuid 3AC90A260366 */
+		void get_async (in CBuLong cb,
+				in CBDescIn desc);
+				
+		/** @roseuid 3AC90A26036F */
+		long get_history (in long n_last_values,
+				  out uLongSeq vs,
+				  out TimeSeq ts);
+				
+		/** @roseuid 3AC90A26037A */
+		MonitoruLong create_monitor (in CBuLong cb,
+					     in CBDescIn desc);
+				
+		/** @roseuid 3AC90A260383 */
+		MonitoruLong create_postponed_monitor (in Time start_time,
+						       in CBuLong cb,
+						       in CBDescIn desc);
+				
+		/** @static */
+	};
+
 	/** The pattern Property has no monitor with value trigger, as a difference of 
 	 * values makes no sense. However, it has three other attributes that provide sequences 
 	 * that describe the meaning of each bit in the pattern: bitDescription, whenSet and 
@@ -1212,6 +1404,40 @@ module ACS {
 			
 	/** @static */
 	};
+
+	/** The boolean Property has no monitor with value trigger, as a 
+	 * difference of values makes no sense.
+	 *
+	 * The rest of the interface is equivalent to the Pdouble property. 
+	 */
+	interface Pboolean : TypelessProperty {
+	readonly attribute TimeInterval default_timer_trigger;
+	readonly attribute TimeInterval min_timer_trigger;
+	readonly attribute boolean default_value;
+	
+	/**  @roseuid 3AC90A270140 */
+	boolean get_sync (out ACSErr::Completion c);
+			
+	/** @roseuid 3AC90A270142 */
+	void get_async (in CBboolean cb,
+			in CBDescIn desc);
+			
+	/** @roseuid 3AC90A27014B */
+	long get_history (in long n_last_values,
+			  out booleanSeq vs,
+			  out TimeSeq ts);
+			
+	/** @roseuid 3AC90A270156 */
+	Monitor create_monitor (in CBboolean cb,
+				in CBDescIn desc);
+			
+	/** @roseuid 3AC90A27015F */
+	Monitor create_postponed_monitor (in Time start_time,
+					  in CBboolean cb,
+					  in CBDescIn desc);
+			
+	/** @static */
+	};
 	
         /** The PstringSeq Property manages sequences of string values. */
 	interface PstringSeq : TypelessProperty {
@@ -1238,6 +1464,36 @@ module ACS {
 	/** @roseuid 3AC90A27015F */
 	MonitorstringSeq create_postponed_monitor (in Time start_time,
 						   in CBstringSeq cb,
+						   in CBDescIn desc);
+			
+	/** @static */
+	};
+
+        /** The PbooleanSeq Property manages sequences of string values. */
+	interface PbooleanSeq : TypelessProperty {
+	readonly attribute TimeInterval default_timer_trigger;
+	readonly attribute TimeInterval min_timer_trigger;
+	readonly attribute boolean default_value;
+	
+	/** @roseuid 3AC90A270140 */
+	booleanSeq get_sync (out ACSErr::Completion c);
+	
+	/** @roseuid 3AC90A270142 */
+	void get_async (in CBbooleanSeq cb,
+			in CBDescIn desc);
+			
+	/** @roseuid 3AC90A27014B */
+	long get_history (in long n_last_values,
+			  out booleanSeqSeq vs,
+			  out TimeSeq ts);
+	
+	/** @roseuid 3AC90A270156 */
+	Monitorboolean create_monitor (in CBbooleanSeq cb,
+					 in CBDescIn desc);
+			
+	/** @roseuid 3AC90A27015F */
+	Monitorboolean create_postponed_monitor (in Time start_time,
+						   in CBbooleanSeq cb,
 						   in CBDescIn desc);
 			
 	/** @static */
@@ -1356,6 +1612,40 @@ module ACS {
 	/** @static */		
 	};
 	
+	/** The PuLongSeq Property is completely equivalent to the PdoubleSeq property. */
+	interface PuLongSeq : TypelessProperty {
+	readonly attribute TimeInterval default_timer_trigger;
+	readonly attribute TimeInterval min_timer_trigger;
+	readonly attribute uLong min_delta_trigger;
+	readonly attribute uLong default_value;
+	readonly attribute uLong graph_min;
+	readonly attribute uLong graph_max;
+	readonly attribute uLong min_step;
+	
+	/** @roseuid 3AC90A27028A */
+	uLongSeq get_sync (out ACSErr::Completion c);
+			
+	/** @roseuid 3AC90A270294 */
+	void get_async (in CBuLongSeq cb,
+			in CBDescIn desc);
+	
+	/** @roseuid 3AC90A270297 */
+	long get_history (in long n_last_values,
+			  out uLongSeqSeq vs,
+			  out TimeSeq ts);
+			
+	/** @roseuid 3AC90A2702A9 */
+	MonitoruLong create_monitor (in CBuLongSeq cb,
+				    in CBDescIn desc);
+			
+	/** @roseuid 3AC90A2702AC */
+	MonitoruLong create_postponed_monitor (in Time start_time,
+					      in CBuLongSeq cb,
+					      in CBDescIn desc);
+	
+	/** @static */		
+	};
+
 	/** Here follow the property definitions that are actually used by the control 
 	 * system: RO for read-only and RW for read-write. The patterns are described in the 
 	 * specification documents, "BACI specifications" and "Application of BACI for ACS 1.0". 
@@ -1615,8 +1905,96 @@ module ACS {
 
 	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
 	boolean alarm_system_enabled();
-
 	};
+	
+	
+	/** See \ref RWdouble. */
+	interface RWboolean : Pboolean {
+	/** @step */
+	readonly attribute boolean min_value;
+	
+	/** @static */
+	readonly attribute boolean max_value;
+	
+	/** @roseuid 3AC90A28006F */
+	ACSErr::Completion set_sync (in boolean value);
+			
+	/** @roseuid 3AC90A28007A */
+	void set_async (in boolean value,
+			in CBvoid cb,
+			in CBDescIn desc);
+	
+	/** @roseuid 3AC90A28007E */
+	void set_nonblocking (in boolean value);
+			
+	/** @nonblocking */
+	};
+	
+	/** See \ref ROdouble. */
+	interface ROboolean : Pboolean {
+	
+	/** @roseuid 3AC90A280097 */
+	Subscription new_subscription_Alarm (in Alarmboolean cb,
+					     in CBDescIn desc);
+					     
+    //** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+					     
+	};
+	
+	/** See \ref ROdouble. */
+	interface RObooleanSeq : PbooleanSeq {
+	/** @roseuid 3AC90A280097 */
+	Subscription new_subscription_Alarm (in Alarmboolean cb,
+					     in CBDescIn desc);
+    
+    //** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();					     
+	};
+
+	/** A sequence of RWboolean. */
+	interface RWbooleanSeq : PbooleanSeq {
+	/** @step */
+	readonly attribute boolean min_value;
+	
+	/** @static */
+	readonly attribute boolean max_value;
+	
+	/** @Property @roseuid 3AC90A2800D3 */
+	ACSErr::Completion set_sync (in booleanSeq value);
+			
+	/** @mutators @sync @roseuid 3AC90A2800D5 */
+	void set_async (in booleanSeq value,
+			in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @mutators @async
+	    @roseuid 3AC90A2800DF */
+	void set_nonblocking (in booleanSeq value);
+			
+	/** @nonblocking @roseuid 3AC90A2800E1 */
+	void increment (in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @step @roseuid 3AC90A2800E8 */
+	void decrement (in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @static */
+	};
+
 
 	/** A sequence of ROdouble. */
 	interface ROdoubleSeq : PdoubleSeq {
@@ -1783,6 +2161,63 @@ module ACS {
 	/** @static */
 	};
 	
+	/** A sequence of ROuLong. */
+	interface ROuLongSeq : PuLongSeq {
+	/** @eventable */
+	readonly attribute uLong alarm_low_on;
+	/** @static */
+	readonly attribute uLong alarm_low_off;
+	/** @static */
+	readonly attribute uLong alarm_high_on;
+	/** @static */
+	readonly attribute uLong alarm_high_off;
+	
+	/** @Property @roseuid 3AC90A280105 */
+	Subscription new_subscription_Alarm (in AlarmuLong cb,
+					     in CBDescIn desc);
+    					     
+	//** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();
+			
+	/** @static */
+	};
+	
+	/** A sequence of RWuLong. */
+	interface RWuLongSeq : PuLongSeq {
+	/** @step */
+	readonly attribute uLong min_value;
+	
+	/** @static */
+	readonly attribute uLong max_value;
+		
+	/** @Property @roseuid 3AC90A280123 */
+	ACSErr::Completion set_sync (in uLongSeq value);
+			
+	/** @mutators @sync @roseuid 3AC90A280125 */
+	void set_async (in uLongSeq value,
+			in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @mutators @async @roseuid 3AC90A28012F */
+	void set_nonblocking (in uLongSeq value);
+			
+	/** @nonblocking @roseuid 3AC90A280131 */
+	void increment (in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @step @roseuid 3AC90A280138 */
+	void decrement (in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @static */
+	};
+	
 	/** See \ref ROdouble. */
 	interface ROlong : Plong {
 		readonly attribute long alarm_low_on;
@@ -1839,11 +2274,64 @@ module ACS {
 	readonly attribute long min_value;
 	};
 	
+	/** See \ref ROdouble. */
+	interface ROuLong : PuLong {
+	readonly attribute uLong alarm_low_on;
+	readonly attribute uLong alarm_low_off;
+	readonly attribute uLong alarm_high_on;
+	readonly attribute uLong alarm_high_off;
+	
+	/** @roseuid 3AC90A28000C */
+	Subscription new_subscription_Alarm (in AlarmuLong cb,
+					     in CBDescIn desc);
+    
+    //** Enables the propagation of Property Alarms to the ACS Alarm System **/
+	void enable_alarm_system();
+
+	//** Disables the propagation of Property Alarms to the ACS Alarm System **/
+	void disable_alarm_system() raises (baciErrTypeProperty::DisableAlarmsErrorEx);
+
+	//** Returns the current status of the propagation of Property Alarms to the ACS Alarm System **/
+	boolean alarm_system_enabled();					     
+	
+	/** @static */
+		
+	};
+
+	/** See \ref RWdouble. */
+	interface RWuLong : PuLong {
+
+	/** @roseuid 3AC90A280034 */
+	ACSErr::Completion set_sync (in uLong value);
+			
+	/** @roseuid 3AC90A280036 */
+	void set_async (in uLong value,
+			in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** @roseuid 3AC90A28003E */
+	void set_nonblocking (in uLong value);
+			
+	/** Increment the raw value by one bit. This method can be used for 
+	 * fine-tuning actuators controlled by the property.
+	 * @roseuid 3AC90A280040 
+	 */
+	void increment (in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** Increment the raw value by one bit. This method can be used 
+	 * for fine-tuning actuators controlled by the property.
+	 * @roseuid 3AC90A280047 
+	 */
+	void decrement (in CBvoid cb,
+			in CBDescIn desc);
+			
+	/** maximal allowed value for set */
+	readonly attribute uLong max_value;
+	readonly attribute uLong min_value;
+	};
+
 /***********************  LONG LONG */
-
-
-
-
 
 	interface PlongLong : TypelessProperty {
 	readonly attribute TimeInterval default_timer_trigger;
