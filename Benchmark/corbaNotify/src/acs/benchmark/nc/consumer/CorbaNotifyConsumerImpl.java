@@ -31,6 +31,7 @@ import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acs.nc.AcsEventSubscriber.Callback;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 import alma.benchmark.CorbaNotifyConsumerOperations;
@@ -39,7 +40,7 @@ import alma.benchmark.MountStatusData;
 import alma.benchmark.NcEventSpec;
 import alma.benchmark.SomeOtherEventType;
 
-public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscriber> implements CorbaNotifyConsumerOperations
+public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscriber<IDLEntity>> implements CorbaNotifyConsumerOperations
 {
 
 //	@Override
@@ -53,16 +54,16 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 //	}
 
 	@Override
-	protected AcsEventSubscriber createNcParticipant(String ncName) throws AcsJContainerServicesEx {
-		return m_containerServices.createNotificationChannelSubscriber(ncName);
+	protected AcsEventSubscriber<IDLEntity> createNcParticipant(String ncName) throws AcsJContainerServicesEx {
+		return m_containerServices.createNotificationChannelSubscriber(ncName, IDLEntity.class);
 	}
 
 	@Override
-	protected void disconnectNcParticipant(AcsEventSubscriber sub) {
+	protected void disconnectNcParticipant(AcsEventSubscriber<IDLEntity> sub) {
 		sub.disconnect();
 	}
 
-	protected static class TestEventHandler<T extends IDLEntity> implements AcsEventSubscriber.Callback<T> {
+	protected static class TestEventHandler<T extends IDLEntity> implements Callback<T> {
 		
 		private final Class<T> clazz;
 		private final String antennaName; 
@@ -140,7 +141,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 
 		try {
 			for (NcEventSpec ncEventSpec : ncEventSpecs) {
-				AcsEventSubscriber sub = subsOrPubs.get(ncEventSpec.ncName);
+				AcsEventSubscriber<IDLEntity> sub = subsOrPubs.get(ncEventSpec.ncName);
 				if (sub == null) {
 					throw new AcsJCouldntPerformActionEx("No subscriber available for NC '" + ncEventSpec.ncName + "'.");
 				}
