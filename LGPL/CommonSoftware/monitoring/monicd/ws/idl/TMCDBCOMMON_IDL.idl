@@ -35,6 +35,11 @@ const DataValueType patternSeqValueType=13; // does not exist, just placeholder
 
 const DataValueType enumValueType=14;
 
+const DataValueType uLongValueType=15;
+const DataValueType uLongSeqValueType=16;
+
+const DataValueType booleanValueType=16;
+const DataValueType booleanSeqValueType=17;
 
 struct doubleBlobData
   {
@@ -99,7 +104,26 @@ struct longLongBlobData
       long long value;
   };
   
- typedef  sequence<longLongBlobData> longLongBlobDataSeq;
+ typedef  /**************************************************************************/
+  
+  struct uLongBlobData
+  {
+      ACS::Time time;
+      unsigned long value;
+  };
+  
+  typedef  sequence<uLongBlobData> uLongBlobDataSeq;
+  
+  
+  struct uLongSeqBlobData
+  {
+      ACS::Time time;
+      ACS::uLongSeq value;
+  };
+  
+  typedef  sequence<uLongSeqBlobData> uLongSeqBlobDataSeq;
+  
+  sequence<longLongBlobData> longLongBlobDataSeq;
   
   
   struct longLongSeqBlobData
@@ -158,7 +182,25 @@ struct stringSeqBlobData
 
 typedef  sequence<stringSeqBlobData> stringSeqBlobDataSeq;
 
-/**************************************************************************/
+/***************************************  struct booleanBlobData
+  {
+      ACS::Time time;
+      boolean value;
+  };
+  
+  typedef  sequence<booleanBlobData> booleanBlobDataSeq;
+  
+  
+  struct booleanSeqBlobData
+  {
+      ACS::Time time;
+      ACS::booleanSeq value;
+  };
+  
+  typedef  sequence<booleanSeqBlobData> booleanSeqBlobDataSeq;
+  
+  /**************************************************************************/
+***********************************/
   
   struct enumBlobData
   {
