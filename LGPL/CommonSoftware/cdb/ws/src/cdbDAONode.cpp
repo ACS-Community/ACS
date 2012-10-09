@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.14 2012/04/20 19:58:57 javarias Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.15 2012/10/09 09:50:49 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -437,6 +437,23 @@ CORBA::Long DAONode::getValue(const char * propertyName)
 	return get_long( propertyName );
 }
 
+template<>
+ACS::uLong DAONode::getValue(const char * propertyName)
+{
+	// we can not use get_long to read xs:unisngedInt which its max value is larger than xs:int  we have to read string and cast it to unsigned long
+	// see: COMP-4268
+	ACS::uLong var;
+	CORBA::String_var str = this->get_string( propertyName );
+	std::istringstream is(str.in());
+	(istream&) is >> var;
+	if (!is) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, "DAONode::getValue<ACS::uLong>",
+			(LM_ERROR, "Problem converting string value: %s to ACS::uLong!", str.in()));
+		throw cdbErrType::WrongCDBDataTypeEx();
+	}//if
+	return var;
+}
+
 //we have to cast because from DAO we get just get_long
 template<>
 ACS::longLong DAONode::getValue(const char * propertyName)
@@ -477,11 +494,25 @@ ACS::uLongLong DAONode::getValue(const char * propertyName)
 }
 
 template<>
-CORBA::ULong DAONode::getValue(const char * propertyName)
+CORBA::Boolean DAONode::getValue(const char * propertyName)
 {
-	return static_cast<CORBA::ULong>(get_long( propertyName ));
+	// we can not use get_long to read xs:unisngedInt which its max value is larger than xs:int  we have to read string and cast it to unsigned long
+	// see: COMP-4268
+	CORBA::Boolean var;
+	CORBA::String_var str = this->get_string( propertyName );
+	std::istringstream is(str.in());
+	(istream&) is >> var;
+	if (!is) {
+		std::istringstream is2(str.in());
+		(istream&) is2 >> std::boolalpha >> var;
+		if(!is2) {
+			ACS_LOG(LM_RUNTIME_CONTEXT, "DAONode::getValue<CORBA::Boolean>",
+				(LM_ERROR, "Problem converting string value: %s to CORBA::Boolean!", str.in()));
+			throw cdbErrType::WrongCDBDataTypeEx();
+		}
+	}//if
+	return var;
 }
-
 
 
 void DAONode::destroy ()
