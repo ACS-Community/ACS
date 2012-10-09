@@ -11,7 +11,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/AlarmSystem.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>

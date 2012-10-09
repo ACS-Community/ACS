@@ -8,7 +8,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeMonitor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar" sourcepath="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar" sourcepath="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="lib" path="ws/lib/acserrTest.jar"/>
 	<classpathentry kind="lib" path="ws/lib/ACSErrTypeTest.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>

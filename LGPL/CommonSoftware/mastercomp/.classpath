@@ -14,7 +14,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar" sourcepath="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar" sourcepath="/ACSROOT/lib/jACSUtil.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar" sourcepath="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar" sourcepath="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="lib" path="lib/mastercompTest_if.jar" sourcepath="lib/mastercompTest_if.jar"/>

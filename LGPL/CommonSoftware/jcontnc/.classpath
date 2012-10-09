@@ -45,6 +45,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsncSchemaBindings.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ACS_acsContainerServices"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
