@@ -45,6 +45,9 @@ module ACS {
 
         /** A 64-bit long used as a pattern of 64 bits. */
     typedef unsigned long long pattern;
+
+    /** A 32-bit signed integer */
+    typedef unsigned long uLong;
     
     /** A 64-bit signed integer */
     typedef long long longLong;
@@ -95,6 +98,12 @@ module ACS {
     /** A sequence of <B>long</B>. See \ref stringSeq for more on sequences. */
     typedef sequence <long> longSeq;
     
+    /** A sequence of <B>uLong<B>. See \ref stringSeq for more on sequences. */
+    typedef sequence <uLong> uLongSeq;
+
+    /** A sequence of <B>boolean</B>. See \ref stringSeq for more on sequences. */
+    typedef sequence <boolean> booleanSeq;
+
     /** Sequences of \ref doubleSeq, following the same naming pattern as simple sequences. */
     typedef sequence <doubleSeq> doubleSeqSeq;
     
@@ -104,15 +113,20 @@ module ACS {
     /** Sequences of \ref longSeq, following the same naming pattern as simple sequences. */
     typedef sequence <longSeq> longSeqSeq;
     
+    /** Sequences of \ref uLongSeq, following the same naming pattern as simple sequences. */
+    typedef sequence <uLongSeq> uLongSeqSeq;
+    
     /** Sequences of \ref stringSeq, following the same naming pattern as simple sequences. */
     typedef sequence <stringSeq> stringSeqSeq;
     
+    /** Sequences of \ref stringSeq, following the same naming pattern as simple sequences. */
+    typedef sequence <booleanSeq> booleanSeqSeq;
+
     /** A sequence of \ref longLong. See \ref stringSeq for more on sequences. */
     typedef sequence <longLong> longLongSeq;
     
     /** A sequence of \ref uLongLong. See \ref stringSeq for more on sequences. */
     typedef sequence <uLongLong> uLongLongSeq;
-
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	/////// Special interfaces used in the context of components or other processes ///////
