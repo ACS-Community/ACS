@@ -548,6 +548,54 @@ module ACS {
 	};
 
 	/** 
+	 * CBuLong objects are used to asynchronously execute an action which takes a large amount of
+	 * time to complete and returns uLong value(s).
+	 * 
+	 * When the callback is used for asynchronous notification in response to some action, the 
+	 * done method will be invoked when the action terminates, either with error condition or 
+	 * success (discovered by examining the Completion parameter). When the client processes the done 
+	 * invocation, it may discard the callback. The completion condition and the timestamp are reported 
+	 * through the Completion structure as a part of the callback notification. If the action is time 
+	 * consuming, i.e. it cannot be completed before the normal_timeout parameter found in the CBDescIn
+	 * structure, the server must issue a working notification periodically (the server works under 
+	 * presupposition that each invocation resets the client's timeout timer to the 
+	 * normal_timeout period). The client must not discard the callback before done notification is 
+	 * called or one of the notifications timeouts on the client side.
+	 * 
+	 * See the BACI specifications for a detailed discussion on timeouts. 
+	 */
+	interface CBuLong : Callback {
+		/**
+		 * The working method can be invoked by the servant any number of times provided it sets
+		 * the appropriate timeout fields in the CBDescOut structure to inform the client. This is a 
+		 * oneway method so the developer need not be worried about how long it takes their implementation
+		 * of the method to complete.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void working (in uLong value,
+				 in ACSErr::Completion c,
+				 in CBDescOut desc);
+		
+		/** 
+		 * The done method is invoked only one time by the servant and signifies the end of future method
+		 * invocations on this particular callback instance. Once this method has been invoked, the instance
+		 * can be discarded.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void done (in uLong value,
+				in ACSErr::Completion c,
+				in CBDescOut desc);
+		};
+	
+	/** 
 	 * CBlongLong objects are used to asynchronously execute an action which takes a large amount of
 	 * time to complete and returns longLong value(s).
 	 * 
@@ -645,6 +693,54 @@ module ACS {
 		 *             (i.e., invoke done) or invoke this method again.
 		 */
 		oneway void done (in uLongLong value,
+				in ACSErr::Completion c,
+				in CBDescOut desc);
+		};
+	
+	/** 
+	 * CBboolean objects are used to asynchronously execute an action which takes a large amount of
+	 * time to complete and returns boolean value(s).
+	 * 
+	 * When the callback is used for asynchronous notification in response to some action, the 
+	 * done method will be invoked when the action terminates, either with error condition or 
+	 * success (discovered by examining the Completion parameter). When the client processes the done 
+	 * invocation, it may discard the callback. The completion condition and the timestamp are reported 
+	 * through the Completion structure as a part of the callback notification. If the action is time 
+	 * consuming, i.e. it cannot be completed before the normal_timeout parameter found in the CBDescIn
+	 * structure, the server must issue a working notification periodically (the server works under 
+	 * presupposition that each invocation resets the client's timeout timer to the 
+	 * normal_timeout period). The client must not discard the callback before done notification is 
+	 * called or one of the notifications timeouts on the client side.
+	 * 
+	 * See the BACI specifications for a detailed discussion on timeouts. 
+	 */
+	interface CBboolean : Callback {
+		/**
+		 * The working method can be invoked by the servant any number of times provided it sets
+		 * the appropriate timeout fields in the CBDescOut structure to inform the client. This is a 
+		 * oneway method so the developer need not be worried about how long it takes their implementation
+		 * of the method to complete.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void working (in boolean value,
+				 in ACSErr::Completion c,
+				 in CBDescOut desc);
+		
+		/** 
+		 * The done method is invoked only one time by the servant and signifies the end of future method
+		 * invocations on this particular callback instance. Once this method has been invoked, the instance
+		 * can be discarded.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void done (in boolean value,
 				in ACSErr::Completion c,
 				in CBDescOut desc);
 		};
@@ -791,6 +887,102 @@ module ACS {
 		 *             (i.e., invoke done) or invoke this method again.
 		 */
 		oneway void done (in longSeq value,
+				in ACSErr::Completion c,
+				in CBDescOut desc);
+	};
+
+	/** 
+	 * CBuLongSeq objects are used to asynchronously execute an action which takes a large amount of
+	 * time to complete and returns uLongSeq value(s).
+	 * 
+	 * When the callback is used for asynchronous notification in response to some action, the 
+	 * done method will be invoked when the action terminates, either with error condition or 
+	 * success (discovered by examining the Completion parameter). When the client processes the done 
+	 * invocation, it may discard the callback. The completion condition and the timestamp are reported 
+	 * through the Completion structure as a part of the callback notification. If the action is time 
+	 * consuming, i.e. it cannot be completed before the normal_timeout parameter found in the CBDescIn
+	 * structure, the server must issue a working notification periodically (the server works under 
+	 * presupposition that each invocation resets the client's timeout timer to the 
+	 * normal_timeout period). The client must not discard the callback before done notification is 
+	 * called or one of the notifications timeouts on the client side.
+	 * 
+	 * See the BACI specifications for a detailed discussion on timeouts. 
+	 */
+	interface CBuLongSeq : Callback {
+		/**
+		 * The working method can be invoked by the servant any number of times provided it sets
+		 * the appropriate timeout fields in the CBDescOut structure to inform the client. This is a 
+		 * oneway method so the developer need not be worried about how long it takes their implementation
+		 * of the method to complete.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void working (in uLongSeq value,
+				in ACSErr::Completion c,
+				in CBDescOut desc);
+				
+		/** 
+		 * The done method is invoked only one time by the servant and signifies the end of future method
+		 * invocations on this particular callback instance. Once this method has been invoked, the instance
+		 * can be discarded.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void done (in uLongSeq value,
+				in ACSErr::Completion c,
+				in CBDescOut desc);
+	};
+
+	/** 
+	 * CBbooleanSeq objects are used to asynchronously execute an action which takes a large amount of
+	 * time to complete and returns booleanSeq value(s).
+	 * 
+	 * When the callback is used for asynchronous notification in response to some action, the 
+	 * done method will be invoked when the action terminates, either with error condition or 
+	 * success (discovered by examining the Completion parameter). When the client processes the done 
+	 * invocation, it may discard the callback. The completion condition and the timestamp are reported 
+	 * through the Completion structure as a part of the callback notification. If the action is time 
+	 * consuming, i.e. it cannot be completed before the normal_timeout parameter found in the CBDescIn
+	 * structure, the server must issue a working notification periodically (the server works under 
+	 * presupposition that each invocation resets the client's timeout timer to the 
+	 * normal_timeout period). The client must not discard the callback before done notification is 
+	 * called or one of the notifications timeouts on the client side.
+	 * 
+	 * See the BACI specifications for a detailed discussion on timeouts. 
+	 */
+	interface CBbooleanSeq : Callback {
+		/**
+		 * The working method can be invoked by the servant any number of times provided it sets
+		 * the appropriate timeout fields in the CBDescOut structure to inform the client. This is a 
+		 * oneway method so the developer need not be worried about how long it takes their implementation
+		 * of the method to complete.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void working (in booleanSeq value,
+				in ACSErr::Completion c,
+				in CBDescOut desc);
+				
+		/** 
+		 * The done method is invoked only one time by the servant and signifies the end of future method
+		 * invocations on this particular callback instance. Once this method has been invoked, the instance
+		 * can be discarded.
+		 * @param value Most recent value.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void done (in booleanSeq value,
 				in ACSErr::Completion c,
 				in CBDescOut desc);
 	};
