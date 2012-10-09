@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.cpp,v 1.112 2012/01/05 14:46:55 rtobar Exp $"
+* "@(#) $Id: baciValue.cpp,v 1.113 2012/10/09 14:22:54 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 
 #include "logging.h"
 
-ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.112 2012/01/05 14:46:55 rtobar Exp $")
+ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.113 2012/10/09 14:22:54 bjeram Exp $")
 
  using namespace baci;
 
@@ -80,15 +80,19 @@ ACE_CString BACIValue::getValue(ACE_CString *n) const
 ACCESSOR_INLINE_TYPE(double, BACIdouble)
 ACCESSOR_INLINE_TYPE(float, BACIfloat)
 ACCESSOR_INLINE_TYPE(long, BACIlong)
+ACCESSOR_INLINE_TYPE(uLong, BACIuLong)
 ACCESSOR_INLINE_TYPE(longLong, BACIlongLong)
 ACCESSOR_INLINE_TYPE(uLongLong, BACIuLongLong)
+ACCESSOR_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted ACCESSOR_INLINE_TYPE(pattern, BACIpattern)
 
 //ACCESSOR_PTR_TYPE(string, ACE_CString)
 ACCESSOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 ACCESSOR_PTR_TYPE(floatSeq, BACIfloatSeq)
 ACCESSOR_PTR_TYPE(longSeq, BACIlongSeq)
+ACCESSOR_PTR_TYPE(uLongSeq, BACIuLongSeq)
 ACCESSOR_PTR_TYPE(stringSeq, BACIstringSeq)
+ACCESSOR_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
 #undef ACCESSOR_PTR_TYPE
 #undef ACCESSOR_INLINE_TYPE
@@ -133,15 +137,19 @@ bool BACIValue::setValue(const ACE_CString &value)
 MUTATOR_INLINE_TYPE(double, BACIdouble)
 MUTATOR_INLINE_TYPE(float, BACIfloat)
 MUTATOR_INLINE_TYPE(long, BACIlong)
+MUTATOR_INLINE_TYPE(uLong, BACIuLong)
 MUTATOR_INLINE_TYPE(longLong, BACIlongLong)
 MUTATOR_INLINE_TYPE(uLongLong, BACIuLongLong)
+MUTATOR_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted MUTATOR_INLINE_TYPE(pattern, BACIpattern)
 
 //MUTATOR_PTR_TYPE(string, ACE_CString)
 MUTATOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 MUTATOR_PTR_TYPE(floatSeq, BACIfloatSeq)
 MUTATOR_PTR_TYPE(longSeq, BACIlongSeq)
+MUTATOR_PTR_TYPE(uLongSeq, BACIuLongSeq)
 MUTATOR_PTR_TYPE(stringSeq, BACIstringSeq)
+MUTATOR_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
 #undef MUTATOR_PTR_TYPE
 #undef MUTATOR_INLINE_TYPE
@@ -162,6 +170,10 @@ const ACE_CString BACIValue::typeName[] = {
     "stringSeq",
     "float",
     "floatSeq",
+    "uLong",
+    "uLongSeq",
+    "boolean",
+    "booleanSeq",
     "enum"
   };
 
@@ -180,6 +192,10 @@ const ACE_CString BACIValue::archiveTypeName[] = {
     "stringSeq",
     "float",
     "floatSeq",
+    "uLong",
+    "uLongSeq",
+    "boolean",
+    "booleanSeq",
     "enum"
   };
 
@@ -292,14 +308,18 @@ bool BACIValue::toString(ACE_CString &value, bool specifyType) const
       OUTPUT_INLINE_TYPE(double, BACIdouble)
       OUTPUT_INLINE_TYPE(float, BACIfloat)
       OUTPUT_INLINE_TYPE(long, BACIlong)
+      OUTPUT_INLINE_TYPE(uLong, BACIuLong)
       OUTPUT_INLINE_TYPE(longLong, BACIlongLong)
       OUTPUT_INLINE_TYPE(uLongLong, BACIuLongLong)
+      OUTPUT_INLINE_TYPE(boolean, BACIboolean)
 //TBDeleted      OUTPUT_INLINE_TYPE(pattern, BACIpattern)
       OUTPUT_PTR_TYPE_WITH_BOUND(string, BACIstring)
       OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(doubleSeq, BACIdoubleSeq)
       OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(floatSeq, BACIfloatSeq)
       OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(longSeq, BACIlongSeq)
+      OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(uLongSeq, BACIuLongSeq)
       OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(stringSeq, BACIstringSeq)
+      OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(booleanSeq, BACIbooleanSeq)
 
     default:
       return false;
@@ -372,8 +392,10 @@ bool BACIValue::fromString(const ACE_CString value, bool specifyType)
    PROCESS_INLINE_TYPE(double, BACIdouble)
    PROCESS_INLINE_TYPE(float, BACIfloat)
    PROCESS_INLINE_TYPE(long, BACIlong)
+   PROCESS_INLINE_TYPE(uLong, BACIuLong)
    PROCESS_INLINE_TYPE(longLong, BACIlongLong)
    PROCESS_INLINE_TYPE(uLongLong, BACIuLongLong)
+   PROCESS_INLINE_TYPE(boolean, BACIboolean)
 //TBDeleted   PROCESS_INLINE_TYPE(pattern, BACIpattern)
 
   return false;
@@ -416,6 +438,11 @@ BACIValue::getAny(CORBA::Any &any) const
 	    any <<= this->longValue();
 	    break;
 
+	    // 32-bit unsigned integer.
+	case type_uLong:
+	    any <<= this->uLongValue();
+	    break;
+
 	    // A bit former pattern.
 	case type_uLongLong /*type_pattern*/:
 	    //special case because this holds enums as well
@@ -431,6 +458,11 @@ BACIValue::getAny(CORBA::Any &any) const
 
 	    break;
 
+	    // Boolean.
+	case type_boolean:
+	    any <<= this->booleanValue();
+	    break;
+
 	    // Sequence of double-s.
 	case type_doubleSeq:
 	    any <<= this->doubleSeqValue();
@@ -439,6 +471,11 @@ BACIValue::getAny(CORBA::Any &any) const
 	    // Sequencs of long-s.
 	case type_longSeq:
 	    any <<= this->longSeqValue();
+	    break;
+
+	    // Sequencs of uLong-s.
+	case type_uLongSeq:
+	    any <<= this->uLongSeqValue();
 	    break;
 
 	    // 64-bit signed integer.
@@ -464,6 +501,11 @@ BACIValue::getAny(CORBA::Any &any) const
 	    // Sequence of float-s.
 	case type_floatSeq:
 	    any <<= this->floatSeqValue();
+	    break;
+
+	    // Sequencs of boolean-s.
+	case type_booleanSeq:
+	    any <<= this->booleanSeqValue();
 	    break;
 
 	    // Have no idea how this could occur but just in case...
@@ -525,7 +567,13 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 // REVISION HISTORY:
 //
 // $Log: baciValue.cpp,v $
-// Revision 1.112  2012/01/05 14:46:55  rtobar
+// Revision 1.113  2012/10/09 14:22:54  bjeram
+// merged ACS-10_1-NewBaciProps-B to HEAD: support for uLong and boolean
+//
+// Revision 1.112.6.1  2012/05/23 21:30:00  javarias
+// Added ulong, bool ane enumerations baci property types
+//
+// Revision 1.112  2012/01/05 14:46:56  rtobar
 // Final touches to let baci compiling without warnings (32/64 bits)
 //
 // Revision 1.111  2008/12/29 08:34:43  bjeram

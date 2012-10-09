@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.105 2008/08/21 15:30:52 bjeram Exp $"
+* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.106 2012/10/09 14:22:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -113,14 +113,18 @@ bool baci::BACIComponent::dispatchCallback(int callbackID,
 WORKING_CALLBACK(double)
 WORKING_CALLBACK(float)
 WORKING_CALLBACK(long)
+WORKING_CALLBACK(uLong)
 WORKING_CALLBACK(longLong)
 WORKING_CALLBACK(uLongLong)
+WORKING_CALLBACK(boolean)
 //tbdeleted WORKING_CALLBACK(pattern)
 WORKING_CALLBACK(string)
 WORKING_CALLBACK(doubleSeq)
 WORKING_CALLBACK(floatSeq)
 WORKING_CALLBACK(longSeq)
+WORKING_CALLBACK(uLongSeq)
 WORKING_CALLBACK(stringSeq)
+WORKING_CALLBACK(booleanSeq)
 
 	default:
 	  {
@@ -208,14 +212,18 @@ bool baci::BACIComponent::finishCallback(int callbackID,
 DONE_CALLBACK(double)
 DONE_CALLBACK(float)
 DONE_CALLBACK(long)
+DONE_CALLBACK(uLong)
 //TBDeleted DONE_CALLBACK(pattern)
 DONE_CALLBACK(longLong)
 DONE_CALLBACK(uLongLong)
 DONE_CALLBACK(string)
+DONE_CALLBACK(boolean)
 DONE_CALLBACK(doubleSeq)
 DONE_CALLBACK(floatSeq)
 DONE_CALLBACK(longSeq)
+DONE_CALLBACK(uLongSeq)
 DONE_CALLBACK(stringSeq)
+DONE_CALLBACK(booleanSeq)
 
 	default:
 	  {

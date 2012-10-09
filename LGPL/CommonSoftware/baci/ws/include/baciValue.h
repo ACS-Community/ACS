@@ -18,7 +18,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciValue.h,v 1.111 2011/03/30 17:57:23 tstaig Exp $"
+ * "@(#) $Id: baciValue.h,v 1.112 2012/10/09 14:22:58 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -103,7 +103,15 @@ class baci_EXPORT BACIValue
 	/// A IEEE 4-byte floating point number.
 	type_float=11,
 	/// Sequence of float-s.
-	type_floatSeq=12
+	type_floatSeq=12,
+	/// 32-bit unsigned integer.
+	type_uLong=13,
+	/// Sequencs of uLong-s.
+	type_uLongSeq=14,
+	/// boolean.
+	type_boolean=15,
+	/// boolean.
+	type_booleanSeq=16
     };
 
     /**
@@ -115,8 +123,9 @@ class baci_EXPORT BACIValue
     /**
      * Array of strings initialized to contain what are essentially
      * the same values as the #Type enum. Values are:
-     *     "null","pointer","string","double","long","pattern","doubleSeq",
-     *     "longSeq","longLong","uLongLong", "longString"
+     *     "null","pointer","string","double","long", "pattern","doubleSeq",
+     *     "longSeq","longLong","uLongLong","longString","float","floatSeq",
+     *     "uLong","uLongSeq","boolean","booleanSeq"
      * Furthermore, this array can be indexed using the #Type enum.
      * <br><hr>
      */
@@ -127,7 +136,8 @@ class baci_EXPORT BACIValue
      * the same values as the #Type enum. Values are:
      *     "invalid","invalid","string","double","long","long",
      *     "doubleSeq" (not supported by logging),"longSeq","longLong",
-     *     "uLongLong","longString"
+     *     "uLongLong","longString","float","floatSeq","uLong","uLongSeq",
+     *     "boolean","booleanSeq"
      * Furthermore, this array can be indexed using the #Type enum.
      * <br><hr>
      */
@@ -181,6 +191,12 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     BACIValue(const BACIlong &value);
+    /** Constructor realType
+     * @param value A constant reference to a value which will be this #BACIValue
+     * object's underlying value.
+     * <br><hr>
+     */
+    BACIValue(const BACIuLong &value);
     /** Constructor BACIpattern
      * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
@@ -211,6 +227,12 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     BACIValue(const char* value);
+    /** Constructor realType
+     * @param value A constant reference to a value which will be this #BACIValue
+     * object's underlying value.
+     * <br><hr>
+     */
+    BACIValue(const BACIboolean &value);
     /** Constructor - <b>Special case</b>
      * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
@@ -241,6 +263,12 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     BACIValue(const BACIlongSeq &value);
+    /** Constructor BACIuLongSeq
+     * @param value A constant reference to a value which will be this #BACIValue
+     * object's underlying value.
+     * <br><hr>
+     */
+    BACIValue(const BACIuLongSeq &value);
     /** Constructor BACIstringSeq
      * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
@@ -254,6 +282,12 @@ class baci_EXPORT BACIValue
      * It is used by test in baci module. 
      */
     BACIValue(const BACIpattern &value, const CORBA::Any& any);
+    /** Constructor BACIbooleanSeq
+     * @param value A constant reference to a value which will be this #BACIValue
+     * object's underlying value.
+     * <br><hr>
+     */
+    BACIValue(const BACIbooleanSeq &value);
 
     /**
      * Resets value to non-initialized state(VALUE_UNINITIALIZED, type_null type).
@@ -392,6 +426,13 @@ class baci_EXPORT BACIValue
      */
     static Type mapType(BACIlong *v=0){  ACE_UNUSED_ARG(v); return type_long; }
     /**
+     * Given a pointer to a baci::BACIuLong, this static method returns a the #Type enumeration value.
+     * @param v Pointer to a BACI data type
+     * @return BACIValue::type_uLong
+     * <br><hr>
+     */
+    static Type mapType(BACIuLong *v=0){  ACE_UNUSED_ARG(v); return type_uLong; }
+    /**
      * Given a pointer to a baci::BACIpattern, this static method returns a the #Type enumeration value.
      * @param v Pointer to a BACI data type
      * @return BACIValue::type_pattern
@@ -412,6 +453,13 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     static Type mapType(ACE_CString *v=0){  ACE_UNUSED_ARG(v); return type_string; }
+    /**
+     * Given a pointer to a baci::BACIboolean, this static method returns a the #Type enumeration value.
+     * @param v Pointer to a BACI data type
+     * @return BACIValue::type_boolean
+     * <br><hr>
+     */
+    static Type mapType(BACIboolean *v=0){  ACE_UNUSED_ARG(v); return type_boolean; }
     /**
      * Given a pointer to a void*, this static method returns a the #Type enumeration value.
      * @param v Pointer to a BACI data type
@@ -441,6 +489,13 @@ class baci_EXPORT BACIValue
      */
     static Type mapType(BACIlongSeq *v=0){  ACE_UNUSED_ARG(v); return type_longSeq; }
     /**
+     * Given a pointer to a baci::BACIuLongSeq, this static method returns a the #Type enumeration value.
+     * @param v Pointer to a BACI data type
+     * @return BACIValue::type_uLongSeq
+     * <br><hr>
+     */
+    static Type mapType(BACIuLongSeq *v=0){  ACE_UNUSED_ARG(v); return type_uLongSeq; }
+    /**
      * Given a pointer to a baci::BACIlongLong, this static method returns a the #Type enumeration value.
      * @param v Pointer to a BACI data type
      * @return BACIValue::type_longLong
@@ -461,6 +516,13 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     static Type mapType(BACIstringSeq *v=0){  ACE_UNUSED_ARG(v); return type_stringSeq; }
+    /**
+     * Given a pointer to a baci::BACIbooleanSeq, this static method returns a the #Type enumeration value.
+     * @param v Pointer to a BACI data type
+     * @return BACIValue::type_booleanSeq
+     * <br><hr>
+     */
+    static Type mapType(BACIbooleanSeq *v=0){  ACE_UNUSED_ARG(v); return type_booleanSeq; }
     // ------------------------------------------------------------------
     //accessors
     /**
@@ -540,6 +602,19 @@ class baci_EXPORT BACIValue
      */
     BACIlong getValue(BACIlong *v=0) const;
     /**
+     * Returns this object's underlying BACI value as an unsigned long.
+     * @return unsigned long  value of this object or 0 if it's not a unsigned long.
+     * <br><hr>
+     */
+    BACIuLong uLongValue() const;
+    /**
+     * Returns this object's underlying BACI value as an unsigned long.
+     * @param v is a BACIuLong *. Invoker should just provide a null reference.
+     * @return unsigned long value of this object or 0 if it's not a unsigned long.
+     * <br><hr>
+     */
+    BACIuLong getValue(BACIuLong *v=0) const;
+    /**
      * Returns this object's underlying BACI value as a long long.
      * @return long long value of this object or 0 if it's not a long.
      * <br><hr>
@@ -571,6 +646,19 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     BACIpattern patternValue() const { return uLongLongValue(); }
+    /**
+     * Returns this object's underlying BACI value as an unsigned long.
+     * @return unsigned long  value of this object or 0 if it's not a unsigned long.
+     * <br><hr>
+     */
+    BACIboolean booleanValue() const;
+    /**
+     * Returns this object's underlying BACI value as an unsigned long.
+     * @param v is a BACIboolean *. Invoker should just provide a null reference.
+     * @return unsigned long value of this object or 0 if it's not a unsigned long.
+     * <br><hr>
+     */
+    BACIboolean getValue(BACIboolean *v=0) const;
 
     /**
      * Deprecated.
@@ -648,6 +736,19 @@ class baci_EXPORT BACIValue
      */
     BACIlongSeq getValue(BACIlongSeq *v=0) const;
     /**
+     * Returns this object's underlying BACI value as a unsigned long sequence.
+     * @return unsigned long sequence value of this object or 0 if it's not an unsigned long sequence.
+     * <br><hr>
+     */
+    BACIuLongSeq uLongSeqValue() const;
+    /**
+     * Returns this object's underlying BACI value as an unsigned long sequence.
+     * @param v is a BACIuLongSeq *. Invoker should just provide a null reference.
+     * @return unsigned long sequence value of this object or 0 if it's not an unsigned long sequence.
+     * <br><hr>
+     */
+    BACIuLongSeq getValue(BACIuLongSeq *v=0) const;
+    /**
      * Returns this object's underlying BACI value as a string sequence.
      * @return string sequence value of this object or 0 if it's not a not a string sequence.
      * <br><hr>
@@ -660,6 +761,19 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     BACIstringSeq getValue(BACIstringSeq *v=0) const;
+    /**
+     * Returns this object's underlying BACI value as a unsigned long sequence.
+     * @return unsigned long sequence value of this object or 0 if it's not an unsigned long sequence.
+     * <br><hr>
+     */
+    BACIbooleanSeq booleanSeqValue() const;
+    /**
+     * Returns this object's underlying BACI value as an unsigned long sequence.
+     * @param v is a BACIbooleanSeq *. Invoker should just provide a null reference.
+     * @return unsigned long sequence value of this object or 0 if it's not an unsigned long sequence.
+     * <br><hr>
+     */
+    BACIbooleanSeq getValue(BACIbooleanSeq *v=0) const;
     // ------------------------------------------------------------------
     /**
      * Mutator
@@ -709,6 +823,22 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     bool setValue(const BACIlong &value);
+    /**
+     * Mutator
+     * @param value Reference to a BACIuLong that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool uLongValue(const BACIuLong &value);
+    /**
+     * Mutator
+     * @param value Reference to a BACIuLong that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool setValue(const BACIuLong &value);
     /**
      * Mutator
      * @param value Reference to a BACIlongLong that this object will copy.
@@ -812,6 +942,22 @@ class baci_EXPORT BACIValue
     bool setValue (const char * value);
     /**
      * Mutator
+     * @param value Reference to a BACIboolean that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool booleanValue(const BACIboolean &value);
+    /**
+     * Mutator
+     * @param value Reference to a BACIboolean that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool setValue(const BACIboolean &value);
+    /**
+     * Mutator
      * @param value Reference to a void pointer that this object will copy.
      * @return If the value currently contains other type of data than the one being
      * stored, the operation has no effect and false is returned.
@@ -868,6 +1014,22 @@ class baci_EXPORT BACIValue
     bool setValue(const BACIlongSeq &value);
     /**
      * Mutator
+     * @param value Reference to a BACIuLongSeq that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool uLongSeqValue(const BACIuLongSeq &value);
+    /**
+     * Mutator
+     * @param value Reference to a BACIuLongSeq that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool setValue(const BACIuLongSeq &value);
+    /**
+     * Mutator
      * @param value Reference to a BACIstringSeq that this object will copy.
      * @return If the value currently contains other type of data than the one being
      * stored, the operation has no effect and false is returned.
@@ -882,6 +1044,22 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     bool setValue(const BACIstringSeq &value);
+    /**
+     * Mutator
+     * @param value Reference to a BACIbooleanSeq that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool booleanSeqValue(const BACIbooleanSeq &value);
+    /**
+     * Mutator
+     * @param value Reference to a BACIbooleanSeq that this object will copy.
+     * @return If the value currently contains other type of data than the one being
+     * stored, the operation has no effect and false is returned.
+     * <br><hr>
+     */
+    bool setValue(const BACIbooleanSeq &value);
     // ------------------------------------------------------------------
     //Conversion helpers
     /**

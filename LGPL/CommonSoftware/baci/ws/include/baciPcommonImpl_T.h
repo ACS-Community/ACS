@@ -109,6 +109,24 @@ class CDBconverter<ACE_CString>
 	}
 };
 
+template<>
+class CDBconverter<CORBA::Boolean>
+{
+  public:
+    static void convertValue(const char *str, CORBA::Boolean& v)
+	{
+	    std::istringstream is(str);
+	    (istream&) is >> v;
+	    if (!is) {
+			std::istringstream is2(str);
+			(istream&) is2 >> std::boolalpha >> v;
+			if(!is2)
+				throw cdbErrType::WrongCDBDataTypeExImpl(__FILE__, __LINE__, "CDBconverter::converterValue");
+		}
+
+	}
+};
+
 /**
  * Implementation of P (common) property
  * @warning We have virtual inheritance from PortableServer::RefCountServantBase

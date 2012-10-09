@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTypes.h,v 1.98 2005/08/23 15:34:35 vwang Exp $"
+* "@(#) $Id: baciTypes.h,v 1.99 2012/10/09 14:22:58 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -53,10 +53,14 @@ typedef ACS::pattern BACIpattern;
 typedef CORBA::Double BACIdouble;
 typedef CORBA::Float BACIfloat;
 typedef CORBA::Long BACIlong;
+typedef ACS::uLong BACIuLong;
+typedef CORBA::Boolean BACIboolean;
 
 typedef ACS::doubleSeq BACIdoubleSeq;
 typedef ACS::floatSeq BACIfloatSeq;
 typedef ACS::longSeq BACIlongSeq;
+typedef ACS::uLongSeq BACIuLongSeq;
+typedef ACS::booleanSeq BACIbooleanSeq;
 
 typedef ACS::longLong BACIlongLong;
 typedef ACS::uLongLong BACIuLongLong;
@@ -72,26 +76,34 @@ typedef ACS::CBvoid CBvoid;
 typedef ACS::CBdouble CBdouble;
 typedef ACS::CBfloat CBfloat;
 typedef ACS::CBlong CBlong;
+typedef ACS::CBuLong CBuLong;
 typedef ACS::CBlongLong CBlongLong;
 typedef ACS::CBuLongLong CBuLongLong;
 typedef ACS::CBstring CBstring;
 typedef ACS::CBstringSeq CBstringSeq;
 typedef ACS::CBpattern CBpattern;
+typedef ACS::CBboolean CBboolean;
 typedef ACS::CBvoid_var CBvoid_var;
 typedef ACS::CBdoubleSeq CBdoubleSeq;
 typedef ACS::CBfloatSeq CBfloatSeq;
 typedef ACS::CBlongSeq CBlongSeq;
+typedef ACS::CBuLongSeq CBuLongSeq;
+typedef ACS::CBbooleanSeq CBbooleanSeq;
 typedef ACS::CBdouble_var CBdouble_var;
 typedef ACS::CBfloat_var CBfloat_var;
 typedef ACS::CBlong_var CBlong_var;
+typedef ACS::CBuLong_var CBuLong_var;
 typedef ACS::CBlongLong_var CBlongLong_var;
 typedef ACS::CBuLongLong_var CBuLongLong_var;
 typedef ACS::CBstring_var CBstring_var;
 typedef ACS::CBpattern_var CBpattern_var;
+typedef ACS::CBboolean_var CBboolean_var;
 typedef ACS::CBdoubleSeq_var CBdoubleSeq_var;
 typedef ACS::CBfloatSeq_var CBfloatSeq_var;
 typedef ACS::CBlongSeq_var CBlongSeq_var;
+typedef ACS::CBuLongSeq_var CBuLongSeq_var;
 typedef ACS::CBstringSeq_var CBstringSeq_var;
+typedef ACS::CBbooleanSeq_var CBbooleanSeq_var;
 typedef ACS::CharacteristicComponent CharacteristicComponent;
 
 typedef acscommon::TimeStamp BACITimeStamp;

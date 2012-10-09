@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.i,v 1.109 2011/03/30 17:57:23 tstaig Exp $"
+* "@(#) $Id: baciValue.i,v 1.110 2012/10/09 14:22:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -121,8 +121,10 @@ inline BACIValue::BACIValue(const BACIpattern &value, const CORBA::Any& any) :
 CONSTRUCTOR(double, BACIdouble)
 CONSTRUCTOR(float, BACIfloat)
 CONSTRUCTOR(long, BACIlong)
+CONSTRUCTOR(uLong, BACIuLong)
 CONSTRUCTOR(longLong, BACIlongLong)
 CONSTRUCTOR(uLongLong, BACIuLongLong)
+CONSTRUCTOR(boolean, BACIboolean)
 //TOBE deleted CONSTRUCTOR(pattern, BACIpattern)
 //CONSTRUCTOR(string, BACIstring)
 
@@ -137,7 +139,9 @@ inline BACIValue::BACIValue(void * value) :
 CONSTRUCTOR(doubleSeq, BACIdoubleSeq)
 CONSTRUCTOR(floatSeq, BACIfloatSeq)
 CONSTRUCTOR(longSeq, BACIlongSeq)
+CONSTRUCTOR(uLongSeq, BACIuLongSeq)
 CONSTRUCTOR(stringSeq, BACIstringSeq)
+CONSTRUCTOR(booleanSeq, BACIbooleanSeq)
 
 #undef CONSTRUCTOR
 
@@ -190,7 +194,9 @@ inline bool BACIValue::setType(Type _type, unsigned long _bound)
 DESTROY_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 DESTROY_PTR_TYPE(floatSeq, BACIfloatSeq)
 DESTROY_PTR_TYPE(longSeq, BACIlongSeq)
+DESTROY_PTR_TYPE(uLongSeq, BACIuLongSeq)
 DESTROY_PTR_TYPE(stringSeq, BACIstringSeq)
+DESTROY_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
 	default:
 	  break;
@@ -221,14 +227,18 @@ DESTROY_PTR_TYPE(stringSeq, BACIstringSeq)
 CREATE_INLINE_TYPE(double, BACIdouble)
 CREATE_INLINE_TYPE(float, BACIfloat)
 CREATE_INLINE_TYPE(long, BACIlong)
+CREATE_INLINE_TYPE(uLong, BACIuLong)
 CREATE_INLINE_TYPE(longLong, BACIlongLong)
 CREATE_INLINE_TYPE(uLongLong, BACIuLongLong)
+CREATE_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted CREATE_INLINE_TYPE(pattern, BACIpattern)
 
 CREATE_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 CREATE_PTR_TYPE(floatSeq, BACIfloatSeq)
 CREATE_PTR_TYPE(longSeq, BACIlongSeq)
+CREATE_PTR_TYPE(uLongSeq, BACIuLongSeq)
 CREATE_PTR_TYPE(stringSeq, BACIstringSeq)
+CREATE_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
     default:
       return false;
@@ -288,14 +298,18 @@ inline BACIValue& BACIValue::operator=(const BACIValue &value)
 ASSIGN_INLINE_TYPE(double, BACIdouble)
 ASSIGN_INLINE_TYPE(float, BACIfloat)
 ASSIGN_INLINE_TYPE(long, BACIlong)
+ASSIGN_INLINE_TYPE(uLong, BACIuLong)
 ASSIGN_INLINE_TYPE(longLong, BACIlongLong)
 ASSIGN_INLINE_TYPE(uLongLong, BACIuLongLong)
+ASSIGN_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted ASSIGN_INLINE_TYPE(pattern, BACIpattern)
 
 ASSIGN_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 ASSIGN_PTR_TYPE(floatSeq, BACIfloatSeq)
 ASSIGN_PTR_TYPE(longSeq, BACIlongSeq)
+ASSIGN_PTR_TYPE(uLongSeq, BACIuLongSeq)
 ASSIGN_PTR_TYPE(stringSeq, BACIstringSeq)
+ASSIGN_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
     default:
       break;
@@ -356,13 +370,18 @@ inline bool BACIValue::operator==(const BACIValue &value) const
 COMPARE_EQUALS_INLINE_TYPE(double, BACIdouble)
 COMPARE_EQUALS_INLINE_TYPE(float, BACIfloat)
 COMPARE_EQUALS_INLINE_TYPE(long, BACIlong)
+COMPARE_EQUALS_INLINE_TYPE(uLong, BACIuLong)
 COMPARE_EQUALS_INLINE_TYPE(longLong, BACIlongLong)
 COMPARE_EQUALS_INLINE_TYPE(uLongLong, BACIuLongLong)
+COMPARE_EQUALS_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted COMPARE_EQUALS_INLINE_TYPE(pattern, BACIpattern)
 
+COMPARE_EQUALS_SEQ_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 COMPARE_EQUALS_SEQ_PTR_TYPE(floatSeq, BACIfloatSeq)
 COMPARE_EQUALS_SEQ_PTR_TYPE(longSeq, BACIlongSeq)
+COMPARE_EQUALS_SEQ_PTR_TYPE(uLongSeq, BACIuLongSeq)
 COMPARE_EQUALS_SEQ_PTR_TYPE(stringSeq, BACIstringSeq)
+COMPARE_EQUALS_SEQ_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
     default:
       return false;
@@ -410,8 +429,10 @@ inline bool BACIValue::operator<=(const BACIValue &value) const
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(double, BACIdouble)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(float, BACIfloat)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(long, BACIlong)
+COMPARE_LESS_OR_EQUAL_INLINE_TYPE(uLong, BACIuLong)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(longLong, BACIlongLong)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(uLongLong, BACIuLongLong)
+COMPARE_LESS_OR_EQUAL_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted COMPARE_LESS_OR_EQUAL_INLINE_TYPE(pattern, BACIpattern)
 
     default:
@@ -462,8 +483,10 @@ inline bool BACIValue::operator<(const BACIValue &value) const
 COMPARE_LESS_INLINE_TYPE(double, BACIdouble)
 COMPARE_LESS_INLINE_TYPE(float, BACIfloat)
 COMPARE_LESS_INLINE_TYPE(long, BACIlong)
+COMPARE_LESS_INLINE_TYPE(uLong, BACIuLong)
 COMPARE_LESS_INLINE_TYPE(longLong, BACIlongLong)
 COMPARE_LESS_INLINE_TYPE(uLongLong, BACIuLongLong)
+COMPARE_LESS_INLINE_TYPE(boolean, BACIboolean)
 //COMPARE_LESS_INLINE_TYPE(pattern, BACIpattern)
 
     default:
@@ -533,12 +556,16 @@ inline bool BACIValue::lessThanDelta(const BACIValue &value, const BACIValue &de
 LESS_THAN_DELTA_NUM_INLINE_TYPE(double, BACIdouble)
 LESS_THAN_DELTA_NUM_INLINE_TYPE(float, BACIfloat)
 LESS_THAN_DELTA_NUM_INLINE_TYPE(long, BACIlong)
+LESS_THAN_DELTA_NUM_INLINE_TYPE(uLong, BACIuLong)
 LESS_THAN_DELTA_NUM_INLINE_TYPE(longLong, BACIlongLong)
 LESS_THAN_DELTA_NUM_INLINE_TYPE(uLongLong, BACIuLongLong)
+LESS_THAN_DELTA_NUM_INLINE_TYPE(boolean, BACIboolean)
 // for sequences delta is scalar
 LESS_THAN_DELTA_NUM_SEQ_TYPE(doubleSeq, BACIdoubleSeq, double, BACIdouble)
 LESS_THAN_DELTA_NUM_SEQ_TYPE(floatSeq, BACIfloatSeq, float, BACIfloat)
 LESS_THAN_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq, long, BACIlong)
+LESS_THAN_DELTA_NUM_SEQ_TYPE(uLongSeq, BACIuLongSeq, uLong, BACIuLong)
+LESS_THAN_DELTA_NUM_SEQ_TYPE(booleanSeq, BACIbooleanSeq, boolean, BACIboolean)
 /// LESS_THAN_DELTA_NUM_SEQ_TYPE(stringSeq, BACIstringSeq, string, BACIstring)
 
     default:
@@ -617,12 +644,16 @@ inline bool BACIValue::lessThanPercentDelta(const BACIValue &value, const BACIVa
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(double, BACIdouble)
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(float, BACIfloat)
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(long, BACIlong)
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(uLong, BACIuLong)
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(longLong, BACIlongLong)
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(uLongLong, BACIuLongLong)
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(boolean, BACIboolean)
 // for sequences delta is scalar
 LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(doubleSeq, BACIdoubleSeq, double, BACIdouble)
 LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(floatSeq, BACIfloatSeq, float, BACIfloat)
 LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq, long, BACIlong)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(uLongSeq, BACIuLongSeq, uLong, BACIuLong)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(booleanSeq, BACIbooleanSeq, boolean, BACIboolean)
 /// LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(stringSeq, BACIstringSeq, string, BACIstring)
 
     default:
@@ -653,8 +684,10 @@ inline bool BACIValue::noDelta() const
 NO_DELTA(double, 0.0)
 NO_DELTA(float, 0.0)
 NO_DELTA(long, 0)
+NO_DELTA(uLong, 0)
 NO_DELTA(longLong, 0)
 NO_DELTA(uLongLong, 0)
+NO_DELTA(boolean, 0)
     default:
       return true;			// everything is 'no delta', because there is no delta
     }
@@ -711,15 +744,19 @@ inline const ACE_TCHAR* BACIValue::stringValue() const
 ACCESSOR_INLINE_TYPE(double, BACIdouble)
 ACCESSOR_INLINE_TYPE(float, BACIfloat)
 ACCESSOR_INLINE_TYPE(long, BACIlong)
+ACCESSOR_INLINE_TYPE(uLong, BACIuLong)
 ACCESSOR_INLINE_TYPE(longLong, BACIlongLong)
 ACCESSOR_INLINE_TYPE(uLongLong, BACIuLongLong)
+ACCESSOR_INLINE_TYPE(boolean, BACIboolean)
 //ACCESSOR_INLINE_TYPE(pattern, BACIpattern)
 
 
 ACCESSOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 ACCESSOR_PTR_TYPE(floatSeq, BACIfloatSeq)
 ACCESSOR_PTR_TYPE(longSeq, BACIlongSeq)
+ACCESSOR_PTR_TYPE(uLongSeq, BACIuLongSeq)
 ACCESSOR_PTR_TYPE(stringSeq, BACIstringSeq)
+ACCESSOR_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
 #undef ACCESSOR_PTR_TYPE
 #undef ACCESSOR_INLINE_TYPE
@@ -789,14 +826,18 @@ inline bool BACIValue::stringValue(const char *value)
 MUTATOR_INLINE_TYPE(double, BACIdouble)
 MUTATOR_INLINE_TYPE(float, BACIfloat)
 MUTATOR_INLINE_TYPE(long, BACIlong)
+MUTATOR_INLINE_TYPE(uLong, BACIuLong)
 MUTATOR_INLINE_TYPE(longLong, BACIlongLong)
 MUTATOR_INLINE_TYPE(uLongLong, BACIuLongLong)
+MUTATOR_INLINE_TYPE(boolean, BACIboolean)
 //TOBE deleted MUTATOR_INLINE_TYPE(pattern, BACIpattern)
 
 MUTATOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 MUTATOR_PTR_TYPE(floatSeq, BACIfloatSeq)
 MUTATOR_PTR_TYPE(longSeq, BACIlongSeq)
+MUTATOR_PTR_TYPE(uLongSeq, BACIuLongSeq)
 MUTATOR_PTR_TYPE(stringSeq, BACIstringSeq)
+MUTATOR_PTR_TYPE(booleanSeq, BACIbooleanSeq)
 
 #undef MUTATOR_PTR_TYPE
 #undef MUTATOR_INLINE_TYPE

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.134 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.135 2012/10/09 14:22:54 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -102,10 +102,12 @@ INCLUDES      = baciCharacteristicModelImpl.h baciCharacteristicComponentImpl.h 
 		baciROlongLong.h baciRWlongLong.h \
 		baciROuLongLong.h baciRWuLongLong.h \
 		baciROlong.h baciRWlong.h \
+		baciROuLong.h baciRWuLong.h \
+		baciROboolean.h baciRWboolean.h \
 		baciPpatternImpl.h baciROpattern.h baciRWpattern.h \
 		baciROstring.h baciRWstring.h \
-		baciROdoubleSeq.h baciROfloatSeq.h baciROlongSeq.h \
-		baciRWdoubleSeq.h baciRWfloatSeq.h baciRWlongSeq.h \
+		baciROdoubleSeq.h baciROfloatSeq.h baciROlongSeq.h baciROuLongSeq.h baciRObooleanSeq.h\
+		baciRWdoubleSeq.h baciRWfloatSeq.h baciRWlongSeq.h baciRWuLongSeq.h baciRWbooleanSeq.h\
 		baciMonitor_T.h baciMonitor_T.i \
 		baciRegistrar.h baciRegistrar.i \
 		baciError.h \
@@ -140,11 +142,13 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 		baciROlongLong baciRWlongLong \
 		baciROuLongLong baciRWuLongLong \
 		baciROlong baciRWlong \
+		baciROuLong baciRWuLong \
+		baciROboolean baciRWboolean \
 		baciAlarmSystemMonitorBase \
 		baciPpatternImpl baciROpattern baciRWpattern baciAlarmPattern baciAlarmSystemMonitorPattern\
 	        baciROstring baciRWstring \
-		baciROdoubleSeq baciROfloatSeq baciROlongSeq \
-		baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq 
+		baciROdoubleSeq baciROfloatSeq baciROlongSeq baciROuLongSeq baciRObooleanSeq \
+		baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq baciRWuLongSeq baciRWbooleanSeq
 baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle alSysSource acsAlSysSource \
 			acsErrTypeAlarmSourceFactory ACSErrTypeMonitor PatternAlarmCleared PatternAlarmTriggered \
 			acsutil cdb logging acscomponent recovery acserr baciStubs archiveevents TAO_CosProperty_Serv
