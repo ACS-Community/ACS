@@ -38,8 +38,8 @@ const DataValueType enumValueType=14;
 const DataValueType uLongValueType=15;
 const DataValueType uLongSeqValueType=16;
 
-const DataValueType booleanValueType=16;
-const DataValueType booleanSeqValueType=17;
+const DataValueType booleanValueType=17;
+const DataValueType booleanSeqValueType=18;
 
 struct doubleBlobData
   {
