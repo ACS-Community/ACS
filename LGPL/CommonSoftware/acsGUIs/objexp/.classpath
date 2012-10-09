@@ -22,6 +22,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar" sourcepath="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar" sourcepath="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

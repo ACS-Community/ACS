@@ -9,7 +9,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="lib" path="lib/lifecycleTest_IF.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jbaci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>

@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
-	<classpathentry sourcepath="INTROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry sourcepath="INTROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
