@@ -96,15 +96,7 @@ struct longSeqBlobData
  typedef  sequence<longSeqBlobData> longSeqBlobDataSeq;
 
 
-/**************************************************************************/
-
-struct longLongBlobData
-  {
-      ACS::Time time;
-      long long value;
-  };
-  
- typedef  /**************************************************************************/
+  /**************************************************************************/
   
   struct uLongBlobData
   {
@@ -123,7 +115,15 @@ struct longLongBlobData
   
   typedef  sequence<uLongSeqBlobData> uLongSeqBlobDataSeq;
   
-  sequence<longLongBlobData> longLongBlobDataSeq;
+/**************************************************************************/
+
+struct longLongBlobData
+  {
+      ACS::Time time;
+      long long value;
+  };
+  
+ typedef  sequence<longLongBlobData> longLongBlobDataSeq;
   
   
   struct longLongSeqBlobData
@@ -155,6 +155,24 @@ struct longLongBlobData
   
   /**************************************************************************/
   
+  struct booleanBlobData
+  {
+      ACS::Time time;
+      boolean value;
+  };
+  
+  typedef  sequence<booleanBlobData> booleanBlobDataSeq;
+  
+  
+  struct booleanSeqBlobData
+  {
+      ACS::Time time;
+      ACS::booleanSeq value;
+  };
+  
+  typedef  sequence<booleanSeqBlobData> booleanSeqBlobDataSeq;
+  
+  /**************************************************************************/
   struct patternBlobData
   {
       ACS::Time time;
@@ -182,25 +200,7 @@ struct stringSeqBlobData
 
 typedef  sequence<stringSeqBlobData> stringSeqBlobDataSeq;
 
-/***************************************  struct booleanBlobData
-  {
-      ACS::Time time;
-      boolean value;
-  };
-  
-  typedef  sequence<booleanBlobData> booleanBlobDataSeq;
-  
-  
-  struct booleanSeqBlobData
-  {
-      ACS::Time time;
-      ACS::booleanSeq value;
-  };
-  
-  typedef  sequence<booleanSeqBlobData> booleanSeqBlobDataSeq;
-  
-  /**************************************************************************/
-***********************************/
+/**************************************************************************/
   
   struct enumBlobData
   {
