@@ -40,7 +40,6 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -51,6 +50,7 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * The toolbar for the alarm panel
@@ -464,7 +464,7 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 		}
 		}
 		final ComboBoxValues ackLvlToSet=ackLvl;
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				// This trigger an ActionEvent too.
 				autoAckLevelCB.setSelectedItem(ackLvlToSet);
@@ -532,7 +532,7 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	 * @param paused <code>true</code> if the application is paused 
 	 */
 	public void updatePauseBtn(final boolean paused) {
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				if (paused) {
 					pauseBtn.setIcon(pausedIcon);
@@ -588,7 +588,7 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	 *</UL>
 	 */
 	private void ratioSearchBtns() {
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				String text = searchTF.getText();
 				prevSearchBtn.setEnabled(text!=null && !text.isEmpty());

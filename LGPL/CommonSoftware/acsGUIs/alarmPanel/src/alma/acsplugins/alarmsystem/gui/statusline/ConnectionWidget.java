@@ -22,15 +22,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
+
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * The widget showing the status of the connection with an icon and
@@ -105,7 +106,7 @@ public class ConnectionWidget extends JLabel implements ActionListener {
 					popMenu.show(ConnectionWidget.this,e.getX(),e.getY());
 				}
 			}
-			SwingUtilities.invokeLater(new ShowPopup(e));	
+			EDTExecutor.instance().execute(new ShowPopup(e));	
 		}
 	}
 	
@@ -170,7 +171,7 @@ public class ConnectionWidget extends JLabel implements ActionListener {
 		}
 		SetConnState thread = new SetConnState();
 		thread.status=state;
-		SwingUtilities.invokeLater(thread);
+		EDTExecutor.instance().execute(thread);
 	}
 
 	/* (non-Javadoc)

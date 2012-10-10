@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.33 2012/07/02 12:43:46 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.34 2012/10/10 14:18:23 acaproni Exp $
  * @since    
  */
 
@@ -27,12 +27,12 @@ package alma.acsplugins.alarmsystem.gui.table;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
 
 import alma.acs.util.IsoDateFormat;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
@@ -974,7 +974,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					addAlarm(alarm);
 				}
 			}
-			SwingUtilities.invokeLater(new Runnable() {
+			EDTExecutor.instance().execute(new Runnable() {
 				public void run() {
 					fireTableDataChanged();
 				}

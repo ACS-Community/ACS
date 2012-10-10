@@ -30,12 +30,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import cern.laser.client.data.Alarm;
-
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
@@ -44,7 +40,9 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.tree.AlarmTree;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.alarmsystem.clients.CategoryClient;
+import cern.laser.client.data.Alarm;
 
 /**
  * The dialog showing all the alarms involved in a reduction.
@@ -169,7 +167,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * Close the dialog and frees its resources
 	 */
 	public void close() {
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				setVisible(false);
 				dispose();

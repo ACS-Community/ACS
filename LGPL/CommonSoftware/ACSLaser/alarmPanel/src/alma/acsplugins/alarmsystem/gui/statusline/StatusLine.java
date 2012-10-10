@@ -18,20 +18,15 @@
  */
 package alma.acsplugins.alarmsystem.gui.statusline;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;

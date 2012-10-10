@@ -22,13 +22,14 @@
 package alma.acsplugins.alarmsystem.gui;
 
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
+
 
 import org.omg.CORBA.ORB;
 
 import cern.laser.client.data.Alarm;
 
 import alma.acs.logging.AcsLogger;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.undocumented.UndocumentedAlarmsPnl;
 
 /**
@@ -121,7 +122,7 @@ public class CernAlSysTabbedPane extends JTabbedPane {
 	 * @param show if <code>true</code> show the tab; otherwise hide the tab
 	 */
 	public void undocTabVisible(final boolean show) {
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				if (show) {
 					// Check if the tab is already visible

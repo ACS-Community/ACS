@@ -26,7 +26,8 @@ import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
+
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * The panel shown when the AS is not available even if the CERN
@@ -82,7 +83,7 @@ public class AlSysNotAvailPanel extends JPanel {
 			return;
 		}
 		
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				String txt = messages.getText();
 				if (!txt.endsWith("\n")) {

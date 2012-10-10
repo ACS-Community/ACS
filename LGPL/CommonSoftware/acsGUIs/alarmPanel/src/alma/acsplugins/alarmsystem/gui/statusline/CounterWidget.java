@@ -19,7 +19,6 @@
 package alma.acsplugins.alarmsystem.gui.statusline;
 
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -29,14 +28,12 @@ import java.awt.event.MouseListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
-import cern.laser.client.data.Alarm;
-
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.table.AlarmCounter;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
-import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
+import cern.laser.client.data.Alarm;
 
 /**
  * The counter for each type of alarm
@@ -98,7 +95,7 @@ public class CounterWidget implements ActionListener {
 					statusLinePM.show(CounterWidget.this.widget,e.getX(),e.getY());
 				}
 			}
-			SwingUtilities.invokeLater(new ShowPopup(e));	
+			EDTExecutor.instance().execute(new ShowPopup(e));	
 		}
 	}
 	

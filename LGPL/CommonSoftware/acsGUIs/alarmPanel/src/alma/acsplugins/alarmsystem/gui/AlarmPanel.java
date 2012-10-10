@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.30 2011/10/10 21:20:15 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.31 2012/10/10 14:18:23 acaproni Exp $
  * @since    
  */
 
@@ -31,7 +31,6 @@ import java.awt.CardLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import org.omg.CORBA.ORB;
 
@@ -42,6 +41,8 @@ import alma.acs.alarmsystem.corbaservice.AlarmServiceUtils;
 import alma.acs.logging.AcsLogger;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
+
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * 
@@ -295,7 +296,7 @@ public class AlarmPanel extends JPanel {
 		if (!found) {
 			throw new IllegalArgumentException("Panel name "+panelName+" NOT defined");
 		}
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			@Override
 			public void run() {
 				layout.show(panel, panelName);

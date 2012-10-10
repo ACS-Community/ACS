@@ -18,8 +18,6 @@
  */
 package alma.acsplugins.alarmsystem.gui.detail;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -30,20 +28,12 @@ import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 import alma.acs.util.IsoDateFormat;
-import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
-import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
-import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
-
 import cern.laser.client.data.Alarm;
 import cern.laser.client.data.ResponsiblePerson;
 import cern.laser.client.data.Status;
@@ -353,7 +343,7 @@ public class AlarmDetailTable extends JTable {
 				}
 			}
 		}
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				setTitleColumnSize(propertyNames);
 			}

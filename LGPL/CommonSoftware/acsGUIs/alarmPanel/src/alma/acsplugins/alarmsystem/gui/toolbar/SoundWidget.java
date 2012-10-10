@@ -23,10 +23,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 
 import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
 import alma.acsplugins.alarmsystem.gui.sound.AlarmSoundListener;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * This class encapsulates the sound button of the toolbar
@@ -82,7 +82,7 @@ implements ActionListener, AlarmSoundListener {
 	 */
 	@Override
 	public void played() {
-		SwingUtilities.invokeLater(new Runnable(){
+		EDTExecutor.instance().execute(new Runnable(){
 			public void run() {
 				setEnabled(true);
 				toggleSoundButton();
@@ -95,7 +95,7 @@ implements ActionListener, AlarmSoundListener {
 	 */
 	@Override
 	public void playing(int priority) {
-		SwingUtilities.invokeLater(new Runnable(){
+		EDTExecutor.instance().execute(new Runnable(){
 			public void run() {
 				setIcon(soundPlayIcon);
 				setToolTipText("Playing...");
@@ -109,7 +109,7 @@ implements ActionListener, AlarmSoundListener {
 	 */
 	@Override
 	public void reset() {
-		SwingUtilities.invokeLater(new Runnable(){
+		EDTExecutor.instance().execute(new Runnable(){
 			public void run() {
 				setSelected(false);
 				toggleSoundButton();
@@ -122,7 +122,7 @@ implements ActionListener, AlarmSoundListener {
 	 * of the button
 	 */
 	private void toggleSoundButton() {
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				setToolTipText("Enable/disable audibles");
 				if (isSelected()) {

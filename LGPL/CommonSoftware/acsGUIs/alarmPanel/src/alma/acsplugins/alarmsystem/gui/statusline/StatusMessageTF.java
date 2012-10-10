@@ -19,14 +19,13 @@
 package alma.acsplugins.alarmsystem.gui.statusline;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * The label showing a status message.
@@ -71,7 +70,7 @@ public class StatusMessageTF extends JTextField implements ActionListener {
 		if (mesg==null || mesg.isEmpty()) {
 			throw new IllegalArgumentException("The mmessage can't be null nor empty");
 		}
-		SwingUtilities.invokeLater(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				if (red) {
 					setForeground(Color.red);

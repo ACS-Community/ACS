@@ -19,13 +19,12 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.22 2011/10/10 21:31:15 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.23 2012/10/10 14:18:23 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -47,6 +46,7 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -54,28 +54,24 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.JComponent;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.RowFilter.Entry;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import alma.acs.util.IsoDateFormat;
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
 import alma.alarmsystem.clients.CategoryClient;
-
 import cern.laser.client.data.Alarm;
 
 /**
@@ -158,7 +154,7 @@ public class AlarmTable extends JTable implements ActionListener {
 					popupM.setVisible(true);
 				}
 			}
-			SwingUtilities.invokeLater(new ShowPopup(e));	
+			EDTExecutor.instance().execute(new ShowPopup(e));	
 		}
 	}
 	
@@ -231,7 +227,7 @@ public class AlarmTable extends JTable implements ActionListener {
 					headerPopup.show(e.getComponent(),e.getX(),e.getY());
 				}
 			}
-			SwingUtilities.invokeLater(new ShowHeaderPopup(e));	
+			EDTExecutor.instance().execute(new ShowHeaderPopup(e));	
 		}
 		
 		/**
@@ -722,7 +718,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		}
 		AddRemoveCol thread = new AddRemoveCol();
 		thread.aTCs=cols;
-		SwingUtilities.invokeLater(thread);
+		EDTExecutor.instance().execute(thread);
 	}
 	
 	/**
@@ -750,7 +746,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		AddRemoveCol thread = new AddRemoveCol();
 		thread.col=columns[col.ordinal()];
 		thread.toAdd=add;
-		SwingUtilities.invokeLater(thread);
+		EDTExecutor.instance().execute(thread);
 	}
 
 	/**
