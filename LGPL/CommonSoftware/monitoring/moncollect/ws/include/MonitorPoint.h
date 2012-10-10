@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.h,v 1.4 2012/03/02 14:03:10 tstaig Exp $"
+* "@(#) $Id: MonitorPoint.h,v 1.5 2012/10/10 09:48:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -166,6 +166,64 @@ class ROMonitorPoint : public MonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TBASE>
 	void alarm_cleared(TALARM value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
   protected:
 	TACB * alarmServant_m;
+};
+
+class EnumMonitorPoint : public MonitorPointBase
+{
+  public:
+	EnumMonitorPoint(const char *propertyName, const ACS::TimeInterval &monitoringInterval, ACS::Property* property, TMCDB::DataValueType typeOfData, MonitorBlob& mb);
+	~EnumMonitorPoint();
+	//Sets the servant for the property monitor
+	void setMonitorServant(POA_ACS::CBuLong *servant);
+
+	virtual void activate(maci::ContainerServices *cs);
+	virtual void deactivate(maci::ContainerServices *cs);
+
+	///start monitoring the property (monitor point)
+	virtual void startMonitoring();
+
+	///stop monitoring the property (monitor point)
+	virtual void stopMonitoring();
+
+	void fillSeq();
+
+	void set_archiving_interval(ACS::TimeInterval time);
+
+	virtual void suppress_archiving();
+
+	virtual void enable_archiving();
+
+	/// implementig CB interface
+	void working(CORBA::ULong value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
+
+	/// implementig CB interface
+	void done(CORBA::ULong value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
+protected:
+	ACS::TypelessProperty* property_m;
+	enumBlobDataSeq blobDataSeq_m;
+	CORBA::ULong valueTrigger_m; // Delta value describing how much a value can change before the value should be archived (and so monitored)
+	POA_ACS::CBuLong * monitorServant_m;
+};
+
+class ROEnumMonitorPoint : public EnumMonitorPoint
+{
+  public:
+	ROEnumMonitorPoint(const char *propertyName, const ACS::TimeInterval &monitoringInterval, ACS::Property* property, TMCDB::DataValueType typeOfData, MonitorBlob& mb);
+	~ROEnumMonitorPoint();
+	//Sets the servant for the alarm monitor
+	void setAlarmServant(POA_ACS::AlarmuLong *servant);
+	void activate(maci::ContainerServices *cs);
+	void deactivate(maci::ContainerServices *cs);
+	///start/stop monitoring the property (monitor point) and its alarms
+	void startMonitoring();
+	void stopMonitoring();
+	void suppress_archiving();
+	void enable_archiving();
+	//Implementing Alarm interface
+	void alarm_raised(CORBA::ULong& value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
+	void alarm_cleared(CORBA::ULong& value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
+  protected:
+	POA_ACS::AlarmuLong * alarmServant_m;
 };
 
 template <class T>

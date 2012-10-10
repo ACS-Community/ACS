@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorComponent.cpp,v 1.5 2012/03/02 14:03:10 tstaig Exp $"
+* "@(#) $Id: MonitorComponent.cpp,v 1.6 2012/10/10 09:48:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.5 2012/03/02 14:03:10 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.6 2012/10/10 09:48:54 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorComponent.h"
@@ -327,6 +327,61 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return true;;
 	}//if
 
+	/////////
+	if (propType.find("uLongSeq:")!=ACE_CString::npos)
+	{
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNSSEQ(ACS, uLong, uLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::uLongSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+			ALARMTIENSSEQ(ACS, uLong, uLong) *alarmServant = new ALARMTIENSSEQ(ACS, uLong, uLong)(dynamic_cast<ROMONITORPOINTNSSEQ(ACS, uLong, uLong) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNSSEQ(ACS, uLong, uLong) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNSSEQ(ACS, uLong, uLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::uLongSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+		CBTIENSSEQ(ACS, uLong, uLong) *monitorServant = new CBTIENSSEQ(ACS, uLong, uLong)(dynamic_cast<MONITORPOINTNSSEQ(ACS, uLong, uLong) *>(mp), false);
+		dynamic_cast<MONITORPOINTNSSEQ(ACS, uLong, uLong) *>(mp)->setMonitorServant(monitorServant);
+		mp->activate(containerServices_m);
+		monitorPoints_m[seqIndex_m] = mp;
+		seqIndex_m++;
+		return true;;
+	}//if
+
+	if (propType.find("uLong:")!=ACE_CString::npos)
+	{
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(ACS, uLong, uLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::uLongValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(ACS, uLong, uLong) *alarmServant = new ALARMTIENS(ACS, uLong, uLong)(dynamic_cast<ROMONITORPOINTNS(ACS, uLong, uLong) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(ACS, uLong, uLong) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(ACS, uLong, uLong)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::uLongValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(ACS, uLong, uLong) *monitorServant = new CBTIENS(ACS, uLong, uLong)(dynamic_cast<MONITORPOINTNS(ACS, uLong, uLong) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(ACS, uLong, uLong) *>(mp)->setMonitorServant(monitorServant);
+		mp->activate(containerServices_m);
+		monitorPoints_m[seqIndex_m] = mp;
+		seqIndex_m++;
+		return true;
+	}//if
+
 	///////////////////////
 	if (propType.find("floatSeq:")!=ACE_CString::npos)
 	{
@@ -546,6 +601,101 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return true;
 	}
 
+	/////////
+	if (propType.find("booleanSeq:")!=ACE_CString::npos)
+	{
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNSSEQ(CORBA, Boolean, boolean)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::booleanSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+			ALARMTIENSSEQ(CORBA, Boolean, boolean) *alarmServant = new ALARMTIENSSEQ(CORBA, Boolean, boolean)(dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Boolean, boolean) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNSSEQ(CORBA, Boolean, boolean) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNSSEQ(CORBA, Boolean, boolean)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::booleanSeqValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]
+			);
+		CBTIENSSEQ(CORBA, Boolean, boolean) *monitorServant = new CBTIENSSEQ(CORBA, Boolean, boolean)(dynamic_cast<MONITORPOINTNSSEQ(CORBA, Boolean, boolean) *>(mp), false);
+		dynamic_cast<MONITORPOINTNSSEQ(CORBA, Boolean, boolean) *>(mp)->setMonitorServant(monitorServant);
+		mp->activate(containerServices_m);
+		monitorPoints_m[seqIndex_m] = mp;
+		seqIndex_m++;
+		return true;;
+	}//if
+
+	if (propType.find("boolean:")!=ACE_CString::npos)
+	{
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROMONITORPOINTNS(CORBA, Boolean, boolean)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::booleanValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			ALARMTIENS(CORBA, Boolean, boolean) *alarmServant = new ALARMTIENS(CORBA, Boolean, boolean)(dynamic_cast<ROMONITORPOINTNS(CORBA, Boolean, boolean) *>(mp), false);
+			dynamic_cast<ROMONITORPOINTNS(CORBA, Boolean, boolean) *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new MONITORPOINTNS(CORBA, Boolean, boolean)(
+					propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::booleanValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		CBTIENS(CORBA, Boolean, boolean) *monitorServant = new CBTIENS(CORBA, Boolean, boolean)(dynamic_cast<MONITORPOINTNS(CORBA, Boolean, boolean) *>(mp), false);
+		dynamic_cast<MONITORPOINTNS(CORBA, Boolean, boolean) *>(mp)->setMonitorServant(monitorServant);
+		mp->activate(containerServices_m);
+		monitorPoints_m[seqIndex_m] = mp;
+		seqIndex_m++;
+		return true;
+	}//if
+
+	/////////////////////////////
+	if (propType.find("enumSeq:")!=ACE_CString::npos)
+	{
+		NonSupportedTypeExImpl ex(__FILE__, __LINE__, "MonitorComponent::addProperties");
+		ex.setProperty(propName);
+		ex.setPropertyType(propType);
+		ex.log(LM_WARNING);
+
+		return false;
+	}//if
+
+	//if (propType.find("enum:")!=ACE_CString::npos)
+	//if (propType.find("EnumTest:")!=ACE_CString::npos)
+	try
+	{
+		//We try to obtaini the condition characteristic, which would mean that it is an enum property.
+		propRef->get_characteristic_by_name("condition");
+		if (propType.find("RO")!=ACE_CString::npos) {
+			mp = new ROEnumMonitorPoint(propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::enumValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+			POA_ACS::AlarmuLong_tie<ROEnumMonitorPoint> *alarmServant = new POA_ACS::AlarmuLong_tie<ROEnumMonitorPoint>(dynamic_cast<ROEnumMonitorPoint *>(mp), false);
+			dynamic_cast<ROEnumMonitorPoint *>(mp)->setAlarmServant(alarmServant);
+		} else
+			mp = new EnumMonitorPoint(propName,
+					monitoringInterval,
+					propRef,
+					TMCDB::enumValueType,
+					monitorDataBlock_m.monitorBlobs[seqIndex_m]);
+		POA_ACS::CBuLong_tie<EnumMonitorPoint> *monitorServant = new POA_ACS::CBuLong_tie<EnumMonitorPoint>(dynamic_cast<EnumMonitorPoint *>(mp), false);
+		dynamic_cast<EnumMonitorPoint *>(mp)->setMonitorServant(monitorServant);
+		mp->activate(containerServices_m);
+		monitorPoints_m[seqIndex_m] = mp;
+		seqIndex_m++;
+		return true;;
+	} catch (ACS::NoSuchCharacteristic& ex) {
+		//If it's not an enum we just let it throw NonSupportedType property.
+	}
 
 	NonSupportedTypeExImpl ex(__FILE__, __LINE__, "MonitorComponent::addProperty");
 	ex.setProperty(propName);

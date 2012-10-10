@@ -42,11 +42,16 @@ try:
     psns =[propertySerailNumber('doubleROProp',    ['1' ]),
            propertySerailNumber('floatROProp',     ['2' ]),
            propertySerailNumber('longROProp',      ['3' ]),
-           propertySerailNumber('longLongROProp',  ['4' ]),
-           propertySerailNumber('uLongLongROProp', ['5' ]),
-           propertySerailNumber('doubleSeqROProp', ['6' ]),
-           propertySerailNumber('floatSeqROProp',  ['7' ]),
-           propertySerailNumber('longSeqROProp',   ['8'])
+           propertySerailNumber('uLongROProp',     ['4' ]),
+           propertySerailNumber('longLongROProp',  ['5' ]),
+           propertySerailNumber('uLongLongROProp', ['6' ]),
+           propertySerailNumber('booleanROProp',   ['7' ]),
+           propertySerailNumber('doubleSeqROProp', ['8' ]),
+           propertySerailNumber('floatSeqROProp',  ['9' ]),
+           propertySerailNumber('longSeqROProp',   ['10']),
+           propertySerailNumber('uLongSeqROProp',  ['11']),
+           propertySerailNumber('booleanSeqROProp',['12']),
+           propertySerailNumber('EnumTestROProp',  ['13'])
         ]
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_ALARMS_COMPONENT', psns)
     tc.reset();
