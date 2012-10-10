@@ -22,10 +22,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeNode;
 
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
-
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import cern.laser.client.data.Alarm;
 
 /**
@@ -39,29 +39,39 @@ public class AlarmTree extends JTree {
 	/**
 	 * The root node
 	 */
-	private DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
+	private final DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
 	
 	/**
 	 * The model of the tree
 	 */
-	private AlarmTreeModel model;
+	private final AlarmTreeModel model=new AlarmTreeModel(rootNode);
 	
 	/**
 	 * Constructor
 	 */
 	public AlarmTree() {
-		model = new AlarmTreeModel(rootNode);
-		setModel(model);
-		setEditable(false);
-		setRootVisible(false);
-		
-		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-		ImageIcon leafIcon=new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"arrow_in.png"));
-		ImageIcon icon=new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"add.png"));
-		renderer.setLeafIcon(leafIcon);
-		renderer.setOpenIcon(icon);
-		renderer.setClosedIcon(icon);
-		setCellRenderer(renderer);
+		initGUI();
+	}
+	
+	/**
+	 * Initialize the GUI
+	 */
+	private void initGUI() {
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				setModel(model);
+				setEditable(false);
+				setRootVisible(false);
+				
+				DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+				ImageIcon leafIcon=new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"arrow_in.png"));
+				ImageIcon icon=new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"add.png"));
+				renderer.setLeafIcon(leafIcon);
+				renderer.setOpenIcon(icon);
+				renderer.setClosedIcon(icon);
+				setCellRenderer(renderer);		
+			}
+		});
 	}
 	
 	/**
