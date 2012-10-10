@@ -1280,6 +1280,144 @@ of the Plong propery.
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Pboolean_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Unsigned Long Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%d"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pboolean">
+		<xs:annotation>
+			<xs:documentation>Base schema for Boolean Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pboolean_">
+				<xs:attribute name="min_delta_trig" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:boolean" use="optional" default="1">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROboolean">
+		<xs:annotation>
+			<xs:documentation>Read Only Boolean Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pboolean">
+				<xs:attribute name="alarm_high_on" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWboolean">
+		<xs:annotation>
+			<xs:documentation>Read Write Boolean Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pboolean">
+				<xs:attribute name="min_value" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:boolean" use="optional" default="true">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="PEnum_">
 		<xs:annotation>
 			<xs:documentation>Restriction step of Enum Property definition.
