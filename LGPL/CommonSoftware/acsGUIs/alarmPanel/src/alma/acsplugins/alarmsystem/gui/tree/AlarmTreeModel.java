@@ -23,8 +23,13 @@ import javax.swing.tree.DefaultTreeModel;
 
 import cern.laser.client.data.Alarm;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
+
 /**
- * The model for the tree of reduced alarms
+ * The model for the tree of reduced alarms.
+ * <P>
+ * The model is changed only inside the swing event dispatcher thread
+ * to ensure thread safety.
  * 
  * @author acaproni
  *
@@ -93,9 +98,21 @@ public class AlarmTreeModel extends DefaultTreeModel {
 		if (parent == null) {
 			parent=(DefaultMutableTreeNode)root;
 		}
-		DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new NodeContent(al));
-		insertNodeInto(newNode, parent, 0);
-		nodeStructureChanged(parent);
+		final DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new NodeContent(al));
+		final DefaultMutableTreeNode parentNode=parent;
+		try {
+			// Inside the EDT for safety
+			EDTExecutor.instance().executeSync(new Runnable() {
+				public void run() {
+					insertNodeInto(newNode, parentNode, 0);
+					nodeStructureChanged(parentNode);		
+				}
+			});
+		} catch (Exception e) {
+			// What to do in this case?
+			e.printStackTrace();
+		}
+		
 		return newNode;
 	}
 	
@@ -104,12 +121,17 @@ public class AlarmTreeModel extends DefaultTreeModel {
 	 * 
 	 * @param label The string to set as label of the root node
 	 */
-	public void clearTree(Alarm al) {
-		for (int t=0; t<root.getChildCount(); t++) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)root.getChildAt(t);
-			removeNodeFromParent(node);
-		}
-		((DefaultMutableTreeNode)root).setUserObject(al);
-		nodeStructureChanged(root);
+	public void clearTree(final Alarm al) {
+		// Inside the EDT for safety
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				for (int t=0; t<root.getChildCount(); t++) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode)root.getChildAt(t);
+					removeNodeFromParent(node);
+				}
+				((DefaultMutableTreeNode)root).setUserObject(al);
+				nodeStructureChanged(root);			
+			}
+		});
 	}
 }
