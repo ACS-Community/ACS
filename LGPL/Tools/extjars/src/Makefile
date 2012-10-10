@@ -75,6 +75,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/logkit.jar \
 	../lib/logkit.jar \
 	../lib/mockito-core-1.9.5.jar \
+	../lib/objenesis-1.2.jar \
 	../lib/openorb13Debug.jar \
 	../lib/prevayler-1.02.001.jar \
 	../lib/saxpath.jar \
