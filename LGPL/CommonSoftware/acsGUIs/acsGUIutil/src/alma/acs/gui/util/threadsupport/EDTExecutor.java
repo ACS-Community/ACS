@@ -18,6 +18,7 @@ ALMA - Atacama Large Millimiter Array
 */
 package alma.acs.gui.util.threadsupport;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +33,9 @@ import javax.swing.SwingWorker;
  * <code>EDTExecutor</code> is a helper that allows to submit tasks to the EDT like 
  * {@link SwingUtilities#invokeLater(Runnable)} does. The advantage is that it handles the case
  * of executing the code from inside or outside of the EDT in a transparent way.
+ * <BR>
+ * In the same way, <code>EDTExecutor</code> allows to run commands synchronously inside the EDT 
+ * in the same way {@link SwingUtilities#invokeAndWait(Runnable)} does.
  * <P>
  * {@link SwingWorker} has something in common with <code>EDTExecutor</code> but it is too heavy
  * and for most applications we don't need such a complexity.
@@ -39,6 +43,10 @@ import javax.swing.SwingWorker;
  * We don't really need <code>EDTExecutor</code> to be a {@link ExecutorService} because it
  * is very easy but in future we might want to extend by adding more features 
  * (without reaching the same completeness of {@link SwingWorker} of course).
+ * <P>
+ * Life cycle methods are kept easy because this class does not manage the life cycle of the EDT.
+ * In this perspective, and to avoid useless blocking due to synchronization, <code>EDTExecutor</code> 
+ * does not keep track of tasks scheduled to be run and not yet executed (@see {@link #shutdownNow()}.  
  * 
  * @author  acaproni
  * @since ACS 10.2
@@ -48,17 +56,12 @@ public class EDTExecutor extends AbstractExecutorService {
 	/**
 	 * The singleton
 	 */
-	private static final ExecutorService executor = new EDTExecutor();
+	private static final EDTExecutor executor = new EDTExecutor();
 	
 	/**
 	 * A flag set is the executor has been shut down.
 	 */
 	protected volatile boolean hasBeenShutdown=false;
-	
-	/**
-	 * <code>true</code> if a task has been submitted to the swing EDT.
-	 */
-	protected volatile boolean executingTask=false;
 	
 	/**
 	 * The constructor is private because it is a singleton.
@@ -69,13 +72,15 @@ public class EDTExecutor extends AbstractExecutorService {
 	 * 
 	 * @return The singleton
 	 */
-	public static ExecutorService instance() {
+	public static EDTExecutor instance() {
 		return executor;
 	}
 
 	/**
-	 * Shuts down the Executor: <code>EDTExecutor</code> will not submit other tasks
-	 * to the EDT.
+	 * Shuts down the Executor (and not the swing EDT): 
+	 * <code>EDTExecutor</code> will not submit other tasks to the EDT.
+	 * 
+	 * 
 	 */
 	@Override
 	public void shutdown() {
@@ -83,10 +88,10 @@ public class EDTExecutor extends AbstractExecutorService {
 	}
 
 	/**
-	 * Shuts down the Executor: <code>EDTExecutor</code> will not submit other tasks
-	 * to the EDT.
+	 * Shuts down the Executor (and not the swing EDT): 
+	 * <code>EDTExecutor</code> will not submit other tasks to the EDT.
 	 * 
-	 * @return <code>null</code> because this executor does not have a queue of tasks to submit. 
+	 * @return <code>null</code> because this executor does not have a queue of tasks to submit.
 	 */
 	@Override
 	public List<Runnable> shutdownNow() {
@@ -101,7 +106,7 @@ public class EDTExecutor extends AbstractExecutorService {
 
 	@Override
 	public synchronized boolean isTerminated() {
-		return hasBeenShutdown && !executingTask;
+		return hasBeenShutdown;
 	}
 
 	@Override
@@ -126,22 +131,51 @@ public class EDTExecutor extends AbstractExecutorService {
 	 * Executes the passed command in the EDT.
 	 * <P>
 	 * It can be called from inside or outside of the swing event dispatcher thread.
+	 * 
+	 * @param command The command to execute in the EDT
 	 */
 	@Override
 	public void execute(Runnable command) {
-		synchronized (this) {
-			if (hasBeenShutdown) {
-				// Do not accept further commands
-				return;
-			}
-			executingTask=true;	
+		if (command==null) {
+			// Nothing to run!
+			return;
+		}
+		if (hasBeenShutdown) {
+			// Do not accept further commands
+			return;
 		}
 		if (SwingUtilities.isEventDispatchThread()) {
 			command.run();
 		} else {
 			SwingUtilities.invokeLater(command);
 		}
-		executingTask=false;
 	}
 	
+	/**
+	 * Execute the passed command in the EDT synchronously.
+	 * <P>
+	 * It can be called from inside or outside of the swing event dispatcher thread.
+	 * 
+	 * @param command The command to execute in the EDT
+	 * 
+	 * @throws InvocationTargetException if an exception is thrown while running the <code>command</code>
+	 * @throws InterruptedException if we're interrupted while waiting for the event dispatching thread to finish excecuting <code>command.run()</code>
+	 */
+	public void executeSync(Runnable command) throws InvocationTargetException, InterruptedException {
+		if (command==null) {
+			// Nothing to run!
+			return;
+		}
+		if (hasBeenShutdown) {
+			// Do not accept further commands
+			return;
+		}
+
+		if (SwingUtilities.isEventDispatchThread()) {
+			command.run();
+		} else {
+			SwingUtilities.invokeAndWait(command);
+		}
+	}
 }
+
