@@ -143,7 +143,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
 	 */
-	public void setCategoryClient(CategoryClient client) {
+	public synchronized void setCategoryClient(CategoryClient client) {
 		this.categoryClient=client;
 	}
 	
@@ -267,7 +267,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	/**
 	 * @return the categoryClient
 	 */
-	public CategoryClient getCategoryClient() {
+	public synchronized CategoryClient getCategoryClient() {
 		return categoryClient;
 	}
 	
