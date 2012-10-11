@@ -28,6 +28,7 @@ import javax.swing.table.AbstractTableModel;
 
 import cern.laser.client.data.Alarm;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.CernAlSysTabbedPane;
 
@@ -160,7 +161,7 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 	private volatile int numOfActiveAlarms=0;
 	
 	/**
-	 * Canstructor
+	 * Constructor
 	 * 
 	 * @param tabbedPane The tabbed pane to hide/show the undocumented alarm tab
 	 */
@@ -186,7 +187,9 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 		AlarmData data = getRowEntry(rowIndex);
 		ColumnTitles col = ColumnTitles.values()[columnIndex];
 		switch (col) {
-		case TIME: return dateFormat.format(data.timestamp);
+		case TIME: synchronized (dateFormat) {
+			return dateFormat.format(data.timestamp);
+		}
 		case COMPONENT: return data.component;
 		case FAMILY: return data.family;
 		case CODE: return data.code;
@@ -213,38 +216,43 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 		Timestamp timestamp = alarm.getStatus().getSourceTimestamp();
 		boolean active = alarm.getStatus().isActive();
 		
-		AlarmData data = new AlarmData(FF, FM, code, timestamp,active);
+		final AlarmData data = new AlarmData(FF, FM, code, timestamp,active);
 		
 		// Calc. the number of active alarms in table
-		int idx=items.indexOf(data);
-		AlarmData old=null;
-		if (idx!=-1) {
-			old=items.get(idx);
-		}
-		if (old==null) {
-			if (data.active) {
-				numOfActiveAlarms++;
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (items) {
+					int idx=items.indexOf(data);
+					AlarmData old=null;
+					if (idx!=-1) {
+						old=items.get(idx);
+					}
+					if (old==null) {
+						if (data.active) {
+							numOfActiveAlarms++;
+						}
+					} else {
+						if (old.active && !data.active) {
+							numOfActiveAlarms--;
+						} else if (!old.active && data.active) {
+							numOfActiveAlarms++;
+						}
+					}
+					// Remove old instance if any
+					if (old!=null) {
+						items.remove(data);
+					}
+					
+					// too many items in table?
+					while (items.size()>=QUEUE_SIZE) {
+						items.remove(items.size()-1);
+					}
+					items.add(data);	
+				}
+				UndocAlarmTableModel.this.fireTableDataChanged();
 			}
-		} else {
-			if (old.active && !data.active) {
-				numOfActiveAlarms--;
-			} else if (!old.active && data.active) {
-				numOfActiveAlarms++;
-			}
-		}
-		// Remove old instance if any
-		if (old!=null) {
-			items.remove(data);
-		}
-		
-		// too many itemes in table?
-		while (items.size()>=QUEUE_SIZE) {
-			items.remove(items.size()-1);
-		}
-		items.add(data);
-		// Show the tab as there is at least one alarm in the table
-		tabbedPane.undocTabVisible(true);
-		fireTableDataChanged();
+		});
 	}
 	
 	/**
@@ -254,35 +262,47 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 	 * @return the item at row position
 	 */
 	public AlarmData getRowEntry(int row) {
-		if (row<0 || row>=items.size()) {
-			throw new IllegalArgumentException("Invalid row index");
+		synchronized(items) {
+			if (row<0 || row>=items.size()) {
+				throw new IllegalArgumentException("Invalid row index");
+			}
+			return items.get(row);	
 		}
-		return items.get(row);
 	}
 	
 	/**
 	 * Clear all the alarms from the table
 	 */
 	public synchronized void clearAll() {
-		items.clear();
-		numOfActiveAlarms=0;
-		fireTableDataChanged();
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				items.clear();
+				numOfActiveAlarms=0;
+				fireTableDataChanged();		
+			}
+		});
 	}
 	
 	/**
 	 * Remove all the inactive alarms from the table
 	 */
 	public synchronized void clearInactiveAlarms() {
-		int t=0;
-		while(t<items.size()) {
-			AlarmData al = items.get(t);
-			if (!al.active) {
-				items.remove(al);
-			} else {
-				t++;
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				int t=0;
+				synchronized(items) {
+					while(t<items.size()) {
+						AlarmData al = items.get(t);
+						if (!al.active) {
+							items.remove(al);
+						} else {
+							t++;
+						}
+					}
+				}	
+				fireTableDataChanged();
 			}
-		}
-		fireTableDataChanged();
+		});
 	}
 
 	/**
@@ -290,7 +310,7 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 	 * 
 	 * @return the number of active alarms in the table
 	 */
-	public int getNumOfActiveAlarms() {
+	public synchronized int getNumOfActiveAlarms() {
 		return numOfActiveAlarms;
 	}
 
@@ -300,7 +320,12 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public void fireTableDataChanged() {
-		super.fireTableDataChanged();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				UndocAlarmTableModel.super.fireTableDataChanged();	
+			}
+		});
 		tabbedPane.undocTabVisible(getRowCount()>0);
 	}
 }
