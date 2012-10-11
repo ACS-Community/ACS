@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
@@ -40,7 +41,6 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.tree.AlarmTree;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
-import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 
@@ -94,7 +94,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	/**
 	 * The rot alarm, whose children are displayed in the table
 	 */
-	private AlarmTableEntry alarm;
+	private volatile AlarmTableEntry alarm;
 	
 	/**
 	 * Constructor
@@ -119,14 +119,19 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		this.panel=panel;
 		model = new AlarmTableModel(rootPane,false,true,undocModel);
 		table = new AlarmTable(model,panel,undocModel);
-		initialize();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				initGUI();	
+			}
+		});
 		refreshContent();
 	}
 	
 	/**
 	 * Initialize the GUI
 	 */
-	private void initialize() {
+	private void initGUI() {
 		setIconImage(new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"arrow_in.png")).getImage());
 		setModalityType(Dialog.ModalityType.MODELESS);
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -194,13 +199,27 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	private void refreshContent() {
 		Thread refreshThread = new Thread() {
 			public void run() {
-				refreshBtn.setEnabled(true);
-				model.clear();
-				setTitle("Reduction chain of ["+alarm.getAlarmId()+"]");
-				tree.clear(alarm);
+				try {
+					EDTExecutor.instance().executeSync(new Runnable(){
+						public void run() {
+							refreshBtn.setEnabled(true);
+							model.clear();
+							setTitle("Reduction chain of ["+alarm.getAlarmId()+"]");
+							tree.clear(alarm);
+						}
+					});
+				} catch (Throwable t) {
+					System.err.println("Error preparaing to refresh for alarm "+alarm);
+					t.printStackTrace();
+					return;
+				} 
 				getAlarmChain(alarm,null);
-				tree.expandRow(0);
-				model.fireTableDataChanged();
+				EDTExecutor.instance().execute(new Runnable() {
+					public void run() {
+						tree.expandRow(0);
+						model.fireTableDataChanged();
+					}
+				});
 			}
 		};
 		refreshThread.setDaemon(true);
@@ -211,8 +230,13 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	/**
 	 * Get the chain of reduction of the given alarm.
 	 * <P>
-	 * <i>Implementation note</i>: this method is recursive and therefore could lead
-	 * to an out of memory if the chain is very deep.
+	 * <i>Implementation notes</i>: 
+	 * <UL>
+	 * 	<LI>this method is recursive and therefore could lead to an out of memory if the chain is very deep.
+	 * 	<LI><code>getAlarmChain(Alarm, DefaultMutableTreeNode)</code> uses the {@link #categoryClient} to get
+	 * the children of an alarm. This operation involves a CORBA call so it must not be executed
+	 * inside the swing EDT.
+	 * </UL>
 	 * 
 	 * @param al The alarm to get reduced nodes
 	 * @param parentNode The parent node of the tree
