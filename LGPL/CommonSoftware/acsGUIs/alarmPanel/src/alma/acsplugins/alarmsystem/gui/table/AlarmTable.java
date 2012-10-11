@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.23 2012/10/10 14:18:23 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.24 2012/10/11 08:38:12 acaproni Exp $
  * @since    
  */
 
@@ -465,14 +465,18 @@ public class AlarmTable extends JTable implements ActionListener {
 			throw new IllegalArgumentException("Invalid null panel in constructor");
 		}
 		this.panel=panel;
-		initialize();
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				initGUI();
+			}
+		});
 		searchEngine=new SearchEngine(this,model);
 	}
 	
 	/**
 	 * Init the GUI
 	 */
-	private void initialize() {
+	private void initGUI() {
 		setShowHorizontalLines(true);
 		// Build and set the selection model
 		selectionModel = new DefaultListSelectionModel();
@@ -549,6 +553,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	/**
 	 * @see JTable
 	 */
+	@Override
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
 		
 		TableColumn col = getColumnModel().getColumn(vColIndex);
@@ -608,10 +613,14 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @param c The component to color
 	 * @param priority The alarm to set the color
 	 */
-	private void colorizeCell(Component c, AlarmTableEntry alarm) {
-		AlarmGUIType alarmType = AlarmGUIType.fromAlarm(alarm);
-		c.setForeground(alarmType.foreg);
-		c.setBackground(alarmType.backg);
+	private void colorizeCell(final Component c, final AlarmTableEntry alarm) {
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				AlarmGUIType alarmType = AlarmGUIType.fromAlarm(alarm);
+				c.setForeground(alarmType.foreg);
+				c.setBackground(alarmType.backg);		
+			}
+		});
 	}
 
 	/**
@@ -634,30 +643,35 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * 
 	 * @param The alarm to save in a plain text file
 	 */
-	public void saveAlarm(Alarm alarm) {
+	public void saveAlarm(final Alarm alarm) {
 		// Get the user dir property
-		JFileChooser fileChooser = new JFileChooser();
+		final JFileChooser fileChooser = new JFileChooser();
 		if (fileChooser.showSaveDialog(this)!=JFileChooser.APPROVE_OPTION) {
 			return;
 		}
-		// Build the text to write
-		SimpleDateFormat dateFormat = new IsoDateFormat();
-		StringBuilder str = new StringBuilder(alarm.toString());
-		str.append("\n\n");
-		str.append("Saved at ");
-		str.append(dateFormat.format(new Date(System.currentTimeMillis())));
-		str.append("\n\n");
 		// Save the file
-		File outF = fileChooser.getSelectedFile();
-		FileOutputStream fOutS;
-		try {
-			fOutS = new FileOutputStream(outF,false);
-			fOutS.write(str.toString().getBytes());
-			fOutS.flush();
-			fOutS.close();
-		} catch (Exception e) {
-			JOptionPane.showInternalMessageDialog(this, e.getMessage(), "Error saving", JOptionPane.ERROR_MESSAGE);
-		}
+		new Thread(new Runnable(){
+			public void run() {
+				// Build the text to write
+				SimpleDateFormat dateFormat = new IsoDateFormat();
+				StringBuilder str = new StringBuilder(alarm.toString());
+				str.append("\n\n");
+				str.append("Saved at ");
+				str.append(dateFormat.format(new Date(System.currentTimeMillis())));
+				str.append("\n\n");
+				// Save the file
+				File outF = fileChooser.getSelectedFile();
+				FileOutputStream fOutS;
+				try {
+					fOutS = new FileOutputStream(outF,false);
+					fOutS.write(str.toString().getBytes());
+					fOutS.flush();
+					fOutS.close();
+				} catch (Exception e) {
+					JOptionPane.showInternalMessageDialog(AlarmTable.this, e.getMessage(), "Error saving", JOptionPane.ERROR_MESSAGE);
+				}		
+			}
+		},"SaveThread").start();
 	}
 	
 	/**
@@ -683,7 +697,11 @@ public class AlarmTable extends JTable implements ActionListener {
 			reducedDlg = new ReducedChainDlg(client,alarm,panel,undocModel);
 		} else {
 			reducedDlg.setRootAlarm(alarm);
-			reducedDlg.setVisible(true);
+			EDTExecutor.instance().execute(new Runnable() {
+				public void run() {
+					reducedDlg.setVisible(true);
+				}
+			});
 		}
 	}
 	
@@ -694,19 +712,18 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @param cols The visible columns in the table;
 	 * 			it can't be <code>null</code> and at least one column must be in the array.
 	 */
-	public void showColumns(AlarmTableColumn[] cols) {
+	public void showColumns(final AlarmTableColumn[] cols) {
 		if (cols==null || cols.length==0) {
 			throw new IllegalArgumentException("Invalid columns array");
 		}
-		class AddRemoveCol extends Thread {
-			public AlarmTableColumn[] aTCs;
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				TableColumnModel colModel = getColumnModel();
 				// Remove all the columns
 				for (TableColumn column: columns) {
 					colModel.removeColumn(column);
 				}
-				for (AlarmTableColumn aTC: aTCs) {
+				for (AlarmTableColumn aTC: cols) {
 					for (int t=0; t<columns.length; t++) {
 						if (columns[t].getIdentifier()==aTC) {
 							colModel.addColumn(columns[t]);
@@ -715,10 +732,7 @@ public class AlarmTable extends JTable implements ActionListener {
 					}
 				}
 			}
-		}
-		AddRemoveCol thread = new AddRemoveCol();
-		thread.aTCs=cols;
-		EDTExecutor.instance().execute(thread);
+		});
 	}
 	
 	/**
@@ -727,26 +741,20 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @param col The column to add or remove
 	 * @param add If <code>true</code> add the column, otherwise remove the column
 	 */
-	public void addRemoveColumn(AlarmTableColumn col, boolean add) {
+	public void addRemoveColumn(final AlarmTableColumn col, final boolean add) {
 		if (col==null) {
 			throw new IllegalArgumentException("The column to add/remove can't be null");
 		}
-		class AddRemoveCol extends Thread {
-			public TableColumn col;
-			public boolean toAdd;
+		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				TableColumnModel colModel = getColumnModel();
-				if (toAdd) {
-					colModel.addColumn(col);
+				if (add) {
+					colModel.addColumn(columns[col.ordinal()]);
 				} else {
-					colModel.removeColumn(col);
+					colModel.removeColumn(columns[col.ordinal()]);
 				}
 			}
-		}
-		AddRemoveCol thread = new AddRemoveCol();
-		thread.col=columns[col.ordinal()];
-		thread.toAdd=add;
-		EDTExecutor.instance().execute(thread);
+		});
 	}
 
 	/**
