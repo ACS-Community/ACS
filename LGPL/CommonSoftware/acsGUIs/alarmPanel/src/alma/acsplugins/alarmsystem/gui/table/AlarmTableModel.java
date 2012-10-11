@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.35 2012/10/11 10:01:50 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.36 2012/10/11 13:35:21 acaproni Exp $
  * @since    
  */
 
@@ -623,7 +623,9 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
 		switch (col) {
 		case TIME: {
-			return dateFormat.format(alarm.getStatus().getSourceTimestamp());
+			synchronized (dateFormat) {
+				return dateFormat.format(alarm.getStatus().getSourceTimestamp());	
+			}
 		}
 		case COMPONENT: {
 			return alarm.getTriplet().getFaultMember();
