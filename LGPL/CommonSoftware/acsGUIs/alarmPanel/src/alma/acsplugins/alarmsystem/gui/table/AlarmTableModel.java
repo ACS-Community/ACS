@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.34 2012/10/10 14:18:23 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.35 2012/10/11 10:01:50 acaproni Exp $
  * @since    
  */
 
@@ -242,12 +242,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/** 
 	 * The date format
 	 */
-	private SimpleDateFormat dateFormat = new IsoDateFormat();
+	private final SimpleDateFormat dateFormat = new IsoDateFormat();
 	
 	/**
-	 *  The counter for the alarms
+	 *  The counter for the alarms.
 	 */
-	private HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
+	private final HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
 	
 	/**
 	 * The listener about the status of the connection
@@ -260,7 +260,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * The queue of alarms received from the <code>CategoryClient</code> that will be
 	 * injected in the table
 	 */
-	private LinkedBlockingQueue<AlarmTableEntry> queue = new LinkedBlockingQueue<AlarmTableEntry>(QUEUE_SIZE);
+	private final LinkedBlockingQueue<AlarmTableEntry> queue = new LinkedBlockingQueue<AlarmTableEntry>(QUEUE_SIZE);
 	
 	/**
 	 * The semaphore used to pause the thread
@@ -272,7 +272,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * When the application is upaused then the semaphore is released and the thread restarts.
 	 * 
 	 */
-	private Semaphore paused=new Semaphore(1);
+	private final Semaphore paused=new Semaphore(1);
 	
 	/**
 	 * Signal the thread to terminate
