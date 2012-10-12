@@ -56,6 +56,7 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerProxyCreation_FAIL;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerProxyCreation_OK;
@@ -69,7 +70,7 @@ import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.CircularQueue;
 import alma.acs.nc.Helper;
-import alma.acs.nc.ReconnectableSubscriber;
+import alma.acs.nc.ReconnectableParticipant;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -99,7 +100,7 @@ import alma.acsncErrType.wrappers.AcsJPublishEventFailureEx;
  * 
  * @author jslopez, hsommer
  */
-public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublisher<T>, ReconnectableSubscriber {
+public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublisher<T>, ReconnectableParticipant {
 
 	/** Provides code shared among suppliers and consumers. */
 	protected final Helper helper;
@@ -335,8 +336,8 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			throw new AcsJCORBAProblemEx(e);
 		}
 		
-		reconnectCallback = new AcsNcReconnectionCallback(this);
-		reconnectCallback.init(services, helper.getNotifyFactory());
+		reconnectCallback = new AcsNcReconnectionCallback(this, logger);
+		reconnectCallback.registerForReconnect(services, helper.getNotifyFactory());
 
 	}
 
@@ -345,12 +346,13 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * Failure to do so can result in remote memory leaks. User should not call
 	 * this method multiple times either. Once disconnect has been called, all
 	 * of NCPublisher's methods will cease to function properly.
-	 * @throws IllegalStateException if called when already disconnected.
+	 * @throws AcsJIllegalStateEventEx if called when already disconnected.
 	 */
 	@Override
-	public synchronized void disconnect() {
+	public synchronized void disconnect() throws AcsJIllegalStateEventEx {
+		
 		if (supplierAdmin == null) {
-			throw new IllegalStateException("Publisher already disconnected");
+			throw new AcsJIllegalStateEventEx("Publisher already disconnected");
 		}
 
 		String errMsg = "Failed to cleanly disconnect NCPublisher for channel '" + channelName + "': ";
