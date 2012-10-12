@@ -346,8 +346,8 @@ public class AlarmDetailTable extends JTable {
 		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				setTitleColumnSize(propertyNames);
+				model.fireTableDataChanged();
 			}
 		});
-		model.fireTableDataChanged();
 	}
 }
