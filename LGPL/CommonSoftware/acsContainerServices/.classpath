@@ -29,5 +29,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/xalan.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-digester-2.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="lib" path="ws/lib/acsErrTypeLifeCycle.jar"/>
 	<classpathentry kind="output" path="ws/object/eclipseOut"/>
 </classpath>
