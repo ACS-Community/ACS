@@ -24,15 +24,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.omg.CORBA.portable.IDLEntity;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber.Callback;
 import alma.acs.nc.AcsEventSubscriber.GenericCallback;
-import alma.acs.nc.CannotAddSubscriptionException;
-import alma.acs.nc.SubscriptionNotFoundException;
+import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;
 
 /**
@@ -43,6 +45,13 @@ import alma.acsnc.EventDescription;
 public class NCSubscriberTest extends ComponentClientTestCase {
 
 	private static String CHANNEL_NAME = "pink-floyd";
+	
+	
+	/**
+	 * The shared subscriber for the tests.
+	 * For more complete testing we use the actual type, not just AcsEventSubscriber interface,
+	 * and therefore need a cast in {@link #newSharedSubscriber()}.
+	 */
 	private NCSubscriber<IDLEntity> m_subscriber;
 	
 	/**
@@ -65,10 +74,21 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		m_publisher = getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
+		newSharedSubscriber();
 
 		// This is the all-exclusive filter
 		assertEquals(1, m_subscriber.proxySupplier.get_all_filters().length);
+	}
+
+	/**
+	 * Creates an NCSubscriber and stores it in {@link #m_subscriber}.
+	 * If we alrady had a subscriber, that one gets disconnected first.
+	 */
+	private void newSharedSubscriber() throws AcsJContainerServicesEx, AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
+		if (m_subscriber != null && !m_subscriber.isDisconnected()) {
+			m_subscriber.disconnect();
+		}
+		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 	}
 
 
@@ -88,7 +108,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 				}	
 			});
 			fail("Event receiver is invalid, as it returns a null event type");
-		} catch(CannotAddSubscriptionException e) { }
+		} catch(AcsJEventSubscriptionEx e) { }
 
 		// Invalid receiver (returns String.class)
 		try {
@@ -101,7 +121,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 				}
 			});
 			fail("Event receiver is invalid, as it returns a java.lang.String as the event type");
-		} catch(CannotAddSubscriptionException e) { }
+		} catch(AcsJEventSubscriptionEx e) { }
 
 		// Several receiver subscriptions for the same type overwrite the previous one
 		m_subscriber.addSubscription(new EventReceiver1());
@@ -141,21 +161,21 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		try {
 			m_subscriber.removeSubscription(statusBlockEvent1.class);
 			fail("Should fail because we don't have a subscription yet to statusBlockEvent1");
-		} catch (SubscriptionNotFoundException e) { }
+		} catch (AcsJEventSubscriptionEx e) { }
 		m_subscriber.addSubscription(new EventReceiver1());
 
 		// event 2
 		try {
 			m_subscriber.removeSubscription(statusBlockEvent2.class);
 			fail("Should fail because we don't have a subscription yet to statusBlockEvent2");
-		} catch (SubscriptionNotFoundException e) { }
+		} catch (AcsJEventSubscriptionEx e) { }
 		m_subscriber.addSubscription(new EventReceiver2());
 
 		// generic
 		try {
 			m_subscriber.removeGenericSubscription();
 			fail("Should fail because we don't have a generic subscription");
-		} catch(SubscriptionNotFoundException e) {}
+		} catch(AcsJEventSubscriptionEx e) {}
 		m_subscriber.addGenericSubscription(new GenericEventReceiver());
 
 		// Now we can safely remove all subscriptions
@@ -173,11 +193,11 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		try {
 			m_subscriber.removeSubscription(statusBlockEvent1.class);
 			fail("Should fail because we don't have a subscription yet to statusBlockEvent1");
-		} catch (SubscriptionNotFoundException e) { }
+		} catch (AcsJEventSubscriptionEx e) { }
 		try {
 			m_subscriber.removeSubscription(statusBlockEvent2.class);
 			fail("Should fail because we don't have a subscription yet to statusBlockEvent2");
-		} catch (SubscriptionNotFoundException e) { }
+		} catch (AcsJEventSubscriptionEx e) { }
 
 	}
 
@@ -202,7 +222,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0, c2.getCount());
 
 		// Overriding case: 1 receiver per event type, 2nd receiver is overridden
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
+		newSharedSubscriber();
 		c1 = new CountDownLatch(nEvents);
 		c2 = new CountDownLatch(nEvents);
 		CountDownLatch c3 = new CountDownLatch(nEvents);
@@ -223,7 +243,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0,  c3.getCount());
 
 		// Overriding case 2: 1 receiver per event type, 2nd receiver is overridden two times, but second time is invalid
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
+		newSharedSubscriber();
 		c1 = new CountDownLatch(nEvents);
 		c2 = new CountDownLatch(nEvents);
 		c3 = new CountDownLatch(nEvents);
@@ -236,7 +256,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 				}	
 			});
 			fail("Event receiver is invalid, as it returns a null event type");
-		} catch(CannotAddSubscriptionException e) { }
+		} catch(AcsJEventSubscriptionEx e) { }
 		m_subscriber.startReceivingEvents();
 
 		publish(nEvents, EventType.statusBlock1);
@@ -269,7 +289,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0, c1.getCount());
 
 		// Overriding case: generic subscriber, then overridden by a different one
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
+		newSharedSubscriber();
 		c1 = new CountDownLatch(2*nEvents);
 		CountDownLatch c2 = new CountDownLatch(2*nEvents);
 		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
@@ -286,7 +306,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(0, c2.getCount());
 
 		// Add/remove case: add generic subscription, then remove it, then listen: nothing should arrive
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
+		newSharedSubscriber();
 		c1 = new CountDownLatch(2*nEvents);
 		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
 		m_subscriber.removeGenericSubscription();
@@ -300,7 +320,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(2*nEvents, c1.getCount());
 
 		// Mixed case: a generic receiver + receiver for event type 1
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
+		newSharedSubscriber();
 		c1 = new CountDownLatch(2*nEvents);
 		c2 = new CountDownLatch(nEvents);
 		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
@@ -324,20 +344,18 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		try {
 			m_subscriber.suspend();
 			fail("suspend() should fail, as we're not yet connected");
-		} catch(IllegalStateException e) { }
+		} catch(AcsJIllegalStateEventEx e) { }
 
 		try {
 			m_subscriber.resume();
 			fail("resume() should fail, as we're not yet connected");
-		} catch(IllegalStateException e) { }
+		} catch(AcsJIllegalStateEventEx e) { }
 
-		try {
-			m_subscriber.disconnect();
-			fail("disconnect() should fail, as we're not yet connected");
-		} catch(IllegalStateException e) { }
+		// disconnect() should work, since it's supposed to be called even if we never connect.
+		// After that we need a new subscriber though.
+		m_subscriber.disconnect();
+		newSharedSubscriber();
 
-		// We need to create it again, since after disconnect() the object is not usable anymore
-		m_subscriber = (NCSubscriber<IDLEntity>)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
 		m_subscriber.startReceivingEvents();
 		assertFalse(m_subscriber.isDisconnected());
 
@@ -345,12 +363,12 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		try {
 			m_subscriber.startReceivingEvents();
 			fail("startReceivingEvents() should fail, as we're already connected");
-		} catch(IllegalStateException e) { }
+		} catch(AcsJIllegalStateEventEx e) { }
 
 		try {
 			m_subscriber.resume();
 			fail("resume() should fail, as we're not suspended yet");
-		} catch(IllegalStateException e) { }
+		} catch(AcsJIllegalStateEventEx e) { }
 
 		m_subscriber.suspend();
 
@@ -358,12 +376,12 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		try {
 			m_subscriber.suspend();
 			fail("suspend() should fail, as we're already suspended");
-		} catch (IllegalStateException e) { }
+		} catch (AcsJIllegalStateEventEx e) { }
 
 		try {
 			m_subscriber.startReceivingEvents();
 			fail("startReceivingEvents() should fail, as we're already connected");
-		} catch (IllegalStateException e) { }
+		} catch (AcsJIllegalStateEventEx e) { }
 
 		m_subscriber.resume();
 		m_subscriber.disconnect();
@@ -373,17 +391,17 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		try {
 			m_subscriber.disconnect();
 			fail("disconnect() should fail, as we're already disconnected");
-		} catch (IllegalStateException e) { }
+		} catch (AcsJIllegalStateEventEx e) { }
 
 		try {
 			m_subscriber.suspend();
 			fail("suspend() should fail, as we're already disconnected");
-		} catch (IllegalStateException e) { }
+		} catch (AcsJIllegalStateEventEx e) { }
 
 		try {
 			m_subscriber.resume();
 			fail("resume() should fail, as we're already disconnected");
-		} catch (IllegalStateException e) { }
+		} catch (AcsJIllegalStateEventEx e) { }
 
 	}
 

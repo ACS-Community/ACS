@@ -16,6 +16,9 @@ import gov.sandia.NotifyMonitoringExt.EventChannel;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.concurrent.ThreadBurstExecutorService;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Consumer;
 import alma.acs.nc.Helper;
@@ -37,6 +40,9 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		channel = helper.getNotificationChannel(CHANNEL_NAME, NC_KIND.value, helper.getNotificationFactoryNameForChannel(CHANNEL_NAME));
 		assertNotNull(channel);
 		assertEquals(0, channel.get_all_consumeradmins().length);
+		
+		// Configure SCXML logger higher than the INFO setting 
+		configureLogging(AcsLogLevelDefinition.WARNING);
 	}
 
 	public void tearDown() throws Exception {
@@ -46,12 +52,22 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		super.tearDown();
 	}
 
+	private void configureLogging(AcsLogLevelDefinition scxmlLocalLevel) {
+		String scxmlLoggerName = "scxml@NCSubscriberAdminReuseTest#" + getName();
+		String jacorbLoggerName = "jacorb@NCSubscriberAdminReuseTest#" + getName();
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		logConfig.setMinLogLevelLocal(scxmlLocalLevel, scxmlLoggerName);
+		logConfig.setMinLogLevelLocal(scxmlLocalLevel, jacorbLoggerName);
+		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, scxmlLoggerName);
+		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, jacorbLoggerName);
+		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+	}
+
 	private void destroyConsumers() throws AdminNotFound {
 		for(int adminID: channel.get_all_consumeradmins())
 			channel.get_consumeradmin(adminID).destroy();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void testSharedAdminReuse() throws Exception {
 
 		List<AcsEventSubscriber<IDLEntity>> subscriberList = new ArrayList<AcsEventSubscriber<IDLEntity>>();
@@ -60,7 +76,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 			for(int j=0; j!=NCSubscriber.PROXIES_PER_ADMIN; j++) {
 				subscriberList.add(getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class));
 			}
-			// verify that all all "j loop" subscribers caused only the automatic creation of one admin object
+			// verify that all "j loop" subscribers caused only the automatic creation of one admin object
 			assertEquals(i, channel.get_all_consumeradmins().length);
 		}
 		m_logger.info("Created " + subscriberList.size() + " subscribers for channel " + CHANNEL_NAME);
@@ -70,24 +86,22 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 			assertEquals(NCSubscriber.PROXIES_PER_ADMIN, channel.get_consumeradmin(adminID).push_suppliers().length - 1);
 		}
 		
+		// disconnect all subscribers, which should remove the proxies from the admin objects
+		int disconnectCount=1;
 		for(AcsEventSubscriber<IDLEntity> subscriber : subscriberList) {
-			try { 
-				subscriber.disconnect();
-				fail("Expected IllegalStateException when disconnecting a subscriber for which we never called startReceivingEvents().");
-			}
-			catch(IllegalStateException e) {
-				// OK for now, but see TODO comment about IllegalStateException in AcsEventSubscriber#disconnect
-			}
+			subscriber.disconnect();
+			m_logger.info("Disconnected subscriber #" + disconnectCount++);
 		}
 		
 		// Now, all consumer admins should have 0 proxies (+1, the dummy proxy)
+		int adminCount=1;
 		for(int adminID: channel.get_all_consumeradmins()) {
+			m_logger.info("About to check the supplier proxies on admin #" + adminCount);
 			assertEquals(1, channel.get_consumeradmin(adminID).push_suppliers().length);
 		}
 	}
 
 	
-	@SuppressWarnings("deprecation")
 	public void testNewAndOldNCsTogether() throws Exception {
 
 		List<Consumer> consumers = new ArrayList<Consumer>();
@@ -152,7 +166,6 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		for (int i=0; i<subscribersNum; i++) {
 
 			Runnable r = new Runnable() {
-				@SuppressWarnings("deprecation")
 				public void run() {
 					try {
 						// create subscriber, and add it to the list
