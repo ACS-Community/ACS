@@ -14,10 +14,10 @@
 [GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
 [GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
 [GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16)
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16) repeatCount="0"
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16) repeatCount="10"
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16) repeatCount="10"
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16) repeatCount="10"
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16) repeatCount="10"
-[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=16) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17)
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="0"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
