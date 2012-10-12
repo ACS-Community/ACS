@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.36 2012/10/11 13:35:21 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.37 2012/10/12 14:34:49 acaproni Exp $
  * @since    
  */
 
@@ -316,7 +316,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		// Start the thread
 		thread = new Thread(this,"AlarmTableModel");
 		thread.setDaemon(true);
-		thread.start();
 	}
 	
 	/**
@@ -326,7 +325,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param alarm The alarm to add to the table.
 	 * @see AlarmSelectionListener
 	 */
-	public synchronized void onAlarm(Alarm alarm) {
+	public void onAlarm(Alarm alarm) {
 		// Check if the alarm is not documented
 		String undoc=alarm.getStatus().getUserProperties().getProperty(ACSAlarmCacheImpl.alarmServerPropkey);
 		if (ACSAlarmCacheImpl.undocumentedAlarmProp.equals(undoc)) {
@@ -982,6 +981,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 				}
 			});
 		}
+	}
+	
+	/**
+	 * Start the thread.
+	 * 
+	 */
+	public void start() {
+		thread.start();
 	}
 	
 	/**
