@@ -50,6 +50,8 @@ import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.source.AlarmSource;
@@ -1243,19 +1245,21 @@ public class ContainerServicesImpl implements ContainerServices
 				subscriber.disconnect();
 				String tmp[] = channel.split("/");
 				m_logger.log(AcsLogLevel.NOTICE, "Automatically disconnected subscriber for NC '" + tmp[tmp.length - 1] + "'");
-			} catch (IllegalStateException e) {
+			} catch (AcsJIllegalStateEventEx e) {
 				// Silently ignore this exception, as the subscriber was already disconnected. Well done, developers! :)
+			} catch (AcsJCouldntPerformActionEx ex) {
+				m_logger.log(Level.WARNING, "Failed to disconnect subscriber (which the user should have done before).", ex);
 			}
 		}
 
 		/* Disconnect NC publishers */
 		for(String channel: m_publishers.keySet()) {
-			AcsEventPublisher<?> subscriber = m_publishers.get(channel);
+			AcsEventPublisher<?> publisher = m_publishers.get(channel);
 			try {
-				subscriber.disconnect();
+				publisher.disconnect();
 				String tmp[] = channel.split("/");
 				m_logger.log(AcsLogLevel.NOTICE, "Automatically disconnected publisher for NC '" + tmp[tmp.length - 1] + "'");
-			} catch (IllegalStateException e) {
+			} catch (AcsJIllegalStateEventEx e) {
 				// Silently ignore this exception, as the subscriber was already disconnected. Well done, developers! :)
 			}
 		}
