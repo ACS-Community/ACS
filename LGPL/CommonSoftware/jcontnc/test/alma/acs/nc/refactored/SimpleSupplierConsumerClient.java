@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.portable.IDLEntity;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ADMINTEST1.OnOffStates;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
@@ -123,8 +124,8 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 
 			try {
 				m_subscriber.startReceivingEvents();
-			} catch(IllegalStateException e) {
-				m_logger.info("IllegalStateException thrown, perfect :D");
+			} catch(AcsJIllegalStateEventEx e) {
+				m_logger.info("AcsJIllegalStateEventEx thrown, perfect :D");
 			}
 		}
 
