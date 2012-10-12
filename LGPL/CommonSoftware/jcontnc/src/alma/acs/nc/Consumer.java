@@ -24,11 +24,6 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
-import gov.sandia.NotifyMonitoringExt.EventChannel;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -56,6 +51,11 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
+
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
@@ -88,7 +88,7 @@ import alma.acsncErrType.wrappers.AcsJEventSubscriptionFailureEx;
  * 
  * @author dfugate
  */
-public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscriber{
+public class Consumer extends OSPushConsumerPOA implements ReconnectableParticipant{
 	
 	protected static final String RECEIVE_METHOD_NAME = "receive";
 
@@ -287,8 +287,8 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
 		
 		// if the factory is null, the callback is not registered
-		m_callback = new AcsNcReconnectionCallback(this);
-		m_callback.init(services, m_helper.getNotifyFactory());
+		m_callback = new AcsNcReconnectionCallback(this, m_logger);
+		m_callback.registerForReconnect(services, m_helper.getNotifyFactory());
 		
 		// @TODO remove this hack once NC classes are integrated into container services
 		try {
