@@ -1,11 +1,11 @@
 package alma.acs.nc.sm;
 
-import static alma.acs.nc.sm.generated.EventSubscriberAction.ConnectionCreator;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.ConnectionDestructor;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.ConnectionResumer;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.ConnectionSuspender;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.EnvironmentCreator;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.EnvironmentDestructor;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.createConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.destroyConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.resumeConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.suspendConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.createEnvironment;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.destroyEnvironment;
 
 import java.util.logging.Logger;
 
@@ -41,16 +41,16 @@ public class EventSubscriberStateMachine extends EventSubscriberSignalDispatcher
 		AcsScxmlActionDispatcher<EventSubscriberAction> actionDispatcher = 
 				new AcsScxmlActionDispatcher<EventSubscriberAction>(logger, EventSubscriberAction.class);
 		
-		actionDispatcher.registerActionHandler(EnvironmentCreator, environmentActionHandler);
-		actionDispatcher.registerActionHandler(EnvironmentDestructor, environmentActionHandler);
+		actionDispatcher.registerActionHandler(createEnvironment, environmentActionHandler);
+		actionDispatcher.registerActionHandler(destroyEnvironment, environmentActionHandler);
 		
-		actionDispatcher.registerActionHandler(ConnectionCreator, connectionActionHandler);
-		actionDispatcher.registerActionHandler(ConnectionDestructor, connectionActionHandler);
+		actionDispatcher.registerActionHandler(createConnection, connectionActionHandler);
+		actionDispatcher.registerActionHandler(destroyConnection, connectionActionHandler);
 		
-		actionDispatcher.registerActionHandler(ConnectionSuspender, suspendResumeActionHandler);
-		actionDispatcher.registerActionHandler(ConnectionResumer, suspendResumeActionHandler);
+		actionDispatcher.registerActionHandler(suspendConnection, suspendResumeActionHandler);
+		actionDispatcher.registerActionHandler(resumeConnection, suspendResumeActionHandler);
 		
-		// The AcsScxmlEngine constructor loads the scxml file and starts the state machine
+		// Here the AcsScxmlEngine constructor will load the scxml file and start the state machine
 		stateMachine = new AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction>(
 				scxmlFileName, logger, actionDispatcher, EventSubscriberSignal.class);
 	}
@@ -68,4 +68,12 @@ public class EventSubscriberStateMachine extends EventSubscriberSignalDispatcher
 		return stateMachine.getCurrentState();
 	}
 	
+	/**
+	 * 
+	 * @param stateName Name of a (outer) state, as defined in <code>alma/acs/nc/sm/generated/EventSubscriberSCXML.xml</code>.
+	 */
+	public boolean isStateActive(String stateName) {
+		return getScxmlEngine().isStateActive(stateName);
+	}
+
 }
