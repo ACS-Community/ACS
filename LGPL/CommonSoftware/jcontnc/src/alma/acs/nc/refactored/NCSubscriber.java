@@ -63,7 +63,8 @@ import gov.sandia.NotifyMonitoringExt.NameMapError;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerAdminObtained_OK;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerAdmin_Overloaded;
@@ -86,13 +87,10 @@ import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsEventSubscriberImplBase;
 import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
-import alma.acs.nc.CannotAddSubscriptionException;
-import alma.acs.nc.CannotStartReceivingEventsException;
 import alma.acs.nc.Helper;
-import alma.acs.nc.ReconnectableSubscriber;
-import alma.acs.nc.SubscriptionNotFoundException;
-import alma.acs.nc.sm.EnvironmentActionHandler;
+import alma.acs.nc.ReconnectableParticipant;
 import alma.acs.ncconfig.EventDescriptor;
+import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushConsumer;
@@ -125,17 +123,16 @@ import alma.acsnc.OSPushConsumerPOATie;
  *       the events to the registered handlers.
  *   <li>The connection can then be suspended or resumed.
  * </ul> 
- * The NCSubscriber will be created (and cleaned up if needed) through the container services, 
- * At the moment it is still under development and not used in operational code, 
- * see the currently deprecated method {@link alma.acs.container.ContainerServicesImpl#createNotificationChannelSubscriber(String, String)}.
+ * The NCSubscriber gets created (and cleaned up if needed) through the container services. 
  * Note about refactoring: NCSubscriber gets instantiated in module jcont using java reflection.
  * Thus if you change the package, name, or constructor of this class, make sure to fix the corresponding "forName" call in jcont.
  * 
- * @param <T>
+ * @param <T>  See base class.
  * 
  * @author jslopez, hsommer, rtobar
  */
-public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBase<T> implements OSPushConsumerOperations, ReconnectableSubscriber {
+public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBase<T> 
+		implements OSPushConsumerOperations, ReconnectableParticipant {
 	
 	/**
 	 * The default maximum amount of time an event handler is given to process
@@ -165,19 +162,31 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * which is used by subscribers to get a reference to the structured supplier proxy.
 	 * This reference is <code>null</code> when the subscriber is not connected to a NC.
 	 * <p>
-	 * The TAO extensions allow us to set a meaningful name for the admin object, but it 
-	 * probably will not be used as the ID, but as a separate name field.
+	 * The TAO extensions would allow us to set a meaningful name for the admin object, but it 
+	 * still does not get used as the ID, but as a separate name field.
 	 * You can get the consumer admin object ID from here, see {@link ConsumerAdmin#MyID()}. 
 	 * (In the NC spec, it says "The MyID attribute is a readonly attribute that maintains 
 	 * the unique identifier of the target ConsumerAdmin instance, which is assigned to it 
 	 * upon creation by the Notification Service event channel.) It is an integer type, which makes 
 	 * it necessarily different from the name used with the TAO extensions.
 	 * <p>
-	 * We try to reuse a single admin object, to not allocate a new thread in the notification service for every subscriber.
+	 * We try to reuse an admin object for a limited number of subscribers, 
+	 * to not allocate a new thread in the notification service for every subscriber
+	 * but instead get a flexible thread::subscriber mapping.
+	 * 
+	 * @see #PROXIES_PER_ADMIN
 	 */
 	protected ConsumerAdmin sharedConsumerAdmin;
 
-	/** The supplier proxy we are connected to. */
+	/**
+	 * Maximum number of proxies (subscribers) per admin object.
+	 * @see #sharedConsumerAdmin
+	 */
+	protected static final int PROXIES_PER_ADMIN = 5;
+
+	/** 
+	 * The supplier proxy we are connected to. 
+	 */
 	protected StructuredProxyPushSupplier proxySupplier;
 
 	/**
@@ -190,10 +199,14 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 */
 	private OSPushConsumer corbaRef;
 
-	/** Helper class used to manipulate CORBA anys. */
+	/** 
+	 * Helper class used to manipulate CORBA anys. 
+	 */
 	protected AnyAide anyAide;
 
-	/** Whether receiving events should be logged. */
+	/** 
+	 * Whether receiving events should be logged. 
+	 */
 	private final boolean isTraceNCEventsEnabled;
 
 	/**
@@ -203,15 +216,19 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	protected final HashMap<String, Double> handlerTimeoutMap;
 
 	/**
-	 * Contains a list of the added and removed subscriptions filters applied.
-	 * Events on this list will be processed to check if the event should be
+	 * Contains a list of the added and removed subscription filters applied.
+	 * <p>
+	 * TODO: Does this sentence make sense? Events on this list will be processed to check if the event should be
 	 * accepted or discarded.
 	 */
 	protected final Map<String, Integer> subscriptionsFilters = new HashMap<String, Integer>();
 
+	/**
+	 * Supports reconnection after service restart, see TAO's "topology persistence" extension.
+	 * @see #reconnect(EventChannelFactory)
+	 * @see NotifyExt.ReconnectionCallbackOperations
+	 */
 	private AcsNcReconnectionCallback channelReconnectionCallback;
-
-	protected static final int PROXIES_PER_ADMIN = 5;
 
 	/**
 	 * Creates a new instance of NCSubscriber.
@@ -232,7 +249,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * @param namingService
 	 *            Must be passed explicitly, instead of the old hidden approach via <code>ORBInitRef.NameService</code> property.
 	 * @param clientName
-	 * @param eventType
+	 * @param eventType Our type parameter, either <code>IDLEntity</code> as base type or a concrete IDL-defined struct.
 	 * @throws AcsJException
 	 *             Thrown on any <I>really bad</I> error conditions encountered.
 	 */
@@ -275,75 +292,212 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		// populate the map with the maxProcessTime an event receiver processing should take
 		handlerTimeoutMap = helper.getEventHandlerTimeoutMap(this.channelName);
 
-
 		isTraceNCEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
-
-		// if the factory is null, the reconnection callback is not registered
-		channelReconnectionCallback = new AcsNcReconnectionCallback(this);
-		channelReconnectionCallback.init(services, helper.getNotifyFactory());
-		
 		// this call is mandatory, see base class ctor comment.
 		// It will lead to a call to 'EnvironmentActionHandler#create', 
 		// see 'createEnvironmentActionHandler' below.
-		try {
-			stateMachine.setUpEnvironment();
-		} catch (AcsJStateMachineActionEx ex) {
-			throw new AcsJCouldntCreateObjectEx(ex);
-		}
+		stateMachineSignalDispatcher.setUpEnvironment();
 	}
 
 	
-	@Override
-	protected EnvironmentActionHandler createEnvironmentActionHandler() {
-		return new EnvironmentActionHandler(logger) {
+	////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////// State machine actions //////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
+	protected void createEnvironmentAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+				throws AcsJStateMachineActionEx {
+		
+		super.createEnvironmentAction(evtDispatcher, errRep, scInstance, derivedEvents);
+		try {
+
+			// get the channel
+			channel = helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
+
+			// get the admin object
 			
-			@Override
-			public void create(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
-					throws AcsJStateMachineActionEx {
-				try {
-					// get the channel
-					channel = helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
-
-					// get the admin object
-					
-					// The locking ensures thread memory sync for this non-final field.
-					// Note that the lock is not shared across subscribers and does not include the proxy supplier creation, 
-					// which means that concurrent creation of subscribers may produce too many (> PROXIES_PER_ADMIN) subscribers
-					// for the same admin object. The downside is a small uncertainty in the load balancing and occasional unit test failures,
-					// but we still prefer it over more extended local locking because then we can test from a single process
-					// the concurrent subscriber creation issues, which anyway can occur in practice with different processes creating 
-					// the subscribers.
-					connectionLock.lock(); 
-					sharedConsumerAdmin = getSharedAdmin();
-					connectionLock.unlock();
-					
-					// get the proxy Supplier
-					proxySupplier = createProxySupplier();
-
-					// Just check if our shared consumer admin is handling more proxies than it should, and log it
-					// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
-					int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
-					if( currentProxies > PROXIES_PER_ADMIN )
-						LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
-								currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
-
-					// The user might create this object, and startReceivingEvents() without attaching any receiver
-					// If so, it's useless to get all the events, so we start setting the all-exclusive filter
-					// in the server
-					discardAllEvents();
-				} catch (Throwable thr) {
-					throw new AcsJStateMachineActionEx(thr);
-				}
-			}
+			// Note that admin creation and proxy supplier creation are not synchronized across subscribers,
+			// which means that concurrent creation of subscribers can lead to race conditions
+			// where we end up with too many (> PROXIES_PER_ADMIN) subscribers
+			// for the same admin object.
+			// It would be easy to put a static lock around these two calls, which would take care of 
+			// concurrent subscribers from the same component or client. Still there would be the same 
+			// racing issues coming from distributed subscribers.
+			// We prefer to not even do local synchronization because then even in simple unit tests
+			// from a single process we can verify the concurrency behavior of subscribers and notifyService.
+			// TODO: Revisit the "synchronized(NCSubscriber.class)" block we currently have inside getSharedAdmin(),
+			// which is giving partial local synchronization, leading to fewer race conditions.
+			// Probably should be removed, or pulled up here and extended around createProxySupplier.
+			sharedConsumerAdmin = getSharedAdmin();
 			
-			@Override
-			public void destroy(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-				logger.info("EnvironmentDestructor action called, in the user-supplied action dispatcher");
+			// get the proxy Supplier
+			proxySupplier = createProxySupplier();
+
+			// Just check if our shared consumer admin is handling more proxies than it should, and log it
+			// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
+			int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
+			if( currentProxies > PROXIES_PER_ADMIN )
+				LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
+						currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
+
+			// The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
+			// If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
+			discardAllEvents();
+		} catch (Throwable thr) {
+			throw new AcsJStateMachineActionEx(thr);
+		}
+	}
+		
+	protected void destroyEnvironmentAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+		
+		try {
+			if (proxySupplier != null) {
+				// spec 3.3.10.1: "The disconnect_structured_push_supplier operation is invoked to terminate a
+				// connection between the target StructuredPushSupplier and its associated consumer.
+				// This operation takes no input parameters and returns no values. The result of this
+				// operation is that the target StructuredPushSupplier will release all resources it had
+				// allocated to support the connection, and dispose its own object reference."
+				proxySupplier.disconnect_structured_push_supplier();
+				proxySupplier = null;
+				logger.info("Disconnected and destroyed the supplier proxy");
 			}
-		};
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+			// This is unexpected but OK, because someone else has already destroyed the remote resources
+			logger.fine("No need to release resources for channel " + channelName
+					+ " because the NC has been destroyed already.");
+		} finally {
+			// TODO: Should we not try to destroy an empty consumer admin object? 
+			// Or is it too risky because of possible race conditions with newly created other subscribers,
+			// given that we don't have a clear distributed locking strategy?
+			sharedConsumerAdmin = null;
+			channel = null;
+		}
+		
+		super.destroyEnvironmentAction(evtDispatcher, errRep, scInstance, derivedEvents);
 	}
 
+	public void createConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+		
+		super.createConnectionAction(evtDispatcher, errRep, scInstance, derivedEvents);
+		
+		try {
+			// Register callback for subscribed events
+			if (corbaRef == null) {
+				corbaObj = new OSPushConsumerPOATie(NCSubscriber.this);
+				corbaRef = OSPushConsumerHelper.narrow(helper.getContainerServices().activateOffShoot(corbaObj));
+			}
+			// Register callback for reconnection requests
+			channelReconnectionCallback = new AcsNcReconnectionCallback(NCSubscriber.this, logger);
+			channelReconnectionCallback.registerForReconnect(services, helper.getNotifyFactory()); // if the factory is null, the reconnection callback is not registered
+
+			proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
+		} catch (AcsJContainerServicesEx e) {
+			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
+			throw new AcsJStateMachineActionEx(e);
+		} catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
+			throw new AcsJStateMachineActionEx(new AcsJIllegalStateEventEx(e));
+		} catch (org.omg.CosEventChannelAdmin.TypeError ex) {
+			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
+			throw new AcsJStateMachineActionEx(ex);
+		} catch (AcsJIllegalArgumentEx ex) {
+			throw new AcsJStateMachineActionEx(ex);
+		}
+
+		LOG_NC_SubscriptionConnect_OK.log(logger, channelName, getNotificationFactoryName());
+	}
+
+	protected void destroyConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+		
+		// TODO: CHeck if we need to suspend first (was like that in older impl)
+		// try {
+		// suspendAction(evtDispatcher, errRep, scInstance, derivedEvents);
+		// } catch () {
+		//
+		// }
+
+		/*
+		 * TODO: (rtobar) Maybe this code can be written more nicely, but always taking care that, if not in an illegal
+		 * state, then we should destroy the removed proxySupplier object
+		 */
+		boolean success = false;
+
+		try {
+			// Clean up callback for reconnection requests
+			channelReconnectionCallback.disconnect();
+			
+			// remove all filters and destroy the proxy supplier
+			proxySupplier.remove_all_filters();
+
+			try {
+				// Clean up callback for subscribed events
+				if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
+					helper.getContainerServices().deactivateOffShoot(corbaObj);
+				}
+			} catch (AcsJContainerServicesEx e) {
+				logger.log(Level.INFO, "Failed to Corba-deactivate NCSubscriber " + clientName, e);
+			}
+
+			logger.finer("Disconnected from NC '" + channelName + "'.");
+			success = true;
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+			// this is OK, because someone else has already destroyed the remote resources
+			logger.fine("No need to release resources for channel " + channelName
+					+ " because the NC has been destroyed already.");
+			success = true;
+//		} catch (Throwable thr) {
+//			// TODO remove this hack
+//			throw new AcsJStateMachineActionEx(thr);
+		}
+		finally {
+			if (success) {
+				// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
+				channelReconnectionCallback = null;
+				corbaRef = null;
+				corbaObj = null;
+			}
+		}
+		
+		super.destroyConnectionAction(evtDispatcher, errRep, scInstance, derivedEvents);
+	}
+
+	
+	protected void suspendAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+
+		super.suspendAction(evtDispatcher, errRep, scInstance, derivedEvents);
+		try {
+			// See OMG NC spec 3.4.13.2. Server will continue to queue events.
+			proxySupplier.suspend_connection();
+		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive ex) {
+			throw new AcsJStateMachineActionEx(ex);
+		} catch (org.omg.CosNotifyChannelAdmin.NotConnected ex) {
+			throw new AcsJStateMachineActionEx(ex);
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex) {
+			throw new AcsJStateMachineActionEx("Remote resources already destroyed.", ex);
+		}
+	}
+
+	protected void resumeAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+
+		try {
+			proxySupplier.resume_connection();
+		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive ex) {
+			throw new AcsJStateMachineActionEx(ex);
+		} catch (org.omg.CosNotifyChannelAdmin.NotConnected ex) {
+			throw new AcsJStateMachineActionEx(ex);
+		}
+		super.resumeAction(evtDispatcher, errRep, scInstance, derivedEvents);
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////// Various template method impls //////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	protected boolean isTraceEventsEnabled() {
 		return isTraceNCEventsEnabled;
@@ -383,6 +537,67 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 				remainingEvents+ " events are now still in the queue and may continue to be processed by the receiver.");
 	}
 
+	@Override
+	protected double getMaxProcessTimeSeconds(String eventName) {
+		if (!handlerTimeoutMap.containsKey(eventName)) {
+			// setup a timeout if it's undefined
+			handlerTimeoutMap.put(eventName, DEFAULT_MAX_PROCESS_TIME_SECONDS);
+		}
+//System.out.println("Using handlerTimeout=" + handlerTimeoutMap.get(eventName) + " for event " + eventName);
+		double maxProcessTimeSeconds = handlerTimeoutMap.get(eventName);
+		return maxProcessTimeSeconds;
+	}
+	
+
+
+	/**
+	 * @TODO: Unify treatment of event name. Currently we sometimes use qualified or unqualified names,
+	 * which will create chaos if anyone uses similar event types with same name but different package. 
+	 * Must be fixed across supplier and subscribers, taking into account IDL names vs. Java packages, 
+	 * because also C++ events carry the name in the Corba structure.
+	 * 
+	 * @param structClass
+	 * @throws AcsJEventSubscriptionEx
+	 */
+	@Override
+	protected void notifyFirstSubscription(Class<?> structClass) throws AcsJEventSubscriptionEx {
+		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
+		String eventTypeNameLong = ( structClass == null ? "*" : structClass.getName() );
+		try {
+			int filterId = addFilter(eventTypeNameShort);
+			subscriptionsFilters.put(eventTypeNameLong, filterId);
+		} catch (AcsJCORBAProblemEx e) {
+			throw new AcsJEventSubscriptionEx(e);
+		}
+	}
+	
+	@Override
+	protected void notifySubscriptionRemoved(Class<?> structClass) throws AcsJEventSubscriptionEx {
+//		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
+		String eventTypeNameLong = ( structClass == null ? "*" : structClass.getName() );
+		try {
+			proxySupplier.remove_filter(subscriptionsFilters.get(eventTypeNameLong));
+			subscriptionsFilters.remove(eventTypeNameLong);
+		} catch (FilterNotFound e) {
+			throw new AcsJEventSubscriptionEx("Filter for '"
+					+ eventTypeNameLong + "' not found on the server side: ", e);
+		}
+		// If receivers is empty we just discard everything
+		if (receivers.isEmpty()) {
+			discardAllEvents();
+		}
+	}
+	
+	@Override
+	protected void notifyNoSubscription() {
+		discardAllEvents();
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////// Helper methods  ////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Creates or reuses a shared server-side NC consumer admin object.
 	 * 
@@ -539,106 +754,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		return ret;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * After invoking this method, the user has no control over when
-	 * push_structured_event is invoked by the notification channel. 
-	 * <p>
-	 * @TODO Try to defer contacting the NC and creating server-side objects until this method gets called.
-	 */
-	@Override
-	public void startReceivingEvents() throws CannotStartReceivingEventsException, IllegalStateException {
 
-		try {
-			if( corbaRef == null ) {
-				corbaObj = new OSPushConsumerPOATie(this); 
-				corbaRef = OSPushConsumerHelper.narrow(helper.getContainerServices().activateOffShoot(corbaObj));
-			}
-			proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
-		} catch (AcsJContainerServicesEx e) {
-			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
-			throw new CannotStartReceivingEventsException(e);
-		} catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
-			throw new IllegalStateException(e);
-		} catch (org.omg.CosEventChannelAdmin.TypeError e) {
-			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
-			Throwable cause = new Throwable(e.getMessage());
-			throw new CannotStartReceivingEventsException(cause);
-		}
-
-		LOG_NC_SubscriptionConnect_OK.log(logger, channelName, getNotificationFactoryName());
-	}
-
-	protected double getMaxProcessTimeSeconds(String eventName) {
-		if (!handlerTimeoutMap.containsKey(eventName)) {
-			// setup a timeout if it's undefined
-			handlerTimeoutMap.put(eventName, DEFAULT_MAX_PROCESS_TIME_SECONDS);
-		}
-//System.out.println("Using handlerTimeout=" + handlerTimeoutMap.get(eventName) + " for event " + eventName);
-		double maxProcessTimeSeconds = handlerTimeoutMap.get(eventName);
-		return maxProcessTimeSeconds;
-	}
 	
-
-
-	/**
-	 * @TODO: Unify treatment of event name. Currently we sometimes use qualified or unqualified names,
-	 * which will create chaos if anyone uses similar event types with same name but different package. 
-	 * Must be fixed across supplier and subscribers, taking into account IDL names vs. Java packages, 
-	 * because also C++ events carry the name in the Corba structure.
-	 * 
-	 * @param structClass
-	 * @throws CannotAddSubscriptionException
-	 */
-	@Override
-	protected void notifyFirstSubscription(Class<?> structClass) throws CannotAddSubscriptionException {
-		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
-		String eventTypeNameLong = ( structClass == null ? "*" : structClass.getName() );
-		try {
-			int filterId = addFilter(eventTypeNameShort);
-			subscriptionsFilters.put(eventTypeNameLong, filterId);
-		} catch (AcsJCORBAProblemEx e) {
-			throw new CannotAddSubscriptionException(e);
-		}
-	}
-	
-	@Override
-	protected void notifySubscriptionRemoved(Class<?> structClass) throws SubscriptionNotFoundException {
-//		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
-		String eventTypeNameLong = ( structClass == null ? "*" : structClass.getName() );
-		try {
-			proxySupplier.remove_filter(subscriptionsFilters.get(eventTypeNameLong));
-			subscriptionsFilters.remove(eventTypeNameLong);
-		} catch (FilterNotFound e) {
-			throw new SubscriptionNotFoundException("Filter for '"
-					+ eventTypeNameLong + "' not found on the server side: ", e);
-		}
-		// If receivers is empty we just discard everything
-		if (receivers.isEmpty()) {
-			discardAllEvents();
-		}
-	}
-	
-	@Override
-	protected void notifyNoSubscription() {
-		discardAllEvents();
-	}
-
-	/**
-	 * Use only for unit testing!
-	 */
-	boolean hasGenericReceiver() {
-		return ( genericReceiver != null );
-	}
-	
-	/**
-	 * Use only for unit testing!
-	 */
-	int getNumberOfReceivers() {
-		return receivers.size();
-	}
-
 	/**
 	 * This method manages the filtering capabilities used to control subscriptions.
 	 * 
@@ -675,103 +792,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		}
 
-	}
-
-	@Override
-	protected void disconnect_ImplSpecific() throws IllegalStateException {
-
-		/*
-		 * TODO: (rtobar) Maybe this code can be written more nicely,
-		 *  but always taking care that, if not in an illegal state,
-		 *  then we should destroy the remove proxySupplier object
-		 */
-		boolean success = false;
-		boolean shouldDestroyProxy = true;
-
-		try {
-			// remove all filters and destroy the proxy supplier
-			proxySupplier.remove_all_filters();
-
-			try {
-				// clean-up CORBA stuff
-				if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
-					helper.getContainerServices().deactivateOffShoot(corbaObj);
-				}
-			} catch (AcsJContainerServicesEx e) {
-				logger.log(Level.INFO, "Failed to Corba-deactivate NCSubscriber " + clientName, e);
-			}
-
-			logger.finer("Disconnected from NC '" + channelName + "'.");
-			success = true;
-			shouldDestroyProxy = true;
-		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
-			// this is OK, because someone else has already destroyed the remote resources
-			logger.fine("No need to release resources for channel " + channelName + " because the NC has been destroyed already.");
-			success = true;
-			shouldDestroyProxy = false;
-		}
-		finally {
-			// TODO: Who nulls proxySupplier if we get OBJECT_NOT_EXIST here, or already in suspend?
-			if( shouldDestroyProxy && proxySupplier != null ) {
-				proxySupplier.disconnect_structured_push_supplier();
-				proxySupplier = null;
-			}
-
-			if (success) {
-				// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
-				channelReconnectionCallback = null;
-				corbaRef = null;
-				corbaObj = null;
-				sharedConsumerAdmin = null;
-				channel = null;
-			}
-			
-		}
-	}
-
-
-	protected boolean isDisconnected_ImplSpecific() {
-		// TODO: Shouldn't we also check proxySupplier==null ??
-		return ( sharedConsumerAdmin == null );
-	}
-
-	/**
-	 * Called by {@link #suspend()}.
-	 */
-	@Override
-	protected void suspend_ImplSpecific() throws IllegalStateException {
-		if (proxySupplier == null) {
-			throw new IllegalStateException("Subscriber already disconnected");
-		}
-		try {
-			// See OMG NC spec 3.4.13.2. Server will continue to queue events.
-			proxySupplier.suspend_connection();
-		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive ex) {
-			throw new IllegalStateException(ex);
-		} catch (org.omg.CosNotifyChannelAdmin.NotConnected ex) {
-			throw new IllegalStateException(ex);
-		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex) {
-//			proxySupplier = null;  TODO once isDisconnected etc work with proxy supplier.
-			throw new IllegalStateException("Remote resources already destroyed.", ex);
-		}
-	}
-
-
-	/**
-	 * Called by {@link #resume()}.
-	 */
-	@Override
-	protected void resume_ImplSpecific() throws IllegalStateException {
-		if (proxySupplier == null) {
-			throw new IllegalStateException("Subscriber already disconnected");
-		}
-		try {
-			proxySupplier.resume_connection();
-		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive e) {
-			throw new IllegalStateException(e);
-		} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
-			throw new IllegalStateException(e);
-		}
 	}
 	
 
@@ -841,6 +861,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		return alma.acsnc.FILTER_LANGUAGE_NAME.value;
 	}
 
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////// Corba callback methods  ////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * This method is called by the notification channel (supplier proxy) each time an event is received.
 	 * <p>
@@ -851,7 +876,12 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * method as the first thing it does. 
 	 * @param structuredEvent
 	 *            The structured event sent by a supplier.
-	 * @throws Disconnected If this subscriber is disconnected from the NC.
+	 * @throws Disconnected If this subscriber is disconnected from the NC. 
+	 *         See NC spec 3.3.7.1: "if the invocation of push_structured_event upon a StructuredPushConsumer instance 
+	 *         by a StructuredProxyPushSupplier instance results in the Disconnected exception being raised, 
+	 *         the StructuredProxyPushSupplier will invoke its own disconnect_structured_push_supplier operation, 
+	 *         resulting in the destruction of that StructuredProxyPushSupplier instance."
+	 *         This serves only as a backup mechanism, since normally we explicitly disconnect the subscriber.
 	 * 
 	 * @see org.omg.CosNotifyComm.StructuredPushConsumerOperations#push_structured_event(org.omg.CosNotification.StructuredEvent)
 	 */
@@ -874,19 +904,23 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
-		// TODO: Get Class<T> in ctor, store it, 
-		if (convertedAny == null || !eventType.isInstance(convertedAny)) {
+		if (convertedAny == null) {
 			// @TODO: compare with ACS-NC specs and C++ impl, and perhaps call generic receiver with null data,
 			//        if the event does not carry any data.
-			// @TODO: check that we do not somewhere in ACS allow also *sequences of IDL structs* as event data,
-			//        because here they will lead to this error.
-			String badDataType = ( convertedAny == null ? "null" : convertedAny.getClass().getName() );
 			LOG_NC_EventReceive_FAIL.log(
 					logger,
 					channelName,
 					getNotificationFactoryName(),
 					structuredEvent.header.fixed_header.event_type.type_name,
-					badDataType);
+					"null");
+		}
+		else if (!eventType.isInstance(convertedAny)) {
+			// This can be OK if we have a generic subscription
+			if (genericReceiver == null) {
+				// For typed subscriptions, event types outside of the type parameter <T> range should not arrive 
+				// because we expect server-side filtering to hide from us any other types sent on the channel.
+				logNoEventReceiver(convertedAny.getClass().getName());
+			}
 		}
 		else {
 			// got good event data, will give it to the registered receiver
@@ -908,7 +942,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	/**
 	 * Users can override this method to get notified of raw events, for additional statistics etc.
 	 * Dealing with events in this method is only in addition to the normal processing of that event,
-	 * and should generally be avoided by simply not overriding this method. 
+	 * and should generally be avoided by simply not overriding this method.
+	 * @TODO: Perhaps return a boolean to veto down further processing of the event? Could be useful for eventGUI.
+	 *  
 	 * @param structuredEvent
 	 */
 	protected void push_structured_event_called(StructuredEvent structuredEvent) {
@@ -940,6 +976,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		throw new NO_IMPLEMENT();
 	}
 
+	/**
+	 * @TODO: Perhaps integrate reconnection into the state machine.
+	 * 
+	 * @see alma.acs.nc.ReconnectableParticipant#reconnect(gov.sandia.NotifyMonitoringExt.EventChannelFactory)
+	 */
 	@Override
 	public void reconnect(EventChannelFactory ecf) {
 
@@ -954,10 +995,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 
 		try {
-			channel.set_qos(helper.getChannelProperties().
-					getCDBQoSProps(channelName));
-			channel.set_admin(helper.getChannelProperties().
-					getCDBAdminProps(channelName));
+			channel.set_qos(helper.getChannelProperties().getCDBQoSProps(channelName));
+			channel.set_admin(helper.getChannelProperties().getCDBAdminProps(channelName));
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
 		} catch (UnsupportedAdmin ex) {
