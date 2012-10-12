@@ -22,7 +22,19 @@ package alma.acs.nc;
 
 import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 
-public interface ReconnectableSubscriber {
+/**
+ * Must be implemented by NC publishers and subscribers
+ * in order to get a reconnect request from the NotifyService after a service restart.
+ * <p>
+ * Note that even in a push-push NC configuration there are still 
+ * callbacks from the subscriber to the service and from the service to the supplier,
+ * which partly explains why TAO extensions require an explicit reconnection
+ * rather than relying on persistent object addresses.
+ */
+public interface ReconnectableParticipant {
 
+	/**
+	 * @param ecf The new EventChannelFactory reference as delivered by the NotifyService's callback.
+	 */
 	public void reconnect(EventChannelFactory ecf);
 }
