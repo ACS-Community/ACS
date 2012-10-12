@@ -63,7 +63,7 @@ public class AcsScxmlDispatchingAction<E extends Enum<E>> extends Action
 	/**
 	 * Set by the framework right after construction, via {@link #setName(String)}.
 	 * This mechanism is based on beanutils, working with SCXML elements such as 
-	 * &lt;customActionDomain:EnvironmentCreator name="EnvironmentCreator"/&gt;
+	 * &lt;customActionDomain:createEnvironment name="createEnvironment"/&gt;
 	 * that have a name attribute.
 	 */
 	private String actionName;
