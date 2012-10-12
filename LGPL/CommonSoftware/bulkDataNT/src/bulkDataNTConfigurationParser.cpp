@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.33 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.34 2012/10/12 13:46:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -297,9 +297,15 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 
 				try {
 					if( parsingInfo.type == SENDER )
+					{
 						senderCfg.streamCfg->participantPerStream = getBooleanFromAttribute(streamChildNode, "ParticipantPerStream", false);
+					}
 					else
+					{
 						receiverCfg.streamCfg->participantPerStream = getBooleanFromAttribute(streamChildNode, "ParticipantPerStream", false);
+						receiverCfg.streamCfg->setBaseUnicastPort(getUnsignedShortFromAttribute(streamChildNode, "baseUnicastPort", ReceiverStreamConfiguration::DEFAULT_BASE_UNICAST_PORT));
+						receiverCfg.streamCfg->setUseIncrementUnicastPort(getBooleanFromAttribute(streamChildNode, "useIncrementUnicastPort", ReceiverStreamConfiguration::DEFAULT_USE_INCREMENT_UNICAST_PORT));
+					}
 				} catch(CDBProblemExImpl &ex) {
 					cleanConfig(&receiverCfg, &senderCfg, parsingInfo.type);
 					throw ex;
@@ -376,6 +382,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveAvgProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveAvgProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT));
 						receiverCfg.flowsCfgMap[flowName.get()]->setEnableMulticast(getBooleanFromAttribute(streamChildNode, "enableMulticast", ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST));
 						receiverCfg.flowsCfgMap[flowName.get()]->setMulticastAddress(getStringFromAttribute(streamChildNode, "multicastAddress", ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS));
+						receiverCfg.flowsCfgMap[flowName.get()]->setUnicastPort(getUnsignedShortFromAttribute(streamChildNode, "unicastPort", ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT));
 					}
 
 				} catch(CDBProblemExImpl &ex) {
@@ -467,6 +474,32 @@ double BulkDataConfigurationParser::getDoubleFromAttribute(DOMNode *node, const 
 		}
 
 		returnVal = val->fData.fValue.f_doubleType.f_double;
+	}
+
+	return returnVal;
+}
+
+unsigned short BulkDataConfigurationParser::getUnsignedShortFromAttribute(DOMNode *node, const char * attribute, unsigned short defaultVal) {
+
+	unsigned short returnVal;
+	const XMLCh* sft = getAttrValue(node, attribute);
+	if( sft == 0 )
+		returnVal = defaultVal;
+	else {
+		XSValue::Status status;
+		auto_ptr<XSValue> val(XSValue::getActualValue(sft, XSValue::dt_unsignedShort, status));
+
+		if( status != XSValue::st_Init ) {
+
+			stringstream s;
+			s << "Invalid value for '" << attribute << "' on stream QoS configuration";
+
+			CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			cdbProblemEx.setDetail(s.str().c_str());
+			throw cdbProblemEx;
+		}
+
+		returnVal = val->fData.fValue.f_ushort;
 	}
 
 	return returnVal;
