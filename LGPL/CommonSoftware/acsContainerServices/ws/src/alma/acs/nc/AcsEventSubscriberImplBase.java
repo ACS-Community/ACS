@@ -19,36 +19,58 @@
 
 package alma.acs.nc;
 
+import static alma.acs.nc.sm.generated.EventSubscriberAction.createConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.createEnvironment;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.destroyConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.destroyEnvironment;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.resumeConnection;
+import static alma.acs.nc.sm.generated.EventSubscriberAction.suspendConnection;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.scxml.ErrorReporter;
+import org.apache.commons.scxml.EventDispatcher;
+import org.apache.commons.scxml.SCInstance;
+import org.apache.commons.scxml.TriggerEvent;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
-import alma.acs.nc.sm.ConnectionActionHandler;
-import alma.acs.nc.sm.EnvironmentActionHandler;
-import alma.acs.nc.sm.EventSubscriberStateMachine;
-import alma.acs.nc.sm.SuspendResumeActionHandler;
+import alma.acs.nc.sm.generated.EventSubscriberAction;
+import alma.acs.nc.sm.generated.EventSubscriberSignal;
+import alma.acs.nc.sm.generated.EventSubscriberSignalDispatcher;
+import alma.acs.nc.sm.generic.AcsScxmlActionDispatcher;
+import alma.acs.nc.sm.generic.AcsScxmlActionExecutor;
+import alma.acs.nc.sm.generic.AcsScxmlEngine;
 import alma.acs.util.StopWatch;
+import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;
 
 /**
  * Base class for an event subscriber, that can be used for both Corba NC and for in-memory test NC.
  * <p>
  * We will have to see if it can also be used for DDS-based events, or if the required modifications will be too heavy.
- * The parameterization (T) is an attempt to abstract away from the IDLEntity event base type.
+ * 
+ * @param <T> The event (base) type. If all events are of the same type then that type should be used; 
+ *            otherwise a common base type for all events that may be sent on the given "channel" should be used, 
+ *            such as <code>Object</code> or <code>IDLEntity</code>. 
  */
-public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscriber<T> {
+public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscriber<T>, AcsScxmlActionExecutor<EventSubscriberAction> {
 	
 	/**
 	 * A name that identifies the client of this NCSubscriber, to be used
@@ -57,6 +79,8 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 */
 	protected final String clientName;
 
+	protected final ContainerServicesBase services;
+
 	/** 
 	 * Provides access to the ACS logging system. 
 	 */
@@ -64,10 +88,14 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 
 	/**
 	 * State machine for the subscriber lifecycle. 
-	 * It is not used for data handling itself, even though the measured overhead of less than 0.1 ms 
-	 * per signal might allow this.
+	 * It is not used for data handling itself, even though the measured overhead 
+	 * of less than 0.2 ms per signal might allow this.
 	 */
-	protected final EventSubscriberStateMachine stateMachine;
+	protected final AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction> stateMachine;
+	
+	private static final String scxmlFileName = "/alma/acs/nc/sm/generated/EventSubscriberSCXML.xml";
+
+	protected final EventSubscriberSignalDispatcher stateMachineSignalDispatcher;
 	
 	/**
 	 * Event queue should hold at least two events to avoid unnecessary scary logs about slow receivers,
@@ -89,7 +117,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * here we take into account the actual event rate and check whether the receiver can handle it, 
 	 * whereas {@link #processTimeLogRepeatGuard} only compares the actual process times against pre-configured values.
 	 */
-	private final ThreadPoolExecutor eventHandlingExecutor;
+	private ThreadPoolExecutor eventHandlingExecutor;
 
 	/**
 	 * @see #eventHandlingExecutor
@@ -124,11 +152,10 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	protected final MultipleRepeatGuard processTimeLogRepeatGuard;
 
 	/**
-	 * Lock to make connection and disconnection activities thread-safe. 
+	 * Runtime access to the type parameter &lt;T&gt;.
 	 */
-	protected final ReentrantLock connectionLock = new ReentrantLock();
-
 	protected final Class<T> eventType;
+
 
 	/**
 	 * @return <code>true</code> if events should be logged when they are received. 
@@ -140,9 +167,9 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * Base class constructor, to be called from subclass ctor.
 	 * IMPORTANT: Subclasses MUST call "stateMachine.setUpEnvironment()" at the end of their constructors.
 	 * This is because Java does not support template method design for constructors 
-	 * (see for example http://stackoverflow.com/questions/2906958/running-a-method-after-the-constructor-of-any-derived-class)
-	 * and since the subclasses are all meant to be produced within ACS I did not want to go for dirty tricks to work around this.
-	 * We also don't want user code to call a public init() method after constructing the subscriber. 
+	 * (see for example http://stackoverflow.com/questions/2906958/running-a-method-after-the-constructor-of-any-derived-class).
+	 * Since the subclasses are all meant to be produced within ACS I did not want to go for dirty tricks to work around this.
+	 * We also don't want to call a public init() method after constructing the subscriber. 
 	 * <p>
 	 * Normally an ACS class such as container services will act as the factory for event subscriber objects, 
 	 * but for exceptional cases it is also possible to create one stand-alone, 
@@ -164,6 +191,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 			ex.setParameterValue("null");
 			throw ex;
 		}
+		this.services = services;
 
 		if (clientName == null) {
 			AcsJBadParameterEx ex = new AcsJBadParameterEx();
@@ -171,49 +199,172 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 			ex.setParameterValue("null");
 			throw ex;
 		}
-
-		logger = services.getLogger();
 		this.clientName = clientName;
+
 		this.eventType = eventType;
-		
-		stateMachine = new EventSubscriberStateMachine(logger, 
-									createEnvironmentActionHandler(),
-									createConnectionActionHandler(),
-									createSuspendResumeActionHandler() );
-		
+		logger = services.getLogger();
+
 		// @TODO Set more realistic guarding parameters, e.g. max 1 identical log in 10 seconds
 		processTimeLogRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 1, Logic.COUNTER, 100);
 
 		// log slow receiver error only every 30 seconds or every 100 times, whatever comes first
 		receiverTooSlowLogRepeatGuard = new RepeatGuard(30, TimeUnit.SECONDS, 100, Logic.OR);
 		
+		// set up the state machine
+		
+		AcsScxmlActionDispatcher<EventSubscriberAction> actionDispatcher = 
+				new AcsScxmlActionDispatcher<EventSubscriberAction>(logger, EventSubscriberAction.class);
+		
+		// As a design choice, we implement all SM actions directly here in this class and its subclasses.
+		// The state machine framework expects an object per action, so that we must register ourselves for every action type.
+		// We could do this as a for loop over EventSubscriberAction.values(), but better hardcode the registration
+		// for every action type so that SM changes will be noticed more easily.
+		actionDispatcher.registerActionHandler(createEnvironment, this);
+		actionDispatcher.registerActionHandler(destroyEnvironment, this);
+		actionDispatcher.registerActionHandler(createConnection, this);
+		actionDispatcher.registerActionHandler(destroyConnection, this);
+		actionDispatcher.registerActionHandler(suspendConnection, this);
+		actionDispatcher.registerActionHandler(resumeConnection, this);
+		
+		// Here the AcsScxmlEngine constructor will load the scxml file and start the state machine
+		stateMachine = new AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction>(
+				scxmlFileName, logger, actionDispatcher, EventSubscriberSignal.class);
+		
+		// Convenience method to send events to the SM. 
+		// Usually meant to be used as a base class, but here we don't want to expose the SM to the user.
+		stateMachineSignalDispatcher = new EventSubscriberSignalDispatcher() {
+			@Override
+			protected AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction> getScxmlEngine() {
+				return stateMachine;
+			}
+		};
+		
+		// Later at the end of the subclass ctor there should be the call to 
+		// stateMachine.setUpEnvironment(), leaving our state machine in state EnvironmentCreated
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////// State machine //////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Dispatches the action enum to one of the action handler methods.
+	 * <p>
+	 * The overhead of implementing this method is the price we pay for avoiding reflection
+	 * and allowing flexible action implementation in the SM design.
+	 * @see alma.acs.nc.sm.generic.AcsScxmlActionExecutor#execute(java.lang.Enum, org.apache.commons.scxml.EventDispatcher, org.apache.commons.scxml.ErrorReporter, org.apache.commons.scxml.SCInstance, java.util.Collection)
+	 */
+	@Override
+	public boolean execute(EventSubscriberAction action, EventDispatcher evtDispatcher, ErrorReporter errRep,
+			SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+					throws AcsJStateMachineActionEx {
+		
+//		logger.fine("Will handle action " + action.name());
+		boolean ret = true;
+		
+		switch (action) {
+		
+		case createEnvironment:
+			createEnvironmentAction(evtDispatcher, errRep, scInstance, derivedEvents);
+			break;
+
+		case destroyEnvironment:
+			destroyEnvironmentAction(evtDispatcher, errRep, scInstance, derivedEvents);
+			break;
+
+		case createConnection:
+			createConnectionAction(evtDispatcher, errRep, scInstance, derivedEvents);
+			break;
+
+		case destroyConnection:
+			destroyConnectionAction(evtDispatcher, errRep, scInstance, derivedEvents);
+			break;
+
+		case suspendConnection:
+			suspendAction(evtDispatcher, errRep, scInstance, derivedEvents);
+			break;
+
+		case resumeConnection:
+			resumeAction(evtDispatcher, errRep, scInstance, derivedEvents);
+			break;
+
+		default:
+			ret = false;
+		}
+		
+//		logger.fine("Done handling action " + action.name());
+		return ret;
+	}
+
+	
+	/**
+	 * Subclass may override, but must call super.createEnvironmentAction().
+	 */
+	protected void createEnvironmentAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
+		// nada
+	}
+
+	/**
+	 * Subclass may override, but must call super.destroyEnvironmentAction().
+	 */
+	protected void destroyEnvironmentAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
+	}
+
+	/**
+	 * Subclass may override, but must call super.createConnectionAction().
+	 */
+	protected void createConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
 		eventHandlingExecutor = new ThreadPoolExecutor(0, 1, 1L, TimeUnit.MINUTES,
 				new ArrayBlockingQueue<Runnable>(EVENT_QUEUE_CAPACITY), services.getThreadFactory(), new ThreadPoolExecutor.AbortPolicy() );
-		
-		
-	}
-
-	/**
-	 * Subclasses can override EnvironmentActionHandler
-	 */
-	protected EnvironmentActionHandler createEnvironmentActionHandler() {
-		return new EnvironmentActionHandler(logger);
-	}
-
-	/**
-	 * Subclasses can override ConnectionActionHandler
-	 */
-	protected ConnectionActionHandler createConnectionActionHandler() {
-		return new ConnectionActionHandler(logger);
-	}
-
-	/**
-	 * Subclasses can override SuspendResumeActionHandler
-	 */
-	protected SuspendResumeActionHandler createSuspendResumeActionHandler() {
-		return new SuspendResumeActionHandler(logger);
 	}
 	
+	/**
+	 * Handler for "destroyConnection" state machine action.
+	 * <p>
+	 * Shuts down the event queue. 
+	 * Queued events may still be processed by the receivers afterwards, 
+	 * but here we wait for up to 500 ms to log it if it is the case.
+	 * <p>
+	 * Further events delivered to {@link #processEventAsync(Object, EventDescription)}
+	 * will cause an exception there.
+	 * <p>
+	 * Subclass may override, but must call super.destroyConnectionAction().
+	 */
+	protected void destroyConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+		
+		eventHandlingExecutor.shutdown();
+		boolean queueOK = false; // just in case we want to report the success of this shutdown
+		try {
+			queueOK = eventHandlingExecutor.awaitTermination(500, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException ex) {
+			// just leave queueOK == false
+		}
+		if (!queueOK) {
+			// interrupted or timeout occurred, may still have events in the queue. Terminate with error message
+			int remainingEvents = eventHandlingExecutor.getQueue().size();
+			logQueueShutdownError(500, remainingEvents);
+		}
+	}
+	
+	/**
+	 * Subclass may override, but must call super.suspendAction().
+	 */
+	protected void suspendAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
+		// nada
+	}
+	
+	/**
+	 * Subclass may override, but must call super.resumeAction().
+	 */
+	protected void resumeAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
+		// nada
+	}
 
 	/**
 	 * Gets the configured (or default) max time that a receiver may take to process an event,
@@ -295,8 +446,6 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * for example <code>push_structured_event</code> in case of Corba NC,
 	 * or preferably via {@link #processEventAsync(Object, EventDescription)}.
 	 * <p>
-	 * The implementation cannot assume any particular event type.
-	 * <p>
 	 * No exception is allowed to be thrown by this method, even if the receiver implementation throws a RuntimeExecption
 	 */
 	protected void processEvent(T eventData, EventDescription eventDescrip) {
@@ -367,6 +516,30 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	}
 
 
+	@Override
+	public String getLifecycleState() {
+		return stateMachine.getCurrentState();
+	}
+
+	
+	/**
+	 * Use only for unit testing!
+	 */
+	public boolean hasGenericReceiver() {
+		return ( genericReceiver != null );
+	}
+	
+	/**
+	 * Use only for unit testing!
+	 */
+	public int getNumberOfReceivers() {
+		return receivers.size();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////// AcsEventSubscriber impl //////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Subscribes to all events. The latest generic receiver displaces the previous one. 
 	 * <p>
@@ -380,7 +553,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * @TODO: Couldn't this be fixed by creating the server-side filters on demand (see also javadoc class comment about lifecycle)?
 	 */
 	@Override
-	public final void addGenericSubscription(GenericCallback receiver) throws CannotAddSubscriptionException {
+	public final void addGenericSubscription(GenericCallback receiver) throws AcsJEventSubscriptionEx {
 
 		// First time we create the filter and set the receiver
 		if( genericReceiver == null ) {
@@ -396,47 +569,44 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * @throws AcsJCORBAProblemEx
 	 */
 	@Override
-	public final void removeGenericSubscription() throws SubscriptionNotFoundException {
+	public final void removeGenericSubscription() throws AcsJEventSubscriptionEx {
 
 		if (genericReceiver == null ) {
-			throw new SubscriptionNotFoundException("Failed to remove generic subscription when not actually subscribed");
+			AcsJEventSubscriptionEx ex = new AcsJEventSubscriptionEx();
+			ex.setContext("Failed to remove generic subscription when not actually subscribed.");
+			ex.setEventType("generic");
+			throw ex;
 		}
 
 		notifySubscriptionRemoved(null);
 		genericReceiver = null;
 	}
 
-	/**
-	 * @param structClass Can be <code>null</code> in case of generic subscription.
-	 */
-	protected abstract void notifyFirstSubscription(Class<?> structClass) throws CannotAddSubscriptionException;
-	
-	protected abstract void notifySubscriptionRemoved(Class<?> structClass) throws SubscriptionNotFoundException;
-	
-	protected abstract void notifyNoSubscription();
-
-	
 	@Override
 	public final <U extends T> void addSubscription(Callback<U> receiver) 
-			throws CannotAddSubscriptionException {
+			throws AcsJEventSubscriptionEx {
 
-		Class<U> structClass = receiver.getEventType();
+		Class<U> subscribedEventType = receiver.getEventType();
 
-		if (structClass == null || !(eventType.isAssignableFrom(structClass)) )
-			throw new CannotAddSubscriptionException("Receiver is returning a null or invalid event type. " +
-					"Check the getEventType() method implementation and try again");
-
+		if (subscribedEventType == null || !(eventType.isAssignableFrom(subscribedEventType)) ) {
+			AcsJEventSubscriptionEx ex = new AcsJEventSubscriptionEx();
+			ex.setContext("Receiver is returning a null or invalid event type. " +
+					"Check the getEventType() method implementation and try again.");
+			ex.setEventType(subscribedEventType == null ? "null" : subscribedEventType.getName());
+			throw ex;
+		}
+		
 		// First time we create the filter and set the receiver
-		if (!receivers.containsKey(structClass)) {
-			notifyFirstSubscription(structClass);
+		if (!receivers.containsKey(subscribedEventType)) {
+			notifyFirstSubscription(subscribedEventType);
 		}
 		// After the filter is created, we just replace the corresponding receivers
-		receivers.put(structClass, receiver);
+		receivers.put(subscribedEventType, receiver);
 	}
 
 	
 	@Override
-	public final <U extends T> void removeSubscription(Class<U> structClass) throws SubscriptionNotFoundException {
+	public final <U extends T> void removeSubscription(Class<U> structClass) throws AcsJEventSubscriptionEx {
 
 		// Removing subscription from receivers list
 		if (structClass != null) {
@@ -446,130 +616,105 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 				notifySubscriptionRemoved(structClass);
 			} 
 			else {
-				throw new SubscriptionNotFoundException("Trying to unsubscribe from '"
-						+ structClass.getName() + "' type of event when not actually subscribed to this type.");
+				AcsJEventSubscriptionEx ex = new AcsJEventSubscriptionEx();
+				ex.setContext("Trying to unsubscribe from an event type not being subscribed to.");
+				ex.setEventType(structClass.getName());
+				throw ex;
 			}
-		} else {
+		} 
+		else {
 			// Removing every type of event
 			receivers.clear();
 			notifyNoSubscription();
 		}
 	}
 
+	@Override
+	public final void startReceivingEvents() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
+		try {
+			stateMachineSignalDispatcher.startReceivingEvents();
+		} catch (AcsJStateMachineActionEx ex) {
+			throw new AcsJCouldntPerformActionEx(ex);
+		}
+	}
+
+
 	/** 
 	 * @see alma.acs.nc.AcsEventSubscriber#disconnect()
 	 */
 	@Override
-	public final void disconnect() throws IllegalStateException {
-
-		connectionLock.lock();
+	public final void disconnect() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
 		try {
-			checkConnection();
-
-			// stop receiving events
-			try {
-				suspend();
-			} finally {
-				// An IllegalStateException we let fly, but still must call the rest
-				disconnect_ImplSpecific();
-				shutdownAsyncEventProcessing();
-			}
-		} 
+			stateMachineSignalDispatcher.stopReceivingEvents();
+		}
+		catch (AcsJIllegalStateEventEx ex) {
+			// ignore. If the state is totally wrong then the subsequent cleanUpEnvironment
+			// will also throw AcsJIllegalStateEventEx
+		}
+		catch (AcsJStateMachineActionEx ex) {
+			throw new AcsJCouldntPerformActionEx(ex);
+		}
 		finally {
-			connectionLock.unlock();
+			// even after AcsJIllegalStateEventEx in stopReceivingEvents we want to do the second clean-up step
+			try {
+				stateMachineSignalDispatcher.cleanUpEnvironment();
+			} catch (AcsJStateMachineActionEx ex) {
+				throw new AcsJCouldntPerformActionEx(ex);
+			}
 		}
 	}
 	
-	/**
-	 * Called from {@link #disconnect()}.
-	 */
-	protected abstract void disconnect_ImplSpecific() throws IllegalStateException;
+	@Override
+	public final void suspend() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
+		try {
+			stateMachineSignalDispatcher.suspend();
+		} catch (AcsJStateMachineActionEx ex) {
+			throw new AcsJCouldntPerformActionEx(ex);
+		}
+	}
+
 	
+	@Override
+	public final void resume() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
+		try {
+			stateMachineSignalDispatcher.resume();
+		} catch (AcsJStateMachineActionEx ex) {
+			throw new AcsJCouldntPerformActionEx(ex);
+		}
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////// Subscription helper methods //////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * @param structClass Can be <code>null</code> in case of generic subscription.
+	 */
+	protected abstract void notifyFirstSubscription(Class<?> structClass) throws AcsJEventSubscriptionEx;
+	
+	/**
+	 * @param structClass
+	 * @throws AcsJEventSubscriptionEx
+	 */
+	protected abstract void notifySubscriptionRemoved(Class<?> structClass) throws AcsJEventSubscriptionEx;
+	
+	/**
+	 * 
+	 */
+	protected abstract void notifyNoSubscription();
+
+	
+	@Override
+	public boolean isSuspended() {
+		return stateMachine.isStateActive("EnvironmentCreated::Connected::Suspended");
+	}
 	
 	public final boolean isDisconnected() {
-		connectionLock.lock();
-		try {
-			return isDisconnected_ImplSpecific();
-		}
-		finally {
-			connectionLock.unlock();
-		}
-	}
-
-	/**
-	 * Called by {@link #isDisconnected()}, for the pub-sub technology specific part.
-	 */
-	protected abstract boolean isDisconnected_ImplSpecific();
-	
-
-	private void checkConnection() throws IllegalStateException {
-		if (isDisconnected()) {
-			throw new IllegalStateException("Subscriber already disconnected");
-		}
-	}
-
-	
-	@Override
-	public final void suspend() throws IllegalStateException {
-		connectionLock.lock();
-		try {
-			checkConnection();
-			suspend_ImplSpecific(); // currently may throw OBJECT_NOT_EXIST for NC
-		}
-		finally {
-			connectionLock.unlock();
-		}
-	}
-	
-	/**
-	 * Called by {@link #suspend()}, for the pub-sub technology specific part.
-	 * @throws IllegalStateException
-	 */
-	protected abstract void suspend_ImplSpecific() throws IllegalStateException;
-
-	
-	@Override
-	public final void resume() throws IllegalStateException {
-		connectionLock.lock();
-		try {
-			checkConnection();
-			resume_ImplSpecific();
-		}
-		finally {
-			connectionLock.unlock();
-		}
-	}
-
-	/**
-	 * Called by {@link #resume()}, for the pub-sub technology specific part.
-	 * @throws IllegalStateException
-	 */
-	protected abstract void resume_ImplSpecific() throws IllegalStateException;
-	
-	/**
-	 * Shuts down the event queue. 
-	 * Queued events may still be processed by the receivers afterwards, 
-	 * but here we wait for up to 500 ms to log it if it is the case.
-	 * <p>
-	 * Further events delivered to {@link #processEventAsync(Object, EventDescription)}
-	 * will cause an exception there.
-	 * 
-	 * @return <code>true</code> if all events in the queue were processed before returning.
-	 */
-	private boolean shutdownAsyncEventProcessing() {
-		eventHandlingExecutor.shutdown();
-		boolean queueOK = false;
-		try {
-			queueOK = eventHandlingExecutor.awaitTermination(500, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException ex) {
-			// just leave queueOK == false
-		}
-		if (!queueOK) {
-			// interrupted or timeout occurred, may still have events in the queue. Terminate with error message
-			int remainingEvents = eventHandlingExecutor.getQueue().size();
-			logQueueShutdownError(500, remainingEvents);
-		}
-		return queueOK;
+		return (
+				stateMachine.isStateActive("EnvironmentCreated::Disconnected") ||
+				stateMachine.isStateActive("EnvironmentUnknown")
+			);
 	}
 
 }
