@@ -17,7 +17,7 @@
 				</datareader_qos>
 			</DDSSenderFlowQoS>
 		</SenderFlow>
-		<DDSSenderStreamQoS ParticipantPerStream="true">
+		<DDSSenderStreamQoS participantPerStream="true">
 			<participant_qos name="BLA">
 			</participant_qos>
 		</DDSSenderStreamQoS>
@@ -35,7 +35,7 @@
 				</datareader_qos>
 			</DDSSenderFlowQoS>
 		</SenderFlow>
-		<DDSSenderStreamQoS ParticipantPerStream="false"/>
+		<DDSSenderStreamQoS participantPerStream="false"/>
 	</SenderStream>
 
 </BulkDataNTSender>

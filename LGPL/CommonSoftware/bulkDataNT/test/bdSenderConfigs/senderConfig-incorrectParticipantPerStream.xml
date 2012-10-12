@@ -35,7 +35,7 @@
 				</datareader_qos>
 			</DDSSenderFlowQoS>
 		</SenderFlow>
-		<DDSSenderStreamQoS ParticipantPerStream="superfalse"/> <!-- Incorrect boolean value -->
+		<DDSSenderStreamQoS participantPerStream="superfalse"/> <!-- Incorrect boolean value -->
 	</SenderStream>
 
 </BulkDataNTSender>
