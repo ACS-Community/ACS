@@ -161,6 +161,7 @@ public class EventSubscriberSmEngineTest
 		assertThat(engine.getCurrentState(), equalTo("EnvironmentCreated::Connected::Active"));
 
 		assertThat(engine.suspend(), is(false));
+		// If the following fails because the states were renamed, make sure to fix also AcsEventSubscriberImplBase#isSuspended()
 		assertThat(engine.getCurrentState(), equalTo("EnvironmentCreated::Connected::Suspended"));
 		
 		assertThat(engine.resume(), is(false));
@@ -206,10 +207,10 @@ public class EventSubscriberSmEngineTest
 	public void testGetApplicableSignals() {
 		Set<EventSubscriberSignal> signals = engine.getScxmlEngine().getApplicableSignals();
 // The following works in Eclipse with J2SE 7, but not with ACS's JDK from the Makefile. Dunno why.
-//		assertThat(signals, allOf(
-//				hasSize(1), 
-//				hasItem(setUpEnvironment)
-//				));
+		assertThat(signals, allOf(
+				hasSize(1), 
+				hasItem(setUpEnvironment)
+				));
 // Comile error: cannot find symbol
 //		symbol  : method allOf(org.hamcrest.Matcher<java.util.Collection<? extends java.lang.Object>>,org.hamcrest.Matcher<java.lang.Iterable<? super alma.acs.nc.sm.generated.EventSubscriberSignal>>
 // Instead, use two asserts as a workaround:
@@ -254,7 +255,7 @@ public class EventSubscriberSmEngineTest
 		engine.fireSignal(cleanUpEnvironment);
 
 		// Without exception feedback, we expect just a warning log:
-		// WARNING [testActionException] Handler class alma.acs.nc.sm.EventSubscriberSmEngineTest$MyEnvironmentActionHandler failed to execute action EnvironmentCreator
+		// WARNING [testActionException] Handler class alma.acs.nc.sm.EventSubscriberSmEngineTest$MyEnvironmentActionHandler failed to execute action createEnvironment
 		// alma.acs.nc.sm.generic.AcsJStateMachineActionEx
 		//    at alma.acs.nc.sm.EventSubscriberSmEngineTest$MyEnvironmentActionHandler.create(EventSubscriberSmEngineTest.java:68)
 		engine.fireSignal(setUpEnvironment);
@@ -278,7 +279,7 @@ public class EventSubscriberSmEngineTest
 
 	/**
 	 * Cycles 5.000 times between suspended and resumed state
-	 * and asserts that the state machine overhead be less than 0.1 ms per event.
+	 * and asserts that the state machine overhead be less than 0.2 ms per event.
 	 * This is done both with and without the check for allowed events.
 	 */
 	@Test
@@ -300,7 +301,7 @@ public class EventSubscriberSmEngineTest
 		}
 		long elapsed = sw.getLapTimeMillis();
 		logger.info("suspend/resume cycles: cycles = " + cycles + ", elapsed time ms = " + elapsed);
-		assertThat(elapsed, lessThan(1000L)); // 5.000 cycles mean 10.000 signals/transitions, so 1000 ms max means <= 0.1 ms per transition.
+		assertThat("SM transitions too slow.", elapsed, lessThan(2000L)); // 5.000 cycles mean 10.000 signals/transitions, so 2000 ms max means <= 0.2 ms per transition.
 		
 		// Now do the same again, but including the check for applicable events
 		// It seems that this second run is even faster, in spite of the additional check.
@@ -313,7 +314,7 @@ public class EventSubscriberSmEngineTest
 		}
 		elapsed = sw.getLapTimeMillis();
 		logger.info("suspend/resume cycles with event checks: cycles = " + cycles + ", elapsed time ms = " + elapsed);
-		assertThat(elapsed, lessThan(1000L)); 
+		assertThat("SM transitions too slow.", elapsed, lessThan(2000L)); 
 	}
 
 }
