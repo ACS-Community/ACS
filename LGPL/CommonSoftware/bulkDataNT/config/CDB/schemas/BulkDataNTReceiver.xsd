@@ -17,6 +17,8 @@
       </xs:sequence>
     </xs:choice>
     <xs:attribute name="ParticipantPerStream" type="boolean" default="false" use="optional"/>
+    <xs:attribute name="baseUnicastPort" type="xs:unsignedShort" use="optional" default="48000"/>
+    <xs:attribute name="useIncrementUnicastPort" type="boolean" use="optional" default="true"/>
   </xs:complexType>
   <xs:complexType name="DDSReceiverFlowQoSType">
     <xs:choice>
@@ -42,6 +44,7 @@
     <xs:attribute name="cbReceiveAvgProcessTimeoutSec" type="xs:double" use="optional" default="0.010"/>
     <xs:attribute name="enableMulticast" type="xs:boolean" use="optional" default="true"/>
     <xs:attribute name="multicastAddress" type="xs:string" use="optional" default="225.3.2.1"/>
+    <xs:attribute name="unicastPort" type="xs:unsignedShort" use="optional" default="0"/>
   </xs:complexType>
 
   <xs:complexType name="ReceiverStreamType">

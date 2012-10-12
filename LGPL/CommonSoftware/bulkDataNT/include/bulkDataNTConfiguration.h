@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.35 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.36 2012/10/12 13:47:33 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -253,6 +253,9 @@ public:
     std::string getMulticastAddress() const;
     void setMulticastAddress(std::string multicastAddress);
 
+    unsigned short getUnicastPort() const;
+    void setUnicastPort(unsigned short);
+
     /// default multicast address for receiver flow
     static const char* const DEFAULT_MULTICAST_ADDRESS;
 
@@ -262,13 +265,16 @@ public:
     /// default cbReceiveAvgProcessTimeout value
     static double DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT;
 
-    /// default enableMulticast value
-    static bool DEFAULT_ENABLE_MULTICAST;
+    static bool DEFAULT_ENABLE_MULTICAST; /// default enableMulticast value
+
+    static unsigned short DEFAULT_UNICAST_PORT;  /// default unicvast port; 0 means that DDS will choose the port
+
 protected:
     double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
     double cbReceiveAvgProcessTimeout; /// how long should in avergae take execution of cbReceive
     bool enableMulticast; /// is multicast enabled, otherwise unicast
-    std::string multicastAddress; /// mutlicas address, used only if multicast is anbel (enableMulticast==true)
+    std::string multicastAddress; /// multicast address, used only if multicast is anbel (enableMulticast==true)
+    unsigned short unicastPort; /// unicast address, used only if multicast is disabled (enableMulticast==false). If it is 0 the DDS will coose the port
 };
 
 /** A Receiver stream configuration. It consists in a seres
@@ -292,11 +298,22 @@ public:
 	 */
 	void setDDSReceiverStreamQoS(char *profileName, char* cfg);
 
+	bool isUseIncrementUnicastPort() const { return useIncrementUnicastPort;	}
+	void setUseIncrementUnicastPort(bool usePort) {	this->useIncrementUnicastPort = usePort;}
 
+	unsigned short getBaseUnicastPort() const {	return baseUnicastPort;	}
+	void setBaseUnicastPort(unsigned short port) { this->baseUnicastPort = port;	}
+
+	static bool DEFAULT_USE_INCREMENT_UNICAST_PORT; /// default use increment
+
+	static unsigned short DEFAULT_BASE_UNICAST_PORT;  /// default base unicast port
 protected:
 	ReceiverType type;
-	//	std::map<const char *, BulkDataNTReceiverFlowConfiguration> flows;
-};
+	/// base port for unicast, if it is configured to use incremental port number for flows in the stream (useIncramentUnicastPort=true) ...
+	/// ... #ReceiverFlowConfiguration::unicastPort takes precedence if define (!=0)
+	unsigned short baseUnicastPort;
+	bool useIncrementUnicastPort; /// if increment port numbers should be used for flows in the stream. The port is calculated as increment to the #baseUnicasPort
+};//ReceiverStreamConfiguration
 
 };
 

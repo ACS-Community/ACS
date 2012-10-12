@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.27 2012/09/13 14:02:38 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.28 2012/10/12 13:47:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,10 +42,14 @@ unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_
 double SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT=5.0;  //secs
 double SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT=2.0; //secs
 
+unsigned short ReceiverStreamConfiguration::DEFAULT_BASE_UNICAST_PORT=48000;
+bool ReceiverStreamConfiguration::DEFAULT_USE_INCREMENT_UNICAST_PORT=true;
+
 const char* const ReceiverFlowConfiguration::DEFAULT_MULTICAST_ADDRESS="225.3.2.1";
 double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT=0.01; //sec => 6.4 MB/sec
 double ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT=0.005; //sec => ~ 12MB/sec
 bool ReceiverFlowConfiguration::DEFAULT_ENABLE_MULTICAST=true;
+unsigned short ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT=0; ///0 means that DDS will choose the port
 
 bool DDSConfiguration::ignoreUserProfileQoS = true;
 bool DDSConfiguration::ignoreEnvironmentProfileQoS = true;
@@ -260,6 +264,16 @@ void ReceiverFlowConfiguration::setMulticastAddress(std::string multicastAddress
     this->multicastAddress = multicastAddress;
 }
 
+unsigned short ReceiverFlowConfiguration::getUnicastPort() const
+{
+	return this->unicastPort;
+}
+
+void ReceiverFlowConfiguration::setUnicastPort(	unsigned short port)
+{
+	this->unicastPort = port;
+}
+
 void ReceiverFlowConfiguration::setDDSReceiverFlowQoS(char* cfg)
 {
 	setStringProfileQoS(cfg, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
@@ -308,7 +322,9 @@ void SenderFlowConfiguration::setDDSSenderFlowQoS(char* cfg)
 void SenderFlowConfiguration::setDDSSenderFlowQoS(char* profileName, char* cfg)
 {
 	setStringProfileQoS(profileName, cfg, DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE);
-}//setDDSReceiverFlowQoS
+}
+
+
 
 
 
