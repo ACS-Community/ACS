@@ -11,19 +11,19 @@
       </initial>  
       <state id="EnvironmentCreated::Connected::Suspended"> 
         <transition event="resume" target="EnvironmentCreated::Connected::Active"> 
-          <customActionDomain:ConnectionResumer name="ConnectionResumer"/> 
+          <customActionDomain:resumeConnection name="resumeConnection"/> 
         </transition> 
       </state>  
       <state id="EnvironmentCreated::Connected::Active"> 
         <transition event="suspend" target="EnvironmentCreated::Connected::Suspended"> 
-          <customActionDomain:ConnectionSuspender name="ConnectionSuspender"/> 
+          <customActionDomain:suspendConnection name="suspendConnection"/> 
         </transition> 
       </state>  
       <onentry> 
-        <customActionDomain:ConnectionCreator name="ConnectionCreator"/> 
+        <customActionDomain:createConnection name="createConnection"/> 
       </onentry>  
       <onexit> 
-        <customActionDomain:ConnectionDestructor name="ConnectionDestructor"/> 
+        <customActionDomain:destroyConnection name="destroyConnection"/> 
       </onexit>  
       <transition event="stopReceivingEvents" target="EnvironmentCreated::Disconnected"/> 
     </state>  
@@ -31,10 +31,10 @@
       <transition event="startReceivingEvents" target="EnvironmentCreated::Connected"/> 
     </state>  
     <onentry> 
-      <customActionDomain:EnvironmentCreator name="EnvironmentCreator"/> 
+      <customActionDomain:createEnvironment name="createEnvironment"/> 
     </onentry>  
     <onexit> 
-      <customActionDomain:EnvironmentDestructor name="EnvironmentDestructor"/> 
+      <customActionDomain:destroyEnvironment name="destroyEnvironment"/> 
     </onexit>  
     <transition event="cleanUpEnvironment" target="EnvironmentUnknown"/> 
   </state>  

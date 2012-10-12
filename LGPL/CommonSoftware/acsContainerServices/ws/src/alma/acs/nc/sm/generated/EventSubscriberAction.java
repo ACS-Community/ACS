@@ -6,7 +6,7 @@ import alma.acs.nc.sm.generic.AcsScxmlDispatchingAction;
  * All SM actions are mapped to the generic {@link AcsScxmlDispatchingAction}, 
  * so that SCXML will invoke {@link EventSubscriberActionDispatcher}.
  * <p>
- * This enum class replaces the config file config/SMActionMap.txt, 
+ * This enum class replaces the config file config/SMActionMap.txt used in the ESO SM framework, 
  * together with the option of setting arbitrary action handlers.
  * <p>
  * TODO: Rename to uppercase and change the name to start with a verb, e.g. createEnvironment.
@@ -15,10 +15,10 @@ import alma.acs.nc.sm.generic.AcsScxmlDispatchingAction;
  * @author hsommer
  */
 public enum EventSubscriberAction {
-	EnvironmentCreator,
-	ConnectionCreator,
-	ConnectionSuspender,
-	ConnectionResumer,
-	ConnectionDestructor,
-	EnvironmentDestructor
+	createEnvironment,
+	createConnection,
+	suspendConnection,
+	resumeConnection,
+	destroyConnection,
+	destroyEnvironment
 }
