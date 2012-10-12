@@ -8,11 +8,12 @@ import org.apache.commons.scxml.EventDispatcher;
 import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.TriggerEvent;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
 import alma.acs.nc.sm.generated.EventSubscriberAction;
 import alma.acs.nc.sm.generic.AcsScxmlActionExecutor;
 
 /**
- * Handler for actions ConnectionCreator and ConnectionDestructor.
+ * Handler for actions createConnection and destroyConnection.
  * <p>
  * Note that grouping these two actions into one class is an arbitrary choice,
  * not demanded by the state machine framework.
@@ -32,13 +33,15 @@ public class ConnectionActionHandler implements AcsScxmlActionExecutor<EventSubs
 
 	@Override
 	public boolean execute(EventSubscriberAction action, EventDispatcher evtDispatcher, ErrorReporter errRep,
-			SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
+			SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+					throws AcsJStateMachineActionEx {
+		
 		switch (action) {
-		case ConnectionCreator:
+		case createConnection:
 			createConnection(evtDispatcher, errRep, scInstance, derivedEvents);
 			return true;
 
-		case ConnectionDestructor:
+		case destroyConnection:
 			destroyConnection(evtDispatcher, errRep, scInstance, derivedEvents);
 			return true;
 
@@ -48,12 +51,14 @@ public class ConnectionActionHandler implements AcsScxmlActionExecutor<EventSubs
 		
 	}
 	
-	public void createConnection(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-		logger.info("ConnectionCreator action called (event 'startReceivingEvents'), in the user-supplied action dispatcher");
+	public void createConnection(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
+		logger.info("createConnection action called (event 'startReceivingEvents'), in the user-supplied action dispatcher");
 	}
 
-	public void destroyConnection(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-		logger.info("ConnectionDestructor action called (event 'stopReceivingEvents'), in the user-supplied action dispatcher");
+	public void destroyConnection(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+			throws AcsJStateMachineActionEx {
+		logger.info("destroyConnection action called (event 'stopReceivingEvents'), in the user-supplied action dispatcher");
 	}
 
 }

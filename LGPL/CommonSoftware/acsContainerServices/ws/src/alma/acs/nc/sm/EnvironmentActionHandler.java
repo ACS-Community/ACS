@@ -14,7 +14,7 @@ import alma.acs.nc.sm.generated.EventSubscriberAction;
 import alma.acs.nc.sm.generic.AcsScxmlActionExecutor;
 
 /**
- * Handler for actions EnvironmentCreator and EnvironmentDestructor.
+ * Handler for actions createEnvironment and destroyEnvironment.
  * <p>
  * Note that grouping these two actions into one class is an arbitrary choice,
  * not demanded by the state machine framework.
@@ -37,11 +37,11 @@ public class EnvironmentActionHandler implements AcsScxmlActionExecutor<EventSub
 			SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
 					throws AcsJStateMachineActionEx {
 		switch (action) {
-		case EnvironmentCreator:
+		case createEnvironment:
 			create(evtDispatcher, errRep, scInstance, derivedEvents);
 			return true;
 
-		case EnvironmentDestructor:
+		case destroyEnvironment:
 			destroy(evtDispatcher, errRep, scInstance, derivedEvents);
 			return true;
 
@@ -53,11 +53,11 @@ public class EnvironmentActionHandler implements AcsScxmlActionExecutor<EventSub
 	
 	public void create(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
 			throws AcsJStateMachineActionEx {
-		logger.info("EnvironmentCreator action called, in the user-supplied action dispatcher");
+		logger.info("createEnvironment action called, in the user-supplied action dispatcher");
 	}
 	
 	public void destroy(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-		logger.info("EnvironmentDestructor action called, in the user-supplied action dispatcher");
+		logger.info("destroyEnvironment action called, in the user-supplied action dispatcher");
 	}
 
 }
