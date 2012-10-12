@@ -19,6 +19,7 @@
 
 package alma.acs.nc;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -44,10 +45,9 @@ public interface AcsEventPublisher<T> {
 	 * Disconnect this Publisher from the Notification Channel.
 	 * This method must be called when the publisher object is no longer needed.
 	 *
-	 * @throws IllegalStateException If the current Publisher is already
-	 * disconnected
+	 * @throws AcsJIllegalStateEventEx If the current Publisher is already disconnected
 	 */
-	public void disconnect() throws IllegalStateException;
+	public void disconnect() throws AcsJIllegalStateEventEx;
 
 	
 	/**
