@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.34 2012/10/12 13:46:24 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.35 2012/10/12 13:57:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -298,11 +298,11 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 				try {
 					if( parsingInfo.type == SENDER )
 					{
-						senderCfg.streamCfg->participantPerStream = getBooleanFromAttribute(streamChildNode, "ParticipantPerStream", false);
+						senderCfg.streamCfg->setParticipantPerStream(getBooleanFromAttribute(streamChildNode, "participantPerStream", StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM));
 					}
 					else
 					{
-						receiverCfg.streamCfg->participantPerStream = getBooleanFromAttribute(streamChildNode, "ParticipantPerStream", false);
+						receiverCfg.streamCfg->setParticipantPerStream(getBooleanFromAttribute(streamChildNode, "participantPerStream", StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM));
 						receiverCfg.streamCfg->setBaseUnicastPort(getUnsignedShortFromAttribute(streamChildNode, "baseUnicastPort", ReceiverStreamConfiguration::DEFAULT_BASE_UNICAST_PORT));
 						receiverCfg.streamCfg->setUseIncrementUnicastPort(getBooleanFromAttribute(streamChildNode, "useIncrementUnicastPort", ReceiverStreamConfiguration::DEFAULT_USE_INCREMENT_UNICAST_PORT));
 					}

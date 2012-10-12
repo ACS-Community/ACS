@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.28 2012/10/12 13:47:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.29 2012/10/12 13:57:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,6 +38,8 @@ const char* const DDSConfiguration::DEFAULT_API_CREATE_PROFILE = "APICreateProfi
 
 short DDSConfiguration::debugLevel = -1;
 unsigned int DDSConfiguration::DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
+
+bool StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM=false;
 
 double SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT=5.0;  //secs
 double SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT=2.0; //secs
@@ -180,7 +182,7 @@ void DDSConfiguration::setStringProfileQoS(char*  profileName, char* cfg, const 
 StreamConfiguration::StreamConfiguration()
 {
 
-	participantPerStream=false;
+	participantPerStream = DEFAULT_PARTICIPANT_PER_STREAM;
 }//StreamConfiguration
 
 

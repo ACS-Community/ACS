@@ -14,7 +14,7 @@
         <xs:element maxOccurs="1" minOccurs="0" name="participant_qos" type="domainparticipantQosProfileChild"/>
       </xs:sequence>
     </xs:choice>
-    <xs:attribute name="ParticipantPerStream" type="boolean" default="false" use="optional"/>
+    <xs:attribute name="participantPerStream" type="boolean" default="false" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="DDSSenderFlowQoSType">

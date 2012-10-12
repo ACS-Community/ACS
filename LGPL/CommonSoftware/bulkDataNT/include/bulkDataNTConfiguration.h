@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.36 2012/10/12 13:47:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.37 2012/10/12 13:57:22 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -143,6 +143,10 @@ class StreamConfiguration : public DDSConfiguration
 public:
 	StreamConfiguration();
 
+	bool isParticipantPerStream() const {	return participantPerStream;	}
+	void setParticipantPerStream(bool participantPerStream) {	this->participantPerStream = participantPerStream;	}
+
+    static bool DEFAULT_PARTICIPANT_PER_STREAM;
 protected:
 	bool participantPerStream;  /// TBD: not used yet - should flag if we have a participant per stream or just a single participant
 };//StreamConfiguration
