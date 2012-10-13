@@ -94,6 +94,12 @@ module acspytest
 
 	readonly attribute ACS::ROlongSeq timestampROProp;
 	};
+
+	module nested {
+		interface PyTestNestedModule : ACS::ACSComponent {
+			void test();
+		};
+	};
 };
 
 #endif

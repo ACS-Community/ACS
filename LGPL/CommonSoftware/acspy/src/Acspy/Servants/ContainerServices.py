@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.31 2011/09/02 16:09:07 javarias Exp $
+# @(#) $Id: ContainerServices.py,v 1.32 2012/10/13 18:06:06 tstaig Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.31 2011/09/02 16:09:07 javarias Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.32 2012/10/13 18:06:06 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.31 2011/09/02 16:09:07 javarias Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.32 2012/10/13 18:06:06 tstaig Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -300,6 +300,9 @@ class ContainerServices:
             comp_class = temp.pop()  #"PowerSupply"
             #components module name
             comp_module = temp.pop()  #"PS"
+            #components might have nested modules. We ignore pragma prefix (first element)
+            while len(temp) > 1:
+                comp_module = temp.pop() + "." + comp_module
             
             #Now import the real module
             comp_module = __import__(comp_module,

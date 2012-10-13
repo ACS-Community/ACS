@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.31 2012/07/04 16:44:26 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.32 2012/10/13 18:06:06 tstaig Exp $"
 #
 # TestList
 #
@@ -77,5 +77,6 @@ PROLOGUE acspyTATPrologue
 15 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumerPS 15 1"
 16 testArchiveSupplier    "acsutilTATTestRunner acspyTestArchiveConsumer 15 11" "@SLEEP 3" "acsutilTATTestRunner acspyTestArchiveSupplier"  "@SLEEP 60"
 17 testLoggingConsumer    "acsutilTATTestRunner acspyTestLoggingConsumer 15"
+18 testNestedModules      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" "acsutilTATTestRunner acspyTestNestedModules" "@SLEEP 25" "acsutilTATTestRunner acsStopContainer pyContainer" 
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue
