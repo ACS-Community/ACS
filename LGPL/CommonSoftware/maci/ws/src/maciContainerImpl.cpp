@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.149 2012/06/13 07:56:26 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.150 2012/10/15 13:50:00 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.149 2012/06/13 07:56:26 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.150 2012/10/15 13:50:00 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2560,6 +2560,8 @@ ContainerImpl::shutdown (
       ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::shutdown");
     }
 */
+
+  ArchiveSupplierSingleton::Instance().done();
 
 #ifndef MAKE_VXWORKS
   ACSAlarmSystemInterfaceFactory::done();
