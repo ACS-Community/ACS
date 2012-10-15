@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.19 2012/09/06 10:50:30 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.20 2012/10/15 09:46:17 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -48,10 +48,16 @@ class BulkDataNTReceiverStreamBase : public BulkDataNTStream
 {
 public:
 	BulkDataNTReceiverStreamBase(const char* streamName, const ReceiverStreamConfiguration &cfg):
-		BulkDataNTStream(streamName, cfg), receiverName_m("DefaultReceiver") {}
+		BulkDataNTStream(streamName, cfg), receiverName_m("DefaultReceiver")
+	{
+		flowUnicastPort_m = (cfg.isUseIncrementUnicastPort()) ? (cfg.getBaseUnicastPort()) : 0;
+	}
 
 	BulkDataNTReceiverStreamBase( const char* receiverName, const char* streamName, const ReceiverStreamConfiguration &cfg):
-			BulkDataNTStream(streamName, cfg), receiverName_m(receiverName){}
+			BulkDataNTStream(streamName, cfg), receiverName_m(receiverName)
+	{
+		flowUnicastPort_m = (cfg.isUseIncrementUnicastPort()) ? (cfg.getBaseUnicastPort()) : ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT/*=0*/;
+	}
 
 	/**
 	 * Set receiver name (in receiver callback). Nothing to do with stream/flow name!
@@ -71,9 +77,21 @@ public:
 	 */
 	const char* getReceiverName() { return receiverName_m.c_str(); }
 
+	/**
+	 * Returns next flow unicast port, and prepare the next one (increment by one) that will be returned by next call.
+	 * If useIncrementUnicastPort was set to false it returns #ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT (=0) (and does not increment)
+	 */
+	unsigned short getNextFlowUnicastPort()
+	{
+		unsigned short port=flowUnicastPort_m;
+		if (flowUnicastPort_m!=ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT/*=0*/) flowUnicastPort_m++;
+		return port;
+	}
+
 protected:
 
 	std::string receiverName_m;
+	unsigned short flowUnicastPort_m; /// if we decide to use incremental port number for flow (unicast)
 
 };//BulkDataNTReceiverStreamBase
 
