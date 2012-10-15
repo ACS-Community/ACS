@@ -28,7 +28,7 @@
 2 -             Thread=MainThread,
 2 -             Type=10,
 2 - ----------T--:--:--.--- Python Client Error Trace
-2 -             Code=16,
+2 -             Code=17,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
 2 -             Severity=Error,
@@ -54,7 +54,7 @@
 2 -                 Thread=RequestProcessor-xxx,
 2 -             Host=xxxx,
 2 -                 Type=10,
-2 -                 Code=16,
+2 -                 Code=17,
 2 -             Process=xxxjavaContainer,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             Thread=RequestProcessor-xxx,
@@ -63,7 +63,7 @@
 2 -                 Severity=Error,
 2 -             Type=10,
 2 - ----------T--:--:--.--- Python Client testTypeException - Example 4a: TypeException with depth 0
-2 -             Code=16,
+2 -             Code=17,
 2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
 2 - ErrorTrace (TimeStamp=xxxx,
 2 - 
@@ -98,7 +98,7 @@
 2 -             Type=10,
 1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
-2 -             Code=16,
+2 -             Code=17,
 2 -                 Routine=internalBadMethod,
 2 -             Routine=internalBadMethod,
 2 -                     Thread=RequestProcessor-xxx,
@@ -108,7 +108,7 @@
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                     Type=10,
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-2 -                     Code=16,
+2 -                     Code=17,
 2 -                 Process=xxxjavaContainer,
 2 -             Process=xxxjavaContainer,
 2 -             Severity=Error,
@@ -123,8 +123,8 @@
 2 -                 Type=10,
 2 -             Type=10,
 1 - 	at java.lang.reflect.Method.invoke(Method.java:xxx)
-2 -                 Code=16,
-2 -             Code=16,
+2 -                 Code=17,
+2 -             Code=17,
 2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
 2 -     ErrorTrace (TimeStamp=xxxx,
 1 - 	at alma.acs.monitoring.DynamicInterceptor.invoke(DynamicInterceptor.java:xxx)
@@ -168,7 +168,7 @@
 2 -                         Process=xxxjavaContainer,
 2 -                 Type=10,
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
-2 -                 Code=16,
+2 -                 Code=17,
 2 -                     Routine=internalBadMethod,
 2 -                 Routine=internalBadMethod,
 2 -             Routine=testCORBASystemException,
@@ -180,7 +180,7 @@
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                         Type=10,
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6b: completionFromCompletion with depth 3
-2 -                         Code=16,
+2 -                         Code=17,
 2 -             Process=xxx,
 2 -                     Process=xxxjavaContainer,
 2 -                 Process=xxxjavaContainer,
@@ -198,9 +198,9 @@
 2 -                     Type=10,
 2 -                 Type=10,
 2 -             Type=10,
-2 -                     Code=16,
-2 -                 Code=16,
-2 -             Code=16,
+2 -                     Code=17,
+2 -                 Code=17,
+2 -             Code=17,
 2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -             File=xxx
@@ -233,11 +233,11 @@
 2 -                 File=xxx
 2 -                     Thread=RequestProcessor-xxx,
 2 -             Type=10,
-2 -             Code=16,
+2 -             Code=17,
 2 -                     Line=xxx
 2 -                 Line=xxx
 2 -                     Type=10,
-2 -                     Code=16,
+2 -                     Code=17,
 2 -                     Routine=internalBadMethod,
 2 -                 Routine=testCORBASystemException,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
@@ -258,7 +258,7 @@
 2 -                     Type=10,
 2 -                 Type=7,
 2 -                 Code=0,
-2 -                     Code=16,
+2 -                     Code=17,
 2 -                 File=xxx
 2 -                 Line=xxx
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
@@ -275,7 +275,7 @@
 2 -                 Thread=RequestProcessor-xxx,
 2 -   File "/somepath/acsexmplErrorComponent_idl.py, line XXX, in corbaSystemException
 2 -                 Type=10,
-2 -                 Code=16,
+2 -                 Code=17,
 2 -     return _omnipy.invoke(self, "corbaSystemException", _0_acsexmplErrorComponent.ErrorComponent._d_corbaSystemException, args)
 2 - BAD_PARAM: CORBA.BAD_PARAM(0x0, CORBA.COMPLETED_NO)
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
@@ -292,7 +292,7 @@
 2 -                     Process=xxxjavaContainer,
 2 -                     Thread=RequestProcessor-xxx,
 2 -                     Type=10,
-2 -                     Code=16,
+2 -                     Code=17,
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                     Severity=Error,
 2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )

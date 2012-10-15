@@ -54,7 +54,7 @@
 2 - ----------T--:--:--.--- Python Client Error Trace
 2 -             Thread=MainThread,
 2 -             Type=10,
-2 -             Code=16,
+2 -             Code=17,
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
@@ -87,8 +87,8 @@
 2 -                 Type=10,
 2 -             Type=10,
 2 - ----------T--:--:--.--- Python Client testTypeException - Example 4a: TypeException with depth 0
-2 -                 Code=16,
-2 -             Code=16,
+2 -                 Code=17,
+2 -             Code=17,
 2 -             File=xxx
 2 - ----------T--:--:--.--- Python Client testTypeException - OK: No exception thrown
 2 -             Line=xxx
@@ -116,7 +116,7 @@
 2 -                 File=xxx
 2 -             Line=xxx
 2 -             Type=10,
-2 -             Code=16,
+2 -             Code=17,
 2 -                     Line=xxx
 2 -                 Line=xxx
 2 -             Routine=ErrorComponent::badMethod,
@@ -138,13 +138,13 @@
 2 -                 Thread=ORBTask,
 2 -             Type=10,
 2 - ----------T--:--:--.--- Python Client Error Trace
-2 -             Code=16,
+2 -             Code=17,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 - ErrorTrace (TimeStamp=xxxx,
 2 -                     Type=10,
 2 -                 Type=10,
-2 -                     Code=16,
-2 -                 Code=16,
+2 -                     Code=17,
+2 -                 Code=17,
 2 -                 File=xxx
 2 -             File=xxx
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
@@ -185,8 +185,8 @@
 2 -                 Type=10,
 2 -             Type=10,
 2 - ----------T--:--:--.--- Python Client testOutCompletion - Example 8: outCompletion
-2 -                 Code=16,
-2 -             Code=16,
+2 -                 Code=17,
+2 -             Code=17,
 2 -             File=xxx
 2 -                         Line=xxx
 2 -                     Line=xxx
@@ -216,19 +216,19 @@
 2 -                         Thread=ORBTask,
 2 -                     Thread=ORBTask,
 2 -                 Type=10,
-2 -                 Code=16,
+2 -                 Code=17,
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -             Thread=ORBTask,
 2 -                         Type=10,
 2 -                     Type=10,
-2 -                         Code=16,
-2 -                     Code=16,
+2 -                         Code=17,
+2 -                     Code=17,
 2 -                     File=xxx
 2 -                 File=xxx
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             Type=10,
-2 -             Code=16,
+2 -             Code=17,
 2 -                 Line=xxx
 2 -                     Line=xxx
 2 -                 Severity=Error,
@@ -263,7 +263,7 @@
 2 -                     Type=10,
 2 -                 Type=7,
 2 -                 Code=0,
-2 -                     Code=16,
+2 -                     Code=17,
 2 -                 File=xxx
 2 -                     Routine=ErrorComponent::buildErrorTrace,
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::deactivate_component] Component 'ERRORCOMP_CPP' deactivated.
@@ -284,14 +284,14 @@
 2 -   File "/somepath/acspyexmplClientErrorComponent, line XXX, in testCORBASystemException
 2 -                 Process=xxxcppContainer,
 2 -                     Type=10,
-2 -                     Code=16,
+2 -                     Code=17,
 2 -     self.foo.corbaSystemException()
 2 -                 Thread=ORBTask,
 2 -   File "/somepath/acsexmplErrorComponent_idl.py, line XXX, in corbaSystemException
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Type=10,
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
-2 -                 Code=16,
+2 -                 Code=17,
 2 -     return _omnipy.invoke(self, "corbaSystemException", _0_acsexmplErrorComponent.ErrorComponent._d_corbaSystemException, args)
 2 -                     Severity=Error,
 2 - BAD_PARAM: CORBA.BAD_PARAM(0x2, CORBA.COMPLETED_NO)
@@ -311,7 +311,7 @@
 2 -                     Process=xxxcppContainer,
 2 -                     Thread=ORBTask,
 2 -                     Type=10,
-2 -                     Code=16,
+2 -                     Code=17,
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                     Severity=Error,
 2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
