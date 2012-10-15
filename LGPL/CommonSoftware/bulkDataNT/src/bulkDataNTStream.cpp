@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.45 2012/09/13 14:58:05 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.46 2012/10/15 09:57:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,7 +48,7 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 
 	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
-	  if (configuration_m.participantPerStream)
+	  if (configuration_m.isParticipantPerStream())
 	  {
 		  participant_m = createDDSParticipant(); //we have a participant per stream
 	  }
