@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.h,v 1.6 2008/02/12 01:06:22 msekoran Exp $"
+* "@(#) $Id: basencHelper.h,v 1.7 2012/10/15 12:35:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,6 +66,11 @@ class BaseHelper
      */
     virtual void
     init(CosNaming::NamingContext_ptr nc_p);
+
+    /**
+     * Should clean up what was created in #init() method
+     */
+    virtual void done();
 
     /**
      * Destructor

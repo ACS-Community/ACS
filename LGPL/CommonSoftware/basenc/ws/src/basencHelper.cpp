@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.cpp,v 1.7 2009/05/19 17:35:42 javarias Exp $"
+* "@(#) $Id: basencHelper.cpp,v 1.8 2012/10/15 12:35:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSErrTypeCORBA.h>
 
 //-----------------------------------------------------------------------------
-static const char *rcsId="@(#) $Id: basencHelper.cpp,v 1.7 2009/05/19 17:35:42 javarias Exp $"; 
+static const char *rcsId="@(#) $Id: basencHelper.cpp,v 1.8 2012/10/15 12:35:34 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 //-----------------------------------------------------------------------------
 BaseHelper::BaseHelper(const char* channelName, const char* notifyServiceDomainName) :
@@ -194,6 +194,11 @@ BaseHelper::init(CosNaming::NamingContext_ptr nc_p)
 	}
 
 	initCalled_m = true;
+}
+//-----------------------------------------------------------------------------
+void BaseHelper::done()
+{
+ //TBD: clean up from init method
 }
 //-----------------------------------------------------------------------------
 void
