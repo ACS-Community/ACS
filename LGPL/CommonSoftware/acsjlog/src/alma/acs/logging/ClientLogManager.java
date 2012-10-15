@@ -41,6 +41,7 @@ import si.ijs.maci.Manager;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.Logging.AcsLogServiceHelper;
 import alma.Logging.AcsLogServiceOperations;
+import alma.acs.logging.adapters.CommonsLoggingFactory;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
@@ -676,14 +677,14 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * @TODO rename this method to accommodate non-corba frameworks into which we insert ACS loggers, such as hibernate,
 	 *       see {@link org.slf4j.impl.ACSLoggerFactory}.
 	 * <p>
-	 * For hibernate loggers, the logger automatically receives an initial custom log level configuration, 
-	 * to avoid jamming the log system with hibernate logs. 
+	 * For hibernate and scxml loggers, the logger automatically receives an initial custom log level configuration, 
+	 * to avoid jamming the log system with hibernate or scxml logs. 
 	 * The applied custom log level is the maximum of the default log level and WARNING.
-	 * Note that the hibernate logger can still be set to a more verbose level by giving it a custom log config
+	 * Note that the hibernate/scxml logger can still be set to a more verbose level by giving it a custom log config
 	 * in the CDB, or dynamically using logLevelGUI etc.
 	 * <p>
 	 * @TODO Instead of this hard coded and probably confusing application of a custom log level,
-	 * the CDB should offer a central configuration option for all jacorb, hibernate etc loggers,
+	 * the CDB should offer a central configuration option for all jacorb, hibernate, scxml etc loggers,
 	 * independently of the process (container or manager etc).
 	 * <p>
 	 * @param corbaName
@@ -731,7 +732,8 @@ public class ClientLogManager implements LogConfigSubscriber
 			// get a minimum log level applied to ensure that a carelessly set low default log level
 			// does not swamp the system with log messages.
 			if (corbaName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) ||
-				corbaName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX)) {
+				corbaName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX) ||
+				corbaName.startsWith(CommonsLoggingFactory.SCXML_LOGGER_NAME_PREFIX)) {
 
 				AcsLogLevelDefinition minCustomLevel = AcsLogLevelDefinition.WARNING;
 				AcsLogLevelDefinition customLevel = 
@@ -747,7 +749,7 @@ public class ClientLogManager implements LogConfigSubscriber
 				sharedLogConfig.setMinLogLevelLocal(customLevelLocal, loggerName);
 				
 				m_internalLogger.info("Logger " + loggerName + " created with custom log levels local=" + customLevelLocal.name + 
-						", remote=" + customLevel.name + " to avoid hibernate log jams due to careless default log level settings.");
+						", remote=" + customLevel.name + " to avoid log jams due to careless default log level settings.");
 			}
 		}
 

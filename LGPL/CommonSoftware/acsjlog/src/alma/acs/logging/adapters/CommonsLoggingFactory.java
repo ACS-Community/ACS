@@ -34,6 +34,13 @@ import alma.acs.logging.ClientLogManager;
  */
 public class CommonsLoggingFactory extends LogFactoryImpl
 {
+	
+	/**
+	 * SCXML logger name base.
+	 */
+	public static final String SCXML_LOGGER_NAME_PREFIX = "scxml";
+	
+
 	private final Map<String, Log> loggerMap = new HashMap<String, Log>();
 
 	@Override
@@ -45,7 +52,7 @@ public class CommonsLoggingFactory extends LogFactoryImpl
 		StackTraceElement[] stackTrace = (new Exception()).getStackTrace();
 		for (StackTraceElement stackTraceElement : stackTrace) {
 			if (stackTraceElement.getClassName().contains("org.apache.commons.scxml")) {
-				loggerNameBase = "scxml";
+				loggerNameBase = SCXML_LOGGER_NAME_PREFIX;
 				break;
 			}
 			// TODO: add check for other frameworks that use apache logging commons, once we have those
@@ -63,6 +70,8 @@ public class CommonsLoggingFactory extends LogFactoryImpl
 			myLog = new Jdk14Logger(loggerNameBase) {
 				@Override
 				public Logger getLogger() {
+					// note that getLoggerForCorba implements a hack that assigns WARNING log levels 
+					// to some known framework loggers, in the absence of other specific log configuration.
 					return ClientLogManager.getAcsLogManager().getLoggerForCorba(loggerNameBaseFinal, true);
 				}
 			};
