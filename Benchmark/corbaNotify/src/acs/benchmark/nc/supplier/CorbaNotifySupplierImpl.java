@@ -33,6 +33,7 @@ import acs.benchmark.nc.CorbaNotifyBaseImpl;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
@@ -64,7 +65,7 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 	}
 
 	@Override
-	protected void disconnectNcParticipant(AcsEventPublisher<IDLEntity> pub) {
+	protected void disconnectNcParticipant(AcsEventPublisher<IDLEntity> pub) throws AcsJIllegalStateEventEx {
 		pub.disconnect();
 	}
 

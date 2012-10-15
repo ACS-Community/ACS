@@ -29,6 +29,7 @@ import acs.benchmark.nc.CorbaNotifyBaseImpl;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsEventSubscriber.Callback;
@@ -59,7 +60,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 	}
 
 	@Override
-	protected void disconnectNcParticipant(AcsEventSubscriber<IDLEntity> sub) {
+	protected void disconnectNcParticipant(AcsEventSubscriber<IDLEntity> sub) throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
 		sub.disconnect();
 	}
 

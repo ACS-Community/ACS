@@ -25,6 +25,7 @@ import java.util.Map;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.benchmark.CorbaNotifyCompBaseOperations;
@@ -64,8 +65,10 @@ public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implement
 	
 	/**
 	 * Encapsulates difference between AcsEventSubscriber and AcsEventPublisher.
+	 * @throws AcsJIllegalStateEventEx
+	 * @throws AcsJCouldntPerformActionEx 
 	 */
-	protected abstract void disconnectNcParticipant(T subOrPub);
+	protected abstract void disconnectNcParticipant(T subOrPub) throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx;
 
 	
 	/**
