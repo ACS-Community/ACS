@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.29 2012/10/12 13:57:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.30 2012/10/15 09:37:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -200,6 +200,8 @@ SenderStreamConfiguration::SenderStreamConfiguration()
 ReceiverStreamConfiguration::ReceiverStreamConfiguration()
 {
 	profileQos=DEFAULT_RECEIVER_STREAM_PROFILE;
+	useIncrementUnicastPort = DEFAULT_USE_INCREMENT_UNICAST_PORT;
+	baseUnicastPort = DEFAULT_BASE_UNICAST_PORT;
 }//ReceiverStreamConfiguration
 
 void ReceiverStreamConfiguration::setDDSReceiverStreamQoS(char *cfg)
@@ -222,6 +224,7 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 	cbReceiveAvgProcessTimeout =DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT;
 	enableMulticast = DEFAULT_ENABLE_MULTICAST;
 	multicastAddress = DEFAULT_MULTICAST_ADDRESS;
+	unicastPort = DEFAULT_UNICAST_PORT;
 }//ReceiverFlowConfiguration
 
 
