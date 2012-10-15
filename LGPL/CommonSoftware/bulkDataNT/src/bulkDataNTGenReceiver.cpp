@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.9 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.10 2012/10/15 10:09:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
 {
 
 	char c;
+	ReceiverStreamConfiguration streamCfg;
 	ReceiverFlowConfiguration flowCfg;
 	char *streamName = "DefaultStream";
 	/*char unicastPortQoS[250];
@@ -170,8 +171,10 @@ int main(int argc, char *argv[])
 	LoggingProxy::init (&m_logger);
 	ACS_CHECK_LOGGER;
 
-	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream(streamName);
+	//streamCfg.setUseIncrementUnicastPort(false);
+	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream(streamName, streamCfg);
 
+	//flowCfg.setUnicastPort(47000);
 	list<char *>::iterator it;
 	//unsigned int j=0;
 	for(it = flows.begin(); it != flows.end(); it++) {
