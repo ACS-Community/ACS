@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.24 2012/05/24 15:00:49 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.25 2012/10/15 09:50:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,21 +26,21 @@
 #include "bulkDataNTDDSSubscriber.h"
 #include <iostream>
 
-
 using namespace AcsBulkdata;
 using namespace std;
 using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
-
-//DDS::Long BulkDataNTDDSSubscriber::unicastAddress_m=24000;
 
 BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const ReceiverFlowConfiguration &cfg) :
 		BulkDataNTDDS(p, cfg)
 {
 	subscriber_m = createDDSSubscriber();
 	enalbeMulticast_m = cfg.isEnableMulticast();
-	mutlicastAddress_m = cfg.getMulticastAddress();
-}
+	if (enalbeMulticast_m)
+		mutlicastAddress_m = cfg.getMulticastAddress();
+	else
+		unicastPort_m = cfg.getUnicastPort();
+}//BulkDataNTDDSSubscriber
 
 BulkDataNTDDSSubscriber::~BulkDataNTDDSSubscriber()
 {
@@ -173,13 +173,17 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on multicast address: %s.", topicName_m.c_str(), mutlicastAddress_m.c_str()));
 		}
 	}
-	else
+	else // unicast
 	{
-/*
-		dr_qos.unicast.value.ensure_length(1,1);
-		dr_qos.unicast.value[0].receive_port = unicastAddress_m++;
- */
-		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast port", topicName_m.c_str()));
+		if (unicastPort_m!=ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT)
+		{
+			dr_qos.unicast.value.ensure_length(1,1);
+			dr_qos.unicast.value[0].receive_port = unicastPort_m;
+			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast address, port: %d", topicName_m.c_str(), unicastPort_m));
+		}else
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream#Flow: %s going to listen on unicast address", topicName_m.c_str()));
+		}
 	}
 
 	// here we do not need the temporary DR
