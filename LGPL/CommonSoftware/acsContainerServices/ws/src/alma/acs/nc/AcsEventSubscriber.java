@@ -175,9 +175,9 @@ public interface AcsEventSubscriber<T> {
 	 * will stop receiving events, and this subscriber becomes unusable.
 	 * <p>
 	 * Calling this method over a subscriber object that has been already disconnected
-	 * will throw an {@link IllegalStateException}.
+	 * will throw an {@link AcsJIllegalStateEventEx}.
 	 * <p>
-	 * @throws IllegalStateException If this method is called on an AcsEventSubscriber object
+	 * @throws AcsJIllegalStateEventEx If this method is called on an AcsEventSubscriber object
 	 * that has been already disconnected
 	 */
 	public void disconnect() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx;
@@ -193,7 +193,7 @@ public interface AcsEventSubscriber<T> {
 //	 * This call has no effect if the Subscriber is not connected, or if it is
 //	 * connected but already suspended.
 	 *
-	 * @throws IllegalStateException if the subscriber is not connected to an NC.
+	 * @throws AcsJIllegalStateEventEx if the subscriber is not connected to an NC.
 	 */
 	public void suspend() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx;
 
