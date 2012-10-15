@@ -37,7 +37,6 @@ Local file logger
 offshoot
 StaticMethodLogger
 alma.nctest.FridgeConsumer
-Segmentation fault
 File "./__init__.py", line 805, in __init__
 omniORB: Exception trying to create worker thread.
 Traceback \(most recent call last\)
@@ -49,3 +48,6 @@ object is activated
 object is deactivated
 servant is etherealized
 name service error resolving
+Logger scxml
+Loaded SCXML file jar
+Started SM execution
