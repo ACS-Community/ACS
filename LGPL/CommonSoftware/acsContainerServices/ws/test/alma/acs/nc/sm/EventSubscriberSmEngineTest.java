@@ -7,7 +7,6 @@ import static alma.acs.nc.sm.generated.EventSubscriberSignal.setUpEnvironment;
 import static alma.acs.nc.sm.generated.EventSubscriberSignal.startReceivingEvents;
 import static alma.acs.nc.sm.generated.EventSubscriberSignal.stopReceivingEvents;
 import static alma.acs.nc.sm.generated.EventSubscriberSignal.suspend;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -18,7 +17,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import junit.framework.JUnit4TestAdapter;
 
@@ -38,6 +36,8 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.nc.sm.generated.EventSubscriberActionDispatcher;
+import alma.acs.nc.sm.generated.EventSubscriberAllActionsHandler;
 import alma.acs.nc.sm.generated.EventSubscriberSignal;
 import alma.acs.nc.sm.generic.AcsScxmlEngine;
 import alma.acs.util.StopWatch;
@@ -50,28 +50,42 @@ import alma.acs.util.StopWatch;
 public class EventSubscriberSmEngineTest
 {
 	private AcsLogger logger;
-	private MyEnvironmentActionHandler environmentActionHandler;
+	private MyActionHandler actionHandler;
 	private EventSubscriberStateMachine engine;
 
 	/**
-	 * Optionally throws an exception in {@link #create(EventDispatcher, ErrorReporter, SCInstance, Collection)}, 
+	 * Optionally throws an exception in {@link #createEnvironmentAction(EventDispatcher, ErrorReporter, SCInstance, Collection)}, 
 	 * which gets used in {@link EventSubscriberSmEngineTest#testActionException()}.
 	 */
-	private static class MyEnvironmentActionHandler extends EnvironmentActionHandler {
-		public volatile boolean throwActionExceptionInCreate = false;
+	private static class MyActionHandler implements EventSubscriberAllActionsHandler {
 		
-		public MyEnvironmentActionHandler(Logger logger) {
-			super(logger);
-		}
+		public volatile boolean throwExceptionInCreateEnvironment = false;
+		
 		@Override
-		public void create(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
+		public void createEnvironmentAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) 
 				throws AcsJStateMachineActionEx {
-			if (throwActionExceptionInCreate) {
+			if (throwExceptionInCreateEnvironment) {
 				throw new AcsJStateMachineActionEx();
 			}
 		}
 		@Override
-		public void destroy(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
+		public void destroyEnvironmentAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+			// nothing
+		}
+		@Override
+		public void createConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+			// nothing
+		}
+		@Override
+		public void destroyConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+			// nothing
+		}
+		@Override
+		public void suspendAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
+			// nothing
+		}
+		@Override
+		public void resumeAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
 			// nothing
 		}
 	}
@@ -93,34 +107,11 @@ public class EventSubscriberSmEngineTest
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(testMethodName, false);
 		configureLogging(AcsLogLevelDefinition.INFO);
 		
-		environmentActionHandler = new MyEnvironmentActionHandler(logger);
-
 		StopWatch sw = new StopWatch();
 		
 		// we use empty handlers, except for environmentActionHandler
-		engine = new EventSubscriberStateMachine(logger, 
-				environmentActionHandler,
-				new ConnectionActionHandler(logger) {
-					@Override
-					public void createConnection(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-						// nothing
-					}
-					@Override
-					public void destroyConnection(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-						// nothing
-					}
-				},
-				new SuspendResumeActionHandler(logger) {
-					@Override
-					public void suspend(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-						// nothing
-					}
-					@Override
-					public void resume(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance, Collection<TriggerEvent> derivedEvents) {
-						// nothing
-					}
-				}
-			);
+		actionHandler = new MyActionHandler();
+		engine = new EventSubscriberStateMachine(logger, new EventSubscriberActionDispatcher(actionHandler, logger));
 		
 		assertThat("SM creation should take less than a second.", sw.getLapTimeMillis(), lessThan(1000L));
 	}
@@ -207,10 +198,10 @@ public class EventSubscriberSmEngineTest
 	public void testGetApplicableSignals() {
 		Set<EventSubscriberSignal> signals = engine.getScxmlEngine().getApplicableSignals();
 // The following works in Eclipse with J2SE 7, but not with ACS's JDK from the Makefile. Dunno why.
-		assertThat(signals, allOf(
-				hasSize(1), 
-				hasItem(setUpEnvironment)
-				));
+//		assertThat(signals, allOf(
+//				hasSize(1), 
+//				hasItem(setUpEnvironment)
+//				));
 // Comile error: cannot find symbol
 //		symbol  : method allOf(org.hamcrest.Matcher<java.util.Collection<? extends java.lang.Object>>,org.hamcrest.Matcher<java.lang.Iterable<? super alma.acs.nc.sm.generated.EventSubscriberSignal>>
 // Instead, use two asserts as a workaround:
@@ -242,7 +233,7 @@ public class EventSubscriberSmEngineTest
 	@Test
 	public void testActionException() throws Exception {
 		// provoke an exception in the create action
-		environmentActionHandler.throwActionExceptionInCreate = true;
+		actionHandler.throwExceptionInCreateEnvironment = true;
 		
 		try {
 			engine.fireSignalWithErrorFeedback(setUpEnvironment);

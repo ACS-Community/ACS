@@ -1,16 +1,9 @@
 package alma.acs.nc.sm;
 
-import static alma.acs.nc.sm.generated.EventSubscriberAction.createConnection;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.destroyConnection;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.resumeConnection;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.suspendConnection;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.createEnvironment;
-import static alma.acs.nc.sm.generated.EventSubscriberAction.destroyEnvironment;
-
 import java.util.logging.Logger;
 
-import alma.acs.nc.AcsEventSubscriberImplBase;
 import alma.acs.nc.sm.generated.EventSubscriberAction;
+import alma.acs.nc.sm.generated.EventSubscriberActionDispatcher;
 import alma.acs.nc.sm.generated.EventSubscriberSignal;
 import alma.acs.nc.sm.generated.EventSubscriberSignalDispatcher;
 import alma.acs.nc.sm.generic.AcsScxmlActionDispatcher;
@@ -18,10 +11,10 @@ import alma.acs.nc.sm.generic.AcsScxmlEngine;
 
 /**
  * Adapts {@link AcsScxmlEngine} for the concrete SM type 'EventSubscriber',
- * including the action handlers.
+ * and a single all-action handler.
  * <p>
- * This code could also be embedded somewhere else, 
- * e.g. directly in component code {@link AcsEventSubscriberImplBase}.
+ * Currently this class is used only in tests, while the real code
+ * uses {@link AcsScxmlEngine} directly, similarly to this class.
  * 
  * @author hsommer
  */
@@ -32,27 +25,20 @@ public class EventSubscriberStateMachine extends EventSubscriberSignalDispatcher
 	
 	private final AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction> stateMachine;
 
-	public EventSubscriberStateMachine(Logger logger, 
-										EnvironmentActionHandler environmentActionHandler, 
-										ConnectionActionHandler connectionActionHandler,
-										SuspendResumeActionHandler suspendResumeActionHandler ) {
+	public EventSubscriberStateMachine(Logger logger, EventSubscriberActionDispatcher actionExecutor) {
 		this.logger = logger;
 	
-		AcsScxmlActionDispatcher<EventSubscriberAction> actionDispatcher = 
+		AcsScxmlActionDispatcher<EventSubscriberAction> genericActionDispatcher = 
 				new AcsScxmlActionDispatcher<EventSubscriberAction>(logger, EventSubscriberAction.class);
 		
-		actionDispatcher.registerActionHandler(createEnvironment, environmentActionHandler);
-		actionDispatcher.registerActionHandler(destroyEnvironment, environmentActionHandler);
-		
-		actionDispatcher.registerActionHandler(createConnection, connectionActionHandler);
-		actionDispatcher.registerActionHandler(destroyConnection, connectionActionHandler);
-		
-		actionDispatcher.registerActionHandler(suspendConnection, suspendResumeActionHandler);
-		actionDispatcher.registerActionHandler(resumeConnection, suspendResumeActionHandler);
+		// register our action executor for all possible actions
+		for (EventSubscriberAction action : EventSubscriberAction.values()) {
+			genericActionDispatcher.registerActionHandler(action, actionExecutor);
+		}
 		
 		// Here the AcsScxmlEngine constructor will load the scxml file and start the state machine
 		stateMachine = new AcsScxmlEngine<EventSubscriberSignal, EventSubscriberAction>(
-				scxmlFileName, logger, actionDispatcher, EventSubscriberSignal.class);
+				scxmlFileName, logger, genericActionDispatcher, EventSubscriberSignal.class);
 	}
 
 	@Override
