@@ -18,5 +18,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
