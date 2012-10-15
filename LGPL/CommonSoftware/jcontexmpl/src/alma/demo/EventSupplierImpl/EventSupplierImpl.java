@@ -32,6 +32,7 @@ import org.omg.CORBA.portable.IDLEntity;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.FRIDGE.TemperatureStatus;
 import alma.FRIDGE.temperatureDataBlockEvent;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
@@ -41,6 +42,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventPublisher;
 import alma.demo.SupplierCompOperations;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 
 /**
@@ -75,14 +77,16 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
     	}
     }
 
-    /**
-     * Disconnects the supplier before component is removed.
-     */
-    public void cleanUp()
-    {
-        m_supplier.disconnect();
-    }
-    
+	/**
+	 * Disconnects the supplier before component is removed.
+	 */
+	public void cleanUp() throws AcsJComponentCleanUpEx {
+		try {
+			m_supplier.disconnect();
+		} catch (AcsJIllegalStateEventEx ex) {
+			throw new AcsJComponentCleanUpEx(ex);
+		}
+	}
 
     /**
      * The IDL-defined method that sends the <code>temperatureDataBlockEvent</code> fridge event a given number of times.
