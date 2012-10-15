@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.12 2009/05/19 17:35:42 javarias Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.13 2012/10/15 12:36:08 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -54,6 +54,13 @@ BaseSupplier::init(CosNaming::NamingContext_ptr nc_p)
     //ourselves to the proxy consumer
     this->connect();
 }
+//-----------------------------------------------------------------------------
+void BaseSupplier::done()
+{
+	if (!CORBA::is_nil(supplierAdmin_m.in()))	supplierAdmin_m->destroy();
+	BaseHelper::done();
+}
+
 //-----------------------------------------------------------------------------
 BaseSupplier::~BaseSupplier()
 {

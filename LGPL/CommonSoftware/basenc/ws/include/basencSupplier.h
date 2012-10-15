@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: basencSupplier.h,v 1.6 2008/09/30 09:34:43 cparedes Exp $"
+ * "@(#) $Id: basencSupplier.h,v 1.7 2012/10/15 12:36:08 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -70,6 +70,11 @@ class BaseSupplier : public POA_acsnc::OSPushSupplier,
     void
     init(CosNaming::NamingContext_ptr nc_p);
     
+    /**
+     * Override. Clean up what was initalized/created in init method.
+     */
+    void done();
+
     //--CORBA methods defined here-----------------------------------------
     /**
      * CORBA method we do not really care about from this class
