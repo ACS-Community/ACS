@@ -28,14 +28,15 @@ import java.util.logging.Logger;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.COUNTER.CHANNELNAME_COUNTER;
 import alma.COUNTER.CounterSupplierOperations;
 import alma.COUNTER.OnOffStates;
 import alma.COUNTER.statusBlockEvent;
 import alma.acs.component.ComponentLifecycle;
-import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.AcsEventPublisher;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /** 
  * CounterSupplier is a simple class that creates the "counter" notification channel,
@@ -61,7 +62,7 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
 	// Implementation of ComponentLifecycle
 	/////////////////////////////////////////////////////////////
 
-    public void initialize(ContainerServices containerServices)
+    public void initialize(ContainerServices containerServices) 
     {
     	m_containerServices = containerServices;
     	m_logger = m_containerServices.getLogger();
@@ -72,15 +73,12 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
             m_logger.info("CounterSupplier ready to send NC events...");
     	}
     	catch (Exception e) {
-        	if (m_supplier != null) {
-        		m_supplier.disconnect();
-        	}
             m_logger.info("CounterSupplier failed to connect as an event supplier to channel " + CHANNELNAME_COUNTER.value);
+            // we let the container services clean up the supplier
         }
-
 	}
 
-	public void execute() throws ComponentLifecycleException {
+	public void execute() {
 		m_logger.info("execute() called...");
     	//try {
     	//	int i = sendBlocks (1, 20, 20, 0.5f);
@@ -90,10 +88,14 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
     	//}
 	}
 
-	public void cleanUp() {
+	public void cleanUp() throws AcsJComponentCleanUpEx {
 		if (m_supplier != null) {
 			m_logger.info("cleanUp() called, disconnecting supplier from channel " + CHANNELNAME_COUNTER.value);
-	    	m_supplier.disconnect();
+			try {
+				m_supplier.disconnect();
+			} catch (AcsJIllegalStateEventEx ex) {
+				throw new AcsJComponentCleanUpEx(ex);
+			}
 		}
 		else {
 			m_logger.info("cleanUp() called..., nothing to clean up.");
@@ -101,7 +103,12 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
 	}
 
 	public void aboutToAbort() {
-		cleanUp();
+		try {
+			cleanUp();
+		} catch (AcsJComponentCleanUpEx ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 	//	m_logger.info("managed to abort...");
 		System.out.println("CounterSupplier component managed to abort... you should know this even if the logger did not flush correctly!");
 	}
@@ -157,9 +164,11 @@ public class CounterSupplierImpl implements ComponentLifecycle, CounterSupplierO
     	}
     	catch (Exception e)
     	{
-    		if (m_supplier != null) {				
-    			m_supplier.disconnect();
-    		}
+// HSO: Commenting out the supplier disconnect, because the caught exception may be some other problem, 
+// and future invocation may succeed. This makes supplier creation/cleanup symmetric, done in the component lifecycle methods.
+//    		if (m_supplier != null) {
+//    			m_supplier.disconnect();
+//    		}
 			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx();
 			ex.setProperty(PROP_ASSERTION_MESSAGE, "failed to connect as an event supplier to channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
 			throw ex.toCouldntPerformActionEx();
