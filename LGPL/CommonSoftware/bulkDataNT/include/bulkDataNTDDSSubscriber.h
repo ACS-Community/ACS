@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.11 2012/05/21 13:03:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.12 2012/10/15 09:47:06 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,6 +68,7 @@ protected:
 
 	bool enalbeMulticast_m; /// read from ReceiverFlowConfiguration
 	std::string mutlicastAddress_m; /// read from ReceiverFlowConfiguration
+	unsigned short unicastPort_m;  /// unicast port (if enableMulticast_m==false)
 
 	/// disable default - empty constructor
 	BulkDataNTDDSSubscriber();
