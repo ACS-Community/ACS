@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.24 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.25 2012/10/15 09:49:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.24 2012/09/06 10:50:30 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.25 2012/10/15 09:49:38 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -42,7 +42,8 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
     bool releaseCB) :
     BulkDataNTFlow(flowName),
     receiverStream_m(receiverStream),
-    callback_m(cb), releaseCB_m(releaseCB)
+    callback_m(cb), releaseCB_m(releaseCB),
+    rcvCfg_m(rcvCfg)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
   std::string streamName, topicName;
@@ -55,10 +56,14 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
   callback_m->setCBReceiveProcessTimeout(rcvCfg.getCbReceiveProcessTimeout());
   callback_m->setCBReceiveAvgProcessTimeout(rcvCfg.getCbReceiveAvgProcessTimeout());
 
-  receiverStream->addDDSQoSProfile(rcvCfg);
+  receiverStream->addDDSQoSProfile(rcvCfg_m);
 
+  if (!rcvCfg_m.isEnableMulticast() &&  rcvCfg_m.getUnicastPort()==ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT/*=0*/) //unicast && no unicast port was defined
+  {
+	  rcvCfg_m.setUnicastPort(receiverStream_m->getNextFlowUnicastPort()); //re-set unicast port on local(!) copy
+  }
   // should be refactor to have just one object for comunication !! DDSDataWriter or similar
-  ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant(), rcvCfg);
+  ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant(), rcvCfg_m);
 
   topicName =  streamName + "#" + flowName_m;
   ddsTopic_m = ddsSubscriber_m->createDDSTopic(topicName.c_str());
