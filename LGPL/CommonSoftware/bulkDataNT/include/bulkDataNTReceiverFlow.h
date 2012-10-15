@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.16 2012/03/30 13:47:52 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.17 2012/10/15 09:47:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,6 +98,7 @@ protected:
 	BulkDataNTReaderListener *dataReaderListener_m; /// DDS reader
 	BulkDataNTCallback *callback_m; /// callback
 	bool releaseCB_m; /// should the CB be destroyed when the flow is destroyed
+	ReceiverFlowConfiguration rcvCfg_m; /// local copy of rcv configuration
 
 	/// disable default - empty constructor
 	BulkDataNTReceiverFlow();
