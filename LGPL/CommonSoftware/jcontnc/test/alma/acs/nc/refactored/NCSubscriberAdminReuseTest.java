@@ -40,9 +40,6 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		channel = helper.getNotificationChannel(CHANNEL_NAME, NC_KIND.value, helper.getNotificationFactoryNameForChannel(CHANNEL_NAME));
 		assertNotNull(channel);
 		assertEquals(0, channel.get_all_consumeradmins().length);
-		
-		// Configure SCXML logger higher than the INFO setting 
-		configureLogging(AcsLogLevelDefinition.WARNING);
 	}
 
 	public void tearDown() throws Exception {
@@ -52,16 +49,16 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		super.tearDown();
 	}
 
-	private void configureLogging(AcsLogLevelDefinition scxmlLocalLevel) {
-		String scxmlLoggerName = "scxml@NCSubscriberAdminReuseTest#" + getName();
-		String jacorbLoggerName = "jacorb@NCSubscriberAdminReuseTest#" + getName();
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		logConfig.setMinLogLevelLocal(scxmlLocalLevel, scxmlLoggerName);
-		logConfig.setMinLogLevelLocal(scxmlLocalLevel, jacorbLoggerName);
-		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, scxmlLoggerName);
-		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, jacorbLoggerName);
-		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
-	}
+//	private void configureLogging(AcsLogLevelDefinition scxmlLocalLevel) {
+//		String scxmlLoggerName = "scxml@NCSubscriberAdminReuseTest#" + getName();
+//		String jacorbLoggerName = "jacorb@NCSubscriberAdminReuseTest#" + getName();
+//		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+//		logConfig.setMinLogLevelLocal(scxmlLocalLevel, scxmlLoggerName);
+//		logConfig.setMinLogLevelLocal(scxmlLocalLevel, jacorbLoggerName);
+//		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, scxmlLoggerName);
+//		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, jacorbLoggerName);
+//		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+//	}
 
 	private void destroyConsumers() throws AdminNotFound {
 		for(int adminID: channel.get_all_consumeradmins())
