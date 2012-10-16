@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.37 2012/10/12 14:34:49 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.38 2012/10/16 09:37:28 acaproni Exp $
  * @since    
  */
 
@@ -246,6 +246,9 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	
 	/**
 	 *  The counter for the alarms.
+	 *  <P>
+	 *  <code>counters</code> is immutable. It is created in the constructor and never modified.
+	 *  Can we use a better data structure for that?
 	 */
 	private final HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
 	
@@ -475,7 +478,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		boolean oldAlarmStatus = oldAlarmEntry.getStatus().isActive();
 		try {
 			synchronized (items) {
-				items.replace(newAlarm);
+				items.replace(newAlarm); // Trigger a CORBA call
 			}
 		} catch (Exception e) {
 			System.err.println("Error replacing an alarm: "+e.getMessage());
@@ -952,29 +955,31 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 //			System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
 //			System.out.println("\t\tActive: "+alarm.getStatus().isActive());
 			
-			synchronized (items) {
-				if (items.size(applyReductionRules)==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
-					AlarmTableEntry removedAlarm=null;
-					try {
-						removedAlarm = items.removeOldest(); // Remove the last one
-					} catch (Exception e) {
-						System.err.println("Error removing the oldest alarm: "+e.getMessage());
-						e.printStackTrace(System.err);
-						JOptionPane.showInternalMessageDialog(
-								owner, 
-								e.getMessage(), 
-								"Error removing the oldest alarm", 
-								JOptionPane.ERROR_MESSAGE);
-						return;
+			if (items.contains(alarm.getAlarmId())) {
+				replaceAlarm(alarm);
+			} else {
+				synchronized (items) {
+					// Enough room for the new alarm? If not remove the oldest
+					if (items.size(applyReductionRules)==MAX_ALARMS) {
+						AlarmTableEntry removedAlarm=null;
+						try {
+							removedAlarm = items.removeOldest(); // Remove the last one
+						} catch (Exception e) {
+							System.err.println("Error removing the oldest alarm: "+e.getMessage());
+							e.printStackTrace(System.err);
+							JOptionPane.showInternalMessageDialog(
+									owner, 
+									e.getMessage(), 
+									"Error removing the oldest alarm", 
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						counters.get(removedAlarm.getAlarmType()).decCounter();
 					}
-					counters.get(removedAlarm.getAlarmType()).decCounter();
-				}
-				if (items.contains(alarm.getAlarmId())) {
-					replaceAlarm(alarm);
-				} else {
 					addAlarm(alarm);
-				}
+				}	
 			}
+			
 			EDTExecutor.instance().execute(new Runnable() {
 				public void run() {
 					fireTableDataChanged();
