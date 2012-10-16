@@ -118,6 +118,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		alarm=rootAlarm;
 		this.panel=panel;
 		model = new AlarmTableModel(rootPane,false,true,undocModel);
+		model.start();
 		table = new AlarmTable(model,panel,undocModel);
 		EDTExecutor.instance().execute(new Runnable() {
 			@Override
@@ -172,6 +173,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * Close the dialog and frees its resources
 	 */
 	public void close() {
+		model.close();
 		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
 				setVisible(false);
@@ -186,7 +188,11 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==closeBtn) {
-			close();
+			EDTExecutor.instance().execute(new Runnable() {
+				public void run() {
+					setVisible(false);
+				}
+			});
 		} else if (e.getSource()==refreshBtn) {
 			refreshContent();
 		}
@@ -197,6 +203,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 *  children of the root alarm from the {@link CategoryClient}.
 	 */
 	private void refreshContent() {
+		System.out.println("refreshContent with rootNode "+alarm);
 		Thread refreshThread = new Thread() {
 			public void run() {
 				try {
@@ -282,6 +289,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
 		alarm=rootAlarm;
+		System.out.println("setRootAlarm: Root alarm is "+rootAlarm);
 		refreshContent();
 	}
 }
