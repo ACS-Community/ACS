@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.24 2012/10/11 08:38:12 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.25 2012/10/16 09:14:19 acaproni Exp $
  * @since    
  */
 
@@ -136,25 +136,21 @@ public class AlarmTable extends JTable implements ActionListener {
 		 * 
 		 * @param e The mouse event that triggered the pop
 		 */
-		private void showPopup(MouseEvent e) {
+		private void showPopup(final MouseEvent e) {
 			if (!e.isPopupTrigger()) {
 				return;
 			}
 			int row=rowAtPoint(new Point(e.getX(),+e.getY()));
 			selectedAlarm = AlarmTable.this.model.getRowAlarm(getRowSorter().convertRowIndexToModel(row));
-			class ShowPopup extends Thread {
-				MouseEvent e;
-				public ShowPopup(MouseEvent e) {
-					this.e=e;
-				}
+			EDTExecutor.instance().execute(new Runnable() {
+				@Override
 				public void run() {
 					ackMI.setEnabled(!selectedAlarm.getStatus().isActive());
 					showReducedMI.setEnabled(selectedAlarm!=null && (selectedAlarm.isParent()));
 					popupM.show(e.getComponent(),e.getX(),e.getY());
 					popupM.setVisible(true);
 				}
-			}
-			EDTExecutor.instance().execute(new ShowPopup(e));	
+			});	
 		}
 	}
 	
@@ -213,21 +209,17 @@ public class AlarmTable extends JTable implements ActionListener {
 		 * 
 		 * @param e The mouse event that triggered the pop
 		 */
-		private void showPopup(MouseEvent e) {
+		private void showPopup(final MouseEvent e) {
 			if (!e.isPopupTrigger()) {
 				return;
 			}
-			class ShowHeaderPopup extends Thread {
-				MouseEvent e;
-				public ShowHeaderPopup(MouseEvent e) {
-					this.e=e;
-				}
+			EDTExecutor.instance().execute(new Runnable() {
+				@Override
 				public void run() {
 					ratioMenu();
 					headerPopup.show(e.getComponent(),e.getX(),e.getY());
 				}
-			}
-			EDTExecutor.instance().execute(new ShowHeaderPopup(e));	
+			});	
 		}
 		
 		/**
