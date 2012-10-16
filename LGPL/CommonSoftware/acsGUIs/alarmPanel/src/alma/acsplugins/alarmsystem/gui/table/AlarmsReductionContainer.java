@@ -23,6 +23,7 @@ import java.util.Vector;
 import cern.laser.client.data.Alarm;
 
 import alma.alarmsystem.clients.CategoryClient;
+import alma.alarmsystem.clients.alarm.AlarmClientException;
 
 /**
  * Extends <code>AlarmsContainer</code> for the reduced alarms.
@@ -114,20 +115,13 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 		if (categoryClient==null) {
 			return;
 		}
-		// Check if the table contains children of this alarm that must be hidden
-		// i.e. removed
 		Alarm[] children=null;
 		try {
-			if (entry.isNodeParent()) {
-					children = categoryClient.getChildren(entry.getAlarmId(), true);
-				
-			} else if (entry.isMultiplicityParent()) {
-				children = categoryClient.getChildren(entry.getAlarmId(), false);
-			}
+			children=getReducedChildren(entry.getAlarmId(),entry.isNodeParent());
 		} catch (Throwable t) {
 			System.err.println("Error getting children of "+entry.getAlarmId()+": "+t.getMessage());
 			t.printStackTrace();
-			children=null;
+			return;
 		}
 		if (children!=null) {
 			System.out.println("Childern of "+entry.getAlarmId());
@@ -136,6 +130,25 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 				indexWithReduction.remove(al.getAlarmId());
 			}
 		}
+	}
+	
+	/**
+	 * Get the children of a reduction of the alarm with the passed ID.
+	 * <P>
+	 * This method asks the {@link CategoryClient} for the children of alarm i.e.
+	 * it implies a CORBA call and must not be run into the swing EDT.
+	 * 
+	 * @param alarmID The not <code>null</code> and not empty ID of the alarm
+	 * @param nodeReduction <code>true</code> if it is a node reduction
+	 * @return The array of children of the alarm reduced by the alarm with the passed ID
+	 * @throws AlarmClientException in case of error from the {@link CategoryClient} 
+	 */
+	private Alarm[] getReducedChildren(final String alarmID, final boolean nodeReduction) 
+	throws AlarmClientException {
+		if (alarmID==null || alarmID.isEmpty()) {
+			throw new IllegalArgumentException("Invalid null or empty alarm ID");
+		}
+		return categoryClient.getChildren(alarmID, nodeReduction);
 	}
 	
 	/**
@@ -242,11 +255,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 		// visible
 		Alarm[] als=null;
 		try {
-			if (alarm.isMultiplicityParent()){
-				als= categoryClient.getActiveChildren(alarm.getAlarmId(), false);
-			} else if (alarm.isNodeParent()) {
-				als= categoryClient.getActiveChildren(alarm.getAlarmId(), true);
-			}
+			als=getActiveChildren(alarm.getAlarmId(), alarm.isNodeParent());
 		} catch (Throwable t) {
 			System.err.println("Error getting children of "+alarm.getAlarmId()+": "+t.getMessage());
 			t.printStackTrace();
@@ -262,6 +271,25 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Get the list of active children of a reduction of the alarm with the passed ID.
+	 * <P>
+	 * This method asks the {@link CategoryClient} for the children of alarm i.e.
+	 * it implies a CORBA call and must not be run into the swing EDT.
+	 * 
+	 * @param alarmID The not <code>null</code> and not empty ID of the alarm
+	 * @param nodeReduction <code>true</code> if it is a node reduction
+	 * @return The array of children of the alarm reduced by the alarm with the passed ID
+	 * @throws AlarmClientException in case of error from the {@link CategoryClient} 
+	 */
+	private Alarm[] getActiveChildren(final String alarmID, final boolean nodeReduction) 
+	throws AlarmClientException {
+		if (alarmID==null || alarmID.isEmpty()) {
+			throw new IllegalArgumentException("Invalid null or empty alarm ID");
+		}
+		return categoryClient.getActiveChildren(alarmID, nodeReduction);
 	}
 
 	/**
