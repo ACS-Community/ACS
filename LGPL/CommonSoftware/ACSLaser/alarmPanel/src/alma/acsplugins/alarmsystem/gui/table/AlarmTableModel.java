@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.38 2012/10/16 09:37:28 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.39 2012/10/16 10:09:57 acaproni Exp $
  * @since    
  */
 
@@ -323,7 +323,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	
 	/**
 	 * Add an alarm in the queue.
-	 * The thread will get the alarm from the queue and update the model.
+	 * The thread will get the alarm from the queue and update the model (@see {@link #run()}).
 	 * 
 	 * @param alarm The alarm to add to the table.
 	 * @see AlarmSelectionListener
@@ -384,11 +384,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		} catch (Exception e) {
 			System.err.println("Error adding an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
-			JOptionPane.showInternalMessageDialog(
-					owner, 
-					e.getMessage(), 
-					"Error adding alarm", 
-					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		counters.get(alarm.getAlarmType()).incCounter();
@@ -453,15 +448,15 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		} catch (Exception e) {
 			System.err.println("Error removing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
-			JOptionPane.showInternalMessageDialog(
-					owner, 
-					e.getMessage(), 
-					"Error removing alarm", 
-					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		counters.get(AlarmGUIType.fromAlarm(alarm)).decCounter();
-		fireTableDataChanged();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				fireTableDataChanged();
+			}
+		});
 	}
 	
 	/**
@@ -483,11 +478,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		} catch (Exception e) {
 			System.err.println("Error replacing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
-			JOptionPane.showInternalMessageDialog(
-					owner, 
-					e.getMessage(), 
-					"Error replacing alarm", 
-					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (oldAlarmStatus==newAlarm.getStatus().isActive()) {
@@ -505,7 +495,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * Get exception from the client.
 	 * A message is notified to the listener or written in the
-	 * standard output if the listener is <code>null</code>.
+	 * standard error if the listener is <code>null</code>.
 	 * 
 	 * @see AlarmSelectionListener
 	 */
@@ -523,7 +513,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		} else if (e.getCode().equals(LaserHeartbeatException.CONNECTION_REESTABILISHED)) {
 			connectionListener.connected();
 		} else {
-			// Unrecognized code
+			// Unrecognized error code
 			System.err.println("Exception: "+e.getCode());
 			e.printStackTrace();
 		}
@@ -584,9 +574,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	private volatile ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
 
 	public int getRowCount() {
-		synchronized (items) {
-			return items.size(applyReductionRules);
-		}
+		return items.size(applyReductionRules);
 	}
 
 	public int getColumnCount() {
@@ -603,11 +591,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (rowIndex<0) {
 			return null;
 		}
-		AlarmTableEntry alarm;
-		synchronized (items) {
-			alarm = items.get(rowIndex,applyReductionRules);
-		}
-		return alarm;
+		return items.get(rowIndex,applyReductionRules);
 	}
 	
 	/**
@@ -782,11 +766,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * The user pressed one mouse button over a row
 	 */
-	public void alarmSelected(int row) {
-		synchronized (items) {
-			items.get(row,applyReductionRules).alarmSeen();
-		}
-		fireTableRowsUpdated(row, row);
+	public void alarmSelected(final int row) {
+		items.get(row,applyReductionRules).alarmSeen();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				fireTableRowsUpdated(row, row);
+			}
+		});
 	}
 	
 	/**
@@ -815,7 +802,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			for (int t=0; t<removed; t++) {
 				counters.get(AlarmGUIType.INACTIVE).decCounter();
 			}
-			fireTableDataChanged();
+			EDTExecutor.instance().execute(new Runnable() {
+				@Override
+				public void run() {
+					fireTableDataChanged();
+				}
+			});
 		}
 	}
 	
@@ -836,7 +828,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (type==AlarmGUIType.PRIORITY_0 || type==AlarmGUIType.INACTIVE) {
 			throw new IllegalArgumentException("Invalid alarm type to auto-acknowledge: "+type);
 		}
-		int ret=0;
 		for (int t=type.ordinal(); t<=AlarmGUIType.PRIORITY_3.ordinal(); t++) {
 			removeInactiveAlarms(AlarmGUIType.values()[t]);
 		}
@@ -862,7 +853,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public void applyReductions(boolean reduce) {
 		applyReductionRules=reduce;
-		fireTableDataChanged();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				fireTableDataChanged();
+			}
+		});
 	}
 	
 	/**
@@ -967,11 +963,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 						} catch (Exception e) {
 							System.err.println("Error removing the oldest alarm: "+e.getMessage());
 							e.printStackTrace(System.err);
-							JOptionPane.showInternalMessageDialog(
-									owner, 
-									e.getMessage(), 
-									"Error removing the oldest alarm", 
-									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						counters.get(removedAlarm.getAlarmType()).decCounter();
