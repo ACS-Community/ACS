@@ -1047,7 +1047,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=16)
+2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=17)
 2 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] Problem to get value (type=20, code=5)
 2 - ----------T--:--:--.--- [GlobalLogger - BACIProperty::dispatchMonitors] Error retreiving value for the monitor (type=1, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - PcommonImpl::getValue(...)] Read Error (type=30, code=0)
@@ -1074,7 +1074,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BACIProperty::dispatchMonitors] Error retreiving value for the monitor (type=1, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - PcommonImpl::getValue(...)] Read Error (type=30, code=0)
 2 - ----------T--:--:--.--- [GlobalLogger - ] (RWdoublePropError::CBdouble::working) desc.id_tag: 1 TimeStamp: ----------T--:--:--.--- containes an error
-2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=16)
+2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=17)
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -1100,7 +1100,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BACIProperty::dispatchMonitors] Error retreiving value for the monitor (type=1, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - PcommonImpl::getValue(...)] Read Error (type=30, code=0)
 2 - ----------T--:--:--.--- [GlobalLogger - ] (RWdoublePropError::CBdouble::working) desc.id_tag: 1 TimeStamp: ----------T--:--:--.--- containes an error
-2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=16)
+2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=17)
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -1123,7 +1123,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BACIProperty::dispatchMonitors] Error retreiving value for the monitor (type=1, code=2)
 2 - ----------T--:--:--.--- [GlobalLogger - PcommonImpl::getValue(...)] Read Error (type=30, code=0)
 2 - ----------T--:--:--.--- [GlobalLogger - ] (RWdoublePropError::CBdouble::working) desc.id_tag: 1 TimeStamp: ----------T--:--:--.--- containes an error
-2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=16)
+2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=17)
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
