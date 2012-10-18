@@ -19,35 +19,33 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.39 2012/10/16 10:09:57 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.40 2012/10/18 12:30:32 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
-
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.table.AbstractTableModel;
-
-import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
-
-import alma.acs.util.IsoDateFormat;
-import alma.acs.gui.util.threadsupport.EDTExecutor;
-import alma.acsplugins.alarmsystem.gui.ConnectionListener;
-import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
-import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
-import alma.alarmsystem.clients.CategoryClient;
-
-import cern.laser.client.data.Alarm;
-import cern.laser.client.services.selection.AlarmSelectionListener;
-import cern.laser.client.services.selection.LaserHeartbeatException;
-import cern.laser.client.services.selection.LaserSelectionException;
 
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+
+import javax.swing.JComponent;
+import javax.swing.table.AbstractTableModel;
+
+import alma.acs.gui.util.threadsupport.EDTExecutor;
+import alma.acs.util.IsoDateFormat;
+import alma.acsplugins.alarmsystem.gui.ConnectionListener;
+import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
+import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
+import alma.alarmsystem.clients.CategoryClient;
+import cern.laser.client.data.Alarm;
+import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.LaserHeartbeatException;
+import cern.laser.client.services.selection.LaserSelectionException;
+
+import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
 
 /** 
  * 
@@ -442,9 +440,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		// Remove the alarm from the table
 		try {
-			synchronized (items) {
-				items.remove(alarm);	
-			}
+			items.remove(alarm);	
 		} catch (Exception e) {
 			System.err.println("Error removing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
@@ -472,9 +468,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		AlarmGUIType oldAlarmType = oldAlarmEntry.getAlarmType();
 		boolean oldAlarmStatus = oldAlarmEntry.getStatus().isActive();
 		try {
-			synchronized (items) {
-				items.replace(newAlarm); // Trigger a CORBA call
-			}
+			items.replace(newAlarm); // Trigger a CORBA call
 		} catch (Exception e) {
 			System.err.println("Error replacing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
@@ -588,9 +582,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @return the alarm shown at the rowIndex row of the table
 	 */
 	public AlarmTableEntry getAlarmAt(int rowIndex) {
-		if (rowIndex<0) {
-			return null;
-		}
 		return items.get(rowIndex,applyReductionRules);
 	}
 	
@@ -725,12 +716,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @return The entry 
 	 */
 	public AlarmTableEntry getRowEntry(int row) {
-		synchronized (items) {
-			if (row<0 || row>=items.size(applyReductionRules)) {
-				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size(applyReductionRules)+"[");
-			}
-			return items.get(row,applyReductionRules);
-		}
+		return items.get(row,applyReductionRules);
 	}
 	
 	/**
@@ -738,12 +724,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param row Return true if the alarm is new
 	 */
 	public boolean isRowAlarmNew(int row) {
-		synchronized (items) {
-			if (row<0 || row>=items.size(applyReductionRules)) {
-				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size(applyReductionRules)+"[");
-			}
-			return items.get(row,applyReductionRules).isNew();
-		}
+		return items.get(row,applyReductionRules).isNew();
 	}
 	
 	/**
@@ -756,11 +737,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (type==null) {
 			throw new IllegalArgumentException("The alarm type can't be null");
 		}
-		AlarmCounter ret = counters.get(type);
-		if (ret==null) {
-			throw new IllegalStateException("A counter for the type "+type+"does not exist");
-		}
-		return ret;
+		return counters.get(type);
 	}
 	
 	/**
@@ -790,7 +767,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (type==null) {
 			throw new IllegalArgumentException("The type can't be null");
 		}
-		System.out.println("removing inactive alarms of type "+type);
 		int removed=0;
 		try {
 			removed=items.removeInactiveAlarms(type);
@@ -1003,6 +979,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see alma.acsplugins.alarmsystem.gui.table.AlarmsContainer#hasNotAckAlarms()
 	 */
 	public int hasNotAckAlarms() {
-		return items.hasNotAckAlarms(applyReductionRules);
+		try {
+			return items.hasNotAckAlarms(applyReductionRules);	
+		} catch (Throwable t) {
+			System.err.println("Error getting the highest priority of the alarms to ACK from the conatainer:"+t.getMessage());
+			t.printStackTrace();
+			return -1;
+		}
+		
 	}
 }
