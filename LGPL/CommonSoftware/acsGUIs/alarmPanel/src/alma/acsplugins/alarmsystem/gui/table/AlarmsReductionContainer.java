@@ -18,15 +18,28 @@
  */
 package alma.acsplugins.alarmsystem.gui.table;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
-import cern.laser.client.data.Alarm;
+import javax.swing.SwingWorker;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
+import cern.laser.client.data.Alarm;
 
 /**
- * Extends <code>AlarmsContainer</code> for the reduced alarms.
+ * Extends <code>AlarmsContainer</code> to cope with reduced alarms.
+ * <P>
+ * Methods of this class ensure that the model is changed from inside the swing EDT.
+ * <BR>Methods that queries the model instead are not forced to be executed inside the EDT and
+ * immediately return the requested value 
+ * (i.e. the caller must ensure to query from inside the EDT).
+ * 
+ * <P>
+ * Synchronization is done by thread confinement (inside the EDT).
+ * Invocation of read only methods must be done inside the EDT.
  * 
  * @author acaproni
  *
@@ -39,7 +52,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * Each item in the vector represents the ID of the entry 
 	 * shown in a table row when the reduction rules are used.
 	 */
-	private final Vector<String> indexWithReduction = new Vector<String>();
+	private final List<String> indexWithReduction = Collections.synchronizedList(new Vector<String>());
 	
 	/**
 	 * The <code>CategoryClient</code> to ask for parents/children
@@ -68,7 +81,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param <code>true</code> if the reduction rules are applied
 	 * @return The number of alarms in the container
 	 */
-	public synchronized int size(boolean reduced) {
+	public int size(boolean reduced) {
 		if (!reduced) {
 			return super.size();
 		} else {
@@ -86,7 +99,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param entry The not <code>null</code> entry to add
 	 * @throw {@link AlarmContainerException} If the entry is already in the container
 	 */
-	public synchronized void add(AlarmTableEntry entry) throws AlarmContainerException {
+	public void add(final AlarmTableEntry entry) throws AlarmContainerException {
 		super.add(entry);
 		addAlarm(entry);
 	}
@@ -96,9 +109,14 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param alarm The alarm to add to the container
 	 */
-	private void addAlarm(AlarmTableEntry alarm) {
+	private void addAlarm(final AlarmTableEntry alarm) {
 		if (!alarm.getStatus().isReduced()) {
-			indexWithReduction.add(alarm.getAlarmId());
+			EDTExecutor.instance().execute(new Runnable() {
+				@Override
+				public void run() {
+					indexWithReduction.add(alarm.getAlarmId());
+				}
+			});
 		}
 		hideReducedChildren(alarm);
 	}
@@ -108,28 +126,41 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param entry The not <code>null</code> entry to hide active children
 	 */
-	private void hideReducedChildren(AlarmTableEntry entry) {
+	private void hideReducedChildren(final AlarmTableEntry entry) {
 		if (entry==null) {
 			throw new IllegalArgumentException("The entry can't be null");
 		}
 		if (categoryClient==null) {
 			return;
 		}
-		Alarm[] children=null;
-		try {
-			children=getReducedChildren(entry.getAlarmId(),entry.isNodeParent());
-		} catch (Throwable t) {
-			System.err.println("Error getting children of "+entry.getAlarmId()+": "+t.getMessage());
-			t.printStackTrace();
-			return;
-		}
-		if (children!=null) {
-			System.out.println("Childern of "+entry.getAlarmId());
-			for (Alarm al: children) {
-				System.out.println("\tchild "+al.getAlarmId());
-				indexWithReduction.remove(al.getAlarmId());
+		
+		new SwingWorker<Alarm[], Object>() {
+			@Override
+			protected Alarm[] doInBackground() throws Exception {
+				// slow task
+				return getReducedChildren(entry.getAlarmId(),entry.isNodeParent());
 			}
-		}
+
+			@Override
+			protected void done() {
+				// Update the model
+				Alarm[] children=null;
+				try {
+					children=get();
+				} catch (Throwable t) {
+					System.out.println("Error getting the children of "+entry);
+					t.printStackTrace();
+					return;
+				}
+				if (children!=null) {
+					for (Alarm al: children) {
+						indexWithReduction.remove(al.getAlarmId());
+					}
+				}
+				super.done();
+			}
+			
+		}.execute();
 	}
 	
 	/**
@@ -167,14 +198,14 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param reduced <code>true</code> if the alarms in the table are reduced
 	 * @return The <code>AlarmTableEntry<code> in the given position
 	 */
-	public synchronized AlarmTableEntry get(int pos, boolean reduced) {
+	public AlarmTableEntry get(int pos, boolean reduced) {
 		if (!reduced) {
 			return super.get(pos);
 		} 
 		String ID = indexWithReduction.get(pos);
 		AlarmTableEntry ret = get(ID);
 		if (ret==null) {
-			throw new IllegalStateException("Inconsistent state of reduced container");
+			throw new IllegalStateException("Inconsistent state of reduced container pos="+pos+", size="+indexWithReduction.size());
 		}
 		return ret;
 	}
@@ -182,8 +213,13 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	/**
 	 * Remove all the elements in the container
 	 */
-	public synchronized void clear() {
-		indexWithReduction.clear();
+	public void clear() {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				indexWithReduction.clear();
+			}
+		});
 		super.clear();
 	}
 
@@ -193,14 +229,19 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param alarm The alarm whose entry must be removed
 	 * @throws AlarmContainerException If the alarm is not in the container
 	 */
-	public synchronized void remove(AlarmTableEntry alarm) throws AlarmContainerException {
+	public void remove(final AlarmTableEntry alarm) throws AlarmContainerException {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		int pos = indexWithReduction.indexOf(alarm.getAlarmId());
-		if (pos>=0) {
-			indexWithReduction.remove(pos);
-		}
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				int pos = indexWithReduction.indexOf(alarm.getAlarmId());
+				if (pos>=0) {
+					indexWithReduction.remove(pos);
+				}
+			}
+		});
 		super.remove(alarm);
 	}
 	
@@ -210,10 +251,22 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @return The removed item
 	 * @throws AlarmContainerException If the container is empty
 	 */
-	public synchronized AlarmTableEntry removeOldest() throws AlarmContainerException {
-		AlarmTableEntry removedEntry = super.removeOldest();
-		indexWithReduction.remove(removedEntry.getAlarmId());
-		return removedEntry;
+	public AlarmTableEntry removeOldest() throws AlarmContainerException {
+		final AlarmTableEntry removedEntry = super.removeOldest();
+		if (removedEntry==null) {
+			throw new IllegalStateException("The oldest alarm can't be null!");
+		}
+		try {
+			EDTExecutor.instance().executeSync(new Runnable() {
+				@Override
+				public void run() {
+					indexWithReduction.remove(removedEntry.getAlarmId());
+				}
+			});
+		} catch (Throwable t) {
+			throw new AlarmContainerException("Error removing oldest alarm from the alarm ("+removedEntry.getAlarmId()+") reduction container",t);
+		}
+		return removedEntry;			
 	}
 	
 	/**
@@ -224,21 +277,21 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param newAlarm The not null new alarm 
 	 * @throws AlarmContainerException if the entry is not in the container
 	 */
-	public synchronized void replace(AlarmTableEntry newAlarm) throws AlarmContainerException {
+	public void replace(AlarmTableEntry newAlarm) throws AlarmContainerException {
 		super.replace(newAlarm);
 		int pos=indexWithReduction.indexOf(newAlarm.getAlarmId());
 		if (pos>=0) {
 			String key = indexWithReduction.remove(pos);
-			indexWithReduction.insertElementAt(key, 0);
+			indexWithReduction.add(0,key);
 			if (newAlarm.getStatus().isActive()) {
 				hideReducedChildren(newAlarm);
 			} else {
 				showActiveChildren(newAlarm,pos);
 			}	
 		} else {
+			// This should never happen but we don't want to lose alarms
 			addAlarm(newAlarm);
 		}
-		
 	}
 	
 	/**
@@ -247,30 +300,44 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param alarm The alarm whose active children must be displayed
 	 * @param pos The position in the table where the active children must be shown
 	 */
-	private void showActiveChildren(AlarmTableEntry alarm, int pos) {
+	private void showActiveChildren(final AlarmTableEntry alarm, int pos) {
 		if (categoryClient==null) {
 			return;
 		}
-		// If the alarm is not active then the active children must be
-		// visible
-		Alarm[] als=null;
-		try {
-			als=getActiveChildren(alarm.getAlarmId(), alarm.isNodeParent());
-		} catch (Throwable t) {
-			System.err.println("Error getting children of "+alarm.getAlarmId()+": "+t.getMessage());
-			t.printStackTrace();
-			als=null;
-		}
-		if (als!=null) {
-			for (Alarm al: als) {
-				AlarmTableEntry newEntry = get(al.getAlarmId());
-				if (newEntry!=null) {
-					if (indexWithReduction.indexOf(al.getAlarmId())<0) {
-						indexWithReduction.add(al.getAlarmId());
+		
+		new SwingWorker<Alarm[], Object>() {
+
+			@Override
+			protected Alarm[] doInBackground() throws Exception {
+				Alarm[] ret= getActiveChildren(alarm.getAlarmId(), alarm.isNodeParent());
+				return ret;
+			}
+			
+
+			@Override
+			protected void done() {
+				Alarm[] als=null;
+				try {
+					als=get();
+				} catch (Throwable t) {
+					System.err.println("Error getting the active children list"+t.getMessage());
+					t.printStackTrace();
+					return;
+				}
+				if (als!=null) {
+					for (Alarm al: als) {
+						AlarmTableEntry newEntry = AlarmsReductionContainer.this.get(al.getAlarmId());
+						if (newEntry!=null) {
+							if (indexWithReduction.indexOf(al.getAlarmId())<0) {
+								indexWithReduction.add(al.getAlarmId());
+							}
+						}
 					}
 				}
+				super.done();
 			}
-		}
+			
+		}.execute();
 	}
 	
 	/**
@@ -310,19 +377,21 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 			the highest priority of the alarm to acknowledge
 	 * @see AlarmContainer#hasNotAckAlarms()
 	 */
-	public synchronized int hasNotAckAlarms(boolean reduced) {
+	public int hasNotAckAlarms(boolean reduced) throws AlarmContainerException {
 		if (!reduced) {
 			return super.hasNotAckAlarms();
 		}
 		int ret=Integer.MAX_VALUE;
-		for (String id: indexWithReduction) {
-			AlarmTableEntry entry = get(id);
-			if (entry.getStatus().isActive() && entry.isNew() && entry.getPriority()<ret) {
-				ret=entry.getPriority();
-			}
-			if (ret==0) {
-				break;
-			}
+		synchronized (indexWithReduction) {
+			for (String id: indexWithReduction) {
+				AlarmTableEntry entry = get(id);
+				if (entry.getStatus().isActive() && entry.isNew() && entry.getPriority()<ret) {
+					ret=entry.getPriority();
+				}
+				if (ret==0) {
+					break;
+				}
+			}	
 		}
 		return (ret==Integer.MAX_VALUE)?-1:ret;
 	}
