@@ -87,6 +87,7 @@ import alma.acsncErrType.wrappers.AcsJEventSubscriptionFailureEx;
  * receiving events.
  * 
  * @author dfugate
+ * @deprecated Since ACS 10.2. Use {@link ContainerServicesBase#createNotificationChannelSubscriber(String, Class)} instead.
  */
 public class Consumer extends OSPushConsumerPOA implements ReconnectableParticipant{
 	
