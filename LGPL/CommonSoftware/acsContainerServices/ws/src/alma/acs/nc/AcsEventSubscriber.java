@@ -245,7 +245,7 @@ public interface AcsEventSubscriber<T> {
 	 * Generic event callback, for use with {@link AcsEventSubscriber#addGenericSubscription(GenericCallback)}.
 	 */
 	public static interface GenericCallback {
-		public void receive(Object event, EventDescription eventDescrip);
+		public void receiveGeneric(Object event, EventDescription eventDescrip);
 	}
 
 }
