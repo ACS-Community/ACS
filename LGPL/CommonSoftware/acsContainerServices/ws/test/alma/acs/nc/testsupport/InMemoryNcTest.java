@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
+
+import junit.framework.JUnit4TestAdapter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -42,13 +45,13 @@ public class InMemoryNcTest
 	private AcsLogger logger;
 	private ContainerServicesBase services;
 	
-//	/**
-//	 * For compatibility with JUnit3 based TATJUnitRunner
-//	 */
-//	public static junit.framework.Test suite() {
-//		return new JUnit4TestAdapter(EventSubscriberSmEngineTest.class);
-//	}
-//
+	/**
+	 * For compatibility with JUnit3 based TATJUnitRunner
+	 */
+	public static junit.framework.Test suite() {
+		return new JUnit4TestAdapter(InMemoryNcTest.class);
+	}
+
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////// Dummy data and receivers ///////////////////////////////////
@@ -250,8 +253,6 @@ public class InMemoryNcTest
 	/**
 	 * Tests that events get delivered correctly, 
 	 * using various typed and generic subscriptions.
-	 * <p>
-	 * @TODO: Test suspend /resume
 	 */
 	@Test
 	public void testSubscriptions() throws Exception {
@@ -346,6 +347,57 @@ public class InMemoryNcTest
 		logger.info("OK: received event2 and eventData in rec2 after disconnecting / unsubscribing other subscribers.");
 	}
 
+	
+	/**
+	 * Tests the correct behavior of suspend / resume.
+	 * The events sent during subscriber suspension must be delivered right after resume gets called.
+	 */
+	@Test
+	public void testSuspendResume() throws Exception {
+		InMemoryNcFake nc = new InMemoryNcFake(services, "myTestChannel");
+
+		// subscriber 
+		AcsEventSubscriber<TestEventType1> sub = nc.createSubscriber("myTestSubscriber", TestEventType1.class);
+		sub.startReceivingEvents();
+		StoringEventCollector eventCollector = new StoringEventCollector();
+		TestEventReceiver1 rec = new TestEventReceiver1(eventCollector);
+		sub.addSubscription(rec);
+		
+		// publisher
+		AcsEventPublisher<TestEventType1> pub = nc.createPublisher("myTestPublisher", TestEventType1.class);
+		
+		TestEventType1 event1 = new TestEventType1();
+
+		final int numEventsBeforeSuspend = 7;
+		final int numEventsDuringSuspend = 5;
+		final int numEventsAfterResume = 3;
+		
+		for (int i = 0; i < numEventsBeforeSuspend; i++) {
+			pub.publishEvent(event1);
+		}
+		
+		// Suspend the subscriber. This can no longer lose already published events, because those calls return 
+		// only after putting the event in the subscriber's queue.
+		// Still chances are good that the subscriber is still processing the events, which would then test concurrency behavior
+		sub.suspend(); 
+		for (int i = 0; i < numEventsDuringSuspend; i++) {
+			pub.publishEvent(event1);
+		}
+		// wait a bit for the receiver. Alternatively sync on the receiver as done in the concurrency test.
+		Thread.sleep(100);
+		// make sure we do not see the numEventsDuringSuspend included...
+		assertThat(eventCollector.getAndClearEvents(), hasSize(numEventsBeforeSuspend));
+		
+		sub.resume();
+		Thread.sleep(100);
+		assertThat(eventCollector.getAndClearEvents(), hasSize(numEventsDuringSuspend));
+		
+		for (int i = 0; i < numEventsAfterResume; i++) {
+			pub.publishEvent(event1);
+		}
+		Thread.sleep(100);
+		assertThat(eventCollector.getAndClearEvents(), hasSize(numEventsAfterResume));
+	}
 	
 	/**
 	 * Heavy-duty test to check for concurrency problems
