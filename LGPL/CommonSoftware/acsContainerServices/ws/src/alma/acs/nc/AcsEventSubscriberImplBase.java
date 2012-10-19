@@ -33,6 +33,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import org.apache.commons.scxml.ErrorReporter;
@@ -122,7 +123,7 @@ public abstract class AcsEventSubscriberImplBase<T>
 	/**
 	 * @see #eventHandlingExecutor
 	 */
-	private long numEventsDiscarded;
+	private final AtomicLong numEventsDiscarded = new AtomicLong(0);
 
 	/**
 	 * Throttles logs from {@link #logEventProcessingTooSlowForEventRate(long, String, long)}.
@@ -385,8 +386,12 @@ public abstract class AcsEventSubscriberImplBase<T>
 	/**
 	 * Logs the error that the receiver cannot keep up with the actual event rate,
 	 * in spite of the small event buffering done.
+	 * 
+	 * @param numEventsDiscarded   The number of events that have actually been discarded since the last log. 
+	 *                             Will often be 0 when we just warn about the queue filling up.
+	 * @param eventName
 	 */
-	protected abstract void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName, long logOcurrencesNumber);
+	protected abstract void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName);
 	
 	/**
 	 * Logs or ignores the fact that an event was received for which no receiver could be found.
@@ -409,9 +414,11 @@ public abstract class AcsEventSubscriberImplBase<T>
 	 * <p>
 	 * This method should be called from the subclass-specific method that receives the event,
 	 * for example <code>push_structured_event</code> in case of Corba NC.
-	 *  
+	 * <p>
+	 * This method is thread-safe.
+	 * 
 	 * @param eventData (defined as <code>Object</code> instead of <code>T</code> to include data for generic subscription).
-	 * @param eventDesc
+	 * @param eventDesc event meta data
 	 */
 	protected void processEventAsync(final Object eventData, final EventDescription eventDesc) {
 
@@ -430,13 +437,24 @@ public abstract class AcsEventSubscriberImplBase<T>
 						}
 					});
 		} catch (RejectedExecutionException ex) {
-			// receivers have been too slow, queue is full, will drop data.
+			// receivers have been too slow, queue is actually full, will drop data.
 			thisEventDiscarded = true;
-			numEventsDiscarded++;
+			numEventsDiscarded.incrementAndGet();
 		}
-		if ( (thisEventDiscarded || isReceiverBusyWithPreviousEvent) && receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
-			logEventProcessingTooSlowForEventRate(numEventsDiscarded, eventData.getClass().getName(), receiverTooSlowLogRepeatGuard.counterAtLastExecution());
-			numEventsDiscarded = 0;
+		if (thisEventDiscarded || isReceiverBusyWithPreviousEvent) {
+			// receiverTooSlowLogRepeatGuard currently not thread-safe, therefore synchronize
+			synchronized (receiverTooSlowLogRepeatGuard) {
+				if (receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
+					// About numEventsDiscarded and concurrency: 
+					// That counter may have been incremented by other threads between the above RejectedExecutionException
+					// and here. These threads are blocked now, and have not yet incremented the repeat guard.
+					// This can lead to some harmless irregularities in how often we actually log the message.
+					// What matters is that we report correctly the number of discarded events. 
+					logEventProcessingTooSlowForEventRate(
+							numEventsDiscarded.getAndSet(0), 
+							eventData.getClass().getName());
+				}
+			}
 		}
 	}
 
