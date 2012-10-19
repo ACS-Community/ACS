@@ -377,7 +377,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		super.destroyEnvironmentAction(evtDispatcher, errRep, scInstance, derivedEvents);
 	}
 
-	public void createConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
+	protected void createConnectionAction(EventDispatcher evtDispatcher, ErrorReporter errRep, SCInstance scInstance,
 			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
 		
 		super.createConnectionAction(evtDispatcher, errRep, scInstance, derivedEvents);
@@ -900,8 +900,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			throw new Disconnected();
 		}
 
-		final EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
-
 		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
 		if (convertedAny == null) {
@@ -914,18 +912,14 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 					structuredEvent.header.fixed_header.event_type.type_name,
 					"null");
 		}
-		else if (!eventType.isInstance(convertedAny)) {
-			// This can be OK if we have a generic subscription
-			if (genericReceiver == null) {
-				// For typed subscriptions, event types outside of the type parameter <T> range should not arrive 
-				// because we expect server-side filtering to hide from us any other types sent on the channel.
+		else {
+			// An optimization: If the event type cannot match a typed or generic receiver
+			// then we don't put it into the queue. We could improve this by checking for registered receivers already here...
+			if (!eventType.isInstance(convertedAny) && !hasGenericReceiver()) {
 				logNoEventReceiver(convertedAny.getClass().getName());
 			}
-		}
-		else {
-			// got good event data, will give it to the registered receiver
-			@SuppressWarnings("unchecked")
-			T struct = (T) convertedAny;
+			
+			EventDescription eventDesc = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 			
 			if (isTraceEventsEnabled()) {
 				LOG_NC_EventReceive_OK.log(
@@ -935,7 +929,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 						structuredEvent.header.fixed_header.event_type.type_name);
 			}
 
-			processEventAsync(struct, eDescrip);
+			// let the base class deal with queue and dispatching to receiver
+			processEventAsync(convertedAny, eventDesc);
 		}
 	}
 
