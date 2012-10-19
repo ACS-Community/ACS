@@ -51,8 +51,6 @@ public class AcsLocations {
 	 * 
 	 * The strategy uses the following order:
 	 * <ol>
-	 * <li>if both exist, use properties <code>ACS.managerhost</code> and
-	 * <code>ACS.baseport</code>
 	 * <li>if it exists, use property <code>ACS.manager</code>
 	 * <li>if it exists, use <code>ACS.baseport</code> together with
 	 * <code>local IP</code>
@@ -80,14 +78,6 @@ public class AcsLocations {
 					managerPort = ACSPorts.globalInstance(acsInstance).giveManagerPort();
 				}
 			} catch (NumberFormatException exc) {}
-		}
-
-		// --- try to read new two-property definition
-
-		String managerHost = System.getProperty("ACS.managerhost", "").trim();
-
-		if (!managerHost.equals("") && !managerPort.equals("")) {
-			return convertToManagerLocation(managerHost, managerPort);
 		}
 
 		// --- try to read old single-property definition
