@@ -33,7 +33,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.scxml.ErrorReporter;
@@ -70,7 +69,8 @@ import alma.acsnc.EventDescription;
  *            otherwise a common base type for all events that may be sent on the given "channel" should be used, 
  *            such as <code>Object</code> or <code>IDLEntity</code>. 
  */
-public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscriber<T>, AcsScxmlActionExecutor<EventSubscriberAction> {
+public abstract class AcsEventSubscriberImplBase<T> 
+		implements AcsEventSubscriber<T>, AcsScxmlActionExecutor<EventSubscriberAction> {
 	
 	/**
 	 * A name that identifies the client of this NCSubscriber, to be used
@@ -410,10 +410,10 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * This method should be called from the subclass-specific method that receives the event,
 	 * for example <code>push_structured_event</code> in case of Corba NC.
 	 *  
-	 * @param structToProcess
-	 * @param eDescrip
+	 * @param eventData (defined as <code>Object</code> instead of <code>T</code> to include data for generic subscription).
+	 * @param eventDesc
 	 */
-	protected void processEventAsync(final T structToProcess, final EventDescription eDescrip) {
+	protected void processEventAsync(final Object eventData, final EventDescription eventDesc) {
 
 		// to avoid unnecessary scary logs, we tolerate previous events up to half the queue size
 		boolean isReceiverBusyWithPreviousEvent = ( eventHandlingExecutor.getQueue().size() > EVENT_QUEUE_CAPACITY / 2 );
@@ -426,7 +426,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 					new Runnable() {
 						public void run() {
 							// here we call processEvent from the worker thread
-							processEvent(structToProcess, eDescrip);
+							processEvent(eventData, eventDesc);
 						}
 					});
 		} catch (RejectedExecutionException ex) {
@@ -435,7 +435,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 			numEventsDiscarded++;
 		}
 		if ( (thisEventDiscarded || isReceiverBusyWithPreviousEvent) && receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
-			logEventProcessingTooSlowForEventRate(numEventsDiscarded, structToProcess.getClass().getName(), receiverTooSlowLogRepeatGuard.counterAtLastExecution());
+			logEventProcessingTooSlowForEventRate(numEventsDiscarded, eventData.getClass().getName(), receiverTooSlowLogRepeatGuard.counterAtLastExecution());
 			numEventsDiscarded = 0;
 		}
 	}
@@ -447,25 +447,30 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 	 * or preferably via {@link #processEventAsync(Object, EventDescription)}.
 	 * <p>
 	 * No exception is allowed to be thrown by this method, even if the receiver implementation throws a RuntimeExecption
+	 * @param eventData (defined as <code>Object</code> instead of <code>T</code> to include data for generic subscription).
+	 * @param eventDesc
 	 */
-	protected void processEvent(T eventData, EventDescription eventDescrip) {
+	protected void processEvent(Object eventData, EventDescription eventDesc) {
 		
-		@SuppressWarnings("unchecked")
-		Class<T> incomingEventType = (Class<T>) eventData.getClass();
-		
+		Class<?> incomingEventType = eventData.getClass();
 		String eventName = incomingEventType.getName();
-
+		
 		// figure out how much time this event has to be processed (according to configuration)
 		double maxProcessTimeSeconds = getMaxProcessTimeSeconds(eventName);
 
 		StopWatch profiler = new StopWatch();
-		// we give preference to a receiver that has registered for this concrete subtype of T
-		if (receivers.containsKey(incomingEventType)) {
+		
+		// we give preference to a receiver that has registered for this event type T or a subtype
+		if (eventType.isAssignableFrom(incomingEventType) && receivers.containsKey(incomingEventType)) {
+	
+			@SuppressWarnings("unchecked")
+			T typedEventData = (T) eventData;
+			
 			Callback<? extends T> receiver = receivers.get(incomingEventType);
 
 			profiler.reset();
 			try {
-				_process(receiver, eventData, eventDescrip);
+				_process(receiver, typedEventData, eventDesc);
 			} 
 			catch (Throwable thr) {
 				logEventReceiveHandlerException(eventName, receiver.getClass().getName(), thr);
@@ -481,7 +486,7 @@ public abstract class AcsEventSubscriberImplBase<T> implements AcsEventSubscribe
 		else if (genericReceiver != null) {
 			
 			profiler.reset();
-			genericReceiver.receive(eventData, eventDescrip);
+			genericReceiver.receiveGeneric(eventData, eventDesc);
 			double usedSecondsToProcess = (profiler.getLapTimeMillis() / 1000.0);
 
 			// warn the end-user if the receiver is taking too long 
