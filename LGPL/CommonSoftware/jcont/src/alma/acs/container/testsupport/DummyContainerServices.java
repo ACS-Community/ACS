@@ -21,14 +21,10 @@
 package alma.acs.container.testsupport;
 
 import java.util.Properties;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Object;
-import org.omg.PortableServer.Servant;
-
-import com.cosylab.CDB.DAL;
 
 import si.ijs.maci.ComponentSpec;
 
@@ -40,13 +36,11 @@ import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
 import alma.acs.container.AcsManagerProxy;
-import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
-import alma.acs.logging.AcsLogger;
-import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acs.nc.testsupport.DummyContainerServicesBase;
 import alma.entities.commonentity.EntityT;
 
 /**
@@ -58,10 +52,8 @@ import alma.entities.commonentity.EntityT;
  * 
  * @author hsommer
  */
-public class DummyContainerServices implements ContainerServices
+public class DummyContainerServices extends DummyContainerServicesBase implements ContainerServices
 {
-	protected final String name;
-	protected final AcsLogger logger;
 	private AlarmSource alarmSource;
 
 	/**
@@ -69,13 +61,7 @@ public class DummyContainerServices implements ContainerServices
 	 * @param logger A JDK logger will be wrapped to become an AcsLogger. If <code>null</code>, a new logger gets created.
 	 */
 	public DummyContainerServices(String name, Logger logger) {
-		this.name = name;
-		if (logger == null) {
-			this.logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name, false);
-		}
-		else {
-			this.logger = AcsLogger.fromJdkLogger(logger, null);
-		}
+		super(name, logger);
 		
 		alarmSource = new AlarmSource() {
 			
@@ -135,36 +121,6 @@ public class DummyContainerServices implements ContainerServices
 
 	///////////////////////////////////////
 	
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @throws RuntimeException, see {@link #check()}
-	 * @see alma.acs.container.ContainerServicesBase#getLogger()
-	 */
-	@Override
-	public AcsLogger getLogger() {
-		return logger;
-	}
-
-	/**
-	 * @see alma.acs.container.ContainerServicesBase#getCDB()
-	 */
-	@Override
-	public DAL getCDB() throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
-	}
-
-	/**
-	 * @see alma.acs.container.ContainerServicesBase#activateOffShoot(org.omg.PortableServer.Servant)
-	 */
-	@Override
-	public <T extends Servant & OffShootOperations> OffShoot activateOffShoot(T cbServant)
-			throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
-	}
 
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(alma.acs.container.OffShootOperations, java.lang.Class)
@@ -173,31 +129,6 @@ public class DummyContainerServices implements ContainerServices
 	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
 			throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx();
-	}
-
-	/**
-	 * @throws AcsJContainerServicesEx
-	 * @see alma.acs.container.ContainerServicesBase#deactivateOffShoot(java.lang.Object)
-	 */
-	@Override
-	public void deactivateOffShoot(java.lang.Object offshootImpl) throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
-	}
-
-	/**
-	 * @see alma.acs.container.ContainerServicesBase#getAdvancedContainerServices()
-	 */
-	@Override
-	public AdvancedContainerServices getAdvancedContainerServices() {
-		return null;
-	}
-
-	/**
-	 * @see alma.acs.container.ContainerServicesBase#getThreadFactory()
-	 */
-	@Override
-	public ThreadFactory getThreadFactory() {
-		return null;
 	}
 
 
