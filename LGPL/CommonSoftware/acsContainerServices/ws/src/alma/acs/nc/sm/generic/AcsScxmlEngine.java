@@ -160,7 +160,7 @@ public class AcsScxmlEngine<S extends Enum<S>, A extends Enum<A>>
 			
 			List<CustomAction> scxmlActions = actionDispatcher.getScxmlActionMap();
 			scxml = SCXMLParser.parse(scxmlUrl, errorTracer, scxmlActions);
-			logger.info("Loaded SCXML file " + scxmlUrl.toString() + "...");
+			logger.fine("Loaded SCXML file " + scxmlUrl.toString() + "...");
 		} catch (ModelException e) {
 			logger.severe("Could not load model: " + e.getMessage());
 		} catch (SAXException e) {
@@ -193,7 +193,7 @@ public class AcsScxmlEngine<S extends Enum<S>, A extends Enum<A>>
 			logger.severe("Could not start SM execution: " + e.getMessage());
 		}
 
-		logger.info("Started SM execution ...");
+		logger.fine("Started SM execution ...");
 	}
 
 	/**
