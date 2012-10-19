@@ -518,9 +518,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	}
 	
 	@Override
-	protected void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName, long logOcurrencesNumber) {
+	protected void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName) {
 		LOG_NC_ReceiverTooSlow.log(logger, clientName, numEventsDiscarded, eventName, channelName,
-				getNotificationFactoryName(), logOcurrencesNumber);
+				getNotificationFactoryName());
 	}
 	
 	@Override
