@@ -282,7 +282,6 @@
 		<Member name="EventName" type="string" description="Name of the last event that could not be handled immediately." />
 		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
-		<Member name="LogOcurrencesNumber" type="long" description="Number of previous LOG_NC_ReceiverTooSlow logs reduced into this single log by a repeat guard." />
 	</LogDefinition>
 	
 </LogDefinitionType>

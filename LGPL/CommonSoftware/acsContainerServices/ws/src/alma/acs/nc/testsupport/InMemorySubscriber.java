@@ -213,22 +213,15 @@ class InMemorySubscriber<T> extends AcsEventSubscriberImplBase<T>
 	}
 
 	@Override
-	protected void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName, long logOcurrencesNumber) {
-		logger.warning("More events came in from the NC than the receiver processed. eventName= " + eventName +
-				"; numEventsDiscarded=" + numEventsDiscarded + "; logOcurrencesNumber=" + logOcurrencesNumber + "."); 
+	protected void logEventProcessingTooSlowForEventRate(long numEventsDiscarded, String eventName) {
+		logger.warning("More events came in from the NC than the receiver processed. eventName=" + eventName +
+				"; numEventsDiscarded=" + numEventsDiscarded + "."); 
 	}
 
 	@Override
 	protected void logNoEventReceiver(String eventName) {
-		// Usually this is not an error in case of this in-memory fake event handler,
-		// because no event filtering is done "on the server side". 
-		// The unknown event could be of a type our receiver simply does not care about.
-		// Thus we only log it if tracing of events is enabled.
-		if (isTraceEventsEnabled()) {
-			// TODO: log it
-		}
-		// hack
-//		logger.info("logNoEventReceiver, clientName=" + clientName + ", eventName=" + eventName);
+		// we fake server-side filtering #pushData and thus have to treat missing matching receiver as a problem
+		logger.warning("logNoEventReceiver: clientName=" + clientName + ", eventName=" + eventName);
 	}
 
 	@Override

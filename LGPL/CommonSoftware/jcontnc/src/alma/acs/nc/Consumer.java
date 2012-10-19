@@ -790,7 +790,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 			}
 			if ( (thisEventDiscarded || isReceiverBusyWithPreviousEvent) && receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
 				LOG_NC_ReceiverTooSlow.log(m_logger, m_clientName, numEventsDiscarded, struct.getClass().getName(), m_channelName,
-						getNotificationFactoryName(), receiverTooSlowLogRepeatGuard.counterAtLastExecution());
+						getNotificationFactoryName());
 				numEventsDiscarded = 0;
 			}
 		}
