@@ -501,7 +501,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			super(c);
 		}
 
-		public void receive(Object event, EventDescription eventDescrip) {
+		public void receiveGeneric(Object event, EventDescription eventDescrip) {
 			super.receive(eventDescrip);
 		}
 		
