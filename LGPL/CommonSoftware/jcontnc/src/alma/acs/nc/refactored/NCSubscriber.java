@@ -935,15 +935,19 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	}
 
 	/**
-	 * Users can override this method to get notified of raw events, for additional statistics etc.
-	 * Dealing with events in this method is only in addition to the normal processing of that event,
-	 * and should generally be avoided by simply not overriding this method.
-	 * @TODO: Perhaps return a boolean to veto down further processing of the event? Could be useful for eventGUI.
-	 *  
+	 * Users can override this method to get notified of raw events, for additional statistics, 
+	 * to handle event data given as a sequence of IDL structs (exceptional case in acssamp),
+	 * or for DynAny access (eventGUI).
+	 * <p>
+	 * Usually this method should not be overridden.
+	 * 
 	 * @param structuredEvent
+	 * @return <code>true</code> if normal event processing should continue, 
+	 *         <code>false</code> if NCSubscriber should not process this event. 
 	 */
-	protected void push_structured_event_called(StructuredEvent structuredEvent) {
+	protected boolean push_structured_event_called(StructuredEvent structuredEvent) {
 		//System.out.println("********** got a call to push_structured_event **********");
+		return true;
 	}
 
 	/**
