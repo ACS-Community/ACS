@@ -42,6 +42,34 @@ import cern.laser.client.data.Alarm;
 public class AlarmContainerTest extends TestCase {
 	
 	/**
+	 * MyAlarmContainer extends {@link AlarmsReductionContainer} to allow testing
+	 * protected methods.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class MyAlarmContainer extends AlarmsReductionContainer {
+		
+		/**
+		 * Constructor
+		 * @see AlarmsReductionContainer#AlarmsReductionContainer(int)
+		 */
+		public MyAlarmContainer(int max) {
+			super(max);
+		}
+
+		/**
+		 * @see AlarmsContainer#removeInactiveAlarms(AlarmGUIType type)
+		 */
+		@Override
+		public int removeInactiveAlarms(AlarmGUIType type)
+				throws AlarmContainerException {
+			return super.removeInactiveAlarms(type);
+		}
+		
+	}
+	
+	/**
 	 * The max number of alarms in the container
 	 */
 	private final int CONTAINER_SIZE = 10000;
@@ -49,7 +77,7 @@ public class AlarmContainerTest extends TestCase {
 	/**
 	 * The container to test
 	 */
-	private AlarmsReductionContainer container;
+	private MyAlarmContainer container;
 
 	/**
 	 * Constructor
@@ -67,7 +95,7 @@ public class AlarmContainerTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		TestAlarm.alarm_generator_id=0;
-		container = new AlarmsReductionContainer(CONTAINER_SIZE);
+		container = new MyAlarmContainer(CONTAINER_SIZE);
 		assertNotNull(container);
 	}
 
