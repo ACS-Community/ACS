@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.122 2012/09/11 12:51:19 bjeram Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.123 2012/10/22 09:39:08 hsommer Exp $"
 #
 #
 #
@@ -1433,7 +1433,12 @@ then
 	export CYGWIN_ROOT=`cygpath -m /`
 fi
 
-unset MODPATH
+# See COMP-5690 about no longer unsetting MODPATH (if RETAIN flag is set)
+if [ X"$ACS_RETAIN" = X ]
+then
+    unset MODPATH
+fi
+
 
 # - Functions and aliases are not exported to sub-shells, therefore pointless
 #   in the profile.
