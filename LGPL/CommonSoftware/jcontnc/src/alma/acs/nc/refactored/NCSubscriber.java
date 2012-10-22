@@ -231,6 +231,13 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	private AcsNcReconnectionCallback channelReconnectionCallback;
 
 	/**
+	 * We log it only once if {@link #push_structured_event_called(StructuredEvent)}
+	 * vetoes down the regular event processing by this NCSubscriber.
+	 */
+	private boolean firstSubclassVeto = true;
+
+	
+	/**
 	 * Creates a new instance of NCSubscriber.
 	 * Normally an ACS class such as container services will act as the factory for NCSubscriber objects, 
 	 * but for exceptional cases it is also possible to create one stand-alone, 
@@ -889,13 +896,26 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	public final void push_structured_event(StructuredEvent structuredEvent)
 			throws Disconnected {
 		
+		boolean shouldProcessEvent = true;
+		
 		try {
-			push_structured_event_called(structuredEvent);
+			shouldProcessEvent = push_structured_event_called(structuredEvent);
 		} catch (Throwable thr) {
 			// ignore any exception, since push_structured_event_called is only meant for 
 			// notification, to enable special tests or other exotic purposes.
+			// In this case we also keep shouldProcessEvent=true, just in case.
 		}
 
+		// got a subclass 'veto'?
+		if (!shouldProcessEvent) {
+			if (firstSubclassVeto) {
+				logger.info("Event subscriber '" + getClass().getSimpleName() + "' handles one or more raw NC events itself, bypassing '" + NCSubscriber.class + 
+								"'. This non-standard behavior will not be logged again by this NCSubscriber.");
+				firstSubclassVeto = false;
+			}
+			return;
+		}
+		
 		if (isDisconnected()) {
 			throw new Disconnected();
 		}
