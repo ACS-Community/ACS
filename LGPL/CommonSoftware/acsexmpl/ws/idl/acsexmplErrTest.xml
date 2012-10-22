@@ -2,7 +2,7 @@
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"     
      name="acsexmplErrTest"
-     type="50042"
+     type="905"
      _prefix="alma"
 >
 <ErrorCode name="InitializationFailure"
