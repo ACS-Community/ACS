@@ -26,28 +26,34 @@
  */
 ////////////////////////////////////////////////////////////////////////////////
 package alma.ACSCOURSE_MOUNT;
-////////////////////////////////////////////////////////////////////////////////
-import alma.acs.nc.Consumer;
-import alma.acs.container.ContainerServices;
+
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.component.client.ComponentClient;
-////////////////////////////////////////////////////////////////////////////////
+import alma.acs.container.ContainerServices;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
+
+
 /** 
  * MountConsumer is a simple class that connects to the MOUNT_CHANNEL channel,
  * and prints events to standard out.
  * @author dfugate
  */
-public class MountConsumer extends Consumer
-{
-    /** Creates a new instance of MountConsumer */
-    public MountConsumer(ContainerServices cServices)
-	throws alma.acs.exceptions.AcsJException
-    {
-        super(MOUNT_CHANNEL.value, cServices);
-	
-	//Subscribe to an event type and provide a reference to a class capable
-	//of processing the event (see receive method).
-	addSubscription(MountEventData.class, this);
-    }    
+public class MountConsumer implements AcsEventSubscriber.Callback<MountEventData> {
+
+	private final AcsEventSubscriber<MountEventData> m_consumer;
+
+	/** Creates a new instance of MountConsumer */
+	public MountConsumer(ContainerServices cServices) throws alma.acs.exceptions.AcsJException {
+		m_consumer = cServices.createNotificationChannelSubscriber(MOUNT_CHANNEL.value, MountEventData.class);
+
+		// Subscribe to an event type and provide a reference to a class capable
+		// of processing the event (see receive method).
+		m_consumer.addSubscription(this);
+		m_consumer.startReceivingEvents();
+	}
+
     ////////////////////////////////////////////////////////////////////////////
     /** 
      * A <code>receive</code> method <B>must</B> be created for each type of event
@@ -55,13 +61,23 @@ public class MountConsumer extends Consumer
      * 
      * @param joe A data structure extracted from a CORBA event.
      */
-    public void receive(MountEventData joe)
-	{
+	@Override
+	public void receive(MountEventData joe, EventDescription eventDescrip) {
 	    System.out.println("The commanded Az/El received by this consumer are:" + 
 			       joe.Azimuth + 
 			       "," + 
 			       joe.Elevation);
 	}
+
+	@Override
+	public Class<MountEventData> getEventType() {
+		return MountEventData.class;
+	}
+
+	private void disconnect() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
+		m_consumer.disconnect();
+	}
+
     ////////////////////////////////////////////////////////////////////////////
     /** Illustrates a simple example outside of the component/container model.
      * @param args Not used!
@@ -86,7 +102,6 @@ public class MountConsumer extends Consumer
             //After consumerReady() is invoked, processEvent(...) is invoked
             //by the channel.  That is, we have no control over when
             //that method is called.
-            joe.consumerReady();
             System.out.println("Waiting for events...");
 
 	    //Wait a while for some events
@@ -104,5 +119,5 @@ public class MountConsumer extends Consumer
         }
         System.out.println("Done...");
     }
-    ////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 }

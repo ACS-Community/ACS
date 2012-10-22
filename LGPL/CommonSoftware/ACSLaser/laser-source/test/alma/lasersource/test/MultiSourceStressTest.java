@@ -24,11 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
@@ -38,8 +34,8 @@ import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.acs.nc.Consumer;
-import alma.acs.nc.Helper;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -60,7 +56,7 @@ import alma.alarmsystem.source.ACSFaultState;
  * @author acaproni
  *
  */
-public class MultiSourceStressTest extends ComponentClientTestCase {
+public class MultiSourceStressTest extends ComponentClientTestCase implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
 	
 	/**
 	 * The relevant fields of a fault state to compare against
@@ -130,7 +126,7 @@ public class MultiSourceStressTest extends ComponentClientTestCase {
 	}
 	
 	// The consumer
-	private volatile Consumer m_consumer;
+	private volatile AcsEventSubscriber<ACSJMSMessageEntity> m_consumer;
 
 	// The number of fault states to send with the same source
 	private static final int NUM_OF_FS_TO_SEND_ONE_SOURCE = 10000;
@@ -189,15 +185,11 @@ public class MultiSourceStressTest extends ComponentClientTestCase {
 		super.setUp();
 		assertNotNull(getContainerServices());
 		
-		// If the Consumer ctor hangs again, we have to investigate more about http://jira.alma.cl/browse/COMP-2153
-		// and perhaps go back to rev. 1.10 and create the Consumer in a separate thread with timeout.
-		// For now, the hope is that this spurious problem got resolved by changing the NC Helper.m_nContext field
-		// (which is a reference to the naming service) from a static field to an object member.
-		m_consumer = new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
+		m_consumer = getContainerServices().createNotificationChannelSubscriber(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		assertNotNull("Error instantiating the consumer", m_consumer);
 		
-		assertNotNull("Error instantiating the consumer",m_consumer);
-		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
-		m_consumer.consumerReady();
+		m_consumer.addSubscription(this);
+		m_consumer.startReceivingEvents();
 		
 		alarmSource = ACSAlarmSystemInterfaceFactory.createSource();
 		assertNotNull("Error instantiating the source",alarmSource);
@@ -215,15 +207,29 @@ public class MultiSourceStressTest extends ComponentClientTestCase {
 		super.tearDown();
 	}
 	
-	public synchronized void receive(ACSJMSMessageEntity msg) throws Exception {
-		ASIMessage asiMsg = XMLMessageHelper.unmarshal(msg.text);
-		Collection<FaultState>faultStates = ASIMessageHelper.unmarshal(asiMsg);
+	@Override
+	public synchronized void receive(ACSJMSMessageEntity msg, EventDescription eventDescrip) {
+		ASIMessage asiMsg = null;
+		try {
+			asiMsg = XMLMessageHelper.unmarshal(msg.text);
+		} catch (Exception ex) {
+			// TODO: How to handle this XML parse/validation exception? In the old implementation using NC Consumer
+			// the Consumer would have simply logged this exception. Should we take any action instead?
+			m_logger.log(Level.INFO, "Failed to parse ASIMessage XML", ex);
+		}
+		Collection<FaultState> faultStates = ASIMessageHelper.unmarshal(asiMsg);
 		assertNotNull(faultStates);
 		for (FaultState fs: faultStates) {
 			assertNotNull(fs);
 			receivedFS.add(new FaultStateReceived(fs));	
 		}
 	}
+
+	@Override
+	public Class<ACSJMSMessageEntity> getEventType() {
+		return ACSJMSMessageEntity.class;
+	}
+
 	
 	/**
 	 * Send a fault state to the NC.
@@ -323,4 +329,5 @@ public class MultiSourceStressTest extends ComponentClientTestCase {
 			checkFaultStates(statesToPublish.get(t), receivedFS.get(t).faultState);
 		}
 	}
+
 }

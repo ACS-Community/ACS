@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.11 2009/09/30 15:22:29 acaproni Exp $
+ * @version $Id: SendTest.java,v 1.12 2012/10/22 11:46:37 hsommer Exp $
  * @since    
  */
 
@@ -31,14 +31,18 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
+import com.cosylab.acs.jms.ACSJMSMessageEntity;
+
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -52,13 +56,14 @@ import alma.alarmsystem.source.ACSFaultState;
  * Each message is checked for integrity
  *
  */
-public class SendTest extends ComponentClientTestCase {
+public class SendTest extends ComponentClientTestCase implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
 	
 	public SendTest() throws Exception {
 		super("SendTest");
 	}
 	
-	private volatile Consumer m_consumer;
+	private volatile AcsEventSubscriber<ACSJMSMessageEntity> m_consumer;
+	
 	private static final String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
 //	private ContainerServices m_contSvcs;
 	
@@ -95,13 +100,10 @@ public class SendTest extends ComponentClientTestCase {
 
 			m_logger.info("alarm system initialized.");
 
-		// If the Consumer ctor hangs again, we have to investigate more about http://jira.alma.cl/browse/COMP-2153
-		// and perhaps go back to rev. 1.9 and create the Consumer in a separate thread with timeout.
-		// For now, the hope is that this spurious problem got resolved by changing the NC Helper.m_nContext field
-		// (which is a reference to the naming service) from a static field to an object member.
-			m_consumer = new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, contSvcs);
-			m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
-			m_consumer.consumerReady();
+			m_consumer = getContainerServices().createNotificationChannelSubscriber(
+							m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+			m_consumer.addSubscription(this);
+			m_consumer.startReceivingEvents();
 			m_logger.info("NC consumer installed on channel " + m_channelName);
 		} catch (Exception ex) {
 			super.tearDown();
@@ -216,8 +218,9 @@ public class SendTest extends ComponentClientTestCase {
 	 * @param msg The message received from the NC
 	 * @see alma.acs.nc.Consumer
 	 */
-	public void receive(com.cosylab.acs.jms.ACSJMSMessageEntity msg) {
-		Collection faultStates;
+	@Override
+	public synchronized void receive(ACSJMSMessageEntity msg, EventDescription eventDescrip) {
+		Collection<FaultState> faultStates;
 		try {
 			ASIMessage asiMsg = XMLMessageHelper.unmarshal(msg.text);
 			faultStates = ASIMessageHelper.unmarshal(asiMsg);
@@ -227,7 +230,7 @@ public class SendTest extends ComponentClientTestCase {
 			receiverError = e;
 			return;
 		}
-		Iterator iter = faultStates.iterator();
+		Iterator<FaultState> iter = faultStates.iterator();
 		while (iter.hasNext()) {
 			FaultStateImpl fs = (FaultStateImpl)iter.next();
 			if (!isValidFSMessage(fs,nMsgReceived)) {
@@ -242,6 +245,12 @@ public class SendTest extends ComponentClientTestCase {
 		}
 	}
 	
+	@Override
+	public Class<ACSJMSMessageEntity> getEventType() {
+		return ACSJMSMessageEntity.class;
+	}
+
+
 	/**
 	 * Check if the message is coherent with the number
 	 * 
