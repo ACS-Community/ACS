@@ -148,19 +148,16 @@ public class AcsLocationsTest extends TestCase {
 		String guess;
 
 		System.getProperties().remove("ACS.baseport");
-		System.getProperties().remove("ACS.managerhost");
 		System.getProperties().remove("ACS.manager");
 		
 		// baseport    : unset
 		// manager     : unset
-		// managerhost : unset
 		guess = AcsLocations.figureOutManagerLocation();
 		assertEquals(guess, "corbaloc::"+AcsLocations.getLocalIP()+":3000/Manager");
 		
 		
 		// baseport    : set
 		// manager     : unset
-		// managerhost : unset
 		System.setProperty("ACS.baseport", "3");
 		guess = AcsLocations.figureOutManagerLocation();
 		assertEquals(guess, "corbaloc::"+AcsLocations.getLocalIP()+":3300/Manager");
@@ -168,19 +165,10 @@ public class AcsLocationsTest extends TestCase {
 		
 		// baseport    : set
 		// manager     : set
-		// managerhost : unset
 		System.setProperty("ACS.manager", "corbaloc::456.456.456.456:3500/Manager");
 		guess = AcsLocations.figureOutManagerLocation();
 		assertEquals(guess, "corbaloc::456.456.456.456:3500/Manager");
-
 		
-		// baseport   : set
-		// manager    : set
-		// managerhost: set
-		System.setProperty("ACS.managerhost", "123.123.123.123");
-		guess = AcsLocations.figureOutManagerLocation();
-		assertEquals(guess, "corbaloc::123.123.123.123:3300/Manager");
-
 	}
 	
 	
