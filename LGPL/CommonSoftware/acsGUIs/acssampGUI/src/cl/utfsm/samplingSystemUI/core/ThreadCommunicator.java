@@ -30,10 +30,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
 * This is a manager class designed to transport information from one thread to
-* an other. The comunication is based in channels, each channel has its own
-* LinkedBlockingQueue to gurantee data consistency. Once you get a channel to
-* eficiently extract the data the darinTo(Collection c) meber is prefered, as it
-* will move the data from the queue to the colection in an atomic action. 
+* an other. The communication is based in channels, each channel has its own
+* LinkedBlockingQueue to guarantee data consistency. Once you get a channel to
+* efficiently extract the data the darinTo(Collection c) meber is prefered, as it
+* will move the data from the queue to the collection in an atomic action. 
 */
 public class ThreadCommunicator {
 	private static ThreadCommunicator _instance;

@@ -41,14 +41,14 @@ import alma.JavaContainerError.wrappers.AcsJContainerEx;
 public class SamplingManagerUITool {
 	protected static AcsInformation info=null;
 	private static Hashtable<SampDetail,PropertySamp> sampler = new Hashtable<SampDetail,PropertySamp>();
-	/*container useage count*/
+	/*container usage count*/
 
 	/**
-	 * Prepares the conection to the ACS infrastructure. This member creates
+	 * Prepares the connection to the ACS infrastructure. This member creates
 	 * two objects, an AcsInformation and a SamplingManager. This two are
 	 * the links with the ACS infrastructure.
 	 * 
-	 * @param clientName string tha contains the name with which the tool
+	 * @param clientName string that contains the name with which the tool
 	 * will register with ACS.
 	 * @param managerName string that contains the name of the sampling
 	 * manager in the container. This manager is specified in the CDB.
@@ -64,7 +64,7 @@ public class SamplingManagerUITool {
 
 	/**
 	 * Start the sampling of a property. This member will start a
-	 * PropertySamp object, which will run in a separeted Thread.
+	 * PropertySamp object, which will run in a separate Thread.
 	 * 
 	 * @param sDetail a SampDetail object that contains the specification
 	 * for the sampling.
@@ -105,7 +105,12 @@ public class SamplingManagerUITool {
 	 * @see SampDetail
 	 */
 	protected static void stopSample(SampDetail sDetail){
-		sampler.get(sDetail).stop();
+		try {
+			sampler.get(sDetail).stop();
+		} catch (Exception ex) {
+			// seems normal here to not use proper logging...
+			ex.printStackTrace();
+		}
 	}
 
 	/**

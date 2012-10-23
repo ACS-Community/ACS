@@ -24,15 +24,18 @@
  **/
 
 package cl.utfsm.samplingSystemUI.core;
-import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
-import alma.ACSErrTypeCommon.TypeNotSupportedEx;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
 import alma.ACSErrTypeCommon.CORBAProblemEx;
+import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
 import alma.ACSErrTypeCommon.CouldntCreateObjectEx;
 import alma.ACSErrTypeCommon.MemoryFaultEx;
 import alma.ACSErrTypeCommon.OutOfBoundsEx;
+import alma.ACSErrTypeCommon.TypeNotSupportedEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.Helper;
 import alma.acssamp.SampObj;
 
 /**
@@ -69,8 +72,9 @@ public class PropertySamp {
 		
 		try {
 			sampObject=sManager.getSamplingObj(sampDetail);
-			ncs = new NotificationChannelSuscription(sampObject.getChannelName(),info.getContainerServices());
-			ncs.consumerReady();
+			ncs = new NotificationChannelSuscription(sampObject.getChannelName(), info.getContainerServices(), 
+					Helper.getNamingServiceInitial(info.getContainerServices()));
+			ncs.startReceivingEvents();
 			sampObject.start();
 		} catch (alma.ACSErrTypeCommon.CouldntAccessComponentEx ex) {
 			throw ex;
@@ -93,8 +97,10 @@ public class PropertySamp {
 
 	/**
 	* Closes the Notification Channel, stops sampling of the current SampDetail and destroys the Sampling Object
+	 * @throws AcsJCouldntPerformActionEx 
+	 * @throws AcsJIllegalStateEventEx 
 	*/
-	public void stop(){
+	public void stop() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx{
 		ncs.disconnect();
 		sampObject.suspend();
 	}
