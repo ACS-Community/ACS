@@ -367,7 +367,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 				// allocated to support the connection, and dispose its own object reference."
 				proxySupplier.disconnect_structured_push_supplier();
 				proxySupplier = null;
-				logger.info("Disconnected and destroyed the supplier proxy");
+				logger.finer("Disconnected and destroyed the supplier proxy");
 			}
 		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
 			// This is unexpected but OK, because someone else has already destroyed the remote resources
