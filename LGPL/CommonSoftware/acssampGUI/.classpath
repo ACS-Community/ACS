@@ -27,6 +27,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/NotifyMonitoringExt.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jchart2d-3.1.0.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jchart2d-3.2.0.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-scxml-0.9.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/repeatGuard.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
