@@ -23,5 +23,11 @@
 	<classpathentry kind="var" path="ACSROOT/lib/AlarmSystem.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="lib" path="lib/demoComponents.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmService.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

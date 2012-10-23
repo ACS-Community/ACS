@@ -20,40 +20,35 @@
  *******************************************************************************/
 package alma.demo.test;
 
-import java.util.logging.Logger;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Logger;
+
+import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
+import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
 import alma.alarmsystem.AlarmService;
-import alma.alarmsystem.AlarmServiceHelper;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 import alma.alarmsystemdemo.Antenna;
 import alma.alarmsystemdemo.AntennaHelper;
-import alma.alarmsystemdemo.AntennaPOA;
+import alma.alarmsystemdemo.MF;
+import alma.alarmsystemdemo.MFHelper;
 import alma.alarmsystemdemo.Mount;
 import alma.alarmsystemdemo.MountHelper;
 import alma.alarmsystemdemo.PS;
 import alma.alarmsystemdemo.PSHelper;
-import alma.alarmsystemdemo.MF;
-import alma.alarmsystemdemo.MFHelper;
-import alma.acs.exceptions.AcsJException;
-
-import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
-
-import alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl;
-import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
 
 
 /**
@@ -75,10 +70,11 @@ public class DemoTest {
 	 **/ 
 	private static final String srcChName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
 	
-	Logger logger;
-	private AdvancedComponentClient m_client;
-	private ContainerServices m_contSvcs;
-	private Consumer m_consumer = null;
+	private final Logger logger;
+	private final AdvancedComponentClient m_client;
+	private final ContainerServices m_contSvcs;
+	private  AcsEventSubscriber<ACSJMSMessageEntity> subscriber;
+	private final MyReceiver myReceiver;
 	
 	
 	// A reference to the ASC (used only to be sure it is running)
@@ -86,29 +82,23 @@ public class DemoTest {
 	
 	/**
 	 * Constructor
-	 *
 	 */
-	public DemoTest() {
-		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DemoTest",true);
+	public DemoTest() throws Exception {
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DemoTest",true);
 		String managerLoc = System.getProperty("ACS.manager");
         if (managerLoc == null) {
                 System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
                 System.exit(-1);
         }
-        try {
-        	m_client = new AdvancedComponentClient(logger,managerLoc,"TestSendLaserSources");
-        } catch (Exception e) {
-        	System.out.println("Error creating the AdvancedComponentClient: "+e.getMessage());
-        	e.printStackTrace();
-        	System.exit(-1);
-        }
-        m_contSvcs=m_client.getContainerServices();
+       	m_client = new AdvancedComponentClient(logger, managerLoc,"TestSendLaserSources");
+        m_contSvcs = m_client.getContainerServices();
+        myReceiver = new MyReceiver();
         connectSrcChannel();
 	}
 	
-	public void disconnect() {
-		m_consumer.disconnect();
-		m_consumer=null;
+	public void disconnect() throws AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
+		subscriber.disconnect();
+		subscriber=null;
 		try {
 			m_client.tearDown();
 		} catch (Throwable t) {
@@ -123,21 +113,22 @@ public class DemoTest {
 	private void connectSrcChannel() {
 		// Connect to the NC used by the sources
         try {
-        	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
+        	subscriber = m_contSvcs.createNotificationChannelSubscriber(
+        							srcChName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
         } catch (Exception e) {
         	logger.severe("Error instantiating the consumer: "+e.getMessage());
         	e.printStackTrace();
         	System.exit(-1);
         }
         try {
-        	m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
+        	subscriber.addSubscription(myReceiver);
         } catch (Exception e) {
         	logger.severe("Error subscribing: "+e.getMessage());
         	e.printStackTrace();
         	System.exit(-1);
         }
 		try {
-			m_consumer.consumerReady();
+			subscriber.startReceivingEvents();
 		} catch (Exception e) {
         	logger.severe("Error in consumerReady: "+e.getMessage());
         	e.printStackTrace();
@@ -318,68 +309,78 @@ public class DemoTest {
 			Thread.sleep(30000);
 		} catch(InterruptedException ie) {}
 	}
+
+// HSO: This method is not used and can probably be removed.
+//	/**
+//	 * Setup the listener for the sources
+//	 *
+//	 */
+//	private void setupSourceListener() {
+//		// Connect to the NC used by the sources
+//	    try {
+//	    	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
+//	    } catch (AcsJException e) {
+//	    	logger.severe("Error instantiating the consumer: "+e.getMessage());
+//	    	e.printStackTrace();
+//	    	System.exit(-1);
+//	    }
+//	    try {
+//	    	m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
+//	    } catch (Exception e) {
+//	    	logger.severe("Error subscribing: "+e.getMessage());
+//	    	e.printStackTrace();
+//	    	System.exit(-1);
+//	    }
+//		try {
+//			m_consumer.consumerReady();
+//		} catch (Exception e) {
+//	    	logger.severe("Error in consumerReady: "+e.getMessage());
+//	    	e.printStackTrace();
+//	    	System.exit(-1);
+//	    }
+//	}
 	
-	/**
-	 * Setup the listener for the sources
-	 *
-	 */
-	private void setupSourceListener() {
-		// Connect to the NC used by the sources
-	    try {
-	    	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
-	    } catch (AcsJException e) {
-	    	logger.severe("Error instantiating the consumer: "+e.getMessage());
-	    	e.printStackTrace();
-	    	System.exit(-1);
-	    }
-	    try {
-	    	m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
-	    } catch (Exception e) {
-	    	logger.severe("Error subscribing: "+e.getMessage());
-	    	e.printStackTrace();
-	    	System.exit(-1);
-	    }
-		try {
-			m_consumer.consumerReady();
-		} catch (Exception e) {
-	    	logger.severe("Error in consumerReady: "+e.getMessage());
-	    	e.printStackTrace();
-	    	System.exit(-1);
-	    }
-	}
-	
-	/**
-	 * The method recives all the messages published in the NC by the sources
-	 * 
-	 *  
-	 * @param msg The message received from the NC
-	 * @see alma.acs.nc.Consumer
-	 */
-	public synchronized void receive(ACSJMSMessageEntity msg) {
-		ASIMessage asiMsg;
-		Collection faultStates;
-		try {
-			asiMsg = XMLMessageHelper.unmarshal(msg.text);
-			faultStates = ASIMessageHelper.unmarshal(asiMsg);
-		} catch (Exception e) {
-			System.out.println("Exception caught while unmarshalling the msg "+e.getMessage());
-			e.printStackTrace();
-			return;
+	private static class MyReceiver implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
+
+		/**
+		 * The method receives all the messages published in the NC by the sources
+		 *  
+		 * @param msg The message received from the NC
+		 * @see alma.acs.nc.Consumer
+		 */
+		@Override
+		public void receive(ACSJMSMessageEntity msg, EventDescription eventDescrip) {
+			ASIMessage asiMsg;
+			Collection faultStates;
+			try {
+				asiMsg = XMLMessageHelper.unmarshal(msg.text);
+				faultStates = ASIMessageHelper.unmarshal(asiMsg);
+			} catch (Exception e) {
+				System.out.println("Exception caught while unmarshalling the msg "+e.getMessage());
+				e.printStackTrace();
+				return;
+			}
+			Iterator iter = faultStates.iterator();
+			while (iter.hasNext()) {
+				FaultStateImpl fs = (FaultStateImpl)iter.next();
+				StringBuilder str = new StringBuilder("Alarm message received from source: <");
+				str.append(fs.getFamily());
+				str.append(",");
+				str.append(fs.getMember());
+				str.append(",");
+				str.append(fs.getCode());
+				str.append(">");
+				str.append(" Status: ");
+				str.append(fs.getDescriptor());
+				System.out.println(str.toString());
+			}
 		}
-		Iterator iter = faultStates.iterator();
-		while (iter.hasNext()) {
-			FaultStateImpl fs = (FaultStateImpl)iter.next();
-			StringBuilder str = new StringBuilder("Alarm message received from source: <");
-			str.append(fs.getFamily());
-			str.append(",");
-			str.append(fs.getMember());
-			str.append(",");
-			str.append(fs.getCode());
-			str.append(">");
-			str.append(" Status: ");
-			str.append(fs.getDescriptor());
-			System.out.println(str.toString());
+
+		@Override
+		public Class<ACSJMSMessageEntity> getEventType() {
+			return ACSJMSMessageEntity.class;
 		}
+		
 	}
 	
 	/**
@@ -388,21 +389,25 @@ public class DemoTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		DemoTest test = new DemoTest();
-		// Check if the ASC is running
-		boolean alSvcRunning=test.getAlarmServiceComponent();
-		if (!alSvcRunning) {
-			System.out.println("The alarm service component is not running!");
-			System.out.println("Test aborted.");
-			return;
+		try {
+			DemoTest test = new DemoTest();
+			// Check if the ASC is running
+			boolean alSvcRunning=test.getAlarmServiceComponent();
+			if (!alSvcRunning) {
+				System.out.println("The alarm service component is not running!");
+				System.out.println("Test aborted.");
+				return;
+			}
+			System.out.println("Invoking methods on java components (NODE REDUCTION)");
+			test.testJavaNR();
+			System.out.println("Invoking methods on java components (MULTIPLICITY REDUCTION)");
+			test.testJavaMR();
+			System.out.println("Invoking methods on C++ components");
+			test.testCppComponents();
+			// Disconnect from the source NC
+			test.disconnect();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		System.out.println("Invoking methods on java components (NODE REDUCTION)");
-		test.testJavaNR();
-		System.out.println("Invoking methods on java components (MULTIPLICITY REDUCTION)");
-		test.testJavaMR();
-		System.out.println("Invoking methods on C++ components");
-		test.testCppComponents();
-		// Disconnect from the source NC
-		test.disconnect();
 	}
 }
