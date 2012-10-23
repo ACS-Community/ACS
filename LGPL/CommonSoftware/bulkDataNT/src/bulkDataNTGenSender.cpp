@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.8 2012/09/06 10:50:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.9 2012/10/23 07:32:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@ using namespace AcsBulkdata;
 using namespace std;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-b data size in bytes] [-p parameter] [-l # of loops]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-b data size in bytes] [-p parameter] [-l # of loops] [-n no wait for a key]" << endl;
 	exit(1);
 }
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 	char c;
 	bool sendData=true;
 	bool recreate=true;
+	bool waitForKey=true;
 	double send_time;
 	ACE_Time_Value start_time, elapsed_time;
 	char *streamName = "DefaultStream";
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:");
+    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:n");
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
     	case 'l':
@@ -80,6 +81,11 @@ int main(int argc, char *argv[])
     	case 'b':
     	{
     		dataSize = atoi(get_opts.opt_arg());
+    		break;
+    	}
+    	case 'n':
+    	{
+    		waitForKey = false;
     		break;
     	}
     	default:
@@ -127,7 +133,7 @@ int main(int argc, char *argv[])
     		unsigned int numOfCreatedFlows = senderStream.getFlowNumber();
 
     		std::cout << "press ENTER to send data (start/data/stop) to connected receivers ..." << std::endl;
-    		getchar();
+    		if (waitForKey) getchar();
     		sendData=true;
 
     		throughputSums.resize(numOfCreatedFlows);
@@ -177,6 +183,12 @@ int main(int argc, char *argv[])
 
     			ACS_SHORT_LOG((LM_INFO, "Average transfer rate for all the flow(s): %f MBytes/sec",
     			    					sumThrouhgput/(loop*numOfCreatedFlows)));
+
+    			if (!waitForKey) //we exit both loops
+    				{
+    				recreate=false;
+    				break;
+    				}
 
     			std::cout << "press 'r' for re-send data, 'c' for re-create stream+flow(s), and any other key for exit + ENTER" << std::endl;
     			int c=getchar();
