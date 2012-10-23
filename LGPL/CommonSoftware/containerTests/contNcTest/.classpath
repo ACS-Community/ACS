@@ -22,5 +22,6 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
