@@ -28,6 +28,7 @@ package alma.acs.eventbrowser.model;
 
 import java.util.logging.Logger;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
@@ -88,8 +89,9 @@ public class EventSupplierImpl
 		}
 	}
 
-	/** Disconnects the supplier. */
-	public void cleanUp() {
+	/** Disconnects the supplier. 
+	 * @throws AcsJIllegalStateEventEx */
+	public void cleanUp() throws AcsJIllegalStateEventEx {
 		m_logger.info("cleanUp() called...");
 
 		try {
