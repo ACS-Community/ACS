@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="ws/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
@@ -31,5 +30,11 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/repeatGuard.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/NotifyMonitoringExt.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-scxml-0.9.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-math-2.1.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
