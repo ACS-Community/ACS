@@ -37,11 +37,6 @@ import alma.acssamp.SampObjPackage.SampDataBlockSeqHelper;
 public class acssampConsumer extends NCSubscriber<IDLEntity>
 {
 	/**
-	 * Total number of events that have been consumed.
-	 */
-	public final AtomicInteger eventCount = new AtomicInteger(0);
-
-	/**
 	 * Differences of adjacent sample data timestamps in ms.
 	 */
 	public final SummaryStatistics samplingIntervalStats = new SummaryStatistics();
@@ -100,9 +95,6 @@ public class acssampConsumer extends NCSubscriber<IDLEntity>
 		}
 		receivedDateJavaOld = receivedDateJava;
 		
-		// count how many events this instance has received.
-		eventCount.incrementAndGet();
-
 		try {
 			SampDataBlock[] sampledData = SampDataBlockSeqHelper.extract(structuredEvent.filterable_data[0].value);
 			
