@@ -21,6 +21,8 @@ package alma.acs.alarm.test.panel;
 import java.util.Collection;
 import java.util.Vector;
 
+import javax.swing.SwingWorker;
+
 import junit.framework.TestCase;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableEntry;
@@ -28,6 +30,7 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer.AlarmContainerException;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsReductionContainer;
 import cern.laser.client.data.Alarm;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * <code>AlarmContainerTest</code> tests {@link AlarmsContainer}
@@ -35,6 +38,10 @@ import cern.laser.client.data.Alarm;
  * After building an <code>AlarmsContainer</code>, the test stresses
  * each of its methods in both situations i.e. with and without
  * reductions.
+ * <P>
+ * Alarms container must be accessed inside the EDT because the synchronization
+ * is done through thread confinement. The alarm containers modify their data
+ * inside the EDT but reading must be done from inside the EDT.
  * 
  * @author acaproni
  *
@@ -115,17 +122,49 @@ public class AlarmContainerTest extends TestCase {
 	 */
 	public void testContainerSize() throws Exception {
 		// Check the size of the empty container
-		assertEquals(0,container.size(false));
-		assertEquals(0,container.size(true));
+		EDTExecutor.instance().executeSync(new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(0,container.size(false));
+				assertEquals(0,container.size(true));
+			}
+		});
 		// Add half of the max number of alarms
 		int notReduced=populateContainer(CONTAINER_SIZE/2, "TEST",null,null);
-		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",notReduced, container.size(true));
+		
+		class EDTReader implements Runnable {
+			// The value to check after reading from EDT
+			private final int value;
+			
+			EDTReader(int val) {
+				value=val;
+			}
+			
+			public void run() {
+				assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+				assertEquals("Wrong reduced size",value, container.size(true));
+			}
+			
+		}
+		EDTExecutor.instance().executeSync(new EDTReader(notReduced));
 
 		// Add the other alarms until the container is full
 		notReduced+=populateContainer(CONTAINER_SIZE/2, "TEST", null,null);
-		assertEquals("Wrong not reduced size",CONTAINER_SIZE, container.size(false));
-		assertEquals("Wrong reduced size",notReduced, container.size(true));
+		class EDTReader2 implements Runnable {
+			// The value to check after reading from EDT
+			private final int value;
+			
+			EDTReader2(int val) {
+				value=val;
+			}
+			
+			public void run() {
+				assertEquals("Wrong not reduced size",CONTAINER_SIZE, container.size(false));
+				assertEquals("Wrong reduced size",value, container.size(true));
+			}
+			
+		}
+		EDTExecutor.instance().executeSync(new EDTReader2(notReduced));
 		
 		// Adding one more item, an exception should be thrown
 		boolean exceptionThrown=false;
@@ -137,9 +176,14 @@ public class AlarmContainerTest extends TestCase {
 		assertTrue(exceptionThrown);
 		
 		// Finally clear the container
-		container.clear();
-		assertEquals(0,container.size(false));
-		assertEquals(0,container.size(true));
+		EDTExecutor.instance().executeSync(new Runnable() {
+			@Override
+			public void run() {
+				container.clear();
+				assertEquals(0,container.size(false));
+				assertEquals(0,container.size(true));
+			}
+		});
 	}
 	
 	/**
@@ -152,8 +196,21 @@ public class AlarmContainerTest extends TestCase {
 		int notReduced=0;
 		Vector<Alarm> alarms = new Vector<Alarm>();
 		notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
-		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",notReduced, container.size(true));
+		class EDTReader implements Runnable {
+			// The value to check after reading from EDT
+			private final int value;
+			
+			EDTReader(int val) {
+				value=val;
+			}
+			
+			public void run() {
+				assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+				assertEquals("Wrong reduced size",value, container.size(true));
+			}
+			
+		}
+		EDTExecutor.instance().executeSync(new EDTReader(notReduced));
 		
 		// Trying to remove an alarm not in the container throws an exception
 		Alarm al = TestAlarm.generateRndAlarm("EXCEPTION");
@@ -174,12 +231,33 @@ public class AlarmContainerTest extends TestCase {
 			if (!removedAlarm.getStatus().isReduced()) {
 				reducedToRemove--;
 			}
-			assertEquals(sz, container.size(false));
-			assertEquals(reducedToRemove, container.size(true));
+			class EDTReader2 implements Runnable {
+				// The values to check after reading from EDT
+				private final int sz;
+				private final int reducedToRemove;
+				
+				EDTReader2(int sz,int reducedToRemove) {
+					this.sz=sz;
+					this.reducedToRemove=reducedToRemove;
+				}
+				
+				public void run() {
+					assertEquals(sz, container.size(false));
+					assertEquals(reducedToRemove, container.size(true));
+				}
+				
+			}
+			EDTExecutor.instance().executeSync(new EDTReader2(sz,reducedToRemove));
+			
 		}
 		// The container is empty
-		assertEquals(0, container.size(false));
-		assertEquals(0, container.size(true));
+		EDTExecutor.instance().executeSync(new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(0,container.size(false));
+				assertEquals(0,container.size(true));
+			}
+		});
 	}
 	
 	
@@ -237,20 +315,47 @@ public class AlarmContainerTest extends TestCase {
 	 */
 	public void testRemoveOldest() throws Exception {
 		// Add some alarms
-		Vector<Alarm> alarms = new Vector<Alarm>();
+		final Vector<Alarm> alarms = new Vector<Alarm>();
 		int notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
-		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",notReduced, container.size(true));
+		class EDTReader implements Runnable {
+			// The value to check after reading from EDT
+			private final int value;
+			
+			EDTReader(int val) {
+				value=val;
+			}
+			
+			public void run() {
+				assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+				assertEquals("Wrong reduced size",value, container.size(true));
+			}
+			
+		}
+		EDTExecutor.instance().executeSync(new EDTReader(notReduced));
 		
-		AlarmTableEntry removedEntry = container.removeOldest();
+		final AlarmTableEntry removedEntry = container.removeOldest();
 		assertNotNull(removedEntry);
 		// Check the sizes
-		assertEquals(alarms.size()-1, container.size(false));
-		if (removedEntry.isReduced()) {
-			assertEquals(notReduced, container.size(true));
-		} else {
-			assertEquals(notReduced-1, container.size(true));
+		class EDTReader2 implements Runnable {
+			// The value to check after reading from EDT
+			private final int notReduced;
+			
+			EDTReader2(int notReduced) {
+				this.notReduced=notReduced;
+			}
+			
+			public void run() {
+				assertEquals(alarms.size()-1, container.size(false));
+				if (removedEntry.isReduced()) {
+					assertEquals(notReduced, container.size(true));
+				} else {
+					assertEquals(notReduced-1, container.size(true));
+				}
+			}
+			
 		}
+		EDTExecutor.instance().executeSync(new EDTReader2(notReduced));
+		
 		// Check if removed alarms was the oldest alarm
 		assertEquals(alarms.get(0).getAlarmId(), removedEntry.getAlarmId());
 	}
@@ -264,8 +369,21 @@ public class AlarmContainerTest extends TestCase {
 		// Add some alarms
 		Vector<Alarm> alarms = new Vector<Alarm>();
 		int notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
-		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",notReduced, container.size(true));
+		class EDTReader implements Runnable {
+			// The value to check after reading from EDT
+			private final int value;
+			
+			EDTReader(int val) {
+				value=val;
+			}
+			
+			public void run() {
+				assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+				assertEquals("Wrong reduced size",value, container.size(true));
+			}
+			
+		}
+		EDTExecutor.instance().executeSync(new EDTReader(notReduced));
 		
 		// replace the first alarm with another one changing the
 		// active attribute
@@ -278,10 +396,27 @@ public class AlarmContainerTest extends TestCase {
 				!alarmToReplace.getStatus().isActive(),
 				alarmToReplace.getStatus().isMasked(),
 				alarmToReplace.getStatus().isReduced());
-		container.replace(new AlarmTableEntry(newAlarm));
-		AlarmTableEntry entry = container.get(newAlarm.getAlarmId());
-		assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
-		assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
+		class ReplaceAndCheck implements Runnable {
+			
+			private final Alarm newAlarm;
+			
+			ReplaceAndCheck(Alarm newAlarm) {
+				this.newAlarm=newAlarm;
+			}
+			
+			public void run() {
+				try {
+					container.replace(new AlarmTableEntry(newAlarm));
+				} catch (Throwable t) {
+					System.err.println("Error replacing alarm "+newAlarm.getAlarmId());
+					t.printStackTrace();
+				}
+				AlarmTableEntry entry = container.get(newAlarm.getAlarmId());
+				assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
+				assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
+			}
+		}
+		EDTExecutor.instance().executeSync(new ReplaceAndCheck(newAlarm));
 		
 		// replace the LAST alarm with another one changing the
 		// active attribute
@@ -294,10 +429,7 @@ public class AlarmContainerTest extends TestCase {
 				!alarmToReplace.getStatus().isActive(),
 				alarmToReplace.getStatus().isMasked(),
 				alarmToReplace.getStatus().isReduced());
-		container.replace(new AlarmTableEntry(newAlarm));
-		entry = container.get(newAlarm.getAlarmId());
-		assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
-		assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
+		EDTExecutor.instance().executeSync(new ReplaceAndCheck(newAlarm));
 		
 		// replace a middle-list alarm with another one changing the
 		// active attribute
@@ -310,10 +442,7 @@ public class AlarmContainerTest extends TestCase {
 				!alarmToReplace.getStatus().isActive(),
 				alarmToReplace.getStatus().isMasked(),
 				alarmToReplace.getStatus().isReduced());
-		container.replace(new AlarmTableEntry(newAlarm));
-		entry = container.get(newAlarm.getAlarmId());
-		assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
-		assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
+		EDTExecutor.instance().executeSync(new ReplaceAndCheck(newAlarm));
 	}
 	
 	/**
@@ -322,36 +451,74 @@ public class AlarmContainerTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testRemoveInactivAls() throws Exception {
-		Vector<Alarm> alarms= new Vector<Alarm>();
+		final Vector<Alarm> alarms= new Vector<Alarm>();
 		int notReduced;
 		// Stores for each priority the number of inactive alarms
-		int[] priorities =new int[AlarmGUIType.values().length-1];
+		final int[] priorities =new int[AlarmGUIType.values().length-1];
 		// The test is done for each AlarmGUIType corresponding to a priority
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			// Add some alarms
 			alarms.clear();
 			assertEquals(0, alarms.size());
-			container.clear();
-			assertEquals(0, container.size(false));
+			EDTExecutor.instance().executeSync(new Runnable() {
+				@Override
+				public void run() {
+					container.clear();
+					assertEquals(0, container.size(false));
+				}
+			});
+			
 			for (int t=0; t<4; t++) {
 				priorities[t]=0;
 			}
 			notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
-			assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-			assertEquals("Wrong reduced size",notReduced, container.size(true));
+			class EDTReader implements Runnable {
+				// The value to check after reading from EDT
+				private final int value;
+				
+				EDTReader(int val) {
+					value=val;
+				}
+				
+				public void run() {
+					assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+					assertEquals("Wrong reduced size",value, container.size(true));
+				}
+				
+			}
+			EDTExecutor.instance().executeSync(new EDTReader(notReduced));
+			
 			for (Alarm al: alarms) {
 				if (!al.getStatus().isActive()) {
 					priorities[al.getPriority()]++;
 				}
 			}
-			container.removeInactiveAlarms(alarmType);
-			if (alarmType!=AlarmGUIType.INACTIVE) {
-				assertEquals(alarms.size()-priorities[alarmType.ordinal()], container.size(false));
-			} else {
-				int newSize = alarms.size()-priorities[0]-priorities[1]-priorities[2]-priorities[3];
-				assertEquals(newSize, container.size(false));
-			}
 			
+			class Checker implements Runnable {
+				
+				private final AlarmGUIType alarmType;
+				
+				public Checker(AlarmGUIType alarmType) {
+					this.alarmType=alarmType;
+				}
+				
+				public void run() {
+					try {
+						container.removeInactiveAlarms(alarmType);
+					} catch (Throwable t) {
+						System.out.println("Error removing inactive alarms for "+alarmType);
+						t.printStackTrace();
+						return;
+					}
+					if (alarmType!=AlarmGUIType.INACTIVE) {
+						assertEquals(alarms.size()-priorities[alarmType.ordinal()], container.size(false));
+					} else {
+						int newSize = alarms.size()-priorities[0]-priorities[1]-priorities[2]-priorities[3];
+						assertEquals(newSize, container.size(false));
+					}		
+				}
+			}
+			EDTExecutor.instance().executeSync(new Checker(alarmType));
 		}
 	}
 	
