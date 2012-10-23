@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.43 2012/06/25 14:18:39 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.44 2012/10/23 09:44:16 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -128,7 +128,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = bulkDataNTtest
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
