@@ -32,7 +32,7 @@ import alma.acs.eventbrowser.Application;
 
 /**
  * This class represents a preference page that is contributed to the
- * Preferences dialog. By subclassing <samp>FieldEditorPreferencePage</samp>,
+ * Preferences dialog. By subclassing <code>FieldEditorPreferencePage</code>,
  * we can use the field support built into JFace that allows us to create a page
  * that is small and knows how to save, restore and apply itself.
  * <p>
