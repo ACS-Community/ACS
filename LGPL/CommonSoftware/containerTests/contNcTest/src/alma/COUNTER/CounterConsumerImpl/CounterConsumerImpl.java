@@ -34,8 +34,9 @@ import alma.COUNTER.statusBlockEvent;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.util.StopWatch;
+import alma.acsnc.EventDescription;
 import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /** 
@@ -44,13 +45,13 @@ import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
  * @author eallaert
  */
 
-public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerOperations
+public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerOperations, AcsEventSubscriber.Callback<statusBlockEvent>
 {
 	public static final String PROP_ASSERTION_MESSAGE = "CounterConsumerAssert"; 
 
 	private ContainerServices m_containerServices;
 	private Logger m_logger;
-	private volatile Consumer m_consumer = null;
+	private volatile AcsEventSubscriber<statusBlockEvent> subscriber;
    /** 
      * Total number of events that have been consumed.
      */    
@@ -75,12 +76,12 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 
 	@Override
 	public void cleanUp() throws AcsJComponentCleanUpEx {
-		if (m_consumer != null) {
+		if (subscriber != null) {
 			m_logger.info("cleanUp() called, disconnecting from channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
 			StopWatch sw = new StopWatch();
 			try {
-				m_consumer.disconnect();
-				m_consumer = null;
+				subscriber.disconnect();
+				subscriber = null;
 			} catch (Exception ex) {
 				// could be IllegalStateException if the consumer is already disconnected.
 				throw new AcsJComponentCleanUpEx(ex);
@@ -107,35 +108,42 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 	}
 	
 	
-    ////////////////////////////////////////////////////////////////////////////
-    /** 
-     * NC receiver method.
-     */
-    public void receive(statusBlockEvent someParam) {
-    	// Know how many events this instance has received.
-    	eventCount++;
-    	if (contFlag) {
-    		OnOffStates onOff        = someParam.onOff;
-    		//float onOff        = someParam.onOff;
-    		String myString  = someParam.myString;
-    		int counter1     = someParam.counter1;
-    		int counter2     = someParam.counter2;
-    		int counter3     = someParam.counter3;
-    		boolean lastFlag = someParam.flipFlop;
-    		float period     = someParam.period;
-        	//if (!lastFlag) {
-    		if (onOff == OnOffStates.ON && !lastFlag) {
-    			//m_logger.info("Counter now " + counter1 + " (max " + counter2 + "), flag  will flip at " + counter3);
-    			//System.out.println("Counter now " + counter1 + " (max " + counter2 + "), flag  will flip at " + counter3);
-    		} 
-    		else {	
-    			m_logger.info(myString + " received, counter is now " + counter1);
-    			System.out.println(myString + " received, counter is now " + counter1);
-    			// allow waitTillDone() to return so that this component can be released by the client.
-    			contFlag = false;
-    		}	
-    	} 
-    }
+	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * NC receiver method.
+	 */
+	@Override
+	public void receive(statusBlockEvent someParam, EventDescription eventDescrip) {
+		// Know how many events this instance has received.
+		eventCount++;
+		if (contFlag) {
+			OnOffStates onOff = someParam.onOff;
+			// float onOff = someParam.onOff;
+			String myString = someParam.myString;
+			int counter1 = someParam.counter1;
+			int counter2 = someParam.counter2;
+			int counter3 = someParam.counter3;
+			boolean lastFlag = someParam.flipFlop;
+			float period = someParam.period;
+			// if (!lastFlag) {
+			if (onOff == OnOffStates.ON && !lastFlag) {
+				// m_logger.info("Counter now " + counter1 + " (max " + counter2 + "), flag  will flip at " + counter3);
+				// System.out.println("Counter now " + counter1 + " (max " + counter2 + "), flag  will flip at " +
+				// counter3);
+			} else {
+				m_logger.info(myString + " received, counter is now " + counter1);
+				System.out.println(myString + " received, counter is now " + counter1);
+				// allow waitTillDone() to return so that this component can be released by the client.
+				contFlag = false;
+			}
+		}
+	}
+
+	@Override
+	public Class<statusBlockEvent> getEventType() {
+		return statusBlockEvent.class;
+	}
+
 
 	/////////////////////////////////////////////////////////////
 	// Implementation of ACSComponent
@@ -161,25 +169,29 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 	public void getBlocks() throws CouldntPerformActionEx {
     	try
     	{
-        	m_consumer = new Consumer(alma.COUNTER.CHANNELNAME_COUNTER.value, m_containerServices);
+    		subscriber = m_containerServices.createNotificationChannelSubscriber(alma.COUNTER.CHANNELNAME_COUNTER.value, statusBlockEvent.class);
         	//Subscribe to an event type.
-        	m_consumer.addSubscription(statusBlockEvent.class, this);
+    		subscriber.addSubscription(this);
 
         	//After consumerReady() is invoked, receive(...) is invoked
         	//by the notification channel.  That is, we have no control over when
         	//that method is called.
-        	m_consumer.consumerReady();
+    		subscriber.startReceivingEvents();
 
     		m_logger.info("CounterConsumer is ready to receive 'status' events.");
      	}
-    	catch (Exception e)
+    	catch (Exception ex)
     	{
-    		if (m_consumer != null) {
-    			m_consumer.disconnect();
+    		if (subscriber != null) {
+    			try {
+					subscriber.disconnect();
+				} catch (Exception ex3) {
+					// too bad, but we forward rather the original ex
+				}
     		}
-			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx();
-			ex.setProperty(PROP_ASSERTION_MESSAGE, "failed to connect as an event consumer to channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
-			throw ex.toCouldntPerformActionEx();
+			AcsJCouldntPerformActionEx ex2 = new AcsJCouldntPerformActionEx();
+			ex2.setProperty(PROP_ASSERTION_MESSAGE, "failed to connect as an event consumer to channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
+			throw ex2.toCouldntPerformActionEx();
     	}
     	return;
 	}
@@ -191,7 +203,7 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 	 */
 	@Override
 	public int waitTillDone() throws CouldntPerformActionEx {
-		if (m_consumer == null) {
+		if (subscriber == null) {
 			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx();
 			ex.setProperty(PROP_ASSERTION_MESSAGE, "Consumer didn't even start yet");
 			throw ex.toCouldntPerformActionEx();
