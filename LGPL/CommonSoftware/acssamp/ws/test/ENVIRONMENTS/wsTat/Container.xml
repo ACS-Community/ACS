@@ -12,10 +12,7 @@
     <cdb:_ string="baci" />
   </Autoload>
   <LoggingConfig 
-             centralizedLogger="Log" 
-             minLogLevel="0" 
-             dispatchPacketSize="10" 
-             immediateDispatchLevel="31">
+             minLogLevel="2" 
   </LoggingConfig>
 </Container>
 
