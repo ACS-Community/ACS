@@ -1,5 +1,7 @@
 Instruction for testing supplier (samp)-consumer in Java
--------------------------------------------------
+--------------------------------------------------------
+
+TODO: Automate the Java test, incl. verification of output.
 
 1. compile acssamp both in src and test
 
@@ -13,7 +15,7 @@ cp ENVIRONMENTS/wsTat/Container.xml CDB/MACI/Containers/Container/Container.xml
 
 3. start ACS
 
-export ACS_CDB=<...>/acssamp/ws/test
+export ACS_CDB=$PWD
 acsStart
 acsStartContainer -cpp Container
 
