@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.1 2012/10/23 13:52:17 bjeram Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.2 2012/10/23 15:22:51 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -26,24 +26,30 @@
 
 from subprocess import Popen, PIPE
 import os
-import sys
+import getopt, sys
 import time
 
 class bulkDataNTtestSuite:
     
+    def __init__(self, hosts, size=640000, loops=10):
+        self.hosts = hosts
+        self.numOfHosts = len(hosts)
+        self.dataSizeInBytes=size
+        self.loops=loops
     
     def startSenders(self):
         flow = 0
-        numOfHosts = len(sys.argv)
         output = []
         process = []
         cmd = []
-        print 'aa:' + str(sys.argv)
-        for i in range(1, numOfHosts):
+        cmdMap={}
+        i=0
+        print 'Going to start remote senders on the following hosts: ' + str(self.hosts)
+        for h in self.hosts:
             flowString = format(flow, "02d")      
-            command = ("ssh " + os.environ['USER']+ "@" + sys.argv[i] + 
-                       " 'source .bash_profile; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; bulkDataNTGenSender -l 50 -b 640000 -s TS -f "+
-                       flowString+
+            command = ("ssh " + os.environ['USER']+ "@" + h + 
+                       " 'source .bash_profile; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; bulkDataNTGenSender -l "+str(self.loops)+" -b "
+                       +str(self.dataSizeInBytes)+" -s TS -f "+flowString+
                        " | grep -v lost | tee bulkDataNTGenSender.$HOST'")
             print "#",i,' : '+ command
             p = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
@@ -51,13 +57,15 @@ class bulkDataNTtestSuite:
             if p is not None:
                 process.append(p)
                 cmd.append(command)
+                cmdMap[h]=command
                 flow+=1
+                i+=1
             else:
                 print 'Problem to execute: ' + command
                 
-        print 'Going to start sending data'
+        print 'Going to send data'
         time.sleep(3)                
-        for i in range(1, numOfHosts):
+        for i in range(1, self.numOfHosts):
             p = process[i-1]
             p.poll()
             if p.returncode is None:
@@ -65,7 +73,7 @@ class bulkDataNTtestSuite:
             else:
                 print "#",i, 'command: '+cmd[i-1]+' exit with an error: ', p.returncode, p.stderr.read()
                 
-        for i in range(1, numOfHosts):
+        for i in range(1, self.numOfHosts):
             p = process[i-1]
             p.wait()
             output.append(p.stdout.read().strip())
@@ -75,7 +83,20 @@ class bulkDataNTtestSuite:
                 print "#",i, 'command: '+cmd[i-1]+' exit with an error: ', p.returncode, p.stderr.read() 
             
 if __name__ == '__main__':
-    testSuit = bulkDataNTtestSuite()            
+    b=640000
+    l=50
+    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:", ["help", "senders=", "receivers="])
+    for o,a in opts:
+        if o in ("-h", "--help"):
+            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations]'
+        elif o=="-s":
+            h=a.split(",")
+        elif o=="-b":
+            b=a
+        elif o=="-l":
+            l=a
+                                                
+    testSuit = bulkDataNTtestSuite(hosts=h, size=b, loops=l)            
     testSuit.startSenders()
 
 # ___oOo___
