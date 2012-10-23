@@ -3,8 +3,11 @@ package alma.acssamp.jtest;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+import org.omg.CosNaming.NamingContext;
+
 import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
+import alma.acs.nc.Helper;
 
 /**
  * Runner for {@link acssampConsumer}.
@@ -19,20 +22,27 @@ public class acssampJTest extends ComponentClient {
 
 		String ncChannel = "NC_LAMP1_brightness_1000000_10000000";
 
-		consumer = new acssampConsumer(ncChannel, csrv);
+		NamingContext namingService = Helper.getNamingServiceInitial(csrv);
+
+		consumer = new acssampConsumer(ncChannel, csrv, namingService);
 		try {
 			//After consumerReady() is invoked, push_structured_event(...) is invoked
 			//by the notification channel.  That is, we have no control over when
 			//that method is called.
-			consumer.consumerReady();
+			consumer.startReceivingEvents();
 			System.out.println("Waiting for events, for 50 seconds ");
 			Thread.sleep(50000);
+			
+			System.out.println("Sampling callback interval (ms) statistics: " + consumer.callbackIntervalStats.toString());
+			System.out.println("Sampling interval (ms) statistics: " + consumer.samplingIntervalStats.toString());
+			System.out.println("Sampling sequence length statistics: " + consumer.sequenceLengthStats.toString());
 		} 
 		catch (Exception e) {
 			System.err.println(e);
 		}
 		finally {
-			consumer.ncDisconnect();			
+			consumer.disconnect();
+			tearDown();
 		}
 	}
 

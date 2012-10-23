@@ -41,7 +41,6 @@ import java.util.logging.Logger;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClient;
-import alma.acs.container.ContainerServices;
 import alma.acssamp.Samp;
 import alma.acssamp.SampHelper;
 import alma.acssamp.SampObj;
@@ -73,7 +72,7 @@ public class acssampSupplier extends ComponentClient {
 		String sampCurl = "SAMP1";
 		Samp samp = SampHelper.narrow(getContainerServices().getComponent(sampCurl));
 
-		m_logger.info("will now use the samp component...");
+		m_logger.info("Will now get component 'SAMP1' to sample the lamp brightness...");
 		SampObj sampObj = null;
 		try {
 			// register for sampling the 'brightness' property of the Lamp component
@@ -121,6 +120,7 @@ public class acssampSupplier extends ComponentClient {
 			acssampSupplier foo = new acssampSupplier(managerLoc, "acssampSupplier1");
 			
 			foo.sampleLampBrightness();
+			foo.tearDown();
 			
 			Thread.sleep(1000);
 		} catch (Exception e) {
