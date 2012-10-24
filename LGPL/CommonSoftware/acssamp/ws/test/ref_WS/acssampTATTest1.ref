@@ -3,13 +3,7 @@
 1 - Retrieving CDB reference from Manager using bootstrap ORB
 1 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
-1 - Unable to create DAL for record: ':Appl_data:MACI/Containers/Container' (field: 'LoggingConfig/dispatchPacketSize')
-1 - Configuration information for container 'Container' not available.
-1 - Starting as dynamic container.
 1 - ContainerStatusMsg: Startup begins
-1 - cdbErrType::CDBXMLerrorEx 'MACI/Containers/Container' 'MACI/Containers/Container'
-1 - cdbErrType::CDBXMLerrorEx 'MACI/Containers' 'MACI/Containers'
-1 - cdbErrType::CDBXMLerrorEx 'MACI' 'MACI'
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] Resolving manager...
@@ -19,7 +13,6 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' initialized successfuly
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Archiving Channel.
@@ -84,7 +77,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] SAMP1 released
 2 - Shutting down Container
 2 - All done!
-1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'Container' exited with code: 0.
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'LAMP1' etherealized.
@@ -96,5 +88,6 @@
 1 - ----------T--:--:--.--- [Container-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
 1 - /----/libbaci.so
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [Container-GL - ] Container stopped.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'Container' exited with code: 0.

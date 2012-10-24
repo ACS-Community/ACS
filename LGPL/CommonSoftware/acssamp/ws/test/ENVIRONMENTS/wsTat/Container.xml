@@ -12,8 +12,6 @@
     <cdb:_ string="baci" />
   </Autoload>
   <LoggingConfig 
-             minLogLevel="2" 
+    minLogLevel="2" > 
   </LoggingConfig>
 </Container>
-
-
