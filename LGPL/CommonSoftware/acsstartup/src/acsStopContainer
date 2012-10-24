@@ -170,8 +170,14 @@ for i in $CONTAINER_PID_FILES; do
         #or it times out. in the event of a timeout, let
         #acsutilBlock kill the container
         acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
+        if [ "$?" = "6" ]; then
+        	ACS_LOG_INFO "acsStopContainer" "After $MAX_TIMEOUT s container($a)'s PID ($ACS_CONTAINER_PID) was still around, so it was tried to kill it."
+        	exit 1
+        fi
     fi
 done
+# we can skip sanity check
+exit 0
 
 #------------------------------------------------------------------
 CONTAINER_TCP_FILE=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
