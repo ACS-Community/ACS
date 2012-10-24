@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2012/01/20 23:18:16 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.8 2012/10/24 15:00:27 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -157,7 +157,12 @@ install : install_all
 ../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
-	@cd gen; CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/
+	@cd gen;\
+	    CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
+	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; \
+	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
+	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigcore/ SwCore-orm.xml; \
+	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigext/ SwExt-orm.xml;
 
 ../lib/TMCDBswconfigStrategy.jar :.done_generating_sql 
 	@echo "== Compiling TMCDBswconfigStrategy.jar "

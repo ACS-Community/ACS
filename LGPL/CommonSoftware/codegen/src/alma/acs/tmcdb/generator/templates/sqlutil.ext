@@ -15,3 +15,6 @@ boolean hasXmlClobTypeColumn(Table this):
 
 List[Column] getXmlClobTypeColumns(Table this):
 	this.columns.select( e | XmlClobType.isInstance(e.type) );
+
+boolean isManyToManyTable(Table this):
+	this.columns.size == this.constraints.typeSelect(ForeignConstraint).size && this.columns.size == 2;
