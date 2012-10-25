@@ -815,7 +815,7 @@ public class Helper {
 	public static synchronized String createRandomizedClientName(String clientName) {
 		StringBuffer clientNameSB = new StringBuffer(clientName);
 		clientNameSB.append('-');
-		clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+		clientNameSB.append(String.format("%05d", random.nextInt(Integer.MAX_VALUE)));
 		return clientNameSB.toString();
 	}
 	
