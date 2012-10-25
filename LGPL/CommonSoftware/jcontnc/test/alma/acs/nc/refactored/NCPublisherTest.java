@@ -58,12 +58,12 @@ public class NCPublisherTest extends ComponentClientTestCase {
 		assertTrue(publisher != null);
 
 		// Sending numEvents;
-		while (publisher.count < numEvents) {
+		while (publisher.count.get() < numEvents) {
 			// Constructing the event
 			OnOffStates onOff = OnOffStates.ON;
 			statusBlockEvent1 event = null;
 			event = new statusBlockEvent1(onOff, "testingEvent", 0,
-					(int) publisher.count, numEvents, false, 100);
+					(int) publisher.count.get(), numEvents, false, 100);
 			// Publishing the event
 			publisher.publishEvent(event);
 			// simulates the period
