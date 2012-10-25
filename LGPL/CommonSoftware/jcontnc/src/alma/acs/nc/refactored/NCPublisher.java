@@ -19,6 +19,7 @@
 
 package alma.acs.nc.refactored;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -128,7 +129,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * supplier. The current count is attached to the EventDescription that gets
 	 * sent along as additional data (remainder_of_body).
 	 */
-	protected volatile long count = 0;
+	protected final AtomicLong count = new AtomicLong(0);
 
 	/** Channel we'll be sending events to. Cannot be final because reconnect() modifies it. */
 	protected EventChannel channel;
@@ -605,7 +606,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		event.remainder_of_body = services.getAdvancedContainerServices().getAny();
 		// get the useful data which includes the component's name, timestamp, and event count
 		EventDescription descrip = new EventDescription(services.getName(),
-				alma.acs.util.UTCUtility.utcJavaToOmg(System.currentTimeMillis()), count);
+				alma.acs.util.UTCUtility.utcJavaToOmg(System.currentTimeMillis()), count.getAndIncrement());
 		// store the IDL struct into the structured event
 		EventDescriptionHelper.insert(event.remainder_of_body, descrip);
 
@@ -631,7 +632,6 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		}
 
 		publishCORBAEvent(event, customStruct);
-		count++;
 	}
 
 	@Override
