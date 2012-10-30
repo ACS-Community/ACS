@@ -23,7 +23,6 @@
 package alma.acs.logging.adapters;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
@@ -32,6 +31,7 @@ import org.jacorb.config.LoggerFactory;
 
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  * Logger factory that can be forced upon JacORB version 2.x via the <code>jacorb.log.loggerFactory</code> property.
@@ -47,12 +47,17 @@ import alma.acs.logging.ClientLogManager;
  */
 public class JacORBLoggerFactory implements LoggerFactory {
 
-    private final static String BACKEND_NAME = "jdk14";
-    
-    private Jdk14Logger delegate;
-    
-    /** verbosity level 0-4 from jacorb property */
-	private int jacOrbVerbosity;
+	public static final String JACORB_LOGGER_NAME = "jacorb";
+
+	private final static String BACKEND_NAME = "jdk14";
+
+	private Jdk14Logger delegate;
+
+    /** 
+     * verbosity level 0-4 from jacorb property.
+     * Making it static so that #getLogLevelFromJacorbVerbosity() can be static.
+     * */
+	private static int jacOrbVerbosity = -1;
 
     
     public JacORBLoggerFactory() {
@@ -70,34 +75,8 @@ public class JacORBLoggerFactory implements LoggerFactory {
 	 */
 	public org.apache.avalon.framework.logger.Logger getNamedLogger(String name) {
 		if (delegate == null) {  // reuse one acs logger for all jacorb loggers
-			AcsLogger acsDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("jacorb", true);
-
-			// @TODO The following "if" was merged from the 8.2 branch (TMCDB FBT), 
-			// and now while merging looks a bit too specific for the case of the hibernate loggers.
-			// Check if it makes sense also for a jacorb logger that has a custom configuration at creation time!
-			if (!ClientLogManager.getAcsLogManager().getLogConfig().hasCustomConfig(acsDelegate.getName())) {
-				
-				// we can't use the same log levels that the container logger uses, because JacORB is much too verbose compared with ALMA code. 
-				// Thus we restrict this Logger's level, assuming that the log handler will be generous enough always.
-				// TODO: use custom Logger configuration in the CDB for Corba logger, instead of JacORB property
-				// TODO: use a custom logger adapter, which translates the given avalon log levels to lower jdk log levels than is done now.
-				
-				// Log level description in orb.properties:
-				// 0 = fatal errors only = "almost off" (FATAL ERRORS)
-				// 1 = non-fatal errors and exceptions (ERROR)
-				// 2 = important messages (WARN)
-				// 3 = informational messages and exceptions (INFO)
-				// 4 = debug-level output (DEBUG) (may confuse the unaware user :-)
-				Level[] levelMap = new Level[] {Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE, Level.ALL};
-				
-				if (jacOrbVerbosity >= 0 && jacOrbVerbosity <=4) {
-					Level level = levelMap[jacOrbVerbosity];
-					acsDelegate.setLevel(level);
-				}
-				else {
-					acsDelegate.warning("Failed to adjust Corba logger level based on 'jacorb.log.default.verbosity'");
-				}
-			}
+			AcsLogger acsDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba(JACORB_LOGGER_NAME, true);
+			
 			acsDelegate.addLoggerClass(Jdk14Logger.class);
 			JacORBFilter logFilter = new JacORBFilter();
 			logFilter.setLogLevel(acsDelegate.getLevel()); // AcsLogger will later update the filter log level if there are changes
@@ -140,9 +119,37 @@ public class JacORBLoggerFactory implements LoggerFactory {
 	/**
 	 * @see org.apache.avalon.framework.configuration.Configurable#configure(org.apache.avalon.framework.configuration.Configuration)
 	 */
-	public void configure(Configuration conf) throws ConfigurationException {		
+	public void configure(Configuration conf) throws ConfigurationException {
 		jacOrbVerbosity = conf.getAttributeAsInteger("jacorb.log.default.verbosity", 0);
 //		System.out.println("******** JacORB Log configure called. Verbosity=" + jacOrbVerbosity);
 	}
 
+	/**
+	 * Supports {@link ClientLogManager#getLoggerForCorba(String, boolean)}
+	 * with finding the right custom log level for the jacorb logger.
+	 * @return The log level that corresponds to <code>jacorb.log.default.verbosity</code>, 
+	 *         or <code>null</code> if no such log level could be found. 
+	 */
+	public static AcsLogLevelDefinition getLogLevelFromJacorbVerbosity() {
+		// we can't use the same log levels that the container logger uses, because JacORB is much too verbose compared with ALMA code. 
+		// Thus we restrict this Logger's level, assuming that the log handler will be generous enough always.
+		// TODO: use custom Logger configuration in the CDB for Corba logger, instead of JacORB property
+		// TODO: use a custom logger adapter, which translates the given avalon log levels to lower jdk log levels than is done now.
+		
+		// Log level description in orb.properties:
+		// 0 = fatal errors only = "almost off" (FATAL ERRORS)
+		// 1 = non-fatal errors and exceptions (ERROR)
+		// 2 = important messages (WARN)
+		// 3 = informational messages and exceptions (INFO)
+		// 4 = debug-level output (DEBUG) (may confuse the unaware user :-)
+		AcsLogLevelDefinition[] levelMap = new AcsLogLevelDefinition[] {
+				AcsLogLevelDefinition.EMERGENCY, AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.INFO, AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.TRACE };
+		
+		if (jacOrbVerbosity >= 0 && jacOrbVerbosity <=4) {
+			return levelMap[jacOrbVerbosity];
+		}
+		else {
+			return null;
+		}
+	}
 }

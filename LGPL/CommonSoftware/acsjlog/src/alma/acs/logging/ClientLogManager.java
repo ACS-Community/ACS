@@ -42,6 +42,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.Logging.AcsLogServiceHelper;
 import alma.Logging.AcsLogServiceOperations;
 import alma.acs.logging.adapters.CommonsLoggingFactory;
+import alma.acs.logging.adapters.JacORBLoggerFactory;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
@@ -492,7 +493,8 @@ public class ClientLogManager implements LogConfigSubscriber
                 }
             }
         } catch (Throwable thr) {
-            System.out.println("failed to create logger '" + loggerName + "'.");
+            System.out.println("failed to create logger '" + loggerName + "'. Stack trace follows.");
+            thr.printStackTrace(System.out);
         }
         return loggerInfo.logger;
     }
@@ -707,11 +709,14 @@ public class ClientLogManager implements LogConfigSubscriber
 			}
 
 			corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
-			// Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
-			// As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
-			corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
-			corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
-			corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
+			
+			if (corbaName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
+				// Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
+				// As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
+				corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
+				corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
+				corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
+			}
 
 			if (autoConfigureContextName && processName == null) {
 				// mark this logger for process name update
@@ -728,14 +733,36 @@ public class ClientLogManager implements LogConfigSubscriber
 			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
 		}
 		else if (!sharedLogConfig.hasCustomConfig(loggerName)) {
+			
 			// In the absence of their own custom logger config, some very verbose loggers 
 			// get a minimum log level applied to ensure that a carelessly set low default log level
 			// does not swamp the system with log messages.
+			AcsLogLevelDefinition minCustomLevel = null;
+			
 			if (corbaName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) ||
 				corbaName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX) ||
 				corbaName.startsWith(CommonsLoggingFactory.SCXML_LOGGER_NAME_PREFIX)) {
+			
+				minCustomLevel = AcsLogLevelDefinition.WARNING;
+			}
+			else if (corbaName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
+				// jacorb loggers have a special property that we can use as default, 
+				// instead of blindly going for WARNING like we do with the other loggers.
+				AcsLogLevelDefinition level = JacORBLoggerFactory.getLogLevelFromJacorbVerbosity();
+				if (level != null) {
+					minCustomLevel = level;
+				}
+				else {
+					minCustomLevel = AcsLogLevelDefinition.WARNING;
+					m_internalLogger.info("Failed to consider jacorb log level property, will use only ACS log level mechanisms.");
+				}
+			}
 
-				AcsLogLevelDefinition minCustomLevel = AcsLogLevelDefinition.WARNING;
+			if (minCustomLevel != null) {
+				
+				// We are dealing with one of the known framework loggers, and it has no other custom log level set.
+				// We apply as custom level the maximum of minCustomLevel and the process default level. 
+				
 				AcsLogLevelDefinition customLevel = 
 					( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevel()) > 0 
 							? minCustomLevel 
