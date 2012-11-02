@@ -343,9 +343,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			// Just check if our shared consumer admin is handling more proxies than it should, and log it
 			// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
 			int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
-			if( currentProxies > PROXIES_PER_ADMIN )
+			if( currentProxies > PROXIES_PER_ADMIN ) {
 				LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
 						currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
+			}
 
 			// The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
 			// If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
@@ -725,11 +726,12 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		String errMsg = null;
 		IntHolder proxyIdHolder = new IntHolder(); // will get assigned "a numeric identifier [...] that is unique among all proxy suppliers [the admin object] has created"
 
+		String randomizedClientName = null;
 		try {
 			ProxySupplier proxy = null;
 			while( proxy == null ) {
 				// See the comments on Consumer#createConsumer() for a nice explanation of why this randomness is happening here
-				String randomizedClientName = Helper.createRandomizedClientName(clientName);
+				randomizedClientName = Helper.createRandomizedClientName(clientName);
 				try {
 					proxy = sharedConsumerAdmin.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder, randomizedClientName);
 				} catch (NameAlreadyUsed e) {
@@ -740,7 +742,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 					proxy = sharedConsumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder);
 				}
 			}
-
 			ret = StructuredProxyPushSupplierHelper.narrow(proxy);
 		} catch (AdminLimitExceeded ex) {
 			// See NC spec 3.4.15.10
@@ -751,7 +752,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 					" subscribers, which does not allow this client to subscribe."; 
 		}
 
-		if (ret == null) {
+		if (ret != null) {
+			logger.fine("Created named proxy supplier '" + randomizedClientName + "'.");
+		}
+		else {
 			LOG_NC_SupplierProxyCreation_FAIL.log(logger, clientName, channelName, getNotificationFactoryName(), errMsg);
 			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx();
 			ex2.setInfo("Failed to create proxy supplier on NC '" + channelName + "' for client '" + clientName + "': " + errMsg);
