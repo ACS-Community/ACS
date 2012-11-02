@@ -3,6 +3,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'AlarmSourceFactoryTest#testSameReference' and updated logger names
 1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testSameReference] -------------------------------
 1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testSameReference] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@AlarmSourceFactoryTest#testSameReference created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] POA activated
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -23,6 +24,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'AlarmSourceFactoryTest#testReferences' and updated logger names
 1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testReferences] -------------------------------
 1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testReferences] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@AlarmSourceFactoryTest#testReferences created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] POA activated
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] manager reference not yet available in method loginToManager; will try to find the manager first
