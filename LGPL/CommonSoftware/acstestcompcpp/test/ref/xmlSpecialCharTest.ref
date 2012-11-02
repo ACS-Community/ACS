@@ -1,5 +1,6 @@
 1 -  --clientVM -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@cdbjDALClearCache created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [cdbjDALClearCache] Cleared CDB cache for all curls.
 1 - ----------T--:--:--.--- INFO [Manager] 'Python Client' requested component 'curl:///COMP99'.
 1 - ----------T--:--:--.--- INFO [Manager] Activating component 'COMP99' (Handle (0x-------) = { type = COMPONENT, key = (0x0), id = (0x--) }) on container 'Container'.
@@ -15,4 +16,5 @@
 1 -  --clientVM -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@cdbjDALClearCache created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [cdbjDALClearCache] Cleared CDB cache for all curls.
