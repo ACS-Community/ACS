@@ -3,3 +3,4 @@ INFO \[acsStartJava\] Starting Java application:
 -- com.cosylab.cdb.DALRead
 INFO \[acsStartJava\] Using endorsed jar files in:
 INFO \[DALRead\] Curl data:
+Logger jacorb@DALRead created with custom log levels local=Info, remote=Info
