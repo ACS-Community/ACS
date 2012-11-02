@@ -28,7 +28,7 @@ echo "=== Running all JUnit tests of module jcont which require a container infr
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.AcsCorbaTestWithContainer
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ClientPendingReplyTimeoutTest
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
-    acsStartJava -endorsed -D jacorb.log.default.verbosity=3 alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.FrameworkLoggerTest
+    ACS_LOG_STDOUT=3; acsStartJava -endorsed -D jacorb.log.default.verbosity=3 alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.FrameworkLoggerTest
     acsStartJava -endorsed alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.container.corba.ContainerMonitorTest
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.ClientWithLogReceiverTest
     #This test is commented because it provokes a timeout in NRI 

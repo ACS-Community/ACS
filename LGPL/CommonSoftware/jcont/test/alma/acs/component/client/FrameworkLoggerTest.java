@@ -144,7 +144,7 @@ public class FrameworkLoggerTest extends ComponentClient
 				logConfig.isKnownLogger(expectedFrameworkLoggerName), 
 				is(false));
 
-		assertThat("jacorb logger configuration should be DELOUSE for local logging.", 
+		assertThat("framework logger configuration should be DELOUSE for local logging.", 
 				AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(expectedFrameworkLoggerName).getMinLogLevelLocal()), 
 				equalTo(AcsLogLevelDefinition.DELOUSE));
 		

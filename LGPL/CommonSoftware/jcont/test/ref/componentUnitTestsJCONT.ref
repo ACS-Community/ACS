@@ -7,6 +7,8 @@
 1 - JUnit test run succeeded
 1 - TEST_RUNNER_REPORT success/total: 1/1
 1 - JUnit test run succeeded
+1 - TEST_RUNNER_REPORT success/total: 2/2
+1 - JUnit test run succeeded
 1 - ----------T--:--:--.--- INFO [testStress#testStress] -------------------------------
 1 - ----------T--:--:--.--- INFO [testStress#testStress] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@testStress#testStress created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
