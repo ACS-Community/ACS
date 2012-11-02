@@ -14,3 +14,4 @@ DEBUG
 Ignoring call to ClientLogManager#init: already initialized!
 ComponentClientTestCase#setUp()
 suppressRemoteLogging called
+Logger jacorb@.* created with custom log levels local=Info, remote=Info
