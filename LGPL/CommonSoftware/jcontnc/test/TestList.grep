@@ -16,3 +16,4 @@ Took too long to handle an 'alma.acsnc.EventDescription' event
 object is activated
 object is deactivated
 servant is etherealized
+Logger jacorb@.* created with custom log levels local=Info, remote=Info
