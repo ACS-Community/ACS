@@ -3,6 +3,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -11,9 +12,9 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] Alarm sent: &lt;TestFF,TestFM1,0&gt; ACTIVE
 1 - ----------T--:--:----- ALERT [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] Alarm sent: &lt;TestFF,TestFM2,1&gt; TERMINATE
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] AlarmSourceFactory closed
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] about to log out from manager
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] logged out from manager
-1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] AlarmSourceFactory closed
 1 - 
 1 - 
 1 - OK (1 test)
