@@ -7,3 +7,4 @@ Time:
 export
 getAdvancedContainerServices
 ACS.log.minlevel.namedloggers not defined
+Logger jacorb@[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info
