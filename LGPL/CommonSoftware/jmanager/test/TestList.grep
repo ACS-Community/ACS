@@ -15,3 +15,4 @@ ACS.log.minlevel.namedloggers
 processing /tmp/acsIrfeedDyn.[0-9]*\.idl
 components activated in
 Manager object serialization size after full deactivation
+Logger jacorb@[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info
