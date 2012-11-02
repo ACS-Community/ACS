@@ -3,6 +3,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleRaise] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -20,6 +21,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testMultipleClear] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -37,6 +39,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testOscillation] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -55,6 +58,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testDisable] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -73,6 +77,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueing] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -113,6 +118,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueueingTimer] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -153,6 +159,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm' and updated logger names
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] -------------------------------
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] POA activated
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSourceTest#testQueuingSingleAlarm] manager reference not yet available in method loginToManager; will try to find the manager first

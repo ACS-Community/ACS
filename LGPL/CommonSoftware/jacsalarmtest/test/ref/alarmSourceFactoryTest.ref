@@ -47,6 +47,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'AlarmSourceFactoryTest#testGetRelease' and updated logger names
 1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testGetRelease] -------------------------------
 1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testGetRelease] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@AlarmSourceFactoryTest#testGetRelease created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] POA activated
 1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] manager reference not yet available in method loginToManager; will try to find the manager first

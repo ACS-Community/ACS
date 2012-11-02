@@ -2,6 +2,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testPushAlarm#testPushAlarm' and updated logger names
 1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] -------------------------------
 1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@testPushAlarm#testPushAlarm created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] POA activated
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -17,6 +18,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testAlarmsCollection#testAlarmsCollection' and updated logger names
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] -------------------------------
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@testAlarmsCollection#testAlarmsCollection created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] POA activated
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] manager reference not yet available in method loginToManager; will try to find the manager first
