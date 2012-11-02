@@ -22,6 +22,7 @@ import org.omg.CosNaming.NamingContextHelper;
 import org.xml.sax.InputSource;
 
 import alma.acs.util.ACSPorts;
+import alma.acs.util.AcsLocations;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 
 import com.cosylab.CDB.DAL;
@@ -36,6 +37,8 @@ import com.cosylab.cdb.jdal.XMLHandler;
 /**
  * Class managing CDB access (establishing connection to the CDB,
  * observing DAO changes, and providing accessor methods to the user).
+ * <p>
+ * It retrieves and caches XML data from the CDB unless property <code>DAO.remote</code> is <code>true</code>.
  * 
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
@@ -59,9 +62,9 @@ public class CDBAccess
 	private static final String CDBDAL_DEFAULT_REFERENCE = CDBDAL_PREFIX + ".defaultReference";
 
 	/**
-	 * The constant denoting the default DAL reference (if non is set).
+	 * The constant denoting the default DAL reference (if none is set).
 	 */
-	private static final String DEFAULT_REFERENCE = "corbaloc::" + ACSPorts.getIP() + ":" + ACSPorts.getCDBPort() + "/CDB";
+	private static final String DEFAULT_REFERENCE = AcsLocations.convertToCdbLocation(ACSPorts.getIP(), ACSPorts.getCDBPort());
 
 	/**
 	 * The constant denoting the name of default DAO remote switch property key.
