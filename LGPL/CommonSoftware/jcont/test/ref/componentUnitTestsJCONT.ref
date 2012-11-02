@@ -9,6 +9,7 @@
 1 - JUnit test run succeeded
 1 - ----------T--:--:--.--- INFO [testStress#testStress] -------------------------------
 1 - ----------T--:--:--.--- INFO [testStress#testStress] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@testStress#testStress created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Got silentContainer's PID: xxxx
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Max/Min for JacORB's thread pool: xx/xx
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Total number of JacORB threads: xx
