@@ -23,6 +23,7 @@
 1 -  --endorsed -- alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
 1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
 1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=0' on all terminals running ACS clients.
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@AlarmService created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [AlarmService] Starting the ACS implementation of the alarm service
 1 - The alarm service is ready and waiting
 1 - Manager Application initialized
