@@ -4,6 +4,7 @@
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer 
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@javaContainer created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
