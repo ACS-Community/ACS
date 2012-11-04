@@ -41,12 +41,6 @@ if [ $? -ne 0 ]; then
     FLAG=1
 fi
 sleep 10
-acsdaemonStartContainer -t java -m archiveContainer -c ARCHIVE/ACC/javaArchiveContainer -i 0 &> startjavaArchiveContainer.log
-if [ $? -ne 0 ]; then
-    echo "FAILED - starting ARCHIVE/ACC/javaArchiveContainer"
-    FLAG=1
-fi
-sleep 10
 acsdaemonStartContainer -t py -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 &> startpyContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyContainer"
@@ -83,12 +77,6 @@ sleep 10
 acsdaemonStopContainer -c ARCHIVE/ACC/javaContainer -i 0 >> stopjavaContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - stoping ARCHIVE/ACC/javaContainer"
-    FLAG=1
-fi
-sleep 10
-acsdaemonStopContainer -c ARCHIVE/ACC/javaArchiveContainer -i 0 >> stopjavaArchiveContainer.log
-if [ $? -ne 0 ]; then
-    echo "FAILED - stoping ARCHIVE/ACC/javaArchiveContainer"
     FLAG=1
 fi
 sleep 10
