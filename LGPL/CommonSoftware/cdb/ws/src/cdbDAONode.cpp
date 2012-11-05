@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.15 2012/10/09 09:50:49 bjeram Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.16 2012/11/05 08:58:27 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -292,6 +292,22 @@ void DAONode::connect(bool silent)
 	    {
 	    cdbErrType::CDBXMLErrorExImpl xeeImpl(xee);
 	    cdbErrType::CDBXMLErrorExImpl ex = 
+		cdbErrType::CDBXMLErrorExImpl (xeeImpl, __FILE__, __LINE__,
+							 "cdb::DAONode::connect");
+	    ex.setCurl(xeeImpl.getCurl());
+	    ex.setFilename(xeeImpl.getFilename());
+	    ex.setNodename(xeeImpl.getNodename());
+	    ex.setErrorString(xeeImpl.getErrorString());
+	    throw ex;
+	    }
+	}
+    // DAOProxy constructor throws CDBXMLErrorExImpl
+    catch (cdbErrType::CDBXMLErrorExImpl &xee)
+	{
+	if (!silent)
+	    {
+	    cdbErrType::CDBXMLErrorExImpl xeeImpl(xee);
+	    cdbErrType::CDBXMLErrorExImpl ex =
 		cdbErrType::CDBXMLErrorExImpl (xeeImpl, __FILE__, __LINE__,
 							 "cdb::DAONode::connect");
 	    ex.setCurl(xeeImpl.getCurl());
