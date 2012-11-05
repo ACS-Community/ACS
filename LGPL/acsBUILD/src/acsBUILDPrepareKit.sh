@@ -1,10 +1,10 @@
-#!/usr/bin/ksh
+#!/bin/ksh
 #*******************************************************************************
 # E.S.O. - VLT project
 #
 # buildKit
 #
-# "@(#) $Id: acsBUILDPrepareKit.sh,v 1.124 2004/10/15 20:37:38 gchiozzi Exp $"
+# "@(#) $Id: acsBUILDPrepareKit.sh,v 1.125 2012/11/05 09:37:29 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
