@@ -192,13 +192,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		/**
 		 * Number of current locks.
 		 */
-		private AtomicInteger references = new AtomicInteger(1);
+		private final AtomicInteger references = new AtomicInteger(1);
 
 		/**
 		 * Synchronization mutex.
 		 */
-		private Lock lock = new ReentrantLock();
+		private final Lock lock = new ReentrantLock();
 
+		/**
+		 * User data (must be sync by the user).
+		 */
+		private Object userData = null;
+		
 		/**
 		 * Constructor of <code>ReferenceCountingLock</code>.
 		 * After construction lock is free and reference count equals <code>1</code>.
@@ -265,6 +270,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			return references.decrementAndGet();
 		}
 
+		/**
+		 * @return the userData
+		 */
+		public Object getUserData() {
+			return userData;
+		}
+
+		/**
+		 * @param userData the userData to set
+		 */
+		public void setUserData(Object userData) {
+			this.userData = userData;
+		}
 	}
 
 	/**
@@ -272,8 +290,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	class RequestComponentTask implements Runnable
 	{
-		private int h;
-		private URI[] curls;
+		private final int h;
+		private final URI[] curls;
 
 		public RequestComponentTask(int h, URI curl)
 		{
@@ -317,8 +335,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	class ReleaseComponentTask implements Runnable
 	{
-		private int h;
-		private int[] handles;
+		private final int h;
+		private final int[] handles;
 
 		public ReleaseComponentTask(int h, int handle)
 		{
@@ -441,7 +459,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	class DeactivateComponentTask extends TimerTask
 	{
-		private String name;
+		private final String name;
 
 		public DeactivateComponentTask(String name)
 		{
@@ -468,7 +486,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	class ShutdownContainerTask extends TimerTask
 	{
-		private String containerName;
+		private final String containerName;
 
 		public ShutdownContainerTask(String containerName)
 		{
@@ -511,7 +529,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		/**
 		 * Service representing this Component.
 		 */
-		private Object object;
+		private final Object object;
 
 		/**
 		 * Construct service Component.
@@ -5885,8 +5903,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// try to acquire lock
 		long lockTimeoutMillis = getLockTimeout();
-		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeoutMillis);
-		if (lockAcquired)
+		String lockNotAcquiredCause = acquireSynchronizationObject(name, lockTimeoutMillis, "request component " + name);
+		if (lockNotAcquiredCause == null)
 		{
 			boolean releaseRWLock = true;
 			try
@@ -5927,7 +5945,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 		{
-			String msg = "Failed to obtain synchronization lock for component '" + name + "' within '" + lockTimeoutMillis + "' ms, possible deadlock." ;
+			String msg = "Failed to obtain synchronization lock for component '" + name + "' within '" + lockTimeoutMillis + "' ms, possible deadlock; locked to '" + lockNotAcquiredCause + "'." ;
 			logger.fine(msg);
 			NoResourcesException nre = new NoResourcesException(msg);
 			throw nre;
@@ -6087,8 +6105,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, getLockTimeout());
-		if (lockAcquired)
+		String lockNotAcquiredCause = acquireSynchronizationObject(name, getLockTimeout(), "request component " + name);
+		if (lockNotAcquiredCause == null)
 		{
 			boolean releaseRWLock = true;
 			try
@@ -6112,6 +6130,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			AcsJSyncLockFailedEx slfe = new AcsJSyncLockFailedEx();
 			slfe.setCURL(name);
 			slfe.setRequestor(requestor);
+			slfe.setProperty("lockCause", lockNotAcquiredCause);
 			throw slfe;
 		}
 
@@ -7162,8 +7181,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeout);
-		if (lockAcquired)
+		String lockNotAcquiredCause = acquireSynchronizationObject(name, lockTimeout, "deactivate component " + name);
+		if (lockNotAcquiredCause == null)
 		{
 			boolean releaseRWLock = false;
 			try
@@ -7214,7 +7233,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock; locked to '" + lockNotAcquiredCause + "'.");
 			throw nre;
 		}
 	}
@@ -7263,8 +7282,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeout);
-		if (lockAcquired)
+		String lockNotAcquiredCause = acquireSynchronizationObject(name, lockTimeout, "release component " + name);
+		if (lockNotAcquiredCause == null)
 		{
 			boolean releaseRWLock = true;
 			try
@@ -7284,7 +7303,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock; locked to '" + lockNotAcquiredCause + "'.");
 			throw nre;
 		}
 
@@ -7651,8 +7670,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		final String LOCK_NAME = "container-" + containerName;
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(LOCK_NAME, lockTimeout);
-		if (lockAcquired)
+		String lockNotAcquiredCause = acquireSynchronizationObject(LOCK_NAME, lockTimeout, "start-up container " + containerName);
+		if (lockNotAcquiredCause == null)
 		{
 			try
 			{
@@ -7670,7 +7689,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for container '"+containerName+"', possible deadlock.");
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for container '"+containerName+"', possible deadlock; locked to '" + lockNotAcquiredCause + "'.");
 			throw nre;
 		}
 
@@ -7872,8 +7891,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeout);
-		if (lockAcquired)
+		String lockNotAcquiredCause = acquireSynchronizationObject(name, lockTimeout, "restart component " + name);
+		if (lockNotAcquiredCause == null)
 		{
 			boolean releaseRWLock = true;
 			try
@@ -7893,7 +7912,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock; locked to '" + lockNotAcquiredCause + "'.");
 			throw nre;
 		}
 
@@ -9461,10 +9480,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	name	name of the object whose lock to acquire.
 	 * @param	msecs	the number of milleseconds to wait.
 	 * 					An argument less than or equal to zero means not to wait at all.
-	 * @return	<code>true</code> if acquired, <code>false</code> othwerwise.
+	 * @param   acquireTaskDesc Description of the task that needs a synchronization lock.
+	 * @return	<code>null</code> if acquired, <code>non-null</code> othwerwise (contains lock cause description).
 	 */
-	private boolean acquireSynchronizationObject(String name, long msec)
+	private String acquireSynchronizationObject(String name, long msec, String acquireTaskDesc)
 	{
+		if (acquireTaskDesc == null)
+			acquireTaskDesc = "(unknown lock cause)";
+			
 		ReferenceCountingLock lock;
 
 		synchronized (activationSynchronization)
@@ -9486,9 +9509,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		boolean success = lock.acquire(msec);
 
 		if (!success)
+		{
 			releaseSynchronizationObject(name, false);
-
-		return success;
+			return (String)lock.getUserData();
+		}
+		else
+		{
+			lock.setUserData(acquireTaskDesc);
+			return null;
+		}
 	}
 
 	/**
