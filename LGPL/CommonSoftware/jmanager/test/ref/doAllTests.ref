@@ -1,5 +1,6 @@
 1 -  Starting ORB Services
 1 -  -D manager.debug.rememberOldHandles -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = ADMINISTRATOR, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Manager in shutdown state.' ] 
@@ -117,6 +118,7 @@
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerPrevaylerTest
 1 - Removing old recovery files.
 1 - Recovering system state...
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - 100 components activated until now...
 1 - 200 components activated until now...
 1 - 300 components activated until now...
