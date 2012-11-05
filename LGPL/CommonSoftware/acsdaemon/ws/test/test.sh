@@ -35,7 +35,7 @@ if [ $? -ne 0 ]; then
     FLAG=1
 fi
 sleep 10
-acsdaemonStartContainer -t java-archive -c ARCHIVE/ACC/javaContainer -i 0 &> startjavaContainer.log
+acsdaemonStartContainer -t java -c ARCHIVE/ACC/javaContainer -i 0 &> startjavaContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting ARCHIVE/ACC/javaContainer"
     FLAG=1
