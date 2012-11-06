@@ -28,6 +28,9 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.profiling.orb.AcsORBProfilerImplBase;
 
 /**
+ * ORB profiler with the additional feature of forwarding connection thread pool size
+ * information to the manager implementation.
+ * 
  * @author hsommer
  */
 public class ManagerOrbProfiler extends AcsORBProfilerImplBase
@@ -46,11 +49,6 @@ public class ManagerOrbProfiler extends AcsORBProfilerImplBase
 	@Override
 	public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, int maxThreads) {
 		super.connectionThreadPoolSizeChanged(idleThreads, totalThreads, maxThreads);
-		
-		// TODO: make AcsORBProfilerImplBase#connectionPoolUsePercent protected in the base class and use it instead of computing it again.
-		// For now we don't want to make jmanager depend on jacsutil2 changes on the HEAD, to make patching jmanager easier for scalability tests.
-		int connectionPoolUsePercent = (int) (((totalThreads - idleThreads) / (double) maxThreads) * 100);
-		
 		manager.setConnectionThreadUsage(connectionPoolUsePercent);
 	}
 		
