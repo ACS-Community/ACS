@@ -273,7 +273,7 @@ public class CacheFile {
 		if (str==null || str.isEmpty()) {
 			throw new IllegalArgumentException("Invalid string to write on file");
 		}
-		if (key==null || this.key!=key) {
+		if (!this.key.equals(key)) {
 			throw new IllegalArgumentException("Wrong key while writing");
 		}
 		if (raFile==null) {
