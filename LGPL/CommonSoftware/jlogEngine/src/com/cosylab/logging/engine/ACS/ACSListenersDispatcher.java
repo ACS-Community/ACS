@@ -38,7 +38,7 @@ public class ACSListenersDispatcher {
 	/**
 	 * The log listeners for this connection
 	 */
-	private Vector<ACSRemoteLogListener> logListeners = new Vector<ACSRemoteLogListener>();
+	private final Vector<ACSRemoteLogListener> logListeners = new Vector<ACSRemoteLogListener>();
 	// The number of listeners (it is the same of listeners.size() but It avoids
 	// executing a method)
 	private volatile int logListenersNum=0;
@@ -46,13 +46,13 @@ public class ACSListenersDispatcher {
 	/**
 	 * The listeners of the status of the connection and report messages
 	 */
-	private Vector<ACSLogConnectionListener> connectionListeners = new Vector<ACSLogConnectionListener>();
+	private final Vector<ACSLogConnectionListener> connectionListeners = new Vector<ACSLogConnectionListener>();
 	private volatile int connListenersNum=0;
 	
 	/**
 	 * The listeners of the XML strings representing a log
 	 */
-	private Vector<ACSRemoteRawLogListener> rawLogListeners = new Vector<ACSRemoteRawLogListener>();
+	private final Vector<ACSRemoteRawLogListener> rawLogListeners = new Vector<ACSRemoteRawLogListener>();
 	private volatile int rawLogListenersNum=0;
 	
 	/**
@@ -60,7 +60,7 @@ public class ACSListenersDispatcher {
 	 * from a cache string)
 	 * 
 	 */
-	private Vector<ACSRemoteErrorListener> errorListeners = new Vector<ACSRemoteErrorListener>();
+	private final Vector<ACSRemoteErrorListener> errorListeners = new Vector<ACSRemoteErrorListener>();
 	private volatile int errorListenersNum=0;
 	
 	/**
@@ -152,7 +152,7 @@ public class ACSListenersDispatcher {
 	 */
 	public void publishError(String error){
 		synchronized(errorListeners) {
-			if (errorListeners==null || errorListeners.size()==0) {
+			if (! errorListeners.isEmpty()) {
 				StringBuilder str = new StringBuilder("Error parsing the following log: \n");
 				str.append(error);
 				str. append("\n The log has been lost.");
@@ -388,7 +388,7 @@ public class ACSListenersDispatcher {
 	
 	/**
 	 * 
-	 * @return true is there are registerd log listeners
+	 * @return <code>true</code> if there are registered log listeners
 	 */
 	public boolean hasLogListeners() {
 		return logListenersNum>0;
@@ -396,7 +396,7 @@ public class ACSListenersDispatcher {
 	
 	/**
 	 * 
-	 * @return true is there are registerd raw log listeners
+	 * @return <code>true</code> if there are registered raw log listeners
 	 */
 	public boolean hasRawLogListeners() {
 		return rawLogListenersNum>0;
@@ -404,7 +404,7 @@ public class ACSListenersDispatcher {
 	
 	/**
 	 * 
-	 * @return true is there are registerd connection listeners
+	 * @return <code>true</code> if there are registered connection listeners
 	 */
 	public boolean hasConnectionListeners() {
 		return connListenersNum>0;
