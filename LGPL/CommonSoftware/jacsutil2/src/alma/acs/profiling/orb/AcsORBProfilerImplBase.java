@@ -67,7 +67,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 	/**
 	 * Percentage of busy threads in the connection thread pool.
 	 */
-	private volatile int connectionPoolUsePercent;
+	protected volatile int connectionPoolUsePercent;
 	
 	/**
 	 * Number of undelivered requests since the last ORB profiler status log.
@@ -272,7 +272,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 			int snapshotRequestQueueMaxUsePercent = -1;
 			String snapshotRequestQueueMaxUsePOA = null;
 			synchronized (requestQueueMaxUsePercent) {
-				snapshotConnectionPoolUsePercent = connectionPoolUsePercent ;
+				snapshotConnectionPoolUsePercent = connectionPoolUsePercent;
 				snapshotUndeliveredRequests = undeliveredRequests.getAndSet(0);
 				snapshotRequestQueueMaxUsePercent = requestQueueMaxUsePercent.getAndSet(0);
 				snapshotRequestQueueMaxUsePOA = requestQueueMaxUsePOA;
