@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.23 2012/05/15 09:03:19 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.24 2012/11/07 11:05:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -91,6 +91,7 @@ module acsdaemon
 	 *  @htmlonly
 	 *  <br><hr>
 	 *  @endhtmlonly
+	 * TBD: callback should be added :see COMP-8312
 	 */
 	void start_container(
 			in string container_type, 
@@ -99,17 +100,41 @@ module acsdaemon
 			in ACS::stringSeq type_modifiers,
 			in string flags)
 				raises (acsdaemonErrType::FailedToStartContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
+	/**
+	* Starts container in sychronous way - It does not return until the container is up, or there is an error.
+	*/
+	void start_container_sync(
+			in string container_type, 
+			in string container_name, 
+			in short instance_number,
+			in ACS::stringSeq type_modifiers,
+			in string flags)
+				raises (acsdaemonErrType::FailedToStartContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
 	/** 
 	 *  Stop a container.
 	 *  @return void
 	 *  @htmlonly
 	 *  <br><hr>
 	 *  @endhtmlonly
+ 	 * TBD: callback should be added :see COMP-8312
 	 */
 	void stop_container(in string container_name, 
 			in short instance_number, 
 			in string flags) 
 				raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
+
+	/**
+	* Stops container in sychronous way - it does not return until the container is down/or an error occures.
+	*/				
+	void stop_container_sync(in string container_name, 
+			in short instance_number, 
+			in string flags) 
+				raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
+				
+				
 	/** 
 	 * Shuts down the daemon.
 	 * @return void
