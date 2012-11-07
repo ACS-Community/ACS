@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.21 2011/12/14 15:08:28 tstaig Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.22 2012/11/07 11:05:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -157,10 +157,185 @@ ACSContainerHandlerImpl::start_container (
    
 }
 
-
-
 void
-ACSContainerHandlerImpl::stop_container (
+ACSContainerHandlerImpl::start_container_sync (
+    const char * container_type,
+    const char * container_name,
+    ::CORBA::Short instance_number,
+    const ::ACS::stringSeq & type_modifiers,
+    const char * additional_command_line
+    )
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::acsdaemonErrType::FailedToStartContainerEx,
+			::ACSErrTypeCommon::BadParameterEx
+			))
+{
+    if (container_type == 0 ||
+	*container_type == 0)
+	{
+	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__,
+						  "::ACSContainerDaemonImpl::start_container_sync");
+	ex.setParameter("container_type");
+	throw ex.getBadParameterEx();
+	}
+
+    if (container_name == 0 ||
+	*container_name == 0)
+	{
+	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__,
+						  "::ACSContainerDaemonImpl::start_container_sync");
+	ex.setParameter("container_name");
+	throw ex.getBadParameterEx();
+	}
+
+    const char * cmdln = (additional_command_line ? additional_command_line : "");
+
+	int isCasaContainer = 0;
+	for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
+		if (!strcmp(type_modifiers[i], "casaContainer")) {
+			isCasaContainer = 1;
+			break;
+		}
+
+	}
+
+    // execute: "acsStartContainer -<type> -b <instance> <name> <args>"
+    // TODO checks for ';', '&', '|' chars, they can run any other command!
+
+    //get the directory name to store the container stdout
+    std::string logDirectory="~/.acs/commandcenter/";
+    char * acsdata = ACE_OS::getenv("ACSDATA");
+    if(acsdata != 0)
+        logDirectory = std::string(acsdata) + std::string("/logs/");
+    std::string logs = logDirectory;
+    char * host = ACE_OS::getenv("HOST");
+    if(host != NULL)
+        logDirectory = logDirectory + std::string(host) + std::string("/");
+    std::string containerName(container_name);
+    std::string::size_type pos=containerName.rfind("/");
+    if(pos != std::string::npos){
+    	logDirectory.append(containerName,0,pos+1);
+    	containerName.erase(0,pos+1);
+    }
+    //create the directory
+    std::string mkdir("mkdir -p ");
+    mkdir.append(logDirectory);
+    ACE_OS::system(mkdir.c_str());
+    std::string chmod("chmod 775 ");
+    chmod.append(logDirectory);
+    ACE_OS::system(chmod.c_str());
+    ACE_OS::system(("chmod 775 " + logs).c_str());
+
+    std::string timeStamp(getStringifiedTimeStamp().c_str());
+
+    if( timeStamp.find(":") != std::string::npos)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find(":") != std::string::npos )
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find("T") != std::string::npos)
+        timeStamp.replace(timeStamp.find("T"),1,"_");
+
+	char command[1000];
+
+	if (isCasaContainer)
+		snprintf(command, 1000, "acsStartContainerWithCASA -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+	else
+		snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+
+	ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
+
+    int result = ACE_OS::system(command);
+
+    if (result < 0)
+    {
+    	::acsdaemonErrType::FailedToStartContainerExImpl ex(
+    			__FILE__, __LINE__,
+    			"::ACSContainerDaemonImpl::start_container_sync");
+    	ex.setReturnCode(result);
+    	ex.log(LM_DEBUG);
+    	throw ex.getFailedToStartContainerEx();
+    }
+
+}//start_container_sync
+
+
+
+void ACSContainerHandlerImpl::stop_container (
+    const char * container_name,
+    ::CORBA::Short instance_number,
+    const char * additional_command_line
+    )
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::acsdaemonErrType::FailedToStopContainerEx,
+			::ACSErrTypeCommon::BadParameterEx
+			))
+{
+    if (container_name == 0 ||
+	*container_name == 0)
+	{
+	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__,
+						  "::ACSContainerDaemonImpl::stop_container");
+	ex.setParameter("container_name");
+	throw ex.getBadParameterEx();
+	}
+
+    const char * cmdln = (additional_command_line ? additional_command_line : "");
+
+    //get the directory name to store the container stdout
+    std::string logDirectory="~/.acs/commandcenter/";
+    char * acsdata = ACE_OS::getenv("ACSDATA");
+    if(acsdata != 0)
+        logDirectory = std::string(acsdata) + std::string("/logs/");
+    std::string logs = logDirectory;
+    char * host = ACE_OS::getenv("HOST");
+    if(host != NULL)
+        logDirectory = logDirectory + std::string(host) + std::string("/");
+    std::string containerName(container_name);
+    std::string::size_type pos=containerName.rfind("/");
+    if(pos != std::string::npos){
+    	logDirectory.append(containerName,0,pos+1);
+    	containerName.erase(0,pos+1);
+    }
+    //create the directory
+    std::string mkdir("mkdir -p ");
+    mkdir.append(logDirectory);
+    ACE_OS::system(mkdir.c_str());
+    std::string chmod("chmod 775 ");
+    chmod.append(logDirectory);
+    ACE_OS::system(chmod.c_str());
+    ACE_OS::system(("chmod 775 " + logs).c_str());
+
+    std::string timeStamp(getStringifiedTimeStamp().c_str());
+
+    if( timeStamp.find(":") != std::string::npos)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find(":") != std::string::npos )
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find("T") != std::string::npos)
+        timeStamp.replace(timeStamp.find("T"),1,"_");
+
+    // execute: "acsStopContainer -b <instance> <name> <args>"
+    // TODO checks for ';', '&', '|' chars, they can run any other command!
+    char command[1000];
+    snprintf(command, 1000, "acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s&", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+
+    ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
+
+    int result = ACE_OS::system(command);
+
+    if (result < 0)
+	{
+	throw ::acsdaemonErrType::FailedToStopContainerExImpl(
+	    __FILE__, __LINE__,
+	    "::ACSContainerDaemonImpl::stop_container").getFailedToStopContainerEx();
+	}
+
+}
+
+
+void ACSContainerHandlerImpl::stop_container_sync (
     const char * container_name,
     ::CORBA::Short instance_number,
     const char * additional_command_line
@@ -175,7 +350,7 @@ ACSContainerHandlerImpl::stop_container (
 	*container_name == 0)
 	{
 	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
-						  "::ACSContainerDaemonImpl::stop_container");
+						  "::ACSContainerDaemonImpl::stop_container_sync");
 	ex.setParameter("container_name");
 	throw ex.getBadParameterEx();
 	}
@@ -218,20 +393,22 @@ ACSContainerHandlerImpl::stop_container (
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     char command[1000];
-    snprintf(command, 1000, "acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s&", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+    snprintf(command, 1000, "acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
     int result = ACE_OS::system(command);
 
     if (result < 0)
-	{
-	throw ::acsdaemonErrType::FailedToStopContainerExImpl(
-	    __FILE__, __LINE__, 
-	    "::ACSContainerDaemonImpl::stop_container").getFailedToStopContainerEx();
-	}
-   
-}
+    {
+    	::acsdaemonErrType::FailedToStopContainerExImpl ex(
+    			__FILE__, __LINE__,
+    			"::ACSContainerDaemonImpl::stop_container_sync");
+    	ex.setReturnCode(result);
+    	ex.log(LM_DEBUG);
+    	throw ex.getFailedToStopContainerEx();
+    }
+}//stop_container_sync
 
 
 

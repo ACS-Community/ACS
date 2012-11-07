@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerHandlerImpl.h,v 1.7 2008/10/27 21:11:23 msekoran Exp $"
+* "@(#) $Id: acsContainerHandlerImpl.h,v 1.8 2012/11/07 11:05:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -104,6 +104,20 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
         ::acsdaemonErrType::FailedToStartContainerEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
+
+    virtual void start_container_sync (
+            const char * container_type,
+            const char * container_name,
+            ::CORBA::Short instance_number,
+            const ::ACS::stringSeq & type_modifiers,
+            const char * additional_command_line
+          )
+          ACE_THROW_SPEC ((
+            CORBA::SystemException,
+            ::acsdaemonErrType::FailedToStartContainerEx,
+    	::ACSErrTypeCommon::BadParameterEx
+          ));
+
     virtual void stop_container (
         const char * container_name,
         ::CORBA::Short instance_number,
@@ -114,6 +128,18 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
         ::acsdaemonErrType::FailedToStopContainerEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
+
+    virtual void stop_container_sync (
+            const char * container_name,
+            ::CORBA::Short instance_number,
+            const char * additional_command_line
+          )
+          ACE_THROW_SPEC ((
+            CORBA::SystemException,
+            ::acsdaemonErrType::FailedToStopContainerEx,
+    	::ACSErrTypeCommon::BadParameterEx
+          ));
+
     virtual void shutdown ()
       ACE_THROW_SPEC ((
         CORBA::SystemException,
