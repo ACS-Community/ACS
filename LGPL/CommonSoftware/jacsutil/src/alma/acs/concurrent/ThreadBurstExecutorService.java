@@ -97,8 +97,11 @@ public class ThreadBurstExecutorService
 		Future<T> future = delegate.submit(interceptingCallable);
 		
 		// wait till the thread has started, otherwise a subsequent executeAllAndWait call might come too early
-		confirmWaiting.await(awaitExecutionTimeout, unit);
-		
+		if (!confirmWaiting.await(awaitExecutionTimeout, unit)) {
+			// thread has not started within awaitExecutionTimeout..
+			// TODO: feedback to the future, perhaps exception
+			System.out.println("ThreadBurstExecutorService#submit: Starting of thread too slow!");
+		}
 		return future;
 	}
 	
