@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.22 2012/11/07 11:05:35 bjeram Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.23 2012/11/07 14:01:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -247,6 +247,8 @@ ACSContainerHandlerImpl::start_container_sync (
 
     int result = ACE_OS::system(command);
 
+    ACS_SHORT_LOG ((LM_INFO, "Command: '%s' has been executed (%d).", command, result));
+
     if (result < 0)
     {
     	::acsdaemonErrType::FailedToStartContainerExImpl ex(
@@ -398,6 +400,8 @@ void ACSContainerHandlerImpl::stop_container_sync (
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
     int result = ACE_OS::system(command);
+
+    ACS_SHORT_LOG ((LM_INFO, "Command: '%s' has been executed (%d).", command, result));
 
     if (result < 0)
     {
