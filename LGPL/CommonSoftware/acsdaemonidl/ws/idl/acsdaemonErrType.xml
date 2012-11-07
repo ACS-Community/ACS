@@ -28,13 +28,17 @@
 	
 	<ErrorCode name="FailedToStartContainer"
 		shortDescription="Failed to start container"
-		description="Failed to start container"
-	/>
+		description="Failed to start container">
+		<Member name="ReturnCode" type="long" description="Return error code."/>
+	</ErrorCode>
+	
 
 	<ErrorCode name="FailedToStopContainer"
 		shortDescription="Failed to stop container"
-		description="Failed to stop container"
-	/>
+		description="Failed to stop container">
+		<Member name="ReturnCode" type="long" description="Return error code."/>
+	</ErrorCode>
+	
 
 	<ErrorCode name="AcsStartServices"
 		shortDescription="Status of ACS services start"
