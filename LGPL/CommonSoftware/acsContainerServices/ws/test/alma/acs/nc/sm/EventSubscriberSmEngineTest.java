@@ -271,7 +271,7 @@ public class EventSubscriberSmEngineTest
 
 	/**
 	 * Cycles 5.000 times between suspended and resumed state
-	 * and asserts that the state machine overhead be less than 0.2 ms per event.
+	 * and asserts that the state machine overhead be less than 0.6 ms per event.
 	 * This is done both with and without the check for allowed events.
 	 */
 	@Test
@@ -293,7 +293,9 @@ public class EventSubscriberSmEngineTest
 		}
 		long elapsed = sw.getLapTimeMillis();
 		logger.info("suspend/resume cycles: cycles = " + cycles + ", elapsed time ms = " + elapsed);
-		assertThat("SM transitions too slow.", elapsed, lessThan(2000L)); // 5.000 cycles mean 10.000 signals/transitions, so 2000 ms max means <= 0.2 ms per transition.
+		// 5.000 cycles mean 10.000 signals/transitions, so 6000 ms max means <= 0.6 ms per transition.
+		// Usually its around 1000 ms, but NRI machine te48 has gotten slow and reports failures regularly.
+		assertThat("SM transitions too slow.", elapsed, lessThan(6000L)); 
 		
 		// Now do the same again, but including the check for applicable events
 		// It seems that this second run is even faster, in spite of the additional check.
@@ -306,7 +308,7 @@ public class EventSubscriberSmEngineTest
 		}
 		elapsed = sw.getLapTimeMillis();
 		logger.info("suspend/resume cycles with event checks: cycles = " + cycles + ", elapsed time ms = " + elapsed);
-		assertThat("SM transitions too slow.", elapsed, lessThan(2000L)); 
+		assertThat("SM transitions too slow.", elapsed, lessThan(6000L)); 
 	}
 
 }
