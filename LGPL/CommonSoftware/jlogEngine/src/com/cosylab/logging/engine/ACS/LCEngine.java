@@ -27,6 +27,9 @@ import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
 
+import alma.acs.logging.AcsLogger;
+import alma.acs.logging.ClientLogManager;
+
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
@@ -70,6 +73,8 @@ public class LCEngine implements Filterable {
 	 */
 	private final int CHECK_INTERVAL = 15;
 
+	private final AcsLogger logger;
+	
 	// The boolean remember if the client was connected before
 	// checking for the connection (needed to understand if the
 	// connection has been lost or never happened)
@@ -123,15 +128,15 @@ public class LCEngine implements Filterable {
 			listenersDispatcher.publishReport("Connecting to " + accessType
 					+ " remote access...");
 			try {
-
-				Class[] parameters = { listenersDispatcher.getClass(), logRetrieval.getClass() };
+				// TODO: Shouldn't we instantiate ACSRemoteAccess directly? Who gains from 'forName'?
+				Class[] parameters = { listenersDispatcher.getClass(), logRetrieval.getClass(), AcsLogger.class };
 				String raName = accessType;
 				if (accessType.indexOf(".") == -1)
 					raName = "com.cosylab.logging.engine." + accessType + "."
 							+ accessType + "RemoteAccess"; // com.cosylab.logging.engine.ACS.ACSRemoteAccess
 				Class theClass = Class.forName(raName);
 				Constructor ctor = theClass.getConstructor(parameters);
-				remoteAccess = (RemoteAccess)ctor.newInstance(listenersDispatcher,logRetrieval);
+				remoteAccess = (RemoteAccess)ctor.newInstance(listenersDispatcher,logRetrieval, logger);
 				remoteAccess.initialize(orb, manager);
 			} catch (Throwable e) {
 				listenersDispatcher
@@ -241,7 +246,13 @@ public class LCEngine implements Filterable {
 	 * 
 	 */
 	public LCEngine() {
-		logRetrieval=new ACSLogRetrieval(listenersDispatcher, Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
+		logRetrieval = new ACSLogRetrieval(listenersDispatcher, Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
+		
+		// TODO: This logger should probably be created somewhere else and should be passed around
+		// the various jlog objects, once jlog gets modified to use logging in general.
+		// Here we just create an ad-hoc logger, to be passed to ACSRemoteAccess, as part of ORB profiling.
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("jlogEngine", false);
+		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 	}
 
 	/**
@@ -287,6 +298,13 @@ public class LCEngine implements Filterable {
 				listenersDispatcher, 
 				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT),
 				cacheFileHandler);
+		// TODO: This logger should probably be created somewhere else and should be passed around
+		// the various jlog objects, once jlog gets modified to use logging in general.
+		// Here we just create an ad-hoc logger, to be passed to ACSRemoteAccess, as part of ORB profiling.
+		//
+		// TODO: Try to call this() because now we create the logger in 2 ctors.
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("jlogEngine", false);
+		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 	}
 	
 	/**

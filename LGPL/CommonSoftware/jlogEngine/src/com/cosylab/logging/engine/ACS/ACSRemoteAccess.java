@@ -21,6 +21,10 @@
  */
 package com.cosylab.logging.engine.ACS;
 
+import java.util.logging.Level;
+
+import org.jacorb.orb.acs.AcsORBProfiler;
+import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
@@ -37,18 +41,20 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
 
-import si.ijs.maci.Manager;
-
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
 
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.NoPermissionEx;
+import si.ijs.maci.Manager;
+
+import alma.acs.logging.AcsLogger;
+import alma.acs.profiling.orb.AcsORBProfilerImplBase;
+import alma.acscommon.LOGGING_CHANNEL_NAME;
 import alma.acscommon.LOGGING_CHANNEL_XML_NAME;
 import alma.acscommon.NAMING_SERVICE_NAME;
-import alma.acscommon.LOGGING_CHANNEL_NAME;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoPermissionEx;
 
 /**
  * This class implements methods for declaring the naming service 
@@ -81,20 +87,26 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	// The object to send new logs to
 	private ACSLogRetrieval logRetrieval;
 	
+	private final AcsLogger logger;
+	
 	/**
 	 * ACSRemoteAccss constructor comment.
 	 * 
 	 * @param listeners The object to send messages to the listeners
 	 */
-	public ACSRemoteAccess(ACSListenersDispatcher listeners, ACSLogRetrieval retrieval) {
+	public ACSRemoteAccess(ACSListenersDispatcher listeners, ACSLogRetrieval retrieval, AcsLogger logger) {
 		if (listeners==null) {
 			throw new IllegalArgumentException("The object to dispatch messages to listeners can't be null");
 		}
 		if (retrieval==null) {
 			throw new IllegalArgumentException("The ACSLogRetrieval can't be null");
 		}
+		if (logger==null) {
+			throw new IllegalArgumentException("The logger can't be null");
+		}
 		listenersDispatcher=listeners;
 		logRetrieval=retrieval;
+		this.logger = logger;
 	}
 	
 	/**
@@ -240,6 +252,17 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			} catch (Exception e)
 			{
 				throw new IllegalStateException("POAManager activation failed." + e);
+			}
+			
+			// setup ORB profiling
+			try {
+				if (orb instanceof AcsProfilingORB) {
+					AcsORBProfiler profiler = new AcsORBProfilerImplBase(logger);
+					((AcsProfilingORB)orb).registerAcsORBProfiler(profiler);
+					logger.finer("Orb profiling set up, using class " + AcsORBProfilerImplBase.class.getName());
+				}
+			} catch (Throwable th) {
+				logger.log(Level.WARNING, "Failed to setup ORB profiling.", th);
 			}
 		
 			// end of CORBA stanza
