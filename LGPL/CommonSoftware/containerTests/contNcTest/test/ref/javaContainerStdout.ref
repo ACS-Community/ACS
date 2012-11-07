@@ -16,6 +16,7 @@
 1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
 1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
 1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [alma.acs.logging] Logger scxml@javaContainer created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
 1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
 1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
 1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Python supplier received, counter is now 15
