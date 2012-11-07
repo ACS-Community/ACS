@@ -32,6 +32,8 @@ import java.util.logging.LogRecord;
  * Also corrects the log level of a few known messages when it seems inappropriate (and blanks non-printable chars in the message);
  * this is a bit dirty because the JDK logging filters are not expected to modify the log records,
  * but it saves us from re-examining the same log record in a subsequent home-brew modifier stage.
+ * <p>
+ * See http://jira.alma.cl/browse/COMP-8302 about statistics of real-world jacorb logs.
  */
 public class JacORBFilter implements Filter {
 
@@ -58,9 +60,18 @@ public class JacORBFilter implements Filter {
 						message.endsWith("... done") ||
 						message.endsWith("stop the request controller") ||
 						message.endsWith("etherialize all servants ...")
-				) 
-                ) {
+					) ) {
 				record.setLevel(Level.FINEST);
+			}
+			else if (message.startsWith("get_policy_overrides returns")) {
+				// From ACS unit tests it seems that this message is totally harmless, 
+				// caused by a Corba stub calling org.jacorb.orb.Delegate#getRelativeRoundtripTimeout()
+				// and asking for the RELATIVE_RT_TIMEOUT_POLICY_TYPE policy.
+				// We do not fully discard the log though because it may have other causes at the AOS.
+				record.setLevel(Level.FINEST);
+//				// Enable the following 2 lines to investigate for http://jira.alma.cl/browse/COMP-8302, to see where all these logs come from
+//				String stackTrace = org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(new Throwable());
+//				System.out.println("Hack for COMP-8302 debugging: 'get_policy_overrides returns' message logged with trace " + stackTrace);
 			}
 			// from FINE to discard
 			else isLoggable = !(
@@ -68,14 +79,14 @@ public class JacORBFilter implements Filter {
 					message.indexOf("is queued (queue size:") > 0 ||
 					message.endsWith("trying to get a RequestProcessor") ||
 					message.endsWith("waiting for queue") ||
-					message.endsWith("with request processing") || // for "starts...",  "ends..."			
+					message.endsWith("with request processing") || // for "starts...",  "ends..."
 					message.endsWith("invokeOperation on servant (stream based)") ||
 					message.endsWith("reset a previous completion call") ||
 					message.startsWith("Delegate.getReference") || 
 					message.startsWith("Received CodeSetContext. Using") || 
 					message.startsWith("ClientConnectionManager: releasing ClientGIOPConnection") ||
 					message.startsWith("Delegate released!") ||
-					message.endsWith(": streamClosed()")		// findPOA: impl_name mismatch						
+					message.endsWith(": streamClosed()")		// findPOA: impl_name mismatch
 			);
 		}
 		
