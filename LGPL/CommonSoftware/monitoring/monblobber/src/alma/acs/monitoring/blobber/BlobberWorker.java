@@ -43,6 +43,10 @@ import alma.TMCDB.MonitorCollectorOperations;
 import alma.TMCDB.MonitorDataBlock;
 import alma.TMCDB.anyBlobData;
 import alma.TMCDB.anyBlobDataSeqHelper;
+import alma.TMCDB.booleanBlobData;
+import alma.TMCDB.booleanBlobDataSeqHelper;
+import alma.TMCDB.booleanSeqBlobData;
+import alma.TMCDB.booleanSeqBlobDataSeqHelper;
 import alma.TMCDB.doubleBlobData;
 import alma.TMCDB.doubleBlobDataSeqHelper;
 import alma.TMCDB.doubleSeqBlobData;
@@ -67,10 +71,14 @@ import alma.TMCDB.stringBlobData;
 import alma.TMCDB.stringBlobDataSeqHelper;
 import alma.TMCDB.stringSeqBlobData;
 import alma.TMCDB.stringSeqBlobDataSeqHelper;
+import alma.TMCDB.uLongBlobData;
+import alma.TMCDB.uLongBlobDataSeqHelper;
 import alma.TMCDB.uLongLongBlobData;
 import alma.TMCDB.uLongLongBlobDataSeqHelper;
 import alma.TMCDB.uLongLongSeqBlobData;
 import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
+import alma.TMCDB.uLongSeqBlobData;
+import alma.TMCDB.uLongSeqBlobDataSeqHelper;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
@@ -372,7 +380,34 @@ public class BlobberWorker extends CancelableRunnable {
 
             }// end internal if
             // longLongBlobDataSeq
-        } else if (inSequence.type().equal(longLongBlobDataSeqHelper.type())) {
+		} 
+		// uLongBlobDataSeq
+		else if (inSequence.type().equal(uLongBlobDataSeqHelper.type())) {
+			uLongBlobData[] blobDataArray = uLongBlobDataSeqHelper.extract(inSequence);
+			AnyDataContainer container = new AnyDataContainer();
+			int index = 0;
+			for (uLongBlobData blobData : blobDataArray) {
+				populateContainerNumeric(container, blobData.time, blobData.value, index);
+			}
+			outList.add(container);
+		} 
+		// uLongSeqBlobDataSeq
+		else if (inSequence.type().equal(uLongSeqBlobDataSeqHelper.type())) {
+			uLongSeqBlobData[] blobDataMatrix = uLongSeqBlobDataSeqHelper.extract(inSequence);
+			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
+				populateList(outList, blobDataMatrix[0].value.length);
+				for (uLongSeqBlobData blobDataArray : blobDataMatrix) {
+					int index = 0;
+					for (Number blobData : blobDataArray.value) {
+						AnyDataContainer container = outList.get(index);
+						populateContainerNumeric(container, blobDataArray.time, blobData, index);
+						index++;
+					}
+				}
+			}
+		} 
+        // longLongBlobDataSeq
+		else if (inSequence.type().equal(longLongBlobDataSeqHelper.type())) {
 			longLongBlobData[] blobDataArray = longLongBlobDataSeqHelper.extract(inSequence);
             AnyDataContainer container = new AnyDataContainer();
             int index = 0;
@@ -380,8 +415,9 @@ public class BlobberWorker extends CancelableRunnable {
 				populateContainerNumeric(container, blobData.time, blobData.value, index);
             }
             outList.add(container);
-            // longLongSeqBlobDataSeq
-        } else if (inSequence.type().equal(longLongSeqBlobDataSeqHelper.type())) {
+        } 
+        // longLongSeqBlobDataSeq
+		else if (inSequence.type().equal(longLongSeqBlobDataSeqHelper.type())) {
 			longLongSeqBlobData[] blobDataMatrix = longLongSeqBlobDataSeqHelper.extract(inSequence);
             if (blobDataMatrix != null && blobDataMatrix.length > 0) {
                 populateList(outList, blobDataMatrix[0].value.length);
@@ -418,8 +454,34 @@ public class BlobberWorker extends CancelableRunnable {
                     }// end for
                 }// end for
             }// end if
-            // patternBlobDataSeq
-        } else if (inSequence.type().equal(patternBlobDataSeqHelper.type())) {
+        }
+		// booleanBlobDataSeq
+		else if (inSequence.type().equal(booleanBlobDataSeqHelper.type())) {
+			booleanBlobData[] blobDataArray = booleanBlobDataSeqHelper.extract(inSequence);
+			AnyDataContainer container = new AnyDataContainer();
+			int index = 0;
+			for (booleanBlobData blobData : blobDataArray) {
+				populateContainerObject(container, blobData.time, blobData.value, index);
+			}
+			outList.add(container);
+		}
+		// booleanSeqBlobDataSeq
+		else if (inSequence.type().equal(booleanSeqBlobDataSeqHelper.type())) {
+			booleanSeqBlobData[] blobDataMatrix = booleanSeqBlobDataSeqHelper.extract(inSequence);
+			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
+				populateList(outList, blobDataMatrix[0].value.length);
+				for (booleanSeqBlobData blobDataArray : blobDataMatrix) {
+					int index = 0;
+					for (Boolean blobData : blobDataArray.value) {
+						AnyDataContainer container = outList.get(index);
+						populateContainerObject(container, blobDataArray.time, blobData, index);
+						index++;
+					}
+				}
+			}
+		}
+        // patternBlobDataSeq
+		else if (inSequence.type().equal(patternBlobDataSeqHelper.type())) {
 			patternBlobData[] blobDataArray = patternBlobDataSeqHelper.extract(inSequence);
             AnyDataContainer container = new AnyDataContainer();
             int index = 0;
