@@ -23,7 +23,7 @@ package alma.acs.jlog.test;
 
 import java.util.Collection;
 import java.util.Vector;
-import java.util.logging.Level;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
@@ -35,7 +35,6 @@ import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.AcsLogLevel;
@@ -64,7 +63,7 @@ public class EngineFilteringTest
 	private Vector<ILogEntry> receivedLogs;
 	
 	// The number of XML logs received
-	private int xmlLogs=0;
+	private AtomicInteger xmlLogsCount;
 	
 	// The number of INFO's in the XML
 	private int xmlInfos=0;
@@ -98,12 +97,12 @@ public class EngineFilteringTest
 		receivedLogs= new Vector<ILogEntry>();
 		assertNotNull(receivedLogs);
 		receivedLogs.clear();
-		xmlLogs=0;
+		xmlLogsCount = new AtomicInteger(0);
 		
 		xmlInfos=0;
 		
 		assertNotNull(m_logger);
-		AcsLogger acsLogger = (AcsLogger)m_logger;
+		AcsLogger acsLogger = m_logger;
 		LogConfig config = new LogConfig();
 		acsLogger.configureLogging(config);
 		
@@ -205,8 +204,7 @@ public class EngineFilteringTest
 	@Override
 	public void xmlEntryReceived(String xmlLogString) {
 		if (xmlLogString.contains("testFiltering")) {
-			
-			xmlLogs++;
+			xmlLogsCount.incrementAndGet();
 			if (xmlLogString.contains("Info") && !xmlLogString.contains("Manager")) {
 				xmlInfos++;
 			}
@@ -386,10 +384,11 @@ public class EngineFilteringTest
 			elapsed++;
 		}
 		
-		// If all the logs has been received then xmlLogs must be greater then NUMBER_OF_LOGS
-		// No t equal because the xml logs are not filtered and there can be logs generated
+		// If all the logs have been received then xmlLogsCount must be greater then NUMBER_OF_LOGS
+		// Not equal because the xml logs are not filtered and there can be logs generated
 		// outside of this object
-		assertTrue(xmlLogs>=NUMBER_OF_LOGS);
+		assertTrue("Received only " + xmlLogsCount.get() + " xml logs, when there should have been at least " + NUMBER_OF_LOGS, 
+				xmlLogsCount.get() >= NUMBER_OF_LOGS);
 		
 		// Check if the number of received logs is as expected
 		assertEquals(infos,receivedLogs.size());
