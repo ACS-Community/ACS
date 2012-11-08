@@ -27,65 +27,73 @@
 
 package alma.demo.EventConsumerImpl;
 
+import java.util.logging.Level;
+
+import alma.FRIDGE.CHANNELNAME_FRIDGE;
+import alma.FRIDGE.temperatureDataBlockEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
 import alma.demo.ConsumerCompOperations;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /**
  * Implementation class of the ConsumerComp IDL interface.
- * @author  dfugate
+ * 
+ * @author dfugate
  */
-public class EventConsumerImpl extends ComponentImplBase implements ConsumerCompOperations
+public class EventConsumerImpl extends ComponentImplBase implements ConsumerCompOperations, AcsEventSubscriber.Callback<temperatureDataBlockEvent>
 {
-    private Consumer m_consumer;
+	private AcsEventSubscriber<temperatureDataBlockEvent> m_consumer;
 
-    /** 
-	 * Sets up the {@link Consumer}.
-     */
-	public void initialize(ContainerServices containerServices)
-		throws ComponentLifecycleException
-	{
-        super.initialize(containerServices);
-		
-		try
-		{
-	        m_consumer = new Consumer(alma.FRIDGE.CHANNELNAME_FRIDGE.value, m_containerServices);
-			//Subscribe to a domain and event type.
-			m_consumer.addSubscription(alma.FRIDGE.temperatureDataBlockEvent.class, this);
-			m_consumer.consumerReady();
+	/**
+	 * Sets up the {@link AcsEventSubscriber}.
+	 */
+	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+		super.initialize(containerServices);
+
+		try {
+			m_consumer = containerServices.createNotificationChannelSubscriber(alma.FRIDGE.CHANNELNAME_FRIDGE.value,
+					temperatureDataBlockEvent.class);
+			m_consumer.addSubscription(this);
+			m_consumer.startReceivingEvents();
 			m_logger.info("ConsumerComp is waiting for 'temperatureDataBlockEvent' events.");
-		}
-		catch (Exception e)
-		{
-			if (m_consumer != null) {				
-				m_consumer.disconnect();
+		} catch (Exception ex) {
+			if (m_consumer != null) {
+				try {
+					m_consumer.disconnect();
+				} catch (Exception ex2) {
+					m_logger.log(Level.WARNING, "Failed to disconnect a messed-up NC subscriber", ex2);
+				}
 			}
-			throw new ComponentLifecycleException("failed to connect as an event consumer to channel " + alma.FRIDGE.CHANNELNAME_FRIDGE.value);
+			throw new ComponentLifecycleException("failed to connect as an event consumer to channel " + CHANNELNAME_FRIDGE.value, ex);
 		}
 	}
 
-	
-    /**
-     * This method will be called whenever a <code>temperatureDataBlockEvent</code> becomes available 
-     * on the channel.
-     * <p>
-     * Note that this method is found by the framework through introspection, 
-     * see {@link Consumer#addSubscription(java.lang.Class, java.lang.Object)}.
-     */
-    public void receive(alma.FRIDGE.temperatureDataBlockEvent joe)
-	{
-	    m_logger.info("Received an event: the temp difference is: " + joe.absoluteDiff);
+	/**
+	 * This method will be called whenever a <code>temperatureDataBlockEvent</code> becomes available on the channel.
+	 */
+	@Override
+	public void receive(temperatureDataBlockEvent joe, EventDescription eventDescrip) {
+		m_logger.info("Received an event: the temp difference is: " + joe.absoluteDiff);
 	}
 
-    
-	/** 
+	@Override
+	public Class<temperatureDataBlockEvent> getEventType() {
+		return temperatureDataBlockEvent.class;
+	}
+
+	/**
 	 * Disconnects the Consumer
 	 */
-	public void cleanUp()
-	{
-		m_consumer.disconnect();
+	public void cleanUp() throws AcsJComponentCleanUpEx {
+		try {
+			m_consumer.disconnect();
+		} catch (Exception ex) {
+			throw new AcsJComponentCleanUpEx(ex);
+		}
 	}
-     
+
 }
