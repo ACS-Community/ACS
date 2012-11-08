@@ -32,19 +32,17 @@ import javax.jms.TopicSubscriber;
 
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.ALARMSYSTEM_DOMAIN_NAME;
+import alma.acsnc.EventDescription;
 
 /**
  * @author kzagar
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ACSJMSTopicSubscriber
-	extends ACSJMSConsumer
-	implements TopicSubscriber, ACSJMSMessageEntityConsumerListener {
+	extends ACSJMSConsumer implements TopicSubscriber, AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
 
-	private Consumer consumer;
+	private AcsEventSubscriber<ACSJMSMessageEntity> consumer;
 	
 	/**
 	 * @param destination
@@ -56,10 +54,10 @@ public class ACSJMSTopicSubscriber
 	public ACSJMSTopicSubscriber(Topic topic, ContainerServicesBase containerServices, String selector) throws JMSException {
 		super(topic, containerServices,selector);
 		try {
-			//this.consumer = new Consumer(topic.getTopicName(), alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, containerServices);
-			//this.consumer.addSubscription(ACSJMSMessageEntity.class, this);
-			this.consumer = new ACSJMSMessageEntityConsumer(topic.getTopicName(), containerServices, this);
-			this.consumer.consumerReady();
+			consumer = containerServices.createNotificationChannelSubscriber(
+					topic.getTopicName(), ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+			consumer.addSubscription(this);
+			consumer.startReceivingEvents();
 		} catch (AcsJException e) {
 			System.err.println("Error creating the subscriber: "+e.getMessage());
 			e.printStackTrace(System.err);
@@ -81,12 +79,32 @@ public class ACSJMSTopicSubscriber
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * The NC subscriber callback method.
+	 */
+	@Override
+	public void receive(ACSJMSMessageEntity eventData, EventDescription eventDescrip) {
+		// let base class handle it
+		receive(eventData);
+	}
+
+	@Override
+	public Class<ACSJMSMessageEntity> getEventType() {
+		return ACSJMSMessageEntity.class;
+	}
+
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageConsumer#close()
 	 */
 	public void close() throws JMSException {
-		if(this.consumer != null) {
-			this.consumer.disconnect();
+		if(consumer != null) {
+			try {
+				this.consumer.disconnect();
+			} catch (Exception ex) {
+				JMSException ex2 = new JMSException("Failed to disconnect NC subscriber for topic " + getTopic().getTopicName());
+				ex2.setLinkedException(ex);
+				throw ex2;
+			}
 		}
 	}
 }
