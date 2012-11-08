@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
+import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
@@ -45,7 +46,6 @@ import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJNotImplementedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -59,6 +59,7 @@ import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Helper;
 import alma.acs.nc.refactored.NCPublisher;
+import alma.acs.nc.refactored.NCSubscriber;
 
 public class AlarmSystemContainerServices implements ContainerServicesBase {
 	
@@ -181,15 +182,39 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 
 	@Override
 	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, Class<T> eventType) throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
+		return createNotificationChannelSubscriber(channelName, null, eventType);
 	}
 
 	@Override
-	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, 
-		String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx(new AcsJNotImplementedEx("createNotificationChannelSubscriber not yet implemented in this special alarm service CS class."));
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(
+			String channelName, 
+			String channelNotifyServiceDomainName, 
+			Class<T> eventType) throws AcsJContainerServicesEx {
+		
+		if (eventType == null || !IDLEntity.class.isAssignableFrom(eventType)) {
+			throw new IllegalArgumentException("With Corba-NC based pub-sub, the event must be an instance of IDLEntity.");
+		}
+		
+		AcsEventSubscriber<T> subscriber = null;
+		try {
+			// TODO: try to get the naming service ref in a nicer way (from ORB etc)
+			NamingContext namingService = Helper.getNamingServiceInitial(this);
+
+			// This is dirty omitting of <T> because NCSubscriber needs something like "<U extends T & IDLEntity>"
+			// Note that this problem does not exist in the ContainerServicesImpl because there we instantiate via reflection.
+			subscriber = new NCSubscriber(channelName, channelNotifyServiceDomainName, this,
+					namingService, this.getName(), eventType);
+		} catch (Throwable e) {
+			logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventSubscriber object", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			throw ex;
+		}
+
+//		m_subscribers.put( (channelNotifyServiceDomainName == null ? "" : channelNotifyServiceDomainName) + "/" + channelName, subscriber);
+		return subscriber;
 	}
 
+	
 	private Policy[] m_offshootPolicies;
 
 	public POA getPOAForOffshoots(POA componentPOA) throws AcsJContainerEx,
@@ -270,7 +295,7 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
 			ex.setContextInfo(msg);
 			throw ex;
-        }
+		}
 	}
 
 	/**
