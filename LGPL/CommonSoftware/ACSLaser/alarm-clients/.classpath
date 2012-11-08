@@ -23,5 +23,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/laserconsole.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
