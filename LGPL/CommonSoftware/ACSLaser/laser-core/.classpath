@@ -47,5 +47,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
