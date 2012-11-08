@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SourcesListener.java,v 1.5 2008/02/06 09:57:37 msekoran Exp $
+ * @version $Id: SourcesListener.java,v 1.6 2012/11/08 08:31:45 hsommer Exp $
  * @since    
  */
 
@@ -30,8 +30,8 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
+import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
@@ -40,26 +40,28 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.ClientLogManager;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
  * A java client that listens for the alarms sent by sources.
  * For each received alarm, prints a message in the console.
  */
-public class SourcesListener {
+public class SourcesListener implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
+	
 	/** 
-	 * Actually there is only one channel used by all sources
-	 * to publish alarms
+	 * Actually there is only one channel used by all sources to publish alarms
 	 **/ 
 	private static final String srcChName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
 	
 	private AdvancedComponentClient m_client;
+	
 	private ContainerServices m_contSvcs;
 	
-	private Consumer m_consumer = null;
+	private AcsEventSubscriber<ACSJMSMessageEntity> m_consumer;
 	
-	Logger logger=null;
+	final Logger logger;
 	
 	/**
 	 * Constructor
@@ -93,41 +95,42 @@ public class SourcesListener {
         	e.printStackTrace();
         	System.exit(-1);
         }
-        // Connect to the NC used by the sources
-        try {
-        	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
-        } catch (Exception e) {
-        	logger.severe("Error instantiating the consumer: "+e.getMessage());
-        	e.printStackTrace();
-        	System.exit(-1);
-        }
-        try {
-        	m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
-        } catch (Exception e) {
-        	logger.severe("Error subscribing: "+e.getMessage());
-        	e.printStackTrace();
-        	System.exit(-1);
-        }
+		// Connect to the NC used by the sources
 		try {
-			m_consumer.consumerReady();
+			m_consumer = m_contSvcs.createNotificationChannelSubscriber(srcChName,
+					alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
 		} catch (Exception e) {
-        	logger.severe("Error in consumerReady: "+e.getMessage());
-        	e.printStackTrace();
-        	System.exit(-1);
-        }
+			logger.severe("Error instantiating the consumer: " + e.getMessage());
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		try {
+			m_consumer.addSubscription(this);
+		} catch (Exception e) {
+			logger.severe("Error subscribing: " + e.getMessage());
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		try {
+			m_consumer.startReceivingEvents();
+		} catch (Exception e) {
+			logger.severe("Error in consumerReady: " + e.getMessage());
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 	
 	/**
-	 * The method recives all the messages published in the NC by the sources
+	 * The method receives all the messages published in the NC by the sources
 	 * 
 	 *  
 	 * @param msg The message received from the NC
-	 * @see alma.acs.nc.Consumer
 	 */
-	public void receive(ACSJMSMessageEntity msg) {
+	@Override
+	public void receive(ACSJMSMessageEntity msg, EventDescription eventDescrip) {
 		logger.fine("Msg received");
 		ASIMessage asiMsg;
-		Collection faultStates;
+		Collection<FaultState> faultStates;
 		try {
 			asiMsg = XMLMessageHelper.unmarshal(msg.text);
 			faultStates = ASIMessageHelper.unmarshal(asiMsg);
@@ -136,9 +139,9 @@ public class SourcesListener {
 			e.printStackTrace();
 			return;
 		}
-		Iterator iter = faultStates.iterator();
+		Iterator<FaultState> iter = faultStates.iterator();
 		while (iter.hasNext()) {
-			FaultStateImpl fs = (FaultStateImpl)iter.next();
+			FaultState fs = iter.next();
 			StringBuilder str = new StringBuilder("Alarm message received: <");
 			str.append(fs.getFamily());
 			str.append(",");
@@ -152,6 +155,12 @@ public class SourcesListener {
 		}
 	}
 	
+	@Override
+	public Class<ACSJMSMessageEntity> getEventType() {
+		return ACSJMSMessageEntity.class;
+	}
+	
+
 	
 	public static void main(String[] args) {
 		SourcesListener srcListener = new SourcesListener();
@@ -162,5 +171,5 @@ public class SourcesListener {
 			} catch (Exception e) {}
 		}
 	}
-	
+
 }
