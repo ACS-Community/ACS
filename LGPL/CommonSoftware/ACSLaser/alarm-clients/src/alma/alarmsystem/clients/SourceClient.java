@@ -22,28 +22,31 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import com.cosylab.acs.jms.ACSJMSMessageEntity;
-
-import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.nc.Consumer;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
+import com.cosylab.acs.jms.ACSJMSMessageEntity;
+
+import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.nc.AcsEventSubscriber;
+import alma.acsnc.EventDescription;
 import alma.alarmsystem.clients.source.SourceListener;
 
-public class SourceClient { 
+public class SourceClient implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> { 
 	
 	// The listeners of alarms
 	private HashSet<SourceListener> listeners = new HashSet<SourceListener>();
 	
-	private Consumer m_consumer = null;
-	private String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
+	private AcsEventSubscriber<ACSJMSMessageEntity> m_consumer;
+	
+	// TODO: Is there no IDL-defined constant for this NC name?
+	private static final String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
 	
 	// Container services
-	private ContainerServices contSvcs;
+	private final ContainerServices contSvcs;
 	
 	// To avoid to release the resources twice
 	private volatile boolean closed=false;
@@ -69,9 +72,9 @@ public class SourceClient {
 			throw new IllegalStateException("SourceClient is closed!");
 		}
 		logger.log(AcsLogLevel.DEBUG,"Connecting to source channel "+m_channelName);
-		m_consumer = new Consumer(m_channelName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,contSvcs);
-		m_consumer.addSubscription(ACSJMSMessageEntity.class,this);
-		m_consumer.consumerReady();
+		m_consumer = contSvcs.createNotificationChannelSubscriber(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		m_consumer.addSubscription(this);
+		m_consumer.startReceivingEvents();
 		logger.log(AcsLogLevel.DEBUG,"Source channel "+m_channelName+" connected");
 	}
 	
@@ -88,7 +91,8 @@ public class SourceClient {
 	 * @param msg The message received from the NC
 	 * @see alma.acs.nc.Consumer
 	 */
-	public void receive(ACSJMSMessageEntity msg) {
+	@Override
+	public void receive(ACSJMSMessageEntity msg, EventDescription eventDescrip) {
 		ASIMessage asiMsg;
 		Collection<FaultState> faultStates;
 		try {
@@ -105,6 +109,11 @@ public class SourceClient {
 		}
 	}
 	
+	@Override
+	public Class<ACSJMSMessageEntity> getEventType() {
+		return ACSJMSMessageEntity.class;
+	}
+
 	/**
 	 * Add a listener for the alarms.
 	 * 
@@ -189,7 +198,12 @@ public class SourceClient {
 		}
 		closed=true;
 		if (m_consumer!=null) {
-			m_consumer.disconnect();
+			try {
+				m_consumer.disconnect();
+			} catch (Exception ex) {
+				// Should we throw something? Who all calls this method?
+				ex.printStackTrace();
+			}
 		}
 	}
 	
@@ -202,4 +216,5 @@ public class SourceClient {
 		}
 		super.finalize();
 	}
+
 }
