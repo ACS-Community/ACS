@@ -21,6 +21,7 @@
  */
 package com.cosylab.logging;
 
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.ACS.LCEngine;
 
 /**
@@ -34,20 +35,20 @@ public class LoggingClientText {
 /**
  * LoggingClientText constructor comment.
  */
-public LoggingClientText() {
+public LoggingClientText() throws LogEngineException {
 	this("ACS");
 }
 /**
  * LoggingClientText constructor comment.
  */
-public LoggingClientText(String accessType) {
+public LoggingClientText(String accessType) throws LogEngineException {
 	initialize(accessType);
 }
 /**
  * Insert the method's description here.
  * Creation date: (11/2/2001 10:43:03 AM)
  */
-private void initialize(String accessType) {
+private void initialize(String accessType) throws LogEngineException {
 	
 	rrct = new RemoteResponseCallbackText();
 	lct = new LCEngine();
@@ -68,8 +69,13 @@ private void initialize(String accessType) {
  * Starts the application.
  * @param args an array of command-line arguments
  */
-public static void main(java.lang.String[] args) {
-//	LoggingClientText lct = new LoggingClientText();
-	LoggingClientText lct = new LoggingClientText("ACS");
-}
+	public static void main(java.lang.String[] args) {
+		//	LoggingClientText lct = new LoggingClientText();
+		try {
+			LoggingClientText lct = new LoggingClientText("ACS");
+		} catch (Throwable t) {
+			System.err.println("Error with the logging client: "+t.getMessage());
+			t.printStackTrace();
+		}
+	}
 }
