@@ -20,6 +20,8 @@ package alma.acs.logtools.monitor;
 
 import java.io.File;
 
+import com.cosylab.logging.engine.LogEngineException;
+
 import alma.acs.logtools.monitor.file.FileStatistics;
 import alma.acs.logtools.monitor.gui.LogMonitorFrame;
 import alma.acs.util.CmdLineArgs;
@@ -83,8 +85,9 @@ public class LogMonitor extends Thread {
 	 * Constructor
 	 * 
 	 * @param args The command line params
+	 * @throws LogEngineException In case of error instantiating the engine
 	 */
-	public LogMonitor(String[] args) {
+	public LogMonitor(String[] args) throws LogEngineException{
 		if (parseCmdLineArgs(args)) {
 			System.exit(0);
 		}
@@ -230,6 +233,11 @@ public class LogMonitor extends Thread {
 	 * @param args Command line arguments
 	 */
 	public static void main(String[] args) {
-		LogMonitor monitor = new LogMonitor(args);
+		try {
+			LogMonitor monitor = new LogMonitor(args);
+		} catch (Throwable t) {
+			System.err.println("Error instantiating the monitor: "+t.getMessage());
+			t.printStackTrace();
+		}
 	}
 }

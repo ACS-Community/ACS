@@ -20,6 +20,7 @@ package alma.acs.logtools.monitor;
 
 import java.util.Vector;
 
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
@@ -115,8 +116,10 @@ Runnable {
 	
 	/**
 	 * Constructor
+	 * 
+	 * @throws LogEngineException In case of error instantiating the engine
 	 */
-	public LogDetailsDispatcher() {
+	public LogDetailsDispatcher() throws LogEngineException {
 		// Start the thread
 		notifierThread=new Thread(this);
 		notifierThread.setDaemon(true);
