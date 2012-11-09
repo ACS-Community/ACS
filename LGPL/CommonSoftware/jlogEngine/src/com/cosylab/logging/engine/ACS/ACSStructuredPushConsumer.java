@@ -54,9 +54,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 
 	private ACSRemoteAccess acsra = null;
 	
-	// true if the binary format is in use, falso otherwise
-	private boolean binaryFormat;
-	
 	/**
 	 * If it is suspended then the incoming messages are discarded
 	 * instead of being notified to the listeners
@@ -79,7 +76,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 * @param acsra The remote access obj to ACS NC
 	 * @param theEngine The LCEngine
 	 */
-	public ACSStructuredPushConsumer(ACSRemoteAccess acsra, ACSListenersDispatcher listenersDispatcher, ACSLogRetrieval logRetrieval, boolean binaryFormat)
+	public ACSStructuredPushConsumer(ACSRemoteAccess acsra, ACSListenersDispatcher listenersDispatcher, ACSLogRetrieval logRetrieval)
 	{
 		if (acsra==null || listenersDispatcher==null) {
 			throw new IllegalArgumentException("Illegal null argument");
@@ -87,7 +84,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		if (logRetrieval==null) {
 			throw new IllegalArgumentException("The ACSLogRetrieval can't be null");
 		}
-		this.binaryFormat=binaryFormat;
 		this.acsra = acsra;
 		this.listenersDispatcher=listenersDispatcher;
 		this.logRetrieval = logRetrieval;
@@ -173,20 +169,14 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		if (suspended || closed) {
 			return;
 		}
-		if (binaryFormat) {
-			Any any = event.remainder_of_body;
-			LogBinaryRecord logRecord = LogBinaryRecordHelper.extract(any);
-			String binStr = CacheUtils.toCacheString(logRecord);
-			logRetrieval.addLog(binStr);
-		} else {
-			try{
-				String xmlLog = event.remainder_of_body.extract_string();
-				logRetrieval.addLog(xmlLog);
-			}catch(org.omg.CORBA.BAD_OPERATION ex){
-				XmlLogRecord[] xmlLogs = XmlLogRecordSeqHelper.extract(event.remainder_of_body);
-				for(int i = 0; i < xmlLogs.length ; i++)
-					logRetrieval.addLog(xmlLogs[i].xml);
-			}
+	
+		try{
+			String xmlLog = event.remainder_of_body.extract_string();
+			logRetrieval.addLog(xmlLog);
+		}catch(org.omg.CORBA.BAD_OPERATION ex){
+			XmlLogRecord[] xmlLogs = XmlLogRecordSeqHelper.extract(event.remainder_of_body);
+			for(int i = 0; i < xmlLogs.length ; i++)
+				logRetrieval.addLog(xmlLogs[i].xml);
 		}
 	}
 

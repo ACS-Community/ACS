@@ -65,7 +65,6 @@ import alma.maciErrType.NoPermissionEx;
  */
 public final class ACSRemoteAccess implements RemoteAccess {
 	public static final String MANAGER_PROPERTY = System.getProperty("ACS.manager");
-	public static final String LOGGING_BINARY_FORMAT =System.getProperty("ACS.loggingBin");
 	
 	public static final String NAME_SERVICE = NAMING_SERVICE_NAME.value;
 	public static final String LOGGING_XML_CHANNEL = LOGGING_CHANNEL_XML_NAME.value;
@@ -175,8 +174,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		acsSPS = new ACSStructuredPushConsumer(
 				this,
 				listenersDispatcher,
-				logRetrieval,
-				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
+				logRetrieval);
 		if (!acsSPS.isInitialized) return false;
 		
 		acsSPS.connect();
@@ -283,13 +281,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			return;
 		}
 		
-		boolean isNotifyResolved;
-		if (Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT)) {
-			isNotifyResolved= resolveNotifyChannel(LOGGING_BIN_CHANNEL, namingContext);
-		} else {
-			isNotifyResolved= resolveNotifyChannel(LOGGING_XML_CHANNEL, namingContext);
-		}
-		if (!isNotifyResolved) {
+		if (!resolveNotifyChannel(LOGGING_XML_CHANNEL, namingContext)) {
 			return;
 		}
 			
