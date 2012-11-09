@@ -70,7 +70,8 @@ public class HelperTest extends ComponentClientTestCase
 			nsmc = NotificationServiceMonitorControlHelper.narrow(
 					helper.getNamingService().resolve(new NameComponent[]{new NameComponent("MC_NotifyEventChannelFactory", "")}));
 		} catch (NotFound ex) {
-			fail("Failed to resolve factory's MC extension object in the naming service: " + factoryMonitorRegName);
+			fail("Failed to resolve factory's MC extension object in the naming service: " + factoryMonitorRegName 
+					+ ". This is a recurrent problem, probably linked to the missing line 'ReBound ID: MC_NotifyEventChannelFactory' in ./tmp/acsStart.log.");
 		}
 		assertNotNull(nsmc);
 	}
