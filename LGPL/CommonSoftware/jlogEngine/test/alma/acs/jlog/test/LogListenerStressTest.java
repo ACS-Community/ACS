@@ -20,6 +20,7 @@
  *******************************************************************************/
 package alma.acs.jlog.test;
 
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
@@ -41,7 +42,7 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 	
 	boolean msgPrinted = false;
 	
-	public LogListenerStressTest() {
+	public LogListenerStressTest() throws LogEngineException {
 		engine = new LCEngine();
 		engine.addLogListener(this);
 		engine.addRawLogListener(this);
@@ -112,7 +113,14 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		LogListenerStressTest ll = new LogListenerStressTest();
+		LogListenerStressTest ll = null;
+		try { 
+			ll=new LogListenerStressTest();
+		} catch (Throwable t) {
+			System.err.println("Error instantiating the LogListenerStressTest: "+t.getMessage());
+			t.printStackTrace();
+			System.exit(-1);
+		}
 		synchronized(ll.done) {
 			try {
 				ll.done.wait();

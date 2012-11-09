@@ -20,6 +20,7 @@
  *******************************************************************************/
 package alma.acs.jlog.test;
 
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
@@ -58,7 +59,7 @@ public class LogListener implements
 	 * The constructor
 	 *
 	 */
-	public LogListener() {
+	public LogListener() throws LogEngineException {
 		engine = new LCEngine();
 		engine.addLogConnectionListener(this);
 		engine.addLogListener(this);
@@ -73,7 +74,14 @@ public class LogListener implements
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		LogListener ll = new LogListener();
+		LogListener ll = null;
+		try {
+			ll=new LogListener();
+		}  catch (Throwable t) {
+			System.err.println("Error instantiating the LogListenerStressTest: "+t.getMessage());
+			t.printStackTrace();
+			System.exit(-1);
+		}
 		try {
 			Thread.sleep(90000);
 		} catch (InterruptedException ie) {}

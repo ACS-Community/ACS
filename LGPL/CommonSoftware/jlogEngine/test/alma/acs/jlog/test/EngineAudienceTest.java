@@ -101,9 +101,10 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		numOfReceivedXMLLogs=0;
 		dispatcher = new ACSListenersDispatcher();
 		assertNotNull(dispatcher);
-		logRetieval = new ACSLogRetrieval(dispatcher,false);
+		logRetieval = new ACSLogRetrieval(dispatcher);
 		assertNotNull(logRetieval);
 		logRetieval.setFilters(null);
+		logRetieval.start();
 		dispatcher.addLogListener(this);
 		dispatcher.addRawLogListener(this);
 	}

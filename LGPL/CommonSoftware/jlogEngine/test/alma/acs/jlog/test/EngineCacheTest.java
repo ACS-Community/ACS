@@ -54,7 +54,7 @@ public class EngineCacheTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		// Build the cache
-		cache = new EngineCache(CACHE_SIZE,false);
+		cache = new EngineCache(CACHE_SIZE);
 		assertNotNull(cache);
 		assertEquals(0, cache.getActiveFilesSize());
 		assertEquals(0, cache.size());

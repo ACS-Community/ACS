@@ -38,7 +38,7 @@ import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
  * 
  * Tests the notification of {@link EngineCache} through {@link ILogQueueFileHandler}.
  * 
- * @version $Id: EngineCacheNotification.java,v 1.4 2012/09/14 14:52:56 acaproni Exp $
+ * @version $Id: EngineCacheNotification.java,v 1.5 2012/11/09 17:01:54 acaproni Exp $
  * @since ACS 10.2    
  */
 public class EngineCacheNotification extends TestCase {
@@ -274,8 +274,9 @@ public class EngineCacheNotification extends TestCase {
 		checkNotification=true;
 		testFileHandler = new TestFileHandler();
 		assertNotNull(testFileHandler);
-		engineCache = new EngineCache(testFileHandler, false);
+		engineCache = new EngineCache(testFileHandler);
 		assertNotNull(engineCache);
+		engineCache.start();
 	}
 
 	@Override

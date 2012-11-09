@@ -33,7 +33,7 @@ import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
  *   
  * @author  acaproni
  * 
- * @version $Id: CacheFileTest.java,v 1.1 2012/08/07 08:46:39 acaproni Exp $
+ * @version $Id: CacheFileTest.java,v 1.2 2012/11/09 17:01:54 acaproni Exp $
  * @since ACS 10.2    
  */
 public class CacheFileTest  extends TestCase {
@@ -98,7 +98,7 @@ public class CacheFileTest  extends TestCase {
 		raFile = new RandomAccessFile(file,"rw");
 		assertNotNull("Error building the RandomAccessFile",raFile);
 		
-		cacheFile=new CacheFile(file.getName(), key, raFile, file, false);
+		cacheFile=new CacheFile(file.getName(), key, raFile, file);
 	}
 
 	@Override

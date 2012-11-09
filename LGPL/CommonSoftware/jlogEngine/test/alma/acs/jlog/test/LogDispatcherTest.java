@@ -168,8 +168,9 @@ public class LogDispatcherTest extends TestCase {
 		}
 		ACSListenersDispatcher listenerDispatcher = new ACSListenersDispatcher();
 		assertNotNull("Null listener dispatcher!",listenerDispatcher);
-		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher,false);
+		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher);
 		assertNotNull("Null log dispatcher!",logDispatcher);
+		logDispatcher.start();
 		listenerDispatcher.addLogListener(logRecv);
 		listenerDispatcher.addRawLogListener(logRecv);
 		stopWatch.reset();
@@ -182,35 +183,6 @@ public class LogDispatcherTest extends TestCase {
 		//System.out.print(str);
 		assertEquals("XML case: logs sent and logs received differ", LOGS_NUMBER, logsReceived);
 		assertEquals("XML case: logs sent and raw logs received differ", LOGS_NUMBER, rawLogsReceived);
-		logDispatcher.close(true);
-	}
-	
-	/**
-	 * Test the dispatching of binary logs
-	 * 
-	 * @throws Exception
-	 */
-	public void testBinaryDispatch() throws Exception {
-		for (ILogEntry log: logs) {
-			log.addData("TestType", "Binary");
-		}
-		ACSListenersDispatcher listenerDispatcher = new ACSListenersDispatcher();
-		assertNotNull("Null listener dispatcher!",listenerDispatcher);
-		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher,true);
-		assertNotNull("Null log dispatcher!",logDispatcher);
-		listenerDispatcher.addLogListener(logRecv);
-		listenerDispatcher.addRawLogListener(logRecv);
-		
-		stopWatch.reset();
-		for (ILogEntry log: logs) {
-			logDispatcher.addLog(this.toCacheString(log));
-		}
-		waitProcessingComplete(logDispatcher,300);
-		long binTime=stopWatch.getLapTimeMillis()/1000;
-		//String str="Time to publish "+LOGS_NUMBER+" binary logs: "+binTime + " seconds.\n";
-		//System.out.print(str);
-		assertEquals("Binary case: logs sent and logs received differ", LOGS_NUMBER, logsReceived);
-		assertEquals("Binary case: logs sent and raw logs received differ", LOGS_NUMBER, rawLogsReceived);
 		logDispatcher.close(true);
 	}
 		
@@ -320,8 +292,9 @@ public class LogDispatcherTest extends TestCase {
 	public void testGetSetDiscardLevel() throws Exception {
 		ACSListenersDispatcher listenerDispatcher = new ACSListenersDispatcher();
 		assertNotNull("Null listener dispatcher!",listenerDispatcher);
-		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher,false);
+		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher);
 		assertNotNull("Null log dispatcher!",logDispatcher);
+		logDispatcher.start();
 		
 		logDispatcher.setDiscardLevel(null);
 		assertNull(logDispatcher.getDiscardLevel());
@@ -345,6 +318,7 @@ public class LogDispatcherTest extends TestCase {
 		assertNotNull("Null listener dispatcher!",listenerDispatcher);
 		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher,false,null,checker);
 		assertNotNull("Null log dispatcher!",logDispatcher);
+		logDispatcher.start();
 		
 		// Check increasing of the discard level
 		logDispatcher.setDiscardLevel(null);

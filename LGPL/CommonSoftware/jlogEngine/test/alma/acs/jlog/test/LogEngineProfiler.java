@@ -21,6 +21,7 @@
  */
 package alma.acs.jlog.test;
 
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
@@ -55,7 +56,7 @@ ACSRemoteLogListener, ACSRemoteRawLogListener {
 	/**
 	 * Constructor
 	 */
-	public LogEngineProfiler() {
+	public LogEngineProfiler() throws LogEngineException {
 		engine = new LCEngine();
 		engine.addRawLogListener(this);
 		engine.addLogListener(this);
@@ -74,7 +75,14 @@ ACSRemoteLogListener, ACSRemoteRawLogListener {
 	}
 
 	public static void main(String[] args) {
-		LogEngineProfiler logProfiler = new LogEngineProfiler();
+		LogEngineProfiler logProfiler = null;
+		try {
+			new LogEngineProfiler();
+		} catch (Throwable t) {
+			System.err.println("Error instantiating the LogEngineProfiler: "+t.getMessage());
+			t.printStackTrace();
+			System.exit(-1);
+		}
 		logProfiler.execute();
 	}
 	
