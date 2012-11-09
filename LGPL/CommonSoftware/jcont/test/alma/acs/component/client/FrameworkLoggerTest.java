@@ -63,6 +63,12 @@ import alma.acs.util.AcsLocations;
 public class FrameworkLoggerTest extends ComponentClient
 {
 
+	/**
+	 * TODO: Check if this rule and the getMethodName() call in setUp() can be moved up to ComponentClient,
+	 *      if that adds a runtime dependency on junit, and how bad that would be.
+	 *      Probably we should add a class ComponentClientTestCaseJUnit4 that extends ComponentClient
+	 *      and only adds this testname business.
+	 */
 	@Rule 
 	public TestName testName = new TestName();
 	
@@ -84,6 +90,10 @@ public class FrameworkLoggerTest extends ComponentClient
 		String testMethodName = testName.getMethodName();
 		m_logger.info("----------------- " + testMethodName + " ----------------- ");
 		clientLogManager = ClientLogManager.getAcsLogManager();
+		
+		assertThat("Expecting $ACS_LOG_STDOUT to be set to 3", 
+				System.getProperty("ACS.logstdout"),
+				equalTo("3"));
 	}
 
 	@After
@@ -106,7 +116,9 @@ public class FrameworkLoggerTest extends ComponentClient
 		// but it is not visible as a system property and thus cannot be verified here.
 		// This test must be started with "-Djacorb.log.default.verbosity=3" (DEBUG) so that we can assert
 		// the right jacorb log level.
-		assertThat(System.getProperty("jacorb.log.default.verbosity"), equalTo("3"));
+		assertThat("Expected system property jacorb.log.default.verbosity=3 set. Check the test start script!",
+				System.getProperty("jacorb.log.default.verbosity"), 
+				equalTo("3"));
 		assertThat("Stdout log level must be DEBUG or lower, to not override the jacorb log level.",
 				logConfig.getDefaultMinLogLevelLocal(), 
 				lessThanOrEqualTo(AcsLogLevelDefinition.DEBUG));
@@ -123,9 +135,10 @@ public class FrameworkLoggerTest extends ComponentClient
 		assertThat(jacorbLogger.isLoggable(AcsLogLevel.DELOUSE), is(false)); 
 		assertThat(jacorbLogger.isLoggable(AcsLogLevel.DEBUG), is(true));
 		
-		// this will call LogConfig#notifySubscribers(), which I suspect to bring out the jacorb logs.
+		// This setMinLogLevelLocal effects a call to LogConfig#notifySubscribers(), 
+		// which in the past brought out the jacorb logs even when the above "A jacorb test log, should be shown." 
+		// was not logged due a bug.
 		logConfig.setMinLogLevelLocal(AcsLogLevelDefinition.DELOUSE, "SomeOtherFramework");
-
 		jacorbLogger.finer("jacorb test log #2, shown.");
 	}
 	
@@ -144,9 +157,9 @@ public class FrameworkLoggerTest extends ComponentClient
 				logConfig.isKnownLogger(expectedFrameworkLoggerName), 
 				is(false));
 
-		assertThat("framework logger configuration should be DELOUSE for local logging.", 
+		assertThat("Framework logger configuration should be DEBUG, as controlled by ACS_LOG_STDOUT.", 
 				AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(expectedFrameworkLoggerName).getMinLogLevelLocal()), 
-				equalTo(AcsLogLevelDefinition.DELOUSE));
+				equalTo(AcsLogLevelDefinition.DEBUG));
 		
 		// Check if the framework logger is configured in line with the above logConfig results
 		
