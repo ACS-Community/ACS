@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.42 2010/06/30 15:12:06 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.43 2012/11/09 16:59:20 acaproni Exp $
  * @since    
  */
 
@@ -34,6 +34,7 @@ import alma.acs.logging.engine.utils.IResourceChecker;
 import alma.acs.logging.engine.utils.ResourceChecker;
 
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.cache.EngineCache;
 import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
@@ -64,7 +65,8 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * If a threshold is defined, the thread that checks the amount of available memory increases the discard level.
  * To avoid oscillations, the user can define a a damping factor: the discard level is decreased when the
  * amount of available memory is greater the the threshold plus the damping.
- * 
+ * <P>
+ * Life cycle: {@link #start()} must be called at the beginning and {@link #stop()} at the end. * 
  * 
  * @see ACSRemoteLogListener
  * @see ACSRemoteRawLogListener
@@ -118,11 +120,6 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 */
 	private ACSLogParser parser=null;
 	
-	/**
-	 * <code>true</code> if the binary format is in use, <code>false</code> otherwise
-	 */
-	private final boolean binaryFormat;
-
 	/**
 	 * The cache
 	 */
@@ -240,16 +237,12 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * @param binFormat true if the lags are binary, 
 	 *                  false if XML format is used 
 	 */
-	public ACSLogRetrieval(
-			ACSListenersDispatcher listenersDispatcher,
-			boolean binFormat) {
+	public ACSLogRetrieval(ACSListenersDispatcher listenersDispatcher) {
 		if (listenersDispatcher==null) {
 			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
 		}
-		this.binaryFormat=binFormat;
-		cache=new EngineCache(binaryFormat);
+		cache=new EngineCache();
 		this.listenersDispatcher=listenersDispatcher;
-		initialize();
 	}
 	
 	/**
@@ -263,12 +256,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 */
 	public ACSLogRetrieval(
 			ACSListenersDispatcher listenersDispatcher,
-			boolean binFormat,
 			ILogQueueFileHandler fileHandler) {
-		this.binaryFormat=binFormat;
-		cache=new EngineCache(fileHandler, binaryFormat);
+		cache=new EngineCache(fileHandler);
 		this.listenersDispatcher=listenersDispatcher;
-		initialize();
 	}
 	
 	/**
@@ -285,7 +275,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			ACSListenersDispatcher listenersDispatcher,
 			boolean binFormat,
 			FiltersVector filters) {
-		this(listenersDispatcher,binFormat);
+		this(listenersDispatcher);
 		setFilters(filters);
 	}
 	
@@ -319,16 +309,13 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * Init the file and the parser
 	 *
 	 */
-	private void initialize() {
-		if (!binaryFormat) {
-			try {
-				parser = ACSLogParserFactory.getParser();
-			} catch (Exception pce) {
-				System.err.println("Error getting the parser: "+pce.getMessage());
-				
-				parser=null;
-			}
+	public void start() throws LogEngineException {
+		try {
+			parser = ACSLogParserFactory.getParser();
+		} catch (Exception pce) {
+			throw new LogEngineException("Error starting the ACSLogRetrieval",pce);
 		}
+		
 		thread = new Thread(this,"ACSLogRetrieval");
 		thread.setDaemon(true);
 		thread.start();
@@ -416,32 +403,16 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			}
 			if (tempStr.length()>0) {
 				ILogEntry log;
-				if (!binaryFormat) {
-					try {
-						log = parser.parse(tempStr);
-					} catch (Throwable t) {
-						listenersDispatcher.publishError(tempStr);
-						listenersDispatcher.publishReport(tempStr);
-						System.err.println("Exception parsing a log: "+t.getMessage());
-						t.printStackTrace(System.err);
-						continue;
-					}
-					publishLog(tempStr, log);
-				} else {
-					String xmlStr=null;
-					try {
-						log=CacheUtils.fromCacheString(tempStr);
-						xmlStr=log.toXMLString();
-					} catch (Throwable t) {
-						listenersDispatcher.publishError(tempStr);
-						listenersDispatcher.publishReport(tempStr);
-						System.err.println("Exception parsing a log: "+t.getMessage());
-						t.printStackTrace(System.err);
-						continue;
-					}
-					readCounter++;
-					publishLog(xmlStr, log);
+				try {
+					log = parser.parse(tempStr);
+				} catch (Throwable t) {
+					listenersDispatcher.publishError(tempStr);
+					listenersDispatcher.publishReport(tempStr);
+					System.err.println("Exception parsing a log: "+t.getMessage());
+					t.printStackTrace(System.err);
+					continue;
 				}
+				publishLog(tempStr, log);
 			}
 		}
 	}
@@ -501,12 +472,17 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	public void close(boolean sync) {
 		closed=true;
 		terminateThread=true;
+		if (thread!=null) {
+			thread.interrupt();
+		}
 		if (timerThread!=null) {
 			timerThread.cancel();
 		}
 		if (sync) {
 			try {
-				thread.join();
+				if (thread!=null) {
+					thread.join();
+				}
 			} catch (InterruptedException ie) {}
 		}
 		cache.close(sync);

@@ -50,7 +50,7 @@ import com.cosylab.logging.engine.LogEngineException;
  * <code>files</code> too.
  * 
  * <P>
- * <code>entries</code> contains all the entries of in cache.
+ * Life cycle: {@link #start()} must be called at the beginning and {@link #stop()} at the end. 
  *  
  * @author acaproni
  *
@@ -118,63 +118,45 @@ public class EngineCache extends Thread {
 	private final ILogQueueFileHandler fileHandler;
 	
 	/**
-	 * <code>true</code> if the string in the cache are in binary format
-	 * and <code>false</code> if XML.
-	 */
-	private final boolean binary;
-	
-	/**
 	 * Build a cache.
-	 * 
-	 * @param binary <code>true</code> if the string of logs are in binary format
-	 *               and <code>false</code> if XML strings
 	 */
-	public EngineCache(boolean binary) {
+	public EngineCache() {
 		super("EngineCache");
-		this.binary=binary;
 		fileHandler=new LogQueueFileHandlerImpl();
-		setDaemon(true);
-		setPriority(MIN_PRIORITY);
-		start();
 	}
 	
 	/**
-	 * Build the cache with the passed maximum size for each file of the cache
+	 * Build the cache with the passed maximum size for each file of the cache.
+	 * <P>
+	 * This constructor must be used to instantiate the default file handler ({@link LogQueueFileHandlerImpl})
+	 * with a customized file size. 
 	 * 
 	 * @param size The max size of each file of the cache
-	 * @param binary <code>true</code> if the string of logs are in binary format
-	 *               and <code>false</code> if XML strings
 	 */
-	public EngineCache(long size, boolean binary) {
+	public EngineCache(long size) {
 		super("EngineCache");
 		if (size<=1024) {
 			throw new IllegalArgumentException("The size can't be less then 1024");
 		}
-		this.binary=binary;
 		fileHandler=new LogQueueFileHandlerImpl(size);
-		setDaemon(true);
-		setPriority(MIN_PRIORITY);
-		start();
 	}
 	
 	/**
-	 * Build the cache by setting the size of the files and the handler to 
-	 * create and delete the files.
+	 * Build the cache with the passed file handler. This method should be used 
+	 * <OL>
+	 * 	<LI>when a custom implementation of the {@link ILogQueueFileHandler}
+	 *  <LI>when the default handler with the default size of files must be instantiated. 
+	 *      The default size means {@link ILogQueueFileHandler#DEFAULT_SIZE} or whatever is 
+	 *      set in the  {@value ILogQueueFileHandler#MAXSIZE_PROPERTY_NAME} java property. 
+	 * </OL>
+	 * If you want to customize the size of the files in the default cache, use {@link #EngineCache(long)} instead.
 	 * 
-	 * @param handler The handler to create and delete the files
-	 * @param binary <code>true</code> if the string of logs are in binary format
-	 *               and <code>false</code> if XML strings
+	 * @param handler The handler to create and delete the files.
+	 * 				  If <code>null</code>, the default implementation ({@link LogQueueFileHandlerImpl}) will be instantiated. 
 	 */
-	public EngineCache(ILogQueueFileHandler handler, boolean binary) {
+	public EngineCache(ILogQueueFileHandler handler) {
 		super("EngineCache");
-		if (handler==null) {
-			throw new IllegalArgumentException("The ILogQueueFileHandler can't be null");
-		}
-		this.binary=binary;
-		fileHandler=handler;
-		setDaemon(true);
-		setPriority(MIN_PRIORITY);
-		start();
+		fileHandler=(handler==null)?new LogQueueFileHandlerImpl():handler;
 	}
 	
 	/**
@@ -311,7 +293,7 @@ public class EngineCache extends Thread {
 			}
 			String name = f.getAbsolutePath();
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
-			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f,binary);
+			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f);
 			outCacheFile.setWritingMode(true);
 			synchronized (files) {
 				files.put(outCacheFile.key,outCacheFile);
@@ -368,6 +350,15 @@ public class EngineCache extends Thread {
 		} else {
 			return ret;
 		}
+	}
+	
+	/**
+	 * Start the thread.
+	 */
+	public void start() {
+		setDaemon(true);
+		setPriority(MIN_PRIORITY);
+		super.start();
 	}
 	
 	/**
