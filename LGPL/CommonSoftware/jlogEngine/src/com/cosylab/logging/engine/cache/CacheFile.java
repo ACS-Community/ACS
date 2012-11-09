@@ -89,12 +89,6 @@ public class CacheFile {
 	private boolean writing=false;
 	
 	/**
-	 * <code>true</code> if the string in the cache are in binary format
-	 * and <code>false</code> if XML.
-	 */
-	private final boolean binary;
-	
-	/**
 	 * The date of the oldest log in this file in ISO format
 	 */
 	private String dateOfOldestLog=null;
@@ -136,14 +130,12 @@ public class CacheFile {
 	 * @param key The key of this entry
 	 * @param rf The <code>RandomAccessFile</code> used for I/O
 	 * @param f The <code>File</code> used to get the length
-	 * @param binary if the string of logs are in binary format
-	 *               and false if XML strings
 	 * 
 	 * @throws IOException In case of error writing in the file
 	 * 
 	 * @see {@link CacheFile(String fName, Integer key)}
 	 */
-	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f, boolean binary) throws IOException {
+	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f) throws IOException {
 		if (fName==null || fName.isEmpty()) {
 			throw new IllegalArgumentException("The file name can't be null not empty");
 		}
@@ -157,11 +149,8 @@ public class CacheFile {
 		this.key=key;
 		raFile=rf;
 		file=f;
-		this.binary=binary;
-		if (!binary) {
-			synchronized (raFile) {
-				raFile.writeBytes(xmlHeader);
-			}
+		synchronized (raFile) {
+			raFile.writeBytes(xmlHeader);
 		}
 	}
 	
@@ -213,10 +202,8 @@ public class CacheFile {
 			
 			try {
 				synchronized (raFile) {
-					if (!binary) {
-						raFile.seek(file.length());
-						raFile.writeBytes(xmlFooter);
-					}
+					raFile.seek(file.length());
+					raFile.writeBytes(xmlFooter);
 					raFile.close();
 				}
 			} catch (Throwable t) {
@@ -345,54 +332,38 @@ public class CacheFile {
 	private void updateLogDates(String str) throws LogEngineException{
 		long millis=0; // Date of current log read from str
 		String timestamp; // Date of current log ISO format
-		if (binary) {
-			// The string format is defined in CacheUtils
-			String[] strs = str.split(CacheUtils.SEPARATOR);
-			try {
-				synchronized (dateFormat) {
-					millis=dateFormat.parse(strs[0]).getTime();
-				}
-			} catch (ParseException e) {
-				System.err.println("Error parsing the date from: ["+strs[0]+"]");
-				throw new LogEngineException(e);
+
+		// To improve performances I don't want to parse the log
+		// in this method so I parse the string knowing that the
+		// timestamp has always the same format
+		str=str.toUpperCase();
+		int pos=str.indexOf(timestampStrTag);
+		if (pos==-1) {
+			String msg=timestampStrTag+" not found in XML: ["+str+"]";
+			System.err.println(msg);
+			throw new LogEngineException(msg);
+		}
+		// switch to the end of the TIMESTAMP string
+		int startPosOfTimestamp=pos+timestampStrTag.length();
+		int endPos=str.indexOf('"', startPosOfTimestamp);
+		timestamp=str.substring(startPosOfTimestamp, endPos);
+		try {
+			synchronized (dateFormat) {
+				millis=dateFormat.parse(timestamp).getTime();
 			}
-			timestamp=strs[0];
-		} else {
-			// XML
-			//
-			// To improve performances I don't want to parse the log
-			// in this method so I parse the string knowing that the
-			// timestamp has always the same format
-			str=str.toUpperCase();
-			int pos=str.indexOf(timestampStrTag);
-			if (pos==-1) {
-				String msg=timestampStrTag+" not found in XML: ["+str+"]";
-				System.err.println(msg);
-				throw new LogEngineException(msg);
-			}
-			// switch to the end of the TIMESTAMP string
-			int startPosOfTimestamp=pos+timestampStrTag.length();
-			int endPos=str.indexOf('"', startPosOfTimestamp);
-			timestamp=str.substring(startPosOfTimestamp, endPos);
-			try {
-				synchronized (dateFormat) {
-					millis=dateFormat.parse(timestamp).getTime();
-				}
-			} catch (ParseException e) {
-				System.err.println("Error parsing the date from: ["+timestamp+"]");
-				throw new LogEngineException(e);
-			}
-			
-			// check and store the date
-			if (millis<youngestLogDateMillis ||youngestLogDateMillis==0) {
-				youngestLogDateMillis=millis;
-				dateOfYoungestLog=timestamp;
-			}
-			if (millis>oldestLogDateMillis || oldestLogDateMillis==0) {
-				oldestLogDateMillis=millis;
-				dateOfOldestLog=timestamp;
-			}
-			
+		} catch (ParseException e) {
+			System.err.println("Error parsing the date from: ["+timestamp+"]");
+			throw new LogEngineException(e);
+		}
+		
+		// check and store the date
+		if (millis<youngestLogDateMillis ||youngestLogDateMillis==0) {
+			youngestLogDateMillis=millis;
+			dateOfYoungestLog=timestamp;
+		}
+		if (millis>oldestLogDateMillis || oldestLogDateMillis==0) {
+			oldestLogDateMillis=millis;
+			dateOfOldestLog=timestamp;
 		}
 	}
 	
