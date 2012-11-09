@@ -1,5 +1,10 @@
 package alma.acs.nc.refactored;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,9 +21,6 @@ import gov.sandia.NotifyMonitoringExt.EventChannel;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.concurrent.ThreadBurstExecutorService;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Consumer;
 import alma.acs.nc.Helper;
@@ -48,17 +50,6 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		destroyConsumers();
 		super.tearDown();
 	}
-
-//	private void configureLogging(AcsLogLevelDefinition scxmlLocalLevel) {
-//		String scxmlLoggerName = "scxml@NCSubscriberAdminReuseTest#" + getName();
-//		String jacorbLoggerName = "jacorb@NCSubscriberAdminReuseTest#" + getName();
-//		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-//		logConfig.setMinLogLevelLocal(scxmlLocalLevel, scxmlLoggerName);
-//		logConfig.setMinLogLevelLocal(scxmlLocalLevel, jacorbLoggerName);
-//		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, scxmlLoggerName);
-//		logConfig.setMinLogLevel(AcsLogLevelDefinition.OFF, jacorbLoggerName);
-//		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
-//	}
 
 	private void destroyConsumers() throws AdminNotFound {
 		for(int adminID: channel.get_all_consumeradmins())
@@ -99,6 +90,10 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	}
 
 	
+	/**
+	 * TODO: Write a similar test with an old-style C++ Consumer, 
+	 *       once we remove the deprecated Java NC Consumer.
+	 */
 	public void testNewAndOldNCsTogether() throws Exception {
 
 		List<Consumer> consumers = new ArrayList<Consumer>();
@@ -152,15 +147,16 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		runConcurrentSubscribersCreation(42);
 	}
 
-	private void runConcurrentSubscribersCreation(int subscribersNum) throws Exception {
+	private void runConcurrentSubscribersCreation(int numRealSubscribersDefinedTotal) throws Exception {
 
-		m_logger.info("Setting up " + subscribersNum + " concurrent subscriber creations...");
+		m_logger.info("Setting up " + numRealSubscribersDefinedTotal + " concurrent subscriber creations...");
 		
-		final List<AcsEventSubscriber<IDLEntity>> subscribers = Collections.synchronizedList(new ArrayList<AcsEventSubscriber<IDLEntity>>());
+		final List<AcsEventSubscriber<IDLEntity>> subscribers = Collections.synchronizedList(
+				new ArrayList<AcsEventSubscriber<IDLEntity>>());
 
 		// Create all the tasks first
 		ThreadBurstExecutorService executor = new ThreadBurstExecutorService(getContainerServices().getThreadFactory());
-		for (int i=0; i<subscribersNum; i++) {
+		for (int i=0; i<numRealSubscribersDefinedTotal; i++) {
 
 			Runnable r = new Runnable() {
 				public void run() {
@@ -181,39 +177,50 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		}
 
 		// and now run'em all at the same time! (concurrently)
-		m_logger.info("Running " + subscribersNum + " concurrent subscriber creations...");
+		m_logger.info("Running " + numRealSubscribersDefinedTotal + " concurrent subscriber creations...");
 		try {
 			assertTrue(executor.executeAllAndWait(100, TimeUnit.SECONDS));
 		} catch (InterruptedException e) {
 			fail("Got InterruptedException while running all my threads");
 		}
 
-		// After all the show, we should have all requested subscribers in the  list
-		assertEquals(subscribersNum, subscribers.size());
+		// After all the show, we should have all requested subscribers in the local list
+		assertEquals(numRealSubscribersDefinedTotal, subscribers.size());
 
-		// ...and all the admins should be full, except the last one (depending if CONCURRENT_SUBSCRIBERS is multiple of PROXIES_PER_ADMIN)
-		int subscribersForLastAdmin = subscribersNum % NCSubscriber.PROXIES_PER_ADMIN;
-		int expectedAdmins          = subscribersNum / NCSubscriber.PROXIES_PER_ADMIN;
-		if( subscribersForLastAdmin != 0 )
-			expectedAdmins++;
-
+		// Check if these subscribers are distributed correctly over several admin objects,
+		// allowing for some overbooking due to concurrent requests (see comment about concurrency in c'tor of NCSubscriber)
+		
+		final int allowedAdminOverbooking = 2;
+		int numRealSubscribersFoundTotal = 0;
 		int[] adminIDs = channel.get_all_consumeradmins();
-		assertEquals(expectedAdmins, adminIDs.length);
-
-		// And all admins should get example PROXIES_PER_ADMIN (+1, the dummy one), except the last one that gets the remains, if any
+		
 		for(int i=0; i < adminIDs.length; i++) {
 			int adminID = adminIDs[i];
+			String msgBase = "Subscriber admin #" + (i+1) + " (of " + adminIDs.length + ") ";
 			try {
 				int subs = channel.get_consumeradmin(adminID).push_suppliers().length;
-				if( i == adminIDs.length - 1 && subscribersForLastAdmin != 0 ) {
-					assertEquals(subscribersForLastAdmin + 1, subs);
+				int numRealSubscribersThisAdmin = subs - 1; // minus 1 for the 'management' subscriber
+				m_logger.info(msgBase + "has " + numRealSubscribersThisAdmin + " proxy objects (subscribers) attached.");
+				
+				if (i < adminIDs.length - 1) {
+					// This is not the last of the admin objects. It should be  filled to the brim with proxies.
+					assertThat(msgBase + "should be full with " + NCSubscriber.PROXIES_PER_ADMIN + " proxies.",
+							numRealSubscribersThisAdmin,
+							greaterThanOrEqualTo(NCSubscriber.PROXIES_PER_ADMIN) );
+					assertThat(msgBase + "has more proxies than allowed by 'allowedAdminOverbooking'=" + allowedAdminOverbooking + ", which may be OK.",
+							numRealSubscribersThisAdmin,
+							lessThanOrEqualTo(NCSubscriber.PROXIES_PER_ADMIN + allowedAdminOverbooking) );
 				}
 				else {
-					// Sometimes we get one proxy too many. This is OK, see comment about concurrency in c'tor of NCSubscriber.
-					// To avoid test failures, we could statistically allow this case (7 instead of 6) for just a few of the admin objects.
-					assertEquals("Wrong number of supplier proxies for subscriber admin #" + (i+1) + " (of " + adminIDs.length + "): ", 
-							NCSubscriber.PROXIES_PER_ADMIN + 1, subs);
+					// We should be at the last of the admin objects, which may be only partially filled
+					assertThat(msgBase + "has more proxies than allowed by 'allowedAdminOverbooking'=" + allowedAdminOverbooking + ", which may be OK.",
+							numRealSubscribersThisAdmin,
+							lessThanOrEqualTo(NCSubscriber.PROXIES_PER_ADMIN + allowedAdminOverbooking) );
+					assertThat(msgBase + "should contain all remaining proxies.",
+							numRealSubscribersThisAdmin,
+							equalTo(numRealSubscribersDefinedTotal - numRealSubscribersFoundTotal) );
 				}
+				numRealSubscribersFoundTotal += numRealSubscribersThisAdmin;
 			} catch (AdminNotFound e) {
 				fail("Can't get information about consumer admin " + adminID);
 			}
