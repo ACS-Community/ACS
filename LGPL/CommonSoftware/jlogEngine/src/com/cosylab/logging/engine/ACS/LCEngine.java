@@ -33,6 +33,7 @@ import alma.acs.logging.ClientLogManager;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.RemoteAccess;
 import com.cosylab.logging.engine.audience.Audience;
 import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
@@ -244,26 +245,21 @@ public class LCEngine implements Filterable {
 	/**
 	 * LCEngine constructor
 	 * 
+	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine() {
-		logRetrieval = new ACSLogRetrieval(listenersDispatcher, Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
-		
-		// TODO: This logger should probably be created somewhere else and should be passed around
-		// the various jlog objects, once jlog gets modified to use logging in general.
-		// Here we just create an ad-hoc logger, to be passed to ACSRemoteAccess, as part of ORB profiling.
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("jlogEngine", false);
-		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+	public LCEngine() throws LogEngineException  {
+		this(false,null,null);
 	}
 
 	/**
 	 * LCEngine constructor.
 	 * 
-	 * @param autoReconn
-	 *            If true the engine automatically reconnects
+	 * @param autoReconn If <code>true</code> the engine automatically reconnects
+	 * 
+	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine(boolean autoReconn) {
-		this();
-		autoReconnect = autoReconn;
+	public LCEngine(boolean autoReconn) throws LogEngineException {
+		this(autoReconn,null,null);
 	}
 
 	/**
@@ -278,11 +274,11 @@ public class LCEngine implements Filterable {
 	 * @param filters
 	 *            The filters to apply to the incoming logs.
 	 *            <code>filters</code> can be null or empty.
+	 * 
+	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine(boolean autoReconn, FiltersVector filters) {
-		this(autoReconn);
-		setFilters(filters,false);
-		
+	public LCEngine(boolean autoReconn, FiltersVector filters) throws LogEngineException {
+		this(autoReconn,filters,null);
 	}
 	
 	/**
@@ -292,19 +288,10 @@ public class LCEngine implements Filterable {
 	 * @param cacheFileHandler The handler of the files of the cache
 	 * 
 	 * @see ILogQueueFileHandler
+	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine(ILogQueueFileHandler cacheFileHandler) {
-		logRetrieval=new ACSLogRetrieval(
-				listenersDispatcher, 
-				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT),
-				cacheFileHandler);
-		// TODO: This logger should probably be created somewhere else and should be passed around
-		// the various jlog objects, once jlog gets modified to use logging in general.
-		// Here we just create an ad-hoc logger, to be passed to ACSRemoteAccess, as part of ORB profiling.
-		//
-		// TODO: Try to call this() because now we create the logger in 2 ctors.
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("jlogEngine", false);
-		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+	public LCEngine(ILogQueueFileHandler cacheFileHandler) throws LogEngineException {
+		this(false,null,cacheFileHandler);
 	}
 	
 	/**
@@ -314,10 +301,10 @@ public class LCEngine implements Filterable {
 	 * @param cacheFileHandler The handler of the files of the cache
 	 * 
 	 * @see ILogQueueFileHandler
+	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine(boolean autoReconn, ILogQueueFileHandler cacheFileHandler) {
-		this(cacheFileHandler);
-		autoReconnect = autoReconn;
+	public LCEngine(boolean autoReconn, ILogQueueFileHandler cacheFileHandler)throws LogEngineException  {
+		this(autoReconn,null,cacheFileHandler);
 	}
 
 	/**
@@ -330,17 +317,24 @@ public class LCEngine implements Filterable {
 	 * @param autoReconn If <code>true</code> the engine automatically reconnects
 	 * @param filters
 	 *            The filters to apply to the incoming logs.
-	 *            <code>filters</code> can also be <code>null</code> or empty.
-	 * @param cacheFileHandler The handler of the files of the cache
+	 *            <code>filters</code> can also be either <code>null</code> or empty.
+	 * @param cacheFileHandler The handler of the files of the cache or <
+	 * 						   <code>null</code> if do not want to register for notification
 	 * 
 	 * @see ILogQueueFileHandler
 	 */
 	public LCEngine(
 			boolean autoReconn,
 			FiltersVector filters,
-			ILogQueueFileHandler cacheFileHandler) {
-		this(autoReconn,cacheFileHandler);
+			ILogQueueFileHandler cacheFileHandler) throws LogEngineException {
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("jlogEngine", false);
+		//ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+		logRetrieval=new ACSLogRetrieval(
+				listenersDispatcher,
+				cacheFileHandler);
+		autoReconnect = autoReconn;
 		setFilters(filters,false);
+		logRetrieval.start();
 	}
 
 	/**
