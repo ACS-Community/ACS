@@ -223,9 +223,9 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 				numRealSubscribersFoundTotal += numRealSubscribersThisAdmin;
 			} catch (AdminNotFound e) {
 				fail("Can't get information about consumer admin " + adminID);
+			} finally {
+				destroyConsumers();
 			}
 		}
-		
-		destroyConsumers();
 	}
 }
