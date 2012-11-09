@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.omg.CORBA.ORB;
 
+import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
@@ -107,9 +108,12 @@ public class LogReceiver {
      * or to call {@link #startCaptureLogs(PrintWriter)} (or {@link #startCaptureLogs(PrintWriter, ThreadFactory)})
      * which will drain the queue automatically.
      * 
-     * @return true if initialization was successful within at most 10 seconds 
+     * @return <code>true</code> if initialization was successful within at most 10 seconds
+     * @throws LogEngineException In case of error instantiating the {@link LCEngine}
+     * @see #initialize(ORB, Manager, int)
+     *  
      */
-    public boolean initialize() {
+    public boolean initialize() throws LogEngineException {
         return initialize(null, null, 10);
     }
     
@@ -123,8 +127,9 @@ public class LogReceiver {
      * @param manager  reference to the acs manager, or <code>null</code> if this reference should be created
      * @param timeoutSeconds  timeout for awaiting the successful initialization. 
      * @return true if initialization was successful within at most <code>timeoutSeconds</code> seconds. 
+     * @throws LogEngineException In case of error instantiating the {@link LCEngine}
      */
-	public boolean initialize(ORB theORB, Manager manager, int timeoutSeconds) {
+	public boolean initialize(ORB theORB, Manager manager, int timeoutSeconds) throws LogEngineException {
 		boolean ret = false;
 		if (verbose) {
 			System.out.println("Attempting to connect to Log channel...");
