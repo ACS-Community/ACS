@@ -624,7 +624,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 			// Check if we can reuse an already existing consumer admin
 			int consumerAdminIds[] = channel.get_all_consumeradmins();
-			for(int i=0; i!=consumerAdminIds.length && retBase == null; i++) {
+			for(int i=0; i<consumerAdminIds.length && retBase == null; i++) {
 
 				int adminID = consumerAdminIds[i];
 				try {
@@ -679,7 +679,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 				// by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
 				//
 				// This hack is only needed while we are in transition between the old and new NC classes,
-				// and should get removed once the old classes are not used anymore
+				// and should get removed once the old classes are not used anymore (also not in C++ etc)
 				try {
 					retBase.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
 				} catch (AdminLimitExceeded e) {
@@ -699,9 +699,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			ret = ConsumerAdminHelper.narrow(retBase);
 		} catch (BAD_PARAM ex) {
 
-			if (created)
+			if (created) {
 				retBase.destroy();
-
+			}
 			LOG_NC_TaoExtensionsSubtypeMissing.log(logger, "ConsumerAdmin for channel " + channelName, ConsumerAdminHelper.id(), org.omg.CosNotifyChannelAdmin.ConsumerAdminHelper.id());
 			AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
 			ex2.setNarrowType(ConsumerAdminHelper.id());
@@ -753,7 +753,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 
 		if (ret != null) {
-			logger.fine("Created named proxy supplier '" + randomizedClientName + "'.");
+			LOG_NC_SupplierProxyCreation_OK.log(logger, proxyIdHolder.value, clientName, randomizedClientName, channelName, getNotificationFactoryName());
 		}
 		else {
 			LOG_NC_SupplierProxyCreation_FAIL.log(logger, clientName, channelName, getNotificationFactoryName(), errMsg);
@@ -761,7 +761,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			ex2.setInfo("Failed to create proxy supplier on NC '" + channelName + "' for client '" + clientName + "': " + errMsg);
 			throw ex2;
 		}
-		LOG_NC_SupplierProxyCreation_OK.log(logger, proxyIdHolder.value, clientName, channelName, getNotificationFactoryName());
 		return ret;
 	}
 
