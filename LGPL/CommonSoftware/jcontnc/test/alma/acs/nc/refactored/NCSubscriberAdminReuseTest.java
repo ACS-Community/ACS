@@ -52,11 +52,17 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	}
 
 	private void destroyConsumers() throws AdminNotFound {
-		m_logger.info("Will destroy all consumer admin objects...");
-		for(int adminID : channel.get_all_consumeradmins()) {
-			channel.get_consumeradmin(adminID).destroy();
+		int[] adminIDs = channel.get_all_consumeradmins();
+		if (adminIDs.length > 0) {
+			m_logger.info("Will destroy all " + adminIDs.length + " consumer admin objects...");
+			for(int adminID : adminIDs) {
+				channel.get_consumeradmin(adminID).destroy();
+			}
+			m_logger.info("Done destroying all consumer admin objects.");
 		}
-		m_logger.info("Done destroying all consumer admin objects.");
+		else {
+			m_logger.info("There are no consumer admin objects, nothing to destroy.");
+		}
 	}
 
 	public void testSharedAdminReuse() throws Exception {
@@ -237,9 +243,9 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 				numRealSubscribersFoundTotal += numRealSubscribersThisAdmin;
 			} 
 			catch (AdminNotFound ex) {
-				fail("Can't get information about consumer admin #" + i + " (ID=" + adminID + "): " + ex.toString());
+				fail("Can't get information about consumer admin #" + (i+1) + " (ID=" + adminID + "): " + ex.toString());
 			}
-			destroyConsumers();
 		}
+		destroyConsumers();
 	}
 }
