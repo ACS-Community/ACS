@@ -32,3 +32,4 @@ HeartbeatHelper
 MomConfig
 ACS.log.minlevel.namedloggers not defined
 Logger jacorb@BACITest:[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info
+Logger scxml@BACITest:[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Warning, remote=Warning
