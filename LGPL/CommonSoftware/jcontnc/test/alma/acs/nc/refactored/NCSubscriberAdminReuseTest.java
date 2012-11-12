@@ -52,27 +52,34 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	}
 
 	private void destroyConsumers() throws AdminNotFound {
-		for(int adminID: channel.get_all_consumeradmins())
+		m_logger.info("Will destroy all consumer admin objects...");
+		for(int adminID : channel.get_all_consumeradmins()) {
 			channel.get_consumeradmin(adminID).destroy();
+		}
+		m_logger.info("Done destroying all consumer admin objects.");
 	}
 
 	public void testSharedAdminReuse() throws Exception {
-
+		final int intendedNumberOfAdminObjects = 10;
+		
 		List<AcsEventSubscriber<IDLEntity>> subscriberList = new ArrayList<AcsEventSubscriber<IDLEntity>>();
-		for(int i=1; i<=10; i++) {
+		for(int adminCount = 1; adminCount <= intendedNumberOfAdminObjects; adminCount++) {
 			// Create the maximum number of proxies per admin 
 			for(int j=0; j!=NCSubscriber.PROXIES_PER_ADMIN; j++) {
 				subscriberList.add(getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class));
 			}
 			// verify that all "j loop" subscribers caused only the automatic creation of one admin object
-			assertEquals(i, channel.get_all_consumeradmins().length);
+			assertEquals(adminCount, channel.get_all_consumeradmins().length);
 		}
-		m_logger.info("Created " + subscriberList.size() + " subscribers for channel " + CHANNEL_NAME);
+		m_logger.info("Created " + subscriberList.size() + " subscribers for channel '" + CHANNEL_NAME);
 
-		// Now, all admins should be full of proxies (-1 because of the dummy proxy)
+		// Now, all admins should be full of proxies (-1 because of the dummy proxy).
+		// There should not be any fluctuation in the number of proxies per admin as we have it in #testConcurrentSubscribersCreation
+		// because here we create all subscribers sequentially.
 		for(int adminID : channel.get_all_consumeradmins()) {
 			assertEquals(NCSubscriber.PROXIES_PER_ADMIN, channel.get_consumeradmin(adminID).push_suppliers().length - 1);
 		}
+		m_logger.info("Verified that each admin object has " + NCSubscriber.PROXIES_PER_ADMIN + " subscribers. Will now disconnect the subscibers...");
 		
 		// disconnect all subscribers, which should remove the proxies from the admin objects
 		int disconnectCount=1;
@@ -80,12 +87,17 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 			subscriber.disconnect();
 			m_logger.info("Disconnected subscriber #" + disconnectCount++);
 		}
+		m_logger.info("All subscribers are disconnected. Will now verify this on the server-side admin objects...");
 		
 		// Now, all consumer admins should have 0 proxies (+1, the dummy proxy)
+		int[] adminIDs = channel.get_all_consumeradmins();
+		assertEquals("Currently we do not release admin objects, which means that there should still be " + intendedNumberOfAdminObjects + " of them, even when empty.", 
+				intendedNumberOfAdminObjects, adminIDs.length);
 		int adminCount=1;
-		for(int adminID: channel.get_all_consumeradmins()) {
+		for(int adminID : channel.get_all_consumeradmins()) {
 			m_logger.info("About to check the supplier proxies on admin #" + adminCount);
 			assertEquals(1, channel.get_consumeradmin(adminID).push_suppliers().length);
+			adminCount++;
 		}
 	}
 
@@ -177,15 +189,17 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		}
 
 		// and now run'em all at the same time! (concurrently)
-		m_logger.info("Running " + numRealSubscribersDefinedTotal + " concurrent subscriber creations...");
+		m_logger.info("Will run " + numRealSubscribersDefinedTotal + " concurrent subscriber creations...");
 		try {
-			assertTrue(executor.executeAllAndWait(100, TimeUnit.SECONDS));
+			boolean startOK = executor.executeAllAndWait(100, TimeUnit.SECONDS);
+			assertTrue("Not all subscribers started within the alotted 100 seconds window.", startOK);
 		} catch (InterruptedException e) {
 			fail("Got InterruptedException while running all my threads");
 		}
 
 		// After all the show, we should have all requested subscribers in the local list
 		assertEquals(numRealSubscribersDefinedTotal, subscribers.size());
+		m_logger.info("Successfully created " + numRealSubscribersDefinedTotal + " subscribers semi-concurrently. Will now check their NC admin links...");
 
 		// Check if these subscribers are distributed correctly over several admin objects,
 		// allowing for some overbooking due to concurrent requests (see comment about concurrency in c'tor of NCSubscriber)
@@ -221,11 +235,11 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 							equalTo(numRealSubscribersDefinedTotal - numRealSubscribersFoundTotal) );
 				}
 				numRealSubscribersFoundTotal += numRealSubscribersThisAdmin;
-			} catch (AdminNotFound e) {
-				fail("Can't get information about consumer admin " + adminID);
-			} finally {
-				destroyConsumers();
+			} 
+			catch (AdminNotFound ex) {
+				fail("Can't get information about consumer admin #" + i + " (ID=" + adminID + "): " + ex.toString());
 			}
+			destroyConsumers();
 		}
 	}
 }
