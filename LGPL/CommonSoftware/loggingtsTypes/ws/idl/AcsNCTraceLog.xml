@@ -22,7 +22,7 @@
 <LogDefinitionType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSLogTS"	
 	name="AcsNCTraceLog" 
 	type="10"
-	shortDescription="ACS trace logs for interaction with notification services/channels"
+	shortDescription="ACS trace logs for use of notification services/channels"
 	description="ACS uses these messages to log notification service related activities such as creating channels, subscribing to a channel etc." 
 	_prefix="alma" 
 	>
@@ -55,7 +55,7 @@
 	
 	<LogDefinition
 		logName="LOG_NC_ChannelCreatedRaw_OK"
-		shortDescription="Successfully created a notification channel, w/o configuration."
+		shortDescription="Successfully created an NC, w/o configuration yet."
 		description="Successfully created a notification channel, w/o configuration. Having this log message in addition to LOG_NC_ChannelCreated_OK is useful in order to measure performance bottlenecks in the various steps of NC creation."
 		priority="DELOUSE"
 		audience="Developer">
@@ -91,7 +91,7 @@
 	 
 	<LogDefinition
 		logName="LOG_NC_ConsumerAdminObtained_OK"
-		shortDescription="Successfully obtained a notification channel consumer admin object."
+		shortDescription="Successfully obtained an NC consumer admin object."
 		description="Successfully obtained a notification channel consumer admin object, through creation or reuse."
 		priority="TRACE"
 		audience="Developer">
@@ -104,7 +104,7 @@
 
 	<LogDefinition
 		logName="LOG_NC_ConsumerAdmin_Overloaded"
-		shortDescription="Shared consumer admin object is handling more proxies than it should"
+		shortDescription="Shared consumer admin object has too many proxies."
 		description="Shared consumer admin object has more push suppliers than it should, probably because a race condition was met by two simultaneous subscribers trying to acquire the same almost-full consumer admin."
 		priority="DEBUG"
 		audience="Developer">
@@ -117,20 +117,20 @@
 	
 	<LogDefinition
 		logName="LOG_NC_SupplierProxyCreation_OK"
-		shortDescription="Successfully created a notification channel supplier proxy object."
+		shortDescription="Successfully created an NC supplier proxy object."
 		description="Successfully created a notification channel supplier proxy object, on behalf of the NC subscriber identified by 'ClientName'."
 		priority="TRACE"
 		audience="Developer">
 		<Member name="SupplierProxyId" type="long" description="System-provided ID of the supplier proxy object that was created." />
-		<!--  TODO Member name="SupplierProxyName" type="long" description="Application-provided name of the supplier proxy object that was created." / -->
 		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
+		<Member name="SupplierProxyName" type="string" description="Name of the supplier proxy object, derived from ClientName." />
 		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
 	</LogDefinition>
 	
 	<LogDefinition
 		logName="LOG_NC_SupplierProxyCreation_FAIL"
-		shortDescription="Failed to create a notification channel supplier proxy object."
+		shortDescription="Failed to create an NC supplier proxy object."
 		description="Failed to create a notification channel supplier proxy object on behalf of the NC subscriber identified by 'ClientName'."
 		priority="NOTICE"
 		audience="Developer">
@@ -142,7 +142,7 @@
 	
 	<LogDefinition
 		logName="LOG_NC_ConsumerProxyCreation_OK"
-		shortDescription="Successfully created a notification channel consumer proxy object."
+		shortDescription="Successfully created an NC consumer proxy object."
 		description="Successfully created a notification channel Consumer proxy object, on behalf of the NC supplier identified by 'ClientName'."
 		priority="TRACE"
 		audience="Developer">
@@ -156,7 +156,7 @@
 	
 	<LogDefinition
 		logName="LOG_NC_ConsumerProxyCreation_FAIL"
-		shortDescription="Failed to create a notification channel consumer proxy object."
+		shortDescription="Failed to create an NC consumer proxy object."
 		description="Failed to create a notification channel Consumer proxy object on behalf of the NC supplier identified by 'ClientName'."
 		priority="NOTICE"
 		audience="Developer">
@@ -237,7 +237,7 @@
 
 	<LogDefinition
 		logName="LOG_NC_EventReceive_NoHandler"
-		shortDescription="Event will be ignored because no registered receiver was found."
+		shortDescription="Ignoring event because no registered receiver was found."
 		description="An event was properly received, but no registered receiver was found, thus ACS will ignore this event. NC libs must carefully check whether event type filtering should be done in the NotifyService (then this is serious) or in the subscriber libraries (then this is normal), and adjust log level or use repeat guards accordingly."
 		priority="DEBUG"
 		audience="Developer">
