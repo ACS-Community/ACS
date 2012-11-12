@@ -10,8 +10,13 @@
 1 - ----------T--:--:--.--- DELOUSE [PubSubTest#testTopicConnection] Successfully created a notification channel, w/o configuration. [ logName='LOG_NC_ChannelCreatedRaw_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] Successfully created a notification channel consumer proxy object. [ logName='LOG_NC_ConsumerProxyCreation_OK' ConsumerProxyId='4' ConsumerProxyName='alma.acsjms.test.PubSubTest-xxx' ProxyCreationAttempts='1' ClientName='alma.acsjms.test.PubSubTest' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@PubSubTest#testTopicConnection created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- CONFIG [PubSubTest#testTopicConnection] Connected to DAO 'MACI/Channels'.
+1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] Successfully obtained a notification channel consumer admin object. [ logName='LOG_NC_ConsumerAdminObtained_OK' ConsumerAdminId='5' CreatedOrReused='created' ClientName='alma.acsjms.test.PubSubTest' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] Successfully created a notification channel supplier proxy object. [ logName='LOG_NC_SupplierProxyCreation_OK' SupplierProxyId='7' ClientName='alma.acsjms.test.PubSubTest' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] intercepted a call to 'alma.acsjms.test.PubSubTest/alma.acsnc.OSPushConsumer#push_structured_event'.
+1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] returning from alma.acsjms.test.PubSubTest/alma.acsnc.OSPushConsumer#push_structured_event after 3 ms.
 1 - ----------T--:--:--.--- DELOUSE [PubSubTest#testTopicConnection] Closing the AlarmSourceFactory
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] AlarmSourceFactory closed
 1 - 
