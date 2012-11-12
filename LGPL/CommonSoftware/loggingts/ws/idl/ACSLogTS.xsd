@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- created by Nicolas Barriga-->
-<!--
-<xs:annotation>
-<xs:documentation>
-</xs:documentation>
-</xs:annotation>
--->
+
 <!-- ***************************************************************************
  * ALMA - Atacama Large Millimeter Array
  * Copyright (c) ESO - European Southern Observatory, 2011
@@ -40,18 +34,17 @@ This schema describes type safe logs, that are used on top of the normal free fo
 		</xs:documentation>
 	</xs:annotation>
 	<xs:element name="LogDefinitionType">
-	        <xs:annotation>
-        	        <xs:documentation>
+		<xs:annotation>
+			<xs:documentation>
 This element is used to describe and group together all the log definitions in the same file.
-                	</xs:documentation>
-       	 	</xs:annotation>
+			</xs:documentation>
+		</xs:annotation>
 
 		<xs:complexType>
 			<xs:choice maxOccurs="unbounded">
 				<xs:element name="LogDefinition" maxOccurs="unbounded">
 					<xs:annotation>
-						<xs:documentation>
-This element contains all the information for the code generation of the type safe logs, plus information for documentation purposes. Each LogDefinition will become a new class, with a standardized interface in all three languages supported by ACS(C++, Java and Python).
+						<xs:documentation>This element contains all the information for the code generation for one type safe log, plus information for documentation purposes. Each LogDefinition will become a new class, with a standardized interface in all three languages supported by ACS(C++, Java and Python).
 
 CPP API:
 	SampleLog mylog(__FILE__, __LINE__, "routine")
@@ -91,14 +84,15 @@ Python API:
 			<xs:attribute name="_prefix" type="common:prefixType" default="alma"/><!--for java package-->
 		</xs:complexType>
 	</xs:element>
+
 	<xs:simpleType name="logType">
 		<xs:annotation>
-			<xs:documentation>
-the 'type' field of the LogDefinition is a non negative integer.
-			</xs:documentation>
+			<xs:documentation>The 'type' field of the LogDefinition is a non negative integer.
+@TODO: Remove this 'type', since it does not appear to be used anywhere.</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:nonNegativeInteger"/>
 	</xs:simpleType>
+
 	<xs:simpleType name="priorityType">
 		<xs:annotation>
 			<xs:documentation>
@@ -107,6 +101,7 @@ Type for priority. Just lists all the priorities defined for the ACS logging sys
 		</xs:annotation>
 		<xs:restriction base="common:nonEmptyString">
 			<xs:enumeration value="TRACE"/>
+			<xs:enumeration value="DELOUSE"/>
 			<xs:enumeration value="DEBUG"/>
 			<xs:enumeration value="INFO"/>
 			<xs:enumeration value="NOTICE"/>
@@ -118,4 +113,3 @@ Type for priority. Just lists all the priorities defined for the ACS logging sys
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>
-
