@@ -86,7 +86,7 @@ public class LogFileCache implements ILogMap {
 		 */
 		public LogCacheInfo(long startPos, int length) {
 			if (startPos<0 || length<=0) {
-				throw new IllegalArgumentException("Invalid positions for log [start="+startPos+", len="+len+"]");
+				throw new IllegalArgumentException("Invalid positions for log [start="+startPos+", len="+length+"]");
 			}
 			start=startPos;
 			len=length;
