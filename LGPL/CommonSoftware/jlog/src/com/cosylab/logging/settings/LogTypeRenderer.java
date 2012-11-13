@@ -76,14 +76,18 @@ public class LogTypeRenderer extends JLabel  implements ListCellRenderer {
             setForeground(list.getForeground());
         }
         
-        // Set the text
-        setText(value.toString());
-        setFont(list.getFont());
+        
         
         // If the type of log is known, set the icon
         if (value==null) {
         	setIcon(null);
-        } else if (value instanceof LogTypeHelper) {
+        	return this;
+        }
+        // Set the text
+        setText(value.toString());
+        setFont(list.getFont());
+        
+        if (value instanceof LogTypeHelper) {
         	setIcon(EntryTypeIcon.getIcon((LogTypeHelper)value));
         } else if (!value.toString().equals("None")) {
 	        LogTypeHelper logType = LogTypeHelper.fromLogTypeDescription(value.toString());
@@ -93,7 +97,6 @@ public class LogTypeRenderer extends JLabel  implements ListCellRenderer {
         } else {
         	setIcon(null);
         }
-
         return this;
     }
 }
