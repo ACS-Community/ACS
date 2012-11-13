@@ -42,7 +42,7 @@ import com.cosylab.logging.engine.ACS.LCEngine;
  * operations aiming to keep the <code>LogTableDataModel</code> class shorter 
  * and more readable.
  * <P>
- * This class instantiate a new thread for each load/save.
+ * This class instantiate a new thread for each load/save operation.
  * To cleanly close, the <code>done()</code> must be called.
  * <P>
  * This class allows only one load/save at a time.
@@ -53,7 +53,7 @@ import com.cosylab.logging.engine.ACS.LCEngine;
  * @author acaproni
  *
  */
-public class IOLogsHelper extends Thread  implements IOPorgressListener {
+public class IOLogsHelper implements IOPorgressListener {
 	
 	/**
 	 * The thread to load logs
@@ -183,7 +183,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * The <code>Thread</code> executing I/O
 	 * @return
 	 */
-	private IOThread thread=null;
+	private volatile IOThread thread=null;
 	
 	/**
 	 * The dialog
@@ -193,7 +193,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	/** 
 	 * The IOHelper performing load and save
 	 */
-	private IOHelper ioHelper = new IOHelper();
+	private final IOHelper ioHelper;
 	
 	/** 
 	 * The logging client
@@ -218,18 +218,15 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	/**
 	 * Build an IOCacheHelper object
 	 *
+	 * @throws Exception IN case of error building the {@link IOHelper}
 	 */
-	public IOLogsHelper(LoggingClient client) {
+	public IOLogsHelper(LoggingClient client) throws Exception {
 		super();
 		if (client==null) {
 			throw new IllegalArgumentException("Invalid null LoggingClient!");
 		}
 		loggingClient=client;
-		// Try to speed up (less responsive but seems good enough)
-		setPriority(Thread.MAX_PRIORITY);
-		setName("IOLogsHelper");
-		setDaemon(true);
-		start();
+		ioHelper = new IOHelper();
 	}
 	
 	/**
@@ -321,12 +318,13 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * Release the resource acquired by this object
 	 * It terminates the thread so the object can be deleted by the JVM
 	 * 
-	 * NOTE: when the thread is terminate it is not possible to 
+	 * NOTE: when the thread is terminated it is not possible to 
 	 *       request asynchronous services 
-	 *
+	 *       
+	 * @param sync If it is <code>true</code> wait the termination of the threads before returning
 	 */
-	public void done() {
-		thread.stopThread(false);
+	public void done(boolean sync) {
+		thread.stopThread(sync);
 		thread=null;
 	}
 	
@@ -390,6 +388,10 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			return false;
 		}
 		return thread.isAlive();
+	}
+
+	public IOHelper getIoHelper() {
+		return ioHelper;
 	}
 	
 }
