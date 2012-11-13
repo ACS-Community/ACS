@@ -38,8 +38,6 @@ import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.swing.JOptionPane;
-
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.util.StopWatch;
@@ -128,6 +126,15 @@ public class IOHelper extends LogMatcher {
 	}
 	
 	/**
+	 * Constructor
+	 * 
+	 * @throws Exception In case of errors building the parser
+	 */
+	public IOHelper() throws Exception {
+		parser=ACSLogParserFactory.getParser();
+	}
+	
+	/**
 	 * The default compression level while saving files
 	 */
 	public static final int DEFAULT_COMPRESSION_LEVEL = 5;
@@ -140,7 +147,7 @@ public class IOHelper extends LogMatcher {
 	/**
 	 * The parser
 	 */
-	private ACSLogParser parser;
+	private final ACSLogParser parser;
 	
 	/**
 	 * Inject the log into the engine 
@@ -261,15 +268,15 @@ public class IOHelper extends LogMatcher {
 	 * @param rawLogListener The callback for each new XML log read from the IO
 	 * @param errorListener The listener for errors
 	 * @param progressListener The listener to be notified about the bytes read
+	 * 
 	 * @throws IOException In case of an IO error while reading the file
-	 * @throws Exception In case of error building the parser
 	 */
 	public synchronized void loadLogs(
 			BufferedReader reader,
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
-			IOPorgressListener progressListener) throws IOException, Exception {
+			IOPorgressListener progressListener) throws IOException {
 		if (reader==null || errorListener==null) {
 			throw new IllegalArgumentException("Parameters can't be null");
 		}
@@ -278,11 +285,6 @@ public class IOHelper extends LogMatcher {
 		}
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
-		}
-		
-		// Build the parser
-		if (parser == null && logListener!=null) {
-			parser = ACSLogParserFactory.getParser();
 		}
 		
 		stopped=false;
@@ -321,41 +323,35 @@ public class IOHelper extends LogMatcher {
 		 */
 		int bytesInBuffer=0;
 		
-		try {
-			StopWatch stopWatch = new StopWatch();
-		
-			while (true && !stopped) {
-				// Read a block from the file if the buffer is empty
-				if (bytesInBuffer==0) {
-					bytesInBuffer = reader.read(buf,0,size);
-				}
-				if (bytesInBuffer<=0) { // EOF
-					break;
-				}
-				bytesInBuffer--;
-				actualPos=(actualPos+1)%size;
-				chRead=buf[actualPos];
-				
-				bytesRead++;
-				buffer.append((char)chRead,xmlStr);
-				if (xmlStr.length()>0) {
-					// A new log has been found
-					injectLog(xmlStr,logListener, rawLogListener, errorListener);
-					logRecordsRead++;
-					xmlStr.delete(0, xmlStr.length());
-					progressListener.bytesRead(bytesRead);
-					if (logRecordsRead%25==0) {
-						progressListener.logsRead(logRecordsRead);
-					}
+		StopWatch stopWatch = new StopWatch();
+	
+		while (true && !stopped) {
+			// Read a block from the file if the buffer is empty
+			if (bytesInBuffer==0) {
+				bytesInBuffer = reader.read(buf,0,size);
+			}
+			if (bytesInBuffer<=0) { // EOF
+				break;
+			}
+			bytesInBuffer--;
+			actualPos=(actualPos+1)%size;
+			chRead=buf[actualPos];
+			
+			bytesRead++;
+			buffer.append((char)chRead,xmlStr);
+			if (xmlStr.length()>0) {
+				// A new log has been found
+				injectLog(xmlStr,logListener, rawLogListener, errorListener);
+				logRecordsRead++;
+				xmlStr.delete(0, xmlStr.length());
+				progressListener.bytesRead(bytesRead);
+				if (logRecordsRead%25==0) {
+					progressListener.logsRead(logRecordsRead);
 				}
 			}
-			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
-						stopWatch.getLapTimeMillis()/1000 + " seconds.");
-		} catch (IOException ioe) {
-			System.err.println("Exception loading the logs: "+ioe.getMessage());
-			ioe.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
 		}
+		System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
+					stopWatch.getLapTimeMillis()/1000 + " seconds.");
 	}
 	
 	/**
