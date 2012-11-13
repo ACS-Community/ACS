@@ -282,9 +282,11 @@ public class LogFileCache implements ILogMap {
 	 * The string is read from the temporary file
 	 * 
 	 * @param idx The position of the log; valid position are between 0 and size-1 
-	 * @return A String representing the log in the given position 
+	 * @return A String representing the log in the given position
+	 * @throws IOException If in case of error seekeing or reading from file
+	 * @throws LogCacheException if the number of bytes read is less then expected 
 	 */
-	private String getLogAsString(int idx) {
+	private String getLogAsString(int idx) throws IOException, LogCacheException {
 		if (idx<0 || idx>=logID) {
 			throw new IndexOutOfBoundsException("Index out of bounds: "+idx);
 		}
@@ -295,21 +297,19 @@ public class LogFileCache implements ILogMap {
 			info = index.get(idx);
 		}
 		// Allocate the string
-		byte buffer[] = new byte[(int)(info.len)];
+		byte buffer[] = new byte[info.len];
 		
-		try {
-			// Move to the starting of the log and read the log
-			//
-			// This operation must be performed in mutual exclusion
-			// because other thread can access the cache in the same moment
-			// (one of them might be the load)
-			synchronized(file) {
-				file.seek(info.start);
-				file.read(buffer);
+		// Move to the starting of the log and read the log
+		//
+		// This operation must be performed in mutual exclusion
+		// because other thread can access the cache in the same moment
+		// (one of them might be the load)
+		synchronized(file) {
+			file.seek(info.start);
+			int bytesRead=file.read(buffer);
+			if (bytesRead!=info.len) {
+				throw new LogCacheException("Error reding from file: got "+bytesRead+" instead of "+info.len);
 			}
-		} catch (IOException ioe) {
-			System.err.println("Errore nella seek: "+ioe.getMessage());
-			
 		}
 		
 		return new String(buffer);
@@ -335,8 +335,13 @@ public class LogFileCache implements ILogMap {
 			if (replacedLogs.containsKey(key)) {
 				return replacedLogs.get(key);
 			}
+		} 
+		String logStr = null;
+		try {
+			logStr =getLogAsString(key);
+		} catch (IOException ioe) {
+			throw new LogCacheException("Exception getting log from cache");
 		}
-		String logStr = getLogAsString(key); 
 		try {
 			return fromCacheString(logStr); 
 		} catch (Exception e) {
