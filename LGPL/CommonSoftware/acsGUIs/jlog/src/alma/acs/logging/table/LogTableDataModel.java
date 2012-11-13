@@ -30,7 +30,6 @@ import java.io.File;
 import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
-import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.io.LoadFileChooser;
 import alma.acs.logging.io.IOLogsHelper;
 import alma.acs.logging.io.SaveFileChooser;
@@ -216,20 +215,18 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		BufferedReader br=null;
 		int len=0;
 		try {
-			br=new IOHelper().getBufferedReader(fileName);
+			br=getIOHelper().getIoHelper().getBufferedReader(fileName);
 			File f = new File(fileName);
 			if (fileName.toLowerCase().endsWith(".gz")) {
 				len=0; 
 			} else {
 				len=(int)f.length();
 			}
-		} catch (Exception fnfe) {
+			getIOHelper().loadLogs(br,loggingClient,loggingClient,len);
+		} catch (Throwable fnfe) {
 			JOptionPane.showInternalMessageDialog(loggingClient.getLogEntryTable(), fnfe.getMessage(), "Error opening "+fileName, JOptionPane.ERROR_MESSAGE);
 			fnfe.printStackTrace();
-			return;
 		}
-		getIOHelper().loadLogs(br,loggingClient,loggingClient,len);
-		
 	}
 
 	/**
@@ -309,8 +306,9 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 * A getter method that created the helper only when needed
 	 * 
 	 * @return The IOLogsHelper object
+	 * @throws Exception In case of error building the helper
 	 */
-	private IOLogsHelper getIOHelper() {
+	private IOLogsHelper getIOHelper() throws Exception {
 		if (ioHelper==null) {
 			ioHelper = new IOLogsHelper(loggingClient);
 		}
@@ -339,11 +337,11 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	/**
 	 * Closes all the threads and frees the resources
 	 * This is the last method to call before closing the application
-	 * @param sync If it is true wait the termination of the threads before returning
+	 * @param sync If it is <code>true</code> wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
 		if (ioHelper!=null) {
-			ioHelper.done();
+			ioHelper.done(sync);
 			ioHelper=null;
 		}
 		super.close(sync);
