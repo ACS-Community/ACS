@@ -124,6 +124,11 @@ public class FileHelper implements ACSRemoteErrorListener {
 		if (lowLvl.ordinal()>hiLvl.ordinal()) {
 			throw new IllegalArgumentException("Invalid log level range ["+lowLvl+", "+hiLvl+"]");
 		}
+		try {
+			ioHelper = new IOHelper();
+		} catch (Throwable t) {
+			throw new ZoomException("Error instantiating te helper for I/O",t);
+		}
 		startTime=start;
 		endTime=end;
 		minLogLevel=lowLvl;
@@ -160,7 +165,6 @@ public class FileHelper implements ACSRemoteErrorListener {
 			ACSRemoteLogListener logListener, 
 			IOPorgressListener ioListener, 
 			ACSRemoteErrorListener errorListener) throws ZoomException, FileNotFoundException {
-		ioHelper = new IOHelper();
 		FiltersVector filters = setupFilters();
 		ioHelper.setFilters(filters);
 		errorParsingLogs=false;
