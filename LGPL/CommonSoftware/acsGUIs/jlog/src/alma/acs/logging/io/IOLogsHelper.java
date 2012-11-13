@@ -324,8 +324,10 @@ public class IOLogsHelper implements IOPorgressListener {
 	 * @param sync If it is <code>true</code> wait the termination of the threads before returning
 	 */
 	public void done(boolean sync) {
-		thread.stopThread(sync);
-		thread=null;
+		if (thread!=null) {
+			thread.stopThread(sync);
+			thread=null;	
+		}
 	}
 	
 	/**
