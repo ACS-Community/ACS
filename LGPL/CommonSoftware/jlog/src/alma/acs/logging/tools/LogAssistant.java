@@ -105,11 +105,15 @@ public class LogAssistant {
 		} catch (IllegalStateException e) {
 			System.err.println("Error in the parameters: "+e.getMessage());
 			usage("acsLogAssistant");
+			return;
 		}
 		if (command=='h') {
 			usage("acsLogAssistant");
 			return;
 		}
+	}
+	
+	public void work() throws Exception {
 		if (checkState()) {
 			if (command=='x') {
 				extractLogs();
@@ -389,39 +393,30 @@ public class LogAssistant {
 	 * Extract the logs from the source to the destination file
 	 *
 	 */
-	private void extractLogs() {
-		try {
-			LogFileExtractor extractor = 
-				new LogFileExtractor(
-						sourceFileNames,
-						destFileName,
-						startDate,
-						endDate,
-						filterFileName,
-						converter);
-			extractor.extract();
-		} catch (Exception e) {
-			System.err.println("Error extracting: "+e.getMessage());
-		}
+	private void extractLogs() throws Exception {
+		LogFileExtractor extractor = 
+			new LogFileExtractor(
+					sourceFileNames,
+					destFileName,
+					startDate,
+					endDate,
+					filterFileName,
+					converter);
+		extractor.extract();
 	}
 	
 	/**
 	 * Split the input log file in several files
 	 *
 	 */
-	private void splitFile() {
-		try {
-			LogFileSplitter fileSplitter = new LogFileSplitter(
-					sourceFileNames,
-					destFileName,
-					num,
-					minutes,
-					converter);
-			fileSplitter.split();
-		} catch (Exception e) {
-			System.err.println("Error splitting: "+e.getMessage());
-			e.printStackTrace();
-		}
+	private void splitFile() throws Exception {
+		LogFileSplitter fileSplitter = new LogFileSplitter(
+				sourceFileNames,
+				destFileName,
+				num,
+				minutes,
+				converter);
+		fileSplitter.split();
 	}
 	
 	/**
@@ -459,7 +454,13 @@ public class LogAssistant {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new LogAssistant(args);
+		LogAssistant assistant=new LogAssistant(args);
+		try {
+			assistant.work();
+		} catch (Throwable t) {
+			System.err.println("Exception working on logs: "+t.getMessage());
+			t.printStackTrace(System.err);
+		}
 	}
 
 }

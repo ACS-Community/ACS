@@ -175,17 +175,11 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 	 *  <LI>the <code>outF</code>
 	 * </UL>
 	 */
-	private void openDestFile() {
+	private void openDestFile() throws Exception {
 		if (destFileName.length()==0) {
 			throw new IllegalArgumentException("Wrong dest file name");
 		}
-		try {
-			outF = new BufferedWriter(new FileWriter(destFileName));
-		} catch (Exception e) {
-			System.err.println("Error creating a file for saving named "+destFileName);
-			e.printStackTrace(System.err);
-			System.exit(-1);
-		}
+		outF = new BufferedWriter(new FileWriter(destFileName));
 	}
 	
 	/**
@@ -277,7 +271,7 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 				outF.write(converter.convert(logEntry));
 			} catch (IOException e) {
 				System.err.println("Error writing a log: "+e.getMessage());
-				System.exit(-1);
+				e.printStackTrace(System.err);
 			}
 		}
 	}

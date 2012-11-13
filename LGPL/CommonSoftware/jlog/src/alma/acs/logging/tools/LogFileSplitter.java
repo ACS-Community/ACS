@@ -193,7 +193,7 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 	 *                     
 	 * @return The writer for output
 	 */
-	private BufferedWriter getOutputFile(String dest, int idx, Date startingDate) {
+	private BufferedWriter getOutputFile(String dest, int idx, Date startingDate) throws IOException {
 		// Build the name of the file
 		StringBuilder name = new StringBuilder(dest);
 		name.append('-');
@@ -212,13 +212,7 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 		}
 		// Create and return the file
 		FileWriter outFile=null;
-		try {
-			outFile = new FileWriter(name.toString(),false);
-		} catch (IOException e) {
-			System.err.print("Error creating output file "+name.toString()+": ");
-			System.err.print(e.getMessage());
-			System.exit(-1);
-		}
+		outFile = new FileWriter(name.toString(),false);
 		System.out.println("Writing logs on "+name);
 		return new BufferedWriter(outFile,OUTPUT_BUFFER_SIZE);
 	}
@@ -228,18 +222,12 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 	 * 
 	 * @param file The file to close
 	 */
-	private void closeOutputFile(BufferedWriter file) {
+	private void closeOutputFile(BufferedWriter file) throws Exception {
 		//	Flush and close the old file
 		if (file!=null) {
-			try {
-				file.flush();
-				file.close();
-				file=null;
-			} catch (IOException e) {
-				System.err.print("Error closing output file: ");
-				System.err.print(e.getMessage());
-				System.exit(-1);
-			}
+			file.flush();
+			file.close();
+			file=null;
 		}
 	}
 
@@ -252,7 +240,12 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 
 
 	/**
-	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)			} catch (IOException e) {
+				System.err.print("Error closing output file: ");
+				System.err.print(e.getMessage());
+				System.exit(-1);
+			}
+
 	 */
 	@Override
 	public void bytesWritten(long bytes) {}
@@ -289,8 +282,18 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 		if (number!=null ) {
 			// Number criteria
 			if (outF==null || ++logsRead>number) {
-				closeOutputFile(outF);
-				outF=getOutputFile(destFileName,index++,null);
+				try {
+					closeOutputFile(outF);
+				} catch (Throwable t) {
+					System.err.println("Error closing the output file");
+					t.printStackTrace(System.err);
+				}
+				try {
+					outF=getOutputFile(destFileName,index++,null);
+				} catch (IOException e) {
+					System.err.println("Error getting a new file for output: " + e.getMessage());
+					e.printStackTrace(System.err);
+				}
 				logsRead=1;
 			}
 		} else {
@@ -298,15 +301,25 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 			long logDate = ((Long)logEntry.getField(LogField.TIMESTAMP));
 			if (firstLogDate==-1 || logDate-firstLogDate>time) {
 				firstLogDate=logDate;
-				closeOutputFile(outF);
-				outF=getOutputFile(destFileName,index++,new Date(logDate));
+				try {
+					closeOutputFile(outF);
+				} catch (Throwable t) {
+					System.err.println("Error closing the output file");
+					t.printStackTrace(System.err);
+				}
+				try {
+					outF=getOutputFile(destFileName,index++,new Date(logDate));
+				} catch (IOException e) {
+					System.err.println("Error getting a new file for output: " + e.getMessage());
+					e.printStackTrace(System.err);
+				}
 			}
 		}
 		try {
 			outF.write(converter.convert(logEntry));
 		} catch (IOException e) {
 			System.err.println("Error writing a log: " + e.getMessage());
-			System.exit(-1);
+			e.printStackTrace(System.err);
 		}
 	}
 }
