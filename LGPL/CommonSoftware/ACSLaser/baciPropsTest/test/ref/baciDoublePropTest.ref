@@ -2,11 +2,8 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] -------------------------------
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] component 'alma.acs.alarmsystem.test.BACIDoublePropertyTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropertyTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
-1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropertyTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
-1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropertyTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: No alarms
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH ON

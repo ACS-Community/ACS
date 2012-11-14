@@ -2,7 +2,6 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] -------------------------------
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] component 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- TRACE [BACITest:BACIEnumPropertyTest#testROEnum] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BaciPropTest#testEnumVar, TEST_COMPONENT, 1> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=true

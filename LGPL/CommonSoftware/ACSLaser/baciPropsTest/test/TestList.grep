@@ -8,14 +8,16 @@ Starting Java application
 -D user.dir=
 Jlog will use cache for
 Connected
+TRACE
 FINEST
+DELOUSE
 FINER
+DEBUG
+FINE
 calling orb.resolve_initial_references
 Manager login done, handle
 get_component with client handle
 will try to find the manager first
-Please initialize the log4j system properly
-log4j:WARN No appenders could be found for logger
 failed to flush logging queue because remote logging service has not been made available
 about to release component
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
@@ -23,9 +25,6 @@ activated
 Failed to get MACI/Channels DAO from CDB
 ##
 component AlarmService retrieved
-DEBUG
-DELOUSE
-FINE
 DefaultSubscriberImpl
 ACSJMSTopicConnectionImpl
 HeartbeatHelper

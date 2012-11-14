@@ -2,7 +2,6 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] -------------------------------
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] component 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropCompleteTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: No alarms
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: HIGH ON
