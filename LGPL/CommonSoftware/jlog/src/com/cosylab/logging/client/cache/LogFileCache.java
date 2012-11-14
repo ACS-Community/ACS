@@ -135,7 +135,7 @@ public class LogFileCache implements ILogMap {
 	/**
 	 * The separator between the field of the logs written in cache
 	 */
-	private static final String SEPARATOR = new String (""+((char)0));
+	private static final String SEPARATOR = ""+((char)0);
 	
 	/** 
 	 * The logs replaced (for example the logs with some info added)  

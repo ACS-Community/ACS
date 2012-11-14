@@ -524,7 +524,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	 */
 	public void show(Component invoker, int x, int y, int row, String txt) {
 		this.row=row;
-		this.textToCopy=new String(txt);
+		this.textToCopy=txt;
 		
 		// Hide the unneeded buttons
 		boolean singleLineSelected =
