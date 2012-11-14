@@ -267,18 +267,10 @@ public class ComponentAccessUtil {
 
 	
 	/**
-	 * Should be called when no component are needed any more. 
-	 * @TODO: Offer also "waitForCompRelease" flag. Probably best to 
-	 * move support for both parallel component activation and release
-	 * to another class such as "ConcurrentComponentAccessUtil" 
-	 * which maintains a thread pool and can 
-	 * - take a list of component names and return list of activated components
-	 *   (check if this gets more confusing than helpful!)
-	 * - release several components in parallel
-	 * - perhaps also take explicit list of components to be released "releaseComponents(list)"
+	 * Should be called when none of the components are needed any more.
 	 * 
-	 * @param waitForCompsRelease If <code>true</code> this method waits for the complete components release
-	 * 							 otherwise returns immediately
+	 * @param waitForCompsRelease
+	 *            If <code>true</code> this method waits for the complete components release, otherwise returns immediately.
 	 */
 	public void releaseAllComponents(boolean waitForCompsRelease) {
 		List<String> compNames;
@@ -289,7 +281,10 @@ public class ComponentAccessUtil {
 	}
 	
 	/**
-	 * Release a set of components.
+	 * Releases a set of components sequentially.
+	 * <p>
+	 * Subclasses may override this method, see for example {@link ConcurrentComponentAccessUtil#releaseComponents(Collection, boolean)},
+	 * to implement concurrent component release calls, which then also affects {@link #releaseAllComponents(boolean)}.
 	 * 
 	 * @param componentNames The name of the components to release
 	 * @param waitForCompsRelease If <code>true</code> this method waits for the complete components release
@@ -301,8 +296,6 @@ public class ComponentAccessUtil {
 			return;
 		}
 		for (String compName : componentNames) {
-			// @TODO if waitForCompRelease, still we should not call releaseComponent(compName, false)
-			// because this releases components only sequentially, while they should be release in parallel
 			releaseComponent(compName, waitForCompsRelease);
 		}
 	}
