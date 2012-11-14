@@ -150,7 +150,7 @@ module benchmark
         /** 
          * Interrupt a running series of sending/receiving NC events. 
          * If nothing is running, returns silently.
-	 */
+         */
         void interrupt();
 
         /** 
@@ -158,10 +158,9 @@ module benchmark
          * 
          * If a problem occurs with one of the NCs, the other NCs still get disconnected from. The returned exception 
          * represents the last problem from the loop over all connected NCs.
-	 */
+         */
         void ncDisconnect() raises (ACSErrTypeCommon::CouldntPerformActionEx);
-        
-        
+
     };
 
 
@@ -171,13 +170,16 @@ module benchmark
     interface CorbaNotifySupplier : CorbaNotifyCompBase
     {
         /** 
-         * Start sending events.
-         * If a fixed number of events are specified in "numberOfEvents" then the call will return only when these events have been fired.
+         * Start sending events on one or more NCs, using one publisher thread per NC.
+         * If a fixed number of events are specified in "numberOfEvents" then the call will return only when that many events 
+         * have been fired on every NC.
          * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
-         * Without defined number of events, this call will return immediately.
+         * Without defined number of events, this call will return immediately, and the supplier component
+         * will keep sending events until interrupt() gets called.
          * 
-         * @return The time it took (in ms) to send the specified number of events. This may be a bit shorter than the time experienced by the client for the call.
-         *         Undefined if numberOfEvents is not specified.
+         * @return The time it took (in ms) to send the specified number of events. 
+         *         This may be a bit shorter than the time experienced by the client for the call.
+         *         Undefined if numberOfEvents is <= 0.
          */
     	long sendEvents(
     	        // Sends events filled with dummy data on the specified NCs.
@@ -186,7 +188,7 @@ module benchmark
     	        in NcEventSpecSeq ncEventSpecs,
     	        // Optional period for sending events, e.g. every 48 ms. If eventPeriodMillis<=0 then the supplier will fire as fast as possible.
     	        in long eventPeriodMillis, 
-    	        // Optional number of events to fire. If <=0 then fire continously.
+    	        // Optional number of events to fire. If <=0 then fire indefinitely.
     	        in long numberOfEvents
             ) raises (ACSErrTypeCommon::CouldntPerformActionEx);
     	
