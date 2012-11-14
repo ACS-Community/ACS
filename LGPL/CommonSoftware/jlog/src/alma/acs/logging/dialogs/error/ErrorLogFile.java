@@ -237,15 +237,18 @@ public class ErrorLogFile extends TimerTask {
 		}
 		FileInputStream inF = new FileInputStream(fileName);
 		
-		byte[] buffer = new byte[512];
-    	int bytesRead;
-    	do {
-   			bytesRead=inF.read(buffer);
-    		if (bytesRead>0) {
-   				file.write(buffer, 0, bytesRead);
-    		}
-    	} while (bytesRead>=0);
-    	inF.close();
+		try {
+			byte[] buffer = new byte[512];
+	    	int bytesRead;
+	    	do {
+	   			bytesRead=inF.read(buffer);
+	    		if (bytesRead>0) {
+	   				file.write(buffer, 0, bytesRead);
+	    		}
+	    	} while (bytesRead>=0);
+		} finally {
+			inF.close();
+		}
 	}
 	
 	/**
