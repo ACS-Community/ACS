@@ -74,7 +74,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * possible to change the key of an entry in the HashMap.
 	 * 
 	 */
-	private Map<Integer,ILogEntry> cache;
+	private final Map<Integer,ILogEntry> cache=Collections.synchronizedMap(new HashMap<Integer,ILogEntry>());;
 	
 	/**
 	 * The following list is used to keep ordered the indexes
@@ -93,19 +93,19 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 *    with its neighborhood
 	 * </UL>
 	 */
-	private LinkedList<Integer> manager = null;
+	private final LinkedList<Integer> manager = new LinkedList<Integer>();
 	
 	/** 
 	 * The array with the level of each log in the cache
 	 * (useful for setting the log level)
 	 */
-	private Map<Integer,LogTypeHelper> logTypes;
+	private final Map<Integer,LogTypeHelper> logTypes= Collections.synchronizedMap(new HashMap<Integer,LogTypeHelper>());
 	
 	/**
 	 * The times of the logs
 	 * Integer is the key of the log, Long is its timestamp
 	 */
-	private Map<Integer,Long> logTimes;
+	private final Map<Integer,Long> logTimes= Collections.synchronizedMap(new HashMap<Integer,Long>());
 	
 	/**
 	 * Build a LogCache object
@@ -130,7 +130,6 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		}
 		actualCacheSize = size;
 		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
-		initCache();
 	}
 	
 	/** 
@@ -242,17 +241,6 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	}
 	
 	/**
-	 * Build the <code>HashMap</code>s and the <code>LinkedList</code> used by the cache;
-	 */
-	private void initCache() {
-		cache = Collections.synchronizedMap(new HashMap<Integer,ILogEntry>());
-		logTypes = Collections.synchronizedMap(new HashMap<Integer,LogTypeHelper>());
-		logTimes = Collections.synchronizedMap(new HashMap<Integer,Long>());
-		manager = new LinkedList<Integer>();
-	}
-	
-	
-	/**
 	 * Empty the cache
 	 * 
 	 */
@@ -261,9 +249,6 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		manager.clear();
 		logTypes.clear();
 		logTimes.clear();
-		// It is better to recreate the HashMaps because their clear method
-		// does not free all the allocated resources
-		initCache();
 		super.clear();
 	}
 	
