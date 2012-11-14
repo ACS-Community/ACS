@@ -38,7 +38,7 @@ public class ThreadLoopRunnerTest extends TestCase
 				logger2.info("Simple action run.");
 			}
 		};
-		ThreadLoopRunner threadLoopRunner = new ThreadLoopRunner(action, 1, TimeUnit.SECONDS, tf, logger);
+		ThreadLoopRunner threadLoopRunner = new ThreadLoopRunner(action, 1, TimeUnit.SECONDS, tf, logger, "testSimple");
 		assertEquals(ScheduleDelayMode.FIXED_RATE, threadLoopRunner.getDelayMode());
 		assertFalse(threadLoopRunner.isLoopRunning());
 
@@ -79,7 +79,7 @@ public class ThreadLoopRunnerTest extends TestCase
 
 		ThreadLoopRunner threadLoopRunner = null;
 		try {
-			threadLoopRunner = new ThreadLoopRunner(myAction, delayMillis, TimeUnit.MILLISECONDS, tf, logger);
+			threadLoopRunner = new ThreadLoopRunner(myAction, delayMillis, TimeUnit.MILLISECONDS, tf, logger, "testComplex");
 			StopWatch sw = new StopWatch();
 			
 			for (int i = 0; i < numberOnOffCycles; i++) {
@@ -140,7 +140,7 @@ public class ThreadLoopRunnerTest extends TestCase
 		Exception mainBlockException = null;
 		
 		try {
-			threadLoopRunner = new ThreadLoopRunner(myAction, delayMillis, TimeUnit.MILLISECONDS, tf, logger);
+			threadLoopRunner = new ThreadLoopRunner(myAction, delayMillis, TimeUnit.MILLISECONDS, tf, logger, "testDelayTimeMode");
 			// setting delay mode before running loop is fine
 			threadLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_RATE);
 			threadLoopRunner.runLoop();

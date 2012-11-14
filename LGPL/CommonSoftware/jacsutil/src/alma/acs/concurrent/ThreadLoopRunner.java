@@ -116,22 +116,6 @@ public class ThreadLoopRunner
 	 * @param unit
 	 * @param tf ThreadFactory from which the loop thread will be created.
 	 * @param logger Logger used by this class.
-	 * @deprecated (since ACS 10.1) Use the variant with additional name parameter.
-	 */
-	public ThreadLoopRunner(Runnable task, long delayTime, TimeUnit unit, ThreadFactory tf, Logger logger) {
-		this(task, delayTime, unit, tf, logger, null);
-	}
-
-	/**
-	 * Creates a <code>ThreadLoopRunner</code> that can repeatedly execute <code>task</code>.
-	 * The mode defaults to {@link ScheduleDelayMode#FIXED_RATE} unless being changed 
-	 * via {@link #setDelayMode(ScheduleDelayMode)}.
-	 * 
-	 * @param task user-supplied {@link Runnable}, or better subtype {@link ThreadLoopRunner.CancelableRunnable}.
-	 * @param delayTime 
-	 * @param unit
-	 * @param tf ThreadFactory from which the loop thread will be created.
-	 * @param logger Logger used by this class.
 	 * @param name Facilitates debugging, by using a meaningful name for logs and threads.
 	 */
 	public ThreadLoopRunner(Runnable task, long delayTime, TimeUnit unit, final ThreadFactory tf, Logger logger, String name) {
