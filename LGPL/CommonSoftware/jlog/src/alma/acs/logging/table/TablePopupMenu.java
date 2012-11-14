@@ -68,7 +68,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	/**
 	 * The file chooser to see the icon of the given type
 	 */
-	public class CustomFileChooser extends JFileChooser {
+	private final class CustomFileChooser extends JFileChooser {
 		
 		/**
 		 * The icon to show for the file type
@@ -114,7 +114,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	 * @author acaproni
 	 *
 	 */
-	public final class TextTransfer implements ClipboardOwner {
+	private static final class TextTransfer implements ClipboardOwner {
 		/**
 	   * Empty implementation of the ClipboardOwner interface.
 	   */

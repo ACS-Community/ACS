@@ -31,7 +31,6 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -52,8 +51,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
 
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
@@ -62,12 +59,12 @@ import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.logging.io.LoadSwitchesPanel;
 
 import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
-import com.cosylab.logging.engine.LogMatcher;
 
 /**
  * A class to setup a query to submit to the DB
@@ -136,7 +133,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 * @author acaproni
 	 * since ACS 10.2
 	 */
-	private class IntegerDocumentListener implements DocumentListener {
+	private static class IntegerDocumentListener implements DocumentListener {
 		
 		/**
 		 * The matcher to check that the inserted string contains only numbers

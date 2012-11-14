@@ -170,7 +170,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * @author acaproni
 	 *
 	 */
-	class PassVerifier extends InputVerifier {
+	private static class PassVerifier extends InputVerifier {
 		/**
 		 * Low limit (inclusive)
 		 */

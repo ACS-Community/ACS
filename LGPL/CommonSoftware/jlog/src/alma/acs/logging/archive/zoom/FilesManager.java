@@ -81,7 +81,7 @@ public class FilesManager {
 	 * @author acaproni
 	 *
 	 */
-	public class ProgressListener implements IOPorgressListener {
+	private static class ProgressListener implements IOPorgressListener {
 
 		/**
 		 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)

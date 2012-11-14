@@ -60,7 +60,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * @author acaproni
 	 *
 	 */
-	private class BufferedCacheItem {
+	private static class BufferedCacheItem {
 		private ILogEntry logEntry;
 		private String logCacheString;
 		public BufferedCacheItem(ILogEntry log, String cacheString) {
