@@ -277,11 +277,11 @@ MessageWidgetListener
 	 * The icons to show the status of the connection
 	 * 
 	 */
-	private final int CONNECTED_ICON =  0;
-	private final int CONNECTING_ICON = 1;
-	private final int DISCONNECTED_ICON=2;
-	private final int SUSPENDED_ICON = 3;
-	private final int DELAY_ICON = 4;
+	private static final int CONNECTED_ICON =  0;
+	private static final int CONNECTING_ICON = 1;
+	private static final int DISCONNECTED_ICON=2;
+	private static final int SUSPENDED_ICON = 3;
+	private static final int DELAY_ICON = 4;
 	private ImageIcon[] connectionStatusIcons;
 	
 	/**

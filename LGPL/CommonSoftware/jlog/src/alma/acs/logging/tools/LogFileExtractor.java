@@ -80,7 +80,7 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 	/**
 	 * The size of the buffer for writing
 	 */
-	private final int OUTPUT_BUFFER_SIZE=8192;
+	private static final int OUTPUT_BUFFER_SIZE=8192;
 	
 	/**
 	 * The writer to write the destination files

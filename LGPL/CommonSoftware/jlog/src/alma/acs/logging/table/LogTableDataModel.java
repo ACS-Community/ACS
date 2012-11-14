@@ -80,7 +80,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	/**
 	 * The time interval between 2 removal of logs from the table
 	 */
-	private final int DELETION_INTERVAL_TIME=30*1000;
+	private static final int DELETION_INTERVAL_TIME=30*1000;
 	
 	/**
 	 * The thread removing logs from the cache.

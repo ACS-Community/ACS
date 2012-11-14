@@ -59,7 +59,7 @@ public class StatsDlg extends JDialog implements ActionListener {
 	/**
 	 * The interval (msec) between iterations while monitoring
 	 */
-	private final int MONITORING_INTERVAL = 1000;
+	private static final int MONITORING_INTERVAL = 1000;
 	
 	private JLabel totNumOfLogsLbl = new JLabel(NotAvailable);
 	private JLabel visibleLogsLbl  = new JLabel(NotAvailable);

@@ -59,7 +59,7 @@ public class DetailedLogTable extends JTable
 	/**
 	 * The string shown when the dialog is not displaying a log
 	 */
-	private final String NOT_AVAILABLE="";
+	private static final String NOT_AVAILABLE="";
 	
 	public class MultilineRenderer extends JTextArea implements
 			TableCellRenderer {

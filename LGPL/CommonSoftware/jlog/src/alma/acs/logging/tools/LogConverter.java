@@ -49,7 +49,7 @@ public abstract class LogConverter {
 	 * Additional data is not a field of the log so its 
 	 * value is specified here as a constant char
 	 */
-	public final char ADDITIONAL_DATA_ID='j';
+	public static final char ADDITIONAL_DATA_ID='j';
 	
 	/**
 	 * The string representing the columns and their order.
