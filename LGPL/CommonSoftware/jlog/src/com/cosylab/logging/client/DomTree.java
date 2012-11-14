@@ -234,7 +234,7 @@ public class DomTree extends javax.swing.JTree  {
 		}
 	}
 
-	public class TheCellRenderer extends DefaultTreeCellRenderer {
+	public static class TheCellRenderer extends DefaultTreeCellRenderer {
 		public TheCellRenderer() {
 			super();
 		}

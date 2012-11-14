@@ -244,7 +244,7 @@ public class FilterChooserDialog extends JDialog {
 	 * 
 	 * @author acaproni
 	 */
-	private class XmlFileFilter extends FileFilter {
+	private static class XmlFileFilter extends FileFilter {
 		public boolean accept(File f) {
 			// Check if the name has the extension .xml at the end and is readable
 			boolean pass = f.isFile() && f.getName().toUpperCase().endsWith(".XML") && f.canRead();

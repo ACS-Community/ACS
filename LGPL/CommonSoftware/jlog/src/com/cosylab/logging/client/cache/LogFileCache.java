@@ -68,7 +68,7 @@ public class LogFileCache implements ILogMap {
 	 * @author acaproni
 	 *
 	 */
-	protected class LogCacheInfo {
+	protected static class LogCacheInfo {
 		/**
 		 * Starting position in the file
 		 */ 

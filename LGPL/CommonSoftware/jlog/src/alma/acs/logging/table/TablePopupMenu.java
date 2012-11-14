@@ -68,7 +68,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	/**
 	 * The file chooser to see the icon of the given type
 	 */
-	private final class CustomFileChooser extends JFileChooser {
+	private static final class CustomFileChooser extends JFileChooser {
 		
 		/**
 		 * The icon to show for the file type
