@@ -149,7 +149,7 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 				return new Filter(
 						getFieldIndex(), 
 						isLethal(), 
-						new Integer(exact.getSelectedIndex()),
+						Integer.valueOf(exact.getSelectedIndex()),
 						notCheck.isSelected());
 			} catch (InvalidFilterConstraintException e) {
 				throw new FilterParameterException(e.getMessage());

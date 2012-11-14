@@ -129,7 +129,7 @@ public Filter getFilter() throws FilterParameterException {
 			return new Filter(
 					getFieldIndex(), 
 					isLethal(), 
-					new Integer(exact.getIntegerValue()),
+					Integer.valueOf(exact.getIntegerValue()),
 					notCheck.isSelected());
 		} catch (InvalidFilterConstraintException e) {
 			throw new FilterParameterException(e.getMessage());
