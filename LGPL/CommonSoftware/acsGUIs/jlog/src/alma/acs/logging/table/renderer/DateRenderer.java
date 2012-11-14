@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JLabel;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
@@ -41,7 +40,7 @@ import alma.acs.util.IsoDateFormat;
  */
 public class DateRenderer extends JLabel implements TableCellRenderer {
 
-	protected static Border noFocusBorder=null;
+	protected static final Border noFocusBorder= new EmptyBorder(1, 2, 1, 2);
 	private Color bColor;
 	private Color fColor;
 	
@@ -61,9 +60,6 @@ public class DateRenderer extends JLabel implements TableCellRenderer {
 		shortDate=dateFormat;
 		setPreferredSize(new java.awt.Dimension(18, 18));
 		setOpaque(true);
-		if (noFocusBorder==null) {
-			noFocusBorder = new EmptyBorder(1, 2, 1, 2);
-		}
 		setBorder(noFocusBorder);
 	}
 	
