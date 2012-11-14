@@ -255,7 +255,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * Flush all the logs on file
 	 *
 	 */
-	public void flushBuffer() throws LogCacheException {
+	public synchronized void flushBuffer() throws LogCacheException {
 		// str is the buffer of logs to write on disk at once
 		StringBuilder str = new StringBuilder();
 		if (file==null) {
