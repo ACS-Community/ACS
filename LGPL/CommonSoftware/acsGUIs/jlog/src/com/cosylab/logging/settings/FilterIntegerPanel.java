@@ -137,10 +137,10 @@ public Filter getFilter() throws FilterParameterException {
 	}
 
 	if (bmin) {
-		min = new Integer(minimum.getIntegerValue());
+		min = Integer.valueOf(minimum.getIntegerValue());
 	}
 	if (bmax) {
-		max = new Integer(maximum.getIntegerValue());
+		max = Integer.valueOf(maximum.getIntegerValue());
 	}
 
 	if ((min != null) && (max != null)) {

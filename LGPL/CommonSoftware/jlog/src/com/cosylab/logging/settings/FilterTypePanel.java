@@ -157,10 +157,10 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		}
 
 		if (bmin) {
-			min = new Integer(minimum.getSelectedIndex());
+			min = Integer.valueOf(minimum.getSelectedIndex());
 		}
 		if (bmax) {
-			max = new Integer(maximum.getSelectedIndex());
+			max = Integer.valueOf(maximum.getSelectedIndex());
 		}
 
 		if ((min != null) && (max != null)) {
