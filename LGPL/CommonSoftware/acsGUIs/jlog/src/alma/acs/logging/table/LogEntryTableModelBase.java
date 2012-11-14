@@ -59,7 +59,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @author acaproni
 	 *
 	 */
-	public class TableUpdater extends Thread {
+	private class TableUpdater extends Thread {
 		
 		/**
 		 * Signal the thread to terminate
@@ -177,7 +177,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		} 
 		
 		tableUpdater = new TableUpdater();
-		tableUpdater.setName("TableUpdater");
+		tableUpdater.setName("LogEntryTableModelBase.TableUpdater");
 		tableUpdater.setDaemon(true);
 		tableUpdater.start();
 	}
