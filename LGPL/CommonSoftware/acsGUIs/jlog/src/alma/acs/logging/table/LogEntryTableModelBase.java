@@ -277,9 +277,8 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 				 ret=allLogs.getLog(rows.get(row));
 			 }
 			 return ret;
-		 } catch (Exception e) {
-			 // This can happen because deletion/adding of logs is asynchronous
-			 // We can return null and safely ignore this exception
+		 } catch (LogCacheException e) {
+			 e.printStackTrace();
 			return null;
 		 }
 	 }
