@@ -31,8 +31,6 @@ import java.util.Date;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
-import alma.acs.logging.engine.parser.ACSLogParser;
-import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
@@ -72,7 +70,7 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 	/**
 	 * The name of the files for reading
 	 */
-	private String[] inFileNames;
+	private final String[] inFileNames;
 	
 	/**
 	 * The name of the output file
@@ -123,14 +121,15 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 		if (outputFile==null) {
 			throw new IllegalArgumentException("The source can't be null");
 		}
-		if (inputFiles!=null && inputFiles.length==0) {
+		if (inputFiles==null || inputFiles.length==0) {
 			throw new IllegalArgumentException("No source files");
 		}
 		if (converter==null) {
 			throw new IllegalArgumentException("The converter can't be null");
 		}
 		this.converter=converter;
-		inFileNames=inputFiles;
+		inFileNames=new String[inputFiles.length];
+		System.arraycopy(inputFiles, 0, inFileNames, 0, inputFiles.length);
 		destFileName=outputFile;
 		// Add the extension to the outputfilename if not
 		// already present
