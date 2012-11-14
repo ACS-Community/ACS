@@ -70,7 +70,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	/**  
 	 * The log text appears into a <code>JtextArea</code>
 	 */
-	private JTextArea logTA;
+	private final JTextArea logTA= new JTextArea("", 20, 60);
 	
 	/**
 	 *  The document of the TextArea
@@ -154,7 +154,6 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		ImageIcon icon = new ImageIcon(LogTypeHelper.class.getResource("/errorLogIcon.png"));
 		setIconImage(icon.getImage());
 		
-		logTA = new JTextArea("", 20, 60);
 		synchronized(logTA) {
 			logTA.setDocument(document);
 			logTA.setEditable(false);
