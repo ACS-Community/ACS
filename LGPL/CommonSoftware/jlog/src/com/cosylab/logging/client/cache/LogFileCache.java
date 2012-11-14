@@ -237,13 +237,9 @@ public class LogFileCache implements ILogMap {
 				name=f.getAbsolutePath();
 			}
 		}
-		if (f!=null) {
-			logFileName=f.getAbsolutePath();
-			f.deleteOnExit();
-			f=null;
-		} else {
-			logFileName=null;
-		}
+		logFileName=f.getAbsolutePath();
+		f.deleteOnExit();
+		f=null;
 		return logFileName;
 	}
 	

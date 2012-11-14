@@ -66,11 +66,7 @@ public class LogProcessor {
 				}
 			} catch (Throwable th) {
 				System.out.println("LogProcessor: error instantiating a Reduction rule: "+th.getMessage());
-				if (log==null) {
-					System.out.println("The problematic log is NULL");
-				} else {
-					System.out.println("Problematic log: "+log.toString());
-				}
+				System.out.println("Problematic log: "+log.toString());
 				th.printStackTrace();
 				continue;
 			}
