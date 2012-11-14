@@ -303,7 +303,7 @@ public class ContainerUtil
 	 * Similar code from module acscommandcenter (Executor#remoteDaemonForContainers) does not seem to implement
 	 * synchronization on the container becoming available. 
 	 * 
-	 * @param host
+	 * @param host Name of container host. Can be <code>null</code> for localhost.
 	 * @param containerType
 	 * @param containerName
 	 * @param flags
@@ -348,6 +348,10 @@ public class ContainerUtil
 		}
 	}
 
+	/**
+	 * @param host Name of container host. Can be <code>null</code> for localhost.
+	 * @param containerName
+	 */
 	public void stopContainer(String host, String containerName) throws BadParameterEx, FailedToStopContainerEx {
 		if (host == null || host.isEmpty()) {
 			host = ACSPorts.getIP();
