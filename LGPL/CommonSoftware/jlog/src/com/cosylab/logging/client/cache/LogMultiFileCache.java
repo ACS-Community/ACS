@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -120,7 +121,7 @@ public class LogMultiFileCache  implements ILogMap {
 	/**
 	 * The number of logs in cache
 	 */
-	private volatile int logsInCache=0;
+	private final AtomicInteger logsInCache=new AtomicInteger(0);
 	
 	/**
 	 * The ID (i.e. the key) identifying each log
@@ -278,7 +279,7 @@ public class LogMultiFileCache  implements ILogMap {
 		} 
 		
 		fileRecord.addLog(log, ++ID);
-		logsInCache++;
+		logsInCache.incrementAndGet();
 		
 		return ID;
 	}
@@ -304,7 +305,7 @@ public class LogMultiFileCache  implements ILogMap {
 		fileRecord.deleteLog(logKey);
 		
 		// Update table record
-		logsInCache--;
+		logsInCache.decrementAndGet();
 		
 		
 		printDebugTrace("\n Delete log key = "+logKey+" from record "+idx+
@@ -332,7 +333,7 @@ public class LogMultiFileCache  implements ILogMap {
 	 * @see com.cosylab.logging.client.cache.ILogMap
 	 */
 	public int getSize() {
-		return logsInCache;
+		return logsInCache.get();
 	}
 	
 	/**
@@ -345,7 +346,7 @@ public class LogMultiFileCache  implements ILogMap {
 	 * @see com.cosylab.logging.client.cache.ILogMap
 	 */
 	public Integer getLastLog() {
-		if (logsInCache==0) {
+		if (logsInCache.get()==0) {
 			return null;
 		}
 		MultiFileTableRecord lastRecord = logFileTable.lastElement();
@@ -367,7 +368,7 @@ public class LogMultiFileCache  implements ILogMap {
 	 * @throws In case of error getting the first log
 	 */
 	public Integer getFirstLog() {
-		if (logsInCache==0) {
+		if (logsInCache.get()==0) {
 			return null;
 		}
 		MultiFileTableRecord firstRecord = logFileTable.get(0);
@@ -404,7 +405,7 @@ public class LogMultiFileCache  implements ILogMap {
 			record.clear();
 		}
 		logFileTable.clear();
-		logsInCache=0;
+		logsInCache.set(0);
 	}
 	
 	/**
