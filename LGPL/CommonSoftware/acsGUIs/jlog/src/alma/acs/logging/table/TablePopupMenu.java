@@ -574,16 +574,16 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	 */
 	private String buildFields() {
 		int colCount=table.getColumnCount();
-		String ret="";
+		StringBuilder ret=new StringBuilder();
 		
 		for (int t=0; t<colCount; t++) {
 			int modelCount = table.convertColumnIndexToModel(t);
 			if (modelCount==0) {
 				continue;
 			}
-			ret+=LogField.values()[modelCount-1].id;
+			ret.append(LogField.values()[modelCount-1].id);
 		}
-		return ret;
+		return ret.toString();
 	}
 	
 	private void copyToClipboard(LogConverter converter) {

@@ -151,14 +151,14 @@ public abstract class LogConverter {
 		if ((columns==null || columns.isEmpty())&& !additionlData) {
 			throw new IllegalArgumentException("The columns can't be null nor empty");
 		}
-		String cols="";
+		StringBuilder cols=new StringBuilder();
 		for (LogField f: columns) {
-			cols=cols+f.id;
+			cols.append(f.id);
 		}
 		if (additionlData) {
-			cols=cols+ADDITIONAL_DATA_ID;
+			cols.append(ADDITIONAL_DATA_ID);
 		}
-		setCols(cols);
+		setCols(cols.toString());
 	}
 	
 	/**
