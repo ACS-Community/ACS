@@ -58,7 +58,7 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 	/**
 	 * The name of the input files
 	 */
-	private String[] inFileNames;
+	private final String[] inFileNames;
 	
 	/**
 	 * The name for the output files
@@ -105,7 +105,7 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 	/**
 	 * The format of the date in the name of the file
 	 */
-	private SimpleDateFormat dateFormat = new IsoDateFormat();
+	private final SimpleDateFormat dateFormat = new IsoDateFormat();
 	
 	/**
 	 * The converter to format the log before saving
@@ -152,7 +152,8 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 			throw new IllegalArgumentException("The converter can't be null");
 		}
 		this.converter=converter;
-		inFileNames=inputFiles;
+		inFileNames=new String[inputFiles.length];
+		System.arraycopy(inputFiles, 0, inFileNames, 0, inputFiles.length);
 		destFileName=outputFiles;
 		number=num;
 		if (mins!=null) {
@@ -201,7 +202,9 @@ public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorList
 		if (startingDate!=null) {
 			name.append('-');
 			StringBuffer buffer = new StringBuffer();
-			dateFormat.format(startingDate,buffer, new FieldPosition(0));
+			synchronized (dateFormat) {
+				dateFormat.format(startingDate,buffer, new FieldPosition(0));	
+			}
 			name.append(buffer.toString()); 
 		}
 		// Add the extension
