@@ -168,7 +168,7 @@ public class LogFileCache implements ILogMap {
 	 * @throws IOException in case of I/O error
 	 * @see java.io.RandomAccessFile
 	 */
-	public long getFileSize() throws IOException{
+	public synchronized long getFileSize() throws IOException{
 		return (file==null) ? 0 : file.length();
 	}
 	
