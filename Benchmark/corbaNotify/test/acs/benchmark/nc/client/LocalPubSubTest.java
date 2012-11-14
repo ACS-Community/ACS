@@ -57,7 +57,7 @@ import alma.maci.containerconfig.types.ContainerImplLangType;
  * 
  * @author hsommer
  */
-public class LocalSupplierTest extends ComponentClient
+public class LocalPubSubTest extends ComponentClient
 {
 	private ContainerUtil containerUtil;
 	
@@ -78,11 +78,11 @@ public class LocalSupplierTest extends ComponentClient
 	 * For compatibility with JUnit3 based TATJUnitRunner
 	 */
 	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(LocalSupplierTest.class);
+		return new JUnit4TestAdapter(LocalPubSubTest.class);
 	}
 
-	public LocalSupplierTest() throws Exception {
-		super(null, AcsLocations.figureOutManagerLocation(), LocalSupplierTest.class.getSimpleName());
+	public LocalPubSubTest() throws Exception {
+		super(null, AcsLocations.figureOutManagerLocation(), LocalPubSubTest.class.getSimpleName());
 	}
 
 
