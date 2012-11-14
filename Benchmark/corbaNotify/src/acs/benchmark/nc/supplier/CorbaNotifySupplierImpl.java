@@ -47,6 +47,9 @@ import alma.benchmark.SomeOtherEventType;
 
 public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublisher<IDLEntity>> implements CorbaNotifySupplierOperations
 {
+	/**
+	 * One runnable per NC. Each run() call publishes an event.
+	 */
 	private final List<PublishEventRunnable> runnables = new ArrayList<PublishEventRunnable>();
 
 //	@Override
@@ -69,8 +72,17 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 		pub.disconnect();
 	}
 
+	/**
+	 * Runnable that can repeatedly publish the same (or an alternating series of different) events to a given NC.
+	 * The run method expects to be called multiple times. If a finite number of events is specified to be published,
+	 * and the {@link #setScheduledFuture(ScheduledFuture)} method has been called with the corresponding future object
+	 * from an executor, then this runnable will cancel further executions once all events are sent.
+	 */
 	protected class PublishEventRunnable implements Runnable {
 		private final Object ncName;
+		/**
+		 * Event data that will be published alternatingly
+		 */
 		private final List<IDLEntity> events;
 		private final AcsEventPublisher<IDLEntity> pub;
 		private final int eventsMax;
@@ -98,12 +110,17 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 			this.eventsMax = numberOfEvents;
 		}
 		
+		/**
+		 * Support self-cancelling of repeated executions from inside the {@link #run()} method, 
+		 * in case that {@link #eventsMax} is >= 0 and we have already sent the requested
+		 * number of events.
+		 */
 		void setScheduledFuture(ScheduledFuture<?> future) {
 			this.future = future;
 		}
 		
 		/**
-		 * Allows external cancellation of the running event suppliers.
+		 * Allows cancellation of the running event suppliers.
 		 * A single call to the NC libs will not be interrupted though.
 		 */
 		void cancelPeriodicRuns() {
@@ -207,12 +224,16 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 				}
 				runnable.setScheduledFuture(future);
 			}
+			
 		} catch (Exception ex) {
 			m_logger.log(AcsLogLevel.SEVERE, "sendEvents call failed", ex);
 			throw new AcsJCouldntPerformActionEx(ex).toCouldntPerformActionEx();
 		}
 		
+		String msgBase = "Started publishing events on " + ncEventSpecs.length + " NC(s), sending events "
+				+ ( eventPeriodMillis > 0 ? "every " + eventPeriodMillis + " ms. " : "as fast as possible. " );
 		if (numberOfEvents > 0) {
+			m_logger.info(msgBase + "Will now wait until " + numberOfEvents + " have been published on every NC...");
 			// block until all events are sent
 			runner.setContinueExistingPeriodicTasksAfterShutdownPolicy(true);
 			runner.setExecuteExistingDelayedTasksAfterShutdownPolicy(true);
@@ -226,6 +247,9 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 			} catch (InterruptedException ex) {
 				cancel = true;
 			}
+		}
+		else {
+			m_logger.info(msgBase + "Will return and asynchronously continue publishing events, until interrupt() gets called.");
 		}
 		
 		if (cancel) {
@@ -242,6 +266,7 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 		for (PublishEventRunnable runnable : runnables) {
 			runnable.cancelPeriodicRuns();
 		}
+		m_logger.info("Stopped publishing events.");
 	}
 
 }
