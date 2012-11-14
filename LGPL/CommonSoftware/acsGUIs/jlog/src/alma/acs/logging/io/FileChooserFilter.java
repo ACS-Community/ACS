@@ -46,7 +46,8 @@ public class FileChooserFilter extends FileFilter {
 		if (extensions==null || extensions.length==0) {
 			throw new IllegalArgumentException("Invalid extensions");
 		}
-		this.extensions=extensions;
+		this.extensions=new String[extensions.length];
+		System.arraycopy(extensions, 0, this.extensions, 0, extensions.length);
 	}
 
 	/**
