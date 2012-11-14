@@ -25,15 +25,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 import si.ijs.maci.ComponentSpec;
 
@@ -41,54 +43,31 @@ import alma.ACS.ACSComponentOperations;
 import alma.acs.container.ContainerServices;
 
 /**
- * <code>ConcurrentComponentAccessUtil</code> extends {@link ComponentAccessUtil} allowing to 
+ * <code>ConcurrentComponentAccessUtil</code> extends {@link ComponentAccessUtil}, allowing to 
  * instantiate and release components concurrently.
  * <P>
- * The class owns a thread pool to execute the tasks concurrently. The size of the thred pool
- * can be set in the constructor otherwise the default value of {@link ConcurrentComponentAccessUtil#defaultThreadNumber}
+ * The class owns a thread pool to execute the tasks concurrently. The size of the thread pool
+ * can be set in the constructor; otherwise a default value of {@link ConcurrentComponentAccessUtil#defaultThreadNumber}
  * is used.
  * <P>
  * This class allows to release components in parallel by executing each release in one of the 
- * thread of the pool.
- * <P>
- * The activation of a component requests to specify the class of the components to activate and a return mechanism
- * for the instantiated component.
- * <BR> To limit the complexity of the method, the parallel instantiation of more then one dynamic components
- * is limited to components of the same type. 
- * <P>
- * One parallel operation can be performed in a certain time. If the user
- * want to issue a new parallel command, he has to wait until the current one 
- * terminates.
+ * threads of the pool.
  * <P>
  * Life cycle: 
  * <UL>
  * 	<LI>start() must be executed before using methods from this class
- *  <LI>stop() must be executed when the object is not needed anymore
+ *  <LI>stop() must be executed when the object is not needed anymore.
  * </UL>
  *  
  * @author acaproni
- *
  */
 public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 	
 	/**
 	 * The class to get a component in a thread of the pool
-	 * 
-	 * @author acaproni
-	 *
 	 */
 	private class ComponentActivator<V extends ACSComponentOperations> implements Callable<V> {
 		
-		
-		
-		@Override
-		public V call() throws Exception {
-			V comp=null;
-			comp=ConcurrentComponentAccessUtil.super.getDynamicComponent(compSpec, idlOpInterface);
-			logger.info("ComponentActivator got component "+compSpec.component_name);
-			return comp;
-		}
-
 		/**
 		 * The ComponentSpec of the dynamic component to get
 		 */
@@ -109,72 +88,48 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 			this.compSpec=compSpec;
 			this.idlOpInterface=idlOpInterface;
 		}
+		
+		@Override
+		public V call() throws Exception {
+			V comp = getDynamicComponent(compSpec, idlOpInterface);
+			logger.info("ComponentActivator got component " + compSpec.component_name);
+			return comp;
+		}
 	}
 	
 	/**
 	 * The class to release a component in a thread
-	 * 
-	 * @author acaproni
-	 *
 	 */
 	private class ComponentDeactivator implements Callable<Void> {
 		
-		/**
-		 * The name of the component to release
-		 */
-		private final String name;
+		private final String compName;
 		
 		/**
-		 * Constructor
-		 * 
-		 * @param componentName The name of the component to release
+		 * @param componentName
+		 * @param sync may be null
 		 */
 		public ComponentDeactivator(String componentName) {
-			this.name=componentName;
+			this.compName=componentName;
 		}
 
 		@Override
 		public Void call() {
-			ConcurrentComponentAccessUtil.this.releaseComponent(name, true);
-			countDown.countDown();
+			// here, from a separate thread, we do a *synchronous* comp release
+			ConcurrentComponentAccessUtil.this.releaseComponent(compName, true);
 			return null;
 		}
 	}
 	
+	
 	/**
 	 * The thread pool to add statistics to the FutureTask.
-	 * 
-	 * @author acaproni
-	 *
 	 */
 	public class BenchmarkTreadPoolExecutor extends ThreadPoolExecutor {
 
 		public BenchmarkTreadPoolExecutor(int corePoolSize,
 				int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-				BlockingQueue<Runnable> workQueue,
-				RejectedExecutionHandler handler) {
-			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
-		}
-
-		public BenchmarkTreadPoolExecutor(int corePoolSize,
-				int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-				BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
-				RejectedExecutionHandler handler) {
-			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
-					threadFactory, handler);
-		}
-
-		public BenchmarkTreadPoolExecutor(int corePoolSize,
-				int maximumPoolSize, long keepAliveTime, TimeUnit unit,
 				BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
-			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
-					threadFactory);
-		}
-
-		public BenchmarkTreadPoolExecutor(int corePoolSize,
-				int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-				BlockingQueue<Runnable> workQueue) {
-			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
 		}
 
 		/**
@@ -216,16 +171,11 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 			}
 			super.afterExecute(r, t);
 		}
-		
-		
-		
 	}
+
 	
 	/**
 	 * An instrumented future task contains fields useful for getting statistics.
-	 * 
-	 * @author acaproni
-	 *
 	 * @param <T>
 	 */
 	public class InstrumentedFutureTask<T> extends FutureTask<T> {
@@ -285,7 +235,7 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 	 * The number of threads is set in the constructor. The default is used if such
 	 * a number is not specified in the constructor.
 	 */
-	private static final int defaultThreadNumber= 100;
+	private static final int defaultThreadNumber = 100;
 
 	/**
 	 * Number of threads to concurrently start/release components
@@ -293,39 +243,10 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 	private final int totThreads;
 	
 	/**
-	 * The ACS thread factory
-	 */
-	private final ThreadFactory acsThreadFactory;
-	
-	/**
 	 * The executor service to concurrently activate the components
 	 */
 	private final BenchmarkTreadPoolExecutor executor;
-	
-	/**
-	 * The {@link CountDownLatch} to wait until all the tasks terminate.
-	 */
-	private volatile CountDownLatch countDown=new CountDownLatch(0);
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param contSrv The {@link ContainerServices}
-	 * @param threadPoolSize The number of threads in the thread pool
-	 */
-	public ConcurrentComponentAccessUtil(ContainerServices contSrv, int threadPoolSize) {
-		super(contSrv);
-		totThreads=threadPoolSize;
-		acsThreadFactory= this.contSrv.getThreadFactory();
-		executor = new BenchmarkTreadPoolExecutor(totThreads, totThreads,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                acsThreadFactory);
-		// Start the threads
-		int n=executor.prestartAllCoreThreads();
-		logger.info(n+" threads started");
 
-	}
 	
 	/**
 	 * Constructor.
@@ -339,10 +260,39 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 	}
 	
 	/**
+	 * Constructor.
+	 * 
+	 * @param contSrv The {@link ContainerServices}
+	 * @param threadPoolSize The number of threads in the thread pool
+	 */
+	public ConcurrentComponentAccessUtil(ContainerServices contSrv, int threadPoolSize) {
+		this(contSrv, threadPoolSize, false);
+	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param contSrv The {@link ContainerServices}
+	 * @param threadPoolSize The number of threads in the thread pool
+	 * @param prestartCoreThreads 
+	 */
+	public ConcurrentComponentAccessUtil(ContainerServices contSrv, int threadPoolSize, boolean prestartCoreThreads) {
+		super(contSrv);
+		totThreads = threadPoolSize;
+		executor = new BenchmarkTreadPoolExecutor(totThreads, totThreads, 1, TimeUnit.MINUTES,
+									new LinkedBlockingQueue<Runnable>(), contSrv.getThreadFactory());
+		executor.allowCoreThreadTimeOut(true);
+		if (prestartCoreThreads) {
+			int n = executor.prestartAllCoreThreads();
+			logger.info(n+" threads pre-started");
+		}
+	}
+	
+	/**
 	 * Life cycle method: this method must be called before using methods from this class 
 	 */
 	public void start() {
-		
+		// TODO: Say if it's intended to have this empty, but keep the method for future use.
 	}
 	
 	/**
@@ -361,61 +311,73 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 	}
 	
 	/**
-	 * Release a component in a dedicated thread of the pool.
+	 * Releases a component in a dedicated thread of the pool.
+	 * <p>
+	 * Note that <code>ComponentAccessUtil#releaseComponent(compName, waitForCompRelease=false)</code>
+	 * is very similar in the sense that it is also asynchronous, making an async call to the manager
+	 * instead of spawning a new thread already here in the client. 
+	 * The main difference though is that in this method we can measure the time it takes to release a component,
+	 * which is important for performance tests.
 	 * 
 	 * @param name The name of the component to deactivate
-	 * @return
+	 * @return handle to sync up with the finishing of the component release.
 	 */
 	public Future<Void> releaseComponentConcurrent(String name) {
-		ComponentDeactivator deactivator=new ComponentDeactivator(name);
+		ComponentDeactivator deactivator = new ComponentDeactivator(name);
 		return executor.submit(deactivator);
 	}
 	
 	/**
-	 * Concurrently release the components with the passed names
+	 * Concurrently releases the components with the passed names.
+	 * <p>
+	 * This method overrides the base class version, bringing in a thread pool for parallel 
+	 * component release, instead of sequentially releaseing every component. 
+	 * Mostly makes sense for <code>waitCompsTermination == true</code>.
+	 * <p>
+	 * To avoid hanging tests, a generous timeout of 30 minutes gets applied.
 	 * 
-	 * @param compNames The names of the components to release
-	 * @param if <code>true</code> the methods wait for all the threads to terminate before returning
-	 * 		otherwise return immediately
-	 * 
-	 * TODO: limit the waiting time 
+	 * @param compNames
+	 *            The names of the components to release
+	 * @param waitCompsTermination
+	 *            if <code>true</code> the method waits for all the threads to terminate before returning, otherwise
+	 *            returns immediately
 	 */
 	@Override
 	public void releaseComponents(Collection<String> compNames, boolean waitCompsTermination) {
-		try {
-			countDown.await(); 
-		} catch (InterruptedException ie) {}
-		countDown= new CountDownLatch(compNames.size());
+		List<Future<Void>> compReleaseFutures = new ArrayList<Future<Void>>();
+		
 		for (String compName : compNames) {
-			ComponentDeactivator deactivator=new ComponentDeactivator(compName);
-			executor.submit(deactivator);
+			compReleaseFutures.add(releaseComponentConcurrent(compName));
 		}
 		if (waitCompsTermination) {
-			logger.info("Awaiting termination of "+countDown.getCount()+" threads");
-			try {
-				countDown.await(); 
-			} catch (InterruptedException ie) {}
+			logger.info("Awaiting termination of " + compReleaseFutures.size() + " component release requests (with a 30 min timeout).");
+			
+			boolean printErrorLogs = true;
+			for (Future<Void> future : compReleaseFutures) {
+				try {
+					// The following get() call will block until the component release has finished,
+					// either normally or with an error, or if a timeout occurred.
+					future.get(30, TimeUnit.MINUTES);
+					
+				} catch (InterruptedException ex) {
+					logger.log(Level.WARNING, "Async component release interrupted.", ex);
+				} catch (CancellationException ex) {
+					logger.log(Level.WARNING, "Async component release cancelled.", ex);
+				} catch (ExecutionException ex) {
+					logger.log(Level.WARNING, "Async component release failed with exception ", ex.getCause());
+				} catch (TimeoutException ex) {
+					if (printErrorLogs) {
+						logger.log(Level.WARNING, "Async component release timed out.", ex);
+						printErrorLogs = false;
+					}
+				}
+			}
 		}
-	}
-	
-	/**
-	 * Concurrently release all the components.
-	 * 
-	 * @param if <code>true</code> the methods wait for all the threads to terminate before returning
-	 * 		otherwise return immediately
-	 */
-	@Override
-	public void releaseAllComponents(boolean waitCompsTermination) {
-		List<String> compNames;
-		synchronized (compName2Comp) {
-			compNames = new ArrayList<String>(compName2Comp.keySet()); // to avoid ConcurrentModificationException
-		}
-		releaseComponents(compNames,waitCompsTermination);
 	}
 	
 	/**
 	 * The parallel version of {@link ComponentAccessUtil#getDynamicComponent(ComponentSpec, Class)}
-	 * get the dynamic component in a thread of the pool.
+	 * gets the dynamic component in a thread of the pool.
 	 * 
 	 * @param compSpec The spec to start the dynamic component
 	 * @param idlOpInterface The idl interface of the component
@@ -425,9 +387,7 @@ public class ConcurrentComponentAccessUtil extends ComponentAccessUtil {
 			ComponentSpec compSpec,
 			Class<T> idlOpInterface) {
 		ComponentActivator<T> activator = new ComponentActivator<T>(compSpec, idlOpInterface);
-		//FutureTask<T> futureTask = new FutureTask<T>(activator);
 		return executor.submit(activator);
-		//return futureTask;
 	}
 
 }
