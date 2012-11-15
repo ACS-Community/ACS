@@ -37,6 +37,11 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	private final long maxFileSize;
 	
 	/**
+	 * The random number generator
+	 */
+	private final Random randomNumGenerator = new Random(System.currentTimeMillis());
+	
+	/**
 	 * Build the handler with the default size for the files.
 	 * 
 	 * The max size of each file of the cache is calculated in the following way:
@@ -109,7 +114,7 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 			if (homeDirFile.isDirectory() && homeDirFile.canWrite()) {
 				do {
 					// Try to create the file in the home directory
-					int random = new Random().nextInt();
+					int random = randomNumGenerator.nextInt();
 					name = homeDir + File.separator+"jlogEngineCache"+random+".jlog";
 					f = new File(name);
 				} while (f.exists());
