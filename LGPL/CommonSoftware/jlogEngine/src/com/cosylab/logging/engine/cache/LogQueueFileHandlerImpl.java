@@ -77,7 +77,9 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 		if (filePointer==null) {
 			throw new IllegalArgumentException("The file can't be null");
 		}
-		filePointer.delete();
+		if (!filePointer.delete()) {
+			System.err.println("Error deleting "+filePointer.getAbsolutePath());
+		}
 	}
 
 	/**

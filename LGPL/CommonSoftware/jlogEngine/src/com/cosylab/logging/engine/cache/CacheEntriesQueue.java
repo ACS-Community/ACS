@@ -204,7 +204,9 @@ public class CacheEntriesQueue {
 		}
 		raFile=null;
 		if (file!=null) {
-			file.delete();
+			if (!file.delete()) {
+				System.err.println("Error deleting cache file: "+file.getAbsolutePath());
+			}
 		}
 		file=null;
 	}
