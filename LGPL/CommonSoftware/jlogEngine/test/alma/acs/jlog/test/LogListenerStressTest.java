@@ -104,7 +104,7 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 	 *
 	 */
 	public void disconnet() {
-		engine.disconnect();
+		engine.disconnect(true);
 	}
 	
 	/**
