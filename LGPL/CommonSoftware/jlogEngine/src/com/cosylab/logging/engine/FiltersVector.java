@@ -432,9 +432,18 @@ public class FiltersVector extends Vector<Filter> {
 	 * @param f The xml file to store the filters in (java.io.File)
 	 */
 	public void saveFilters(File f) throws IOException {
+		if (f==null) {
+			throw new IllegalArgumentException("The file to save can't be null");
+		}
 		if (size()==0) return; // No filters to save
-		if (f.exists()) f.delete();
-		f.createNewFile();
+		if (f.exists()) {
+			if (!f.delete()) {
+				throw new IOException("Error deleting  "+f.getAbsolutePath());
+			}
+		}
+		if (!f.createNewFile()) {
+			throw new IOException("Error creating  "+f.getAbsolutePath());
+		}
 		FileOutputStream outStream = new FileOutputStream(f);
 		DataOutputStream dataOutStream = new DataOutputStream(outStream);
 		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
