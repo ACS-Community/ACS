@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +65,7 @@ public class EngineCache extends Thread {
 	 * <P>
 	 * The key is always positive.
 	 */
-	private AtomicInteger fileKey = new AtomicInteger(0);
+	private final AtomicInteger fileKey = new AtomicInteger(0);
 	
 	/**
 	 * The file used to write the strings into.
@@ -105,7 +107,7 @@ public class EngineCache extends Thread {
 	 * 
 	 * @see {@link EngineCache.entries}
 	 */
-	private final LinkedHashMap<Integer,CacheFile> files = new LinkedHashMap<Integer,CacheFile>();
+	private final Map<Integer,CacheFile> files = Collections.synchronizedMap(new LinkedHashMap<Integer,CacheFile>());
 	
 	/** 
 	 * <code>true</code> if the cache is closed.
@@ -249,10 +251,8 @@ public class EngineCache extends Thread {
 		}
 		Integer ret = Integer.valueOf(fileKey.get());
 		// Check if the key is already used
-		synchronized (files) {
-			if (files.containsKey(fileKey.get())) {
-				throw new IllegalStateException("No more room in cache");
-			}
+		if (files.containsKey(fileKey.get())) {
+			throw new IllegalStateException("No more room in cache");
 		}
 		return ret;
 	}
@@ -262,10 +262,7 @@ public class EngineCache extends Thread {
 	 * @return The number of files used by the cache
 	 */
 	public int getActiveFilesSize() {
-		synchronized (files) {
-			return files.size();
-		}
-		
+		return files.size();
 	}
 	
 	/**
@@ -296,9 +293,7 @@ public class EngineCache extends Thread {
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
 			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f);
 			outCacheFile.setWritingMode(true);
-			synchronized (files) {
-				files.put(outCacheFile.key,outCacheFile);
-			}
+			files.put(outCacheFile.key,outCacheFile);
 		}
 		if (!string.endsWith("\n")) {
 			string=string+"\n";
@@ -327,23 +322,17 @@ public class EngineCache extends Thread {
 			return null;
 		}
 		if (inCacheFile==null) {
-			synchronized (files) {
-				inCacheFile=files.get(entry.key);
-				inCacheFile.setReadingMode(true);
-			}
+			inCacheFile=files.get(entry.key);
+			inCacheFile.setReadingMode(true);
 		} else if (inCacheFile.key!=entry.key) {
 			inCacheFile.setReadingMode(false);
-			synchronized (files) {
-				files.remove(inCacheFile.key);
-			}
+			files.remove(inCacheFile.key);
 			if (!filesToDelete.offer(inCacheFile)) {
 				// Most unlikely to happen: the queue is full!
 				releaseFile(inCacheFile);
 			} 
-			synchronized (files) {
-				inCacheFile=files.get(entry.key);
-				inCacheFile.setReadingMode(true);
-			}
+			inCacheFile=files.get(entry.key);
+			inCacheFile.setReadingMode(true);
 		}
 		String ret= inCacheFile.readFromFile(entry);
 		if (ret.endsWith("\n")) {
@@ -384,12 +373,14 @@ public class EngineCache extends Thread {
 			} catch (InterruptedException ie) {}
 		}
 		// Release all the files still in the queue
-		if (!files.isEmpty()) {
-			Set<Integer> keys = files.keySet();
-			for (Integer key: keys) {
-				CacheFile cf = files.get(key);
-				releaseFile(cf);
-			}
+		synchronized (files) {
+			if (!files.isEmpty()) {
+				Set<Integer> keys = files.keySet();
+				for (Integer key: keys) {
+					CacheFile cf = files.get(key);
+					releaseFile(cf);
+				}
+			}	
 		}
 	}
 }
