@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.cosylab.logging.engine.LogEngineException;
 
@@ -62,7 +63,7 @@ public class EngineCache extends Thread {
 	 * <P>
 	 * The key is always positive.
 	 */
-	private int fileKey = 0;
+	private AtomicInteger fileKey = new AtomicInteger(0);
 	
 	/**
 	 * The file used to write the strings into.
@@ -86,12 +87,12 @@ public class EngineCache extends Thread {
 	 * 
 	 * @see {@link EngineCache.files}
 	 */
-	private CacheEntriesQueue entries = new CacheEntriesQueue();
+	private final CacheEntriesQueue entries = new CacheEntriesQueue();
 	
 	/**
 	 * A list of keys of unused files to delete.
 	 */
-	private LinkedBlockingQueue<CacheFile> filesToDelete = new LinkedBlockingQueue<CacheFile>();
+	private final LinkedBlockingQueue<CacheFile> filesToDelete = new LinkedBlockingQueue<CacheFile>();
 	
 	/**
 	 * The files used by the cache.
@@ -104,7 +105,7 @@ public class EngineCache extends Thread {
 	 * 
 	 * @see {@link EngineCache.entries}
 	 */
-	private LinkedHashMap<Integer,CacheFile> files = new LinkedHashMap<Integer,CacheFile>();
+	private final LinkedHashMap<Integer,CacheFile> files = new LinkedHashMap<Integer,CacheFile>();
 	
 	/** 
 	 * <code>true</code> if the cache is closed.
@@ -240,16 +241,16 @@ public class EngineCache extends Thread {
 	 * @return A new key for a file
 	 */
 	private Integer getNextFileKey() {
-		if (fileKey<Integer.MAX_VALUE) {
-			fileKey++;
+		if (fileKey.get()<Integer.MAX_VALUE) {
+			fileKey.incrementAndGet();
 		} else {
 			// Ops we need to reset the key...
-			fileKey=0;
+			fileKey.set(0);
 		}
-		Integer ret = Integer.valueOf(fileKey);
+		Integer ret = Integer.valueOf(fileKey.get());
 		// Check if the key is already used
 		synchronized (files) {
-			if (files.containsKey(fileKey)) {
+			if (files.containsKey(fileKey.get())) {
 				throw new IllegalStateException("No more room in cache");
 			}
 		}
