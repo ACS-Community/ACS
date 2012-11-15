@@ -21,10 +21,7 @@
  */
 package com.cosylab.logging.engine.log;
 
-import java.util.Date;
 import java.util.Vector;
-
-import java.io.Serializable;
 
 /**
  * The interface for all the log entry.
@@ -39,7 +36,7 @@ import java.io.Serializable;
  * @author acaproni
  *
  */
-public interface ILogEntry extends Serializable {
+public interface ILogEntry {
 	
 	/**
 	 * Each additional data is a couple <name,value>
