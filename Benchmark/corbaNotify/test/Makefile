@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = corbaNotifyTATPrologue corbaNotifyTATEpilogue
 
 
 #
@@ -202,9 +202,13 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) *~
+	$(RM) tmp
+	$(RM) tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

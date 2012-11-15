@@ -1,0 +1,7 @@
+#! /bin/bash
+
+echo "Will run 'acscontainerdaemonSmartStart'..."
+acscontainerdaemonSmartStart &> $ACS_TMP/containerdaemon.out
+echo "Container daemon is running."
+
+acsutilTATPrologue --noloadifr -l
