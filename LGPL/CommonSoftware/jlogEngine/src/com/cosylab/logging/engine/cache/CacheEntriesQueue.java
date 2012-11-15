@@ -144,6 +144,11 @@ public class CacheEntriesQueue {
 	private volatile int nextPageToRead=0;
 	
 	/**
+	 * The random number generator
+	 */
+	private final Random randomNumberGenerator = new Random(System.currentTimeMillis());
+	
+	/**
 	 * Put an entry in Cache.
 	 * <P>
 	 * If the cache is full the entry is added to the buffer.
@@ -243,7 +248,7 @@ public class CacheEntriesQueue {
 			if (homeFileDir.isDirectory() && homeFileDir.canWrite()) {
 				do {
 					// Try to create the file in the home directory
-					int random = new Random().nextInt();
+					int random = randomNumberGenerator.nextInt();
 					name = homeDir +File.separator + "jlogEngineCache"+random+".jlog";
 					f = new File(name);
 				} while (f.exists());
