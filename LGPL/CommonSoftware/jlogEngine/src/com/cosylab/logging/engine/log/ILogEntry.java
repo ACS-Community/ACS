@@ -43,8 +43,10 @@ public interface ILogEntry extends Serializable {
 	
 	/**
 	 * Each additional data is a couple <name,value>
-	 * The list of additional datas (see below) stores
+	 * The list of additional data (see below) stores
 	 * objects of this class
+	 * <P>
+	 * Objects of this class are immutable.
 	 * 
 	 * @author acaproni
 	 *
@@ -65,6 +67,16 @@ public interface ILogEntry extends Serializable {
 			}
 			AdditionalData d=(AdditionalData)o;
 			return this.name.equals(d.name) && this.value.equals(d.value); 
+		}
+
+		@Override
+		public int hashCode() {
+			int result=11;
+			int c1=(name==null?0:name.hashCode());
+			result=19*result+c1;
+			int c2=(value==null?0:value.hashCode());
+			result=19*result+c2;
+			return result;
 		}
 		
 	}
