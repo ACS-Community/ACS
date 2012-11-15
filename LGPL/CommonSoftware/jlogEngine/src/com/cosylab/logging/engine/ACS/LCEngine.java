@@ -22,6 +22,7 @@
 package com.cosylab.logging.engine.ACS;
 
 import java.lang.reflect.Constructor;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.omg.CORBA.ORB;
 
@@ -82,8 +83,8 @@ public class LCEngine implements Filterable {
 	private boolean wasConnected = false;
 
 	// Signal the thread to terminate
-	private AccessChecker connCheckerThread = null;
-	private boolean terminateThread = false;
+	private AtomicReference<AccessChecker> connCheckerThread = new AtomicReference<LCEngine.AccessChecker>(null);
+	private volatile boolean terminateThread = false;
 
 	private RemoteAccess remoteAccess = null;
 	
@@ -343,14 +344,15 @@ public class LCEngine implements Filterable {
 	 * 
 	 * @see LCEngine$AccessSetter
 	 */
-	public void connect() {
+	public synchronized void connect() {
 		new AccessSetter().start();
-		if (connCheckerThread == null || !connCheckerThread.isAlive()) {
+		if (connCheckerThread.get() == null || !connCheckerThread.get().isAlive()) {
 			terminateThread = false;
-			connCheckerThread = new AccessChecker();
-			connCheckerThread.setName("LCEngine");
-			connCheckerThread.setDaemon(true);
-			connCheckerThread.start();
+			AccessChecker setter = new AccessChecker();
+			connCheckerThread.set(setter);
+			setter.setName("LCEngine");
+			setter.setDaemon(true);
+			setter.start();
 		}
 	}
 
@@ -389,32 +391,53 @@ public class LCEngine implements Filterable {
 	 * 
 	 * @param sync If <code>true</code> the closing is made in a synchronized way.
 	 */
-	public synchronized void close(boolean sync) {
+	public void close(boolean sync) {
 		logRetrieval.close(sync);
-		disconnect();
+		disconnect(sync);
+	}
+	
+	/**
+	 * Disconnect the engine
+	 */
+	public void disconnect() {
+		disconnect(true);
 	}
 
 	/**
-	 * LCEngine starts an attempt to connect to the remote system. Connection is
-	 * handled in a separate Thread
+	 * LCEngine starts an attempt to disconnect to the remote system.
 	 * 
+	 * @param sync If <code>true</code> the closing is made in a synchronized way.
 	 * @see LCEngine$AccessSetter
 	 */
-	public synchronized void disconnect() {
+	public void disconnect(boolean sync) {
 		
 		// Stop the thread to check the status of the connection
-		if (connCheckerThread != null) {
+		synchronized (this) {
 			terminateThread = true;
-			while (connCheckerThread != null && connCheckerThread.isAlive()) {
+			AccessChecker checker = connCheckerThread.get();
+			if (checker != null) {
+				checker.interrupt();
+			}
+		}
+		disconnectRA();
+		if (!sync) {
+			return;
+		}
+		
+		// Wait for termination
+		while (true) {
+			AccessChecker checker = connCheckerThread.get();
+			if (checker!=null && checker.isAlive()) {
 				try {
 					Thread.sleep(250);
 				} catch (InterruptedException ie) {
 					continue;
 				}
+			} else {
+				break;
 			}
-			connCheckerThread = null;
 		}
-		disconnectRA();
+		connCheckerThread.set(null);
 	}
 
 	/**
