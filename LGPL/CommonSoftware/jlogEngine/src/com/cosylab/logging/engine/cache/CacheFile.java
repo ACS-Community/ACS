@@ -299,7 +299,10 @@ public class CacheFile {
 		reading=true;
 		byte buffer[] = new byte[(int)(entry.end-entry.start)];
 		raFile.seek(entry.start);
-		raFile.read(buffer);
+		int bytesRead=raFile.read(buffer);
+		if (bytesRead!=buffer.length) {
+			throw new IOException("read returned "+bytesRead+" instead of "+buffer.length);
+		}
 		return new String(buffer);
 	}
 	
