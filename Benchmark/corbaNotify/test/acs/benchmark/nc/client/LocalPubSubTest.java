@@ -20,13 +20,16 @@
  *******************************************************************************/
 package acs.benchmark.nc.client;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import junit.framework.JUnit4TestAdapter;
 
@@ -39,8 +42,6 @@ import org.junit.rules.TestName;
 import acs.benchmark.util.ContainerUtil;
 import acs.benchmark.util.ContainerUtil.ContainerLogLevelSpec;
 
-import alma.ACSErrTypeCommon.CouldntPerformActionEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.AcsLocations;
@@ -151,8 +152,8 @@ public class LocalPubSubTest extends ComponentClient
 			m_logger.info("Single supplier comp '" + componentName + "' sent " + numEvents 
 					+ " MountStatusData events at max speed to NC '" 
 					+ ncNames[0] + "' in " + callTimeInternalMillis + " ms.");
-			assertThat("Expecting at most 2 ms for publishing an event to a NotifyService.", 
-					callTimeInternalMillis, lessThanOrEqualTo(numEvents * 2));
+			assertThat("Expecting at most 4 ms for publishing an event to a NotifyService.", 
+					callTimeInternalMillis, lessThanOrEqualTo(numEvents * 4));
 		} finally {
 			// clean up
 			if (supplierComp != null) supplierComp.ncDisconnect();
@@ -170,8 +171,8 @@ public class LocalPubSubTest extends ComponentClient
 	@Test
 	public void testOneSupplierOneSubscriberMixedEvents() throws Exception {
 
-		final int numEvents = 100;
-		final int eventPeriodMillis = 10;
+		final int numEvents = 200;
+		final int eventPeriodMillis = 48;
 		
 		String[] ncNames = new String[] {CHANNELNAME_CONTROL_REALTIME.value};
 		final NcEventSpec[] ncEventSpecs = new NcEventSpec[] {
@@ -189,24 +190,15 @@ public class LocalPubSubTest extends ComponentClient
 			final CorbaNotifyConsumerOperations subscriberComp = componentAccessUtil.getDynamicJavaSubscriberComponent(subscriberComponentName, subscriberContainerName);
 			subscriberComp.ncConnect(ncNames);
 			m_logger.info("Connected subscriber to NC " + ncNames[0]);
-			final CountDownLatch subscriberSync = new CountDownLatch(1); // or use SynchronousQueue etc to pass back data
-			Runnable runSubscriber = new Runnable() {
+			Callable<Integer> runSubscriber = new Callable<Integer>() {
 				@Override
-				public void run() {
-					try {
-						int subscriberReceptionTimeMillis = subscriberComp.receiveEvents(ncEventSpecs, 0, numEvents);
-						m_logger.info("Subscriber component done. It received " + numEvents + " events in " + subscriberReceptionTimeMillis + " ms.");
-					} catch (CouldntPerformActionEx ex) {
-						AcsJCouldntPerformActionEx ex2 = AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
-						m_logger.log(Level.WARNING, "Failure in subscriberComp.receiveEvents", ex2);
-					} catch (Exception ex) {
-						m_logger.log(Level.WARNING, "Failure in subscriberComp.receiveEvents", ex);
-					}
-					subscriberSync.countDown();
+				public Integer call() throws Exception {
+					m_logger.info("About to call subscriber#receiveEvents in a separate thread...");
+					return subscriberComp.receiveEvents(ncEventSpecs, 0, numEvents);
 				}
 			};
-			getContainerServices().getThreadFactory().newThread(runSubscriber).start();
-	
+			Future<Integer> subscriberCallFuture = Executors.newSingleThreadExecutor().submit(runSubscriber);
+			Thread.sleep(100); // to "ensure" that the subscriber is ready before we publish events 
 	
 			// Create dynamic supplier component
 			String componentName = "JavaSupplier-1";
@@ -215,15 +207,22 @@ public class LocalPubSubTest extends ComponentClient
 			
 			// supplier setup
 			supplierComp.ncConnect(ncNames);
-			m_logger.info("Connected supplier to NC " + ncNames[0]);
+			m_logger.info("Connected supplier to NC " + ncNames[0] + ". Will now send " + numEvents + " events, one every " + eventPeriodMillis + " ms.");
 			
 			// Let publisher component publish events as long as it takes for the subscriber to get enough of them 
 			supplierComp.sendEvents(ncEventSpecs, eventPeriodMillis, -1);
 			
-			boolean subscriberTerminateOK = subscriberSync.await(60, TimeUnit.SECONDS);
-			
-			assertThat("Subscriber component should have received all events without client timeout.", 
-					subscriberTerminateOK, is(true));
+			int subscriberReceptionTimeMillis = subscriberCallFuture.get(60, TimeUnit.SECONDS);
+			m_logger.info("Subscriber component done. It received " + numEvents + " events in " + subscriberReceptionTimeMillis + " ms.");
+			int expectedReceptionTimeMillis = numEvents * eventPeriodMillis;
+			// TODO: In Eclipse with JDK 1.7 it works more compact like this: 
+			// is(both(greaterThan((int)(0.90 * expectedReceptionTimeMillis))).and(lessThan((int)(1.1 * expectedReceptionTimeMillis))))
+			assertThat("It should have taken around " + expectedReceptionTimeMillis + " ms to receive the events.",
+					subscriberReceptionTimeMillis, 
+					is(greaterThan((int)(0.80 * expectedReceptionTimeMillis))));
+			assertThat("It should have taken around " + expectedReceptionTimeMillis + " ms to receive the events.",
+					subscriberReceptionTimeMillis, 
+					is(lessThan((int)(1.1 * expectedReceptionTimeMillis))));
 		}
 		finally {
 			componentAccessUtil.releaseComponent(subscriberComponentName, true);
