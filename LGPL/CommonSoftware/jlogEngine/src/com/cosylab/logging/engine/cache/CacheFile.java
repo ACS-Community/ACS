@@ -25,10 +25,9 @@ import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import com.cosylab.logging.engine.LogEngineException;
-import com.cosylab.logging.engine.ACS.CacheUtils;
-
 import alma.acs.util.IsoDateFormat;
+
+import com.cosylab.logging.engine.LogEngineException;
 
 /**
  * Each file used by the cache.
