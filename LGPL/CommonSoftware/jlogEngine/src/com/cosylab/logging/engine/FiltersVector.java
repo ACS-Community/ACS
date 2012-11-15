@@ -29,6 +29,7 @@ package com.cosylab.logging.engine;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
@@ -365,12 +366,13 @@ public class FiltersVector extends Vector<Filter> {
 	 * 
 	 * NOTE: This method will be removed
 	 * 
-	 * @param f The file to convert
-	 * 
 	 * @return The file with new format
-	 * @throws <code>Exception</code> In case of error converting the file
+	 * @throws {@link IOException}
+	 * throws {@link FileNotFoundException}
+	 * 
+	 * @deprecated
 	 */
-	private File convertOldFilterFile(File oldFile) throws Exception {
+	private File convertOldFilterFile(File oldFile) throws IOException, FileNotFoundException {
 		if (oldFile==null) {
 			throw new IllegalArgumentException("The file can't be null");
 		}
@@ -379,7 +381,6 @@ public class FiltersVector extends Vector<Filter> {
 			throw new IllegalArgumentException("The file must have read and write permissions");
 		}
 		//Create a new temporary file 
-		try {
 		File tempFile = File.createTempFile("jlog_",null);
 		
 		FileOutputStream outStream = new FileOutputStream(tempFile);
@@ -389,41 +390,48 @@ public class FiltersVector extends Vector<Filter> {
 		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
 		dataOutStream.writeBytes("<FILTERS>\n");
 		// Write the list of filters as it is in the old file
-		FileInputStream inStream = new FileInputStream(oldFile);
+		FileInputStream inStream = null;
+		try {
+			inStream = new FileInputStream(oldFile);
+		} catch (FileNotFoundException fnfe) {
+			dataOutStream.close();
+			throw fnfe;
+		}
+		
 		byte[] buffer = new byte[1024];
 		// strBuffer will contain the whole old file
 		StringBuffer strBuffer = new StringBuffer();
 		// The number of bytes read
-		int nBytes;
-		do {
-			nBytes=inStream.read(buffer);
-			if (nBytes>0) {
-				strBuffer.append(new String(buffer,0,nBytes));
+		try {
+			int nBytes;
+			do {
+				nBytes=inStream.read(buffer);
+				if (nBytes>0) {
+					strBuffer.append(new String(buffer,0,nBytes));
+				}
+			} while (nBytes!=-1); //EOF
+			
+			String startTagStr = new String("<FILTER_LIST>");
+			String endTagStr = new String("</FILTER_LIST>");
+			int startTagPos = strBuffer.indexOf(startTagStr);
+			int endTagPos   = strBuffer.indexOf(endTagStr);
+			
+			if (startTagPos>0 && endTagPos>0) {
+				dataOutStream.writeBytes(strBuffer.substring(startTagPos,endTagPos+endTagStr.length()));
+			} else {
+				// Strange.. it seems I read no filters definition...
+				dataOutStream.writeBytes(startTagStr);
+				dataOutStream.writeBytes(endTagStr);
 			}
-		} while (nBytes!=-1); //EOF
-		
-		String startTagStr = new String("<FILTER_LIST>");
-		String endTagStr = new String("</FILTER_LIST>");
-		int startTagPos = strBuffer.indexOf(startTagStr);
-		int endTagPos   = strBuffer.indexOf(endTagStr);
-		
-		if (startTagPos>0 && endTagPos>0) {
-			dataOutStream.writeBytes(strBuffer.substring(startTagPos,endTagPos+endTagStr.length()));
-		} else {
-			// Strange.. it seems I read no filters definition...
-			dataOutStream.writeBytes(startTagStr);
-			dataOutStream.writeBytes(endTagStr);
+			
+			// Close the file with the termination tags
+			dataOutStream.writeBytes("</FILTERS>");
+		} finally {
+			dataOutStream.close();
+			inStream.close();
 		}
-		
-		// Close the file with the termination tags
-		dataOutStream.writeBytes("</FILTERS>");
 
 		return tempFile;
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	/**
@@ -446,22 +454,27 @@ public class FiltersVector extends Vector<Filter> {
 		}
 		FileOutputStream outStream = new FileOutputStream(f);
 		DataOutputStream dataOutStream = new DataOutputStream(outStream);
-		dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
-		dataOutStream.writeBytes("<FILTERS>\n");
-		dataOutStream.writeBytes("<FILTER_LIST>\n");
-		for (int t=0; t<size(); t++) {
-			StringBuilder xmlString=new StringBuilder(get(t).toXMLString());
-			int pos=xmlString.indexOf("</FILTER>");
-			if (pos>=0) {
-				StringBuilder enabledStr = new StringBuilder("\t<ENABLED>");
-				enabledStr.append(isActive(t));
-				enabledStr.append("</ENABLED>\n\t");
-				xmlString.insert(pos, enabledStr);
+		
+		try {
+			dataOutStream.writeBytes("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
+			dataOutStream.writeBytes("<FILTERS>\n");
+			dataOutStream.writeBytes("<FILTER_LIST>\n");
+			for (int t=0; t<size(); t++) {
+				StringBuilder xmlString=new StringBuilder(get(t).toXMLString());
+				int pos=xmlString.indexOf("</FILTER>");
+				if (pos>=0) {
+					StringBuilder enabledStr = new StringBuilder("\t<ENABLED>");
+					enabledStr.append(isActive(t));
+					enabledStr.append("</ENABLED>\n\t");
+					xmlString.insert(pos, enabledStr);
+				}
+				dataOutStream.writeBytes(xmlString.toString());
 			}
-			dataOutStream.writeBytes(xmlString.toString());
+			dataOutStream.writeBytes("</FILTER_LIST>\n");
+			dataOutStream.writeBytes("</FILTERS>\n");
+		} finally {
+			dataOutStream.close();
 		}
-		dataOutStream.writeBytes("</FILTER_LIST>\n");
-		dataOutStream.writeBytes("</FILTERS>\n");
 	}
 	
 	/**
