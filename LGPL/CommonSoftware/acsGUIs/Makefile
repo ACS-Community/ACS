@@ -16,13 +16,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2012/11/15 15:18:18 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2012/11/16 13:19:32 acaproni Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# almamgr  2012-11-15  created
+# acaproni  2012-11-16  created
 #
 #*******************************************************************************
 # This Makefile follows ACS Standards (see Makefile(5) for more).
@@ -42,13 +42,23 @@
 #
 # Modify as appropriate to your subsystem
 
-SUBSYSTEM = "Voyager One"
+SUBSYSTEM = "ACS GUIs"
 
-MODULES_ALPHA  = alpha1 alpha2 alpha3
-MODULES_BETA = beta1 beta2 beta3
+MODULES_ACSGUIS  = 	acsGUIutil \
+                        acsEclipseUtils \
+                        acssampGUI \
+                        cdbBrowser \
+                        errorBrowser \
+                        eventGUI \
+                        jlog \
+                        logLevelGUI \
+                        logTools \
+                        objexp
+MODULES_ACSGUIS_ALARM = alarmSourcePanel \
+                        alarmPanel
 
-MODULES =  $(foreach dir, $(MODULES_ALPHA), Alpha/$(dir)) \
-           $(foreach dir, $(MODULES_BETA), Beta/$(dir)) 
+MODULES =  $(foreach dir, $(MODULES_ACSGUIS), $(dir)) \
+           $(foreach dir, $(MODULES_ACSGUIS_ALARM), $(dir)) 
 
 #
 # If option KEEP_GOING=on is present in the make command line gnu_make is NOT interrupted 
@@ -145,6 +155,8 @@ clean_log:
 	@$(ECHO) "############ Clean Build Log File: build.log #################"
 	@rm -f build.log
 	@touch build.log
+
+update: build
 
 #
 # building all modules
