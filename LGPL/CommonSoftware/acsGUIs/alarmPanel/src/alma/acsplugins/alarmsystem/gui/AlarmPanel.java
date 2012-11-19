@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.31 2012/10/10 14:18:23 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.32 2012/11/19 09:48:03 acaproni Exp $
  * @since    
  */
 
@@ -77,17 +77,11 @@ public class AlarmPanel extends JPanel {
     private JFrame frame=null;
     
     /**
-     * The panel shown when the CERN alarm system is in use
-     * and the client is connected to the AS
-     */
-    private final CernAlSysTabbedPane cernPnl;
-    
-    /**
      * The panel shown when the ACS alarm system is in use.
      * <P>
      * This panel contains a label to inform the user to open jlog instead
      */
-    private AcsAlSysPanel acsASPnl=new AcsAlSysPanel();
+    private final AcsAlSysPanel acsASPnl=new AcsAlSysPanel();
     
     /**
      * The panel shown when the AS is not available even if the CERN
@@ -97,7 +91,20 @@ public class AlarmPanel extends JPanel {
      * The purpose is to inform the user that the AS is not available but can signal 
      * an error if the AS did not start.
      */
-    private AlSysNotAvailPanel alSysNotAvailPnl=new AlSysNotAvailPanel();
+    private final AlSysNotAvailPanel alSysNotAvailPnl=new AlSysNotAvailPanel();
+    
+    /**
+     * The panel shown when the CERN alarm system is in use
+     * and the client is connected to the AS
+     */
+    private final CernAlSysTabbedPane cernPnl=new CernAlSysTabbedPane(this,alSysNotAvailPnl);
+    
+    /**
+     * The panel shown after initializing the GUI and before {@link #setServices(ORB, AcsLogger)}
+     * is executed. In fact until that moment we don't know yet
+     * which alarm system will be used so we present to the user a (hopefully) better message.
+     */
+    private final NoAcsPanel noACSPnl= new NoAcsPanel();
     
     /**
      * The layout to choose which panel the GUI shows
@@ -125,6 +132,11 @@ public class AlarmPanel extends JPanel {
     public static final String acsASName="ACS_pnl";
     
     /**
+     * The name (in the layout) of <code>noACSPnl</code>
+     */
+    private static final String notInitedYetName="Not_Connected_Yet";
+    
+    /**
      * <code>true</code> if the alarm system in use is the ACS implementation
      */
     private boolean isAcsAs;
@@ -135,7 +147,6 @@ public class AlarmPanel extends JPanel {
 	 */
 	public AlarmPanel() {
 		super(true);
-		cernPnl=new CernAlSysTabbedPane(this,alSysNotAvailPnl);
 		initialize();
 	}
 	
@@ -151,7 +162,6 @@ public class AlarmPanel extends JPanel {
 		}
 		this.frame=frame;
 		this.frame.setIconImage(new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"flag_red.png")).getImage());
-		cernPnl=new CernAlSysTabbedPane(this,alSysNotAvailPnl);
 		initialize();
 	}
 	
@@ -164,6 +174,7 @@ public class AlarmPanel extends JPanel {
 		panel.add(alSysNotAvailPnl, alSysNotAvailName);
 		panel.add(cernPnl, cernSysName);
 		panel.add(acsASPnl, acsASName);
+		panel.add(noACSPnl,notInitedYetName);
 
 		// At this stage the alarm system is unavailable  but we do not know yet
 		// which is the type of alarm system in use
@@ -174,8 +185,7 @@ public class AlarmPanel extends JPanel {
 		
 		// This method is executed before setting the ContainerService
 		// and so at this stage we do not know if the AS is CERN or ACS
-		// but for sure we are not connected to the alarm service
-		showPanel(alSysNotAvailName);
+		showPanel(notInitedYetName);
 	}
 
 	/**
@@ -212,6 +222,18 @@ public class AlarmPanel extends JPanel {
 	public void setServices(ORB orb, AcsLogger logger) {
 		this.orb=orb;
 		this.logger=logger;
+		if (orb!=null && logger!=null) {
+			// If the orb and the logger are not null, then
+			// show the ACS or CERN panel
+			if (initAlarmServiceType()) {
+				// Show the ACS panel
+				if (isAcsAs) {
+					showPanel(acsASName);
+				}
+			} else {
+				showPanel(alSysNotAvailName);
+			}
+		}
 	}
 	
 	/**
@@ -257,7 +279,7 @@ public class AlarmPanel extends JPanel {
 	 * <P>
 	 * If the AS is ACS, the ACS panel is shown.
 	 */
-	private void initAlarmServiceType() {
+	private boolean initAlarmServiceType() {
 		if (orb==null || logger==null) {
 			throw new IllegalStateException("The ORB/logger are still null!");
 		}
@@ -271,10 +293,7 @@ public class AlarmPanel extends JPanel {
 			t.printStackTrace(System.err);
 		}
 		isAcsAs=ret;
-		// Show the ACS panel
-		if (isAcsAs) {
-			showPanel(acsASName);
-		}
+		return isAcsAs;
 	}
 	
 	/**
@@ -290,7 +309,7 @@ public class AlarmPanel extends JPanel {
 			throw new IllegalArgumentException("Invalid name of panel (null or empty name)");
 		}
 		boolean found=false;
-		if (panelName.equals(cernSysName) || panelName.equals(acsASName) || panelName.equals(alSysNotAvailName)) {
+		if (panelName.equals(cernSysName) || panelName.equals(acsASName) || panelName.equals(alSysNotAvailName) || panelName.equals(notInitedYetName)) {
 			found=true;
 		}
 		if (!found) {
