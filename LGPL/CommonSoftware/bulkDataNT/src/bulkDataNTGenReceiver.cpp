@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.10 2012/10/15 10:09:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.11 2012/11/19 14:53:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -104,7 +104,7 @@ long TestCB::cbDealy = 0;
 bool TestCB::cbReceivePrint=true;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u unicast mode] [-m multicast address] [-n suppers printing in cbReceive]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive]" << endl;
 	exit(1);
 }
 
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 	list<char *> flows;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:un");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u::n");
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
@@ -140,6 +140,11 @@ int main(int argc, char *argv[])
 			case 'u':
 			{
 				flowCfg.setEnableMulticast(false);
+				char *op=get_opts.opt_arg();
+				if (op!=NULL)
+				{
+					flowCfg.setUnicastPort(atoi(op));
+				}
 				break;
 			}
 			case 's':
