@@ -1,16 +1,21 @@
 #! /bin/bash
 OF=result.out
+PF=test.plot
 FILES=`ls ~/bulkDataNTGenSender*`
+COMMA=""
 
-echo $FILES
+echo "Files that are going to be processed: " $FILES
 rm -rf $OF
-
+echo -ne "plot " > $PF
 for f in $FILES
 do	
 	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
 	OF=$MACHINE.out
 	rm -rf $OF
 	grep 'Transfer rate' $f | awk -v M=$MACHINE '{t=substr($1,12,13)*3600+substr($1,15,16)*60+substr($1,18); printf("%s, %.3f, %s\n", substr($1,12), t, $10)}' >> $OF
+	echo -ne $COMMA "\"$OF\" using 2:3 with linespoints" >> $PF
+	COMMA=","
 #	egrep 'proto|cache' $f	>> $OF
 done
-gnuplot -p plot
+
+gnuplot -p $PF
