@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.3 2012/10/24 07:30:03 bjeram Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.4 2012/11/19 09:32:28 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -38,12 +38,13 @@ class SenderData:
 
 class bulkDataNTtestSuite:
     
-    def __init__(self, hosts, size=640000, loops=10):
+    def __init__(self, hosts, size=640000, loops=10, sourceFile='.bash_profile'):
         self.hosts = hosts
         self.numOfHosts = len(hosts)
         self.dataSizeInBytes=size
         self.loops=loops
         self.sendersData = {}
+        self.sourceFile=sourceFile
     
     def startSenders(self):
         flow = 0
@@ -52,8 +53,8 @@ class bulkDataNTtestSuite:
         for h in self.hosts:
             flowString = format(flow, "02d")      
             command = ("ssh " + os.environ['USER']+ "@" + h + 
-                       " 'source .bash_profile; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; bulkDataNTGenSender -l "+str(self.loops)+" -b "
-                       +str(self.dataSizeInBytes)+" -s TS -f "+flowString+
+                       " 'source " + self.sourceFile + "; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; bulkDataNTGenSender -l " + 
+                       str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
                        " | grep -v lost | tee bulkDataNTGenSender.$HOST'")
             print '#',i,' Executing command: '+ command
             process = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
@@ -87,18 +88,30 @@ class bulkDataNTtestSuite:
 if __name__ == '__main__':
     b=640000
     l=50
-    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:", ["help", "senders=", "receivers="])
+    senderHosts=None
+    sf=".bash_profile"
+    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:", ["help", "senders=", "receivers=", "source="])
     for o,a in opts:
         if o in ("-h", "--help"):
-            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations]'
-        elif o=="-s":
+            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations] [--source=source file]'
+            sys.exit()
+        elif o in ("-s", "--senders"):
             senderHosts=a.split(",")
         elif o=="-b":
             b=a
         elif o=="-l":
             l=a
-                                                
-    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l) 
+        elif o in ("-r", "--receivers"):
+            print 'option -r/--receivers= not supported yet'
+        elif o=="--source":
+            sf=a
+            print 'source file: '+sf
+            
+    if senderHosts is None:
+        print 'No sender has been given (use option -s/--senders=)!'
+        sys.exit()
+                                                    
+    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf) 
     testSuit.startSenders()
 
 # ___oOo___
