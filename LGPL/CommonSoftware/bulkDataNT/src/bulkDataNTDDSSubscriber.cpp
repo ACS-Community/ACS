@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.25 2012/10/15 09:50:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.cpp,v 1.26 2012/11/19 15:12:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -210,6 +210,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	{
 		DDSDREnableProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
+		throw ex;
 	}
 
 	return ACSBulkData::BulkDataNTFrameDataReader::narrow(dr);
