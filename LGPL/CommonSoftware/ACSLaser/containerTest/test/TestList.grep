@@ -1,0 +1,11 @@
+java -classpath
+^. - [jJ]ava
+JUnit version
+ACS.log.minlevel.namedloggers
+Set named logger levels from property
+^1 - Time: 
+TRACE
+DELOUSE
+DEBUG \[ContainerLoggingAlarmTest
+DEBUG \[acsStartJava\]
+FINE

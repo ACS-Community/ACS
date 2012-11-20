@@ -1,0 +1,22 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id$"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+
+set ACS_TMP [file join [pwd] tmp]
+set env(ACS_TMP) $ACS_TMP
+
+set env(ACS_CDB) [pwd] 
+
+# Produce low-level logs for all acsStart.log, all_logs.xml, and test .out.orig files. 
+# The latter will be thinned out by TestList.grep to keep the ref files maintainable.
+set env(ACS_LOG_STDOUT) 2
+set env(ACS_LOG_CENTRAL) 3
+
+set env(ACS_LOG_FILE) [file join $ACS_TMP log_cache.dat]
+
+#
+# ___oOo___

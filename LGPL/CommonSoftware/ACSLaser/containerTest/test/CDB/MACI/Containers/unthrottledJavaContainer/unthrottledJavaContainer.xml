@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Container 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="urn:schemas-cosylab-com:Container:1.0" 
+	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+	ImplLang="java"
+	>
+
+	<Autoload />
+
+	<!-- This configuration is supposed to create stress on the log queue, 
+	     with each log being sent separately to the Log service, 
+	     and a queue size of only 100 instead of default 1000 log records. 
+	     The test expects to fill the queue so that messages get dropped.
+	 -->
+	<LoggingConfig
+		dispatchPacketSize="1" 
+		maxLogQueueSize="100" >
+		<log:_ Name="jacorb@unthrottledJavaContainer" minLogLevel="5" minLogLevelLocal="5" />
+	</LoggingConfig>
+
+</Container>

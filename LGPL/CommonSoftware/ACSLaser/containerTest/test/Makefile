@@ -86,8 +86,8 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 # These scripts are shell scripts not Python scripts
-SCRIPTS         = managerTATPrologue managerTest
-SCRIPTS_L       =
+SCRIPTS         = 
+SCRIPTS_L       = containerTATPrologue runLogAlarmTest.sh
 
 #
 # TCL scripts (public and local)
@@ -139,8 +139,12 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= containerTest
-containerTest_DIRS=alma
+JARFILES=containerTest
+containerTest_DIRS=alma/alarmContainerTest/client
+
+COMPONENTS_JARFILES = testComponentImpl
+testComponentImpl_DIRS = alma/alarmContainerTest/AlarmTestComponentImpl
+
 #
 # java sources in Jarfile on/off
 DEBUG = on

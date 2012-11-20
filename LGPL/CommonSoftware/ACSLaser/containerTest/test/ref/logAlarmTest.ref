@@ -1,0 +1,23 @@
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: org.junit.runner.JUnitCore alma.alarmContainerTest.client.ContainerLoggingAlarmTest
+1 - 
+1 - .----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] ----------------- Running test testLogOverflowNoThrottle ----------------- 
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 10000 INFO logs from component TestcompJavaUnthrottled: xxxx
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 1000 DEBUG logs from component TestcompJavaUnthrottled: xxxx
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 1000 DEBUG logs from component TestcompJavaUnthrottled: xxxx
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] client 'ContainerLoggingAlarmTest' has successfully released a component with curl=TestcompJavaUnthrottled
+1 - .----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] ----------------- Running test testLogThrottleAlarm ----------------- 
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 1000 DEBUG logs from component TestcompJavaThrottled: xxxx
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] client 'ContainerLoggingAlarmTest' has successfully released a component with curl=TestcompJavaThrottled
+1 - 
+1 - 
+1 - OK (2 tests)
+1 - 
+1 - OK: XML log file found.
+1 - OK: Alarm service log file found.
+1 - OK: Unthrottled container log file found.
+1 - Expecting throttle alarm (triplet Logging:throttledJavaContainer:10) to be raised and cleared,
+1 - thus two alarms with active=true/false published by the alarm service:
+1 - xx:xx:xx  INFO - publishing alarm change for Logging:throttledJavaContainer:10, active= true
+1 - xx:xx:xx  INFO - publishing alarm change for Logging:throttledJavaContainer:10, active= false
+1 - Diff between missing blocks of logs reported by container and the logs missing in XML should be empty:
+1 - OK: Verified 'looming log queue overflow...' message caused by dropped DEBUG logs when queue capacity got scarce.
