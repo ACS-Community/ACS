@@ -130,6 +130,16 @@ public class StopWatch
 	 */
 	public void logLapTime(String taskDesc)
 	{
+		logLapTime(taskDesc, Level.FINE);
+	}
+	
+	/**
+	 * Variant of {@link #logLapTime(String)} that allows the user to specify
+	 * the log level. Generally the FINE (=DEBUG) level is appropriate for performance logs, 
+	 * but in special cases such as unit tests it can be necessary to log at INFO or other levels.
+	 */
+	public void logLapTime(String taskDesc, Level logLevel)
+	{
 		if (!s_shutup) {
 			try {
 				long elapsedMillis = getLapTimeMillis();
@@ -140,11 +150,12 @@ public class StopWatch
 				synchronized (millisecFormatter) {
 					elapsed = millisecFormatter.format(elapsedMillis);
 				}
-				m_logger.log(Level.FINE, "elapsed time in ms to " + taskDesc + ": " + elapsed);
+				m_logger.log(logLevel, "elapsed time in ms to " + taskDesc + ": " + elapsed);
 			}
 			catch (Throwable thr) {
 				// just to be safe -- really don't want to mess with the running application...
 			} 
 		}
 	}
+
 }
