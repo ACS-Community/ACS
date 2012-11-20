@@ -73,7 +73,13 @@ public class DispatchingLogQueue {
     
     private int currentFlushPeriod;
     
+    /**
+     * 
+     */
     private final AtomicBoolean outOfCapacity;
+    
+    private final AtomicBoolean scarceCapacity;
+    
     private int preOverflowFlushPeriod;
 
     // log dispatcher: initially null until set when remote log service is available
@@ -98,6 +104,7 @@ public class DispatchingLogQueue {
     
     DispatchingLogQueue() {
         outOfCapacity = new AtomicBoolean(false);
+        scarceCapacity = new AtomicBoolean(false);
         preOverflowFlushPeriod = 0;
         currentFlushPeriod = 0;
         setMaxQueueSize(1000);
@@ -169,6 +176,8 @@ public class DispatchingLogQueue {
 			}
 		}
 
+        // The fact that we get here means that queue.size() < maxQueueSize
+        
         if (outOfCapacity.getAndSet(false)) {
         	// queue was full before, but now is better again
             setPeriodicFlushing(preOverflowFlushPeriod);
@@ -176,17 +185,21 @@ public class DispatchingLogQueue {
             System.out.println("log queue no longer overflowing.");
         }
         
-        // drop less important messages if queue space gets scarce
+        // drop less important messages (DEBUG and below) if queue space gets scarce
         if (!LOSSLESS) {
 	        final int filterThreshold = maxQueueSize * 7 / 10;
 	
 	        if (oldSize >= filterThreshold && logRecord.getLevel().intValue() < Level.INFO.intValue()) {
-	            if (DEBUG) {
-	                System.out.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize + 
-	                                    "): low-level log record with message '" + logRecord.getMessage() +
-	                                    "' will not be sent to the remote logging service.");
+	        	boolean firstTimeScarce = !scarceCapacity.getAndSet(true);
+	            if (DEBUG || firstTimeScarce) {
+	                System.out.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize 
+	                		+ "): low-level log record with message '" + logRecord.getMessage()
+	                		+ "' and possibly other log records below INFO level will not be sent to the remote logging service.");
 	            }
 	            return false;
+	        }
+	        else {
+	        	scarceCapacity.set(false);
 	        }
         }
         
