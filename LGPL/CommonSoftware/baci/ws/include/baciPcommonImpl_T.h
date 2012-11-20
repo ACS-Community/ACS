@@ -266,6 +266,8 @@ public:
     
     virtual ACS::pattern resolution ();
     
+    virtual void publish_now();
+
     /* -------------------- [ P interface ] -------------------- */
     
     virtual ACS::TimeInterval default_timer_trigger ();

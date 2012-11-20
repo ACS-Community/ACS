@@ -139,6 +139,12 @@ void baci::PcommonImpl<ACS_P_TL>::destroy()
   
 }
 
+template<ACS_P_C>
+void baci::PcommonImpl<ACS_P_TL>::publish_now ()
+{
+		publishNow();
+}
+
 template<ACS_P_C> 
 void baci::PcommonImpl<ACS_P_TL>::publishNow()
 {
