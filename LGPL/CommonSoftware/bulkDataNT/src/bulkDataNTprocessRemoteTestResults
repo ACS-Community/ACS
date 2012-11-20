@@ -10,12 +10,26 @@ echo -ne "plot " > $PF
 for f in $FILES
 do	
 	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
-	OF=$MACHINE.out
+	OF=$MACHINE.TP
 	rm -rf $OF
 	grep 'Transfer rate' $f | awk -v M=$MACHINE '{t=substr($1,12,13)*3600+substr($1,15,16)*60+substr($1,18); printf("%s, %.3f, %s\n", substr($1,12), t, $10)}' >> $OF
-	echo -ne $COMMA "\"$OF\" using 2:3 with linespoints" >> $PF
+	echo -ne $COMMA "\"$OF\" using 2:3 " >> $PF
 	COMMA=","
 #	egrep 'proto|cache' $f	>> $OF
+	echo "###########################################"
+	echo $MACHINE " : "
+	egrep -i 'Error|Timeout' $f | grep -v setACK 
+	egrep 'Average transfer rate for all' $f | awk '{print "\t", $12, $13}' 
+	echo -ne "\t" 
+	egrep 'proto' $f | cut -d " " -f11-25 
+	echo -ne "\t"
+	egrep 'cache' $f | cut -d " " -f7-25
+	echo ""
 done
 
+#egrep -i 'Error|Timeout' ~/bulkDataNTGenSender*
+#egrep 'Average transfer rate for all' ~/bulkDataNTGenSender*
+#egrep 'proto|cache' ~/bulkDataNTGenSender*
+
+#with linespoints
 gnuplot -p $PF
