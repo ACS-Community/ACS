@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.10 2012/11/19 13:35:24 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.11 2012/11/20 11:36:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -103,15 +103,17 @@ int main(int argc, char *argv[])
 	LoggingProxy::init (&m_logger);
     ACS_CHECK_LOGGER;
 
+
     ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
     while(recreate)
     {
+    	unsigned int numOfCreatedFlows=0;
+    	vector<BulkDataNTSenderFlow*> flows;
     	try
     	{
     		double throuhgput=0;
     		double sumThrouhgput=0;
     		vector<double> 	throughputSums;
-    		vector<BulkDataNTSenderFlow*> flows;
     		// first we need a stream
     		BulkDataNTSenderStream senderStream(streamName);
 
@@ -130,7 +132,7 @@ int main(int argc, char *argv[])
     			std::cout << tmpFlowNames[i] << " ";
     		std::cout << "] on stream: " << streamName << std::endl;
 
-    		unsigned int numOfCreatedFlows = senderStream.getFlowNumber();
+    		numOfCreatedFlows = senderStream.getFlowNumber();
 
     		std::cout << "press ENTER to send data (start/data/stop) to connected receivers ..." << std::endl;
     		if (waitForKey) getchar();
@@ -219,6 +221,9 @@ int main(int argc, char *argv[])
     	}catch(ACSErr::ACSbaseExImpl &ex)
     	{
     		recreate=false; //in case of an error we exit the while loop
+    		for(unsigned int i=0; i<numOfCreatedFlows; i++)
+    		    flows[i]->dumpStatistics();
+
     		ex.log();
     	}
 
