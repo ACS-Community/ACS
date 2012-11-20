@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.34 2012/11/16 13:21:15 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.35 2012/11/20 17:31:44 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -63,7 +63,8 @@ MODULES_ACSLASER  = 	alarmCommon \
 			demo \
 			managerTest \
 			baciPropsTest \
-			alarmTests
+			alarmTests \
+			containerTest
 
 MODULES =  $(foreach dir, $(MODULES_ACSLASER), $(dir)) 
 
