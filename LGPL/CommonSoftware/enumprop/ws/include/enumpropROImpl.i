@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.60 2012/07/26 13:46:55 gchiozzi Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.61 2012/11/20 15:17:07 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -287,6 +287,13 @@ baci::ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(baci::BACIComp
 
 
 /* ---------------------- [ CORBA interface ] ---------------------- */
+
+template <ACS_ENUM_C>
+void ROEnumImpl<ACS_ENUM_T(T), SK>::publish_now()
+{
+	ACS_LOG(LM_RUNTIME_CONTEXT, "ROEnumImpl::publish_now",
+						(LM_WARNING, "publishNow not implemented yet!"));
+}
 
 template <ACS_ENUM_C>
 bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()

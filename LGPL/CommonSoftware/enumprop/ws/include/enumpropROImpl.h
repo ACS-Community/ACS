@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.52 2012/07/26 13:46:55 gchiozzi Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.53 2012/11/20 15:17:07 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -190,6 +190,8 @@ public:
 	virtual ACS::pattern resolution ();
 	
 	virtual CORBA::Boolean initialize_devio (); 
+
+	virtual void publish_now();
   /* -------------------- [ P interface ] -------------------- */
 
     virtual ACS::TimeInterval default_timer_trigger ();
