@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.50 2012/10/15 10:53:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.51 2012/11/20 11:31:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.50 2012/10/15 10:53:09 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.51 2012/11/20 11:31:21 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -266,26 +266,7 @@ void BulkDataNTSenderFlow::stopSend()
 		if (currentState_m==DataRcvState)
 		{
 			writeFrame(ACSBulkData::BD_STOP);
-			if (DDSConfiguration::debugLevel>0)
-			{
-				DDS::DataWriterProtocolStatus dwps;
-				DDS::DataWriterCacheStatus dwcs;
-
-				ddsDataWriter_m->get_datawriter_protocol_status(dwps);
-				ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-						(LM_DEBUG, "DataWriter protocol status for flow: %s [sample pushed: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
-								flowName_m.c_str(),
-								dwps.pushed_sample_count_change, dwps.pushed_sample_bytes_change,
-								dwps.sent_heartbeat_count_change, dwps.sent_heartbeat_bytes_change,
-								dwps.received_ack_count_change, dwps.received_ack_bytes_change,
-								dwps.received_nack_count_change, dwps.received_nack_bytes_change,
-								dwps.rejected_sample_count_change));
-
-				ddsDataWriter_m->get_datawriter_cache_status(dwcs);
-				ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-						(LM_DEBUG, "DataWriter cache Status: sample count (peak): %lld (%lld)", dwcs.sample_count, dwcs.sample_count_peak));
-
-			}
+			dumpStatistics();
 		}
 		else // here we can be in stop or start state which is not so problematic, and we just log the error
 		{
@@ -387,5 +368,29 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		}
 	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
+
+void BulkDataNTSenderFlow::dumpStatistics()
+{
+	if (DDSConfiguration::debugLevel>0)
+	{
+		DDS::DataWriterProtocolStatus dwps;
+		DDS::DataWriterCacheStatus dwcs;
+
+		ddsDataWriter_m->get_datawriter_protocol_status(dwps);
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+				(LM_DEBUG, "DataWriter protocol status for flow: %s [sample pushed: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
+						flowName_m.c_str(),
+						dwps.pushed_sample_count_change, dwps.pushed_sample_bytes_change,
+						dwps.sent_heartbeat_count_change, dwps.sent_heartbeat_bytes_change,
+						dwps.received_ack_count_change, dwps.received_ack_bytes_change,
+						dwps.received_nack_count_change, dwps.received_nack_bytes_change,
+						dwps.rejected_sample_count_change));
+
+		ddsDataWriter_m->get_datawriter_cache_status(dwcs);
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+				(LM_DEBUG, "DataWriter cache Status: sample count (peak): %lld (%lld)", dwcs.sample_count, dwcs.sample_count_peak));
+
+	}//if
+}//void dumpStatistics()
 
 /*___oOo___*/

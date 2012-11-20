@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.20 2012/03/06 16:22:21 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.21 2012/11/20 11:31:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -105,6 +105,8 @@ public:
 	 * @exception #StopSendErrorExImpl
 	 */
 	void stopSend();
+
+	void dumpStatistics();
 
 protected:
 
