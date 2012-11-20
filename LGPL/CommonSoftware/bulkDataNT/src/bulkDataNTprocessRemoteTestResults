@@ -21,7 +21,8 @@ do
 	egrep -i 'Error|Timeout' $f | grep -v setACK 
 	egrep 'Average transfer rate for all' $f | awk '{print "\t", $12, $13}' 
 	echo -ne "\t" 
-	egrep 'proto' $f | cut -d " " -f11-25 
+	echo -ne `egrep 'proto' $f | cut -d " " -f11-25` 
+	egrep 'proto' $f | awk '{print " NACK/total: " $22/$13}'
 	echo -ne "\t"
 	egrep 'cache' $f | cut -d " " -f7-25
 	echo ""
