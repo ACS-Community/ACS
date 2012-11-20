@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baci.idl,v 1.14 2012/10/09 09:06:52 bjeram Exp $"
+* "@(#) $Id: baci.idl,v 1.15 2012/11/20 15:12:33 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -853,6 +853,13 @@ module ACS {
      * Useful also for returning the resolution of analog-digital convertion 
      */
     readonly attribute pattern resolution;
+
+    /**
+	 * Publish the value of the property.
+	 * This method is meant to be called when the value of this property must be
+	 * archived/monitored in relation to a change or error of another monitor point.
+	 */
+	oneway void publish_now();
 
     };
 	
