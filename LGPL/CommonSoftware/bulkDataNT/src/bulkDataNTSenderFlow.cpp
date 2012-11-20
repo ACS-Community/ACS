@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.52 2012/11/20 16:05:27 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53 2012/11/20 16:09:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.52 2012/11/20 16:05:27 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53 2012/11/20 16:09:05 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -308,9 +308,9 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	if( ret != DDS::RETCODE_OK)
 	{
-		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
+			dumpStatistics();
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			toEx.setSenderName(senderStream_m->getName().c_str()); toEx.setFlowName(flowName_m.c_str());
 			toEx.setTimeout(senderFlowCfg_m.getSendFrameTimeout());
@@ -318,6 +318,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			throw toEx;
 		}else
 		{
+			dumpStatistics();
 			SendFrameGenericErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
 			sfEx.setFrameCount(restFrameCount);
@@ -331,6 +332,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
 		if( ret != DDS::RETCODE_OK)
 		{
+			dumpStatistics();
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -356,6 +358,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
 		if( ret != DDS::RETCODE_OK)
 		{
+			dumpStatistics();
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
