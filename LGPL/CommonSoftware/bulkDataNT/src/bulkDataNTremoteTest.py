@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.4 2012/11/19 09:32:28 bjeram Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.5 2012/11/20 09:30:50 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,10 +29,11 @@ import os
 import getopt, sys
 import time
 
-class SenderData:
-    def __init__(self, cmd, proc):
+class RemoteProcData:
+    def __init__(self, host, cmd, proc):
         self.command =cmd
         self.process = proc
+        self.host = host
         self.out=None
         
 
@@ -44,26 +45,30 @@ class bulkDataNTtestSuite:
         self.dataSizeInBytes=size
         self.loops=loops
         self.sendersData = {}
+        self.receiverData = None
         self.sourceFile=sourceFile
+        self.preCmd="source " + self.sourceFile + "; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; export ACSDATA=$PWD/workspaceEclipse/bulkDataNT;"
+        self.postCmd=" | grep -v lost | tee "
     
     def startSenders(self):
         flow = 0
         i=0
         print 'Going to start remote senders on hosts: ' + str(self.hosts)
+        
         for h in self.hosts:
             flowString = format(flow, "02d")      
-            command = ("ssh " + os.environ['USER']+ "@" + h + 
-                       " 'source " + self.sourceFile + "; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; bulkDataNTGenSender -l " + 
+            sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
+                       " '" + self.preCmd + " bulkDataNTGenSender -l " + 
                        str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
-                       " | grep -v lost | tee bulkDataNTGenSender.$HOST'")
-            print '#',i,' Executing command: '+ command
-            process = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+                       self.postCmd+"bulkDataNTGenSender.$HOST'")
+            print '#',i,' Executing command: '+ sndCmd
+            process = Popen(sndCmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 #            print p.pid, p.returncode, p.poll()
             if process is not None:
-                self.sendersData[h]= SenderData(command,process)
+                self.sendersData[h]= RemoteProcData(h, sndCmd, process)
                 flow+=1
             else:
-                print 'Problem to execute: ' + command
+                print 'Problem to execute: ' + sndCmd
             i+=1
                 
         print 'Going to send data'
@@ -83,17 +88,58 @@ class bulkDataNTtestSuite:
             if sp.returncode is 0:
                 print "Command for: "+h+" ", sp.returncode, " : "+o
             else:
-                print 'command for host: '+h+' : '+self.sendersData[h].command+' exited with an error: ', sp.returncode, sp.stderr.read() 
+                print 'command for host: '+h+' : '+self.sendersData[h].command+' exited with an error: ', sp.returncode, sp.stderr.read()
+                 
+    def startReceiver(self, rcvHost, noOfFlows):
+        flow = 0
+        comma=""
+        flowString=""
+        print 'Going to start remote receiver on host: ' + rcvHost + ' with ' + str(noOfFlows) + ' flows'
+        for fn in range(noOfFlows):
+            flowString+=comma
+            flowString+=format(flow, "02d")
+            comma=","
+            flow+=1
+                  
+        rcvCmd = ("ssh " + os.environ['USER']+ "@" + rcvHost + 
+                  " '" + self.preCmd + " bulkDataNTGenReceiver -n -u -s TS -f "+flowString+
+                  self.postCmd+"bulkDataNTGenReceiver.$HOST'")
+        print ' Executing command: '+ rcvCmd
+        process = Popen(rcvCmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+#         print p.pid, p.returncode, p.poll()
+        if process is not None:
+            self.receiverData=RemoteProcData(rcvHost, rcvCmd,process)
+        else:
+            print 'Problem to execute: ' + rcvCmd
+            return
+        print 'Going to wait for data'
+         
+    def stopReceiver(self):        
+        rp = self.receiverData.process           
+        rp.poll()
+        if rp.returncode is None:
+            rp.stdin.write('\n') # ENTER
+        else:
+            print 'command  : '+self.receiverData.command+' exited with an error: ', rp.returncode, rp.stderr.read()
+                
+        rp = self.receiverData.process                
+        rp.wait()
+        self.receiverData.output=o=rp.stdout.read().strip()
+        if rp.returncode is 0:
+            print "Receiver Command ", rp.returncode, " : "+o
+        else:
+            print 'Command : '+self.receiverData.command+' exited with an error: ', rp.returncode, rp.stderr.read()
             
 if __name__ == '__main__':
     b=640000
     l=50
     senderHosts=None
+    receiverHost=None
     sf=".bash_profile"
     opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:", ["help", "senders=", "receivers=", "source="])
     for o,a in opts:
         if o in ("-h", "--help"):
-            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations] [--source=source file]'
+            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations] [--source=file to be sourced]'
             sys.exit()
         elif o in ("-s", "--senders"):
             senderHosts=a.split(",")
@@ -102,6 +148,7 @@ if __name__ == '__main__':
         elif o=="-l":
             l=a
         elif o in ("-r", "--receivers"):
+            receiverHost=a
             print 'option -r/--receivers= not supported yet'
         elif o=="--source":
             sf=a
@@ -111,7 +158,15 @@ if __name__ == '__main__':
         print 'No sender has been given (use option -s/--senders=)!'
         sys.exit()
                                                     
-    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf) 
+    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf)
+    if receiverHost is not None:
+        testSuit.startReceiver(receiverHost, len(senderHosts)) 
+    print '---------------------------------------------------------------------------'
+    
     testSuit.startSenders()
+    
+    if receiverHost is not None:
+        print '---------------------------------------------------------------------------'
+        testSuit.stopReceiver()
 
 # ___oOo___
