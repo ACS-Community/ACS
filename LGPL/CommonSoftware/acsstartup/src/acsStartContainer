@@ -43,8 +43,9 @@ fi
 ACS_LOG_COMMAND $ACS_COMMAND
 
 #--Check out the directory structure
+ACS_INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 
-if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+if [ ! -d $ACS_INSTANCE_DIR ]
 then
 
     if ! createInstanceDirectory $ACS_INSTANCE
@@ -55,11 +56,26 @@ then
     fi
 
 #Stop user A from interfering with user B
-elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
+elif [ ! -w $ACS_INSTANCE_DIR ]
 then
     ACS_LOG_ERROR "acsStartContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' is not writeable by $USER!"
     ACS_LOG_ERROR "acsStartContainer" "Please specify an ACS instance that is owned by $USER"
     exit $EC_CANNOTUSE
+fi
+
+
+#create the pids directory
+if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR ]
+then
+	ACS_SILENT_LOG "WARNING $ACS_INSTANCE_DIR/$ACS_PID_DIR already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+	ACS_SILENT_LOG "WARNING cannot create $ACS_INSTANCE_DIR/$ACS_PID_DIR because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+	mkdir $ACS_INSTANCE_DIR/$ACS_PID_DIR
+	chmod 774 $ACS_INSTANCE_DIR/$ACS_PID_DIR
 fi
 
 #-----------------------------------------------------------------------
@@ -102,11 +118,9 @@ ACS_LOG_INFO  "acsStartContainer" "Container: '$CONTAINERNAME' exited with code:
 # normally removed by acsStopContainer are removed as well. It is absolutely
 # critical this piece of code be kept in sync with what acsStopContainer does!
 
-#go to the correct directory
-INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 
 #if the PID file exists for the container
-if [ -e $INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE ]
+if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE ]
 then
-    rm $INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE
+    rm $ACS_INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE
 fi
