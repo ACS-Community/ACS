@@ -34,9 +34,8 @@ else
 fi
 
 
-# Wait a bit for all xml logs to be processed and alarm service to clear throttle alarm
-# TODO: Check why alarm service takes so long. With 15 seconds we often don't get the second (release) alarm log
-sleep 30
+# Wait a bit for all xml logs to be processed and for the alarm service to report the clearing of the throttle alarm.
+sleep 5
 
 # Check that throttle alarms from ContainerLoggingAlarmTest#testLogThrottleAlarm() arrived at the alarm service
 echo "Expecting throttle alarm (triplet Logging:throttledJavaContainer:10) to be raised and cleared,"

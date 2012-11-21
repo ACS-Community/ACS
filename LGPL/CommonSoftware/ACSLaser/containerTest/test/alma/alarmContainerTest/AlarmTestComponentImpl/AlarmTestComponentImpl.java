@@ -47,13 +47,27 @@ public class AlarmTestComponentImpl extends ComponentImplBase implements AlarmTe
 			msg += ", maxLogQueueSize=" + ClientLogManager.getAcsLogManager().getLogConfig().getMaxLogQueueSize();
 			msg += ", maxLogsPerSecond=" + ClientLogManager.getAcsLogManager().getLogConfig().getMaxLogsPerSecond() + ".";
 			m_logger.info(msg);
-			Thread.sleep(200);
+			
+			// sleep a bit, so that the above log gets processed before the alarm throttle can remove it.
+			Thread.sleep(100);
 			
 			for (int i = 0; i < numLogs; i++) {
 				m_logger.log(level, "Test log (" + coreLevel.toString() + ") #" + i);
 			}
 		} catch (Exception ex) {
 			throw (new AcsJCouldntPerformActionEx(ex)).toCouldntPerformActionEx();
+		} finally {
+			// sleep for one log throttle interval (LogThrottle.LogStreamThrottle#intervalLengthMillis), to ensure  
+			// that the subsequent component release logs make the log throttle re-evaluate the load situation,
+			// which will then lead to the throttle alarm getting cleared.
+			// Otherwise the alarm would only get cleared when the container outputs some status log or shuts down.
+			// This is a special issue of this test (in the real world there are always some logs...) and does not 
+			// seem to justify adding an "evaluation thread" to the LogThrottle.
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
 		}
 		
 	}
