@@ -10,7 +10,8 @@
 	<Autoload />
 
 	<LoggingConfig 
-		maxLogsPerSecond="10" >
+		maxLogsPerSecond="50" 
+		flushPeriodSeconds="1" >
 		<log:_ Name="jacorb@throttledJavaContainer" minLogLevel="5" minLogLevelLocal="5" />
 	</LoggingConfig>
 
