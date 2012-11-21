@@ -6,7 +6,8 @@ COMMA=""
 
 echo "Files that are going to be processed: " $FILES
 rm -rf $OF
-echo -ne "plot " > $PF
+echo -ne "plot " >> $PF
+
 for f in $FILES
 do	
 	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
@@ -33,4 +34,8 @@ done
 #egrep 'proto|cache' ~/bulkDataNTGenSender*
 
 #with linespoints
+echo "" >> $PF
+echo "set terminal png" >> $PF
+echo "set output \"result.png\"" >> $PF
+echo "replot" >> $PF
 gnuplot -p $PF
