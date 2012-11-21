@@ -103,10 +103,11 @@ public class AlarmSourceImpl implements AlarmSource {
 				}
 				Long timestamp=alarmsToClean.get(key);
 				if (timestamp==null) {
-					// The entry has been removed by another task
+					// The entry has been removed by another task (e.g. raiseAlarm)
 					continue;
 				}
 				if (System.currentTimeMillis()-TimeUnit.SECONDS.toMillis(ALARM_OSCILLATION_TIME)>timestamp) {
+					alarmsToClean.remove(key);
 					internalAlarmClear(key);
 				}
 			}
