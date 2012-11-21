@@ -1267,6 +1267,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 	/**
 	 * A hack, see {@link ContainerServicesImpl#registerCleanUpCallback(CleanUpCallback)}.
+	 * @deprecated  Should be removed along with old NC Consumer.
 	 */
 	public static interface CleanUpCallback {
 		public void containerServicesCleanUp();
@@ -1277,10 +1278,10 @@ public class ContainerServicesImpl implements ContainerServices
 	 * in order to release remote Corba resources (and prevent crashes of Notify Service...).
 	 * Note that without this hack, the lifecycle of NC classes is only managed by the application code,
 	 * which means that ACS could not enforce the clean up.
-	 * <p>
-	 * @TODO remove this once the NC classes are properly integrated into container services
+	 * 
 	 * @param cb
 	 * @since ACS 8.1.0
+	 * @deprecated  Since ACS 10.2. Should be removed along with old NC Consumer.
 	 */
 	public void registerCleanUpCallback(ContainerServicesImpl.CleanUpCallback cb) {
 		cleanUpCallbacks.add(cb);
