@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.24 2012/11/07 11:05:04 bjeram Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.25 2012/11/22 08:20:21 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -285,7 +285,7 @@ module acsdaemon
 		 *  Starts a logging service.
 		 * 
 		 *  @param host Hostname
-		 *  @param name name of the log service. If name is null, then "Log" will be used.
+		 *  @param name name of the log service. If name is empty, then "Log" will be used.
 		 *  @return void
 		 */
 		void add_logging_service(in string host, in string name) raises (ACSErrTypeCommon::BadParameterEx);
