@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.11 2012/11/20 11:36:34 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.12 2012/11/22 07:57:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,15 @@ using namespace AcsBulkdata;
 using namespace std;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-b data size in bytes] [-p parameter] [-l # of loops] [-n no wait for a key]" << endl;
+	cout << "Usage: " << argv[0] << ":" << endl;
+	cout << "\t[-s] \t streamName. Default: 'DefaultStream'" << endl;
+	cout << "\t-f \t flow1Name[,flow2Name,flow3Name..." << endl;
+	cout << "\t[-b] \t data size in bytes. Default: 65000" << endl;
+	cout << "\t[-p] \t parameter (startSend()). Default: 'defalutParamter'" << endl;
+	cout << "\t[-l] \t # of loops/iterations. Default: 1" << endl;
+	cout << "\t[-n] \t no wait for a key" << endl;
+	cout << "\t[-t] \t send frame timeout in sec. Default: 5.0" << endl;
+	cout << "\t[-t] \t ACK timeout in sec. Default: 2.0" << endl;
 	exit(1);
 }
 
@@ -41,7 +49,7 @@ int main(int argc, char *argv[])
 	bool sendData=true;
 	bool recreate=true;
 	bool waitForKey=true;
-	double send_time;
+	double send_time, sendTimeout=5.0, ACKtimeout=2.0;
 	ACE_Time_Value start_time, elapsed_time;
 	char *streamName = "DefaultStream";
 	std::string param="defalutParamter";
@@ -51,12 +59,22 @@ int main(int argc, char *argv[])
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:n");
+    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:t:n");
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
     	case 'l':
     	{
     		loop = atoi(get_opts.opt_arg());
+    		break;
+    	}
+    	case 't':
+    	{
+    		sendTimeout = atof(get_opts.opt_arg());
+    		break;
+    	}
+    	case 'a':
+    	{
+    		ACKtimeout = atof(get_opts.opt_arg());
     		break;
     	}
     	case 'p':
@@ -121,6 +139,8 @@ int main(int argc, char *argv[])
     		list<char *>::iterator it;
     		for(it = flowNames.begin(); it != flowNames.end(); it++) {
     			SenderFlowConfiguration cfg;
+    			cfg.setACKsTimeout(ACKtimeout);
+    			cfg.setSendFrameTimeout(sendTimeout);
     			BulkDataNTSenderFlow *flow = senderStream.createFlow((*it), cfg);
     			flows.push_back(flow);
     		}
