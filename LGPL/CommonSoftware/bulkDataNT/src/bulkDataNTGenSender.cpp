@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.12 2012/11/22 07:57:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.13 2012/11/22 07:59:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-l] \t # of loops/iterations. Default: 1" << endl;
 	cout << "\t[-n] \t no wait for a key" << endl;
 	cout << "\t[-t] \t send frame timeout in sec. Default: 5.0" << endl;
-	cout << "\t[-t] \t ACK timeout in sec. Default: 2.0" << endl;
+	cout << "\t[-a] \t ACK timeout in sec. Default: 2.0" << endl;
 	exit(1);
 }
 
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:t:n");
+    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:t:a:n");
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
     	case 'l':
