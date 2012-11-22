@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.45 2012/10/24 10:47:42 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.46 2012/11/22 07:34:20 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -253,15 +253,15 @@ clean : clean_all dds_clean
 	@echo " . . . clean done"
 
 install : install_all
-	$(AT)cp -f ../config/bulkDataNTDefaultQosProfiles.xml* $(ACSDATA)/config
-	$(AT)chmod $(P644) $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml*
+	$(AT)cp -f ../config/bulkDataNTDefaultQosProfiles.*.xml $(ACSDATA)/config
+	$(AT)chmod $(P644) $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.*.xml
 	@if [ -f $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml ]; then \
     	rm -rf $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
     fi
-	@if [ -f $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml.$(LOCATION) ]; then \
-    	ln -s $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml.$(LOCATION) $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
+	@if [ -f $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.$(LOCATION).xml ]; then \
+    	ln -s $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.$(LOCATION).xml $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
     else \
-    	ln -s $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml.default $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
+    	ln -s $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.default.xml $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
     fi
 	@echo " . . . installation done"
 
