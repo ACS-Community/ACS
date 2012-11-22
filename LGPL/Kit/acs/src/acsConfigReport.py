@@ -524,7 +524,7 @@ if tmp_PATH != result_command:
 
 commands.getoutput('echo " <br>" >> ./report.html')
 if tmp_os == 'Linux':
-   tmp_LD_LIBRARY_PATH='$DDS_ROOT/lib:$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:'
+   tmp_LD_LIBRARY_PATH='$DDS_ROOT/lib:$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$ALMASW_INSTDIR/boost/lib:$TCLTK_ROOT/lib:'
    tmp_gnuroot=commands.getoutput('echo $GNU_ROOT')
    if (tmp_gnuroot != '/usr'):
      tmp_LD_LIBRARY_PATH=tmp_LD_LIBRARY_PATH+'$GNU_ROOT/lib:'

@@ -62,7 +62,7 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
               ('texinfo','info --version','4.8'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
-              ('java','java -version','(build 1.6.0_20'),\
+              ('java','java -version','(build 1.6.0_35'),\
               ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.19'),\
               ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.19'),\
               ('incr Tcl','echo "puts [package require Itcl]; exit" | tclsh','3.4'),\
