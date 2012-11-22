@@ -6,6 +6,9 @@ COMMA=""
 
 echo "Files that are going to be processed: " $FILES
 rm -rf $OF
+echo "set title \"$1\" " > $PF
+echo "set xlabel \"time [sec.msec]\"" >> $PF
+echo "set ylabel \"Data Rate [MBytes/sec]\"" >> $PF
 echo -ne "plot " >> $PF
 
 for f in $FILES
