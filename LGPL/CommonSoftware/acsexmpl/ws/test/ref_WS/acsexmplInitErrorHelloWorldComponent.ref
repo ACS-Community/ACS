@@ -1,7 +1,7 @@
 1 - Running acsexmplClientHelloWorld INIT_ERROR
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - InitErrorHelloWorld::initialize] Initialization Failure (type=905, code=0) javaex.class="alma.acs.exceptions.DefaultAcsJException"
 1 - ----------T--:--:--.--- [GlobalLogger - ACSComponentImpl::__initialize] Life cycle error (type=28, code=0) javaex.class="alma.acs.exceptions.DefaultAcsJException"
-1 - ----------T--:--:--.--- [GlobalLogger - InitErrorHelloWorld::initialize] Initialization Failure (type=50042, code=0) javaex.class="alma.acs.exceptions.DefaultAcsJException"
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9) CURL="INIT_ERROR" javaex.class="alma.acs.exceptions.DefaultAcsJException" ComponentCode="acsexmplInitErrorHelloWorld" ComponentType="IDL:alma/acsexmplInitErrorHelloWorld/InitError:1.0"
 1 - All done!
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ActivationMethod::call] Error activating component (type=25, code=9) javaex.class="alma.acs.exceptions.DefaultAcsJException"
