@@ -612,7 +612,7 @@ vixie-cron 4.1 77.el5_4.1
 wget 1.11.4 2.el5_4.1
 which 2.16 7
 wireless-tools 28 2.el5
-wireshark 1.6.4 1.el5
+wireshark 1.6.4 1
 words 3.0 9.1
 wpa_supplicant 0.5.10 9.el5
 Xaw3d 1.5E 10.1
