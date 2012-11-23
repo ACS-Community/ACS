@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.44 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.45 2012/11/23 13:20:39 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -37,7 +37,7 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-
+MAKE_NOIFR_CHECK = on
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
