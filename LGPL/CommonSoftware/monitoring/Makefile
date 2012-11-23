@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/11/23 08:36:12 acaproni Exp $"
 #
 # Makefile of containerTests (the package dealing with container tests)
 #
@@ -163,19 +163,19 @@ update:
                  echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
             fi;\
 	    if [ -f $${member}/src/Makefile ]; then \
-	        $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+	        $(ECHO) "\t############ $${member} MAIN" | tee -a build.log;\
                 $(call makeItAux,$${member}/src,clean,build.log,$${member}/src/NORM-BUILD-OUTPUT) \
                 $(call makeIt,$${member}/src,all,build.log,$${member}/src/NORM-BUILD-OUTPUT) \
                 $(call makeItAux,$${member}/src,install,build.log,$${member}/src/NORM-BUILD-OUTPUT) \
 	    elif [ -f $${member}/ws/src/Makefile ]; then \
-		$(ECHO) "############ $${member} WS" | tee -a build.log;\
+		$(ECHO) "\t############ $${member} WS" | tee -a build.log;\
                 $(call makeItAux,$${member}/ws/src,clean,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
                 $(call makeIt,$${member}/ws/src,all,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
                 $(call makeItAux,$${member}/ws/src,install,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
 	    fi;\
 	    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 		if [ -f $${member}/lcu/src/Makefile ]; then \
-		    $(ECHO) "############ $${member} LCU" | tee -a build.log;\
+		    $(ECHO) "\t############ $${member} LCU" | tee -a build.log;\
                     $(call makeItAux,$${member}/lcu/src,clean,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
                     $(call makeIt,$${member}/lcu/src,all,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
                     $(call makeItAux,$${member}/lcu/src,install,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
@@ -194,14 +194,14 @@ define update-clean-one-module
             echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
         fi;\
 	if [ -f $${member}/src/Makefile ]; then \
-	    $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
+	    $(ECHO) "\t############ $${member} MAIN" | tee -a build.log;\
             $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ clean >> build.log 2>& 1;\
             $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
             $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
             $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
             $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ clean >> build.log 2>& 1 || echo "### ==> FAILED clean ! " | tee -a build.log; \
 	elif [ -f $${member}/ws/src/Makefile ]; then \
-	    $(ECHO) "############ $${member} WS" | tee -a build.log;\
+	    $(ECHO) "\t############ $${member} WS" | tee -a build.log;\
             $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ clean >> build.log 2>& 1;\
             $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
             $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
@@ -210,7 +210,7 @@ define update-clean-one-module
 	fi;\
 	if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 	    if [ -f $${member}/lcu/src/Makefile ]; then \
-		$(ECHO) "############ $${member} LCU" | tee -a build.log;\
+		$(ECHO) "\t############ $${member} LCU" | tee -a build.log;\
                 $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ clean >> build.log 2>& 1;\
                 $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                 $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
@@ -252,17 +252,17 @@ define test-one-module
 	    $(ECHO) "############ $${member}: WARNING: ACS_INSTANCE.$(MAKE_TEST_ACS_INSTANCE) NOT CLEAN!  ############" | tee -a test.log ;\
 	fi;\
 	if [ -f $${member}/ws/test/Makefile ]; then\
-	    $(ECHO) "############ $${member}/ws/test WS TEST ############" | tee -a test.log ;\
+	    $(ECHO) "\t############ $${member}/ws/test WS TEST ############" | tee -a test.log ;\
             if [ -f $${member}/lcu/test/Makefile ]; then \
                 $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/test/ all >> test.log 2>& 1 || echo "### ==> FAILED all lcu/test/! " | tee -a test.log; \
             fi;\
             $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/test/ all >> test.log 2>& 1 || echo "### ==> FAILED all ws/test/! " | tee -a test.log; \
             cd $${member}/ws/test/; export MAKE_PURE; tat -nc -v 2>& 1 | tee -a test.log |  egrep  '(Nothing to|FAILED.|PASSED.|Error:)'; cd $(startupDir); \
 	elif [ -f $${member}/test/Makefile ]; then\
-	    $(ECHO) "############ $${member}/test MAIN TEST ############" | tee -a test.log ;\
+	    $(ECHO) "\t############ $${member}/test MAIN TEST ############" | tee -a test.log ;\
 	    $(MAKE) -k -C $${member}/test/ test | tee -a test.log |  egrep  '(Nothing to|FAILED.|PASSED.|Error:)';\
 	else\
-	    $(ECHO) "######## ==> $${member} TEST DIRECTORY STRUCTURE NOT FOUND! CANNOT TEST ANYTHING!" | tee -a test.log ;\
+	    $(ECHO) "\t######## ==> $${member} TEST DIRECTORY STRUCTURE NOT FOUND! CANNOT TEST ANYTHING!" | tee -a test.log ;\
 	fi
 endef
 
