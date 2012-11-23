@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2012/11/22 10:49:35 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.4 2012/11/23 08:31:03 acaproni Exp $"
 #
 #
 
@@ -240,12 +240,12 @@ endef
 #   that is the LAST module fails the whole Make does not fail
 #
 update_clean:
-	@$(ECHO) "############ (Re-)build Laser Software         #################"| tee -a build.log
+	@$(ECHO) "############ (Re-)build ACS GUIs          #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES_ACSGUIS), $(name) ) ; do \
                    $(update-clean-one-module);\
 		done;\
          true;
-	@$(ECHO) "############ DONE (Re-)build Laser Software    #################"| tee -a build.log
+	@$(ECHO) "############ DONE (Re-)build ACS GUIs     #################"| tee -a build.log
 
 #
 # Test target
