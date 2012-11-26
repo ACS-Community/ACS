@@ -162,12 +162,12 @@ public class HibernateWDAOImpl implements WDAOOperations {
 		// array support
 		if (field instanceof Element)
 		{
-			NodeList childList = ((Element)field).getChildNodes();
-			int childCount = childList.getLength();
+			
 			StringBuffer strignifiedArray = new StringBuffer();
-			for (int i = 0; i < childCount; i++)
+			for (Node childNode = ((Element)field).getFirstChild();
+				 childNode != null;
+				 childNode = childNode.getNextSibling())
 			{
-				Node childNode = childList.item(i);
 				if (childNode instanceof Element && childNode.getAttributes().getLength() > 0)
 				{
 					if (strignifiedArray.length() > 0) strignifiedArray.append(',');
