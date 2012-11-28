@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: basencSupplier.h,v 1.7 2012/10/15 12:36:08 bjeram Exp $"
+ * "@(#) $Id: basencSupplier.h,v 1.8 2012/11/28 11:11:49 acaproni Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -39,6 +39,7 @@
 #include <orbsvcs/CosNotifyCommC.h>
 #include <orbsvcs/CosNamingC.h>
 #include <acsncS.h>
+#include "RepeatGuardLogger.h"
 #include "basencHelper.h"
 
 /**
@@ -102,7 +103,12 @@ class BaseSupplier : public POA_acsnc::OSPushSupplier,
      * Send an entire structured event. Subclasses should create their own
      * structured event and then call this method to do the real publishing
      * of events.
+     *
+     * TODO: throw an exception to make the caller aware in case of error
+     *       publishing the event (@see JIRA:COMP-8454).
      * @param event A CORBA StructuredEvent
+     *
+     *
      */
     void 
     publishEvent(const CosNotification::StructuredEvent& event);
@@ -184,6 +190,12 @@ class BaseSupplier : public POA_acsnc::OSPushSupplier,
      * CORBA reference to myself.
      */
     acsnc::OSPushSupplier_var corbaRef_m;
+
+    /**
+     * The log produced in case of error publishing events in the NC must be guarded.
+     * (@see JIRA:COMP-8454)
+     */
+    Logging::RepeatGuardLogger<Logging::BaseLog> guardbl_m;
 };
 
 #endif

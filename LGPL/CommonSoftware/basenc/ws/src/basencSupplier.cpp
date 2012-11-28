@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.13 2012/10/15 12:36:08 bjeram Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.14 2012/11/28 11:11:49 acaproni Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -31,7 +31,8 @@
 
 //-----------------------------------------------------------------------------
 BaseSupplier::BaseSupplier(const char* channelName, const char* notifyServiceDomainName) :
-    BaseHelper(channelName, notifyServiceDomainName)
+    BaseHelper(channelName, notifyServiceDomainName),
+    guardbl_m(600000,1000) // 1 min or 1000 repetitions, whatever come first
 {
     //no-op
 }
@@ -168,7 +169,7 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - CORBA::COMM_FAILURE!",
 				event.header.fixed_header.event_type.type_name.in(),
 				channelName_mp);
-		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+		guardbl_m.logAndIncrement(logger,Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
 	catch(CORBA::TRANSIENT &ex)
 	{
@@ -177,7 +178,7 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - CORBA::TRANSIENT!",
 				event.header.fixed_header.event_type.type_name.in(),
 				channelName_mp);
-		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+		guardbl_m.logAndIncrement(logger,Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
 	catch(CORBA::UserException &ex)
 	{
@@ -187,7 +188,7 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 				event.header.fixed_header.event_type.type_name.in(),
 				channelName_mp,
 				ex._info().c_str());
-		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+		guardbl_m.logAndIncrement(logger,Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
 	catch(CORBA::SystemException &ex)
 	{
@@ -197,7 +198,7 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 				event.header.fixed_header.event_type.type_name.in(),
 				channelName_mp,
 				ex._info().c_str());
-		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+		guardbl_m.logAndIncrement(logger,Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
 	catch(...)
 	{
@@ -206,7 +207,7 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - UNKNOWN!",
 				event.header.fixed_header.event_type.type_name.in(),
 				channelName_mp);
-		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+		guardbl_m.logAndIncrement(logger,Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 
 	}//try-catch
 }
