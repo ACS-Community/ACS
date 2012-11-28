@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2012/01/21 22:48:11 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.7 2012/11/28 11:13:19 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -61,7 +61,7 @@ LIBRARIES_L     =
 
 basenc_OBJECTS = basencHelper basencSupplier
 basenc_LIBS    = acsncStubs acscommonStubs baciStubs acscomponentStubs acserrStubs acserr \
-					  acsutil cdb ACSErrTypeCORBA
+					  acsutil cdb ACSErrTypeCORBA RepeatGuard
 
 #
 # <brief description of lllll library>
