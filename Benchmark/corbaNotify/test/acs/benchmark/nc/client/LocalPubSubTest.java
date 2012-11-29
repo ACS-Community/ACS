@@ -171,9 +171,9 @@ public class LocalPubSubTest extends ComponentClient
 	}
 
 	/**
-	 * Publishes >= 10.000 "MountStatusData" or "LightweightMountStatusData" events on the NC "CONTROL_REALTIME", 
-	 * using a single supplier component "JavaSupplier-1" for sequential publishing at a rate of 10 events/s,
-	 * and a single subscriber component "" for counting the events.
+	 * Publishes >= 200 "MountStatusData" or "LightweightMountStatusData" events on the NC "CONTROL_REALTIME", 
+	 * using a single supplier component "JavaSupplier-1" for sequential publishing at a rate of 1 events every 48 ms,
+	 * and a single subscriber component "JavaSubscriber" for counting the events.
 	 * The call to the supplier component is asynchronous, returning while the publisher runs in "indefinite publishing" mode. 
 	 * Once the subscriber has received enough data, we terminate the supplier. 
 	 */
@@ -234,6 +234,7 @@ public class LocalPubSubTest extends ComponentClient
 			assertThat("It should have taken around " + expectedReceptionTimeMillis + " ms to receive the events.",
 					subscriberReceptionTimeMillis, 
 					is(lessThan((int)(1.1 * expectedReceptionTimeMillis))));
+			
 		} catch (CouldntPerformActionEx ex) {
 			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
 		}
