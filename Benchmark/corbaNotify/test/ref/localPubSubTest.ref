@@ -11,7 +11,7 @@
 1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Container 'localSupplierContainer1' is ready.
 1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Connected subscriber to NC CONTROL_REALTIME
 1 - ----------T--:--:--.--- INFO [LocalPubSubTest] About to call subscriber#receiveEvents in a separate thread...
-1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Connected supplier to NC CONTROL_REALTIME. Will now send 200 events, one every 48 ms.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Connected supplier to NC CONTROL_REALTIME. Will now send ~200 events, one every 48 ms.
 1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Subscriber component done. It received 200 events in xxx ms.
 1 - ----------T--:--:--.--- INFO [LocalPubSubTest] client 'LocalPubSubTest' has successfully released a component with curl=JavaSubscriber-1
 1 - ----------T--:--:--.--- INFO [LocalPubSubTest] client 'LocalPubSubTest' has successfully released a component with curl=JavaSupplier-1
