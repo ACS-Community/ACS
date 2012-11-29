@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2012
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+ 
+ 
+ <xsd:schema targetNamespace="PubSubTesting" xmlns:pusut="PubSubTesting" 
+             attributeFormDefault="unqualified" elementFormDefault="qualified" version="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+
+	<xsd:simpleType name="EventNameT">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="MountStatusData" />
+			<xsd:enumeration value="LightweightMountStatusData" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ImplLangT">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="java"/>
+			<!-- xsd:enumeration value="cpp"/ -->
+			<!-- xsd:enumeration value="py"/ -->
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="ContainerSpecT">
+		<xsd:annotation><xsd:documentation>Container spec. If no hostName is given then it must be configured either outside of XML or otherwise localhost will be used.</xsd:documentation></xsd:annotation>
+		<xsd:attribute name="containerName" type="xsd:string" use="required" />
+		<xsd:attribute name="implLang" type="pusut:ImplLangT" use="required" />
+		<xsd:attribute name="hostName" type="xsd:string" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="PubSubSpecCommonT" abstract="true">
+		<xsd:annotation><xsd:documentation>Spec applicable for both suppliers and subscribers. If more than one EventName is given, a supplier will send those alternatingly, while a subscriber will subscribe to all events.</xsd:documentation></xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="NC" type="xsd:string" />
+			<xsd:element name="EventName" type="pusut:EventNameT" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="containerName" type="xsd:string" use="required" />
+		<xsd:attribute name="componentName" type="xsd:string" use="required" />
+		<xsd:attribute name="numberOfEvents" type="xsd:int" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="PublisherSpecT">
+		<xsd:complexContent>
+			<xsd:extension base="pusut:PubSubSpecCommonT">
+				<xsd:attribute name="eventPeriodMillis" type="xsd:int" use="optional" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="SubscriberSpecT">
+		<xsd:complexContent>
+			<xsd:extension base="pusut:PubSubSpecCommonT">
+				<xsd:attribute name="processingDelayMillis" type="xsd:int" use="optional" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:element name="PubSubTestSpec">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="TestDescription" type="xsd:string" />
+				<xsd:element name="Container" type="pusut:ContainerSpecT" minOccurs="1" maxOccurs="unbounded" />
+				<xsd:element name="Publisher" type="pusut:PublisherSpecT" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element name="Subscriber" type="pusut:SubscriberSpecT" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

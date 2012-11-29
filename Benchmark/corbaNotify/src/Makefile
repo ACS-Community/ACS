@@ -145,13 +145,16 @@ XML_IDL=
 #
 COMPONENT_HELPERS=
 #
-# Java Entity Classes generation on/off
+# Java Entity Classes generation config file
 #
-XSDBIND=
+XSDBIND = pubSubConfigBind
+
 #
 # Schema Config files for the above
 #
 XSDBIND_INCLUDE=
+
+
 # man pages to be done
 # --------------------
 MANSECTIONS =
