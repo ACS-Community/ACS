@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,8 @@ import org.junit.rules.TestName;
 import acs.benchmark.util.ContainerUtil;
 import acs.benchmark.util.ContainerUtil.ContainerLogLevelSpec;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.AcsLocations;
@@ -60,6 +63,12 @@ import alma.maci.containerconfig.types.ContainerImplLangType;
  */
 public class LocalPubSubTest extends ComponentClient
 {
+	/**
+	 * Should normally be 'null' for localhost, 
+	 * but can be changed when using this test as a template for manual non-local tests.
+	 */
+	private static final String localhostName = null; //"alma-head";
+
 	private ContainerUtil containerUtil;
 	
 	private PubSubComponentAccessUtil componentAccessUtil;
@@ -95,7 +104,7 @@ public class LocalPubSubTest extends ComponentClient
 		// run a local container. Logs are stored under $ACS_TMP/logs/
 		containerUtil = new ContainerUtil(getContainerServices());
 		containerUtil.loginToManager();
-		containerUtil.startContainer(null, ContainerImplLangType.JAVA, supplierContainerName, null, true);
+		containerUtil.startContainer(localhostName, ContainerImplLangType.JAVA, supplierContainerName, null, true);
 		m_logger.info("Container '" + supplierContainerName + "' is ready.");
 		
 		// configure container log levels
@@ -114,7 +123,7 @@ public class LocalPubSubTest extends ComponentClient
 		}
 		
 		if (containerUtil != null) {
-			containerUtil.stopContainer(null, supplierContainerName);
+			containerUtil.stopContainer(localhostName, supplierContainerName);
 			containerUtil.logoutFromManager();
 		}
 		super.tearDown();
@@ -169,12 +178,14 @@ public class LocalPubSubTest extends ComponentClient
 	 * Once the subscriber has received enough data, we terminate the supplier. 
 	 */
 	@Test
-	public void testOneSupplierOneSubscriberMixedEvents() throws Exception {
+	public void testOneSupplierOneSubscriberMixedEvents() throws Throwable {
 
 		final int numEvents = 200;
 		final int eventPeriodMillis = 48;
 		
 		String[] ncNames = new String[] {CHANNELNAME_CONTROL_REALTIME.value};
+		
+		// mixed events spec
 		final NcEventSpec[] ncEventSpecs = new NcEventSpec[] {
 				new NcEventSpec(ncNames[0], 
 						new String[] {"MountStatusData", "LightweightMountStatusData"}, 
@@ -186,7 +197,7 @@ public class LocalPubSubTest extends ComponentClient
 		String subscriberContainerName = "localSubscriberContainer1";
 		String subscriberComponentName = "JavaSubscriber-1";
 		try {
-			containerUtil.startContainer(null, ContainerImplLangType.JAVA, subscriberContainerName, null, true);
+			containerUtil.startContainer(localhostName, ContainerImplLangType.JAVA, subscriberContainerName, null, true);
 			final CorbaNotifyConsumerOperations subscriberComp = componentAccessUtil.getDynamicJavaSubscriberComponent(subscriberComponentName, subscriberContainerName);
 			subscriberComp.ncConnect(ncNames);
 			m_logger.info("Connected subscriber to NC " + ncNames[0]);
@@ -207,7 +218,7 @@ public class LocalPubSubTest extends ComponentClient
 			
 			// supplier setup
 			supplierComp.ncConnect(ncNames);
-			m_logger.info("Connected supplier to NC " + ncNames[0] + ". Will now send " + numEvents + " events, one every " + eventPeriodMillis + " ms.");
+			m_logger.info("Connected supplier to NC " + ncNames[0] + ". Will now send ~" + numEvents + " events, one every " + eventPeriodMillis + " ms.");
 			
 			// Let publisher component publish events as long as it takes for the subscriber to get enough of them 
 			supplierComp.sendEvents(ncEventSpecs, eventPeriodMillis, -1);
@@ -223,10 +234,21 @@ public class LocalPubSubTest extends ComponentClient
 			assertThat("It should have taken around " + expectedReceptionTimeMillis + " ms to receive the events.",
 					subscriberReceptionTimeMillis, 
 					is(lessThan((int)(1.1 * expectedReceptionTimeMillis))));
+		} catch (CouldntPerformActionEx ex) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+		}
+		catch (ExecutionException ex) {
+			Throwable ex2 = ex.getCause();
+			if (ex2 instanceof CouldntPerformActionEx) {
+				throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx((CouldntPerformActionEx)ex2);
+			}
+			else {
+				throw ex2;
+			}
 		}
 		finally {
 			componentAccessUtil.releaseComponent(subscriberComponentName, true);
-			containerUtil.stopContainer(null, subscriberContainerName);
+			containerUtil.stopContainer(localhostName, subscriberContainerName);
 			// for supplier component and container we trust the tearDown method..
 		}
 	}
