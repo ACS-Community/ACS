@@ -7,17 +7,21 @@
 # --------  ----------  ----------------------------------------------
 # eallaert  2008-01-18  initial version
 
-# Should be set to capture container daemon output locally, but does not work from here it seems.
-# set env(ACSDATA) [pwd] 
-
+# Set ACS_TMP to the local tmp folder
 set ACS_TMP [file join [pwd] tmp]
 set env(ACS_TMP) $ACS_TMP
 
-# We don't really need a special CDB yet, but acsutilTATPrologue does not accept the default $ACS_CDB
-# which is why we have a basic local version of it.
+# Also set ACSDATA to the local tmp folder, to capture locally the output of containers started by the daemon.
+# The file $ACSDATA/config/orb.properties must be copied, otherwise the manager fails with wrong jacorb logging factory errors.
+# (Replace "/" with "file join" stuff as needed...) 
+file mkdir $ACS_TMP/acsdata/config
+file copy $env(ACSDATA)/config/orb.properties $ACS_TMP/acsdata/config
+set env(ACSDATA) $ACS_TMP/acsdata
+
+# Test CDB (needed for NC and manager config, even though we currently only use fully dynamic components and containers) 
 set env(ACS_CDB) [pwd] 
 
-# Produce low-level logs for all acsStart.log, all_logs.xml, and test .out.orig files. 
+# Produce also low-level logs for all acsStart.log, all_logs.xml, and test .out.orig files. 
 # The latter will be thinned out by TestList.grep to keep the ref files maintainable.
 set env(ACS_LOG_STDOUT) 1
 set env(ACS_LOG_CENTRAL) 3
