@@ -235,6 +235,9 @@ public class LocalPubSubTest extends ComponentClient
 					subscriberReceptionTimeMillis, 
 					is(lessThan((int)(1.1 * expectedReceptionTimeMillis))));
 			
+			// stop supplier (it was in 'infinite' sending mode)
+			supplierComp.interrupt();
+			
 		} catch (CouldntPerformActionEx ex) {
 			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
 		}
