@@ -1,4 +1,7 @@
 #! /bin/bash
 
+acsNotifyService -k -w -n RealtimeNc
+
 acsutilTATEpilogue
+
 acscontainerdaemonStop

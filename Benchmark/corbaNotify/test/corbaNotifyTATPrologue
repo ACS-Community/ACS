@@ -5,3 +5,7 @@ acscontainerdaemonSmartStart &> $ACS_TMP/containerdaemon.out
 echo "Container daemon is running."
 
 acsutilTATPrologue --noloadifr -l
+echo "ACS services are running."
+
+acsNotifyService -s -w -n RealtimeNc
+echo "RealtimeNc notify service is running, where NC 'CONTROL_REALTIME' should be hosted."
