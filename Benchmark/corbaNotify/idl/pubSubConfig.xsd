@@ -32,6 +32,7 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<!-- Cannot easily reuse urn:schemas-cosylab-com:Container:1.0 because there ImplLang is an anonymous type -->
 	<xsd:simpleType name="ImplLangT">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="java"/>
@@ -74,14 +75,38 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 
+	<xsd:complexType name="SimpleLoggingSpecT">
+		<xsd:annotation><xsd:documentation>Simplified logging configuration, applies to all containers and components.</xsd:documentation></xsd:annotation>
+		<xsd:attribute name="defaultLevelMinLocal" type="xsd:int" use="optional" />
+		<xsd:attribute name="defaultLevelMin" type="xsd:int" use="optional" />
+		<xsd:attribute name="jacorbLevelMin" type="xsd:int" use="optional" />
+	</xsd:complexType>
 
-	<xsd:element name="PubSubTestSpec">
+
+	<xsd:simpleType name="TimeUnitT">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SECONDS"/>
+			<xsd:enumeration value="MINUTES"/>
+			<xsd:enumeration value="HOURS"/>
+			<xsd:enumeration value="DAYS"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="TerminationSpecT">
+		<xsd:attribute name="timeout" type="xsd:int" use="required" />
+		<xsd:attribute name="timeUnit" type="pusut:TimeUnitT" use="required" />
+	</xsd:complexType>
+
+
+	<xsd:element name="PubSubInfrastructureSpec">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="TestDescription" type="xsd:string" />
 				<xsd:element name="Container" type="pusut:ContainerSpecT" minOccurs="1" maxOccurs="unbounded" />
 				<xsd:element name="Publisher" type="pusut:PublisherSpecT" minOccurs="0" maxOccurs="unbounded" />
 				<xsd:element name="Subscriber" type="pusut:SubscriberSpecT" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element name="Logging" type="pusut:SimpleLoggingSpecT" minOccurs="0" />
+				<xsd:element name="Termination" type="pusut:TerminationSpecT" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
