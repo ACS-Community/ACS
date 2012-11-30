@@ -23,7 +23,7 @@ public class PubSubComponentAccessUtil extends ComponentAccessUtil
 	public CorbaNotifySupplierOperations getDynamicJavaSupplierComponent(String componentName, String containerName) throws AcsJContainerServicesEx {
 		ComponentSpec compSpec = new ComponentSpec(componentName,
 				CorbaNotifySupplierHelper.id(), // "IDL:alma/benchmark/CorbaNotifySupplier:1.0" 
-				"acs.benchmark.nc.supplier.CorbaNotifySupplierComponentHelper", // component helper not visible to normal CL 
+				"acs.benchmark.nc.comp.publisher.CorbaNotifySupplierComponentHelper", // component helper not visible to normal CL 
 				containerName);
 		return getDynamicComponent(compSpec, CorbaNotifySupplierOperations.class);
 	}
@@ -31,7 +31,7 @@ public class PubSubComponentAccessUtil extends ComponentAccessUtil
 	public CorbaNotifyConsumerOperations getDynamicJavaSubscriberComponent(String componentName, String containerName) throws AcsJContainerServicesEx {
 		ComponentSpec compSpec = new ComponentSpec(componentName,
 				CorbaNotifyConsumerHelper.id(), // "IDL:alma/benchmark/CorbaNotifyConsumer:1.0" 
-				"acs.benchmark.nc.consumer.CorbaNotifyConsumerComponentHelper", // component helper not visible to normal CL 
+				"acs.benchmark.nc.comp.subscriber.CorbaNotifyConsumerComponentHelper", // component helper not visible to normal CL 
 				containerName);
 		return getDynamicComponent(compSpec, CorbaNotifyConsumerOperations.class);
 	}
