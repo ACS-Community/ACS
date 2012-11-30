@@ -1,4 +1,4 @@
-package acs.benchmark.nc;
+package acs.benchmark.nc.client;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package acs.benchmark.nc.supplier;
+package acs.benchmark.nc.comp.subscriber;
 
 import java.util.logging.Logger;
 
@@ -27,8 +27,8 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.benchmark.CorbaNotifySupplierOperations;
-import alma.benchmark.CorbaNotifySupplierPOATie;
+import alma.benchmark.CorbaNotifyConsumerOperations;
+import alma.benchmark.CorbaNotifyConsumerPOATie;
 
 
 /**
@@ -40,17 +40,17 @@ import alma.benchmark.CorbaNotifySupplierPOATie;
  * copy the line below into a new entry in the file $ACS_CDB/MACI/Components/Components.xml 
  * and modify the instance name of the component and the container: 
  * <p>
- * Name="blabla" Code="acs.benchmark.nc.supplier.CorbaNotifySupplierComponentHelper" Type="IDL:alma/benchmark/CorbaNotifySupplier:1.0" Container="frodoContainer" ImplLang="java"
+ * Name="blabla" Code="acs.benchmark.nc.consumer.CorbaNotifyConsumerComponentHelper" Type="IDL:acs/benchmark/CorbaNotifyConsumer:1.0" Container="frodoContainer" ImplLang="java"
  * <p>
  * @author alma-component-helper-generator-tool
  */
-public class CorbaNotifySupplierComponentHelper extends ComponentHelper
+public class CorbaNotifyConsumerComponentHelper extends ComponentHelper
 {
 	/**
 	 * Constructor
 	 * @param containerLogger logger used only by the parent class.
 	 */
-	public CorbaNotifySupplierComponentHelper(Logger containerLogger)
+	public CorbaNotifyConsumerComponentHelper(Logger containerLogger)
 	{
 		super(containerLogger);
 	}
@@ -60,7 +60,7 @@ public class CorbaNotifySupplierComponentHelper extends ComponentHelper
 	*/
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new CorbaNotifySupplierImpl();
+		return new CorbaNotifyConsumerImpl();
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class CorbaNotifySupplierComponentHelper extends ComponentHelper
 	*/
 	protected Class<? extends Servant> _getPOATieClass()
 	{
-		return CorbaNotifySupplierPOATie.class;
+		return CorbaNotifyConsumerPOATie.class;
 	}
 
 	/**
@@ -76,6 +76,6 @@ public class CorbaNotifySupplierComponentHelper extends ComponentHelper
 	*/
 	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
-		return CorbaNotifySupplierOperations.class;
+		return CorbaNotifyConsumerOperations.class;
 	}
 }

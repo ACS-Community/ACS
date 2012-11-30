@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/ACS_Benchmark_corbaNotify/src/acs/benchmark/nc/PubSubExecutor.java"/>
+<listEntry value="/ACS_Benchmark_corbaNotify/src/acs/benchmark/nc/client/PubSubExecutor.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="acs.benchmark.nc.PubSubExecutor"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="acs.benchmark.nc.client.PubSubExecutor"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="PubSubSetup-1.xml subscriberContainer=myInjectedHost"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_Benchmark_corbaNotify"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:ACS_Benchmark_corbaNotify/test}"/>

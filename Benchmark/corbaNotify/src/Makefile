@@ -120,14 +120,16 @@ USER_IDL =
 # Component jarfiles
 #
 COMPONENTS_JARFILES = corbaNotifyTestComp
-corbaNotifyTestComp_DIRS = acs/benchmark/nc
+corbaNotifyTestComp_DIRS = acs/benchmark/nc/comp
 
 #
 # Jarfiles and their directories
 #
-JARFILES=
-jjj_DIRS=
-jjj_EXTRAS=
+JARFILES = corbaNotify
+corbaNotify_DIRS = acs/benchmark/nc/client
+corbaNotify_EXTRAS=
+corbaNotify_JLIBS = pubSubConfigBind
+
 
 # For expressing dependencies between jarfiles (parallel builds)
 corbaNotifyTestComp_JLIBS = corbaNotifyTest_if
@@ -144,6 +146,7 @@ XML_IDL=
 # Java Component Helper Classes generation on/off
 #
 COMPONENT_HELPERS=
+
 #
 # Java Entity Classes generation config file
 #
