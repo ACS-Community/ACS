@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  ******************************************************************************* -->
 
-<PubSubTestSpec>
+<PubSubInfrastructureSpec>
 
   <TestDescription>A simple pub-sub setup without one mapping.</TestDescription>
   
@@ -52,4 +52,6 @@
     <EventName>LightweightMountStatusData</EventName>
   </Subscriber>
 
-</PubSubTestSpec>
+  <Termination timeout="20" timeUnit="SECONDS" />
+  
+</PubSubInfrastructureSpec>
