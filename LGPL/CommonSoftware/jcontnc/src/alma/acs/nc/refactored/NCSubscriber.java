@@ -912,7 +912,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		// got a subclass 'veto'?
 		if (!shouldProcessEvent) {
 			if (firstSubclassVeto) {
-				logger.info("Event subscriber '" + getClass().getSimpleName() + "' handles one or more raw NC events itself, bypassing '" + NCSubscriber.class + 
+				logger.info("Event subscriber '" + getClass().getSimpleName() + "' handles one or more raw NC events itself, bypassing base class '" + NCSubscriber.class.getName() + 
 								"'. This non-standard behavior will not be logged again by this NCSubscriber.");
 				firstSubclassVeto = false;
 			}
