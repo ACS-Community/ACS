@@ -100,6 +100,7 @@ import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import com.cosylab.acs.jms.ACSJMSTextMessage;
 import com.cosylab.acs.jms.ACSJMSTopic;
 import com.cosylab.acs.jms.ACSJMSTopicConnectionFactory;
+import com.cosylab.acs.laser.AlarmSourcesListener.SourceListener;
 import com.cosylab.acs.laser.dao.ACSAdminUserDAOImpl;
 import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
@@ -110,7 +111,7 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 
-public class LaserComponent extends CERNAlarmServicePOA implements MessageListener{
+public class LaserComponent extends CERNAlarmServicePOA implements SourceListener {
 	
 	/**
 	 * A class to terminate the alarm service asynchronously.
@@ -189,7 +190,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 	/**
 	 * The subscribers to the sources NC
 	 */
-	private AlarmSourcesListener sourcesListener;
+	private AlarmSourcesListenerCached sourcesListener;
 	
 	/**
 	 * The CORBA server
@@ -392,7 +393,8 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		alarmDAO.setAlarmProcessor(alarmMessageProcessor);
 		
 		// Subscribe to all the source channels
-		sourcesListener = new AlarmSourcesListener(alSysContSvcs,logger,this);
+		sourcesListener = new AlarmSourcesListenerCached(alSysContSvcs,logger,this);
+		sourcesListener.start();
 		try {
 			sourcesListener.connectSources(sourceDAO.getAllSourceIDs());
 			logger.log(AcsLogLevel.DEBUG,"Successfully connected to sources NCs"); 
@@ -433,7 +435,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		for (LaserCoreFaultCodes alarm: alarms) {
 			logger.log(AcsLogLevel.ALERT, "Laser core alarm <"+LaserCoreFaultState.FaultFamily+", "+LaserCoreFaultState.FaultMember+", "+alarm.faultCode+">");
 			cern.laser.source.alarmsysteminterface.FaultState fs = LaserCoreFaultState.createFaultState(alarm, true);
-			Message msg;
+			TextMessage msg;
 			try {
 				msg= LaserCoreFaultState.createJMSMessage(fs, alSysContSvcs);
 			} catch (Throwable t) {
@@ -442,17 +444,19 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 				logger.log(AcsLogLevel.ERROR,"Error creating a core alarm of type "+alarm);
 				continue;
 			}
-			onMessage(msg);
+			try {
+				onMessage(msg.getText());
+			} catch (Throwable t) {
+				logger.log(AcsLogLevel.ERROR,"Error processing core alarm: "+alarm);
+			}
 		}
 	}
 	
 	/**
 	 * @see MessageListener
 	 */
-	public synchronized void onMessage(Message message) {
-		if (!(message instanceof TextMessage)) {
-			logger.log(AcsLogLevel.WARNING,"Received a non text source message");
-		}
+	@Override
+	public synchronized void onMessage(String message) {
 		try {
 			alarmMessageProcessor.process(message);
 		} catch (Exception e) {
@@ -1030,7 +1034,12 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 			throw ex.toUnexpectedExceptionEx();
 		}
 		// Inject the message
-		onMessage(message);
+		try {
+			onMessage(message.getText());
+		} catch (Throwable t) {
+			AcsJUnexpectedExceptionEx ex = new AcsJUnexpectedExceptionEx(t);
+			throw ex.toUnexpectedExceptionEx();
+		}
 	}
 	
 	/**
