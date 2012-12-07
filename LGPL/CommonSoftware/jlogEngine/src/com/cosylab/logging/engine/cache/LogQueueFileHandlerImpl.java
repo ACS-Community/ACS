@@ -47,7 +47,7 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	private final Random randomNumGenerator = new Random(System.currentTimeMillis());
 	
 	/**
-	 * Build the handler with the default size for the files.
+	 * Build the handler with the default size  and prefix.
 	 * 
 	 * The max size of each file of the cache is calculated in the following way:
 	 * 1. if the java property is present, the size is taken from such a property
@@ -58,13 +58,34 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	}
 	
 	/**
-	 * Build the handler with the default size for the files.
+	 * Build the handler with the passed size for the files.
 	 * 
 	 * @param maxFileSize The max size of the files of the cache.
 	 */
 	public LogQueueFileHandlerImpl(long maxFileSize) {
+		this(maxFileSize,"jlogEngineCache");
+	}
+	
+	/**
+	 * Build the handler with the default size for the files
+	 * and the passed prefix
+	 * 
+	 * @param maxFileSize The max size of the files of the cache.
+	 * @param prefix The prefix of the name of the cache files
+	 */
+	public LogQueueFileHandlerImpl(String prefix) {
+		this(Long.getLong(MAXSIZE_PROPERTY_NAME,DEFAULT_SIZE),prefix);
+	}
+	
+	/**
+	 * Build the handler with the passed size and prefix.
+	 * 
+	 * @param maxFileSize The max size of the files of the cache.
+	 * @param prefix The prefix of the name of the cache files
+	 */
+	public LogQueueFileHandlerImpl(long maxFileSize, String prefix) {
 		this.maxFileSize=maxFileSize;
-		fileNamePrefix="jlogEngineCache";
+		fileNamePrefix=prefix;
 	}
 
 	/**
