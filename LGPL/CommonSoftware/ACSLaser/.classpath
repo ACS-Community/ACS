@@ -75,5 +75,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmService.jar"/>
 	<classpathentry kind="lib" path="baciPropsTest/lib/baciAlTest.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
