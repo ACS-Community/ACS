@@ -32,6 +32,11 @@ import java.util.Random;
 public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	
 	/**
+	 * The prefix of each file of the cache.
+	 */
+	private final String fileNamePrefix;
+	
+	/**
 	 * The max size of the files of the cache.
 	 */
 	private final long maxFileSize;
@@ -45,16 +50,11 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	 * Build the handler with the default size for the files.
 	 * 
 	 * The max size of each file of the cache is calculated in the following way:
-	 * 1. if the java property is present, the size is taken from suc a property
+	 * 1. if the java property is present, the size is taken from such a property
 	 * 2. the default size is used
 	 */
 	public LogQueueFileHandlerImpl() {
-		Integer fileSizeFromProperty = Integer.getInteger(MAXSIZE_PROPERTY_NAME);
-		if (fileSizeFromProperty != null) {
-			maxFileSize=fileSizeFromProperty.longValue();
-		} else {
-			maxFileSize=DEFAULT_SIZE;
-		}
+		this(Long.getLong(MAXSIZE_PROPERTY_NAME,DEFAULT_SIZE));
 	}
 	
 	/**
@@ -64,6 +64,7 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	 */
 	public LogQueueFileHandlerImpl(long maxFileSize) {
 		this.maxFileSize=maxFileSize;
+		fileNamePrefix="jlogEngineCache";
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 				acstmp=acstmp+File.separator;
 			}
 			File dir = new File(acstmp);
-			f = File.createTempFile("jlogEngineCache",".tmp",dir);
+			f = File.createTempFile(fileNamePrefix,".tmp",dir);
 			name=f.getAbsolutePath();
 		} catch (IOException ioe) {
 			// An error :-O
@@ -115,12 +116,12 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 				do {
 					// Try to create the file in the home directory
 					int random = randomNumGenerator.nextInt();
-					name = homeDir + File.separator+"jlogEngineCache"+random+".jlog";
+					name = homeDir + File.separator+fileNamePrefix+random+".jlog";
 					f = new File(name);
 				} while (f.exists());
 			} else {
 				// The home folder is not writable: try to get a system temp file
-				f=File.createTempFile("jlogEngineCache",".tmp");
+				f=File.createTempFile(fileNamePrefix,".tmp");
 				name=f.getAbsolutePath();
 			}
 		}
