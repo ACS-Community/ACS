@@ -71,7 +71,21 @@ public class AlarmMessageProcessorImpl {
     if (alarmMessage instanceof TextMessage) {
       TextMessage text_message = (TextMessage) alarmMessage;
       String xml_message = text_message.getText();
-      ASIMessage asi_message = XMLMessageHelper.unmarshal(xml_message);
+      process(xml_message);
+    } else {
+      throw new Exception("TextMessage expected");
+    }
+    LOGGER.info("*** message processed ***");
+    if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("message processed");
+  }
+  
+  /**
+   * Process a message
+   * 
+   * @param xml the XML message to unmarshall into a <code>ASIMessage</code>
+   */
+  public void process(String xml) throws Exception {
+      ASIMessage asi_message = XMLMessageHelper.unmarshal(xml);
       LOGGER.info("message from " + asi_message.getSourceName() + "@" + asi_message.getSourceHostname());
       if (asi_message.getBackup()) {
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing backup...");
@@ -82,11 +96,6 @@ public class AlarmMessageProcessorImpl {
         processChanges(asi_message);
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("change processed");
       }
-    } else {
-      throw new Exception("TextMessage expected");
-    }
-    LOGGER.info("*** message processed ***");
-    if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("message processed");
   }
 
   public void processChange(FaultState faultState, String sourceName, String sourceHostname, Timestamp sourceTimestamp)
