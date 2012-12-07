@@ -124,6 +124,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 	 */
 	public class LaserComponentTerminator implements Runnable {
 		public void run() {
+			sourcesListener.shutdown();
 			alarmCacheListener.close();
 			alarmCacheListener=null;
 			alarmSourceMonitor.stop();
@@ -184,6 +185,11 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 	 * alarms in the <code>coreAlarms</code> vector.
 	 */
 	private Vector<LaserCoreFaultCodes> coreAlarms = new Vector<LaserCoreFaultCodes>(); 
+	
+	/**
+	 * The subscribers to the sources NC
+	 */
+	private AlarmSourcesListener sourcesListener;
 	
 	/**
 	 * The CORBA server
@@ -385,27 +391,17 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 
 		alarmDAO.setAlarmProcessor(alarmMessageProcessor);
 		
-		
-		String[] allSources=sourceDAO.getAllSourceIDs();
-		if (allSources!=null) {
-			for (int a=0; a<allSources.length; a++) {
-				Topic topicAdminCacheLoader = new ACSJMSTopic(
-				"CMW.ALARM_SYSTEM.ALARMS.SOURCES."+allSources[a]);
-				try {
-					TopicSubscriber subscriberAdminCacheLoader = ts
-							.createSubscriber(topicAdminCacheLoader);
-			
-					subscriberAdminCacheLoader
-							.setMessageListener(this);
-				} catch (Throwable t) {
-					System.err.println("Error setting source listener: "+t.getMessage());
-					t.printStackTrace(System.err);
-					logger.log(AcsLogLevel.WARNING,"Error setting the source listener",t);
-					coreAlarms.add(LaserCoreFaultCodes.SOURCE_LISTENER);
-				}
-			}
+		// Subscribe to all the source channels
+		sourcesListener = new AlarmSourcesListener(alSysContSvcs,logger,this);
+		try {
+			sourcesListener.connectSources(sourceDAO.getAllSourceIDs());
+			logger.log(AcsLogLevel.DEBUG,"Successfully connected to sources NCs"); 
+		} catch (Throwable t) {
+			System.err.println("Error setting source listener: "+t.getMessage());
+			t.printStackTrace(System.err);
+			logger.log(AcsLogLevel.WARNING,"Error setting the source listener",t);
+			coreAlarms.add(LaserCoreFaultCodes.SOURCE_LISTENER);
 		}
-		
 	}
 	
 	/**
