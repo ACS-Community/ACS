@@ -47,7 +47,7 @@ import com.cosylab.acs.jms.ACSJMSTextMessage;
  * using objects of this class.
  * 
  * @author  acaproni
- * @version $Id: AlarmSourcesListener.java,v 1.1 2012/12/06 18:19:55 acaproni Exp $
+ * @version $Id: AlarmSourcesListener.java,v 1.2 2012/12/07 11:31:26 acaproni Exp $
  * @since ACS 11.0  
  */
 public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
@@ -57,7 +57,15 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	 */
 	private final ContainerServicesBase contSvcs;
 	
+	/**
+	 * The logger
+	 */
 	private final Logger logger;
+	
+	/**
+	 * The alarm system prepend the name of each source NCs with the same string
+	 */
+	private final String channelGroupName="CMW.ALARM_SYSTEM.ALARMS.SOURCES.";
 	
 	/**
 	 * The listeners to send messages to
@@ -170,11 +178,12 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 		if (ncName==null || ncName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid name of source channel!");
 		}
-		logger.log(AcsLogLevel.DEBUG,"Connecting to source NC: "+ncName);
+		String name=channelGroupName+ncName;
+		logger.log(AcsLogLevel.DEBUG,"Connecting to source NC: "+name);
 		AcsEventSubscriber<ACSJMSMessageEntity> consumer;
-		consumer = contSvcs.createNotificationChannelSubscriber(ncName, ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		consumer = contSvcs.createNotificationChannelSubscriber(name, ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
 		consumer.addSubscription(this);
-		logger.log(AcsLogLevel.DEBUG,"Start receiving alarms from source NC: "+ncName);
+		logger.log(AcsLogLevel.DEBUG,"Start receiving alarms from source NC: "+name);
 		consumer.startReceivingEvents();
 		consumers.add(consumer);
 	}
@@ -186,6 +195,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	public void shutdown() {
 		closed=true;
 		// Disconnects the NCs
+		logger.log(AcsLogLevel.DEBUG,"Sources listener is about to disconnect from "+consumers.size()+" source channels.");
 		synchronized (consumers) {
 			for (AcsEventSubscriber<ACSJMSMessageEntity> consumer: consumers) {
 				try {
@@ -198,6 +208,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 			consumers.clear();
 		}
 		listeners.clear();
+		logger.log(AcsLogLevel.DEBUG,"Sources listener is shutdown.");
 	}
 	
 	/**
@@ -219,8 +230,10 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 		if (message==null) {
 			throw new NullPointerException("The message received is null");
 		}
-		logger.log(AcsLogLevel.DELOUSE,"Message received from source");
-
+		// Discard messages if closed
+		if (closed) {
+			return;
+		}
 		ACSJMSMessage jmsMessage = null;
 		if (message.type.compareTo("com.cosylab.acs.jms.ACSJMSObjectMessage")==0){
 			jmsMessage = new ACSJMSObjectMessage(message,contSvcs);
