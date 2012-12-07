@@ -23,22 +23,17 @@ import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.jms.MessageListener;
-
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
-import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.ALARMSYSTEM_DOMAIN_NAME;
 import alma.acsnc.EventDescription;
 
-import com.cosylab.acs.jms.ACSJMSMessage;
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
-import com.cosylab.acs.jms.ACSJMSObjectMessage;
-import com.cosylab.acs.jms.ACSJMSTextMessage;
 
 /**
  * Connects to all the alarm source NC and listen for alarms.
@@ -47,20 +42,36 @@ import com.cosylab.acs.jms.ACSJMSTextMessage;
  * using objects of this class.
  * 
  * @author  acaproni
- * @version $Id: AlarmSourcesListener.java,v 1.2 2012/12/07 11:31:26 acaproni Exp $
+ * @version $Id: AlarmSourcesListener.java,v 1.3 2012/12/07 17:57:03 acaproni Exp $
  * @since ACS 11.0  
  */
 public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
 	
 	/**
+	 * The listener of messages from sources
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public interface SourceListener {
+		
+		/**
+		 * The xml recieved from the source (to be unmarshalled
+		 * into e <code>ASIMessage</code>).
+		 * @param xml
+		 */
+		public void onMessage(String xml);
+	}
+	
+	/**
 	 * Container Services
 	 */
-	private final ContainerServicesBase contSvcs;
+	protected final ContainerServicesBase contSvcs;
 	
 	/**
 	 * The logger
 	 */
-	private final Logger logger;
+	protected final Logger logger;
 	
 	/**
 	 * The alarm system prepend the name of each source NCs with the same string
@@ -70,7 +81,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	/**
 	 * The listeners to send messages to
 	 */
-	private final Collection<MessageListener> listeners = Collections.synchronizedCollection(new Vector<MessageListener>());
+	private final Collection<SourceListener> listeners = Collections.synchronizedCollection(new Vector<SourceListener>());
 	
 	/**
 	 * Signal that the object has been shutdown
@@ -107,7 +118,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	 * @param logger The logger
 	 * @param listener the listener to notify messages to
 	 */
-	public AlarmSourcesListener(ContainerServicesBase contSvcs, Logger logger, MessageListener listener) {
+	public AlarmSourcesListener(ContainerServicesBase contSvcs, Logger logger, SourceListener listener) {
 		this(contSvcs,logger);
 		if (listener==null) {
 			throw new IllegalArgumentException("The listener can't be null!");
@@ -120,7 +131,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	 * 
 	 * @return <code>true</code> if the collection of message listeners changed as a result of the call
 	 */
-	public boolean addListener(MessageListener listener) {
+	public boolean addListener(SourceListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("The listener can't be null!");
 		}
@@ -135,7 +146,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	 * 
 	 * @return <code>true</code> if the listener was removed as a result of this call
 	 */
-	public boolean removeListener(MessageListener listener) {
+	public boolean removeListener(SourceListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("The listener can't be null!");
 		}
@@ -234,30 +245,30 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 		if (closed) {
 			return;
 		}
-		ACSJMSMessage jmsMessage = null;
 		if (message.type.compareTo("com.cosylab.acs.jms.ACSJMSObjectMessage")==0){
-			jmsMessage = new ACSJMSObjectMessage(message,contSvcs);
+			logger.log(AcsLogLevel.WARNING,"Unknown message type received from source "+message.type);
 		} else {
-			jmsMessage = new ACSJMSTextMessage(message,contSvcs);
+			notifyListeners(message.text);
 		}
-		notifyListeners(jmsMessage);
 	}
+	
+	
 	
 	/**
 	 * Notify the listeners of a new message
 	 * 
-	 * @param jmsMessage The message to notify
+	 * @param xml The xml (ASIMessage) to notify
 	 */
-	private void notifyListeners(ACSJMSMessage jmsMessage) {
-		if (jmsMessage==null) {
-			throw new NullPointerException("The message to notify is null");
+	protected void notifyListeners(String xml) {
+		if (xml==null) {
+			throw new NullPointerException("The XML source message to notify is null");
 		}
 		if (closed) {
 			return;
 		}
 		synchronized (listeners) {
-			for (MessageListener listener: listeners) {
-				listener.onMessage(jmsMessage);
+			for (SourceListener listener: listeners) {
+				listener.onMessage(xml);
 			}
 		}
 	}
