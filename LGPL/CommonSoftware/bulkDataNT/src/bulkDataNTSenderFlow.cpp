@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53 2012/11/20 16:09:05 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.54 2012/12/10 15:19:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53 2012/11/20 16:09:05 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.54 2012/12/10 15:19:03 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -35,7 +35,7 @@ using namespace std;
 using namespace ACS_DDS_Errors;
 using namespace ACS_BD_Errors;
 
-const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataRcvState", "StopState" };
+const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataSendState", "StopState" };
 
 BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     const char* flowName,
