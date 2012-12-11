@@ -1,8 +1,9 @@
+#!/bin/sh
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
-# and Cosylab 2002, All rights reserved
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,25 +20,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_WS.lite,v 1.78 2003/01/16 12:14:28 vltsccm Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-SOURCE jcontTATEnvironment
-PROLOGUE jcontTATPrologue
 
-1 selfcontainedUnitTestsJCONT "acsutilTATTestRunner selfcontainedUnitTestsJCONT"
-
-2 componentUnitTestsJCONT "acsutilTATTestRunner componentUnitTestsJCONT"
-
-3 classpathTestsJCONT "acsutilTATTestRunner classpathTestsJCONT"
-
-4 dynamicConfJCONT "DynamicContainerConfigurationTest.sh"
-
-5 clientTestsJCONT "acsutilTATTestRunner clientTestsJCONT"
-
-6 containerJmxMonitorTest "acsutilTATTestRunner containerJmxMonitorTest"
-
-EPILOGUE acsutilTATEpilogue
+export CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH 
+acsStartJava -endorsed alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.container.corba.ContainerMonitorTest

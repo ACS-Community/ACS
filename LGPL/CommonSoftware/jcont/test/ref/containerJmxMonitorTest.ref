@@ -1,0 +1,14 @@
+1 - ----------T--:--:--.--- INFO [testStress#testStress] -------------------------------
+1 - ----------T--:--:--.--- INFO [testStress#testStress] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@testStress#testStress created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - ----------T--:--:--.--- INFO [testStress#testStress] Got silentContainer's PID: xxxx
+1 - ----------T--:--:--.--- INFO [testStress#testStress] Max/Min for JacORB's thread pool: xx/xx
+1 - ----------T--:--:--.--- INFO [testStress#testStress] Total number of JacORB threads: xx
+1 - ----------T--:--:--.--- INFO [testStress#testStress] Total number of ACS threads: xx
+1 - ----------T--:--:--.--- INFO [testStress#testStress] ==========                                        =====          =
+1 - ----------T--:--:--.--- INFO [testStress#testStress] Class name                                        State          #    
+1 - ----------T--:--:--.--- INFO [testStress#testStress] org.jacorb.poa.RequestProcessor                   WAITING        xx
+1 - ----------T--:--:--.--- INFO [testStress#testStress] client 'alma.acs.container.corba.ContainerMonitorTest' has successfully released a component with curl=DefaultDummyComp
+1 - ----------T--:--:--.--- INFO [testStress#testStress] ACS Container threads average (idle/stress): xx.xx/xx.xx
+1 - ----------T--:--:--.--- INFO [testStress#testStress] JacORB threads average        (idle/stress): xx.xx/xx.xx
+1 - OK (1 test)

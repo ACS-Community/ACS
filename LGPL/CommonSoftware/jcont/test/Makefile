@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.24 2012/01/24 01:00:04 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.25 2012/12/11 14:15:56 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -68,7 +68,7 @@ jcontTest_DIRS = alma/acs \
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = selfcontainedUnitTestsJCONT componentUnitTestsJCONT classpathTestsJCONT jcontTATPrologue clientTestsJCONT
+SCRIPTS_L       = selfcontainedUnitTestsJCONT componentUnitTestsJCONT classpathTestsJCONT jcontTATPrologue clientTestsJCONT containerJmxMonitorTest
 
 #>>>>> END OF standard rules
 
@@ -90,7 +90,9 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
-	$(RM) tmp	
+	$(RM) *~
+	$(RM) tmp
+	$(RM) tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

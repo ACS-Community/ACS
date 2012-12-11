@@ -21,15 +21,12 @@
 # MA 02111-1307  USA
 #
 
-export CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
-
 echo "=== Running all JUnit tests of module jcont which require a container infrastructure"
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.ComponentTestclient
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.AcsCorbaTestWithContainer
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ClientPendingReplyTimeoutTest
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
-    ACS_LOG_STDOUT=3; acsStartJava -endorsed -D jacorb.log.default.verbosity=3 alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.FrameworkLoggerTest
-    acsStartJava -endorsed alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.container.corba.ContainerMonitorTest
+    ACS_LOG_STDOUT=3; acsStartJava -endorsed -D jacorb.log.default.verbosity=3 alma.acs.testsupport.tat.TATJUnitRunner alma.acs.component.client.FrameworkLoggerTest
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.ClientWithLogReceiverTest
     #This test is commented because it provokes a timeout in NRI 
 #   acsStartJava -Djacorb.connection.client.pending_reply_timeout=30000 -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
