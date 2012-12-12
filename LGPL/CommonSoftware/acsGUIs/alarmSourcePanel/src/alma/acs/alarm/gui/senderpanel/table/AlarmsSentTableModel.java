@@ -63,7 +63,6 @@ public class AlarmsSentTableModel extends AbstractTableModel {
 	 * @return The number of alarms in the table
 	 */
 	public int alarmSent(Triplet triplet, boolean active) {
-		System.out.println("Model: added "+triplet.toString()+" ACTIVE="+active);
 		if (!active && alarms.contains(triplet)) {
 			alarms.remove(triplet);
 		} else if (active && !alarms.contains(triplet)) {
@@ -71,7 +70,6 @@ public class AlarmsSentTableModel extends AbstractTableModel {
 		}
 		Collections.sort(alarms);
 		fireTableDataChanged();
-		System.out.println("\talarms size= "+alarms.size());
 		return alarms.size();
 	}
 	
