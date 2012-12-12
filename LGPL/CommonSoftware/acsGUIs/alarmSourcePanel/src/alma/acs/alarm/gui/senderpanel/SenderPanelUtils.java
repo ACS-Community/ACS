@@ -56,6 +56,11 @@ public class SenderPanelUtils {
 		 */
 		public final int faultCode;
 		
+		/**
+		 * The ID of the triplet
+		 */
+		public final String id;
+		
 		public Triplet(String ff, String fm, int code) {
 			if (ff==null || ff.trim().isEmpty()) {
 				throw new IllegalArgumentException("Infalid FF ["+ff+"]");
@@ -66,10 +71,11 @@ public class SenderPanelUtils {
 			this.faultFamily=ff.trim();
 			this.faultMember=fm.trim();
 			this.faultCode=code;
+			this.id=faultFamily+":"+faultMember+":"+faultCode;
 		}
 		
 		public String toString() {
-			return "<"+faultFamily+","+faultMember+","+faultCode+">";
+			return "<"+id+">";
 		}
 
 		@Override
