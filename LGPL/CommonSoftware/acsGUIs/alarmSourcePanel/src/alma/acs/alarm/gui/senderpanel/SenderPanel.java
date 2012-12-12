@@ -545,7 +545,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	
 	private void initACS() throws Exception {
 		// Connect to ACS
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("SourcePanel",true);
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AlarmSenderPanel",true);
 		String managerLoc = System.getProperty("ACS.manager");
         if (managerLoc == null) {
                 System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
