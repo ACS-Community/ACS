@@ -114,7 +114,20 @@ public class AlarmSender implements Runnable {
 	private final long TIME_BETWEEN_SENDINGS=100;
 	
 	/**
-	 * The queu of alarms to send.
+	 * The time (msec) between two log messages showing the number 
+	 * of alarms sent by the class 
+	 */
+	private final long TIME_BETWEEN_LOGS=60000;
+	
+	/**
+	 * / Log a message every minute reporting the number of alarms published
+	 */
+	private long lastLogMessageTime=System.currentTimeMillis();
+	
+	private int numOfAlarmsSent=0;
+	
+	/**
+	 * The queue of alarms to send.
 	 * <P>
 	 * Alarms to be sent are stored in this queue. 
 	 * The thread gets alarms from this queue and publishes them in the source NC. 
@@ -300,6 +313,11 @@ public class AlarmSender implements Runnable {
 				return;
 			}
 			sendSynch(alarm.triplet, alarm.descriptor, alarm.userProperties);
+			numOfAlarmsSent++;
+			if (System.currentTimeMillis()-lastLogMessageTime>TIME_BETWEEN_LOGS) {
+				lastLogMessageTime=System.currentTimeMillis();
+				logger.log(AcsLogLevel.INFO, "Alarms sent: "+numOfAlarmsSent+", alarms waiting to be sent: "+alarmsToSend.size());
+			}
 		}
 	}
 }
