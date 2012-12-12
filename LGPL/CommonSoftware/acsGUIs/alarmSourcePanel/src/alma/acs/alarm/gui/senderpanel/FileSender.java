@@ -67,7 +67,7 @@ public class FileSender extends BaseAlarmsSender {
 	 * @param contSvcs The ContainerServices
 	 * @param sender The object to send alarms
 	 */
-	public FileSender(SenderPanel parent,ContainerServices contSvcs, AlarmSender sender) {
+	public FileSender(SenderPanel parent,ContainerServices contSvcs, ParallelAlarmSender sender) {
 		super(parent, contSvcs,  sender,FileSender.class.getName()+"_");
 	}
 

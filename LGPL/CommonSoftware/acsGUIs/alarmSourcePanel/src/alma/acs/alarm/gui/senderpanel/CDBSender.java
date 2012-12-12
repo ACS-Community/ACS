@@ -68,7 +68,7 @@ public class CDBSender extends BaseAlarmsSender {
 	 * @param contSvcs The ContainerServices
 	 * @param sender The object to send alarms
 	 */
-	public CDBSender(SenderPanel parent,ContainerServices contSvcs, AlarmSender sender) {
+	public CDBSender(SenderPanel parent,ContainerServices contSvcs, ParallelAlarmSender sender) {
 		super(parent, contSvcs,  sender,CDBSender.class.getName()+"_");
 		
 		alarmsSenderThread = threadFactory.newThread(new Runnable() {
