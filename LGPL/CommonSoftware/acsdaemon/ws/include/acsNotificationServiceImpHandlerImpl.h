@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.8 2009/12/22 10:46:43 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.9 2012/12/12 07:27:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -125,11 +125,6 @@ public:
 		ACS_SHORT_LOG((LM_ERROR, "%s does not extend required interface, reported as defunctional.", desc->getName()));
 		return acsdaemon::DEFUNCT;
     }
-    
-    // do not monitor alarm notification service
-    if (ACE_OS::strcmp(desc->getName(), "AlarmNotifyEventChannelFactory") == 0 ||
-        ACE_OS::strcmp(desc->getName(), "Alarm") == 0)
-      return acsdaemon::RUNNING;
     
     if (monitorMap.find(desc) == monitorMap.end())
     {
