@@ -29,6 +29,7 @@ import java.util.concurrent.ThreadFactory;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.AlarmDescriptorType;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 
 /**
  * The base class for alarms senders.
@@ -198,7 +199,7 @@ public class BaseAlarmsSender {
 	/**
 	 * The object to send alarms
 	 */
-	protected final AlarmSender alarmsSender;
+	protected final ParallelAlarmSender alarmsSender;
 	
 	/**
 	 * The parent component to show the dialog
@@ -233,7 +234,7 @@ public class BaseAlarmsSender {
 	 * @param sender The object to send alarms
 	 * @param threadPrefixName The prefix of the name of the thread
 	 */
-	public BaseAlarmsSender(SenderPanel parent,ContainerServices contSvcs, AlarmSender sender, String threadPrefixName) {
+	public BaseAlarmsSender(SenderPanel parent,ContainerServices contSvcs, ParallelAlarmSender sender, String threadPrefixName) {
 		if (parent==null) {
 			throw new IllegalArgumentException("The parent component can't be null");
 		}
@@ -412,31 +413,33 @@ public class BaseAlarmsSender {
 			public void run() {
 				notifyStartTask(null);
 				Random rnd = new Random(System.currentTimeMillis());
-				synchronized (alarms) {
-					while (!Thread.currentThread().isInterrupted()) {
-						AlarmDescriptorType type = (rnd.nextBoolean())?AlarmDescriptorType.ACTIVE:AlarmDescriptorType.TERMINATE;
-						int alarmIdx=rnd.nextInt(alarms.size());
-						AlarmRead alarm=alarms.get(alarmIdx);
-						AlarmRead alarmToSend=alarm;
-						if (alarm.isDefaultFM()) {
-							int postFix=rnd.nextInt(maxDefaultFMSuffix);
-							String tripletStr=alarm.triplet.faultFamily+","+defaultFMNamePrefix+postFix+","+alarm.triplet.faultCode;
-							try {
-								alarmToSend=new AlarmRead(tripletStr, alarm.props);
-							} catch (Throwable t) {
-								System.out.println("Exception building an alarm from a default: "+t.getMessage());
-								t.printStackTrace();
-								continue;
-							}
-						}
+				while (!Thread.currentThread().isInterrupted()) {
+					AlarmDescriptorType type = (rnd.nextBoolean()) ? AlarmDescriptorType.ACTIVE: AlarmDescriptorType.TERMINATE;
+					AlarmRead alarm;
+					AlarmRead alarmToSend;
+					synchronized (alarms) {
+						int alarmIdx = rnd.nextInt(alarms.size());
+						alarm = alarms.get(alarmIdx);
+						alarmToSend = alarm;
+					}
+					if (alarm.isDefaultFM()) {
+						int postFix = rnd.nextInt(maxDefaultFMSuffix);
+						String tripletStr = alarm.triplet.faultFamily + ","+ defaultFMNamePrefix + postFix + ","+ alarm.triplet.faultCode;
 						try {
-							alarmsSender.send(alarmToSend.triplet, type, alarmToSend.properties);
-							Thread.sleep(100);
-						} catch (InterruptedException ie) {
-							// If interrupted, terminates.
-							break;
+							alarmToSend = new AlarmRead(tripletStr, alarm.props);
+						} catch (Throwable t) {
+							contSvcs.getLogger().log(AcsLogLevel.ERROR, "Exception building an alarm from a default", t);
+							t.printStackTrace();
+							continue;
 						}
 					}
+					try {
+						alarmsSender.send(alarmToSend.triplet, type,
+								alarmToSend.properties);
+					} catch (InterruptedException e) {
+						break;
+					}
+
 				}
 				notifyStopTask();
 			}
