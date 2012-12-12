@@ -39,7 +39,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
  * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
  * @version $id$
  */
-public class PropertyImpl implements PropertyOperations, PropertyReferenceHolder {
+public class PropertyImpl implements PropertyOperations, PropertyReferenceHolder, Destroyable {
 
 	/**
 	 * Property name.

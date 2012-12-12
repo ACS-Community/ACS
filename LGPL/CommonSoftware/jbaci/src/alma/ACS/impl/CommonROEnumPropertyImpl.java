@@ -319,7 +319,7 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 		
 		return Proxy.newProxyInstance(
 			propertyImpl.getClass().getClassLoader(),
-			new Class[] { operationsIF }, 
+			new Class[] { operationsIF, Destroyable.class }, 
 			new ROEnumProxy(propertyImpl));
 	}
 	
