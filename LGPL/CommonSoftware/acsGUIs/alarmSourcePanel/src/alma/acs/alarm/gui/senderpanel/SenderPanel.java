@@ -239,7 +239,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	/**
 	 * The object to send alarms (ACS alarm sender)
 	 */
-	private final AlarmSender alarmSender;
+	private final ParallelAlarmSender alarmSender;
 	
 	/**
 	 * The helper to send alarms read from a file
@@ -299,7 +299,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		}
 		contSvcs=acsClient.getContainerServices();
 		try {
-			alarmSender = new AlarmSender(contSvcs);
+			alarmSender = new ParallelAlarmSender(contSvcs,200,0);
 		} catch (Throwable t) {
 			JOptionPane.showMessageDialog(null, t.getMessage(), "Error initializing AlarmSender", JOptionPane.ERROR_MESSAGE);
 			throw new Exception("Error intializing the alarm sender",t);
@@ -771,13 +771,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	@Override
 	public void alarmSent(Triplet triplet, AlarmDescriptorType descriptor, boolean success) {
 		if (success) {
-			final int nAlarms=alarmsSent.alarmSent(triplet, descriptor==AlarmDescriptorType.ACTIVE);
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					clearAllBtn.setEnabled(nAlarms>0);
-					clearSelectedAlarmsBtn.setEnabled(nAlarms>0);
-				}
-			});	
+			alarmsSent.alarmSent(triplet, descriptor==AlarmDescriptorType.ACTIVE);
 		} else {
 			String msg ="Error returned sending "+triplet.toString();
 			JOptionPane.showMessageDialog(null, msg, "Error sending alarm alarm", JOptionPane.ERROR_MESSAGE);
