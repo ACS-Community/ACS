@@ -34,7 +34,7 @@ PROLOGUE jcontTATPrologue
 
 3 classpathTestsJCONT "acsutilTATTestRunner classpathTestsJCONT"
 
-4 dynamicConfJCONT "DynamicContainerConfigurationTest.sh"
+4 dynamicConfJCONT "acsutilTATTestRunner DynamicContainerConfigurationTest.sh"
 
 5 clientTestsJCONT "acsutilTATTestRunner clientTestsJCONT"
 

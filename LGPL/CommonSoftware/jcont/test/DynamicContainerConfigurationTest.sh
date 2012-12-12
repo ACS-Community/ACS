@@ -1,4 +1,5 @@
-#! /bin/sh
+#! /bin/bash
+
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2007 
@@ -17,18 +18,29 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: DynamicContainerConfigurationTest.sh,v 1.2 2008/07/02 14:21:05 bjeram Exp $"
+# "@(#) $Id: DynamicContainerConfigurationTest.sh,v 1.3 2012/12/12 17:13:03 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # nbarriga  2007-03-07  created
 #
 
-acsutilTATTestRunner maciContainerLogLevel dynamicTestContainer get default
-acsutilTATTestRunner maciContainerLogLevel dynamicTestContainer set default 2 4
-acsutilTATTestRunner maciContainerLogLevel dynamicTestContainer get default
-acsutilTATTestRunner maciContainerLogLevel dynamicTestContainer refresh
-acsutilTATTestRunner maciContainerLogLevel dynamicTestContainer get default
+echo "Will test dynamic log level configuration using the 'maciContainerLogLevel' tool"
+
+echo "Will read default logger config of 'dynamicTestContainer'. Expecting local level 4 set by ACS_LOG_STDOUT:"
+maciContainerLogLevel dynamicTestContainer get default
+
+echo "Will set default logger config of 'dynamicTestContainer' to (3, 5):"
+maciContainerLogLevel dynamicTestContainer set default 3 5
+
+echo "Will read default logger config of 'dynamicTestContainer':"
+maciContainerLogLevel dynamicTestContainer get default
+
+echo "Will refresh logger config of 'dynamicTestContainer' from CDB and static default values:"
+maciContainerLogLevel dynamicTestContainer refresh
+
+echo "Will read again the default logger config of 'dynamicTestContainer'. Expecting local level 2 set by the CDB which now takes precedence."
+maciContainerLogLevel dynamicTestContainer get default
 
 #
 # ___oOo___
