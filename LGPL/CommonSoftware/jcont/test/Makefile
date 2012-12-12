@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.25 2012/12/11 14:15:56 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.26 2012/12/12 16:34:22 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -68,7 +68,15 @@ jcontTest_DIRS = alma/acs \
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = selfcontainedUnitTestsJCONT componentUnitTestsJCONT classpathTestsJCONT jcontTATPrologue clientTestsJCONT containerJmxMonitorTest
+SCRIPTS_L       = \
+	jcontTATPrologue \
+	selfcontainedUnitTestsJCONT \
+	componentUnitTestsJCONT \
+	classpathTestsJCONT \
+	DynamicContainerConfigurationTest.sh \
+	clientTestsJCONT \
+	containerJmxMonitorTest
+
 
 #>>>>> END OF standard rules
 
