@@ -18,30 +18,65 @@
  */
 package alma.acs.alarm.gui.senderpanel.table;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
 
 /**
- * The model for the table
+ * The model for the table.
+ * <P>
+ * The table is update once every 2 seconds by the swing timer thread.
  * 
  * @author acaproni
  *
  */
-public class AlarmsSentTableModel extends AbstractTableModel {
+public class AlarmsSentTableModel extends AbstractTableModel implements ActionListener {
+	
+	private class TripletSent {
+		public final Triplet triplet;
+		public final boolean activation;
+		
+		public TripletSent(Triplet triplet, boolean activation) {
+			this.triplet = triplet;
+			this.activation = activation;
+		}
+	}
+	
+	/**
+	 * The swing timer
+	 */
+	private final Timer timer;
 	
 	/**
 	 * The alarms shown in the table
 	 */
-	private final Vector<Triplet> alarms=new Vector<Triplet>();
+	private final Vector<Triplet> triplets=new Vector<Triplet>();
+	
+	/**
+	 * The triplets to flush in the table by the thread
+	 */
+	private final Map<String, TripletSent> tripletsToFlush= Collections.synchronizedMap(new HashMap<String, TripletSent>());
+	
+	/**
+	 * Constructor
+	 */
+	public AlarmsSentTableModel() {
+		timer = new Timer(2000, this);
+	}
 
 	@Override
 	public int getRowCount() {
-		return alarms.size();
+		return triplets.size();
 	}
 
 	@Override
@@ -51,37 +86,64 @@ public class AlarmsSentTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return alarms.get(rowIndex);
+		return triplets.get(rowIndex);
 	}
 	
 	/**
-	 * Active alarms must be added to the table;
-	 * terminate alarm must be removed.
+	 * Put the received triplets in the queue waiting to be flushed by the next timer event
 	 * 
-	 * @param triplet The triplet of the alrm
+	 * @param triplet The triplet of the alarm
 	 * @param active The state of the alarm
-	 * @return The number of alarms in the table
 	 */
-	public int alarmSent(Triplet triplet, boolean active) {
-		if (!active && alarms.contains(triplet)) {
-			alarms.remove(triplet);
-		} else if (active && !alarms.contains(triplet)) {
-			alarms.add(triplet);
-		}
-		Collections.sort(alarms);
-		fireTableDataChanged();
-		return alarms.size();
+	public void alarmSent(Triplet triplet, boolean active) {
+		tripletsToFlush.put(triplet.id, new TripletSent(triplet, active));
+		
 	}
 	
 	/**
 	 * @return The alarms in the table
 	 */
 	public Collection<Triplet> getAlarms() {
-		Vector<Triplet> ret = new Vector<Triplet>(alarms.size());
-		for (Triplet triplet: alarms) {
-			ret.add(triplet);
+		return new Vector<Triplet>(triplets);
+	}
+	
+	/**
+	 * Start the thread
+	 */
+	public void start() {
+		timer.setRepeats(true);
+		timer.setInitialDelay(1000);
+		timer.start();
+	}
+	
+	/**
+	 * Stop the thread
+	 */
+	public void stop() {
+		timer.stop();
+	}
+
+	/**
+	 * Refresh the content of the table i.e. Timer events
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		 // Active alarms must be added to the table;
+		 // terminate alarm must be removed.
+		Collection<TripletSent> tripletsList;
+		synchronized (tripletsToFlush) {
+			tripletsList = new Vector<TripletSent>(tripletsToFlush.values());
+			tripletsToFlush.clear();
 		}
-		return ret;
+		for (TripletSent triplet: tripletsList) {
+			if (!triplet.activation && triplets.contains(triplet.triplet)) {
+				triplets.remove(triplet.triplet);
+			} else if (triplet.activation && !triplets.contains(triplet.triplet)) {
+				triplets.add(triplet.triplet);
+			}
+			Collections.sort(triplets);
+			fireTableDataChanged();
+		}
 	}
 
 }

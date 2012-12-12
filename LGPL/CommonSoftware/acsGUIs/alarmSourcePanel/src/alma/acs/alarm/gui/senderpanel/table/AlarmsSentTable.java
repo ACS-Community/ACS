@@ -48,6 +48,7 @@ public class AlarmsSentTable extends JTable {
 		super();
 		super.setModel(model);
 		getColumnModel().getColumn(0).setHeaderValue("Alarms sent");
+		model.start();
 	}
 	
 	/**
@@ -56,11 +57,10 @@ public class AlarmsSentTable extends JTable {
 	 * 
 	 * @param triplet The triplet of the alrm
 	 * @param active The state of the alarm
-	 * @return The number of alarms in the table
 	 * @see AlarmsSentTableModel#alarmSent(String, boolean)
 	 */
-	public int alarmSent(Triplet triplet, boolean active) {
-		return model.alarmSent(triplet, active);
+	public void alarmSent(Triplet triplet, boolean active) {
+		model.alarmSent(triplet, active);
 	}
 	
 	/**
