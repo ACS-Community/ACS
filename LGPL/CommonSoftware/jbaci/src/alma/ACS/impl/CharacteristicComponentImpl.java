@@ -164,10 +164,10 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		// destroy all properties
 		if (properties.size() != 0)
 		{
-			PropertyImpl[] propertyArray = null;
+			Destroyable[] propertyArray = null;
 			synchronized (properties)
 			{
-				propertyArray = new PropertyImpl[properties.size()];
+				propertyArray = new Destroyable[properties.size()];
 				properties.keySet().toArray(propertyArray);
 			}
 			for (int i = 0; i < propertyArray.length; i++)

@@ -97,7 +97,7 @@ public class CommonRWEnumPropertyImpl extends CommonROEnumPropertyImpl {
 		
 		return Proxy.newProxyInstance(
 			propertyImpl.getClass().getClassLoader(),
-			new Class[] { operationsIF }, 
+			new Class[] { operationsIF, Destroyable.class }, 
 			new RWEnumProxy(propertyImpl));
 	}
 	
