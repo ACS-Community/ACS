@@ -28,6 +28,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
+import alma.acs.alarm.gui.senderpanel.ParallelAlarmSender.AlarmToSend;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.AlarmDescriptorType;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
 import alma.acs.container.ContainerServices;
@@ -58,51 +59,6 @@ import alma.alarmsystem.source.ACSFaultState;
 public class AlarmSender implements Runnable {
 	
 	/**
-	 * An alarm to send.
-	 * <P>
-	 * {@link AlarmToSend} objects are put in a queue to be retrieved
-	 * and published asynchronously by the thread.
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private class AlarmToSend {
-		/**
-		 * The triplet
-		 */
-		public final Triplet triplet;
-		
-		/**
-		 * The user properties
-		 */
-		public final Properties userProperties;
-		
-		/**
-		 * The alarm descriptor
-		 */
-		public final AlarmDescriptorType descriptor;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param triplet The triplet 
-		 * @param userProperties The user properties
-		 * @param descriptor The descriptor
-		 */
-		public AlarmToSend(Triplet triplet,Properties userProperties,AlarmDescriptorType descriptor) {
-			if (triplet==null) {
-				throw new IllegalArgumentException("The Triplet can't be null");
-			}
-			if (descriptor==null) {
-				throw new IllegalArgumentException("The descriptor can't be null");
-			}
-			this.triplet=triplet;
-			this.userProperties=userProperties;
-			this.descriptor=descriptor;
-		}
-	}
-	
-	/**
 	 * The max number of alarms that can stored in the queue for sending.
 	 */
 	private static final int maxAlarmsToQueue=50000;
@@ -111,7 +67,7 @@ public class AlarmSender implements Runnable {
 	 * The number of msecs between one alarm sending and another.
 	 * This avoid flooding the system. 
 	 */
-	private final long TIME_BETWEEN_SENDINGS=100;
+	private long TIME_BETWEEN_SENDINGS=100;
 	
 	/**
 	 * The time (msec) between two log messages showing the number 
@@ -124,7 +80,15 @@ public class AlarmSender implements Runnable {
 	 */
 	private long lastLogMessageTime=System.currentTimeMillis();
 	
+	/**
+	 * The total number of alarms sent by this sender
+	 */
 	private int numOfAlarmsSent=0;
+	
+	/**
+	 * Signal if the sender is closed;
+	 */
+	private volatile boolean closed=false;
 	
 	/**
 	 * The queue of alarms to send.
@@ -132,7 +96,7 @@ public class AlarmSender implements Runnable {
 	 * Alarms to be sent are stored in this queue. 
 	 * The thread gets alarms from this queue and publishes them in the source NC. 
 	 */
-	private final BlockingQueue<AlarmToSend> alarmsToSend = new ArrayBlockingQueue<AlarmSender.AlarmToSend>(maxAlarmsToQueue);
+	private final BlockingQueue<AlarmToSend> alarmsToSend = new ArrayBlockingQueue<AlarmToSend>(maxAlarmsToQueue);
 	
 	/**
 	 * The listeners to notify when alarms have been sent to the alarm system.
@@ -161,18 +125,47 @@ public class AlarmSender implements Runnable {
 	private Thread thread=null;
 	
 	/**
+	 * The name of the thread
+	 */
+	private final String threadName;
+	
+	/**
 	 * Constructor
 	 * 
+	 * @param svcs The {@link ContainerServices}
+	 * @param name The name of the sender
 	 * @throws SourceCreationErrorEx 
 	 * @throws ACSASFactoryNotInitedEx 
 	 */
-	public AlarmSender(ContainerServices svcs) throws ACSASFactoryNotInitedEx, SourceCreationErrorEx {
+	public AlarmSender(ContainerServices svcs, String name) throws ACSASFactoryNotInitedEx, SourceCreationErrorEx {
 		if (svcs==null) {
 			throw new IllegalArgumentException("The ContainerServices can't be null");
 		}
+		if (name==null || name.isEmpty()) {
+			throw new IllegalArgumentException("Invalid name of sender");
+		}
 		alarmSource=ACSAlarmSystemInterfaceFactory.createSource(this.getClass().getName());
 		this.contSvcs=svcs;
+		this.threadName=name;
 		this.logger=svcs.getLogger();
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param svcs The {@link ContainerServices}
+	 * @param name The name of the sender
+	 * @param The time between sending 2 alarms
+	 * @throws SourceCreationErrorEx 
+	 * @throws ACSASFactoryNotInitedEx 
+	 */
+	public AlarmSender(ContainerServices svcs, String name, long timeBetweenAlarms) 
+			throws ACSASFactoryNotInitedEx, SourceCreationErrorEx {
+		this(svcs,name);
+		if (timeBetweenAlarms<0) {
+			throw new IllegalArgumentException("Invalid time between two alarms sending: "+timeBetweenAlarms);
+		}
+		TIME_BETWEEN_SENDINGS=timeBetweenAlarms;
 	}
 	
 	/**
@@ -194,7 +187,10 @@ public class AlarmSender implements Runnable {
 		if (descriptor==null) {
 			throw new IllegalArgumentException("The descriptor can't be null");
 		}
-		logger.finer("Sending alarm "+triplet.toString()+" with descriptor "+descriptor);
+		if (closed) {
+			return;
+		}
+		logger.log(AcsLogLevel.DELOUSE, "Sending alarm "+triplet.toString()+" with descriptor "+descriptor);
 		ACSFaultState state =null;
 		try {
 			state=ACSAlarmSystemInterfaceFactory.createFaultState(triplet.faultFamily,triplet.faultMember,triplet.faultCode);
@@ -210,7 +206,7 @@ public class AlarmSender implements Runnable {
 		}
 		alarmSource.push(state);
 		notifyListeners(triplet, descriptor,true);
-		logger.finer("Alarm "+triplet.toString()+" sent");
+		logger.log(AcsLogLevel.DELOUSE, "Alarm "+triplet.toString()+" sent");
 	}
 	
 	/**
@@ -220,19 +216,16 @@ public class AlarmSender implements Runnable {
 	 * <P>If the queue of alarms contains more then {@value #maxAlarmsToQueue}, the caller waits until
 	 * the thread frees the queue.
 	 * 
-	 * @param triplet The triplet in the form FF,FM,FC
-	 * @param The descriptor
-	 * @param props The user properties
+	 * @param alarmToSend The alarm to send to the alarm server
 	 * @throws InterruptedException If interrupted while awaiting to put the alarm in the queue
 	 */
-	public void send(Triplet triplet, AlarmDescriptorType descriptor, Properties props) throws InterruptedException {
-		if (triplet==null) {
-			throw new IllegalArgumentException("The Triplet can't be null");
+	public void send(AlarmToSend alarmToSend) throws InterruptedException {
+		if (alarmToSend==null) {
+			throw new IllegalArgumentException("The alarm to end can't be null");
 		}
-		if (descriptor==null) {
-			throw new IllegalArgumentException("The descriptor can't be null");
+		if (!closed) {
+			alarmsToSend.put(alarmToSend);
 		}
-		alarmsToSend.put(new AlarmToSend(triplet, props, descriptor));
 	}
 	
 	/**
@@ -286,6 +279,7 @@ public class AlarmSender implements Runnable {
 	public synchronized void start() {
 		ThreadFactory threadFactory=contSvcs.getThreadFactory();
 		thread = threadFactory.newThread(this);
+		thread.setName(threadName);
 		thread.start();
 	}
 	
@@ -293,10 +287,20 @@ public class AlarmSender implements Runnable {
 	 * Close the sender and the thread
 	 */
 	public synchronized void close() {
+		closed=true;
+		alarmsToSend.clear();
 		if (thread!=null) {
 			thread.interrupt();
 		}
 		alarmSource.close();
+	}
+	
+	/**
+	 * Return the number of alars queued and waiting to be sent
+	 * @return
+	 */
+	public int alarmsWaiting() {
+		return alarmsToSend.size();
 	}
 
 	/**
@@ -304,20 +308,29 @@ public class AlarmSender implements Runnable {
 	 */
 	@Override
 	public void run() {
-		while (!Thread.currentThread().isInterrupted()) {
+		logger.log(AcsLogLevel.DEBUG,"Thread "+threadName+" started");
+		while (!closed) {
 			AlarmToSend alarm = null;
 			try {
 				alarm=alarmsToSend.take();
-				Thread.sleep(TIME_BETWEEN_SENDINGS);
+				if (TIME_BETWEEN_SENDINGS>0) {
+					Thread.sleep(TIME_BETWEEN_SENDINGS);
+				}
 			} catch (InterruptedException ie) {
-				return;
+				continue;
 			}
-			sendSynch(alarm.triplet, alarm.descriptor, alarm.userProperties);
-			numOfAlarmsSent++;
+			try {
+				sendSynch(alarm.triplet, alarm.descriptor, alarm.userProperties);
+				numOfAlarmsSent++;
+			} catch (Throwable t) {
+				logger.log(AcsLogLevel.ERROR,threadName+": Error sending alarm",t);
+			}
+			
 			if (System.currentTimeMillis()-lastLogMessageTime>TIME_BETWEEN_LOGS) {
 				lastLogMessageTime=System.currentTimeMillis();
-				logger.log(AcsLogLevel.INFO, "Alarms sent: "+numOfAlarmsSent+", alarms waiting to be sent: "+alarmsToSend.size());
+				logger.log(AcsLogLevel.DEBUG, threadName+": alarms sent: "+numOfAlarmsSent+", alarms waiting to be sent: "+alarmsToSend.size());
 			}
 		}
+		logger.log(AcsLogLevel.DEBUG,"Thread "+threadName+" terminated");
 	}
 }
