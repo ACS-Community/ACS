@@ -47,6 +47,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -81,7 +83,7 @@ import cern.laser.source.alarmsysteminterface.FaultState;
  */
 public class SenderPanel 
 extends JFrame 
-implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener, TableModelListener {
+implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener, TableModelListener, ListSelectionListener {
 	
 	/**
 	 * ACS component client
@@ -510,7 +512,7 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 		clearingBtnsPnl.add(clearSelectedAlarmsBtn);
 		clearAllBtn.setEnabled(false);
 		clearAllBtn.addActionListener(this);
-		clearSelectedAlarmsBtn.setEnabled(false);
+		clearSelectedAlarmsBtn.setEnabled(true);
 		clearSelectedAlarmsBtn.addActionListener(this);
 		alarmClearingPnl.add(clearingBtnsPnl);
 		add(alarmClearingPnl,BorderLayout.CENTER);
@@ -887,10 +889,20 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 	}
 
 	/**
-	 * The model changed so the clearAll button must be enabled/disabled 
+	 * The model changed so {@link #clearAllBtn} must be enabled/disabled 
 	 */
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		clearAllBtn.setEnabled(alarmsSent.getModel().getRowCount()>0);
+	}
+
+	/**
+	 * The selection changed so {@link #clearSelectedAlarmsBtn} must be enabled/disabled 
+	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+	 */
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
