@@ -139,7 +139,7 @@ public class UndocStatusLinePnl extends JPanel implements ActionListener, Runnab
 			} catch (InterruptedException ie) {
 				continue;
 			}
-			if (!isVisible()) {
+			if (!statusTF.isShowing()) {
 				// Does not refresh if the panel is not visible
 				continue;
 			}
