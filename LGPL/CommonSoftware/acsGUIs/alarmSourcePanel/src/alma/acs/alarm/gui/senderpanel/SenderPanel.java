@@ -47,6 +47,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.AlarmDescriptorType;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
@@ -61,23 +63,25 @@ import cern.laser.source.alarmsysteminterface.FaultState;
  * 
  * The panel allows the user to send alarms with a simple GUI,
  * by triplet or selecting a file.
- * 
+ * <P>
  * While sending by triplet the user defines the triplet, the activation mode
  * and the user properties. There is a button to send the alarm.
- * 
- * To send by file, the user select a text file with the definition of the alarms then it has 3 options
+ * <BR>
+ * To send by file/CDB, the user select a text file with the definition of the alarms then it has 3 options
  * <UL>
- * 	<LI>activate all the alarms of the file
- *  <LI>terminate all the alarms of the file
- *  <LI>randomly activate/clear the alarms of the file
+ * 	<LI>activate all the alarms of the file/CDB
+ *  <LI>terminate all the alarms of the file/CDB
+ *  <LI>randomly activate/clear the alarms of the file/CDB
  * </UL>
- * 
+ * <BR>
  * The last option activates a thread that activates/clears the alarms defined in the the file. 
  * The user has to press again the button to stop sending alarms in this way.
  * 
  * @author acaproni
  */
-public class SenderPanel extends JFrame implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener {
+public class SenderPanel 
+extends JFrame 
+implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener, TableModelListener {
 	
 	/**
 	 * ACS component client
@@ -493,6 +497,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		alarmClearingPnl.setBorder(BorderFactory.createTitledBorder("Alarm clearing"));
 		JScrollPane scrollPane = new JScrollPane(alarmsSent);
 		alarmsSent.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		alarmsSent.getModel().addTableModelListener(this);
 		alarmClearingPnl.add(scrollPane);
 		JPanel clearingBtnsPnl = new JPanel();
 		BoxLayout layout = new BoxLayout(clearingBtnsPnl, BoxLayout.Y_AXIS);
@@ -879,5 +884,13 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 			numOfAlarmsFromFile=numOfAlarmsRead;
 			fileNameTF.setText(fileSender.getFileName()+" - "+numOfAlarmsFromFile+" alarms loaded");
 		}
+	}
+
+	/**
+	 * The model changed so the clearAll button must be enabled/disabled 
+	 */
+	@Override
+	public void tableChanged(TableModelEvent e) {
+		clearAllBtn.setEnabled(alarmsSent.getModel().getRowCount()>0);
 	}
 }
