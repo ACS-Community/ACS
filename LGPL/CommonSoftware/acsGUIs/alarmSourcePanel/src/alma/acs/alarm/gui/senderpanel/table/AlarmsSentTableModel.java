@@ -42,7 +42,7 @@ import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
  */
 public class AlarmsSentTableModel extends AbstractTableModel implements ActionListener {
 	
-	private class TripletSent {
+	private static class TripletSent {
 		public final Triplet triplet;
 		public final boolean activation;
 		
