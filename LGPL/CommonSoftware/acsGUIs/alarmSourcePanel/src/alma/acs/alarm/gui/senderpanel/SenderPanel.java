@@ -558,7 +558,7 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
                 System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
                 System.exit(-1);
         }
-       	acsClient = new AdvancedComponentClient(logger,managerLoc,"SourcePanel");
+       	acsClient = new AdvancedComponentClient(logger,managerLoc,"AlarmSenderPanel");
 	}
 	
 	private void close() {
