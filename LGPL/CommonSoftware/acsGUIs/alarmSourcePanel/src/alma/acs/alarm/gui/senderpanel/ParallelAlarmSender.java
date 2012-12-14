@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.AlarmDescriptorType;
 import alma.acs.alarm.gui.senderpanel.SenderPanelUtils.Triplet;
+import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 
@@ -36,10 +36,17 @@ import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
  * There is upper limit in the number of alarms sent each second in {@link #maxNumberOfAlarmsPerSecond}
  * and implemented by a {@link ArrayBlockingQueue} bounded to {@link #maxNumberOfAlarmsPerSecond}.
  * <P>
- * The alarms are sent by the thread that runs once per second and empties the queue.
+ * The alarms are sent by the thread that loops once per second (aprox) and empties the queue.
+ * <P>
+ * The {@link ArrayBlockingQueue} control the max number of alarms queued and ready
+ * to be sent in the next second. However it does not prevent to add new alarms while
+ * the thread is sending alarms (i.e. the thread gets a alarm out of the queue so 
+ * a new room is available and the send pushes a new alarm). <BR>
+ * To be sure that the number of alarms sent each second is at most {@link #maxNumberOfAlarmsPerSecond},
+ * the thread counts the number of alarms it get out of the queue at each iteration.
  * 
  * @author  acaproni
- * @version $Id: ParallelAlarmSender.java,v 1.1 2012/12/12 18:04:42 acaproni Exp $
+ * @version $Id: ParallelAlarmSender.java,v 1.2 2012/12/14 18:10:48 acaproni Exp $
  * @since ACS 11.0
  */
 public class ParallelAlarmSender implements Runnable {
@@ -53,7 +60,7 @@ public class ParallelAlarmSender implements Runnable {
 	 * @author acaproni
 	 *
 	 */
-	public class AlarmToSend {
+	public static class AlarmToSend {
 		/**
 		 * The triplet
 		 */
@@ -151,6 +158,8 @@ public class ParallelAlarmSender implements Runnable {
 	 * 
 	 */
 	private final ArrayBlockingQueue<AlarmToSend> alarmsToSend;
+	
+	
 	
 	/**
 	 * Constructor
@@ -255,15 +264,21 @@ public class ParallelAlarmSender implements Runnable {
 	@Override
 	public void run() {
 		while (!terminateThread) {
-			synchronized (alarmsToSend) {
-				while (alarmsToSend.size()>0 && !terminateThread) {
-					AlarmToSend alarm = alarmsToSend.poll();
-					try {
-						senders.get(numOfSender).send(alarm);
-						numOfSender=(numOfSender+1)%senders.size();
-						numOfAlarmsSent++;
-						numOfAlarmsSentInLastMinute++;
-					} catch (InterruptedException ie) {}
+			int count=0; // number of alarms sent in this iteration
+			while (count<maxNumberOfAlarmsPerSecond && !terminateThread) {
+				AlarmToSend alarm = alarmsToSend.poll();
+				if (alarm==null) {
+					// No more alarms in queue;
+					break;
+				}
+				try {
+					senders.get(numOfSender).send(alarm);
+					numOfSender = (numOfSender + 1) % senders.size();
+					numOfAlarmsSent++;
+					numOfAlarmsSentInLastMinute++;
+					count++;
+				} catch (InterruptedException ie) {
+					continue;
 				}
 			}
 			long now=System.currentTimeMillis();
