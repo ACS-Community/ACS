@@ -62,7 +62,7 @@ public class BaseAlarmsSender {
 	 * @author acaproni
 	 *
 	 */
-	protected final class AlarmRead {
+	protected static final class AlarmRead {
 		
 		/**
 		 * The triplet "FF,FM,FC"
@@ -142,7 +142,7 @@ public class BaseAlarmsSender {
 	 * 
 	 * @author acaproni
 	 */
-	protected class AlarmSenderThreadFactory implements ThreadFactory {
+	protected static final class AlarmSenderThreadFactory implements ThreadFactory {
 		
 		/**
 		 * The number of the thread used to build its name
@@ -369,6 +369,7 @@ public class BaseAlarmsSender {
 	 * 				 otherwise terminated
 	 */
 	public synchronized void sendAlarms(final boolean active) {
+		stopThread();
 		alarmsSenderThread = threadFactory.newThread(new Runnable() {
 			@Override
 			public void run() {
@@ -386,7 +387,9 @@ public class BaseAlarmsSender {
 						}
 						try {
 							alarmsSender.send(alarm.triplet, type, alarm.properties);
-							notifyTaskProgress(++nAlarmsSent);
+							if (nAlarmsSent%10==0) {
+								notifyTaskProgress(++nAlarmsSent);
+							}
 						} catch (InterruptedException ie) {
 							// If interrupted, terminates.
 							break;
@@ -408,6 +411,7 @@ public class BaseAlarmsSender {
 	 * 
 	 */
 	public synchronized void startSendingRandomly() {
+		stopThread();
 		alarmsSenderThread = threadFactory.newThread(new Runnable() {
 			@Override
 			public void run() {
