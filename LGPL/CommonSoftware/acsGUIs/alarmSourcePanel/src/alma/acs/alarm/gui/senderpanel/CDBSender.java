@@ -85,6 +85,7 @@ public class CDBSender extends BaseAlarmsSender {
 				}
 			}
 		});
+		alarmsSenderThread.setDaemon(true);
 		alarmsSenderThread.start();
 	}
 	
