@@ -81,7 +81,7 @@ public class SenderPanelUtils {
 		@Override
 		public int compareTo(Triplet o) {
 			if (o==null) {
-				return this.toString().compareTo(null);
+				throw new NullPointerException();
 			}
 			return this.toString().compareTo(o.toString());
 		}
@@ -89,7 +89,7 @@ public class SenderPanelUtils {
 		@Override
 		public boolean equals(Object obj) {
 			if (obj==null) {
-				return this.toString().equals(null);
+				return false;
 			}
 			return this.toString().equals(obj.toString());
 		}
