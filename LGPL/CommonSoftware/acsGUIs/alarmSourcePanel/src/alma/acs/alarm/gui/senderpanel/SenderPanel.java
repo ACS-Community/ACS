@@ -83,7 +83,7 @@ import cern.laser.source.alarmsysteminterface.FaultState;
  */
 public class SenderPanel 
 extends JFrame 
-implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener, TableModelListener, ListSelectionListener {
+implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener, TableModelListener {
 	
 	/**
 	 * ACS component client
@@ -194,12 +194,12 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 	/**
 	 * The button to activate all the alarms read from the file
 	 */
-	private final JButton activateFromFileBtn = new JButton("Activate all");
+	private final JToggleButton activateFromFileBtn = new JToggleButton("Activate all");
 	
 	/**
 	 * The button to terminate all the alarms read from the file
 	 */
-	private final JButton terminateFromFileBtn = new JButton("Terminate all");
+	private final JToggleButton terminateFromFileBtn = new JToggleButton("Terminate all");
 	
 	/**
 	 * The button to randomly activate/terminate the alarms contained in the file
@@ -209,12 +209,12 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 	/**
 	 * The button to activate all the alarms read from TM/CDB
 	 */
-	private final JButton activateFromCdbBtn = new JButton("Activate all");
+	private final JToggleButton activateFromCdbBtn = new JToggleButton("Activate all");
 	
 	/**
 	 * The button to terminate all the alarms read from TM/CDB
 	 */
-	private final JButton terminateFromCdbBtn = new JButton("Terminate all");
+	private final JToggleButton terminateFromCdbBtn = new JToggleButton("Terminate all");
 	
 	/**
 	 * The button to randomly activate/terminate the alarms read from TM/CDB
@@ -603,35 +603,64 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 			terminateFromFileBtn.setEnabled(fileSender.size()>0);
 			activateFromFileBtn.setEnabled(fileSender.size()>0);
 		} else if (e.getSource()==activateFromFileBtn) {
-			fileSender.sendAlarms(true);
+			if (activateFromFileBtn.isSelected()) {
+				fileSender.sendAlarms(true);
+				terminateFromFileBtn.setEnabled(false);
+				cycleFromFileBtn.setEnabled(false);
+				activateFromFileBtn.setEnabled(true);
+			} else {
+				fileSender.stopThread();
+			}
 		} else if (e.getSource()==terminateFromFileBtn) {
-			fileSender.sendAlarms(false);
+			if (terminateFromFileBtn.isSelected()) {
+				fileSender.sendAlarms(false);
+				terminateFromFileBtn.setEnabled(true);
+				cycleFromFileBtn.setEnabled(false);
+				activateFromFileBtn.setEnabled(false);
+			} else {
+				fileSender.stopThread();
+			}
 		} else if (e.getSource()==cycleFromFileBtn) {
 			boolean selected=cycleFromFileBtn.isSelected();
 			if (selected) {
 				fileSender.startSendingRandomly();
+				terminateFromFileBtn.setEnabled(false);
+				cycleFromFileBtn.setEnabled(true);
+				activateFromFileBtn.setEnabled(false);
 			} else {
 				fileSender.stopThread();
 			}
-			terminateFromFileBtn.setEnabled(!selected);
-			activateFromFileBtn.setEnabled(!selected);
-			chooseFiletBtn.setEnabled(!selected);
 			sendFromFileRB.setEnabled(!selected);
 			sendFromTripletRB.setEnabled(!selected);
 			sendFromCdbRB.setEnabled(!selected);
 		} else if (e.getSource()==activateFromCdbBtn) {
-			cdbSender.sendAlarms(true);
+			if (activateFromCdbBtn.isSelected()) {
+				cdbSender.sendAlarms(true);
+				terminateFromCdbBtn.setEnabled(false);
+				cycleFromCdbBtn.setEnabled(false);
+				activateFromCdbBtn.setEnabled(true);
+			} else {
+				cdbSender.stopThread();
+			}
 		} else if (e.getSource()==terminateFromCdbBtn) {
-			cdbSender.sendAlarms(false);
+			if (terminateFromCdbBtn.isSelected()) {
+				cdbSender.sendAlarms(false);
+				terminateFromCdbBtn.setEnabled(true);
+				cycleFromCdbBtn.setEnabled(false);
+				activateFromCdbBtn.setEnabled(false);
+			} else {
+				cdbSender.stopThread();
+			}
 		} else if (e.getSource()==cycleFromCdbBtn) {
 			boolean selected=cycleFromCdbBtn.isSelected();
 			if (selected) {
 				cdbSender.startSendingRandomly();
+				terminateFromCdbBtn.setEnabled(false);
+				cycleFromCdbBtn.setEnabled(true);
+				activateFromCdbBtn.setEnabled(false);
 			} else {
 				cdbSender.stopThread();
 			}
-			terminateFromCdbBtn.setEnabled(!selected);
-			activateFromCdbBtn.setEnabled(!selected);
 			sendFromCdbRB.setEnabled(!selected);
 			sendFromFileRB.setEnabled(!selected);
 			sendFromTripletRB.setEnabled(!selected);
@@ -714,7 +743,6 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 	
 	private void clearAllAlarms() {
 		Collection<Triplet> triplets= alarmsSent.getAlarms();
-		System.out.println("Alarms to terminate "+triplets.size());
 		for (Triplet triplet: triplets) {
 			String tripletStr=triplet.faultFamily+","+triplet.faultMember+","+triplet.faultCode;
 			sendAlarm(tripletStr, FaultState.TERMINATE, null);
@@ -723,9 +751,7 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 	
 	private void clearSelectedAlarms() {
 		Collection<Triplet> triplets= alarmsSent.getSelectedAlarms();
-		System.out.println("Alarms to terminate "+triplets.size());
 		for (Triplet triplet: triplets) {
-			System.out.println("Terminating "+triplet);
 			String tripletStr=triplet.faultFamily+","+triplet.faultMember+","+triplet.faultCode;
 			sendAlarm(tripletStr, FaultState.TERMINATE, null);
 		}
@@ -840,12 +866,28 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 	 * @see SlowTaskListener
 	 */
 	@Override
-	public void slowTaskFinished(Object source) {
-		if (source==fileSender) {
-			stopProgressBar(fileTasksPB);
-		} else {
-			stopProgressBar(cdbTasksPB);
-		}
+	public void slowTaskFinished(final Object source) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (source==fileSender) {
+					stopProgressBar(fileTasksPB);
+					terminateFromFileBtn.setEnabled(true);
+					cycleFromFileBtn.setEnabled(true);
+					activateFromFileBtn.setEnabled(true);
+					terminateFromFileBtn.setSelected(false);
+					cycleFromFileBtn.setSelected(false);
+					activateFromFileBtn.setSelected(false);
+				} else {
+					stopProgressBar(cdbTasksPB);
+					terminateFromCdbBtn.setEnabled(true);
+					cycleFromCdbBtn.setEnabled(true);
+					activateFromCdbBtn.setEnabled(true);
+					terminateFromCdbBtn.setSelected(false);
+					cycleFromCdbBtn.setSelected(false);
+					activateFromCdbBtn.setSelected(false);
+				}		
+			}
+		});
 	}
 	
 	/**
@@ -896,13 +938,4 @@ implements ActionListener, DocumentListener, AlarmSentListener, SlowTaskListener
 		clearAllBtn.setEnabled(alarmsSent.getModel().getRowCount()>0);
 	}
 
-	/**
-	 * The selection changed so {@link #clearSelectedAlarmsBtn} must be enabled/disabled 
-	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-	 */
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
