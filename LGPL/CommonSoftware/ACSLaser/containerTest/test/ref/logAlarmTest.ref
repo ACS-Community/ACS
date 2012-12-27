@@ -17,7 +17,7 @@
 1 - OK: Unthrottled container log file found.
 1 - Expecting throttle alarm (triplet Logging:throttledJavaContainer:10) to be raised and cleared,
 1 - thus two alarms with active=true/false published by the alarm service:
-1 - xx:xx:xx  INFO - publishing alarm change for Logging:throttledJavaContainer:10, active= true
-1 - xx:xx:xx  INFO - publishing alarm change for Logging:throttledJavaContainer:10, active= false
+1 - ----------T--:--:--.--- INFO [laser@AlarmService] publishing alarm change for Logging:throttledJavaContainer:10, active= true
+1 - ----------T--:--:--.--- INFO [laser@AlarmService] publishing alarm change for Logging:throttledJavaContainer:10, active= false
 1 - Diff between missing blocks of logs reported by container and the logs missing in XML should be empty:
 1 - OK: Verified 'looming log queue overflow...' message caused by dropped DEBUG logs when queue capacity got scarce.
