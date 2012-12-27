@@ -78,7 +78,7 @@ import alma.maciErrType.NoPermissionEx;
 public class ClientLogManager implements LogConfigSubscriber
 {
 
-	public enum LoggerOwnerType { ContainerLogger, ComponentLogger, OrbLogger, OtherLogger, UnknownLogger }
+	public enum LoggerOwnerType { ContainerLogger, ComponentLogger, FrameworkLogger, OtherLogger, UnknownLogger }
 	
     /** instance of a singleton */
 	private volatile static ClientLogManager s_instance;
@@ -474,7 +474,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	
 	                // set the value for the "ProcessName" and "SourceObject" fields in the produced log records
 	            	loggerInfo.logger.setProcessName(this.processName);
-	            	if (loggerOwnerType == LoggerOwnerType.ComponentLogger || loggerOwnerType == LoggerOwnerType.OrbLogger) {
+	            	if (loggerOwnerType == LoggerOwnerType.ComponentLogger || loggerOwnerType == LoggerOwnerType.FrameworkLogger) {
 	            		loggerInfo.logger.setSourceObject(loggerName);
 	            	}
 	                else {
@@ -652,28 +652,34 @@ public class ClientLogManager implements LogConfigSubscriber
 		}
 	}
 
-    /**
+	/**
 	 * Allows to suppress remote logging of Corba/ORB logger(s). Internally this suppression is handled using log level
 	 * changes that cannot be undone by other log level changes. Generally remote logging remains enabled though, which
 	 * makes this method quite different from {@linkplain #suppressRemoteLogging()}.
 	 * <p>
 	 * <strong>Application code such as components must not call this method!</strong>
+	 * It is a very specialized feature provided for the ArchiveLogger infrastructural component.
+	 * <p>
+	 * TODO: Currently we do not distinguish between ORB loggers and other framework loggers. 
+	 * This comes from the now wider use of {@link #getLoggerForCorba(String, boolean)}, which initially 
+	 * was meant only for ORB loggers as the name still suggests. 
+	 * It is not a problem at the moment though, because the archiveLogger component is the only known user,
+	 * and it does not use any other frameworks whose logs we intercept. 
 	 */
-    public void suppressCorbaRemoteLogging() {
-    	suppressCorbaRemoteLogging = true;
-    	
-    	synchronized (loggers) {
-	    	for (AcsLoggerInfo loggerInfo : loggers.values()) {
-	    		if (loggerInfo.loggerOwnerType == LoggerOwnerType.OrbLogger) {
-	    			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerInfo.logger.getLoggerName());
-	    		}
-			}
-    	}
-    }
+	public void suppressCorbaRemoteLogging() {
+		suppressCorbaRemoteLogging = true;
 
+		synchronized (loggers) {
+			for (AcsLoggerInfo loggerInfo : loggers.values()) {
+				if (loggerInfo.loggerOwnerType == LoggerOwnerType.FrameworkLogger) {
+					sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerInfo.logger.getLoggerName());
+				}
+			}
+		}
+	}
 
 	/**
-	 * Gets a logger to be used by ORB and POA classes, or by hibernate. 
+	 * Gets a logger to be used by ORB and POA classes, or by hibernate or another 3rd party framework whose logging we redirect. 
 	 * The logger is connected to the central ACS logger.
 	 * <p>
 	 * @TODO rename this method to accommodate non-corba frameworks into which we insert ACS loggers, such as hibernate,
@@ -689,16 +695,16 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * the CDB should offer a central configuration option for all jacorb, hibernate, scxml etc loggers,
 	 * independently of the process (container or manager etc).
 	 * <p>
-	 * @param corbaName
-	 *            e.g. <code>jacorb</code>. @TODO rename it.
+	 * @param frameworkName
+	 *            e.g. <code>jacorb</code> or <code>laser</code>.
 	 * @param autoConfigureContextName
 	 *            if true, the context (e.g. container name) will be appended to this logger's name as soon as it is
 	 *            available, changing the logger name to something like <code>jacorb@frodoContainer</code>.
 	 */
-	public AcsLogger getLoggerForCorba(String corbaName, boolean autoConfigureContextName) {
+	public AcsLogger getLoggerForCorba(String frameworkName, boolean autoConfigureContextName) {
 
-		String loggerName = corbaName;
-		AcsLogger corbaLogger = null;
+		String loggerName = frameworkName;
+		AcsLogger frameworkLogger = null;
 
 		processNameLock.lock();
 		try {
@@ -708,14 +714,14 @@ public class ClientLogManager implements LogConfigSubscriber
 				loggerName += "@" + processName;
 			}
 
-			corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
+			frameworkLogger = getAcsLogger(loggerName, LoggerOwnerType.FrameworkLogger);
 			
-			if (corbaName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
+			if (frameworkName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
 				// Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
 				// As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
-				corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
-				corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
-				corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
+				frameworkLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
+				frameworkLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
+				frameworkLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
 			}
 
 			if (autoConfigureContextName && processName == null) {
@@ -728,24 +734,24 @@ public class ClientLogManager implements LogConfigSubscriber
 			processNameLock.unlock();
 		}
 
-		// fix levels if we suppress corba remote logging
+		// fix levels if we suppress corba remote logging 
 		if (suppressCorbaRemoteLogging) {
+			// TODO: Skip this for non-ORB framework loggers, see comment at #suppressCorbaRemoteLogging()
 			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
 		}
 		else if (!sharedLogConfig.hasCustomConfig(loggerName)) {
-			
 			// In the absence of their own custom logger config, some very verbose loggers 
 			// get a minimum log level applied to ensure that a carelessly set low default log level
 			// does not swamp the system with log messages.
 			AcsLogLevelDefinition minCustomLevel = null;
 			
-			if (corbaName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) ||
-				corbaName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX) ||
-				corbaName.startsWith(CommonsLoggingFactory.SCXML_LOGGER_NAME_PREFIX)) {
+			if (frameworkName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) ||
+				frameworkName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX) ||
+				frameworkName.startsWith(CommonsLoggingFactory.SCXML_LOGGER_NAME_PREFIX)) {
 			
 				minCustomLevel = AcsLogLevelDefinition.WARNING;
 			}
-			else if (corbaName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
+			else if (frameworkName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
 				// jacorb loggers have a special property that we can use as default, 
 				// instead of blindly going for WARNING like we do with the other loggers.
 				AcsLogLevelDefinition level = JacORBLoggerFactory.getLogLevelFromJacorbVerbosity();
@@ -757,12 +763,14 @@ public class ClientLogManager implements LogConfigSubscriber
 					m_internalLogger.info("Failed to consider jacorb log level property, will use only ACS log level mechanisms.");
 				}
 			}
+			// else... we currently do not give special treatment to Log4jFactory#LASER_LOGGER_NAME_PREFIX loggers
 
 			if (minCustomLevel != null) {
 				
 				// We are dealing with one of the known framework loggers, and it has no other custom log level set.
-				// We apply as custom level the maximum of minCustomLevel and the process default level. 
-				
+				// We apply as custom level the maximum of minCustomLevel and the process default level.
+				//
+				// TODO: These default values currently get lost when calling LoggingConfigurable#refresh_logging_config().
 				AcsLogLevelDefinition customLevel = 
 					( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevel()) > 0 
 							? minCustomLevel 
@@ -780,7 +788,7 @@ public class ClientLogManager implements LogConfigSubscriber
 			}
 		}
 
-		return corbaLogger;
+		return frameworkLogger;
 	}
 
 
@@ -1004,6 +1012,7 @@ public class ClientLogManager implements LogConfigSubscriber
 					throttleAlarmFM = processName;
 					try {
 						logAlarmHandler.raiseAlarm(throttleAlarmFF, throttleAlarmFM, throttleAlarmFC);
+						// If alarm fails, we skip the following log, but instead get a severe/warning log on all paths that also mention the throttle kicking in.
 						m_internalLogger.fine("Log throttle kicked in, suppressing logs. Alarm has been raised."); // TODO type-safe log
 					} catch (AcsJCouldntPerformActionEx ex) {
 						m_internalLogger.severe("Failed to publish alarm about dropping logs in the log throttle.");
