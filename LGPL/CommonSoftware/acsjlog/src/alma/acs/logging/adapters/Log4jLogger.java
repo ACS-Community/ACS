@@ -13,9 +13,8 @@ import alma.acs.logging.AcsLogger;
  * type of methods based on the ACS-configured log levels, 
  * rather than first creating and later dropping a LoggingEvent object.
  */
-public class Log4jLogger extends Logger
+public class Log4jLogger extends org.apache.log4j.Logger
 {
-
 
 	private final AcsLogger delegate;
 
@@ -25,6 +24,7 @@ public class Log4jLogger extends Logger
 	public Log4jLogger(String name, AcsLogger delegate) {
 		super(name);
 		this.delegate = delegate;
+		delegate.addLoggerClass(Log4jLogger.class);
 //		System.out.println("*** Created Log4jAcsLogger ***");
 	}
 

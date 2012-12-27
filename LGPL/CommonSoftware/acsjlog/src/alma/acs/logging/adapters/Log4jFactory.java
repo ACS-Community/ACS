@@ -16,6 +16,9 @@ import org.apache.log4j.varia.NullAppender;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
+/**
+ * Redirects log4j logs to ACS logging, see http://jira.alma.cl/browse/COMP-8423
+ */
 public class Log4jFactory implements LoggerFactory
 {
 	/**
@@ -46,7 +49,7 @@ public class Log4jFactory implements LoggerFactory
 	 * This method must be called once in order to enable ACS logging behind the scenes of log4j logging.
 	 * <p>
 	 * The log4j framework is quite resistant against being substituted with a different logging framework.
-	 * Event though it is possible to configure a custom logger factory using <code>log4j.loggerFactory</code>,
+	 * Even though it is possible to configure a custom logger factory using <code>log4j.loggerFactory</code>,
 	 * that factory will not be used when 3rd party code calls the usual <code>Logger.getLogger(name)</code>.
 	 * It seems to make sense only for cases where the custom logger is used as in <code>MyLogger.getLogger(name)</code>.
 	 * log4j-over-slf4j (http://www.slf4j.org/legacy.html) simply re-implements the relevant log4j classes, 
