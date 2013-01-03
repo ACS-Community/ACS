@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import org.jacorb.orb.acs.AcsORBProfiler;
 import org.jacorb.orb.acs.AcsProfilingORB;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.ORBPackage.InvalidName;
@@ -37,6 +38,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
+import org.omg.CosPropertyService.Property;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
@@ -47,7 +49,10 @@ import org.omg.PortableServer.Servant;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
 
+import alma.ACSErrTypeCommon.BadParameterEx;
+import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
 import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem;
+import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem.AcsComponentTerminator;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -55,6 +60,8 @@ import alma.acs.logging.adapters.Log4jFactory;
 import alma.acs.profiling.orb.AcsORBProfilerImplBase;
 import alma.acs.util.ACSPorts;
 import alma.alarmsystem.AlarmServiceOperations;
+import alma.alarmsystem.AlarmServicePOA;
+import alma.alarmsystem.Triplet;
 import alma.alarmsystem.alarmmessage.generated.AlarmSystemConfiguration;
 import alma.alarmsystem.alarmmessage.generated.ConfigurationProperty;
 
@@ -162,6 +169,40 @@ public class AlarmSystemCorbaServer implements Runnable {
 		},"JVM shutdown hook"));
 		this.m_logger = logger;
 		internalInitialize(args);
+		
+		//create object id
+		byte[] id = alma.alarmsystem.AlarmServiceName.value.getBytes();
+		// activate temporary alarm service to allow remote shutdown
+		asPOA.activate_object_with_id(id, new ShutdownOnlyAlarmService());
+
+		// Wait for CDB to become available
+		while (!closed)
+		{
+			try {
+				
+				if (getCDB() != null)
+					break;
+				else
+					logger.log(AcsLogLevel.WARNING,"Failed to obtain valid CDB reference, retrying...");
+					
+			} catch (Throwable th) {
+				logger.log(AcsLogLevel.WARNING,"Failed to obtain valid CDB reference, retrying...", th);
+			}
+			
+			if (closed)
+				break;
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ie) { }
+		}
+		
+		// deactivate temporary alarm service
+		asPOA.deactivate_object(id);
+
+		if (closed)
+			return;
+		
 		// Check which implementation to use (true=ACS)
 		boolean alarmType=true;
 		try {
@@ -169,8 +210,6 @@ public class AlarmSystemCorbaServer implements Runnable {
 		} catch (Throwable t) {}
 		org.omg.CORBA.Object alarmObject;
 
-		//create object id
-		byte[] id = alma.alarmsystem.AlarmServiceName.value.getBytes();
 		if (alarmType) {
 			// ACS
 			laserComponent=null;
@@ -619,24 +658,27 @@ public class AlarmSystemCorbaServer implements Runnable {
 			return;
 		}
 		closed=true;
-		try {
-			unregisterToNamingService();
-		} catch (Throwable t) {
-			m_logger.log(AcsLogLevel.WARNING,"Error unbinding the alarm service from the name service",t);
-		}
-		try {
-			m_logger.log(AcsLogLevel.DEBUG,"Shutting down the alarm service");
-			if (laserComponent!=null) {
-				((AlarmServiceOperations)laserComponent).shutdown();
+		if (laserComponent != null || acsComponent != null)
+		{
+			try {
+				unregisterToNamingService();
+			} catch (Throwable t) {
+				m_logger.log(AcsLogLevel.WARNING,"Error unbinding the alarm service from the name service",t);
 			}
-			if (acsComponent!=null) {
-				((AlarmServiceOperations)acsComponent).shutdown();
+			try {
+				m_logger.log(AcsLogLevel.DEBUG,"Shutting down the alarm service");
+				if (laserComponent!=null) {
+					((AlarmServiceOperations)laserComponent).shutdown();
+				}
+				if (acsComponent!=null) {
+					((AlarmServiceOperations)acsComponent).shutdown();
+				}
+			} catch (Throwable t) {
+				m_logger.log(AcsLogLevel.WARNING,"Error shutting down the alarm service",t);
+			} finally {
+				acsComponent=null;
+				laserComponent=null;
 			}
-		} catch (Throwable t) {
-			m_logger.log(AcsLogLevel.WARNING,"Error shutting down the alarm service",t);
-		} finally {
-			acsComponent=null;
-			laserComponent=null;
 		}
 		m_logger.log(AcsLogLevel.DEBUG,"Shutting down ORB");
 		try {
@@ -692,6 +734,39 @@ public class AlarmSystemCorbaServer implements Runnable {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Temporary AlarmService implementation that allows only shutdown (ORB shutdown).
+	 */
+	private class ShutdownOnlyAlarmService extends AlarmServicePOA
+	{
+		@Override
+		public void shutdown() {
+			m_logger.log(AcsLogLevel.DEBUG,"Shutting down");
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					AlarmSystemCorbaServer.this.shutdown();
+					m_logger.log(AcsLogLevel.DEBUG,"See you soon :-)");
+				}
+			}, "LaserComponentTerminator");
+			t.start();
+		}
+		
+		@Override
+		public boolean isACSAlarmService() {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		@Override
+		public void submitAlarm(Triplet triplet, boolean active,
+				String sourceHostName, String sourceName, long sourceTimestamp,
+				Property[] alarmProperties) throws UnexpectedExceptionEx,
+				BadParameterEx {
+			throw new OBJECT_NOT_EXIST();
+		}
+		
 	}
 }
 
