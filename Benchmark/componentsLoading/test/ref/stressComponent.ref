@@ -1,7 +1,6 @@
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] -------------------------------
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] ComponentClientTestCase#setUp()
-1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] 100 threads started
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] component 'alma.test.benchmark.components.StressStartComponents' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] Starting container bilboContainer_0
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] Starting container bilboContainer_1
@@ -2017,7 +2016,7 @@
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] ComponentActivator got component Mount_996
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] The threads got all the components in hh:mm:ss.ddd in thread main
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] Releasing components
-1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] Awaiting termination of 1000 threads
+1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] Awaiting termination of 1000 component release requests (with a 30 min timeout).
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] client 'alma.test.benchmark.components.StressStartComponents' has successfully released a component with curl=Mount_416
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] client 'alma.test.benchmark.components.StressStartComponents' has successfully released a component with curl=Mount_693
 1 - ----------T--:--:--.--- INFO [StressStartComponents#testStartComponents] client 'alma.test.benchmark.components.StressStartComponents' has successfully released a component with curl=Mount_448
