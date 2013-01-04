@@ -39,16 +39,15 @@ public class Container extends ContainerNode {
     private Double Timeout;
     private Boolean UseIFR = false;
     private Integer ManagerRetry;
+    private Integer PingInterval;
     private Integer ServerThreads;
     private Boolean Recovery;
 
     private String Autoload; // string packed array
 
-    private LoggingConfig LoggingConfig;
-    
     private DeployInfo DeployInfo;
     
-    private Integer PingInterval;
+    private LoggingConfig LoggingConfig;
     
     // hierarchical support
     // must be public to be accessible, but should not have getter to be come visible as node
