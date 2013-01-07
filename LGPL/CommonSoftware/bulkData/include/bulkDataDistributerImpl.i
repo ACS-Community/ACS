@@ -529,6 +529,13 @@ ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>
 	throw err.getAVFlowEndpointErrorEx();
 	}
 
+    if( cb==0)
+    {
+    	ACSBulkDataStatus::AVCbNULLCompletion *comp = new ACSBulkDataStatus::AVCbNULLCompletion(__FILE__, __LINE__, __FUNCTION__);
+    	comp->log(LM_WARNING);
+    	return comp->returnCompletion();
+    }
+
     if(cb->isTimeout() && cb->isWorking())
 	{
 	ACSBulkDataStatus::AVCbWorkingTimeoutCompletion *comp = new ACSBulkDataStatus::AVCbWorkingTimeoutCompletion();
