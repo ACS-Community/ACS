@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.38 2012/10/15 09:58:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.39 2013/01/08 11:13:00 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -180,12 +180,17 @@ public:
     double getSendFrameTimeout() const;
     void setACKsTimeout(double acKsTimeout);
     void setSendFrameTimeout(double frameTimeout);
+	double getThrottling() const;
+	void setThrottling(double throttling);
 
     static double DEFAULT_SENDFRAME_TIMEOUT;
     static double DEFAULT_ACKs_TIMEOUT;
+
+    static double DEFAULT_THROTTLING;
 protected:
     double sendFrameTimeout;
 	double ACKsTimeout;
+	double throttling;
 };
 
 /** A Sender stream configuration. It consists in a seres
