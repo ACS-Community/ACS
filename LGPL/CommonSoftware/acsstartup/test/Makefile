@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.19 2009/11/04 08:08:32 hyatagai Exp $"
+# "@(#) $Id: Makefile,v 1.20 2013/01/08 20:12:21 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -71,7 +71,7 @@ SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupSetEnv \
 	testAcsInstance.sh testPids.sh \
 	acsstartupGenericProcess.sh \
-	maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
+	alarmService alarmServiceShutdown maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer \
 	testContainerPort.sh acsstartupTestLoadIFR.sh heapDumpOnOutOfMemoryErrorTest \
 	testVmOption.sh 
