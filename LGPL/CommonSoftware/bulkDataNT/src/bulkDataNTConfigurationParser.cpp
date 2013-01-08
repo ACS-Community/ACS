@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.35 2012/10/12 13:57:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.36 2013/01/08 11:50:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -377,6 +377,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 					if( parsingInfo.type == SENDER ) {
 						senderCfg.flowsCfgMap[flowName.get()]->setSendFrameTimeout(getDoubleFromAttribute(streamChildNode, "SendFrameTimeoutSec", SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT));
 						senderCfg.flowsCfgMap[flowName.get()]->setACKsTimeout(getDoubleFromAttribute(streamChildNode, "ACKsTimeoutSec", SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT));
+						senderCfg.flowsCfgMap[flowName.get()]->setThrottling(getDoubleFromAttribute(streamChildNode, "ThrottlingMBytesPerSec", SenderFlowConfiguration::DEFAULT_THROTTLING));
 					}else {
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT));
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveAvgProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveAvgProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT));

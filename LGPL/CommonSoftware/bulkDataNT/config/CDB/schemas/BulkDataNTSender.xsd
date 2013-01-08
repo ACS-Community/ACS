@@ -38,6 +38,7 @@
     <xs:attribute name="Name" type="xs:string" use="required"/>
     <xs:attribute name="SendFrameTimeoutSec" type="xs:double" use="optional" default="5.0"/>
     <xs:attribute name="ACKsTimeoutSec" type="xs:double" use="optional" default="1.0"/>
+    <xs:attribute name="ThrottlingMBytesPerSec" type="xs:double" use="optional" default="0.0"/>
   </xs:complexType>
 
   <xs:complexType name="SenderStreamType">
