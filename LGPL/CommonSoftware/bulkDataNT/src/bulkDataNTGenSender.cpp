@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.13 2012/11/22 07:59:46 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.14 2013/01/08 11:41:44 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,6 +40,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-n] \t no wait for a key" << endl;
 	cout << "\t[-t] \t send frame timeout in sec. Default: 5.0" << endl;
 	cout << "\t[-a] \t ACK timeout in sec. Default: 2.0" << endl;
+	cout << "\t[-o] \t throttling in MBytes/sec. Default: 0.0 (no throttling)" << endl;
 	exit(1);
 }
 
@@ -55,11 +56,12 @@ int main(int argc, char *argv[])
 	std::string param="defalutParamter";
 	unsigned int dataSize=65000;
 	unsigned int loop=1;
+	double throttling=0.0;
 	list<char *> flowNames;
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "f:s:b:p:l:t:a:n");
+    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:n");
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
     	case 'l':
@@ -75,6 +77,11 @@ int main(int argc, char *argv[])
     	case 'a':
     	{
     		ACKtimeout = atof(get_opts.opt_arg());
+    		break;
+    	}
+    	case 'o':
+    	{
+    		throttling = atof(get_opts.opt_arg());
     		break;
     	}
     	case 'p':
@@ -141,6 +148,7 @@ int main(int argc, char *argv[])
     			SenderFlowConfiguration cfg;
     			cfg.setACKsTimeout(ACKtimeout);
     			cfg.setSendFrameTimeout(sendTimeout);
+    			cfg.setThrottling(throttling);
     			BulkDataNTSenderFlow *flow = senderStream.createFlow((*it), cfg);
     			flows.push_back(flow);
     		}
