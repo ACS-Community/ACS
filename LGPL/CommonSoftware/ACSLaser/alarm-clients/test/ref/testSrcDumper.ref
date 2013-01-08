@@ -1,5 +1,5 @@
 1 - TestSourceDumper Started
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [AlarmSourceDump] component 'alma.alarmsystem.dump.AlarmSourceDumper' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [AlarmSourceDump] component 'alma.alarmsystem.dump.AlarmSourceDumper' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.dump.AlarmSourceDumper] Config issue for channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
 1 - AlarmSenderForDumperTest sending alarms.
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - instantiating the alarm system interface
@@ -9,7 +9,7 @@
 1 - --non-ISO timestamp-- WARN  MomConfig          - could not load configuration, using defaults
 1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
 1 - ----------T--:--:--.--- testFamily1:TestMember1:12 ACTIVE
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [AlarmSenderForDumperTest] component 'AlarmSenderForDumperTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [AlarmSenderForDumperTest] component 'AlarmSenderForDumperTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [AlarmSenderForDumperTest_2] Config issue for channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
 1 - ----------T--:--:--.--- testFamily3:TestMember3:40 ACTIVE
 1 - ----------T--:--:--.--- testFamily2:TestMember2:2 TERMINATE

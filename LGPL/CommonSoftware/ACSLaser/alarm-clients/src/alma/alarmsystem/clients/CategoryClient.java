@@ -22,18 +22,8 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
-
-import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.AcsLogger;
-import alma.alarmsystem.CERNAlarmService;
-import alma.alarmsystem.Category;
-import alma.alarmsystem.clients.alarm.AlarmClientException;
-import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 import cern.laser.business.data.AlarmImpl;
 import cern.laser.business.data.Building;
@@ -52,6 +42,16 @@ import cern.laser.client.services.selection.Selection;
 import cern.laser.console.Configuration;
 import cern.laser.console.User;
 import cern.laser.console.impl.UserHandlerImpl;
+
+import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.AcsLogger;
+import alma.acs.logging.adapters.Log4jFactory;
+import alma.alarmsystem.CERNAlarmService;
+import alma.alarmsystem.Category;
+import alma.alarmsystem.clients.alarm.AlarmClientException;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 /**
  * A client that listen to alarms from all the categories.
@@ -143,6 +143,7 @@ public class CategoryClient {
 		if (orb==null) {
 			throw new IllegalStateException("Got a null ORB from the container services!");
 		}
+		Log4jFactory.enableAcsLogging();
 	}
 	
 	/**

@@ -1,26 +1,21 @@
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] -------------------------------
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] component 'alma.alarmsystem.clients.test.CategoryClientChildren' requested AdvancedContainerServices
-1 - --non-ISO timestamp-- INFO  MomConfig          - loading configuration...
-1 - --non-ISO timestamp-- WARN  MomConfig          - could not load configuration, using defaults
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
-1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Config issue for channel 'CMW.ALARM_SYSTEM.HEARTBEAT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - Alarm Heartbeat client check frequency : 30000 milliseconds
-1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - starting heartbeat check...
-1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - started heartbeat check
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.ROOT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
-1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Config issue for channel 'CMW.ALARM_SYSTEM.CLIENTS.------'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - unSubscribe(5)
-1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - stopping heartbeat check...
-1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - stopped heartbeat check
+1 - .----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] component 'alma.alarmsystem.clients.test.CategoryClientChildren' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] loading configuration...
+1 - ----------T--:--:--.--- WARNING [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] could not load configuration, using defaults
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Alarm Heartbeat client check frequency : 30000 milliseconds
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] starting heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] started heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
+1 - ----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] unSubscribe(5)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] stopped heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] stopping heartbeat check...
 1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
-1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - unSubscribeAll()
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
 1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - 

@@ -21,4 +21,5 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
+export ACS_LOG_STDOUT=4
 acsutilTATTestRunner acsStartJava -endorsed junit.textui.TestRunner alma.alarmsystem.clients.test.CategoryClientParent
