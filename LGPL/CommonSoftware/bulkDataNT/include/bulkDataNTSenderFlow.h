@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.21 2012/11/20 11:31:05 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.22 2013/01/08 11:39:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -128,6 +128,10 @@ protected:
 
 	DDS::Duration_t ackTimeout_m;  /// ACKs timeout
 	void setACKsTimeout(double ACKsTimeout);  /// setter for ackTimeout
+
+	double throttling_m;
+	double throttlingMinFrameTime_m; /// min time that should elapsed for sending one frame (640000 bytes)
+	void setThrottling(double throttling); /// setter from throttling parameter (in MB/sec)
 
 	// should it go to upper class Publisher ?
 	/**
