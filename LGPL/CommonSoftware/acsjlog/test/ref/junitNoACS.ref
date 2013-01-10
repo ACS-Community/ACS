@@ -2,11 +2,11 @@
 1 - TEST_RUNNER_REPORT success/total: 4/4
 1 - JUnit test run succeeded
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.formatters.AcsLogFormatterTest
-1 - TEST_RUNNER_REPORT success/total: 1/1
 1 - TEST_RUNNER_REPORT success/total: 5/5
 1 - JUnit test run succeeded
-1 - JUnit test run succeeded
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.AcsLoggingHandlerTest
+1 - TEST_RUNNER_REPORT success/total: 1/1
+1 - JUnit test run succeeded
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.RemoteLogDispatcherTest
 1 - TEST_RUNNER_REPORT success/total: 6/6
 1 - JUnit test run succeeded
@@ -21,7 +21,10 @@
 1 - JUnit test run succeeded
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.adapters.JacORBFilterTest
 1 - TEST_RUNNER_REPORT success/total: 1/1
+1 - JUnit test run succeeded
+1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.adapters.Log4jAdapterTest
 1 - TEST_RUNNER_REPORT success/total: 1/1
 1 - JUnit test run succeeded
-1 - JUnit test run succeeded
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner org.slf4j.impl.Slf4jAcsLoggerTest
+1 - TEST_RUNNER_REPORT success/total: 1/1
+1 - JUnit test run succeeded

@@ -10,4 +10,5 @@ acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.ClientLog
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.LogThrottleTest
 acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.config.LogConfigTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.adapters.JacORBFilterTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.adapters.Log4jAdapterTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  org.slf4j.impl.Slf4jAcsLoggerTest
