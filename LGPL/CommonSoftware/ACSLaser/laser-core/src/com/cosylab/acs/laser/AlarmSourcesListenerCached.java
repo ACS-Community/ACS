@@ -41,7 +41,7 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
  * using objects of this class.
  * 
  * @author  acaproni
- * @version $Id: AlarmSourcesListenerCached.java,v 1.1 2012/12/07 17:55:53 acaproni Exp $
+ * @version $Id: AlarmSourcesListenerCached.java,v 1.2 2013/01/11 08:06:24 acaproni Exp $
  * @since ACS-11.0
  */
 public class AlarmSourcesListenerCached extends AlarmSourcesListener implements Runnable {
@@ -110,14 +110,14 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 	public void run() {
 		long lastTimeUpdate=System.currentTimeMillis();
 		while (!terminateThread) {
+			String xml=null;
 			try {
-				String xml = queue.take();
-				if (xml != null) {
-					notifyListeners(xml);
-				}
-			} catch (Throwable t) {
-				System.err.println("Cache pop error");
-				t.printStackTrace();
+				xml = queue.take();
+			} catch (InterruptedException ie) {
+				continue;
+			}
+			if (xml != null) {
+				notifyListeners(xml);
 			}
 			if (System.currentTimeMillis()-lastTimeUpdate>60000) {
 				logger.log(AcsLogLevel.DEBUG,"Queued source alarm messages waiting to be processed "+queue.size());
