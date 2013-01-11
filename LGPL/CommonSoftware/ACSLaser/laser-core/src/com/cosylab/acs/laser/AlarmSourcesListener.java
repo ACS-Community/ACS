@@ -42,7 +42,7 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
  * using objects of this class.
  * 
  * @author  acaproni
- * @version $Id: AlarmSourcesListener.java,v 1.3 2012/12/07 17:57:03 acaproni Exp $
+ * @version $Id: AlarmSourcesListener.java,v 1.4 2013/01/11 08:05:00 acaproni Exp $
  * @since ACS 11.0  
  */
 public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
@@ -268,7 +268,11 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 		}
 		synchronized (listeners) {
 			for (SourceListener listener: listeners) {
-				listener.onMessage(xml);
+				try {
+					listener.onMessage(xml);
+				} catch (Throwable t) {
+					logger.log(AcsLogLevel.ERROR,"Error notifying the source listener: "+t.getMessage(),t);
+				}
 			}
 		}
 	}
