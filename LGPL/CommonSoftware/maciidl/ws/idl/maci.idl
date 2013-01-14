@@ -537,7 +537,7 @@ module maci {
 		 * @param desc A structure used to inform the client how long it will take the callback to finish
 		 *             (i.e., invoke done) or invoke this method again.
 		 */
-		oneway void working (in ComponentInfo value,
+		void working (in ComponentInfo value,
 					in ACSErr::Completion c,
 					in ACS::CBDescOut desc);
 		
@@ -551,7 +551,7 @@ module maci {
 		 * @param desc A structure used to inform the client how long it will take the callback to finish
 		 *             (i.e., invoke done) or invoke this method again.
 		 */
-		oneway void done (in ComponentInfo value,
+		void done (in ComponentInfo value,
 					in ACSErr::Completion c,
 					in ACS::CBDescOut desc);
 	};
