@@ -5,7 +5,7 @@
    xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
 
 	<SenderStream Name="Name7">
-		<SenderFlow Name="Name3">
+		<SenderFlow Name="Name3" ThrottlingMBytesPerSec="30">
 		</SenderFlow>
 		<SenderFlow Name="Name5"/>		
 	</SenderStream>
