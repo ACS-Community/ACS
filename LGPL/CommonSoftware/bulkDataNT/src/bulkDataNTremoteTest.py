@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.5 2012/11/20 09:30:50 bjeram Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.6 2013/01/14 07:58:01 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@ class bulkDataNTtestSuite:
         self.sendersData = {}
         self.receiverData = None
         self.sourceFile=sourceFile
-        self.preCmd="source " + self.sourceFile + "; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; export ACSDATA=$PWD/workspaceEclipse/bulkDataNT;"
+        self.preCmd="source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; export XACSDATA=$PWD/workspaceEclipse/bulkDataNT;"
         self.postCmd=" | grep -v lost | tee "
     
     def startSenders(self):
