@@ -18,6 +18,11 @@ do
 					printf("..... %s %s ", substr($2,12,23), $15);
 					for (i=16;i<=30;i++) printf $i" "; 
 					printf("\t NACK/total: %.3f\n",  $27/$18)}'
+	egrep 'type=57' $f | awk '{	
+				printf("ERROR: %s %s ", substr($2,12,23), $7);
+				for (i=12;i<=30;i++) printf $i" ";
+				printf("\n");
+				}'
 	echo -ne "\t"
 #	egrep 'DataWriter cache' $f | cut -d " " -f7-25
 	echo ""
