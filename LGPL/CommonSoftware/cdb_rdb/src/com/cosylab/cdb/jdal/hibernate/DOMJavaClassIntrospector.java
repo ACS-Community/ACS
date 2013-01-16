@@ -854,9 +854,15 @@ public class DOMJavaClassIntrospector {
 			// TODO do we really need this?
 			if (subnode.indexOf('/') >= 0)
 			{
-				if (!subnode.equals("ComponentLogger"))
+				if (nodeName.endsWith("LoggingConfig") || subnode.equals("ComponentLogger"))
+				{
+					// we allow this, see http://jira.alma.cl/browse/COMP-8302
+				}
+				else
+				{
 					System.out.println("Warning: '/' in name, ignored:" + subnode);
-				continue;
+					continue;
+				}
 			}
 
 			boolean dashAsName = false;
