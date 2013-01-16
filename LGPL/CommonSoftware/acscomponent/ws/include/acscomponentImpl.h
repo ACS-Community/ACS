@@ -24,7 +24,7 @@
 /************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acscomponentImpl.h,v 1.33 2011/11/18 15:10:42 rtobar Exp $"
+* "@(#) $Id: acscomponentImpl.h,v 1.34 2013/01/16 16:24:00 acaproni Exp $"
 *
 * who       when        what
 * --------  ----------  -------------------------------------------------
@@ -90,6 +90,14 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * @endhtmlonly
    */
   PortableServer::POA_var getPOA() { return m_containerServices_p->getPOA(); }
+
+  /**
+   * componentName() returns the name of the component as a C++ array of chars.
+   * It differs from name() because does not involve CORBA
+   *
+   * @return The name of the component
+   */
+  const char* componentName() { return m_name.c_str(); }
 
 /* ------------------ [ ACSComponent interface ] ------------------ */
 
