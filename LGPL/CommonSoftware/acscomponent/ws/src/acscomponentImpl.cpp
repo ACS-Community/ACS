@@ -21,7 +21,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acscomponentImpl.cpp,v 1.40 2012/05/02 09:48:14 bjeram Exp $"
+* "@(#) $Id: acscomponentImpl.cpp,v 1.41 2013/01/16 16:22:16 acaproni Exp $"
 *
 * who       when        what
 * --------  --------    --------------------------------------------------
@@ -71,7 +71,7 @@ ACSComponentImpl::~ACSComponentImpl()
 char *
 ACSComponentImpl::name ()
 {
-  return CORBA::string_dup(m_name.c_str());
+  return CORBA::string_dup(componentName());
 }
 
 ACS::ComponentStates
