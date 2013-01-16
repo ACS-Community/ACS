@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestClient.cpp,v 1.6 2012/01/24 01:00:04 tstaig Exp $"
+* "@(#) $Id: acscomponentTestClient.cpp,v 1.7 2013/01/16 16:30:21 acaproni Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
 * rcirami   2005-09-26  created
 */
 
-static char *rcsId="@(#) $Id: acscomponentTestClient.cpp,v 1.6 2012/01/24 01:00:04 tstaig Exp $"; 
+static char *rcsId="@(#) $Id: acscomponentTestClient.cpp,v 1.7 2013/01/16 16:30:21 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acscomponentTestImpl.h"
@@ -71,6 +71,11 @@ int main(int argc, char *argv[])
 
       ACS_DEBUG("acscomponentTestClient", "Narrowing it .... ");
       ACSCOMPONENT_TEST::ACSComponentTestClass_var mytestClient = ACSCOMPONENT_TEST::ACSComponentTestClass::_narrow (mytest.in());
+      // Check the component name
+      if (strcmp("TEST",mytestClient->name())!=0) {
+    	  ACS_SHORT_LOG((LM_ERROR, "Name getting the name of the component: received %s instead of TEST.",mytestClient->name()));
+      }
+
       mytestClient->shutdown();
     }
 
