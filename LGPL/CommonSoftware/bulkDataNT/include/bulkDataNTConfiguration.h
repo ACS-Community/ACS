@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.39 2013/01/08 11:13:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.40 2013/01/17 15:12:26 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,82 +56,89 @@ public:
 	DDSConfiguration();
 
 	/**
+	 * Returns QoS XML profile name
+	 * @return QoS XML profile name
+	 */
+	std::string getProfileQos() const {	return profileQos;	}
+
+	/**
+	 * Sets the QoS XML profile name (for detail pls. see RTI DDS documentation).
+	 * This method should be used with caution - just expert shall use it!
+	 * If this is not used the default one DEFAULT_*_*_PROFILE (depends on cfg. class).
+	 * @param profileQos - profile name
+	 */
+	void setProfileQos(std::string profileQos) {	this->profileQos = profileQos;	}
+
+	/**
 	 * Default qos_library to use
 	 */
 	static const char* const DEFAULT_LIBRARY;
-
 	/**
 	 * Default qos_profile to use for sender streams
 	 */
 	static const char* const DEFAULT_SENDER_STREAM_PROFILE;
-
 	/**
 	 * Default qos_profile to use for sender flows
 	 */
 	static const char* const DEFAULT_SENDER_FLOW_PROFILE;
-
 	/**
 	 * Default qos_profile to use for receiver streams
 	 */
 	static const char* const DEFAULT_RECEIVER_STREAM_PROFILE;
-
 	/**
 	 * Default qos_profile to use for receiver flows
 	 */
 	static const char* const DEFAULT_RECEIVER_FLOW_PROFILE;
-
 	/**
 	 * Default qos_profile to use when we create QoS using API
 	 */
 	static const char* const DEFAULT_API_CREATE_PROFILE;
-
 	/// BulkData NT debug level. The value is read from env. variable BULKDATA_NT_DEBUG
 	/// now it effects the whole BD running in a single process, but
 	/// if needed can be later re-factor that can be set per stream/flow
 	static short debugLevel;
 
-	std::string getStringProfileQoS() { return stringProfileQoS; }
+	std::string getStringProfileQoS() {
+		return stringProfileQoS;
+	}
 
 protected:
 	/**
 	 * It tries to read BULKDATA_NT_DEBUG and if it is there set the value of debugLevel
 	 */
 	static void setDebugLevelFromEnvVar();
-
 	/**
 	 * sets DDSLogVerbosity depend on the debug level
 	 */
 	static void setDDSLogVerbosity();
-
-	std::string libraryQos;  /// QoS configuration library
-	std::string profileQos;  /// QoS configuration profile in the library that should be used
-
+	std::string libraryQos;
+	/// QoS configuration library
+	std::string profileQos;
+	/// QoS configuration profile in the library that should be used
 	/**
 	 * Sets configuration
 	 * @param cfg
 	 * @param defaultProfile
 	 */
-	void setStringProfileQoS(char* cfg, const char *defaultProfile);
-
-	 /**
-	  * * Sets configuration with profile name
-	  * @param profileName
-	  * @param cfg
-	  * @param defaultProfile
-	  */
-	void setStringProfileQoS(char* profileName, char* cfg, const char *defaultProfile);
-
-	std::string stringProfileQoS;  /// her goes DDS QoS Profile
-
+	void setStringProfileQoS(char* cfg, const char* defaultProfile);
+	/**
+	 * * Sets configuration with profile name
+	 * @param profileName
+	 * @param cfg
+	 * @param defaultProfile
+	 */
+	void setStringProfileQoS(char* profileName, char* cfg,
+			const char* defaultProfile);
+	std::string stringProfileQoS;
+	/// her goes DDS QoS Profile
 	// QoS that follow can be hardcoded, but is more flexible in this way.
 	static bool ignoreUserProfileQoS; //when true USER_QOS_PROFILES.xml in current folder would not be loaded
 	static bool ignoreEnvironmentProfileQoS; //when true NDDS_QOS_PROFILES will be ignored
-
 	static unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
-
 	static const char* const DEFAULT_QoS_FILE;
-	static std::string urlProfileQoS;   // here we specify where it should be looked for default values = DEFAULT_QoS_FILE
-	void fillUrlProfileQoS(const char* envVar, const char *dilim="");
+	static std::string urlProfileQoS;
+	// here we specify where it should be looked for default values = DEFAULT_QoS_FILE
+	void fillUrlProfileQoS(const char* envVar, const char* dilim = "");
 };//DDSConfiguration
 
 
