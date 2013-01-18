@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.40 2013/01/17 15:12:26 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.41 2013/01/18 07:47:50 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,18 +56,32 @@ public:
 	DDSConfiguration();
 
 	/**
+	 * Returns QoS XML library name
+	 * @return QoS XML library name
+	 */
+	std::string getQosLibrary() const {	return libraryQos; }
+
+	/**
+	 * Sets the QoS XML library name (for detail pls. see RTI DDS documentation).
+	 * This method should be used with caution - just EXPERT shall use it!
+	 * If this is not used the default one, DEFAULT_LIBRARY .
+	 * @param libraryQos
+	 */
+	void setQosLibrary(std::string libraryQos) {		this->libraryQos = libraryQos;	}
+
+	/**
 	 * Returns QoS XML profile name
 	 * @return QoS XML profile name
 	 */
-	std::string getProfileQos() const {	return profileQos;	}
+	std::string getQosProfile() const {	return profileQos;	}
 
 	/**
 	 * Sets the QoS XML profile name (for detail pls. see RTI DDS documentation).
-	 * This method should be used with caution - just expert shall use it!
+	 * This method should be used with caution - just EXPERT shall use it!
 	 * If this is not used the default one DEFAULT_*_*_PROFILE (depends on cfg. class).
 	 * @param profileQos - profile name
 	 */
-	void setProfileQos(std::string profileQos) {	this->profileQos = profileQos;	}
+	void setQosProfile(std::string profileQos) {	this->profileQos = profileQos;	}
 
 	/**
 	 * Default qos_library to use
