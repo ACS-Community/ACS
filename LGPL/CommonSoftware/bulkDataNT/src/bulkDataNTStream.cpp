@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.46 2012/10/15 09:57:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.47 2013/01/18 14:43:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -176,8 +176,10 @@ DDS::DomainParticipant* BulkDataNTStream::createDDSParticipant()
 	// Otherwise, it means that the user specified it, so it must belong
 	// to the specified library too
 	const char *library = 0;
-	if( configuration_m.profileQos.compare((const char*)DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE) == 0 ||
-	    configuration_m.profileQos.compare((const char*)DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE) == 0 )
+	if( configuration_m.libraryQos.compare((const char*)DDSConfiguration::DEFAULT_LIBRARY) == 0 &&
+		(configuration_m.profileQos.compare((const char*)DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE) == 0 ||
+	    configuration_m.profileQos.compare((const char*)DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE) == 0)
+		)
 		library = DDSConfiguration::DEFAULT_LIBRARY;
 	else
 		library = configuration_m.libraryQos.c_str();
