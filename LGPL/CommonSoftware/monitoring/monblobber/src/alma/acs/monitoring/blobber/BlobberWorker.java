@@ -461,7 +461,7 @@ public class BlobberWorker extends CancelableRunnable {
 			AnyDataContainer container = new AnyDataContainer();
 			int index = 0;
 			for (booleanBlobData blobData : blobDataArray) {
-				populateContainerObject(container, blobData.time, blobData.value, index);
+				populateContainerBoolean(container, blobData.time, blobData.value, index);
 			}
 			outList.add(container);
 		}
@@ -474,7 +474,7 @@ public class BlobberWorker extends CancelableRunnable {
 					int index = 0;
 					for (Boolean blobData : blobDataArray.value) {
 						AnyDataContainer container = outList.get(index);
-						populateContainerObject(container, blobDataArray.time, blobData, index);
+						populateContainerBoolean(container, blobDataArray.time, blobData, index);
 						index++;
 					}
 				}
@@ -572,6 +572,17 @@ public class BlobberWorker extends CancelableRunnable {
         inContainer.clobBuilder.append(inTime);
         inContainer.clobBuilder.append("|");
         inContainer.clobBuilder.append(numberString);
+        inContainer.clobBuilder.append("|");
+        inContainer.index = inIndex;
+    }
+
+    private void populateContainerBoolean(AnyDataContainer inContainer,
+                                         long inTime, Boolean inData, int inIndex) {
+        String booleanString = (inData ? "1" : "0");
+        inContainer.dataList.add(inData);
+        inContainer.clobBuilder.append(inTime);
+        inContainer.clobBuilder.append("|");
+        inContainer.clobBuilder.append(booleanString);
         inContainer.clobBuilder.append("|");
         inContainer.index = inIndex;
     }
