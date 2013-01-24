@@ -154,7 +154,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private static final long serialVersionUID = 1372046383416324709L;
 
-	// TODO @todo revise...
+	// used to report exceptions that cannot be propagated, etc.
 	private void reportException(Throwable th)
 	{
 		logger.log(Level.SEVERE, th.getMessage(), th);
@@ -1573,7 +1573,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     			{
     				RemoteException re = new RemoteException("Failed to obtain component infos for CURL '"+curl+"' from remote manager.", ex);
     				reportException(re);
-    				logger.log(Level.SEVERE, re.getMessage(), ex);
     				return null;
     			}
 		    }
@@ -1743,6 +1742,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		try {
 			checkCURL(curl);
 		} catch (AcsJBadParameterEx e) {
+			e.setParameter("curl");
 			ex2 = new AcsJCannotGetComponentEx(e);
 			ex2.setCURL(name);
 			throw ex2;
@@ -1847,6 +1847,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (ex2 == null)
 				ex2 = new AcsJCannotGetComponentEx();
 			
+			// log exception as DEBUG, if not issued by the manager (in this case they are handled later)
+			//if (id != getHandle())
 			if (requestorName != null)
 				logger.log(Level.WARNING,"Failed to provide component '" + curl + "' to '" + requestorName + "'.", ex2);
 			else
@@ -1859,7 +1861,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			ex2.setCURL(name);
 			throw ex2;
-			
 		}
 
 		return component;
@@ -3143,8 +3144,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							try {
 								checkCURL(curl, false);
 							} catch (RuntimeException e) {
-								// @todo Auto-generated catch block
-								e.printStackTrace();
+								reportException(e);
 							}
 
 							activationRequestsList.add(curl);
@@ -3318,14 +3318,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				internalRequestComponent(requestor, uri, status);
 
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-					logger.log(Level.FINE,"Failed to reactivate requested component '"+uri+"', reason: '"+status.getStatus()+"'.");
+					logger.log(Level.WARNING,"Failed to activate autostart component '"+uri+"', reason: '"+status.getStatus()+"'.");
 				else
 					activated++;
 			}
 			catch (Throwable ex)
 			{
-				CoreException ce = new CoreException("Failed to request component '"+uri+"'.", ex);
-				reportException(ce);
+				logger.log(Level.WARNING,"Failed to activate autostart component '"+uri+"'.", ex);
 			}
 		}
 
@@ -6160,12 +6159,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		if (name == null) {
 		    bcex = new AcsJCannotGetComponentEx();
-		    logger.log(Level.SEVERE,"Cannot activate component with NULL name.",bcex);
+		    bcex.setReason("Cannot activate component with NULL name.");
 		    throw bcex;
 		}
 		if (status == null) {
 		    bcex = new AcsJCannotGetComponentEx();
-		    logger.log(Level.SEVERE,"Component " + name + " has NULL status.",bcex);
+		    bcex.setReason("Component " + name + " has NULL status.");
 	    	throw bcex;
 		}
 
@@ -6289,7 +6288,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// failed
 				bcex = new AcsJCannotGetComponentEx();
-				logger.log(Level.SEVERE,"Failed to reactivate dynamic component '"+componentInfo+"'.",bcex);
+				bcex.setReason("Failed to reactivate dynamic component '"+componentInfo+"'.");
 				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 				throw bcex;
 			}
@@ -6327,8 +6326,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 					// not found
 					bcex = new AcsJCannotGetComponentEx();
+					bcex.setReason("Component "+ name +" not found in CDB.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
-					logger.log(Level.SEVERE,"Component "+ name +" not found in CDB",bcex);
 					throw bcex;
 				}
 
@@ -6340,7 +6339,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (code == null)
 				{
 					bcex = new AcsJCannotGetComponentEx();
-					logger.log(Level.SEVERE,"Misconfigured CDB, there is no code of component '"+name+"' defined.",bcex);
+					bcex.setReason("Misconfigured CDB, there is no code of component '"+name+"' defined.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -6352,7 +6351,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (type == null)
 				{
 					bcex = new AcsJCannotGetComponentEx();
-					logger.log(Level.SEVERE,"Misconfigured CDB, there is no type of component '"+name+"' defined.",bcex);
+					bcex.setReason("Misconfigured CDB, there is no type of component '"+name+"' defined.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -6364,7 +6363,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (containerName == null)
 				{
 					bcex = new AcsJCannotGetComponentEx();
-					logger.log(Level.SEVERE,"Misconfigured CDB, there is no container of component '"+name+"' defined.",bcex);
+					bcex.setReason("Misconfigured CDB, there is no container of component '"+name+"' defined.");
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -6430,12 +6429,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    remoteManager = getManagerForDomain(domainName);
 			    if (remoteManager == null) {
 			    	bcex = new AcsJCannotGetComponentEx();
-			    	logger.log(Level.WARNING, "Failed to obtain manager for domain '" + domainName + "'.", bcex);
+			    	bcex.setReason("Failed to obtain manager for domain '" + domainName + "'.");
 			        throw bcex;
 			    }
 		    } catch (Throwable th) {
 				bcex = new AcsJCannotGetComponentEx(th);
-				logger.log(Level.WARNING, "Failed to obtain non-local manager required by component '"+name+"'.", bcex);
+				bcex.setReason("Failed to obtain non-local manager required by component '"+name+"'.'");
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				throw bcex;
 		    }
@@ -6460,7 +6459,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (container == null)
 			{
 				bcex = new AcsJCannotGetComponentEx();
-				logger.log(Level.SEVERE, "Container '"+containerName+"' required by component '"+name+"' is not logged in.",bcex);
+				bcex.setReason("Container '"+containerName+"' required by component '"+name+"' is not logged in.");
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				throw bcex;
 			}
@@ -6497,7 +6496,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (h == 0)
 			{
 				AcsJCannotGetComponentEx af = new AcsJCannotGetComponentEx();
-				logger.log(Level.WARNING, "Preallocation of new handle failed, too many registered components.", af);
+				af.setReason("Preallocation of new handle failed, too many registered components.");
 				throw af;
 			}
 
@@ -6571,7 +6570,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			catch (Throwable ex)
 			{
 				bcex = new AcsJCannotGetComponentEx(ex);
-				logger.log(Level.SEVERE, "Failed to obtain component '"+name+"' from remote manager.", bcex);
+				bcex.setReason("Failed to obtain component '"+name+"' from remote manager.");
 				timeoutError = (ex instanceof TimeoutRemoteException);
 			}
 		}
@@ -6601,7 +6600,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				catch (Throwable ex)
 				{
 					bcex = new AcsJCannotGetComponentEx(ex);
-					logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+					bcex.setReason("Failed to activate component '"+name+"' on container '"+containerName+"'.");
 					timeoutError = (ex instanceof TimeoutRemoteException);
 				}
 			}
@@ -6629,7 +6628,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				catch (Throwable ex)
 				{
 					bcex = new AcsJCannotGetComponentEx(ex);
-					logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+					bcex.setReason("Failed to activate component '"+name+"' on container '"+containerName+"'.");
 					throw bcex;
 				}
 			}
@@ -6804,8 +6803,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// failed to activate
 		if (componentInfo == null || componentInfo.getHandle() == 0 || componentInfo.getComponent() == null)
 		{
-			logger.log(Level.SEVERE,"Failed to activate component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ").");
-
+			if (bcex == null)
+				logger.log(Level.SEVERE,"Failed to activate component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ").");
+			else
+				bcex.setReason("Failed to activate component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ").");
+			
 			componentsLock.lock();
 			try {
 				// !!! ACID 3
@@ -6876,7 +6878,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						//components.deallocate(h, true);
 
 					bcex = new AcsJCannotGetComponentEx();
-					logger.log(Level.SEVERE, "Container returned another handle than given, failed to fix handle since returned handle is already allocated.", bcex);
+					bcex.setReason("Container '" + containerName + "' returned another '" + name  + "' component handle than given, failed to fix handle since returned handle is already allocated.");
+
+					// log this anyway, since it's an error of a global nature
+					logger.log(Level.SEVERE, "Container '" + containerName + "' returned another '" + name  + "' component handle than given, failed to fix handle since returned handle is already allocated.", bcex);
 
 					status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// component is activated, but cannot be managed by the Manager
 					throw bcex;
@@ -6908,7 +6913,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						// failed to allocate new
 						bcex = new AcsJCannotGetComponentEx();
-						logger.log(Level.SEVERE,"Container returned another handle than given, failed to fix handle due to handle relocation failure.", bcex);
+						bcex.setReason("Container '" + containerName + "' returned another '" + name  + "' component handle than given, failed to fix handle due to handle relocation failure.");
+						
+						// log this anyway, since it's an error of a global nature
+						logger.log(Level.SEVERE,"Container '" + containerName + "' returned another '" + name  + "' component handle than given, failed to fix handle due to handle relocation failure.", bcex);
+						
 						status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// Component is activated, but cannot be managed by the Manager
 						throw bcex;
 					}
@@ -6917,7 +6926,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						executeCommand(new ComponentCommandSet(h, existingData));
 						//components.set(h, existingData);
 
-					logger.log(Level.SEVERE,"Container returned another handle than given, handle fixed.");
+					logger.log(Level.WARNING,"Container '" + containerName + "' returned another '" + name  + "' component handle than given, handle fixed.");
 				}
 
 			}
@@ -7002,8 +7011,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			catch (Throwable ex)
 			{
 				bcex = new AcsJCannotGetComponentEx(ex);
-				logger.log(Level.SEVERE, "Failed to construct component '"+name+"', exception caught when invoking 'construct()' method.", bcex);
-
+				bcex.setReason("Failed to construct component '"+name+"', exception caught when invoking 'construct()' method.");
 			}
 
 			// remove component from client component list, will be added later
@@ -7028,7 +7036,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					catch (Exception ex)
 					{
 						bcex = new AcsJCannotGetComponentEx(ex);
-						logger.log(Level.SEVERE, "Failed to deactivate component '"+name+"' on container '"+containerName+"'.", bcex);
+						bcex.setReason("Failed to deactivate component '"+name+"' on container '"+containerName+"'.");
 					}
 
 					status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
