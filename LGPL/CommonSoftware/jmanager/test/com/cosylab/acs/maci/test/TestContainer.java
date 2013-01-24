@@ -11,6 +11,7 @@ import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Container;
+import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.RemoteException;
 
 /**
@@ -31,9 +32,21 @@ public class TestContainer extends TestClient implements Container {
 	 * Constructor for TestContainer.
 	 * @param name
 	 * @param type
+	 * @param recover
 	 */
 	public TestContainer(String name, ClientType type, boolean recover) {
 		super(name, type, recover);
+	}
+
+	/**
+	 * Constructor for TestContainer.
+	 * @param name
+	 * @param type
+	 * @param implLang
+	 * @param recover
+	 */
+	public TestContainer(String name, ClientType type, ImplLang implLang, boolean recover) {
+		super(name, type, implLang, recover);
 	}
 
 	/**

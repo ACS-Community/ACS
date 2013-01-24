@@ -48,6 +48,9 @@
   <_ Name="DEMANDER2"    Code="acsexmplPS"       Type="IDL:alma/PS/PowerSupply:1.0"      Container="OnDemandContainer2"
                         Default="false"         Autostart="true"  ImplLang="cpp" />
 
+  <_ Name="CPP_ON_PY"  Code="acsexmplPS"       Type="IDL:alma/PS/PowerSupply:1.0"      Container="PyContainer"
+                        Default="false"         Autostart="false"  ImplLang="cpp" />
+
 </Components>
 
 

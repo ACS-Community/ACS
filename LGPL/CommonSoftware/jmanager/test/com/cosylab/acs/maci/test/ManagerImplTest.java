@@ -38,6 +38,7 @@ import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.HandleConstants;
+import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.Manager.LongCompletionCallback;
@@ -109,7 +110,11 @@ public class ManagerImplTest extends TestCase
 		manager = new ManagerImpl();
 		
 		corbaServce = new DefaultCORBAService(logger);
-		manager.initialize(null, new CDBAccess(corbaServce.getORB(), logger), null, logger, null);
+		
+		CDBAccess cdbAccess = new CDBAccess(corbaServce.getORB(), logger);
+		//cdbAccess.setBypassNameService(true);
+
+		manager.initialize(null, cdbAccess, null, logger, null);
 		//manager.setDomain(domain);
 	
 		transport = new TestTransport();
@@ -154,7 +159,7 @@ public class ManagerImplTest extends TestCase
 			TestAdministrator client = new TestAdministrator(administratorName);
 			ClientInfo info = manager.login(client);
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", false);
-			assertEquals(13, infos.length);
+			assertEquals(14, infos.length);
 			
 			boolean thereisDefault = false;
 			for (int i=0 ; i< infos.length; i++)
@@ -457,6 +462,19 @@ public class ManagerImplTest extends TestCase
 
 			System.out.println("This is OK: "+npe.toString());
 		}
+		
+		// test wrong container ImplLang (CDB vs reported by authenticate method)
+		try
+		{
+			manager.login(new TestContainer("PyContainer", ClientType.CONTAINER, ImplLang.cpp, false));
+			fail();
+		}
+		catch (AcsJNoPermissionEx npe)
+		{
+
+			System.out.println("This is OK: "+npe.toString());
+		}
+		
 		
 		//test client login
 		Client client = new TestClient(clientName);		
@@ -2329,6 +2347,45 @@ public class ManagerImplTest extends TestCase
 			// there should be no components activated
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(0, infos.length);
+			
+			//
+			// test wrong Container-Component ImplLang
+			//
+			TestContainer pycontainer = new TestContainer("PyContainer", ClientType.CONTAINER, ImplLang.py, false);
+			Map pysupportedComponents = new HashMap();
+			Component cppOnPy = new TestComponent("CPP_ON_PY");
+			pysupportedComponents.put("CPP_ON_PY", cppOnPy);
+			pycontainer.setSupportedComponents(pysupportedComponents);
+			
+			manager.login(pycontainer);
+			
+			try
+			{
+				StatusHolder status = new StatusHolder();
+				URI cppOnPyURI = new URI("CPP_ON_PY");
+				manager.getComponent(info.getHandle(), cppOnPyURI, true, status);
+				fail();
+			} catch (AcsJCannotGetComponentEx e1) {
+				System.out.println("This is OK: "+e1.toString());
+			} catch (URISyntaxException e1) {
+				fail();
+			}
+
+			try
+			{
+				manager.getDynamicComponent(info.getHandle(), 
+						new ComponentSpec("CPP_ON_PY", ComponentSpec.COMPSPEC_ANY,
+							ComponentSpec.COMPSPEC_ANY, ComponentSpec.COMPSPEC_ANY), false);
+				fail();
+			} catch (AcsJCannotGetComponentEx e1) {
+				System.out.println("This is OK: "+e1.toString());
+			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e1) {
+				fail();
+			} catch (AcsJIncompleteComponentSpecEx ex) {
+				fail();
+			} catch (AcsJInvalidComponentSpecEx ex) {
+				fail();
+			}
 
 			// client logout
 			manager.logout(info.getHandle());

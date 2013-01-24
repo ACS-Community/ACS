@@ -26,17 +26,22 @@ public class TestClient implements Client, Serializable
 	/**
 	 * Client name.
 	 */
-	String name;
+	final String name;
 
 	/**
 	 * Client type.
 	 */
-	ClientType type;
+	final ClientType type;
+
+	/**
+	 * Client impl. language
+	 */
+	final ImplLang implLang;
 
 	/**
 	 * Recover flag.
 	 */
-	boolean recover;
+	final boolean recover;
 
 	/**
 	 * Client operation status.
@@ -52,7 +57,7 @@ public class TestClient implements Client, Serializable
 	/**
 	 * List of owned components.
 	 */
-	HashMap components = new HashMap();
+	final HashMap components = new HashMap();
 
 	/**
 	 * Constructor for TestClient.
@@ -77,14 +82,29 @@ public class TestClient implements Client, Serializable
 	 * Constructor for TestClient.
 	 * @param	type	reply to autheticate, non-<code>null</code>.
 	 * @param	name	name of the client, non-<code>null</code>.
+	 * @param   recover indicate recover mode. 
 	 */
 	public TestClient(String name, ClientType type, boolean recover)
 	{
+		this(name, type, ImplLang.cpp, recover);
+	}
+
+	/**
+	 * Constructor for TestClient.
+	 * @param	type	 reply to autheticate, non-<code>null</code>.
+	 * @param	name	 name of the client, non-<code>null</code>.
+     * @param   implLang implementation language of the client.
+	 * @param   recover  indicate recover mode. 
+	 */
+	public TestClient(String name, ClientType type, ImplLang implLang, boolean recover)
+	{
 		assert (name != null);
 		assert (type != null);
+		assert (implLang != null);
 		
 		this.name = name;
 		this.type = type;
+		this.implLang = implLang;
 		this.recover = recover;
 	}
 
@@ -93,7 +113,7 @@ public class TestClient implements Client, Serializable
 	 */
 	public AuthenticationData authenticate(long executionId, String question) throws RemoteException
 	{
-		return new AuthenticationData("", type, ImplLang.cpp, recover, System.currentTimeMillis(), executionId);
+		return new AuthenticationData("", type, implLang, recover, System.currentTimeMillis(), executionId);
 	}
 
 	/**

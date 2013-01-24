@@ -6472,7 +6472,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentImplLang != null && ImplLang.fromString(componentImplLang) != containerImplLang)
 			{
 				AcsJCannotGetComponentEx af = new AcsJCannotGetComponentEx();
-				logger.log(Level.WARNING, "Component and container implementation language do not match (" + componentImplLang + " != " + containerImplLang.name() + ")", af);
+				af.setReason("Component and container implementation language do not match (" + componentImplLang + " != " + containerImplLang.name() + ")");
 				throw af;
 			}
 		}
