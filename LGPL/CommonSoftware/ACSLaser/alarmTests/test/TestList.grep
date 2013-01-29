@@ -28,3 +28,5 @@ has successfully released
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 Starting Java/abeans application
 ACS abeans configuration directory
+cmw.mom.*=.*
+listing properties
