@@ -542,7 +542,7 @@ public class ManagerImplTest extends TestCase
 		assertEquals(info, info2);
 
 		//test container login
-		Container container = new TestContainer(containerName);
+		TestContainer container = new TestContainer(containerName);
 		try {
 			info = manager.login(container);
 		} catch (AcsJNoPermissionEx e) {
@@ -553,9 +553,29 @@ public class ManagerImplTest extends TestCase
 		assertTrue((info.getHandle() & HandleConstants.CONTAINER_MASK) == HandleConstants.CONTAINER_MASK);
 		assertEquals(info.getClient(),container);
 		
-		//test duplicate login
+		//test duplicate login (same instance) - allowed
 		try {
 			info2 = manager.login(container);
+		} catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+		assertNotNull(info2);
+		assertEquals(info.getHandle(), info2.getHandle());
+		
+		//test duplicate login (same instance name) - reject
+		TestContainer containerSameName = new TestContainer(containerName);
+		try {
+			info2 = manager.login(containerSameName);
+			fail("No permission expected");
+		} catch (AcsJNoPermissionEx e) {
+			System.out.println("This is OK: "+e.toString());
+		}
+
+		// ... now make first instance unresponsive to a ping
+		// this should allow the login
+		container.setOperative(false);
+		try {
+			info2 = manager.login(containerSameName);
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
 		}
