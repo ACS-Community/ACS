@@ -75,14 +75,7 @@ public class SynchronousAdministratorProxy extends AdministratorProxy implements
 			return (obj == null);
 		else if (obj instanceof si.ijs.maci.SynchronousAdministrator)
 		{
-			try
-			{
-				return administrator._is_equivalent((si.ijs.maci.SynchronousAdministrator)obj);
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
+			return super.equals(obj);
 		}
 		else
 			return false;

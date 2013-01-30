@@ -440,33 +440,26 @@ public class ContainerProxy extends ClientProxy implements Container
 	/**
 	 * @see java.lang.Object#equals(Object)
 	 */
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (container == null)
 			return (obj == null);
-		else if (obj instanceof si.ijs.maci.Container)
-		{
-			try
-			{
-				return container._is_equivalent((si.ijs.maci.Container)obj);
-			}
-			catch (Exception ex)
-			{
+		else if (obj instanceof si.ijs.maci.Container) {
+			try {
+				// compare IORs (encoded host, port, object name, ...)
+				return container.toString().equals(((si.ijs.maci.Container)obj).toString());
+				//return container._is_equivalent((si.ijs.maci.Container) obj);
+			} catch (Exception ex) {
 				return false;
 			}
-		}
-                else if (obj instanceof ClientProxy)
-                {
-                        try
-                        {
-                                return container._is_equivalent(((ClientProxy)obj).getClient());
-                        }
-                        catch (Exception ex)
-                        {
-                                return false;
-                        }
-                }
-		else
+		} else if (obj instanceof ClientProxy) {
+			try {
+				// compare IORs (encoded host, port, object name, ...)
+				return ior.equals(((ClientProxy)obj).ior);
+				//return container._is_equivalent(((ClientProxy) obj).getClient());
+			} catch (Exception ex) {
+				return false;
+			}
+		} else
 			return false;
 	}
 

@@ -116,33 +116,24 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	/**
 	 * @see java.lang.Object#equals(Object)
 	 */
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (daemon == null)
 			return (obj == null);
-		else if (obj instanceof alma.acsdaemon.ContainerDaemon)
-		{
-			try
-			{
-				return daemon._is_equivalent((alma.acsdaemon.ContainerDaemon)obj);
-			}
-			catch (Exception ex)
-			{
+		else if (obj instanceof alma.acsdaemon.ContainerDaemon) {
+			try {
+				//return daemon.toString().equals(((alma.acsdaemon.ContainerDaemon) obj).toString());
+				return daemon._is_equivalent((alma.acsdaemon.ContainerDaemon) obj);
+			} catch (Exception ex) {
 				return false;
 			}
-		}
-                else if (obj instanceof DaemonProxy)
-                {
-                        try
-                        {
-                                return daemon._is_equivalent(((DaemonProxy)obj).getDaemon());
-                        }
-                        catch (Exception ex)
-                        {
-                                return false;
-                        }
-                }
-		else
+		} else if (obj instanceof DaemonProxy) {
+			try {
+				//return daemon.toString().equals(((DaemonProxy) obj).getDaemon().toString());
+				return daemon._is_equivalent(((DaemonProxy) obj).getDaemon());
+			} catch (Exception ex) {
+				return false;
+			}
+		} else
 			return false;
 	}
 

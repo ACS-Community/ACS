@@ -343,14 +343,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 			return (obj == null);
 		else if (obj instanceof si.ijs.maci.Administrator)
 		{
-			try
-			{
-				return administrator._is_equivalent((si.ijs.maci.Administrator)obj);
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
+			return super.equals(obj);
 		}
 		else
 			return false;

@@ -415,22 +415,26 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	/**
 	 * @see java.lang.Object#equals(Object)
 	 */
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (client == null)
 			return (obj == null);
-		else if (obj instanceof si.ijs.maci.Client)
-		{
-			try
-			{
-				return client._is_equivalent((si.ijs.maci.Client)obj);
-			}
-			catch (Exception ex)
-			{
+		else if (obj instanceof si.ijs.maci.Client) {
+			try {
+				// compare IORs (encoded host, port, object name, ...)
+				return client.toString().equals(((si.ijs.maci.Client)obj).toString());
+				//return client._is_equivalent((si.ijs.maci.Client) obj);
+			} catch (Exception ex) {
 				return false;
 			}
-		}
-		else
+		} else if (obj instanceof ClientProxy) {
+			try {
+				// compare IORs (encoded host, port, object name, ...)
+				return ior.equals(((ClientProxy) obj).ior);
+				//return client._is_equivalent(((ClientProxy) obj).getClient());
+			} catch (Exception ex) {
+				return false;
+			}
+		} else
 			return false;
 	}
 
