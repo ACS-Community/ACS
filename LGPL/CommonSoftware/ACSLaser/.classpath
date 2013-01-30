@@ -32,7 +32,6 @@
 	<classpathentry kind="src" path="managerTest/test"/>
 	<classpathentry kind="lib" path="acs-jms/lib/acsjms.jar"/>
 	<classpathentry kind="lib" path="acs-jms/lib/ACSJMSMessageEntity.jar"/>
-	<classpathentry kind="lib" path="alarmPanel/lib/alarmPanel.jar"/>
 	<classpathentry kind="lib" path="laser-extlib/lib/AbsoluteLayout.jar"/>
 	<classpathentry kind="lib" path="laser-extlib/lib/boot.jar"/>
 	<classpathentry kind="lib" path="laser-extlib/lib/concurrent.jar"/>
@@ -79,5 +78,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
