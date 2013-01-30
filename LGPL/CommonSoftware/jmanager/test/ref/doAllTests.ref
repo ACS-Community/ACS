@@ -16,6 +16,8 @@
 1 - This is OK: Invalid response to 'Client::name()' method - non-null string expected.
 1 - This is OK: Invalid response to 'Client::authenticate()' method - non-null client type expected.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='container-invalid-auth' Reason='Given reply to 'Client::authenticate()' method indicated administrator login, but given reference does not implement 'maci::Administrator' interface.' ] 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Rejecting container login, container reported 'cpp' implementation language, but configured 'py'.' ProtectedResource='PyContainer' ] 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CONTAINER, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Rejecting container login, container with name 'testContainer' local already logged in.' ProtectedResource='testContainer' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was properly removed at ----------T--:--:--.---.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
@@ -64,6 +66,8 @@
 1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT1' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT2' ] 
 1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT3' ] 
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='CPP_ON_PY' ] 
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ Reason='Component and container implementation language do not match (cpp != py)' ] 
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
@@ -76,7 +80,7 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason=''name' and 'type' cannot be both '*'.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason=''name' and 'type' cannot be both '*'.' ] 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ Reason='Container 'invalidContainer' required by component 'dynComponent' is not logged in.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx [ ContainerName='DynContainer' CURL='MOUNT2' ComponentType='IDL:alma/MOUNT_ACS/Mount:1.0' ComponentCode='acsexmplMount' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx [ ContainerName='Container' CURL='MOUNT1' ComponentType='IDL:alma/MOUNT_ACS/Mount:1.0' ComponentCode='acsexmplMount' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason='Requested ComponentSpec does not match any entry in the CDB.' ] 
@@ -219,7 +223,7 @@
 1 - 9800 components activated until now...
 1 - 9900 components activated until now...
 1 - 10000 components activated until now...
-1 - Manager object serialization size: 2788139 bytes
+1 - Manager object serialization size: 2788660 bytes
 1 - 
 1 - 
 1 - OK (1 test)
