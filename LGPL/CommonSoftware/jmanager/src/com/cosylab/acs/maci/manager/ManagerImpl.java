@@ -1847,12 +1847,22 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (ex2 == null)
 				ex2 = new AcsJCannotGetComponentEx();
 			
-			// log exception as DEBUG, if not issued by the manager (in this case they are handled later)
-			//if (id != getHandle())
+			// we log the exceptions only if level is low enough (to allow diagnostic on manager size)
+			// it's clients responibility to handle the exception
 			if (requestorName != null)
-				logger.log(Level.WARNING,"Failed to provide component '" + curl + "' to '" + requestorName + "'.", ex2);
+			{
+				if (logger.isLoggable(Level.FINE))
+					logger.log(Level.WARNING,"Failed to provide component '" + curl + "' to '" + requestorName + "'.", ex2);
+				else
+					logger.log(Level.WARNING,"Failed to provide component '" + curl + "' to '" + requestorName + "'.");
+			}
 			else
-				logger.log(Level.WARNING,"Failed to provide component '" + curl + "'.", ex2);
+			{
+				if (logger.isLoggable(Level.FINE))
+					logger.log(Level.WARNING,"Failed to provide component '" + curl + "'.", ex2);
+				else
+					logger.log(Level.FINE,"Failed to provide component '" + curl + "'.");
+			}
 		}
 	
 		/****************************************************************/
