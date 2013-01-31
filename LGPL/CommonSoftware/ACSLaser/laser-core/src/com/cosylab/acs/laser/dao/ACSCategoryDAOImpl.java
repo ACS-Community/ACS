@@ -50,7 +50,6 @@ import alma.alarmsystem.alarmmessage.generated.AlarmDefinition;
 import alma.alarmsystem.alarmmessage.generated.CategoryDefinition;
 import alma.alarmsystem.alarmmessage.generated.CategoryDefinitionListType;
 import alma.alarmsystem.alarmmessage.generated.CategoryDefinitions;
-import alma.alarmsystem.core.alarms.LaserCoreAlarms;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import cern.laser.business.LaserObjectNotFoundException;
@@ -399,7 +398,6 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 	/**
 	 * Assign core alarms to the root category.
 	 * 
-	 * @see LaserCoreAlarms
 	 * @see LaserCoreFaultState
 	 * @see LaserCoreFaultCodes
 	 */
