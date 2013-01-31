@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: TestList.lite,v 1.10 2012/07/10 10:43:16 bjeram Exp $"
+# "@(#) $Id: TestList.lite,v 1.11 2013/01/31 10:58:40 gchiozzi Exp $"
 #
 # TestList
 #
@@ -13,10 +13,8 @@ PROLOGUE acsutilTATPrologue -noloadifr
 
 1 SenderReceiverTest "bdNTReceiverTest -f 00 -f 01 -w 10 -d 20000" "@SLEEP 10" "bdNTSenderTest -w 4"
 2 ConfigurationParser "bdNTConfigurationParserTest"
-3 ReceiverCompOpenCloseStream "acsutilTATTestRunner acsStartContainer -cpp newConfigRecvContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTReceiverImplClient"
-4 SendRecevCompTest "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataSenderTEST BulkDataReceiverTEST_1 BulkDataReceiverTEST_2"
+3 ReceiverCompOpenCloseStream "acsutilTATTestRunner acsStartContainer -cpp newConfigRecvContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTReceiverImplClient" EPILOGUE "acsStopContainer newConfigRecvContainer"
+4 SendRecevCompTest "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataSenderTEST BulkDataReceiverTEST_1 BulkDataReceiverTEST_2" EPILOGUE "acsStopContainer bdNTTestContainer"
 5 MultipleReceiverStreams "bdNTMultiReceiversTest 35"
 
 EPILOGUE acsutilTATEpilogue
-# 
-#  acsStartContainer -cpp bdNTTestContainer ../bin/bdNTTEST1 BulkDataSenderTEST BulkDataReceiverTEST_1 BulkDataReceiverTEST_2

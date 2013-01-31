@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bdNTTEST1.cpp,v 1.3 2012/01/16 11:49:38 bjeram Exp $"
+ * "@(#) $Id: bdNTTEST1.cpp,v 1.4 2013/01/31 10:58:40 gchiozzi Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -113,9 +113,13 @@ int main(int argc, char *argv[])
 	sleep(2);
 
 	sender->disconnect();
+	sleep(1);
 
 	receiver1->closeReceiver();
+	sleep(1);
+
 	receiver2->closeReceiver();
+	sleep(1);
 	}
 
     catch (AVConnectErrorEx & ex)
@@ -163,11 +167,15 @@ int main(int argc, char *argv[])
     
     //We release our component and logout from manager
     client.manager()->release_component(client.handle(), "BulkDataSenderTEST");
+    sleep(1);
 
     client.manager()->release_component(client.handle(), "BulkDataReceiverTEST_1");
+    sleep(1);
     client.manager()->release_component(client.handle(), "BulkDataReceiverTEST_2");
+    sleep(1);
     
     client.logout();
+    sleep(1);
 
     //   ACS_SHORT_LOG((LM_INFO,"Sleeping 3 sec to allow everything to cleanup and stabilize"));
     //   ACE_OS::sleep(3);
