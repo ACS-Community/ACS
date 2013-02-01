@@ -100,24 +100,15 @@ public class LogAssistant {
 	 */
 	public LogAssistant(String[] args) {
 		// Parse the command line
-		try {
-			parseCommandLine(args);
-		} catch (IllegalStateException e) {
-			System.err.println("Error in the parameters: "+e.getMessage());
-			usage("acsLogAssistant");
-			return;
-		}
-		if (command=='h') {
-			usage("acsLogAssistant");
-			return;
-		}
+		parseCommandLine(args);
 	}
 	
 	public void work() throws Exception {
 		if (checkState()) {
 			if (command=='x') {
 				extractLogs();
-			} else if (command=='p') {
+			} 
+			else if (command=='p') {
 				splitFile();
 			}
 		}
@@ -132,6 +123,18 @@ public class LogAssistant {
 	 * @throws IllegalStateException If the parameters in the command line are invalid
 	 */
 	private void parseCommandLine(String[] params) throws IllegalStateException {
+		CmdLineArgs cmdLineArgs = new CmdLineArgs();
+
+		// help / usage is a special case
+		CmdLineRegisteredOption helpCmd = new CmdLineRegisteredOption("-h","-help",0);
+		cmdLineArgs.registerOption(helpCmd);
+		if (params.length == 1) {
+			cmdLineArgs.parseArgs(params);
+			if (cmdLineArgs.isSpecified(helpCmd)) {
+				command='h';
+				return;
+			}
+		}
 		if (params.length<5) {
 			// The param must be at least 5:
 			// -command (-split)
@@ -140,13 +143,10 @@ public class LogAssistant {
 			// destination
 			throw new IllegalStateException("Wrong number of params");
 		}
-		CmdLineArgs cmdLineArgs = new CmdLineArgs();
 		CmdLineRegisteredOption extractCmd = new CmdLineRegisteredOption("-x","-extract",0);
 		cmdLineArgs.registerOption(extractCmd);
 		CmdLineRegisteredOption splitCmd = new CmdLineRegisteredOption("-p","-split",0);
 		cmdLineArgs.registerOption(splitCmd);
-		CmdLineRegisteredOption helpCmd = new CmdLineRegisteredOption("-h","-help",0);
-		cmdLineArgs.registerOption(helpCmd);
 		CmdLineRegisteredOption csvOtuputFormat = new CmdLineRegisteredOption("-csv",0);
 		cmdLineArgs.registerOption(csvOtuputFormat);
 		CmdLineRegisteredOption txtOtuputFormat = new CmdLineRegisteredOption("-txt",0);
@@ -167,9 +167,9 @@ public class LogAssistant {
 		cmdLineArgs.registerOption(number);
 		CmdLineRegisteredOption columns = new CmdLineRegisteredOption("-l","-col",0);
 		cmdLineArgs.registerOption(columns);
-		CmdLineRegisteredOption dstFileOption = new CmdLineRegisteredOption("-dest",0);
+		CmdLineRegisteredOption dstFileOption = new CmdLineRegisteredOption("-dest",1);
 		cmdLineArgs.registerOption(dstFileOption);
-		CmdLineRegisteredOption sourceFilesOption = new CmdLineRegisteredOption("-src",0);
+		CmdLineRegisteredOption sourceFilesOption = new CmdLineRegisteredOption("-src",1);
 		cmdLineArgs.registerOption(sourceFilesOption);
 		cmdLineArgs.parseArgs(params);
 		
@@ -180,13 +180,6 @@ public class LogAssistant {
 		// Command==split
 		if (cmdLineArgs.isSpecified(splitCmd)) {
 			command='p';
-		}
-		// Command==help
-		if (cmdLineArgs.isSpecified(helpCmd)) {
-			command='h';
-		}
-		if (command=='h') {
-			return;
 		}
 		// Start date
 		if (cmdLineArgs.isSpecified(startTime)) {
@@ -303,7 +296,7 @@ public class LogAssistant {
 			destFileName=val[0];
 		} else {
 			throw new IllegalStateException("No destination file in command line.");
-		}		
+		}
 	}
 	
 	/**
@@ -338,6 +331,7 @@ public class LogAssistant {
 					System.out.println(filterFileName+" is unreadable");
 					return false;
 				}
+				// todo: print about using the filter
 			}
 			if (minutes!=null || num!=null) {
 				System.out.println("Warning: minutes and number of logs are ignored while eXtracting");
@@ -425,7 +419,7 @@ public class LogAssistant {
 	 * @param prgName The program name
 	 */
 	private static void usage(String prgName) {
-		System.out.println("USAGE: "+prgName+" command command_params [options] [-dest <FileName>] -src <FileName> <FileName> ....");
+		System.out.println("USAGE: "+prgName+" command command_params [options] -dest <FileName> [-src <FileName> <FileName> ....]");
 		System.out.println("command:");
 		System.out.println("\t-extract|-x: extract logs depending on the command_params criteria");
 		System.out.println("\tcommand_params for extraction (applied as AND):");
@@ -443,10 +437,9 @@ public class LogAssistant {
 		System.out.println("\t-txt: write the output as plain ASCII text");
 		System.out.println("\t-twiki: write the output as Twiki table");
 		System.out.println("\t-col|-l columns: select the columns to write in the csv (not supported by XML)");
-		System.out.println("[-dest <filename>]: the name of the destionation file(s)");
-		System.out.println("-src <filename>...: the name of the source files ");
-		System.out.println("                    Read logs from stdin -src is missing in the cmd line");
-		System.out.println("Read logs from stdin if no");
+		System.out.println("-dest <filename>: the name of the destionation file.");
+		System.out.println("-src <filename>...: the name of the source files.");
+		System.out.println("                    Can be omitted if log files are provided on stdin.");
 		System.out.println("\nSee ACS manual for further details.\n");
 	}
 
@@ -454,7 +447,20 @@ public class LogAssistant {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		LogAssistant assistant=new LogAssistant(args);
+		LogAssistant assistant = null;
+		try {
+			assistant = new LogAssistant(args);
+		} catch (IllegalStateException ex) {
+			System.err.println("Error in the parameters: " + ex.getMessage());
+			usage("acsLogAssistant");
+			return;
+		}
+
+		if (assistant.command=='h') {
+			usage("acsLogAssistant");
+			return;
+		}
+		
 		try {
 			assistant.work();
 		} catch (Throwable t) {
