@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.59 2012/09/06 10:50:30 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.60 2013/02/04 14:24:02 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -393,7 +393,7 @@ void BulkDataNTReaderListener::on_sample_rejected( DDS::DataReader*, const DDS::
 			LoggingProxy::AddData("repeatCount", "%d", rg.count() );
 
 		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-				(LM_WARNING, "Sample Rejected, but MOT lost (need to be resent): reason %d, change: %d, total: %d!",
+				(LM_WARNING, "Sample Rejected, but NOT lost (need to be resent): reason %d, change: %d, total: %d!",
 						srs.last_reason, srs.total_count_change, srs.total_count));
 	}
 }//on_sample_rejected
