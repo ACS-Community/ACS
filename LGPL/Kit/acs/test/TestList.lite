@@ -33,3 +33,8 @@
 6 SOURCE acsSearchPath5.tcl acsSearchPath5 "acsSearchPath"
 # env vars with non-existing dirs should give blank search path if clean-up is requested
 7 SOURCE acsSearchPath6.tcl acsSearchPath6 "acsSearchPath -c lib"
+
+11 makeInstallTest1 "/usr/bin/make -f MakefileInstallTest install INCLUDES=fileDoesNotExist"
+12 PROLOGUE "tclsh acsMakeInstall2.tcl" \
+   makeInstallTest2 "/usr/bin/make -f MakefileInstallTest install INCLUDES=duplicateFile" \
+   EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile"
