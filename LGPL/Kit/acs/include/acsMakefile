@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.205 2012/09/17 13:47:01 eallaert Exp $" 
+# "@(#) $Id: acsMakefile,v 1.206 2013/02/04 09:33:24 eallaert Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -1112,7 +1112,8 @@ endif
 # IDL                                           #
 #################################################
 
-MK_IDL_PATH_LIST=$(shell if [ -d ../idl  ]; then find ../idl -type d ! -name CVS ! -name .svn 2>/dev/null | tr '\n' ' '  ; fi )
+# COMP-8768: ensure no subdirs of CVS/ or .svn/ are included
+MK_IDL_PATH_LIST=$(shell if [ -d ../idl  ]; then find ../idl -type d ! \( -name CVS -prune \)  ! \( -name .svn -prune \) -printf "%p " 2>/dev/null ; fi )
 
 ##################################################################
 #   set search paths for include files and libraries             #
@@ -1952,15 +1953,22 @@ includes_begin:
 	@echo ".....includes:" 
 
 install_include_%:	
-# need to remember why this find statement was necessary. What more was there?
-	$(AT)tFile=`(cd ../include; find . -name $* | tail -1 )` ; \
-	if [ "$${tFile}" == "" ]; then echo "==> $* Missing";  fi ; \
-	tDir=`dirname $${tFile}` ;\
-        if [ ! -d $(INCLUDE)/$${tDir} ]; then mkdir -p $(INCLUDE)/$${tDir} ; fi ;\
-	$(ECHO) "\t$*" ;\
-	cp ../include/$${tFile} $(INCLUDE)/$${tFile}; \
-	chmod $(P755) $(INCLUDE)/$${tFile}
-
+# COMP-498: Need to find subdir-location of include file
+# COMP-6627: cleaner exclusion of CVS/ and .svn/ administrative subdirectories.
+# The shell code here below to determine how many hits is much faster than piping tFile into "wc -w" !
+	$(AT)tFile=`(cd ../include; find . \( -type d -name CVS -prune -o -name .svn -prune \) -o -name $* -printf "%p ")` ; \
+	nrHits=0; for x in $${tFile}; do (( ++nrHits )); done; \
+	if [ $${nrHits} -eq 1 ]; then \
+		tDir=`dirname $${tFile}` ;\
+	 	if [ ! -d $(INCLUDE)/$${tDir} ]; then mkdir -p $(INCLUDE)/$${tDir} ; fi ;\
+		$(ECHO) "\t$*" ;\
+		cp ../include/$${tFile} $(INCLUDE)/$${tFile}; \
+		chmod $(P644) $(INCLUDE)/$${tFile}; \
+	elif [ $${nrHits} -gt 1 ]; then  \
+		echo "==> multiple $* files under ../include: $${tFile}"; exit 1; \
+	elif [ $${nrHits} -eq 0 ]; then  \
+		echo "==> $* missing"  ; exit 1; \
+	fi
 
 # I eliminate the dependency here below because I am not sure why it is needed
 # $(INCLUDE)/${tFile}: ../include/${tFile}" 
