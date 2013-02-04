@@ -159,6 +159,7 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 			}
 			filters = new FiltersVector();
 			filters.loadFilters(f,true,null);
+			System.out.println("Will apply the following filters:\n" + filters.toString());
 		}
 	}
 
@@ -188,6 +189,7 @@ public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorLis
 	 */
 	public void extract() throws Exception {
 		IOHelper inputHelper = new IOHelper();
+		inputHelper.setFilters(filters);
 		openDestFile();
 		// Start the loading
 		if (inFileNames==null) {
