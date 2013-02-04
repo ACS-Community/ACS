@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2010/07/27 22:00:29 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.4 2013/02/04 09:52:57 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 # jagonzal: This is a shell script not a python script
-SCRIPTS         = testCDBCoreAlarm
+SCRIPTS         = testCDBCoreAlarm testTooOldAlarmCore
 SCRIPTS_L       =
 
 #
