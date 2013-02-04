@@ -2,13 +2,14 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.14 2012/11/05 09:28:58 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.15 2013/02/04 09:03:35 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # wpirani   31/08/99    Created for OCT99 (New Tcl/Tk baseline)
 # eallaert  2007-09-03  updated for ACS 7.0
 # eallaert  2011-06-03  updated for ACS 10.0
+# eallaert  2012-10-09  updated for use with RH5.5 and RH6.3; clean-up
 
 #************************************************************************
 #   NAME
@@ -25,7 +26,6 @@
 #   with a reference file
 #
 #   BUGS     
-#
 #   None, just features!
 #
 #------------------------------------------------------------------------
@@ -115,10 +115,21 @@ fi
 #
 # print header
 #
-TITLE="     Checking Tcl/Tk installation  "
-BUILD_NAME="Tcltk"
-. ./standardPrologue
+if [ "$TCLTK_ROOT" = "" ]
+then
+    TCLTK_ROOT=/usr/local
+fi
+PREFIX=$TCLTK_ROOT
+export PREFIX
 
+TCLTK_VERSION=`echo "puts \\$tcl_patchLevel; exit" | $PREFIX/bin/tclsh`
+TITLE="Checking Tcl/Tk ${TCLTK_VERSION} installation"
+echo "             ${TITLE}"
+BUILD_NAME="Tcltk"
+##. ./standardPrologue
+
+CWD=`pwd`
+INSTALL_ROOT=`dirname $CWD`
 TCLTK=${INSTALL_ROOT}/PRODUCTS/tcltk
 
 #
@@ -137,18 +148,18 @@ then
      elif [ "X${distro}" = "XFedoraCore" ] ; then 
           build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
      fi   
+elif [ ${build_OS} = ${CYGWIN_VER} ]; then
+    build_OSV=`echo ${build_OSV} | awk ' { split($0, v, "("); print v[1] } '`
 fi
 
 echo $SEPARATOR
 echo "Checking on $build_OS version $build_OSV:"
 echo ""
 
-if [     ${build_OS}-${build_OSV} != "SunOS-5.8"                  \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.2"  \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.3"  \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.1"  \
-     -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
+# Add here the opsys versions this has been tested on in its current version
+if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.5"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-ScientificLinux6.2"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.3"  \
    ]
 then
     echo ""
@@ -162,68 +173,29 @@ fi
 #
 if [ "$MSQL" ]
 then 
-    echo "ACSDATA . . .\c"
+    echo -n "ACSDATA . . ."
     if [ "$ACSDATA" = "" ]
     then	
         echo "ACSDATA not defined, cannot continue."
         exit 1
     fi
 
-    echo "defined as: $ACSDATA . . .\c"
-    if [ ! -d $ACSDATA ]
-    then
-        echo "but is not a directory, cannot continue."
-        exit 1
-    fi
-
-    if [ ! -w $ACSDATA ]
-    then
-        echo "but is not a writable directory, cannot continue."
-        exit 1
-    fi
-    echo " . . . ok"
+    echo "defined as: $ACSDATA"
 fi
 
 #
 # setup and check target directory
 #
-if [ "$TCLTK_ROOT" = "" ]
-then
-    TCLTK_ROOT=/usr/local
-fi
 
-PREFIX=$TCLTK_ROOT
-export PREFIX
-echo "Install directory defined as: $PREFIX . . . \c"
-
-if [ ! -d $PREFIX ]
-then
-    echo "but this is not a directory, cannot continue."
-    exit 1
-fi
-
-if [ ! -w $PREFIX ]
-then
-    echo "but this is not a writable directory, cannot continue."
-    exit 1
-fi
-echo " . . . ok"
-
+echo "Install directory defined as: $PREFIX"
 
 # 
-# check that all expected files have been created 
+# Check that all expected files have been created.
+# Whether or not msql is included is indicated by the first argument 
+# passed to this script.
 #
-if [ "$build_OS" = "$CYGWIN_VER" ]; then
-  SRC="$TCLTK/$build_OS"
-  # Whether of not msql is included is indicated by the first argument 
-  # passed to this script.
-  reference=${TCLTK}/TCLTK.${build_OS}_$MSQL_NAME
-else
-  SRC="$TCLTK/$build_OS-$build_OSV"
-  # Whether of not msql is included is indicated by the first argument 
-  # passed to this script.
-  reference=${TCLTK}/TCLTK.${build_OS}-${build_OSV}_$MSQL_NAME
-fi
+SRC=${TCLTK}/${build_OS}-${build_OSV}
+reference=${TCLTK}/TclTk${TCLTK_VERSION}-${build_OS}-${build_OSV}-$MSQL_NAME
 
 cd $PREFIX
 echo ""
@@ -244,14 +216,14 @@ LD_LIBRARY_PATH=${TCLTK_ROOT}/lib:$LD_LIBRARY_PATH
 echo $SEPARATOR
 echo "verify:"
 rm -f test.tcl
-for shell in bltwish expect expectk tcl tclsh wish wishx
+for shell in bltwish expect tcl tclsh wish wishx
 do
-    echo "    ${shell} . . .\c"
+    echo -n "    ${shell} . . ."
     out=${SRC}/${shell}.out
     ref=${TCLTK}/ref/${shell}.ref
     if [ -x $PREFIX/bin/$shell ] 
     then
-	echo "puts [lsort [info commands]]; exit"  | $PREFIX/bin/$shell > $out
+	echo 'puts [lsort "[info commands] [info commands blt::*]"]; exit'  | $PREFIX/bin/$shell > $out
         diff $out $ref
         if [ $? -ne 0 ] 
         then	
@@ -265,10 +237,11 @@ do
 done
 
 echo $SEPARATOR
-echo "\007"; sleep 1;echo "\007"; sleep 1;echo "\007"; sleep 1
+echo -e "\007"; sleep 1;echo -e "\007"; sleep 1;echo -e "\007"; sleep 1
 echo "Check completed. Please check the output for possible errors."
+echo ""
+echo ""
 
-. $CWD/standardEpilogue
 
 #
 #___oOo___
