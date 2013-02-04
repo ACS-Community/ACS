@@ -332,7 +332,6 @@ Default QoS Profile for BulkDataNT.
                             <nanosec>0</nanosec>
                         </fast_heartbeat_period>
                         <heartbeats_per_max_samples>10</heartbeats_per_max_samples>
-                        <!-- heartbeats_per_max_samples has to be max_samples or higher-->
                         <heartbeat_period>
                             <sec>604800</sec>
                         </heartbeat_period>
