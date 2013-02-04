@@ -2,40 +2,41 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.23 2012/04/17 11:55:54 jschwarz Exp $"
+# "@(#) $Id: buildTcltk,v 1.24 2013/02/04 09:06:59 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # eallaert  2007-09-03  first version for ACS 7.0, derived from VLTSW
 # eallaert  2008-08-28  modified for ACS 8.0 (product updates)
 # eallaert  2011-06-03  modified for ACS 10.0 (compilation fix in snack)
+# eallaert  2012-11-14  modified to make Tcl/Tk version independent
 #
 #************************************************************************
 #   NAME
 #   buildTcltk
 #
 #   SYNOPSIS
-#   buildTcltk [-v]
+#   buildTcltk [-m] [-d]
 # 
 #   DESCRIPTION
 #   Compiles and install the Tcl/Tk packages needed for ALMA Common Software 
 #
-#    - tcl/tk     8.4.19
-#    - [incr Tcl] 3.4 2008-08-06
-#    - iwidgets   4.0.2 2008-08-20
-#    - tclX       8.4 2008-06-29
-#    - BLT        2.4z
-#    - msqltcl    1.99
-#    - tkimg      1.3
-#    - Tktable    2.9 
-#    - snack      2.2.10           
-#    - tkman      2.2
-#    - rman       3.1
-#    - tcllib     1.10
-#    - tklib      0.4.1 2008-08-19
-#    - expect     5.43 2006-03-01  
-#    - tclCheck   1.1.10
-#    - tkcon      2.4
+#    - tcl/tk
+#    - [incr Tcl]
+#    - iwidgets
+#    - tclX
+#    - tcllib
+#    - tklib
+#    - BLT
+#    - tkimg
+#    - Tktable
+#    - snack
+#    - tkman
+#    - rman
+#    - expect
+#    - tclCheck 1.1.13
+#    - tkcon (2.5 is latest)
+#    - msqltcl 1.99 (if option -m is specified)
 #
 #   Target installation directory is specified by the enviroment
 #   variable $TCLTK_ROOT (usually $ALMASW_INSTDIR/tcltk).  If undefined,
@@ -46,7 +47,7 @@
 #   and the generation of msql directories/files under $ACSDATA.
 #
 #   FILES
-#   input files: are taken from ../tcltk.
+#   input files: are taken from ../PRODUCTS/tcltk.
 #   
 #   ENVIRONMENT
 #
@@ -79,16 +80,11 @@
 #               command is needed
 # EAL 20040719
 #
-#************ PLEASE EDIT vvvvvvvv ACCORDING TO YOUR NEEDS *************
-###PREFIX=$ALMASW_INSTDIR/tcltk
-###TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
-##PREFIX=$TCLTK_ROOT
-##TCL_MEM_DEBUG="CFGLAGS=-DTCL_MEM_DEBUG"
 #************ PLEASE EDIT ^^^^^^^^ ACCORDING TO YOUR NEEDS *************
 
-##########################################################################################
+###############################################################################
 # Function definitions used later in this script.
-##########################################################################################
+###############################################################################
 # definition of a function to print the usage statement for this script
 printUsageAndExit ()
 {
@@ -103,9 +99,9 @@ printUsageAndExit ()
     exit $1;
 }
 
-##########################################################################################
-# Script logic starts here...                                                            #
-##########################################################################################
+###############################################################################
+# Script logic starts here...    
+###############################################################################
 MY_NAME=`basename $0`
 
 #
@@ -180,8 +176,8 @@ date
 #
 # print header
 #
-TITLE="     Installing TCL/TK and related tools  "
-BUILD_NAME="Tcl/Tk"
+TITLE="Installing TCL/TK and related tools"
+BUILD_NAME="Tcltk"
 . ./standardPrologue
 # The standardPrologue re-defines the echo function, whereby it disables
 # the use of escape-sequences under Linux - I wonder why.
@@ -194,12 +190,33 @@ then
     echo "$TCLTK already existing; I'll first remove it"
     rm -rf $TCLTK
 fi
-if ! [ -f tcltk.tar.gz ]
+
+TCL_CONTAINER=`ls tcltk-8.*.tar.gz 2> /dev/null`
+nrFiles=`echo ${TCL_CONTAINER} | awk '{ print split($0, v, " ") }'`
+if [ ${nrFiles} = 1 ]
 then
-    echo "Tcl/Tk tar-file (tcltk.tar.gz) missing"
-    exit 1
+    echo ""
+    echo "Tcl/Tk container tar-file: ----> ${TCL_CONTAINER} <----"
+    echo ""
+    echo -n "untarring ${TCL_CONTAINER} . . . "
+    tar -xzf ${TCL_CONTAINER}
+    echo "done."
 else
-    tar xzf tcltk.tar.gz
+    if [ ${nrFiles} = 0 ]
+    then
+	echo "Tcl/Tk tar-file (tcltk-8.*.tar.gz) missing from ${INSTALL_ROOT}/PRODUCTS/"
+	echo ""
+        echo "Exiting."
+	exit 1
+    else
+	echo "Multiple Tcl/Tk tar-files: "
+        for file in ${TCL_CONTAINER}
+	do
+            echo "   - $file"
+	done
+        echo "This build script expects only a single file; exiting."
+	exit 1
+    fi
 fi
 cd $CWD
 
@@ -219,16 +236,16 @@ then
      elif [ "X${distro}" = "XFedoraCore" ] ; then
           build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
      fi   
+elif [ ${build_OS} = ${CYGWIN_VER} ]; then
+    build_OSV=`echo ${build_OSV} | awk ' { split($0, v, "("); print v[1] } '`
 fi
 
 echo $SEPARATOR
 echo " Installing on $build_OS version $build_OSV"
 
-if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.2"  \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.3"  \
+if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.5"  \
      -a  ${build_OS}-${build_OSV} != "Linux-ScientificLinux6.2"  \
-     -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.3"  \
    ]
 then
     echo ""
@@ -294,24 +311,22 @@ fi
 #-------------------
 # check that all needed files are there
 #
-FILE_LIST="
-	 tclCheck-1.1.13.tar.gz    \
-	 tcltk-ACS10.0.tar.gz       \
-	 tkcon-2.4.tar.gz
-	 "
+# The Tcl/Tk tarball must be named like tcltk-SEP2012.tar.gz
+TCL_TARBALL=`cd ${TCLTK}; ls tcltk-???20??.tar.gz`
+FILE_LIST="tclCheck-1.1.13.tar.gz \
+		 ${TCL_TARBALL}   \
+		 tkcon-2.*.tar.gz "
 if [ "$MSQL" ]
     then 
-    FILE_LIST="
-        $FILE_LIST \
-	msql2.tar.gz
-	"
+    FILE_LIST="$FILE_LIST    \
+		msql2.tar.gz "
 fi
 
 for file in $FILE_LIST
 do
     if [ ! -f ${TCLTK}/$file ]
     then
-    	echo "$file missing - should be contained in ${INSTALL_ROOT}/PRODUCTS/tcltk.tar.gz"
+    	echo "$file missing - should be contained in ${INSTALL_ROOT}/PRODUCTS/${TCL_CONTAINER}"
 	exit 1
     fi
 done
@@ -337,7 +352,7 @@ fi
 
 PREFIX=$TCLTK_ROOT
 export PREFIX
-echo "target directory set to: $PREFIX . . . \c"
+echo -n "target directory set to: $PREFIX . . . "
 
 if [ ! -d $PREFIX ]
 then
@@ -354,25 +369,15 @@ echo " . . . ok"
 
 
 #
-# Use GNU c compiler
-#
-CC=gcc
-export CC
-
-
-#
 # create a temporary directory used to expand the tar files and 
 # to compile
 #
-if [ "$build_OS" = "$CYGWIN_VER" ]; then
-   SRC="$TCLTK/$build_OS"
-else
-   SRC="$TCLTK/$build_OS-$build_OSV"
-fi
-echo "set temporary build directory: $SRC . . . \c"
+SRC="$TCLTK/$build_OS-$build_OSV"
+
+echo -n "set temporary build directory: $SRC . . . "
 if [ -d $SRC ]
 then
-    echo "removing current content . . . \c"
+    echo -n "removing current content . . . "
     rm -rf $SRC
 fi
 mkdir $SRC
@@ -380,6 +385,7 @@ mkdir $SRC
 cwd=`pwd`
 cd $SRC
 SRC=`pwd`
+export SRC
 cd $cwd
 echo "done"
 
@@ -399,28 +405,21 @@ cd $cwd
 #
 if [ "X$PREFIX" != "X/usr/local" ]
 then	
-    echo "remove ${PREFIX} . . .\c"
+    echo -n "remove ${PREFIX} . . . "
     rm -rf $PREFIX
     mkdir -p $PREFIX/bin $PREFIX/lib $PREFIX/include $PREFIX/man/man1 $PREFIX/man/man3 $PREFIX/man/mann $PREFIX/doc
     echo " . . . done"
 fi
 
-#######################################################################
-#
-# 1. msql   
-#
-#    needed to implement the VCC/ACC database. 
-#    The msql static library is linked by seqSh/seqWish (as there is no
-#    shared lib available for dynamic loading)
-#    The ad hoc installation procedure created the database in ACSDATA and the
-#    binaries in the target directory
+###############################################################
+# 1. msql
 #
 if [ "$MSQL" ]
 then
     echo $SEPARATOR
     echo "msql: untarring . . . "
     cd $SRC
-    gunzip -c $TCLTK/msql2.tar.gz | tar xf -
+    tar -xzf $TCLTK/msql2.tar.gz
     cd msql-2.0.11/targets/$build_OS
     ./setup
     make install
@@ -435,149 +434,53 @@ fi
 
 #*********************************************
 #
-#  2.
-#      product    current version
-#      ======     ===============
-#    - tcl/tk     8.4.19
-#    - [incr Tcl] 3.4 2008-08-06
-#    - iwidgets   4.0.2 2008-08-20
-#    - tclX       8.4 2008-06-29
-#    - BLT        2.4z
-#    - msqltcl    1.99
-#    - tkimg      1.3
-#    - Tktable    2.9 
-#    - snack      2.2.10           
-#    - tkman      2.2
-#    - rman       3.1
-#    - tcllib     1.10
-#    - tklib      0.4.1 2008-08-19
-#    - expect     5.43 2006-03-01  
+#  2. The Tcl/Tk core plus common extensions:
+#    - tcl/tk
+#    - tcllib
+#    - tklib
+#    - [incr Tcl] 
+#    - iwidgets
+#    - tclX
+#    - BLT
+#    - tkimg
+#    - Tktable
+#    - snack
+#    - tkman
+#    - rman
+#    - expect
+#    - msqltcl (if -m option specified)
+#  These components and their versions will be printed to stdout.
+#  The actual build is done by the buildTclTk script contained
+#  within the tcltk-MMMYYYY.tar.gz tarball.
 #
-
 echo $SEPARATOR
-echo "tcltk: untarring . . . "
 cd $SRC
-gunzip -c $TCLTK/tcltk-ACS10.0.tar.gz | tar xf -
-if [ "${build_OS}" = "$CYGWIN_VER" ]; then
-  patch $SRC/tcl8.4.19/unix/tcl.m4 < ${INSTALL_ROOT}/PRODUCTS/tcl.m4.patch
-  patch $SRC/tcl8.4.19/generic/tclEnv.c < ${INSTALL_ROOT}/PRODUCTS/tcl.putenv.patch
-  patch $SRC/tk8.4.19/unix/tcl.m4 < ${INSTALL_ROOT}/PRODUCTS/tcl.m4.patch
-  ln -s $SRC/tk8.4.19/unix/tkUnixDefault.h $SRC/tk8.4.19/unix/tkWinDefault.h
-  patch $SRC/tclx-2008-06-29/tclconfig/tcl.m4 < ${INSTALL_ROOT}/PRODUCTS/tclx.m4.patch
-  patch $SRC/tclx-2008-06-29/configure < ${INSTALL_ROOT}/PRODUCTS/tclx.configure.patch
+echo -n "tcltk: untarring ${TCLTK}/${TCL_TARBALL} . . . "
+tar -xzf ${TCLTK}/${TCL_TARBALL}
+echo "done."
+
+# There used to be here the instructions to apply patches for CYGWIN, 
+# but they were version-dependent, and should therefore not be put here 
+# but rather within the buildTclTk script contained in tcltk-MMMYYYY.tar.gz
+###if [ "${build_OS}" = "$CYGWIN_VER" ]; then
+###    patch $SRC/tcl8.4.19/generic/tclEnv.c < ${INSTALL_ROOT}/PRODUCTS/tcl.putenv.patch
+###fi
+
+# The tar-ball must contain a build-script that in its name
+# includes exactly the same release-string as the tarball itself.
+RELEASE=`echo ${TCL_TARBALL} | awk '{ print substr($0,7,7) }'`
+if [ ! -f buildTclTk-${RELEASE} ]
+then 
+    echo "buildTclTk-${RELEASE} script missing in ${TCLTK}/${TCL_TARBALL} - exiting"
+    exit 1
 fi
-
-# Make first the static libraries for Tcl/Tk and [incr Tcl]
-# then the shared version; this should come second, so tclConfig.sh 
-# refers to the shared version, and the executables are the shared ones.
-# Remark that configuring itcl fails if srcdir is not given explicitly with
-# an absolute path; otherwise it uses ".", which messes up things.
-for dir in tcl8.4.19/unix tk8.4.19/unix tclx-2008-06-29 itcl-2008-08-06 ; do \
-    (cd ${dir} ; \
-    if [ "${build_OS}" = "$CYGWIN_VER" ]; then \
-      rm configure; \
-      autoconf; \
-    fi; \
-    ./configure --prefix=$PREFIX --disable-shared --enable-gcc --srcdir=`pwd`; \
-    make ; make -k install; \
-    make distclean ; \
-    ./configure --prefix=$PREFIX --enable-shared --enable-gcc --srcdir=`pwd`; \
-    make; make -k install ) \
-done;
-
-# Link the default shell names to the version specific names
-cd $PREFIX/lib
-ln -s tclConfig.sh tcl8.4/tclConfig.sh
-ln -s tkConfig.sh tk8.4/tkConfig.sh
-cd $PREFIX/bin
-rm -f tclsh wish
-ln -s tclsh8.4   tclsh
-ln -s wish8.4    wish
-
-# Link the default library names to the versions under specific subdirs
-SHLIB_EXT=`echo "puts [info sharedlibextension]"|${PREFIX}/bin/tclsh`
-cd $PREFIX/lib
-rm -f libtclx8.4${SHLIB_EXT} libtclx8.4.a
-##ln -s `pwd`/tclx8.4/libtclx8.4${SHLIB_EXT} libtclx8.4${SHLIB_EXT}
-##ln -s `pwd`/tclx8.4/libtclx8.4.a           libtclx8.4.a
-ln -s tclx8.4/libtclx8.4${SHLIB_EXT} libtclx8.4${SHLIB_EXT}
-ln -s tclx8.4/libtclx8.4.a           libtclx8.4.a
-
-# Install the wrapper scripts for the pre-8.4 TclX shells (tcl, wishx)
-cd $SRC
-cp tcl $PREFIX/bin
-cp wishx $PREFIX/bin
-chmod +x $PREFIX/bin/tcl $PREFIX/bin/wishx
-
-cd $SRC/iwidgets-2008-08-20
-./configure --prefix=$PREFIX --enable-shared --with-itcl=$SRC/itcl-2008-08-06/
-make -k install
-cd $PREFIX/lib
-rm -f iwidgets
-ln -s iwidgets4.0.2 iwidgets
-
-# The "configure" of BLT, MSQLTCL and IMG depend on an *installed* Tcl/Tk,
-# so that is why they have to come after the "make install" of Tcl/Tk
-cd $SRC/blt2.4z
-./configure --prefix=$PREFIX --enable-shared
-##./configure --prefix=$PREFIX --enable-shared --with-cflags="-O6 -DUSE_OLD_CANVAS"
-make
-make -k install
-cd $PREFIX/lib
-rm -f libBLT${SHLIB_EXT}
-ln -s libBLT24${SHLIB_EXT} libBLT${SHLIB_EXT}
 
 if [ "$MSQL" ]
 then
-    # This requires libmsql.a and msql.h (usually under $TCLTK_ROOT)
-    cd $SRC/msqltcl-1.99
-    ./configure --prefix=$PREFIX --enable-shared --with-msql-include=$PREFIX/include --with-msql-library=$PREFIX/lib
-    make
-    make -k install
-fi
-
-cd $SRC/tkimg1.3
-# Include --srcdir: see SF bug report 682911 on tkimg
-./configure --prefix=$PREFIX --enable-shared --disable-stubs --srcdir=`pwd`
-make
-make -k install
-
-cd $SRC/Tktable2.9
-./configure --prefix=$PREFIX --enable-shared 
-make
-make -k install
-
-cd $SRC/snack2.2.10/unix
-# include --libdir, as configure does not do a proper job, it seems.
-./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.19/unix --with-tk=$SRC/tk8.4.19/unix --disable-stubs --libdir=$PREFIX/lib
-make
-make -k install
-
-cd $SRC/rman-3.1
-make
-make -k install
-
-cd $SRC/tkman-2.2
-make 
-make -k install
-
-cd $SRC/tcllib-1.10
-./configure --prefix=$PREFIX
-make -k install
-
-# tklib 2008-08-19 contains tablelist 4.8
-cd $SRC/tklib-2008-08-19
-./configure --prefix=$PREFIX
-make -k install
-
-# The "--with-tclinclude" is needed only if any of the components of 
-# Tcl's version number contains more than 1 digit (due to a limitation
-# in expect's configure script)
-cd $SRC/expect-2006-03-01
-# With the option "--enable-shared" only the shared lib gets built!
-./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.19/unix --with-tk=$SRC/tk8.4.19/unix --with-tclinclude=$SRC/tcl8.4.19/generic --disable-threads
-make 
-make -k install
+    ./buildTclTk-${RELEASE} -m
+else
+    ./buildTclTk-${RELEASE}
+fi 
 
 ###########################################
 # 3. tclCheck
@@ -587,7 +490,7 @@ make -k install
 echo $SEPARATOR
 echo "tclCheck: untarring . . . "
 cd $SRC
-gunzip -c $TCLTK/tclCheck-1.1.13.tar.gz | tar xf -
+tar -xzf $TCLTK/tclCheck-1.1.13.tar.gz
 cd tclCheck-1.1.13
 
 # 1. to avoid problem with 'getopt': comment the line 
@@ -612,19 +515,27 @@ make install BIN=$PREFIX/bin
 echo $SEPARATOR
 echo "tkcon: untarring . . . "
 cd $SRC
-gunzip -c $TCLTK/tkcon-2.4.tar.gz | tar xf -
-cd tkcon-2.4
+tar -xzf $TCLTK/tkcon-2.*.tar.gz
+cd tkcon-2.*
 cp tkcon.tcl $PREFIX/bin/tkcon
 chmod 755 $PREFIX/bin/tkcon
 cp -R docs $PREFIX/doc/
 mv $PREFIX/doc/docs $PREFIX/doc/tkcon
 
 ###############################################################
-# 5. Fix to the msql.conf file to put the real path to the TCLTK_ROOT 
-# and the ACSDATA directories (the msql deamon itself does not 
-# understand environment variables)
+# 5. msql / msqltcl configuration
+#
+#    needed to implement the VCC/ACC database. 
+#    The msql static library is linked by seqSh/seqWish (as there is no
+#    shared lib available for dynamic loading)
+#    The ad hoc installation procedure created the database in ACSDATA and the
+#    binaries in the target directory
+#
 if [ "$MSQL" ]
 then
+    # Fix to the msql.conf file to put the real path to the TCLTK_ROOT 
+    # and the ACSDATA directories (the msql deamon itself does not 
+    # understand environment variables)
     cd $TCLTK_ROOT
     sed -e 's,Inst_Dir = [^\n]*,'"Inst_Dir = $TCLTK_ROOT,g" \
 	-e 's,DB_Dir = [^\n]*,'"DB_Dir = $ACSDATA/msql/msqldb,g" \
@@ -635,10 +546,12 @@ then
 fi
 
 ###############################################################
-# 7. VERIFICATION
+# 6. VERIFICATION
 #
 echo $SEPARATOR
-echo "\n                          VERIFICATION\n"
+echo ""
+echo "                          VERIFICATION"
+echo ""
 
 cd ${INSTALL_ROOT}/INSTALL
 if [ "$MSQL" ]
@@ -647,3 +560,9 @@ then
 else 
     ./checkTcltk
 fi
+
+###############################################################
+# 7. Epilogue
+#
+
+. $CWD/standardEpilogue
