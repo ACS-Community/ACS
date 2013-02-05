@@ -4,6 +4,18 @@
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    <_ Name="BulkDataNTSenderTEST"  Code="bdNTSenderLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />
+    
+    <_ Name="BulkDataNTReceiverTEST_1"  Code="bdNTReceiverLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />
+    
+    <_ Name="BulkDataNTReceiverTEST_2"  Code="bdNTReceiverLibTest"
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />                   
+
     <_ Name="BulkDataSenderTEST"  Code="bdNTSenderLibTest"	
         Type="IDL:alma/bulkdata/BulkDataSender:1.0"
         Container="bdNTTestContainer" ImplLang="cpp" />
