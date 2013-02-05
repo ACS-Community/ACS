@@ -1,0 +1,1014 @@
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'maciContainer bdNTTestContainer -ORBEndpoint iiop://xxx.xxx.xxx.xxx:XYZZ -m corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Bootstrap ORB parms: maciContainer bdNTTestContainer -m corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager
+1 - 
+1 - ManagerReference obtained via command line: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - 
+1 - Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - Manager reference narrowed.
+1 - 
+1 - 
+1 - 
+1 - Manager hostname obtained via command line: 'xxx.xxx.xxx.xxx'
+1 - 
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Generated CommandLine: maciContainer bdNTTestContainer -ORBEndpoint iiop://xxx.xxx.xxx.xxx:XYZZ -m corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::xxx.xxx.xxx.xxx:XYZZ/InterfaceRepository
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Destroy bootstrap ORB
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::initializeCORBA] 
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::getManager] Resolving manager...
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::init()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr)] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Using ACS alarm system
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::MethodRequestThreadPool] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Autoloading 'baci'
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Container 'bdNTTestContainer' activated.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libbaci.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Executing DLLSetupCORBA
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/libbaci.so'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CDBPropertySet::CDBPropertySet] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Container 'bdNTTestContainer' initialized successfuly
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] DLLInitThreads executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Executing DLLInitThreads
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/----/libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] DLLSetupCORBA executed
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Connected to the Manager.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl:::authenticate] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::init] Logged into the Manager.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::run] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::MACIContainerServices::MACIContainerServices] 
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:XYZZ/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///BulkDataNTReceiverTEST_1'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Async. activation of component BulkDataNTReceiverTEST_1 with descOut.id_tag = 1 has started.
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbdNTReceiverLibTest.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bdNTReceiverLibTest'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libbdNTReceiverLibTest.so'.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_1"
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbdNTReceiverLibTest.so'.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::BACIComponent] Creating Component 'BulkDataNTReceiverTEST_1'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - BulkDataNTReceiverImpl<>::BulkDataNTReceiverImpl] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_1"
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_1"
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - BulkDataNTReceiverImpl<>::initialize] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] BulkDataNT debug level read from env. var. BULKDATA_NT_DEBUG and set to 4
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::actionThreadWorker] BulkDataNTReceiverTEST_1
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNTReceiverTEST_1::actionThread'
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_1"
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activate_component] Component 'BulkDataNTReceiverTEST_1' activated.
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::monitorThreadWorker] BulkDataNTReceiverTEST_1
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNTReceiverTEST_1::monitorThread'
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Calling maci::CBComponentInfo::done with descOut.id_tag = 1.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///BulkDataNTReceiverTEST_2'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Async. activation of component BulkDataNTReceiverTEST_2 with descOut.id_tag = 2 has started.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bdNTReceiverLibTest'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_2"
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbdNTReceiverLibTest.so'
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done with descOut.id_tag = 1 completed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::BACIComponent] Creating Component 'BulkDataNTReceiverTEST_2'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_2"
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_2"
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_2: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - BulkDataNTReceiverImpl<>::BulkDataNTReceiverImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - BulkDataNTReceiverImpl<>::initialize] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_2: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_2: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::actionThreadWorker] BulkDataNTReceiverTEST_2
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNTReceiverTEST_2::actionThread'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="xxx" CompName="BulkDataNTReceiverTEST_2"
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activate_component] Component 'BulkDataNTReceiverTEST_2' activated.
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::monitorThreadWorker] BulkDataNTReceiverTEST_2
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNTReceiverTEST_2::monitorThread'
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Calling maci::CBComponentInfo::done with descOut.id_tag = 2.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///BulkDataNTSenderTEST'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Async. activation of component BulkDataNTSenderTEST with descOut.id_tag = 3 has started.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bdNTSenderLibTest'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done with descOut.id_tag = 2 completed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbdNTSenderLibTest.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libbdNTSenderLibTest.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbdNTSenderLibTest.so'.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="BulkDataNTSenderTEST"
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::BACIComponent] Creating Component 'BulkDataNTSenderTEST'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="xxx" CompName="BulkDataNTSenderTEST"
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="xxx" CompName="BulkDataNTSenderTEST"
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTSenderTEST: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - bdNTSenderImplTest::bdNTSenderImplTest] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - BulkDataNTSenderImpl::BulkDataNTSenderImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - virtual void BulkDataNTSenderImpl::initialize()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTSenderTEST: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTSenderTEST: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - virtual void BulkDataNTSenderImpl::initialize()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNTSenderTEST::actionThread'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::actionThreadWorker] BulkDataNTSenderTEST
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNTSenderTEST::monitorThread'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::monitorThreadWorker] BulkDataNTSenderTEST
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="xxx" CompName="BulkDataNTSenderTEST"
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::activate_component] Component 'BulkDataNTSenderTEST' activated.
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Calling maci::CBComponentInfo::done with descOut.id_tag = 3.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Entering...
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - ] BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream 'TestStream' with configuration from CDB
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - void BulkDataNTReceiverImpl<TCallback>::openReceiver() [with TCallback = TestCB]] 
+1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - DDS_DomainParticipantFactory_initializeI:Welcome to NDDS nddscore1.5f.rev00-nddsc1.5f.rev00-nddscpp1.5f.rev00
+1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::DomainParticipant* AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
+1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done with descOut.id_tag = 3 completed.
+1 - DDS_XMLParser_parse_from_file:Loading : ----/config/bulkDataNTDefaultQosProfiles.xml
+1 - [CREATE Participant]DDS_DomainParticipantDiscovery_initialize:builtin discovery plugin PA Client disabled
+1 - DDS_DiscoveryQosPolicy_get_default:no environment variable or file NDDS_DISCOVERY_PEERS
+1 - [CREATE Participant]DDS_DomainParticipantMonitoring_initializeI:monitoring not configured
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 3
+1 - [CREATE Participant]DDS_DomainParticipantFactory_create_participant_disabledI:created participant: domain=0, index=-1
+1 - DDS_StringSeq_ensure_length:memory allocation: original 0, new 1
+1 - [D0000|ENABLE]DDS_PropertySeq_ensure_length:memory allocation: original 0, new 32
+1 - DDS_DiscoveryQosPolicy_get_default:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
+1 - DDS_DiscoveryQosPolicy_get_default:value of: multicast_receive_addresses="builtin.udpv4://239.255.0.1"
+1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:Trying to reserve participant index=0...
+1 - DDS_PropertySeq_ensure_length:memory allocation: original 0, new 10
+1 - [D0000|ENABLE]DDS_DomainParticipantPresentation_reserve_participant_indexI:Domain 0:USING PARTICIPANT INDEX=0
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_enableI:value of: initial_peers="builtin.udpv4://239.255.0.1,builtin.udpv4://127.0.0.1,builtin.shmem://"
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
+1 - [D0000|ENABLE]DDS_DomainParticipant_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverStream] Receiver Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTStream] Going to use global participant for stream: TestStream.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTStream] Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::DomainParticipant* AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: ChannelAverageDataFlow @ Stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double)] cbReceiveAvgProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=TestStream#ChannelAverageDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - DDS_Subscriber_enable:enabled
+1 - DDS_Topic_enable:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#ChannelAverageDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - BulkDataNTReaderListener] 
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#ChannelAverageDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - createDDSReader] Stream#Flow: TestStream#ChannelAverageDataFlow going to listen on multicast address: 225.3.2.1.
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#ChannelAverageDataFlow
+1 - DDS_DataReader_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: WVRDataFlow @ Stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: ChannelAverageDataFlow @ Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double)] cbReceiveAvgProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=TestStream#WVRDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - DDS_Subscriber_enable:enabled
+1 - DDS_Topic_enable:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#WVRDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - createDDSReader] Stream#Flow: TestStream#WVRDataFlow going to listen on multicast address: 225.3.2.1.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - BulkDataNTReaderListener] 
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#WVRDataFlow
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#WVRDataFlow
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DataReader_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: FullResolutionDataFlow @ Stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: WVRDataFlow @ Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double)] cbReceiveAvgProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - DDS_DomainParticipant_create_topic_disabledI:created topic: topic=TestStream#FullResolutionDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - DDS_Subscriber_enable:enabled
+1 - DDS_Topic_enable:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#FullResolutionDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - createDDSReader] Stream#Flow: TestStream#FullResolutionDataFlow going to listen on multicast address: 225.3.2.1.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - BulkDataNTReaderListener] 
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#FullResolutionDataFlow
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#FullResolutionDataFlow
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DataReader_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: FullResolutionDataFlow @ Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTStream] Going to use global participant for stream: TestStream.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTStream] Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - ] BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream 'TestStream' with configuration from CDB
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - void BulkDataNTReceiverImpl<TCallback>::openReceiver() [with TCallback = TestCB]] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: FullResolutionDataFlow @ Stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverStream] Receiver Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double)] cbReceiveAvgProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Already creaded DDS topic: TestStream#FullResolutionDataFlow will be taken
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#FullResolutionDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - BulkDataNTReaderListener] 
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - createDDSReader] Stream#Flow: TestStream#FullResolutionDataFlow going to listen on multicast address: 225.3.2.1.
+1 - DDS_Subscriber_enable:enabled
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#FullResolutionDataFlow
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#FullResolutionDataFlow
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DataReader_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: FullResolutionDataFlow @ Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Already creaded DDS topic: TestStream#ChannelAverageDataFlow will be taken
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: ChannelAverageDataFlow @ Stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#ChannelAverageDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double)] cbReceiveAvgProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - createDDSReader] Stream#Flow: TestStream#ChannelAverageDataFlow going to listen on multicast address: 225.3.2.1.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - BulkDataNTReaderListener] 
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#ChannelAverageDataFlow
+1 - DDS_Subscriber_enable:enabled
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#ChannelAverageDataFlow
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DataReader_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Going to create Receiver Flow: WVRDataFlow @ Stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: ChannelAverageDataFlow @ Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Already creaded DDS topic: TestStream#WVRDataFlow will be taken
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#WVRDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveAvgProcessTimeout(double)] cbReceiveAvgProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - createDDSReader] Stream#Flow: TestStream#WVRDataFlow going to listen on multicast address: 225.3.2.1.
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - BulkDataNTReaderListener] 
+1 - DDS_DomainParticipant_create_subscriber_disabledI:created subscriber
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#WVRDataFlow
+1 - DDS_Subscriber_enable:enabled
+1 - DDS_Subscriber_create_datareader_disabledI:created reader: topic=TestStream#WVRDataFlow
+1 - DDS_TransportMulticastSettingsSeq_ensure_length:memory allocation: original 0, new 1
+1 - DDS_DataReader_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTReceiverFlow] Receiver Flow: WVRDataFlow @ Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - BulkDataNTSenderImpl::connect - deprecated] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderStream::BulkDataNTSenderStream(const char*, const AcsBulkdata::SenderStreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderStream] Sender Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTStream] Going to use global participant for stream: TestStream.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTStream] Stream: TestStream has been created.
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - ] BulkDataNTSenderImpl::openSenders Opening sender stream 'TestStream' with configuration from CDB
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - virtual void BulkDataNTSenderImpl::openSenders()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderStream::BulkDataNTSenderStream(const char*, const AcsBulkdata::SenderStreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTSenderStream::existFlow(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTSenderStream::existFlow(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderFlow] Going to create Sender Flow: ChannelAverageDataFlow @ stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Already creaded DDS topic: TestStream#ChannelAverageDataFlow will be taken
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#ChannelAverageDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
+1 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
+1 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=TestStream#ChannelAverageDataFlow
+1 - DDS_Publisher_enable:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderFlow] Sender Flow: ChannelAverageDataFlow @ stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS DataWriter
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Already creaded DDS topic: TestStream#FullResolutionDataFlow will be taken
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTSenderStream::existFlow(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTSenderStream::existFlow(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderFlow] Going to create Sender Flow: FullResolutionDataFlow @ stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#FullResolutionDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - DDS_DataWriter_enableI:enabled
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_reliable_reader_activity_changed] A new receiver has connected to flow: ChannelAverageDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - DDS_Publisher_enable:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_reliable_reader_activity_changed] A new receiver has connected to flow: ChannelAverageDataFlow of the stream: TestStream. Total alive connection(s): 2
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
+1 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=TestStream#FullResolutionDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS DataWriter
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Already creaded DDS topic: TestStream#WVRDataFlow will be taken
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTSenderStream::existFlow(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - bool AcsBulkdata::BulkDataNTSenderStream::existFlow(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderFlow] Going to create Sender Flow: WVRDataFlow @ stream: TestStream ...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderFlow] Sender Flow: FullResolutionDataFlow @ stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS topic: TestStream#WVRDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTSenderFlow::setThrottling(double)] throttling set to: 30.000000 MBytes/sec (1984.505208 usec)
+1 - DDS_DataWriter_enableI:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - AcsBulkdata::BulkDataNTWriterListener::BulkDataNTWriterListener(const char*, AcsBulkdata::BulkDataNTSenderFlowCallback*)] 
+1 - DDS_DomainParticipant_create_publisher_disabledI:created publisher
+1 - DDS_DataWriter_enableI:enabled
+1 - DDS_Publisher_create_datawriter_disabledI:created writer: topic=TestStream#WVRDataFlow
+1 - DDS_Publisher_enable:enabled
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Created DDS DataWriter
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - BulkDataNTSenderFlow] Sender Flow: WVRDataFlow @ stream: TestStream has been created.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_liveliness_changed] A new sender has connected to flow: ChannelAverageDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_liveliness_changed] A new sender has connected to flow: ChannelAverageDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_reliable_reader_activity_changed] A new receiver has connected to flow: FullResolutionDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_reliable_reader_activity_changed] A new receiver has connected to flow: FullResolutionDataFlow of the stream: TestStream. Total alive connection(s): 2
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_liveliness_changed] A new sender has connected to flow: FullResolutionDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_liveliness_changed] A new sender has connected to flow: FullResolutionDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_reliable_reader_activity_changed] A new receiver has connected to flow: WVRDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_reliable_reader_activity_changed] A new receiver has connected to flow: WVRDataFlow of the stream: TestStream. Total alive connection(s): 2
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_liveliness_changed] A new sender has connected to flow: WVRDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_liveliness_changed] A new sender has connected to flow: WVRDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - bdNTSenderImplTest::startSend] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] UNKNOWN exception catched!
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::cancelActionThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_1: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTReceiverTEST_1': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXX (BulkDataNTReceiverTEST_1 of type IDL:alma/bulkdata/BulkDataReceiver:1.0)
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::cancelMonitoringThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ThreadBase::cancel] Thread stopped:BulkDataNTReceiverTEST_1::actionThread
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ThreadBase::cancel] Thread stopped:BulkDataNTReceiverTEST_1::monitorThread
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - BulkDataNTReceiverImpl<>::cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - BulkDataNTReceiverImpl<>::closeReceiver] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - ] BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream 'TestStream'
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: ChannelAverageDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_reliable_reader_activity_changed] A receiver has disconnected from flow: ChannelAverageDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - [D0000|DELETE Topic|T=TestStream#ChannelAverageDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#ChannelAverageDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: FullResolutionDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: WVRDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverStream] Receiver Stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_1: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTReceiverTEST_1' reference set to nil.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] Etherealizing 'BulkDataNTReceiverTEST_1'
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ThreadBase::stop] Thread BulkDataNTReceiverTEST_1::actionThread
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - BulkDataNTReceiverImpl<>::~BulkDataNTReceiverImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ThreadBase::stop] Thread BulkDataNTReceiverTEST_1::monitorThread
+1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - [D0000|DELETE Topic|T=TestStream#FullResolutionDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#FullResolutionDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - [D0000|DELETE Topic|T=TestStream#WVRDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#WVRDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::~BACIComponent] Component 'BulkDataNTReceiverTEST_1' destroyed.
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_reliable_reader_activity_changed] A receiver has disconnected from flow: FullResolutionDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_reliable_reader_activity_changed] A receiver has disconnected from flow: WVRDataFlow of the stream: TestStream. Total alive connection(s): 1
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::monitorThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataNTReceiverTEST_1' etherealized.
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_1::actionThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTReceiverTEST_1' deactivated.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::cancelActionThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_2: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTReceiverTEST_2': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXX (BulkDataNTReceiverTEST_2 of type IDL:alma/bulkdata/BulkDataReceiver:1.0)
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::cancelMonitoringThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ThreadBase::cancel] Thread stopped:BulkDataNTReceiverTEST_2::actionThread
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ThreadBase::cancel] Thread stopped:BulkDataNTReceiverTEST_2::monitorThread
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - BulkDataNTReceiverImpl<>::cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - BulkDataNTReceiverImpl<>::closeReceiver] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - ] BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream 'TestStream'
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: ChannelAverageDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: FullResolutionDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverFlow] Receiver Flow: WVRDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - ~BulkDataNTReaderListener] 
+1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - [D0000|DELETE Topic|T=TestStream#ChannelAverageDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#ChannelAverageDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - [D0000|DELETE Topic|T=TestStream#FullResolutionDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#FullResolutionDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_reliable_reader_activity_changed] A receiver has disconnected from flow: ChannelAverageDataFlow of the stream: TestStream. Total alive connection(s): 0
+1 - [D0000|DELETE Sub]DDS_DomainParticipant_delete_subscriber:deleted subscriber
+1 - [D0000|DELETE Topic|T=TestStream#WVRDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#WVRDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTReceiverStream] Receiver Stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTReceiverTEST_2: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTReceiverTEST_2' reference set to nil.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] Etherealizing 'BulkDataNTReceiverTEST_2'
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ThreadBase::stop] Thread BulkDataNTReceiverTEST_2::actionThread
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ThreadBase::stop] Thread BulkDataNTReceiverTEST_2::monitorThread
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_reliable_reader_activity_changed] A receiver has disconnected from flow: FullResolutionDataFlow of the stream: TestStream. Total alive connection(s): 0
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::~BACIComponent] Component 'BulkDataNTReceiverTEST_2' destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - BulkDataNTReceiverImpl<>::~BulkDataNTReceiverImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataNTReceiverTEST_2' etherealized.
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::actionThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTReceiverTEST_2::monitorThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_reliable_reader_activity_changed] A receiver has disconnected from flow: WVRDataFlow of the stream: TestStream. Total alive connection(s): 0
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libbdNTReceiverLibTest.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTReceiverTEST_2' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbdNTReceiverLibTest.so'.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::cancelActionThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTSenderTEST: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTSenderTEST': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXX (BulkDataNTSenderTEST of type IDL:alma/bulkdata/BulkDataSender:1.0)
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - on_publication_matched] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::cancelMonitoringThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ThreadBase::cancel] Thread stopped:BulkDataNTSenderTEST::actionThread
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ThreadBase::cancel] Thread stopped:BulkDataNTSenderTEST::monitorThread
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - ] BulkDataNTSenderImpl::disconnect Closing sender stream 'TestStream'
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - BulkDataNTSenderImpl::disconnect - deprecated] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#ChannelAverageDataFlow - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTSenderFlow] Sender Flow: ChannelAverageDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
+1 - [D0000|DELETE Topic|T=TestStream#ChannelAverageDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#ChannelAverageDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - [D0000|Pub(308)|T=TestStream#ChannelAverageDataFlow|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=TestStream#ChannelAverageDataFlow
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTSenderFlow] Sender Flow: FullResolutionDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#FullResolutionDataFlow - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
+1 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTSenderFlow] Sender Flow: WVRDataFlow @ stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTSenderStream] Sender Stream: TestStream has been destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ~BulkDataNTStream] Going to destroy global participant.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDS::destroyDDSTopic(DDS::Topic*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant(DDS::DomainParticipant*)] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - ~BulkDataNTDDSLoggable] 
+1 - ----------T--:--:--.--- [BulkDataNT:TestStream#WVRDataFlow - virtual AcsBulkdata::BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
+1 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
+1 - [D0000|DELETE Topic|T=TestStream#FullResolutionDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#FullResolutionDataFlow, type=ACSBulkData::BulkDataNTFrame
+1 - [D0000|Pub(408)|T=TestStream#FullResolutionDataFlow|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=TestStream#FullResolutionDataFlow
+1 - [D0000|Pub(508)|T=TestStream#WVRDataFlow|DELETE Writer]DDS_Publisher_delete_datawriter:deleted writer: topic=TestStream#WVRDataFlow
+1 - [D0000|DELETE Participant]DDS_DomainParticipantFactory_delete_participant:deleted participant: domain=0, index=0
+1 - [D0000|DELETE Pub]DDS_DomainParticipant_delete_publisher:deleted publisher
+1 - [D0000|DELETE Topic|T=TestStream#WVRDataFlow]DDS_DomainParticipant_delete_topic:deleted topic: topic=TestStream#WVRDataFlow, type=ACSBulkData::BulkDataNTFrame
+2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant(DDS::DomainParticipant*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::~BACIComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Switched state of component BulkDataNTSenderTEST: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTSenderTEST' reference set to nil.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] Etherealizing 'BulkDataNTSenderTEST'
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ThreadBase::stop] Thread BulkDataNTSenderTEST::actionThread
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - bdNTSenderImplTest::~bdNTSenderImplTest] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - BulkDataNTSenderImpl::~BulkDataNTSenderImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - CharacteristicComponentImpl::~CharacteristicComponentImpl] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ThreadBase::stop] Thread BulkDataNTSenderTEST::monitorThread
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::BACIComponent::~BACIComponent] Component 'BulkDataNTSenderTEST' destroyed.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::unregisterNode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAONode::~DAONode] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DAOProxy::~DAOProxy] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::~DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - cdb::DALChangeListenerImplementation::destroy] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataNTSenderTEST' etherealized.
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::actionThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BulkDataNTSenderTEST::monitorThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libbdNTSenderLibTest.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] Component 'BulkDataNTSenderTEST' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbdNTSenderLibTest.so'.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::logout] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::logout] Logging out from the Manager.
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::shutdown] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::logout] Logged out from the Manager.
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::shutdown] 0 components left unactivated (using reverse activation order).
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::done()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::cleanUpDLL()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ACSAlarmSystemInterfaceFactory::cleanUpManagerReference()] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::shutdown] Shutting down ORB
+1 - ----------T--:--:--.--- [bdNTTestContainer - ContainerImpl::run] Container stopping...
+1 - ----------T--:--:--.--- [bdNTTestContainer - ContainerImpl::run] Leaving ContainerImpl::run() method.
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Stopping container... 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::doneCORBA] 
+1 - ----------T--:--:--.--- [bdNTTestContainer - maci::ContainerImpl::shutdown] Done
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - baci::CDBPropertySet::~CDBPropertySet] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - /----/libbaci.so
+1 - ----------T--:--:--.--- [bdNTTestContainer-GL - ] Container stopped.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'bdNTTestContainer' exited with code: 0.
