@@ -42,7 +42,7 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
  * using objects of this class.
  * 
  * @author  acaproni
- * @version $Id: AlarmSourcesListener.java,v 1.4 2013/01/11 08:05:00 acaproni Exp $
+ * @version $Id: AlarmSourcesListener.java,v 1.5 2013/02/05 17:15:15 acaproni Exp $
  * @since ACS 11.0  
  */
 public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSMessageEntity> {
@@ -168,7 +168,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 	public void connectSources(String[] sourceNcNames) 
 			throws AcsJContainerServicesEx, AcsJIllegalStateEventEx, AcsJEventSubscriptionEx, AcsJCouldntPerformActionEx {
 		if (sourceNcNames==null || sourceNcNames.length==0) {
-			throw new IllegalArgumentException("Invalid array of source channel names to connect to!");
+			throw new IllegalArgumentException("No source channel names to connect to!");
 		}
 		for (String name: sourceNcNames) {
 			connectSource(name);
