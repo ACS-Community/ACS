@@ -1,5 +1,4 @@
 #! /bin/bash
 
-tcpBlocker $@&
-sleep 1
+#acsstartupGenericProcess.sh -e HANG "The alarm service is ready and waiting"
 echo "The alarm service is ready and waiting"
