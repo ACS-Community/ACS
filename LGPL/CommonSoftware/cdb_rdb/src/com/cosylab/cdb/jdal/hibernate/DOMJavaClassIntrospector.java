@@ -580,12 +580,14 @@ public class DOMJavaClassIntrospector {
 		}
 		else if (node instanceof Element)
 		{
-			NodeList elements = ((Element)node).getChildNodes();
-			int size = elements.getLength();
 			List<String> list = new ArrayList<String>();
-			for (int i = 0; i < size; i++)
-				if (elements.item(i).getNodeType() == Element.ELEMENT_NODE)
-					list.add(elements.item(i).getNodeName());
+			for (Node childNode = ((Element)node).getFirstChild();
+					  childNode != null;
+					  childNode = childNode.getNextSibling())
+			{
+				if (childNode.getNodeType() == Element.ELEMENT_NODE)
+					list.add(childNode.getNodeName());
+			}
 			return list.toArray(new String[list.size()]);
 		}
 		else
@@ -646,14 +648,13 @@ public class DOMJavaClassIntrospector {
 		}
 		else if (node instanceof Element)
 		{
-			NodeList elements = ((Element)node).getChildNodes();
-			int size = elements.getLength();
-        	ArrayList<NamedObject> list = new ArrayList<NamedObject>(size);
-			for (int i = 0; i < size; i++)
+        	ArrayList<NamedObject> list = new ArrayList<NamedObject>();
+			for (Node childNode = ((Element)node).getFirstChild();
+					  childNode != null;
+					  childNode = childNode.getNextSibling())
 			{
-				Node nodeItem = elements.item(i);
-				if (nodeItem.getNodeType() == Element.ELEMENT_NODE)
-					list.add(new NamedObject(nodeItem.getNodeName(), (Element)nodeItem));
+				if (childNode.getNodeType() == Element.ELEMENT_NODE)
+					list.add(new NamedObject(childNode.getNodeName(), (Element)childNode));
 			}
 			return list.toArray(new NamedObject[list.size()]);
 		}
@@ -713,12 +714,14 @@ public class DOMJavaClassIntrospector {
 		}
 		else if (node instanceof Element)
 		{
-			NodeList elements = ((Element)node).getChildNodes();
-			int size = elements.getLength();
 			List<String> list = new ArrayList<String>();
-			for (int i = 0; i < size; i++)
-				if (elements.item(i).getNodeType() == Element.ELEMENT_NODE)
-					list.add(elements.item(i).getNodeName());
+			for (Node childNode = ((Element)node).getFirstChild();
+					  childNode != null;
+					  childNode = childNode.getNextSibling())
+			{
+				if (childNode.getNodeType() == Element.ELEMENT_NODE)
+					list.add(childNode.getNodeName());
+			}
 			return list.toArray(new String[list.size()]);
 		}
 		else
