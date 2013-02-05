@@ -22,4 +22,5 @@ s/with ID=[0-9]*/with ID=nn/g
 s/Manager login done.*/Manager login done/g
 s/.*user.dir.*/...user.dir.../g
 s/.*endorsed.*/...endorsed.../g
-
+s/CMW.ALARM_SYSTEM.CLIENTS.*/CMW.ALARM_SYSTEM.CLIENTS.xxxxx/g
+s/SynchroBuffer.*/SynchroBuffer[...]/g
