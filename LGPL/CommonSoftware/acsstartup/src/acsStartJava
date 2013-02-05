@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.74 2012/09/21 08:35:47 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.75 2013/02/05 13:29:39 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -489,33 +489,31 @@ ACS_LOG_DEBUG "acsStartJava" "ACS Interface Repository: $ACS_INTERFACE_REPOSITOR
 # Creates default values tmp directory
 # if not already given as environment variables.
 #
-if [ ! $CL_NODIRECTORY ] ; then
-      INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
-      #
-      # Makes sure that the directory for temporary 
-      # ACS_INSTANCE files exists.
-      # If the directory is created locally, removes it at the end.
-      #
-      if [ ! -d $INSTANCE_DIR ]
-        then
-	  if ! createInstanceDirectory $ACS_INSTANCE
-          then 
-	      ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create $INSTANCE_DIR!"
-	      ACS_LOG_ERROR "acsStartJava" "    Check $ACS_INSTANCES_DIR for free base ports!"
-	      exit $EC_CANNOTCREATE
-	  fi
+if [ ! $CL_NODIRECTORY ]; then
+   INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+   #
+   # Makes sure that the directory for temporary 
+   # ACS_INSTANCE files exists.
+   # If the directory is created locally, removes it at the end.
+   #
+   if [ ! -d $INSTANCE_DIR ]; then
+      if [ ! createInstanceDirectory $ACS_INSTANCE ]; then
+        ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create $INSTANCE_DIR!"
+        ACS_LOG_ERROR "acsStartJava" "    Check $ACS_INSTANCES_DIR for free base ports!"
+        exit $EC_CANNOTCREATE
       fi
+   fi
 else
-      INSTANCE_DIR=$ACS_TMP
+   INSTANCE_DIR=$ACS_TMP
 fi
 
 ###
 ### -------------  "remoteDebug" handling  ---------------
 ###
-if [ "$CL_DEBUGPORT" ] ; then
-	JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$CL_DEBUGPORT -Djava.compiler=NONE"
+if [ "$CL_DEBUGPORT" ]; then
+  JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$CL_DEBUGPORT -Djava.compiler=NONE"
 
-   ACS_LOG_INFO "acsStartJava" "The JVM will accept a remote debugger on port $CL_DEBUGPORT"
+  ACS_LOG_INFO "acsStartJava" "The JVM will accept a remote debugger on port $CL_DEBUGPORT"
 fi
 ### ---------- End of "remoteDebug" handling -------------
 
@@ -525,7 +523,7 @@ fi
 ### ------------- "vmtools" handling -------------------
 ###
 LAUNCHER=
-if [ "$CL_VMTOOLS" ] ; then
+if [ "$CL_VMTOOLS" ]; then
    LAUNCHER=alma.acs.vmtools.Launcher
 fi
 ### ---------- End of "vmtools" handling -------------
@@ -533,7 +531,7 @@ fi
 ###
 ### ------------- "splash" handling -------------------
 ###
-if [ "$CL_SPLASHFILE" ] ; then
+if [ "$CL_SPLASHFILE" ]; then
    JAVA_OPTIONS="$JAVA_OPTIONS -splash:$CL_SPLASHFILE"
 fi
 ### ---------- End of "splash" handling -------------
@@ -585,7 +583,9 @@ then
     # We use the -XX:ErrorFile flag to keep any Fatal Error Log also in $ACS_TMP
     JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+HeapDumpOnOutOfMemoryError"
     if [ X"$INSTANCE_DIR" != X ]; then
-        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$INSTANCE_DIR -XX:ErrorFile=$INSTANCE_DIR/jvm_fatal_error%p.log"
+        DUMP_DIR="$ACSDATA/dumps/`hostname`/ACS_INSTANCE.$ACS_INSTANCE"
+        mkdir -p $DUMP_DIR
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$DUMP_DIR -XX:ErrorFile=$DUMP_DIR/jvm_fatal_error%p.log"
     fi
 fi
 
