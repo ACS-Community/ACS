@@ -230,7 +230,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		try {
 			xml=conf.getConfiguration(ALARM_DEFINITION_PATH);
 		} catch (Throwable t) {
-			throw new RuntimeException("Couldn't read alarm XML", t);
+			throw new RuntimeException("Couldn't read alarm XML: "+ALARM_DEFINITION_PATH, t);
 		}
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
