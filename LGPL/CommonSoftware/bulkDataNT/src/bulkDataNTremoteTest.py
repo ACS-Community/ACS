@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.6 2013/01/14 07:58:01 bjeram Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.7 2013/02/05 07:49:43 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@ class RemoteProcData:
 
 class bulkDataNTtestSuite:
     
-    def __init__(self, hosts, size=640000, loops=10, sourceFile='.bash_profile'):
+    def __init__(self, hosts, size=640000, loops=10, sourceFile='.bash_profile', acsdataEnv=None):
         self.hosts = hosts
         self.numOfHosts = len(hosts)
         self.dataSizeInBytes=size
@@ -47,7 +47,11 @@ class bulkDataNTtestSuite:
         self.sendersData = {}
         self.receiverData = None
         self.sourceFile=sourceFile
-        self.preCmd="source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; export XACSDATA=$PWD/workspaceEclipse/bulkDataNT;"
+        self.acsdataEnv = acsdataEnv
+        self.preCmd="source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; "
+        if self.acsdataEnv is not None:
+         self.preCmd+="export ACSDATA="+self.acsdataEnv+"; "
+        #$PWD/workspaceEclipse/bulkDataNT;"
         self.postCmd=" | grep -v lost | tee "
     
     def startSenders(self):
@@ -135,11 +139,12 @@ if __name__ == '__main__':
     l=50
     senderHosts=None
     receiverHost=None
+    acsdata=None
     sf=".bash_profile"
-    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:", ["help", "senders=", "receivers=", "source="])
+    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:", ["help", "senders=", "receivers=", "source=", "acsdata="])
     for o,a in opts:
         if o in ("-h", "--help"):
-            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations] [--source=file to be sourced]'
+            print sys.argv[0]+' -s senderHost1[,senderHost2,....] -h [-b data in bytes] [-l number of loops/iterations] [--source=file to be sourced] [--acsdata ACSDATA]'
             sys.exit()
         elif o in ("-s", "--senders"):
             senderHosts=a.split(",")
@@ -153,14 +158,18 @@ if __name__ == '__main__':
         elif o=="--source":
             sf=a
             print 'source file: '+sf
+        elif o=="--acsdata":
+            acsdata=a
+            print 'ACSDATA => '+ acsdata
             
     if senderHosts is None:
         print 'No sender has been given (use option -s/--senders=)!'
         sys.exit()
                                                     
-    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf)
-    if receiverHost is not None:
-        testSuit.startReceiver(receiverHost, len(senderHosts)) 
+    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf, acsdataEnv=acsdata)
+    # receiver part not yet ready
+    #    if receiverHost is not None:
+    #    testSuit.startReceiver(receiverHost, len(senderHosts)) 
     print '---------------------------------------------------------------------------'
     
     testSuit.startSenders()
