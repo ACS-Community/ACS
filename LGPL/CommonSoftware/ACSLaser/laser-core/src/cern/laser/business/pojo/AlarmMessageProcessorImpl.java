@@ -6,15 +6,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
 
-import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
-
-import cern.laser.business.cache.AlarmCache;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import cern.laser.business.cache.AlarmCacheException;
 import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
@@ -29,12 +31,140 @@ import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 import cern.laser.util.LogTimeStamp;
 
+import com.cosylab.acs.laser.LaserComponent;
+import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
+
+/**
+ * CERN documentation is missing unfortunately... Below you can find ACS documentation of the changes
+ * done on top of the CERN class.
+ * <P>
+ * The <code>AlarmMessageProcessorImpl</code> checks the timestamp of the alarms it receives from the NC
+ * and publishes a core alarm ({@link LaserCoreFaultCodes#ALARMS_TOO_OLD}) 
+ * if the delay between the actual time and the timestamp exceeds the threshold ({@link #delayThreashold}).
+ * The check is done in this class because this is the place where alarms from sources are checked.
+ * <BR>
+ * To ensure that the alarm is set/cleared even if the alarms server does not process alarms, 
+ * the check is done by the thread in {@link #createTimerTask()}.
+ * <BR>
+ * This feature is tested in the <code>alarmTest</code> module.
+ * 
+ * @author acaproni
+ *
+ */
 public class AlarmMessageProcessorImpl {
   private static final Logger LOGGER = Logger.getLogger(AlarmMessageProcessorImpl.class.getName());
 
   private SourceDAO sourceDAO;
   private ACSAlarmCacheImpl alarmCache;
-
+  
+  /**
+   * Helper class to record, for each time interval, the biggest delay between
+   * the actual time and the timestamp of alarms.
+   * 
+   * @author acaproni
+   * @since ACS 11.1
+   *
+   */
+  private final class AlarmsDelayHelper {
+	  /**
+	   * Set to the bigger delay between the actual time and the message timestamp in
+	   * the current time interval
+	   */
+	  private long largestDelay = 0;
+	  
+	  /**
+	   * Check the passed timestamp against the actual time and 
+	   * update the delay ({@link #largestDelay}) accordingly
+	   * 
+	   * @param timestamp The timestamp of a alarm 
+	   * @throws RuntimeException If the timestamp is ahead of the actual time
+	   */
+	  public synchronized void updateDelay(long timestamp) throws RuntimeException {
+		  long delay=System.currentTimeMillis()-timestamp;
+		  if (delay<0) {
+			  // This should never happen if the timestamp has been correctly set by
+			  // the API.
+			  throw new RuntimeException("The timestamp is ahead of actual time");
+		  }
+		  if (delay> largestDelay) {
+			  largestDelay=delay;
+		  }
+	  }
+	  
+	  /**
+	   * Check if the alarms are processed too late i.e. if their oldest timestamp in the last
+	   * time interval has been greater then the threshold.
+	   * <BR>This method reset the delay to be ready to check the delay during a new time interval.
+	   * 
+	   * @return <code>true</code> if the delay has been greater then the threshold
+	   */
+	  public synchronized boolean chekDelayAndReset() {
+		  boolean ret=largestDelay>AlarmMessageProcessorImpl.delayThreashold;
+		  largestDelay=0;
+		  return ret;
+	  }
+	  
+  }
+  
+  /**
+   * The helper to check the timestamp of alarms against the actual time
+   */
+  private final AlarmsDelayHelper alarmsDelayHelper = new AlarmsDelayHelper();
+  
+  /**
+   * If the timestamp of alarms and the actual time differ of more then 
+   * <code>delayThreashold</code> then a core alarm is issued.
+   */
+  public static final long delayThreashold=TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES); // 5 min
+  
+  /**
+   * Do not publish twice the alarm unless its state changed.
+   * <P>
+   * Actually the alarm server itself does this check but we do not want
+   * to process this alarm every interval unless its state changed
+   * (to reduce the load on the server).
+   * <P>
+   * Note that there is no need to synchronize on this variable
+   * Because it used only by the timer thread to issue or not
+   * a new alarm.
+   */
+  private boolean alarmTooOldActive=false;
+  
+  
+  
+  /**
+   * The number of alarms processed in the past {@link #alarmTimestampsCheckInterval};
+   */
+  private final AtomicInteger alarmsProcessed = new AtomicInteger(0);
+  
+  /**
+   * The timestamp of alarms is checked every <code>alarmTimestamsCheckInterval</code>
+   * to reduce the risk to fill the alarm system publishing this alarm too often. 
+   */
+  public static final long alarmTimestampsCheckInterval=TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES); // 5 min
+  
+  /**
+   * The LaserComponent to publish core alarms
+   */
+  private final LaserComponent laserComponent;
+  
+  /**
+   * The timer to check the delay and do periodic tasks.
+   */
+  private final Timer timer = new Timer("AlarmMessageProcessorTimer",true);
+  
+  /**
+   * Constructor
+   * 
+   * @param component The {@link LaserComponent}
+   */
+  public AlarmMessageProcessorImpl(LaserComponent component) {
+	  if (component==null) {
+		  throw new IllegalArgumentException("The LaserComponent can't be null");
+	  }
+	  laserComponent=component;
+  }
+  
   //
   // -- PUBLIC METHODS ----------------------------------------------
   //
@@ -96,6 +226,11 @@ public class AlarmMessageProcessorImpl {
         processChanges(asi_message);
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("change processed");
       }
+      // One alarm more has been processed!
+      alarmsProcessed.incrementAndGet();
+      // Check for the delay comparing the actual time with the timestamp
+      // of the processed message
+      alarmsDelayHelper.updateDelay(TimeUnit.MILLISECONDS.convert(asi_message.getSourceTimestamp().getSeconds(),TimeUnit.SECONDS));
   }
 
   public void processChange(FaultState faultState, String sourceName, String sourceHostname, Timestamp sourceTimestamp)
@@ -543,6 +678,38 @@ public class AlarmMessageProcessorImpl {
 		  Alarm child=alarmCache.getReference(id);
 		  dumpAlarm(child);
 	  }
+  }
+  
+  private TimerTask createTimerTask() {
+	  TimerTask task = new TimerTask() {
+		@Override
+		public void run() {
+			// Logs the number of alarms processed in the past interval (and reset the counter)
+			LOGGER.debug(""+alarmsProcessed.getAndSet(0)+" alarms processed in the past 5 mins");
+			// Check if the delay alarm must be published
+			boolean alarmsAreTooLate=alarmsDelayHelper.chekDelayAndReset();
+			if (alarmsAreTooLate!=alarmTooOldActive) {
+				// Process the core alarm only if its state changed
+				laserComponent.sendCoreAlarmAsync(LaserCoreFaultCodes.ALARMS_TOO_OLD,alarmsAreTooLate);
+				alarmTooOldActive=alarmsAreTooLate;
+			}
+		}
+	};
+	return task;
+  }
+  
+  /**
+   * Start the periodic task
+   */
+  public void start() {
+	  timer.schedule(createTimerTask(), alarmTimestampsCheckInterval, alarmTimestampsCheckInterval);
+  }
+  
+  /**
+   * Stop the periodic task
+   */
+  public void stop() {
+	  timer.cancel();
   }
 
 }
