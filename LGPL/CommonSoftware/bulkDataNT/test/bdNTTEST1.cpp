@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bdNTTEST1.cpp,v 1.4 2013/01/31 10:58:40 gchiozzi Exp $"
+ * "@(#) $Id: bdNTTEST1.cpp,v 1.5 2013/02/06 11:59:37 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -122,44 +122,10 @@ int main(int argc, char *argv[])
 	sleep(1);
 	}
 
-    catch (AVConnectErrorEx & ex)
+    catch (ACSErr::ACSbaseExImpl& ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "AVConnectErrorEx exception catched !"));
-	AVConnectErrorExImpl ex1(ex);
-	ex1.log();
+	ex.log();
 	}
-    catch (AVStartSendErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVStartSendErrorEx exception catched !"));
-	AVStartSendErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVPaceDataErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVPaceDataErrorEx exception catched !"));
-	AVPaceDataErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVStopSendErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVStopSendErrorEx exception catched !"));
-	AVStopSendErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVDisconnectErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVDisconnectErrorEx exception catched !"));
-	AVDisconnectErrorExImpl ex1(ex);
-	ex1.log();
-	}
-    catch (AVCloseReceiverErrorEx & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO, "AVCloseReceiverErrorEx exception catched !"));
-	AVCloseReceiverErrorExImpl ex1(ex);
-	ex1.log();
-	}
-
-
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"UNKNOWN exception catched!"));
