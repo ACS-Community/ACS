@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.20 2012/07/10 10:43:16 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.21 2013/02/06 13:49:08 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -100,12 +100,15 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       =
-LIBRARIES_L     = bdNTReceiverLibTest bdNTSenderLibTest
+LIBRARIES_L     = bdNTReceiverLibTest bdNTSenderLibTest bdNTSenderLibTestNew
 bdNTReceiverLibTest_OBJECTS = bdNTReceiverImplTest
 bdNTReceiverLibTest_LIBS = bulkDataNTReceiver bulkDataReceiverStubs baci
 
 bdNTSenderLibTest_OBJECTS = bdNTSenderImplTest
 bdNTSenderLibTest_LIBS = bulkDataNTSenderImpl
+
+bdNTSenderLibTestNew_OBJECTS = bdNTSenderImplTestNew
+bdNTSenderLibTestNew_LIBS = bulkDataNTSenderImpl
 
 #
 # <brief description of lllll library>

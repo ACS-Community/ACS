@@ -4,7 +4,7 @@
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <_ Name="BulkDataNTSenderTEST"  Code="bdNTSenderLibTest"	
+    <_ Name="BulkDataNTSenderTEST"  Code="bdNTSenderLibTestNew"	
         Type="IDL:alma/bulkdata/BulkDataSender:1.0"
         Container="bdNTTestContainer" ImplLang="cpp" />
     
