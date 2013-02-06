@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2012/03/02 14:05:15 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.7 2013/02/06 13:32:34 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = TMCDBCOMMON_IDL.h
+INCLUDES        = 
 
 #
 # Libraries (public and local)
