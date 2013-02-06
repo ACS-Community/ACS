@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.47 2013/01/18 14:43:35 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.48 2013/02/06 13:59:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -270,28 +270,53 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
     }//if
 
   profLen=factory_qos.profile.string_profile.length(); //how many profiles do we have already ?
-
-  if (profLen!=0) // is is the first profile
-    {
-	  profLen += 3;
-      factory_qos.profile.string_profile.ensure_length(profLen, profLen);
-    }
-  else
-    {
-      profLen=5;
-      factory_qos.profile.string_profile.ensure_length(profLen,profLen);
-	  factory_qos.profile.string_profile[0] = DDS_String_dup("<dds>");
-    }
-
-  std::string qoSlibTag("<qos_library name=\"");
+  std::string qoSlibTag("<qos_library name=\""); // we crate qos_libarary TAG
   qoSlibTag+=cfg.libraryQos;
   qoSlibTag+="\">";
 
-  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(qoSlibTag.c_str());
-  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup(cfg.stringProfileQoS.c_str());
+  if (profLen>0) // is is the first profile
+    {
+	  bool newLib=true;
+	  // lets check if the library is already there
+	  for (unsigned int j=1;j<profLen-2;j++)  // we can skip the first <dds> and also two </qos_library> and </dds>
+	  {
+		  if (strcmp(qoSlibTag.c_str(), factory_qos.profile.string_profile[j]) == 0 )
+		  {
+			  newLib=false;
+			  break;
+		  }//if
+	  }//for
+
+	  if (newLib) // if library is not already there we have to add it
+	  {
+		  profLen += 4; //each profile adds two new lines <> + </<> + 2 tag for qos_library
+		  factory_qos.profile.string_profile.ensure_length(profLen, profLen);
+		  factory_qos.profile.string_profile[profLen-5] = DDS_String_dup(qoSlibTag.c_str());
+	  }
+	  else
+	  {
+		  profLen += 2; //each profile adds two new lines <> + </<>
+		  factory_qos.profile.string_profile.ensure_length(profLen, profLen);
+	  }
+    }
+  else // first profile
+    {
+      profLen=6;
+      factory_qos.profile.string_profile.ensure_length(profLen,profLen);
+	  factory_qos.profile.string_profile[profLen-6] = DDS_String_dup("<dds>");
+	  factory_qos.profile.string_profile[profLen-5] = DDS_String_dup(qoSlibTag.c_str());
+    }
+
+// we assume that profile can be added to recently added library, what should be the case
+  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(cfg.stringProfileQoS.c_str());
+  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup("</qos_profile>");
   factory_qos.profile.string_profile[profLen-2] = DDS_String_dup("</qos_library>");
   factory_qos.profile.string_profile[profLen-1] = DDS_String_dup("</dds>");
 
+  /*int u=factory_qos.profile.string_profile.length();
+  for (int j=0;j<u;j++)
+	  printf("=> %d: %s \n", j, factory_qos.profile.string_profile[j] );
+*/
   ret = factory_m->set_qos(factory_qos);
   if (ret!=DDS::RETCODE_OK)
     {
