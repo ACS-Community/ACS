@@ -4,11 +4,25 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0 BulkDataNTReceiver.xsd">
    
-   <ReceiverStream Name="TestStream">
+   <ReceiverStream Name="TestStream" participantPerStream="1">
+      
       <ReceiverFlow Name="FullResolutionDataFlow">
+         <DDSReceiverFlowQoS baseQosLibrary="BulkDataQoSLibrary">
+         </DDSReceiverFlowQoS>         
       </ReceiverFlow>
-      <ReceiverFlow Name="ChannelAverageDataFlow"/>		
-      <ReceiverFlow Name="WVRDataFlow"/>
+      <ReceiverFlow Name="ChannelAverageDataFlow">
+         <DDSReceiverFlowQoS baseQosLibrary="BulkDataQoSLibrary">
+         </DDSReceiverFlowQoS>         
+      </ReceiverFlow>
+      		
+      <ReceiverFlow Name="WVRDataFlow">
+         <DDSReceiverFlowQoS baseQosLibrary="BulkDataQoSLibrary">
+         </DDSReceiverFlowQoS>         
+      </ReceiverFlow>
+  
+      <DDSReceiverStreamQoS baseQosLibrary="BulkDataQoSLibrary">
+      </DDSReceiverStreamQoS>
+      
    </ReceiverStream>
    
 </BulkDataNTReceiver>

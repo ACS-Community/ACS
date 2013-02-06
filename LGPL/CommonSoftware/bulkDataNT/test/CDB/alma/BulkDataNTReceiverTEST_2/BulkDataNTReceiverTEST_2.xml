@@ -7,9 +7,10 @@
    <ReceiverStream Name="TestStream">
       <ReceiverFlow Name="FullResolutionDataFlow">
       </ReceiverFlow>
-      <ReceiverFlow Name="ChannelAverageDataFlow"/>		
+      <ReceiverFlow Name="ChannelAverageDataFlow">
+      </ReceiverFlow>		
       <ReceiverFlow Name="WVRDataFlow"/>
+      
    </ReceiverStream>
-   
    
 </BulkDataNTReceiver>
