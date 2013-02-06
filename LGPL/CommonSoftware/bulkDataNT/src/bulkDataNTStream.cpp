@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.48 2013/02/06 13:59:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.49 2013/02/06 15:33:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -289,27 +289,27 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
 
 	  if (newLib) // if library is not already there we have to add it
 	  {
-		  profLen += 4; //each profile adds two new lines <> + </<> + 2 tag for qos_library
+		  profLen += 3; //each profile adds three new lines progfile + 2 tag for qos_library
 		  factory_qos.profile.string_profile.ensure_length(profLen, profLen);
-		  factory_qos.profile.string_profile[profLen-5] = DDS_String_dup(qoSlibTag.c_str());
+		  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(qoSlibTag.c_str());
 	  }
 	  else
 	  {
-		  profLen += 2; //each profile adds two new lines <> + </<>
+		  profLen += 1; //each profile adds a new line (profile)
 		  factory_qos.profile.string_profile.ensure_length(profLen, profLen);
 	  }
     }
   else // first profile
     {
-      profLen=6;
+      profLen=5;
       factory_qos.profile.string_profile.ensure_length(profLen,profLen);
-	  factory_qos.profile.string_profile[profLen-6] = DDS_String_dup("<dds>");
-	  factory_qos.profile.string_profile[profLen-5] = DDS_String_dup(qoSlibTag.c_str());
+	  factory_qos.profile.string_profile[profLen-5] = DDS_String_dup("<dds>");
+	  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(qoSlibTag.c_str());
     }
 
 // we assume that profile can be added to recently added library, what should be the case
-  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(cfg.stringProfileQoS.c_str());
-  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup("</qos_profile>");
+  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup(cfg.stringProfileQoS.c_str());
+ // factory_qos.profile.string_profile[profLen-3] = DDS_String_dup("</qos_profile>");
   factory_qos.profile.string_profile[profLen-2] = DDS_String_dup("</qos_library>");
   factory_qos.profile.string_profile[profLen-1] = DDS_String_dup("</dds>");
 
