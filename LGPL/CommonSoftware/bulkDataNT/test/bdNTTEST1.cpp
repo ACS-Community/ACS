@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bdNTTEST1.cpp,v 1.5 2013/02/06 11:59:37 bjeram Exp $"
+ * "@(#) $Id: bdNTTEST1.cpp,v 1.6 2013/02/06 15:30:38 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -130,14 +130,14 @@ int main(int argc, char *argv[])
 	{
 	ACS_SHORT_LOG((LM_INFO,"UNKNOWN exception catched!"));
 	}
-    
+
     //We release our component and logout from manager
-    client.manager()->release_component(client.handle(), "BulkDataSenderTEST");
+    client.manager()->release_component(client.handle(), argv[1]);
     sleep(1);
 
-    client.manager()->release_component(client.handle(), "BulkDataReceiverTEST_1");
+    client.manager()->release_component(client.handle(), argv[2]);
     sleep(1);
-    client.manager()->release_component(client.handle(), "BulkDataReceiverTEST_2");
+    client.manager()->release_component(client.handle(), argv[3]);
     sleep(1);
     
     client.logout();
