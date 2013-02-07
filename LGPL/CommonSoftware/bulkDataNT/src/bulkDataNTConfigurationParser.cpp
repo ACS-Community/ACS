@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.35 2012/10/12 13:57:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.35.2.1 2013/02/07 08:31:15 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,6 +50,7 @@ const char* const BulkDataConfigurationParser::RECEIVER_FLOW_NODENAME       = "R
 const char* const BulkDataConfigurationParser::RECEIVER_FLOW_QOS_NODENAME   = "DDSReceiverFlowQoS";
 
 const char* const BulkDataConfigurationParser::DYNAMIC_LIBRARY_NAME         = DDSConfiguration::DEFAULT_LIBRARY;
+const char* const BulkDataConfigurationParser::DEFAULT_QOS_LIBRARY_NAME		= "BulkDataQoSLibrary";
 
 const struct BulkDataConfigurationParser::ParsingInfo BulkDataConfigurationParser::SENDER_PARSING_INFO = {
 	SENDER,
@@ -102,7 +103,8 @@ XMLChSP& XMLChSP::operator=(const char* pointer) {
 BulkDataConfigurationParser::BulkDataConfigurationParser(const char *baseLibraryName) :
    m_baseLibrary(ACE_OS::strdup(baseLibraryName)),
    m_writer(0),
-   m_parser(0)
+   m_parser(0),
+   m_baseQoSlibrary(DEFAULT_QOS_LIBRARY_NAME)
 {
 	try {
 		XMLPlatformUtils::Initialize();
@@ -283,6 +285,23 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 		else
 			receiverCfg.streamCfg = new ReceiverStreamConfiguration();
 
+		// Sender/ReceiverStreams has extra attributes, let's check them
+		try {
+			if( parsingInfo.type == SENDER )
+			{
+				senderCfg.streamCfg->setParticipantPerStream(getBooleanFromAttribute(streamNode, "participantPerStream", StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM));
+			}
+			else
+			{
+				receiverCfg.streamCfg->setParticipantPerStream(getBooleanFromAttribute(streamNode, "participantPerStream", StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM));
+				receiverCfg.streamCfg->setBaseUnicastPort(getUnsignedShortFromAttribute(streamNode, "baseUnicastPort", ReceiverStreamConfiguration::DEFAULT_BASE_UNICAST_PORT));
+				receiverCfg.streamCfg->setUseIncrementUnicastPort(getBooleanFromAttribute(streamNode, "useIncrementUnicastPort", ReceiverStreamConfiguration::DEFAULT_USE_INCREMENT_UNICAST_PORT));
+			}
+		} catch(CDBProblemExImpl &ex) {
+			cleanConfig(&receiverCfg, &senderCfg, parsingInfo.type);
+			throw ex;
+		}
+
 		// For each sender stream, check the QoS and the underlying flow nodes
 		DOMNodeList *streamChildrenNodesList = streamNode->getChildNodes();
 		for(unsigned int j=0; j!= streamChildrenNodesList->getLength(); j++) {
@@ -291,21 +310,14 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 			if( streamChildNode->getNodeType() != DOMNode::ELEMENT_NODE )
 				continue;
 
+
 			// The Sender/ReceiverStreamQoS is appended to the str:// URI
 			string childNodeName = getElementLocalName(streamChildNode);
+
 			if( ACE_OS::strcmp(childNodeName.c_str(), parsingInfo.reqStreamQoSNodeName) == 0 ) {
 
 				try {
-					if( parsingInfo.type == SENDER )
-					{
-						senderCfg.streamCfg->setParticipantPerStream(getBooleanFromAttribute(streamChildNode, "participantPerStream", StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM));
-					}
-					else
-					{
-						receiverCfg.streamCfg->setParticipantPerStream(getBooleanFromAttribute(streamChildNode, "participantPerStream", StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM));
-						receiverCfg.streamCfg->setBaseUnicastPort(getUnsignedShortFromAttribute(streamChildNode, "baseUnicastPort", ReceiverStreamConfiguration::DEFAULT_BASE_UNICAST_PORT));
-						receiverCfg.streamCfg->setUseIncrementUnicastPort(getBooleanFromAttribute(streamChildNode, "useIncrementUnicastPort", ReceiverStreamConfiguration::DEFAULT_USE_INCREMENT_UNICAST_PORT));
-					}
+					m_baseQoSlibrary = getStringFromAttribute(streamChildNode,"baseQosLibrary", DEFAULT_QOS_LIBRARY_NAME);
 				} catch(CDBProblemExImpl &ex) {
 					cleanConfig(&receiverCfg, &senderCfg, parsingInfo.type);
 					throw ex;
@@ -372,11 +384,12 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 				else
 					receiverCfg.flowsCfgMap[flowName.get()] = new ReceiverFlowConfiguration();
 
-				// SenderFlow has two extra attributes, let's check them
+				// Sender/receiverFlow has extra attributes, let's check them
 				try {
 					if( parsingInfo.type == SENDER ) {
 						senderCfg.flowsCfgMap[flowName.get()]->setSendFrameTimeout(getDoubleFromAttribute(streamChildNode, "SendFrameTimeoutSec", SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT));
 						senderCfg.flowsCfgMap[flowName.get()]->setACKsTimeout(getDoubleFromAttribute(streamChildNode, "ACKsTimeoutSec", SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT));
+						senderCfg.flowsCfgMap[flowName.get()]->setThrottling(getDoubleFromAttribute(streamChildNode, "ThrottlingMBytesPerSec", SenderFlowConfiguration::DEFAULT_THROTTLING));
 					}else {
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_PROCESS_TIMEOUT));
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveAvgProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveAvgProcessTimeoutSec", ReceiverFlowConfiguration::DEFAULT_CBRECEIVE_AVG_PROCESS_TIMEOUT));
@@ -411,6 +424,13 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 						throw cdbProblemEx;
 					}
 
+					try{
+						m_baseQoSlibrary = getStringFromAttribute(childFlowNode,"baseQosLibrary", DEFAULT_QOS_LIBRARY_NAME);
+					} catch(CDBProblemExImpl &ex) {
+						cleanConfig(&receiverCfg, &senderCfg, parsingInfo.type);
+						throw ex;
+					}
+
 					string profileName(streamName.get());
 					profileName.append("#");
 					profileName.append(flowName.get());
@@ -432,7 +452,6 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 						flowConfig->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 						flowConfig->profileQos = profileName;
 						flowConfig->stringProfileQoS = profileQoS;
-
 //						receiverCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 					}
 
@@ -565,7 +584,7 @@ const XMLCh* BulkDataConfigurationParser::getAttrValue(DOMNode *node, const char
 string BulkDataConfigurationParser::getQosProfile(const char *profileName, const char *baseProfile, DOMNode *node) {
 
 	stringstream s;
-	s << "<qos_profile name=\"" << profileName << "\" base_name=\"" << DDSConfiguration::DEFAULT_LIBRARY << "::" << baseProfile << "\">";
+	s << "<qos_profile name=\"" << profileName << "\" base_name=\"" << m_baseQoSlibrary << "::" << baseProfile << "\">";
 
 	DOMNodeList *children = node->getChildNodes();
 	for(unsigned int i=0; i!= children->getLength(); i++) {

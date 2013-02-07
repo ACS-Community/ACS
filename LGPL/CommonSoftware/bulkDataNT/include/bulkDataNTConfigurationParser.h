@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.14 2012/10/12 13:46:24 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.14.2.1 2013/02/07 08:29:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,9 +63,10 @@ namespace AcsBulkdata
 
 	private:
 
-		const char                 *m_baseLibrary;
+		const char                 *m_baseLibrary; /// used for the Qos library name of generated XML
 		xercesc::DOMWriter         *m_writer;
 		xercesc::AbstractDOMParser *m_parser;
+		std::string					    m_baseQoSlibrary; /// the name of the library that Qos should use as a base
 
 		typedef struct _SenderCfg {
 			SenderStreamConfiguration *streamCfg;
@@ -93,6 +94,7 @@ namespace AcsBulkdata
 		static const char* const RECEIVER_FLOW_QOS_NODENAME;
 
 		static const char* const DYNAMIC_LIBRARY_NAME;
+		static const char* const DEFAULT_QOS_LIBRARY_NAME;
 
 		enum ParsingType {
 			SENDER,

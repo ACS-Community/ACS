@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.30 2012/10/15 09:37:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.30.2.1 2013/02/07 08:30:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,6 +43,7 @@ bool StreamConfiguration::DEFAULT_PARTICIPANT_PER_STREAM=false;
 
 double SenderFlowConfiguration::DEFAULT_SENDFRAME_TIMEOUT=5.0;  //secs
 double SenderFlowConfiguration::DEFAULT_ACKs_TIMEOUT=2.0; //secs
+double SenderFlowConfiguration::DEFAULT_THROTTLING=0; // no throttling
 
 unsigned short ReceiverStreamConfiguration::DEFAULT_BASE_UNICAST_PORT=48000;
 bool ReceiverStreamConfiguration::DEFAULT_USE_INCREMENT_UNICAST_PORT=true;
@@ -297,6 +298,7 @@ SenderFlowConfiguration::SenderFlowConfiguration()
 	profileQos=DEFAULT_SENDER_FLOW_PROFILE;
 	sendFrameTimeout = DEFAULT_SENDFRAME_TIMEOUT;
 	ACKsTimeout = DEFAULT_ACKs_TIMEOUT;
+	throttling = DEFAULT_THROTTLING;
 }
 
 double SenderFlowConfiguration::getACKsTimeout() const
@@ -317,6 +319,16 @@ void SenderFlowConfiguration::setACKsTimeout(double acKsTimeout)
 void SenderFlowConfiguration::setSendFrameTimeout(double frameTimeout)
 {
     this->sendFrameTimeout = frameTimeout;
+}
+
+double SenderFlowConfiguration::getThrottling() const
+{
+	return throttling;
+}
+
+void SenderFlowConfiguration::setThrottling(double throttling)
+{
+	this->throttling = throttling;
 }
 
 void SenderFlowConfiguration::setDDSSenderFlowQoS(char* cfg)
