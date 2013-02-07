@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.26 2013/02/07 11:02:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.27 2013/02/07 13:30:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.26 2013/02/07 11:02:59 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.27 2013/02/07 13:30:58 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -135,7 +135,8 @@ void AcsBulkdata::BulkDataNTReceiverFlow::dumpStatistics()
 	ddsDataReader_m->get_datareader_protocol_status(drps);
 
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-			(LM_DEBUG, "DataReader protocol status for flow: %s [sample received: %lld (%lld). Sent: HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld).
+			(LM_DEBUG, "DataReader protocol status for flow: %s [sample received: %lld (%lld). Sent: HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld).",
+					flowName_m.c_str(),
 					drps.received_sample_count_change, drps.received_sample_bytes_change,
 					drps.received_heartbeat_count_change, drps.received_heartbeat_bytes_change,
 					drps.sent_ack_count_change, drps.sent_ack_bytes_change,
