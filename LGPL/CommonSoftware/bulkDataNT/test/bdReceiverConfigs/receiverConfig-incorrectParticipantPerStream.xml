@@ -4,7 +4,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0 BulkDataNTReceiver.xsd">
 
-	<ReceiverStream Name="BLA">
+	<ReceiverStream Name="BLA" participantPerStream="superfalse"> <!-- Incorrect boolean value -->
 		<ReceiverFlow Name="BLA1">
 			<DDSReceiverFlowQoS>
 				<datareader_qos name="BLA1">
@@ -34,8 +34,7 @@
 				<datareader_qos name="PIPO3">
 				</datareader_qos>
 			</DDSReceiverFlowQoS>
-		</ReceiverFlow>
-		<DDSReceiverStreamQoS participantPerStream="superfalse"/> <!-- Incorrect boolean value -->
+		</ReceiverFlow> 
 	</ReceiverStream>
 
 </BulkDataNTReceiver>

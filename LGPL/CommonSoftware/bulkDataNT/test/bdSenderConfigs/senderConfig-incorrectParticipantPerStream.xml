@@ -4,7 +4,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
 
-	<SenderStream Name="BLA">
+	<SenderStream Name="BLA" participantPerStream="superfalse"> <!-- Incorrect boolean value -->
 		<SenderFlow Name="BLA1">
 			<DDSSenderFlowQoS>
 				<datareader_qos name="BLA1">
@@ -35,7 +35,6 @@
 				</datareader_qos>
 			</DDSSenderFlowQoS>
 		</SenderFlow>
-		<DDSSenderStreamQoS participantPerStream="superfalse"/> <!-- Incorrect boolean value -->
 	</SenderStream>
 
 </BulkDataNTSender>
