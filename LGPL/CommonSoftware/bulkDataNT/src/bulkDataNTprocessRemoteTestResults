@@ -1,11 +1,18 @@
 #! /bin/bash
 OF=result.out
 PF=test.plot
+HF=testH.plot
 FILES=`ls ~/bulkDataNTGenSender*`
 COMMA=""
 
 echo "Files that are going to be processed: " $FILES
+
 rm -rf $OF
+
+
+#
+# Plots the transfer rates as function of time
+#
 echo "set title \"$1\" " > $PF
 echo "set xlabel \"time [sec.msec]\"" >> $PF
 echo "set ylabel \"Data Rate [MBytes/sec]\"" >> $PF
@@ -37,8 +44,56 @@ done
 #egrep 'proto|cache' ~/bulkDataNTGenSender*
 
 #with linespoints
+
 echo "" >> $PF
 echo "set terminal png" >> $PF
 echo "set output \"result.png\"" >> $PF
 echo "replot" >> $PF
 gnuplot -p $PF
+
+#
+# Histogram of transfer rates
+#
+echo "set title \"Throughput distribution\"" > $HF
+
+echo "set datafile separator \",\"" >> $HF
+ 
+echo "bin(x, s) = s*int(x/s)" >> $HF
+echo "bw = 1.0" >> $HF
+echo "set boxwidth bw*0.6" >> $HF
+echo "set style fill solid 0.4" >> $HF
+ 
+echo "#set xrange [47:73]" >> $HF
+echo "#set xtics add (47,73)" >> $HF
+echo "set mxtics 5" >> $HF
+echo "set yrange [0:*]" >> $HF
+
+
+echo "set xlabel \"Data Rate [MBytes/sec]\"" >> $HF
+echo "set ylabel \"Frequency\"" >> $HF
+
+####################
+# Builds the gnuplot copmmand line to plot the distribution of the reached data rates
+# echo "plot "alma78-00.TP" using (bin($3,bw)+bw/2):(1.0) smooth frequency ti 'freq' w boxes, "alma78-01.TP" ....  >> $HF
+###
+echo -ne "plot " >> $HF
+
+COMMA=""
+PLOTCMD="using (bin(\$3,bw)+bw/2):(1.0) smooth frequency ti 'freq' w boxes "
+for f in $FILES
+do	
+	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
+	OF=$MACHINE.TP
+	echo -ne $COMMA "\"$OF\"" $PLOTCMD >> $HF
+	COMMA=","
+done
+
+
+echo "" >> $HF
+echo "set terminal png" >> $HF
+echo "set output "resultH.png"" >> $HF
+echo "replot" >> $HF
+gnuplot -p $HF
+
+
+
