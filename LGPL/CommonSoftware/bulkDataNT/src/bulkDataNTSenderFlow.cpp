@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53 2012/11/20 16:09:05 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53.2.1 2013/02/07 08:31:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53 2012/11/20 16:09:05 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53.2.1 2013/02/07 08:31:50 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -35,7 +35,7 @@ using namespace std;
 using namespace ACS_DDS_Errors;
 using namespace ACS_BD_Errors;
 
-const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataRcvState", "StopState" };
+const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataSendState", "StopState" };
 
 BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     const char* flowName,
@@ -78,6 +78,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     }//if
 
   setACKsTimeout(senderFlowCfg_m.getACKsTimeout());
+  setThrottling(senderFlowCfg_m.getThrottling());
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Sender Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
 }//BulkDataNTSenderFlow
 
@@ -140,6 +141,22 @@ void BulkDataNTSenderFlow::setACKsTimeout(double ACKsTimeout)
 }//setACKsTimeout
 
 
+void BulkDataNTSenderFlow::setThrottling(double throttling)
+{
+	throttling_m = throttling; // unit is MBytes/sec
+	// we have to calculate how long should in min case takes to send one frame of size ACSBulkData::FRAME_MAX_LEN
+	// unit is usec
+	if (throttling_m!=0.0)
+	{
+		throttlingMinFrameTime_m = ACSBulkData::FRAME_MAX_LEN / (throttling_m*1.024*1.024)-50; //50us is overhead of the rest code in sendData (set empirically)
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "throttling set to: %f MBytes/sec (%f usec)",
+			throttling_m, throttlingMinFrameTime_m));
+	}
+	else
+	{
+		throttlingMinFrameTime_m = 0.0;
+	}
+}//setThrottling
 
 void BulkDataNTSenderFlow::startSend(ACE_Message_Block *param)
 {
@@ -174,7 +191,7 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
 	//double send_time;
-	//ACE_Time_Value start_time, elapsed_time;
+	ACE_Time_Value start_time, elapsed_time;
 
 
 	unsigned int iteration=0;
@@ -211,16 +228,18 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration, true/*=0*/);
 			}else
 			{
-			//	start_time = ACE_OS::gettimeofday();
+				start_time = ACE_OS::gettimeofday();
 				// if we wait for ACKs for example after: (iteration%50==0) then we have more NACKS than if we do not wait !!
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration, 0/*we do not ask for ACKs*/);
-				// here we wait for less than msec
-			/*	elapsed_time = ACE_OS::gettimeofday() - start_time;
-				while (elapsed_time.usec() <  800)
+				if (throttling_m!=0.0) // is throttling "enable"
 				{
+					// here we wait for less than msec
 					elapsed_time = ACE_OS::gettimeofday() - start_time;
+					while (elapsed_time.usec() <  throttlingMinFrameTime_m)
+					{
+						elapsed_time = ACE_OS::gettimeofday() - start_time;
+					}
 				}
-*/
 			}
 /*
 			elapsed_time = ACE_OS::gettimeofday() - start_time;
@@ -356,6 +375,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s before waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
 		}
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
+		//ret = DDS::RETCODE_OK;
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics();
