@@ -2,6 +2,8 @@
 #A general purpose script designed to be used as the prologue
 #for most tat modular tests
 
+. acsstartupConstants # load error codes like 
+
 # Usage info. Be nice and keep this up-to-date!
 function printUsage 
 {
