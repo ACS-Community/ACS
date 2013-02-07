@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.17 2012/10/15 09:47:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.18 2013/02/07 11:02:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,6 +88,8 @@ public:
 
 	/// Disables calling user's CB (cbStart, cbReceiver, cbStop)
 	void disableCallingCB();
+
+	void dumpStatistics();
 
 protected:
 	AcsBulkdata::BulkDataNTReceiverStreamBase *receiverStream_m;
