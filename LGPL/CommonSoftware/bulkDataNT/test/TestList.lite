@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: TestList.lite,v 1.13 2013/02/05 17:47:08 bjeram Exp $"
+# "@(#) $Id: TestList.lite,v 1.14 2013/02/07 13:48:08 gchiozzi Exp $"
 #
 # TestList
 #
@@ -16,6 +16,9 @@ PROLOGUE acsutilTATPrologue -noloadifr
 3 ReceiverCompOpenCloseStream "acsutilTATTestRunner acsStartContainer -cpp newConfigRecvContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTReceiverImplClient" EPILOGUE "acsStopContainer newConfigRecvContainer"
 4 SendRecevCompTest "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataSenderTEST BulkDataReceiverTEST_1 BulkDataReceiverTEST_2" EPILOGUE "acsStopContainer bdNTTestContainer"
 5 MultipleReceiverStreams "bdNTMultiReceiversTest 35"
+
 # 6 SendRecevCompTestNew "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataNTSenderTEST BulkDataNTReceiverTEST_1 BulkDataNTReceiverTEST_2" EPILOGUE "acsStopContainer bdNTTestContainer"
+
+# 7 GenReceiverSender-1 "bulkDataNTGenReceiver -n -s TS -f 00" "@SLEEP 3" "bulkDataNTGenSender -l 3 -b 640000 -s TS -f 00"
 
 EPILOGUE acsutilTATEpilogue
