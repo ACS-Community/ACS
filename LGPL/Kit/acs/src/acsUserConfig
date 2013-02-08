@@ -3,7 +3,7 @@
 #*******************************************************************************
 # acsUserConfig
 #
-# "@(#) $Id: acsUserConfig,v 1.1 2006/09/28 11:01:24 gchiozzi Exp $"
+# "@(#) $Id: acsUserConfig,v 1.2 2013/02/08 09:35:50 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -46,6 +46,13 @@
 #
 #------------------------------------------------------------------------
 #
+# It could in principle be that this utility is run before other pieces of ACS
+# (including the file acsstartupConstants) are installed ...
+if [ -f acsstartupConstants ] ; then
+    . acsstartupConstants
+else
+    EC_BADARGS=43      # command line arguments wrong or missing
+fi
 
 ######################################
 # Directories names and assumptions  #
