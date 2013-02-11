@@ -158,7 +158,12 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	/**
 	 * HTML close TAG for the string in the table
 	 */
-	private static final String htmlCloseTAG="<html>";
+	private static final String htmlCloseTAG="</html>";
+	
+	/**
+	 * The empty string is returned when a object is <code>null</code>
+	 */
+	private static final String emptyString="";
 	
 	/**
 	 * Constructor
@@ -255,7 +260,11 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			if (column == 0) {
 				return Boolean.valueOf(log.hasDatas());
 			} else {
-				return htmlStartTAG+log.getField(LogField.values()[column-1]).toString()+htmlCloseTAG;
+				Object val=log.getField(LogField.values()[column-1]);
+				if (val==null) {
+					return emptyString;
+				}
+				return htmlStartTAG+val.toString()+htmlCloseTAG;
 			}
 		}
 		}

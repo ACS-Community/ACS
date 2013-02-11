@@ -25,8 +25,9 @@ import javax.swing.RowFilter;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * The filters used to hide/show logs in the table.
@@ -131,13 +132,16 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 		if (filters==null) {
 			return true;
 		}
-		// Check if the entry matches with the filters
-		//
-		// For each filter the field to check is in the entry parameter in the index given
-		// by the field.ordinal()+1 (the fist column, hasDatas must be ignored)
+		
+		// Get the log to check against the filters
+		LogTableDataModel model=entry.getModel();
+		ILogEntry log = model.getVisibleLogEntry(entry.getIdentifier().intValue());
+		
+		// Check if the log matches with the filters
 		boolean ret=true;
 		for (int t=0; t<filters.length && ret; t++) {
-			ret = ret && filters[t].applyTo(entry.getValue(filters[t].field.ordinal()+1));
+			
+			ret = ret && filters[t].applyTo(log, false);
 		}
 		return ret;
 	}
