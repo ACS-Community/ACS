@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.47 2013/02/06 15:07:07 rbourtem Exp $"
+# "@(#) $Id: Makefile,v 1.48 2013/02/11 18:37:33 rbourtem Exp $"
 #
 # Makefile of ........
 #
@@ -79,13 +79,15 @@ INCLUDES        = bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h 
 				bulkDataNTReceiverImpl.h bulkDataNTReceiverImpl.i bulkDataNTReceiverStream.h bulkDataNTReceiverStream.i \
 				bulkDataNTSenderFlow.h bulkDataNTSenderImpl.h bulkDataNTSenderStream.h bulkDataNTStream.h bulkDataNTSupport.h \
 				bulkDataNTFlow.h bulkDataNTWriterListener.h bulkDataNTDDSLoggable.h bulkDataNTSenderFlowCallback.h \
-				bulkDataNTConfiguration.h bulkDataNTConfigurationParser.h
+				bulkDataNTConfiguration.h bulkDataNTConfigurationParser.h \
+				bulkDataNTArrayThread.h bulkDataNTPosixHelper.h bulkDataNTThreadSyncGuard.h \
+				bulkDataNTGenEx.h
 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver bulkDataNTSenderImpl
+LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver bulkDataNTSenderImpl bulkDataNTThreadUtils bulkDataNTEx	
 LIBRARIES_L     =
 
 #
@@ -102,6 +104,13 @@ bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
 bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
 bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 
+bulkDataNTThreadUtils_OBJECTS = bulkDataNTPosixHelper bulkDataNTThreadSyncGuard
+bulkDataNTThreadUtils_LIBS = pthread ACE logging acsThread acstime
+
+bulkDataNTEx_OBJECTS = bulkDataNTGenEx
+bulkDataNTEx_LD_FLAGS = 
+bulkDataNTEx_LIBS = 
+
 bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber \
 							   bulkDataNTReaderListener bulkDataNTCallback
 bulkDataNTReceiver_LIBS = bulkDataNT RepeatGuard
@@ -113,8 +122,8 @@ bulkDataNTGenSender_LIBS= bulkDataNTSender
 bulkDataNTGenReceiver_OBJECTS = bulkDataNTGenReceiver
 bulkDataNTGenReceiver_LIBS= bulkDataNTReceiver 
 
-bulkDataNTGenReceiverSender_OBJECTS = bulkDataNTGenReceiverSender
-bulkDataNTGenReceiverSender_LIBS= bulkDataNTSender bulkDataNTReceiver
+bulkDataNTGenReceiverSender_OBJECTS = bulkDataNTGenReceiverSender bulkDataNTArrayThread bulkDataNTGenStreamerThread
+bulkDataNTGenReceiverSender_LIBS= bulkDataNTSender bulkDataNTReceiver bulkDataNTThreadUtils bulkDataNTEx
 
 #
 # Scripts (public and local)

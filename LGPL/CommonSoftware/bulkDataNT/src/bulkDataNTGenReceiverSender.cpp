@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTGenReceiverSender.cpp,v 1.1 2013/02/06 15:07:07 rbourtem Exp $"
+ * "@(#) $Id: bulkDataNTGenReceiverSender.cpp,v 1.2 2013/02/11 18:37:33 rbourtem Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -25,9 +25,11 @@
 #include "bulkDataNTReceiverStream.h"
 #include "bulkDataNTCallback.h"
 #include "bulkDataNTSenderFlow.h"
+#include "bulkDataNTArrayThread.h"
 #include <iostream>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
+#include <vector>
 
 using namespace AcsBulkdata;
 using namespace std;
@@ -35,7 +37,13 @@ using namespace std;
 class  TestReceiverCB:  public BulkDataNTCallback
 {
 public:
-	TestReceiverCB()
+	TestReceiverCB():
+		m_isError(false),
+		m_offset(0),
+		m_size(0),
+		m_buffer(NULL),
+		m_userFunctionControl(true),
+		m_senderThread_p(NULL)
 	{
 		totalRcvData=0;
 	}
@@ -45,18 +53,102 @@ public:
 		std::cout << "Total received data for: " << getStreamName() << "#" << getFlowName()  << " : " << totalRcvData << std::endl;
 	}
 
+	void setSenderThread(BulkDataNTArrayThread * thread)
+	{
+		m_senderThread_p = thread;
+	}
+
 	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
 		// we cannot initialize flow name and flow stream in constructor, because they are after CB object is created
 		fn = getFlowName();
 		sn = getStreamName();
 
-		std::cout << "cbStart[ " << sn << "#" << fn  << " ]: got a parameter: ";
-		for(unsigned int i=0; i<size; i++)
+		m_isError = false;
+
+		//
+		// check data consistency
+		//
+		if ( sizeof(unsigned int) != size )
 		{
-			std::cout <<  *(char*)(userParam_p+i);
+			cout <<	"header size mismatch (stream/flow/recv/size="
+					<< sn << "/"
+					<< fn << "/"
+					<< size << "/"
+					<< 	sizeof(unsigned int) << endl;
+
+			// disable any other future activity
+			m_isError = true;
+
+			// TODO: Warn the sending thread
+			//
+			//m_userFunc_p[0](NULL, 0, CorrEx("header size mismatch", string(__FILE__), __LINE__), m_userData_p[0]);
+
+			return 1;
 		}
-		std::cout << " of size: " << size << std::endl;
+
+		//
+		// if the buffer is not NULL then it could be that the user is trying
+		// to restart transmission.
+		//
+		if ( m_buffer != NULL )
+		{
+			cout << "restart transmission detected (stream/flow="
+					<< getStreamName() << "/" << getFlowName() << endl;
+
+			//
+			// re-allocate buffer only if current one does not exactly fit
+			//
+			if ( m_size != *reinterpret_cast<unsigned int *>(userParam_p) )
+			{
+				cout << "restart transmission requires reallocation (stream/flow="
+						<< getStreamName() << "/"
+						<< getFlowName() << "/ cur/new="
+						<< m_size << "/"
+						<< *reinterpret_cast<unsigned int *>(userParam_p) << ")" <<endl;
+
+				//m_mh_p->free(m_buffer);
+				free(m_buffer);
+
+				m_buffer = NULL;
+			}
+		}
+
+		//
+		// user param is interpreted as the total number of bytes the
+		// sender is going to transmit
+		//
+		m_size = *reinterpret_cast<unsigned int *>(userParam_p);
+
+		std::cout << "cbStart[ " << sn << "#" << fn  << " ]: got a parameter: " << m_size << endl;
+
+		//
+		// allocate buffer into which data is going to be received, note that
+		// if the buffer is already allocated at this point then it means that
+		// it has the correct size and no allocation should happen again.
+		//
+		if ( m_buffer == NULL )
+		{
+			//m_buffer = reinterpret_cast<uint8_t *>(m_mh_p->malloc(m_size));
+			m_buffer = reinterpret_cast<uint8_t *>(malloc(m_size));
+			if (m_buffer == NULL)
+			{
+				cerr << "failed to allocate memory (stream/flow/size="
+						<< getStreamName() << "/"
+						<< getFlowName() << "/"
+						<< m_size << "). Data have been lost." << endl;
+
+				// disable any other future activity
+				m_isError = true;
+				// TODO Warn the sending thread
+				//m_userFunc_p[0](NULL, 0, CorrEx("failed to allocate memory", string(__FILE__), __LINE__), m_userData_p[0]);
+				return 1;
+			}
+		}
+
+		// reset buffer offset to the beginning
+		m_offset = 0;
+		//MY_SHORT_TIMED_LOG("cbStart %p/%d", (void *)ptr, size);
 		return 0;
 	}
 
@@ -77,7 +169,6 @@ public:
 			ACE_Time_Value start_time, elapsed_time;
 			start_time =  ACE_OS::gettimeofday();
 			elapsed_time =  ACE_OS::gettimeofday() - start_time;
-			// usleep(cbDealy);
 			while (elapsed_time.usec() <  cbDelay)
 			{
 				elapsed_time = ACE_OS::gettimeofday() - start_time;
@@ -85,21 +176,116 @@ public:
 
 		}
 		totalRcvData+=size;
+
+		//MY_SHORT_LOG("in cbReceive %p/%d", ptr, size);
+		//MY_SHORT_LOG_VARS();
+
+		// silently reject any other activity until next successfull start
+		if ( m_isError )
+		{
+			return 1;
+		}
+
+		// check that we are not receiving more data than expected
+		if ( m_offset + size > m_size )
+		{
+			//ACS_SHORT_LOG((LM_ERROR, "unexpected data received (stream/flow/size=%s/%s/%d)", getStreamName(), getFlowName(), size));
+			cerr<< "unexpected data received (stream/flow/size="
+					<< getStreamName() << "/"
+					<< getFlowName() << "/"
+					<< m_size << ")" << endl;
+			return 1;
+		}
+
+		// copy data to local buffer
+		memcpy((void *)(m_buffer + m_offset), (void *)data, size);
+
+		// increment offset
+		m_offset += size;
+		//MY_SHORT_TIMED_LOG("cbReceive %p/%d", ptr, size);
 		return 0;
 	}
 
 	int cbStop()
 	{
-		std::cout << "cbStop[ " << sn << "#" << fn << " ]" << std::endl;
+		cout << "cbStop[ " << sn << "#" << fn << " ]" << endl;
+		//MY_SHORT_LOG_VARS();
+
+		// silently reject any other activity until next successful start
+		if ( m_isError )
+		{
+			return 1;
+		}
+
+		// for testing purposes the user could have set the callback to drop
+		// any data received from nodes, otherwise pass data to user
+		if ( m_userFunctionControl )
+		{
+			// TODO
+			cout << "Passing buffer to the sending Thread" << endl;
+			if(m_senderThread_p == NULL)
+			{
+				cerr << "cbStop(): m_senderThread_p == NULL" << endl;
+			}
+			if(!m_senderThread_p->addDataEvent(m_buffer,m_size))
+			{
+				cerr << "failed to queue data (stream/flow="
+						<< getStreamName() << "/"
+						<< getFlowName() << "/"
+						<< ")" << endl;
+				// there is no much else to do here, if we cannot pass the data
+				// to the user then the data is pretty much lost. The buffer
+				// is freed now.
+				//m_mh_p->free(m_buffer);
+				free(m_buffer);
+				// buffer freed then buffer reset
+				m_buffer = NULL;
+				return 1;
+			}
+		}
+		else
+		{
+			//ACS_SHORT_LOG((LM_DEBUG, "on sub-array index %d dropped %d [bytes]", subArrayIdx, m_size));
+			cout << sn << "#" << fn << " dropped " << m_size << " [bytes]"<< endl;
+			//m_mh_p->free(m_buffer);
+			free(m_buffer);
+		}
+
+		// record that we do not own the buffer any more
+		m_buffer = NULL;
+		//MY_SHORT_TIMED_LOG("cbStop");
 		return 0;
 	}
 
 	static long cbDelay;
 	static bool cbReceivePrint;
 private:
+	// error flags avoid any real activity until after next successfull start
+	bool m_isError;
 	std::string fn; ///flow Name
 	std::string sn; ///stream name
 	unsigned int totalRcvData; ///total size of all received data
+
+	/** Current size of received buffer. Variable updated every time
+	 ** and incoming frame is successfully copied into local buffer.
+	 */
+	unsigned int m_offset;
+
+	/** Expected total size for current transmission.
+	 */
+	unsigned int m_size;
+	/** Local memory buffer in which received data is being copied.
+	 */
+	uint8_t *m_buffer;
+	/** Flag used to control whether to call or not to
+	 ** call user's handling function.
+	 */
+	bool m_userFunctionControl;
+
+	/**
+	 * pointer to the sender thread to be able to pass the data buffer to it
+	 */
+	BulkDataNTArrayThread * m_senderThread_p;
 };
 
 long TestReceiverCB::cbDelay = 0;
@@ -114,7 +300,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-rm \t receiver multicast address]" << endl;
 	cout << "\t[-rv \t additional printing in cbReceive]" << endl;
 	cout << "\t[-ss \t senderStreamName]" << endl;
-	cout << "\t[-sf \t senderFlow1Name[,senderFlow2Name,senderFlow3Name...]]" << endl;
+	cout << "\t[-sf \t senderFlowName]" << endl;
 	cout << "\t[-sb \t sender data size in bytes]. Default: 65000" << endl;
 	cout << "\t[-sp \t sender parameter (startSend())]. Default: 'defaultParameter'" << endl;
 	cout << "\t[-sl \t # of loops/iterations for the sender]. Default: 1" << endl;
@@ -131,10 +317,11 @@ int main(int argc, char *argv[])
 	int option;
 	bool waitForKey=true;
 	bool sendData=true;
-	bool recreate=true;
+	//bool recreate=true;
 	unsigned int loop=1;
 	double throttling=0.0;
-	double send_time, sendTimeout=5.0, ACKtimeout=2.0;
+	double sendTimeout=5.0, ACKtimeout=2.0;
+	//double send_time;
 	ACE_Time_Value start_time, elapsed_time;
 	ReceiverStreamConfiguration recvStreamCfg;
 	ReceiverFlowConfiguration recvFlowCfg;
@@ -146,7 +333,7 @@ int main(int argc, char *argv[])
 	const int RECEIVER_UNICAST_OPTION       = 4;
 	const int RECEIVER_MULTICAST_OPTION		= 5;
 	const int SENDER_STREAM_NAME_OPTION 	= 6;
-	const int SENDER_FLOWS_NAMES_OPTION 	= 7;
+	const int SENDER_FLOW_NAMES_OPTION 		= 7;
 	const int SENDER_DATA_SIZE_OPTION		= 8;
 	const int SENDER_START_SEND_PARAM_OPTION = 9;
 	const int SENDER_NBLOOPS_OPTION			= 10;
@@ -154,9 +341,11 @@ int main(int argc, char *argv[])
 	const int SENDER_FRAME_TIMEOUT_OPTION	= 12;
 	const int SENDER_ACK_TIMEOUT_OPTION		= 13;
 	const int SENDER_THROTTLING_OPTION		= 14;
+	vector <BulkDataNTReceiverFlow *> receiverFlowsList;
 
 	string recvStreamName = "DefaultRcvStream";
 	string senderStreamName = "DefaultSendStream";
+	string senderFlowName = "defaultSenderFlow";
 	string param="defaultParameter";
 	/*char unicastPortQoS[250];
 	unsigned int unicastPort=24000;
@@ -187,7 +376,7 @@ int main(int argc, char *argv[])
 	get_opts.long_option(ACE_TEXT ("rv"), 'v');
 
 	// sender flows names list (sf) option
-	if(get_opts.long_option(ACE_TEXT ("sf"), SENDER_FLOWS_NAMES_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
+	if(get_opts.long_option(ACE_TEXT ("sf"), SENDER_FLOW_NAMES_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	{		return -1; 	}
 	// sender stream name (ss) option
 	if (get_opts.long_option(ACE_TEXT ("ss"), SENDER_STREAM_NAME_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
@@ -250,12 +439,10 @@ int main(int argc, char *argv[])
 			cout << "receiver Stream Name = " << recvStreamName << endl;
 			break;
 		}
-		case SENDER_FLOWS_NAMES_OPTION:
+		case SENDER_FLOW_NAMES_OPTION:
 		{
-			ACE_Tokenizer tok(get_opts.opt_arg());
-			tok.delimiter_replace(',', 0);
-			for(char *p = tok.next(); p; p = tok.next())
-				sendFlows.push_back(p);
+			senderFlowName = get_opts.opt_arg();
+			cout << "sender flow name = " << senderFlowName << endl;
 			break;
 		}
 		case RECEIVER_FLOWS_NAMES_OPTION:
@@ -333,7 +520,7 @@ int main(int argc, char *argv[])
 		flowCfg.setMulticastAddress(multicastAdd);
 		 */
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), recvFlowCfg);
-		flow->getCallback<TestReceiverCB>();
+		receiverFlowsList.push_back(flow);
 	}
 
 	std::vector<string> flowNames = receiverStream.getFlowNames();
@@ -342,8 +529,41 @@ int main(int argc, char *argv[])
 		std::cout << flowNames[i] << " ";
 	std::cout << "] of stream: " <<  recvStreamName << std::endl;
 
+
+	//
+	// processing threads, note that we are not jet trying to support simultaneous
+	// arrays, therefore, the dimension of the array is set to 1.
+	//
+	//std::vector<BulkDataNTArrayThread *> arrayThread_p;
+
+	// Create the sender thread
+	BulkDataNTArrayThread *senderThread;
+	senderThread = new BulkDataNTArrayThread("SENDER_THREAD",senderStreamName, senderFlowName);
+	senderThread->resume();
+
+	TestReceiverCB * cbtmp = NULL;
+	vector<BulkDataNTReceiverFlow *>::iterator recFlowsListIt;
+	for(recFlowsListIt = receiverFlowsList.begin(); recFlowsListIt != receiverFlowsList.end(); recFlowsListIt++)
+	{
+		cbtmp = (*recFlowsListIt)->getCallback<TestReceiverCB>();
+		cbtmp->setSenderThread(senderThread);
+	}
+
 	ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
-	while(recreate)
+
+	std::cout << "press ENTER to transmit data to connected receivers ..." << std::endl;
+	if (waitForKey) getchar();
+	sendData=true;
+	senderThread->startSequence();
+
+	std::cout << "press ENTER to stop transmitting data" << std::endl;
+	//int c=getchar();
+	getchar();
+
+	//senderThread->stopSequence();
+
+
+	/*while(recreate)
 	{
 		unsigned int numOfCreatedFlows=0;
 		vector<BulkDataNTSenderFlow*> flows;
@@ -467,6 +687,14 @@ int main(int argc, char *argv[])
 
 			ex.log();
 		}
-	}//while(recreate)
+	}//while(recreate)*/
+
+
+	if(!senderThread->stop())
+	{
+		ACS_SHORT_LOG((LM_DEBUG,"failed to stop sender thread (%s)",
+							senderThread->getName().c_str()));
+	}
+	delete senderThread;
 	m_logger.flush();
 }
