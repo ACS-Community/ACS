@@ -581,7 +581,9 @@ public class ManagerImplTest extends TestCase
 		}
 		assertNotNull(info2);
 		assertEquals(info.getHandle(), info2.getHandle());
-		
+
+		// wait for some time, so that manager reports passes postponed start-up component activation
+		try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
 	}
 
 	public void testExpiredHandle()
@@ -2379,6 +2381,8 @@ public class ManagerImplTest extends TestCase
 			
 			manager.login(pycontainer);
 			
+			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+
 			try
 			{
 				StatusHolder status = new StatusHolder();
