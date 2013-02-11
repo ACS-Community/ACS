@@ -13,3 +13,5 @@ s/Manager login done, handle .* obtained./Manager login done, handle xxxxxx obta
 s/ChannelName='[^']*'/ChannelName='xxx'/g
 s/ChannelId='[^']*'/ChannelId='xxx'/g
 s/TimeMillis='[0-9]*'/TimeMillis='xxx'/g
+s/CMW.ALARM_SYSTEM.CLIENTS..[0-9]*/CMW.ALARM_SYSTEM.CLIENTS.nnnn/g
+
