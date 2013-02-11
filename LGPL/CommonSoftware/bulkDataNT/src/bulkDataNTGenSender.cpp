@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.14 2013/01/08 11:41:44 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.15 2013/02/11 18:34:38 rbourtem Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,6 +41,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-t] \t send frame timeout in sec. Default: 5.0" << endl;
 	cout << "\t[-a] \t ACK timeout in sec. Default: 2.0" << endl;
 	cout << "\t[-o] \t throttling in MBytes/sec. Default: 0.0 (no throttling)" << endl;
+	cout << "\t[-c] \t CDP protocol compatibility (-p option ignored and parameter = data size as unsigned int)" << endl;
 	exit(1);
 }
 
@@ -50,18 +51,20 @@ int main(int argc, char *argv[])
 	bool sendData=true;
 	bool recreate=true;
 	bool waitForKey=true;
+	bool cdpProtocolCompatible = false;
 	double send_time, sendTimeout=5.0, ACKtimeout=2.0;
 	ACE_Time_Value start_time, elapsed_time;
 	char *streamName = "DefaultStream";
 	std::string param="defalutParamter";
 	unsigned int dataSize=65000;
+	unsigned int totalDataSize=65000;
 	unsigned int loop=1;
 	double throttling=0.0;
 	list<char *> flowNames;
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:n");
+    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:nc");
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
     	case 'l':
@@ -113,6 +116,11 @@ int main(int argc, char *argv[])
     		waitForKey = false;
     		break;
     	}
+    	case 'c':
+    	{
+    		cdpProtocolCompatible = true;
+    		break;
+    	}
     	default:
     	{
     		print_usage(argv);
@@ -127,6 +135,11 @@ int main(int argc, char *argv[])
 	LoggingProxy m_logger(0, 0, 31, 0);
 	LoggingProxy::init (&m_logger);
     ACS_CHECK_LOGGER;
+
+    if(cdpProtocolCompatible)
+    {
+    	totalDataSize = dataSize * loop;
+    }
 
 
     ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
@@ -173,8 +186,16 @@ int main(int argc, char *argv[])
     			// first startSend
     			for(unsigned int i=0; i<numOfCreatedFlows; i++)
     			{
-    				ACS_SHORT_LOG((LM_INFO, "Going to send paramter: '%s' to flow: '%s' to %d receiver(s)", param.c_str(), tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
-    				flows[i]->startSend((const unsigned char*)param.c_str(), param.size());
+    				if(cdpProtocolCompatible)
+    				{
+        				ACS_SHORT_LOG((LM_INFO, "Going to send parameter (= dataSize*nb_loops): '%d' to flow: '%s' to %d receiver(s)", totalDataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+        				flows[i]->startSend((const unsigned char*)&totalDataSize,sizeof(unsigned int));
+    				}
+    				else
+    				{
+        				ACS_SHORT_LOG((LM_INFO, "Going to send parameter: '%s' to flow: '%s' to %d receiver(s)", param.c_str(), tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+        				flows[i]->startSend((const unsigned char*)param.c_str(), param.size());
+    				}
     				throughputSums[i]=0.0;
     			}//for
     			sumThrouhgput=0.0;
