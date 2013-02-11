@@ -21,6 +21,7 @@
  */
 package alma.jconttest.DummyComponentImpl;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import alma.acs.component.ComponentImplBase;
@@ -59,12 +60,18 @@ public class DummyComponentImpl extends ComponentImplBase implements DummyCompon
 	public void callThatTakesSomeTime(int timeInMillisec) {
 		if (timeInMillisec > 0) {
 			getLogger().info("Called in thread " + Thread.currentThread().getName() + ". Will sleep for " + timeInMillisec + " millisec");
-			long sleepTime = System.currentTimeMillis();
+			long sleepTimeBeginNano = System.nanoTime();
 			try {
-				Thread.sleep(timeInMillisec);
+				// This "fancy" sleep in a loop is supposed to guarantee that we don't wake up too early, 
+				// which may have been the cause for spurious failures in the test method AcsCorbaTestWithContainer#testComponentPOALifecycleAsync
+				while (System.nanoTime() < sleepTimeBeginNano + TimeUnit.MILLISECONDS.toNanos(timeInMillisec)) {
+					Thread.sleep(timeInMillisec);
+				}
 			} catch (InterruptedException e) {
-				long wakeTime = System.currentTimeMillis();
-				getLogger().warning("Sleep was interrupted after just " + (wakeTime - sleepTime) + " ms instead of " + timeInMillisec + " ms.");
+				long wakeTimeNano = System.nanoTime();
+				String msg = "Sleep was interrupted after just " + TimeUnit.NANOSECONDS.toMillis(wakeTimeNano - sleepTimeBeginNano) + " ms instead of " + timeInMillisec + " ms.";
+				getLogger().warning(msg);
+				throw new org.omg.CORBA.UNKNOWN(msg);
 			}
 		}
 		getLogger().info("slept enough.");
