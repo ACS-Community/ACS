@@ -2,7 +2,33 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] -------------------------------
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] component 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] loading configuration...
+1 - ----------T--:--:--.--- WARNING [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] could not load configuration, using defaults
+1 - -- listing properties --
+1 - cmw.mom.notification=false
+1 - cmw.mom.brokerlist=sljas1:2506
+1 - cmw.mom.loadbalancing=false
+1 - cmw.mom.timetolive=60000
+1 - cmw.mom.username=cmw_usr
+1 - cmw.mom.retry=10
+1 - cmw.mom.sequential=true
+1 - cmw.mom.ping=5
+1 - cmw.mom.selectoratbroker=false
+1 - cmw.mom.maxretry=99999
+1 - cmw.mom.priority=4
+1 - cmw.mom.persistance=false
+1 - cmw.mom.password=cmw_pwd
+1 - cmw.mom.keepalive=0
+1 - 
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm Heartbeat client check frequency : 30000 milliseconds
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] starting heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] started heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] subscribe(CMW.ALARM_SYSTEM.CLIENTS.nnnn, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] unSubscribe(4)
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: No alarms
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: HIGH ON
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <BaciPropTest#testDoubleVar, TEST_COMPONENT, 3> ACTIVE
@@ -36,6 +62,9 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: LOW OFF
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <AnotherFF, TestFaultMember, 2> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <AnotherFF:TestFaultMember:2> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] stopped heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] stopping heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] unSubscribeAll()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' has successfully released a component with curl=TEST_COMPONENT
 1 - 
 1 - 
