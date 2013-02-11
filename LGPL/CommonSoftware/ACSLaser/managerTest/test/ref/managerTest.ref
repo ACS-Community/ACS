@@ -1,4 +1,21 @@
 1 - 
+1 - ----------T--:--:--.--- WARNING [laser@ManagerTest] could not load configuration, using defaults
+1 - -- listing properties --
+1 - cmw.mom.notification=false
+1 - cmw.mom.brokerlist=sljas1:2506
+1 - cmw.mom.loadbalancing=false
+1 - cmw.mom.timetolive=60000
+1 - cmw.mom.username=cmw_usr
+1 - cmw.mom.retry=10
+1 - cmw.mom.sequential=true
+1 - cmw.mom.ping=5
+1 - cmw.mom.selectoratbroker=false
+1 - cmw.mom.maxretry=99999
+1 - cmw.mom.priority=4
+1 - cmw.mom.persistance=false
+1 - cmw.mom.password=cmw_pwd
+1 - cmw.mom.keepalive=0
+1 - 
 1 - ManagerTest ready to receive alarms
 1 - Waiting
 1 - Process xxxxx killed
