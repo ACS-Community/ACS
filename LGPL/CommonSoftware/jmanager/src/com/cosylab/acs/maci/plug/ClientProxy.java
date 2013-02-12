@@ -9,17 +9,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.omg.CORBA.Any;
 import org.omg.CORBA.Object;
+import org.omg.CORBA.Policy;
+import org.omg.CORBA.SetOverrideType;
 import org.omg.CORBA.TIMEOUT;
 import org.omg.CORBA.TRANSIENT;
+import org.omg.Messaging.RELATIVE_RT_TIMEOUT_POLICY_TYPE;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.acs.util.IorParser;
 import alma.acs.util.UTCUtility;
 
 import com.cosylab.acs.maci.AuthenticationData;
+import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
-import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
@@ -314,9 +319,12 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		if (client == null)
 			return false;
 
+		si.ijs.maci.Client wrappedClient = null;
 		try
 		{
-			return client.ping();
+			// TODO make this configurable
+			wrappedClient = wrapForRoundtripTimeout(client, 20);
+			return wrappedClient.ping();
 		}
 		catch (TIMEOUT te)
 		{
@@ -329,6 +337,41 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		catch (Throwable ex)
 		{
 			throw new RemoteException("Failed to invoke 'ping()' method.", ex);
+		}
+		finally 
+		{
+			// release immediately to allow GC all the relevant resources, see #release()
+			if (wrappedClient != null)
+				wrappedClient._release();
+		}
+	}
+
+	/**
+	 * <p>
+	 * Impl note: The corba spec (v 2.4, 4.3.8.1) describes the difference between 
+	 * SetOverrideType.SET_OVERRIDE and SetOverrideType.ADD_OVERRIDE. It is not clear to me (HSO) 
+	 * which one should be used, or if there is no practical difference.
+	 * @param corbaRef
+	 * @param timeoutSeconds
+	 * @return
+	 * @throws AcsJCORBAProblemEx
+	 */
+	public si.ijs.maci.Client wrapForRoundtripTimeout(si.ijs.maci.Client corbaRef, double timeoutSeconds) throws AcsJCORBAProblemEx {
+		
+		try
+		{
+			org.omg.CORBA.ORB orb = getOrb();
+			Any rrtPolicyAny = orb.create_any();
+			rrtPolicyAny.insert_ulonglong(UTCUtility.durationJavaMillisToOmg((long)timeoutSeconds*1000));
+			Policy p = orb.create_policy(RELATIVE_RT_TIMEOUT_POLICY_TYPE.value, rrtPolicyAny);
+			org.omg.CORBA.Object ret = corbaRef._set_policy_override (new Policy[]{ p }, SetOverrideType.SET_OVERRIDE);
+			p.destroy();
+			return si.ijs.maci.ClientHelper.narrow(ret);
+		}
+		catch (Throwable thr) {
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(thr);
+			ex2.setInfo("Failed to set the object-level client-side corba roundtrip timeout to " + timeoutSeconds);
+			throw ex2;
 		}
 	}
 
