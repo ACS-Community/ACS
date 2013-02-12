@@ -37,8 +37,9 @@ then
 # TODO "jhat $DUMP_FILENAME", check for output "Server is ready", possibly run a query, then kill jhat.
 # This would verify that the dump was indeed readable.
 
+    DUMP_FILE=`grep Dumping heapDumpOnOutOfMemoryErrorTest.out | cut -d \  -f 4`
     echo "Removing dump file $DUMP_FILENAME"
-    rm $ACS_TMP/$DUMP_FILENAME
+    rm $DUMP_FILE
 
 else
     echo "ERROR: Heap dump was not created correctly by the test."
