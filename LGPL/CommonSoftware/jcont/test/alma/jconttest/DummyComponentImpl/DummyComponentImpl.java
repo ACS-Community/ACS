@@ -61,11 +61,13 @@ public class DummyComponentImpl extends ComponentImplBase implements DummyCompon
 		if (timeInMillisec > 0) {
 			getLogger().info("Called in thread " + Thread.currentThread().getName() + ". Will sleep for " + timeInMillisec + " millisec");
 			long sleepTimeBeginNano = System.nanoTime();
+			long sleepTimeEndNano = sleepTimeBeginNano + TimeUnit.MILLISECONDS.toNanos(timeInMillisec);
 			try {
 				// This "fancy" sleep in a loop is supposed to guarantee that we don't wake up too early, 
 				// which may have been the cause for spurious failures in the test method AcsCorbaTestWithContainer#testComponentPOALifecycleAsync
-				while (System.nanoTime() < sleepTimeBeginNano + TimeUnit.MILLISECONDS.toNanos(timeInMillisec)) {
-					Thread.sleep(timeInMillisec);
+				long currentTimeNano = 0;
+				while ((currentTimeNano=System.nanoTime()) < sleepTimeEndNano) {
+					Thread.sleep(TimeUnit.NANOSECONDS.toMillis(sleepTimeEndNano - currentTimeNano));
 				}
 			} catch (InterruptedException e) {
 				long wakeTimeNano = System.nanoTime();
