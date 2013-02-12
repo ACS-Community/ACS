@@ -1,33 +1,24 @@
-1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
-1 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] Starting CORBA Services
+1 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file
 1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
 1 - JDAL is ready and waiting
-1 - ReBound ID: MC_NotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
-1 - ReBound ID: MC_LoggingNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
-1 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
-1 - ReBound ID: MC_AlarmNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
-1 -  --endorsed -- alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
-1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=xxxxx
-1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@AlarmService created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
-1 - ----------T--:--:--.--- INFO [AlarmService] Starting the ACS implementation of the alarm service
 1 - The alarm service is ready and waiting
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 1 - Manager Application initialized
-1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
-1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
 1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
+1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
+1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 2 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
 2 - Mock Java container
 3 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
@@ -35,25 +26,25 @@
 2 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 5 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
 5 - Mock Java container
+6 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=9'
 6 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 6 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
-6 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=9'
 5 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 6 - ----------T--:--:--.--- INFO [acsStop] Shutting down opCont container
 3 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 6 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 6 - Max timeout exceeded!
-6 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 6 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
 6 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
+6 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 6 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
 6 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
-6 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
-6 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
+6 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
 6 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
+6 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 6 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
 6 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
