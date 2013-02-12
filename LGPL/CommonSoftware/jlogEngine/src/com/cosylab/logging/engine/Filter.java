@@ -300,7 +300,7 @@ public class Filter {
 	 * @param obj The object to apply the filter to
 	 * @return <code>true</code> if the object matches the filter
 	 */
-	public boolean applyTo(Object obj) {
+	private boolean applyTo(Object obj) {
 		if (obj == null) {
 			return false;
 		}
