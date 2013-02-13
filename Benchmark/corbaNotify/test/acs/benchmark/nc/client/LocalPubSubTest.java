@@ -47,6 +47,7 @@ import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.pubsubtest.config.types.ImplLangT;
 import alma.acs.util.AcsLocations;
 import alma.benchmark.CHANNELNAME_CONTROL_REALTIME;
 import alma.benchmark.CorbaNotifyConsumerOperations;
@@ -142,7 +143,7 @@ public class LocalPubSubTest extends ComponentClient
 		try {
 			// Create dynamic supplier component
 			String componentName = "JavaSupplier-1";
-			supplierComp = componentAccessUtil.getDynamicJavaSupplierComponent(componentName, supplierContainerName);
+			supplierComp = componentAccessUtil.getDynamicSupplierComponent(componentName, supplierContainerName, ImplLangT.JAVA);
 			
 			// supplier setup
 			String[] ncNames = new String[] {CHANNELNAME_CONTROL_REALTIME.value};
@@ -208,13 +209,14 @@ public class LocalPubSubTest extends ComponentClient
 					return subscriberComp.receiveEvents(ncEventSpecs, 0, numEvents);
 				}
 			};
-			Future<Integer> subscriberCallFuture = Executors.newSingleThreadExecutor().submit(runSubscriber);
+			Future<Integer> subscriberCallFuture = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory())
+														.submit(runSubscriber);
 			Thread.sleep(100); // to "ensure" that the subscriber is ready before we publish events 
 	
 			// Create dynamic supplier component
 			String componentName = "JavaSupplier-1";
-			CorbaNotifySupplierOperations supplierComp = componentAccessUtil.getDynamicJavaSupplierComponent(
-															componentName, supplierContainerName);
+			CorbaNotifySupplierOperations supplierComp = componentAccessUtil.getDynamicSupplierComponent(
+															componentName, supplierContainerName, ImplLangT.JAVA);
 			
 			// supplier setup
 			supplierComp.ncConnect(ncNames);
