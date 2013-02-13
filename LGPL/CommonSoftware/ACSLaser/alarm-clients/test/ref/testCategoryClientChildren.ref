@@ -14,10 +14,8 @@
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] unSubscribe(5)
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] stopping heartbeat check...
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeChildren] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - 
 1 - 
 1 - OK (1 test)

@@ -34,17 +34,13 @@
 1 - TEST:MULTI3:2
 1 - TEST:MULTI4:2
 1 - TEST:MULTI5:2
-1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testActiveChildren] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testActiveChildren] stopped heartbeat check
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testActiveChildren] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testActiveChildren] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testActiveChildren] closing...
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testActiveChildren] closed
 1 - 
 1 - 
 1 - OK (1 test)
 1 - 
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected

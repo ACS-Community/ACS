@@ -12,12 +12,10 @@
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
 1 - ----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] unSubscribe(5)
-1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] stopped heartbeat check
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetNodeParents] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - 
 1 - 
 1 - OK (1 test)

@@ -30,14 +30,11 @@
 1 - 	<TEST, TEST_MEMBER1, 2>  user property [PropertyKey, One property only]
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] stopping heartbeat check...
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
-1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] closed
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] closing...
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] closed
 1 - 
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - 
 1 - OK (1 test)
 1 - 

@@ -14,10 +14,8 @@
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetThreashold] unSubscribe(5)
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetThreashold] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetThreashold] stopping heartbeat check...
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.CategoryClientThreshold#testGetThreashold] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - 
 1 - 
 1 - OK (1 test)

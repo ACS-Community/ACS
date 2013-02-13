@@ -21,13 +21,10 @@
 1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
 1 - ----------T--:--:--.--- INFO [laser@CategoryClientTest#testAlarmReception] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@CategoryClientTest#testAlarmReception] stopped heartbeat check
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@CategoryClientTest#testAlarmReception] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
-1 - ----------T--:--:--.--- INFO [laser@CategoryClientTest#testAlarmReception] closing...
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - ----------T--:--:--.--- INFO [laser@CategoryClientTest#testAlarmReception] closed
+1 - ----------T--:--:--.--- INFO [laser@CategoryClientTest#testAlarmReception] closing...
 1 - 
 1 - 
 1 - OK (1 test)

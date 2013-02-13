@@ -16,7 +16,6 @@
 1 - AlarmSenderForDumperTest closing.
 1 - AlarmSenderForDumperTest.close()
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - closing...
-1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - closed
 1 - AlarmSenderForDumperTest.close() terminated
 1 - AlarmSenderForDumperTest done.
