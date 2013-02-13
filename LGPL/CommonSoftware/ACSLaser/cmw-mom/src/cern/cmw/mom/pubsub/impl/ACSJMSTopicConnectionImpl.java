@@ -249,7 +249,7 @@ public class ACSJMSTopicConnectionImpl implements JMSTopicConnection {
 
     brokerConnection = null;
     connected = false;
-    cat.info("disconnected");
+    cat.debug("disconnected");
   }
 
   /**
