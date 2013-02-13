@@ -79,12 +79,12 @@ echo "set ylabel \"Frequency\"" >> $HF
 echo -ne "plot " >> $HF
 
 COMMA=""
-PLOTCMD="using (bin(\$3,bw)+bw/2):(1.0) smooth frequency ti 'freq' w boxes "
+PLOTCMD="using (bin(\$3,bw)+bw/2):(1.0) smooth frequency w boxes "
 for f in $FILES
 do	
 	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
 	OF=$MACHINE.TP
-	echo -ne $COMMA "\"$OF\"" $PLOTCMD >> $HF
+	echo -ne $COMMA "\"$OF\"" $PLOTCMD ti \"$OF dist\" >> $HF
 	COMMA=","
 done
 
