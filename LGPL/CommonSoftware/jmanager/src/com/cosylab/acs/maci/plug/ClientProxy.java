@@ -311,6 +311,34 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	}
 
 	/**
+	 * ping() CORBA client-side timeout JVM property name.
+	 */
+	private static final String NAME_PING_TIMEOUT = "manager.pingCallTimeout";
+
+	/**
+	 * Default ping timeout.
+	 */
+	private static final double DEFAULT_PING_TIMEOUT_DEFAULT_SEC = 20.0;
+	
+	private static double pingTimeoutSec = DEFAULT_PING_TIMEOUT_DEFAULT_SEC; 
+	
+	static {
+		String secValue = System.getProperty(NAME_PING_TIMEOUT);
+		if (secValue != null)
+		{
+			try 
+			{
+				pingTimeoutSec = Double.parseDouble(secValue);
+			} catch (Throwable th) {
+				// noop
+			}
+
+			// at least one second
+			pingTimeoutSec = Math.max(1.0, pingTimeoutSec);
+		}
+	}
+	
+	/**
 	 * @see com.cosylab.acs.maci.Client#ping()
 	 */
 	public boolean ping() throws RemoteException
@@ -322,8 +350,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		si.ijs.maci.Client wrappedClient = null;
 		try
 		{
-			// TODO make this configurable
-			wrappedClient = wrapForRoundtripTimeout(client, 20);
+			wrappedClient = wrapForRoundtripTimeout(client, pingTimeoutSec);
 			return wrappedClient.ping();
 		}
 		catch (TIMEOUT te)
