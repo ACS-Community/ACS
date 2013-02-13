@@ -36,8 +36,8 @@
 	<xsd:simpleType name="ImplLangT">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="java"/>
-			<!-- xsd:enumeration value="cpp"/ -->
-			<!-- xsd:enumeration value="py"/ -->
+			<xsd:enumeration value="cpp"/>
+			<xsd:enumeration value="py"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -49,7 +49,7 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="PubSubSpecCommonT" abstract="true">
-		<xsd:annotation><xsd:documentation>Spec applicable for both suppliers and subscribers. If more than one EventName is given, a supplier will send those alternatingly, while a subscriber will subscribe to all events.</xsd:documentation></xsd:annotation>
+		<xsd:annotation><xsd:documentation>Spec applicable for both suppliers and subscribers. If more than one EventName is given, a supplier will send those alternatingly, while a subscriber will subscribe to all events. If numberOfEvents is omitted, events will be sent or received until some other mechanism stops it.</xsd:documentation></xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="NC" type="xsd:string" />
 			<xsd:element name="EventName" type="pusut:EventNameT" maxOccurs="unbounded" />
@@ -100,6 +100,7 @@
 
 	<xsd:element name="PubSubInfrastructureSpec">
 		<xsd:complexType>
+			<xsd:annotation><xsd:documentation>For publisher or subscriber components to use more than one NC, specify multiple Publisher or Subscriber elements for the same component.</xsd:documentation></xsd:annotation>
 			<xsd:sequence>
 				<xsd:element name="TestDescription" type="xsd:string" />
 				<xsd:element name="Container" type="pusut:ContainerSpecT" minOccurs="1" maxOccurs="unbounded" />
