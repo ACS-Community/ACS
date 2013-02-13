@@ -24,21 +24,36 @@ package acs.benchmark.nc.client;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import acs.benchmark.util.ContainerUtil;
 import acs.benchmark.util.ContainerUtil.ContainerLogLevelSpec;
 
+import alma.ACS.ACSComponentOperations;
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.pubsubtest.config.ContainerSpecT;
 import alma.acs.pubsubtest.config.PubSubInfrastructureSpec;
+import alma.acs.pubsubtest.config.PubSubSpecCommonT;
 import alma.acs.pubsubtest.config.PublisherSpecT;
 import alma.acs.pubsubtest.config.SimpleLoggingSpecT;
 import alma.acs.pubsubtest.config.SubscriberSpecT;
 import alma.acs.pubsubtest.config.TerminationSpecT;
+import alma.acs.pubsubtest.config.types.EventNameT;
+import alma.acs.pubsubtest.config.types.ImplLangT;
 import alma.acs.util.AcsLocations;
+import alma.benchmark.CorbaNotifyCompBaseOperations;
+import alma.benchmark.CorbaNotifyConsumerOperations;
+import alma.benchmark.CorbaNotifySupplierOperations;
+import alma.benchmark.NcEventSpec;
 import alma.maci.containerconfig.types.ContainerImplLangType;
 
 /**
@@ -61,11 +76,14 @@ import alma.maci.containerconfig.types.ContainerImplLangType;
  *       and their containers as well.
  * </ol>
  * 
- * 
  * @author hsommer
  */
 public class PubSubExecutor extends ComponentClient
 {
+	/**
+	 * Use values != null to cheat, e.g. when running a test from Eclipse on Windows 
+	 * but the containers should be somewhere else.
+	 */
 	private static final String localhostName = "alma-head"; //= null;
 
 	private final ContainerUtil containerUtil;
@@ -131,20 +149,20 @@ public class PubSubExecutor extends ComponentClient
 			for (PublisherSpecT pubSpec : pubSubSpec.getPublisher()) {
 				if (!pubSpec.hasNumberOfEvents() || pubSpec.getNumberOfEvents() <= 0) {
 					throw new IllegalArgumentException("Publisher " + pubSpec.getComponentName() 
-							+ " needs numberOfEvents >= 0, or call execute with a timeout.");
+							+ " needs numberOfEvents >= 0, or call 'execute' with a timeout.");
 				}
 			}
 			for (SubscriberSpecT subSpec : pubSubSpec.getSubscriber()) {
 				if (!subSpec.hasNumberOfEvents() || subSpec.getNumberOfEvents() <= 0) {
 					throw new IllegalArgumentException("Subscriber " + subSpec.getComponentName() 
-							+ " needs numberOfEvents >= 0, or call execute with a timeout.");
+							+ " needs numberOfEvents >= 0, or call 'execute' with a timeout.");
 				}
 			}
 			// timeout is implied by the finite number of events
 			execute(scenario, -1, null);
 		}
 		else {
-			// use timeout from XML
+			// use timeout from XML, complementary to any finite number of events if those are specified.
 			long timeout = teminationSpec.getTimeout();
 			TimeUnit timeUnit = TimeUnit.valueOf(teminationSpec.getTimeUnit().toString());
 			m_logger.fine("Will use timeout from the XML spec: timeout=" + timeout + ", timeUnit=" + timeUnit);
@@ -156,16 +174,12 @@ public class PubSubExecutor extends ComponentClient
 	 * Run the specified pub/sub container and components.
 	 * If this method gets called directly (and not by {@link #execute(PubSubScenario)}, 
 	 * the executionTime parameter can overwrite the timeout setting from the XML, or can 
-	 * set a timeout complementary to a finite <code>numberOfEvents</code>.
+	 * set a timeout complementary to a finite <code>PubSubSpecCommonT#numberOfEvents</code>.
 	 */
-	public void execute(PubSubScenario scenario, long executionTime, TimeUnit timeUnit) throws Throwable {
-		if (executionTime <= 0) {
-			throw new IllegalArgumentException("executionTime must be >= 0");
-		}
-		
-		m_logger.info("execute!");
-		
+	public void execute(PubSubScenario scenario, long executionTimeMax, TimeUnit executionTimeMaxUnit) throws Throwable {
 		PubSubInfrastructureSpec pubSubSpec = scenario.getSpec();
+		
+		m_logger.info("Will execute test with description:\n" + pubSubSpec.getTestDescription());
 		
 		SimpleLoggingSpecT loggingSpec = ( pubSubSpec.getLogging() != null ? pubSubSpec.getLogging() : defaultLoggingSpec );
 		AcsLogLevelDefinition levelDefaultLocal = AcsLogLevelDefinition.fromInteger(loggingSpec.getDefaultLevelMinLocal());
@@ -194,26 +208,115 @@ public class PubSubExecutor extends ComponentClient
 			errors.add(thr);
 		}
 		
-		// TODO: components
-		if (errors.isEmpty()) {
-			
-		}
+		boolean allPubSubHaveFiniteEvents = true;
+		ExecutorService pubSubExec = Executors.newCachedThreadPool(getContainerServices().getThreadFactory());
 		
-		// wait
-		if (errors.isEmpty() && executionTime > 0) {
-			try {
-				m_logger.info("Will sleep for " + executionTime + " " + timeUnit.toString() + "...");
-				timeUnit.sleep(executionTime);
-			} catch (Exception ex) {
-				errors.add(ex);
+		if (errors.isEmpty()) {
+			for (final SubscriberSpecT subSpec : pubSubSpec.getSubscriber()) {
+				boolean subIsBlocking = isBlocking(subSpec);
+				if (!subIsBlocking) {
+					allPubSubHaveFiniteEvents = false;
+				}
+				ImplLangT implLang = deriveComponentImplLang(subSpec, pubSubSpec);
+				
+				// Get the subscriber component. This may retrieve the same component more than once if it should use more than one NC
+				// (which will result in multiple NCSubscriber instances created by that component).
+				CorbaNotifyConsumerOperations subscriberComp = 
+						componentAccessUtil.getDynamicSubscriberComponent(subSpec.getComponentName(), subSpec.getContainerName(), implLang);
+				
+				PubSubRunner runner = new PubSubRunner(subSpec, subscriberComp, pubSubExec, m_logger) {
+					@Override
+					protected Integer callSpecific(NcEventSpec eventSpec, int numEvents) throws CouldntPerformActionEx {
+						logger.info("About to call subscriber#receiveEvents...");
+						int processingDelay = (subSpec.hasProcessingDelayMillis() ? subSpec.getProcessingDelayMillis() : -1);
+						return ((CorbaNotifyConsumerOperations)pubSubComp).receiveEvents(new NcEventSpec[] {eventSpec}, processingDelay, numEvents);
+					}
+				};
+				try {
+					runner.runPubSub();
+				} catch (Exception ex) {
+					errors.add(ex);
+				}
+			}
+
+			Thread.sleep(100); // to "ensure" that even the asynchronously called subscribers are ready before we publish events
+			
+			for (final PublisherSpecT pubSpec : pubSubSpec.getPublisher()) {
+				boolean pubIsBlocking = isBlocking(pubSpec);
+				if (!pubIsBlocking) {
+					allPubSubHaveFiniteEvents = false;
+				}
+				ImplLangT implLang = deriveComponentImplLang(pubSpec, pubSubSpec);
+				
+				// Get the subscriber component. This may retrieve the same component more than once if it should use more than one NC
+				// (which will result in multiple NCPublisher instances created by that component).
+				CorbaNotifySupplierOperations publisherComp = 
+						componentAccessUtil.getDynamicSupplierComponent(pubSpec.getComponentName(), pubSpec.getContainerName(), implLang);
+				
+				PubSubRunner runner = new PubSubRunner(pubSpec, publisherComp, pubSubExec, m_logger) {
+					@Override
+					protected Integer callSpecific(NcEventSpec eventSpec, int numEvents) throws CouldntPerformActionEx {
+						logger.info("About to call publisher#sendEvents...");
+						int eventPeriodMillis = (pubSpec.hasEventPeriodMillis() ? pubSpec.getEventPeriodMillis() : -1);
+						return ((CorbaNotifySupplierOperations)pubSubComp).sendEvents(new NcEventSpec[] {eventSpec}, eventPeriodMillis, numEvents);
+					}
+				};
+				try {
+					runner.runPubSub();
+				} catch (Exception ex) {
+					errors.add(ex);
+				}
+			}
+		} // end of starting all pubs/subs
+		
+		
+		// wait for NC scenario to execute
+		if (errors.isEmpty()) {
+
+			if (allPubSubHaveFiniteEvents) {
+				// wait for all suppliers and subscribers to finish, enforcing the timeout if applicable
+				// TODO: More options would be available if we stored the PubSubRunner instances in a list...
+				pubSubExec.shutdown();
+				if (executionTimeMax > 0) {
+					pubSubExec.awaitTermination(executionTimeMax, executionTimeMaxUnit);
+				}
+				else {
+					pubSubExec.awaitTermination(100*365, TimeUnit.DAYS); // like Dornroeschen
+				}
+			}
+			else {
+				// executionTime should be used to let the "indefinite" suppliers and subscribers do their work, 
+				// even if some others should terminate by themselves
+				if (executionTimeMax > 0) {
+					try {
+						m_logger.info("Will sleep for " + executionTimeMax + " " + executionTimeMaxUnit.toString() + "...");
+						executionTimeMaxUnit.sleep(executionTimeMax);
+					} catch (Exception ex) {
+						errors.add(ex);
+					}
+					// now also the finite suppliers/subscribers should be finished, but even if not they will get interrupted
+					// along with the infinite ones in the cleanup.
+				}
+				else {
+					errors.add(new IllegalArgumentException("An execution time must be specified if some publisher or subscriber is configured with an infinite number of events. Terminating right away..."));
+				}
 			}
 		}
 		
 		// cleanup
 		m_logger.info("Will clean up the pub/sub components...");
 		
-		// todo: interrupt and release components
+		// interrupt and release all components
+		for (ACSComponentOperations comp : componentAccessUtil.getCachedComponents()) {
+			// we could avoid the casting if we keep a separate list of subscriber and supplier comps...
+			if (comp instanceof CorbaNotifyCompBaseOperations) {
+				CorbaNotifyCompBaseOperations pubSubComp = (CorbaNotifyCompBaseOperations) comp;
+				pubSubComp.interrupt(); // this does nothing if the comp has already finished its NC work
+			}
+		}
+		componentAccessUtil.releaseAllComponents(true);
 		
+		// stop containers
 		for (ContainerSpecT containerSpec : pubSubSpec.getContainer()) {
 			try {
 				String host = ( containerSpec.getHostName() != null ? containerSpec.getHostName() : localhostName );
@@ -227,10 +330,88 @@ public class PubSubExecutor extends ComponentClient
 		}
 		
 		if (!errors.isEmpty()) {
+			m_logger.severe("There were " + errors.size() + " errors!");
 			throw errors.get(0);
 		}
 	}
 
+	
+	private ImplLangT deriveComponentImplLang(PubSubSpecCommonT spec, PubSubInfrastructureSpec infraSpec) {
+		ImplLangT implLang = null; // we derive the component implementation language from the associated container
+		for (ContainerSpecT containerSpec : infraSpec.getContainer()) {
+			if (containerSpec.getContainerName().equals(spec.getContainerName())) {
+				implLang = containerSpec.getImplLang();
+			}
+		}
+		return implLang;
+	}
+	
+	private static boolean isBlocking(PubSubSpecCommonT spec) {
+		return ( spec.hasNumberOfEvents() && spec.getNumberOfEvents() > 0 );
+	}
+
+	
+	/**
+	 * Code shared between starting a single supplier or a subscriber for a given NC and component.
+	 * The user should call {@link #runPubSub()}. 
+	 * Also encapsulates the decision whether to run a non-blocking call in the same thread
+	 * or to run in a different thread using the provided ExecutorService.
+	 */
+	private static abstract class PubSubRunner implements Callable<Integer> {
+		
+		protected final Logger logger;
+		private final PubSubSpecCommonT spec;
+		protected final CorbaNotifyCompBaseOperations pubSubComp;
+		private final ExecutorService pubSubExec;
+		private Future<Integer> callFuture; // could be useful in the future...
+
+		PubSubRunner(PubSubSpecCommonT spec, CorbaNotifyCompBaseOperations pubSubComp, ExecutorService pubSubExec, Logger logger) {
+			this.logger = logger;
+			this.spec = spec;
+			this.pubSubComp = pubSubComp;
+			this.pubSubExec = pubSubExec;
+		}
+		
+		void runPubSub() throws Exception {
+			if (isBlocking(spec)) {
+				// the publisher / subscriber will return only when the specified number of events have been published / received, 
+				// for which we need to run it from a separate thread and later sync on the returned Future.
+				callFuture = pubSubExec.submit(this);
+			}
+			else {
+				// just call "sendEvents"/ "receiveEvents" from the current thread, as the call will return immediately
+				call();
+			}
+		}
+		
+		@Override
+		public Integer call() throws Exception {
+		
+			try {
+				pubSubComp.ncConnect(new String[] {spec.getNC()} );
+			} catch (CouldntPerformActionEx ex) {
+				AcsJCouldntPerformActionEx ex2 = AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+				logger.log(Level.WARNING, "Failure invoking " + pubSubComp.name() + "#ncConnect: ", ex2);
+				throw ex2;
+			}
+			logger.info("Connected '" + spec.getComponentName() + "' to NC " + spec.getNC());
+			
+			List<String> eventNamesForIdl = new ArrayList<String>();
+			for (EventNameT eventName : spec.getEventName()) {
+				eventNamesForIdl.add(eventName.toString());
+			}
+			final NcEventSpec eventSpec = new NcEventSpec(spec.getNC(), eventNamesForIdl.toArray(new String[0]), "");
+			int numEvents = (spec.hasNumberOfEvents() ? spec.getNumberOfEvents() : -1);
+			return callSpecific(eventSpec, numEvents);
+		}
+		
+		/**
+		 * Subclasses must contribute pub / sub specific code here, to make the actual component call. 
+		 */
+		abstract Integer callSpecific(NcEventSpec eventSpec, int numEvents) throws CouldntPerformActionEx;
+	}
+	
+	
 	
 	/**
 	 * Parameters:
