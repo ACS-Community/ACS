@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.8 2013/02/07 12:58:50 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.9 2013/02/13 16:14:07 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -113,6 +113,8 @@ class bulkDataNTtestSuite:
                 print "Command for: "+h+" ", sp.returncode, " : "+o
             else:
                 print 'Command for host: '+h+' : '+self.sendersData[h].command+' exited with an error: ', sp.returncode, sp.stderr.read()
+        print '----> All senders terminated. Waiting a few seconds for synchronization'
+        time.sleep(3)                
                  
     #######################################################
     #   Starts the receiver
@@ -120,7 +122,7 @@ class bulkDataNTtestSuite:
     #   Gets the number of flows and builds their names
     #   May be we could pass the list of names directly?
     ######################################################
-    def startReceiver(self, rcvHost, noOfFlows):
+    def startReceiver(self, rcvHost, noOfFlows, multicast):
         flow = 0
         comma=""
         flowString=""
@@ -137,8 +139,13 @@ class bulkDataNTtestSuite:
         #                  " '" + self.preCmd + " bulkDataNTGenReceiver -n -u -s TS -f "+flowString+
         #                  self.postCmd+"bulkDataNTGenReceiver.$HOST'")
         #
+        if multicast == True:
+            xxxcastString=""
+        else:
+            xxxcastString="-u"
+            
         rcvCmd = ("ssh " + os.environ['USER']+ "@" + rcvHost + 
-                  " '" + self.preCmd + " bulkDataNTGenReceiver -n -u -s TS -f "+flowString+
+                  " '" + self.preCmd + " bulkDataNTGenReceiver -n -s TS -f "+flowString+" "+xxxcastString+
                   self.postCmd+"bulkDataNTGenReceiver.$HOST'")
         print ' Executing command: '+ rcvCmd
         process = Popen(rcvCmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
@@ -188,8 +195,9 @@ if __name__ == '__main__':
     acsdata     = None
     sf          = ".bash_profile"
     verbose     = False
+    multicast   = False
     
-    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:v", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose"])
+    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:mv", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose"])
     for o,a in opts:
         if o in ("-h", "--help"):
             print sys.argv[0]+' - Command line options'
@@ -197,6 +205,7 @@ if __name__ == '__main__':
             print '    List of hosts where senders have to be (remotely) executed.'
             print '    Each of the senders will get assigned an increasing flow number.'
             print '  -r receiverHost1[,receiverHost2,....]  or  --receivers=receiverHost1[,receiverHost2,....]'
+            print '  -m                              : Uses multicast instead of the default unicast'
             print '  -v / --verbose                  : Verbose mode: output from the spawned processes is collected and sent to stdout'
             print '  [-b data in bytes]              : Size of each transmitted test data package in bytes. Default: ',b
             print '  [-l number of loops/iterations] : Number of iterations. Default: ',l
@@ -210,6 +219,8 @@ if __name__ == '__main__':
             b=a
         elif o=="-l":
             l=a
+        elif o=="-m":
+            multicast=True
         elif o in ("-r", "--receivers"):
             receiverHost=a
             print 'option -r/--receivers= not supported yet'
@@ -239,7 +250,7 @@ if __name__ == '__main__':
     #
     if receiverHost is not None:
         print '=================> Starting receiver'
-        testSuit.startReceiver(receiverHost, len(senderHosts)) 
+        testSuit.startReceiver(receiverHost, len(senderHosts), multicast) 
     print '---------------------------------------------------------------------------'
 
     #
