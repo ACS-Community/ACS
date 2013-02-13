@@ -72,8 +72,7 @@ public class PubSubScenario
 	
 
 	/**
-	 * Sets container host names in the given <code>PubSubTestSpec</code>.
-	 * @param spec  Pub/sub test spec. Host names for containers will be overwritten by matching data in <code>containerHostMapping</code>.
+	 * Sets container host names.
 	 * @param containerHostMapping  Container-host mapping in the form <code>container1=host1:container2=host2</code>
 	 */
 	public void setHostNames(String containerHostMapping) {
@@ -96,8 +95,7 @@ public class PubSubScenario
 	
 	
 	/**
-	 * Sets container host names in the given <code>PubSubTestSpec</code>.
-	 * @param spec  Pub/sub test spec. Host names for containers will be overwritten by matching data in <code>containerHostMapping</code>.
+	 * Sets container host names.
 	 * @param containerHostMapping  key = container name, value = host name.
 	 */
 	public void setHostNames(Map<String, String> containerHostMapping) {
