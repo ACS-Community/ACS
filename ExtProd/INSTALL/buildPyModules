@@ -130,15 +130,15 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/numpy-1.4.1.tar.gz ]
+if [ ! -e ../PRODUCTS/numpy-1.7.0.tar.gz ]
 then
   echo Error: numpy sources are missing
 else
   echo "== Building numpy"
   export BLAS=/usr/lib/libblas.so
   export LAPACK=/usr/lib/liblapack.so
-  tar -zxf numpy-1.4.1.tar.gz
-  pushd numpy-1.4.1
+  tar -zxf numpy-1.7.0.tar.gz
+  pushd numpy-1.7.0
   $PYTHON_INTR setup.py build --fcompiler=gnu95
   $PYTHON_INTR setup.py install
   popd
@@ -155,16 +155,16 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/matplotlib-0.99.3.tar.gz ]
+if [ ! -e ../PRODUCTS/matplotlib-1.2.0.tar.gz ]
 then
   echo Error: matplotlib sources are missing
 else
   echo "== Building matplotlib"
-  tar -zxf matplotlib-0.99.3.tar.gz;
-  pushd matplotlib-0.99.3
+  tar -zxf matplotlib-1.2.0.tar.gz
+  pushd matplotlib-1.2.0
 
   if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
-    patch setupext.py < ../matplotlib-0.99.3.patch
+    patch setupext.py < ../matplotlib-1.2.0.patch
     cat setupext.py | sed s/\'cygwin\'\ :\ \\[/\'cygwin\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
   else
     cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
