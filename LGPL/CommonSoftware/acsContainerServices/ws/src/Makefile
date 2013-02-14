@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.12 2012/10/05 15:22:09 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.13 2013/02/14 09:38:42 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -128,7 +128,7 @@ USER_IDL =
 JARFILES=acsContainerServices 
 acsContainerServices_DIRS = alma
 acsContainerServices_EXTRAS = alma/acs/nc/sm/generated/EventSubscriberSCXML.xml
-acsContainerServices_JLIBS = JavaContainerError
+acsContainerServices_JLIBS = acsErrTypeLifeCycle JavaContainerError
 
 #
 # java sources in Jarfile on/off
