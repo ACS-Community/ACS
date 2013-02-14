@@ -23,7 +23,11 @@
 
 <PubSubInfrastructureSpec>
 
-  <TestDescription>A simple pub-sub setup without one mapping.</TestDescription>
+  <TestDescription>
+    A simple pub-sub setup for basic tests. 
+    It runs publishers and subscribers for a fixed time, independently of the number of events that are sent or received.
+    See the 'Termination' element used, as opposed to 'numberOfEvents' attributes.
+  </TestDescription>
   
   <Container containerName="publisherContainer-1" implLang="java" />
   <Container containerName="publisherContainer-2" implLang="java" />
@@ -52,6 +56,6 @@
     <EventName>LightweightMountStatusData</EventName>
   </Subscriber>
 
-  <Termination timeout="20" timeUnit="SECONDS" />
+  <Termination timeout="10" timeUnit="MINUTES" />
   
 </PubSubInfrastructureSpec>
