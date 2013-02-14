@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.46 2012/01/18 21:50:02 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.47 2013/02/14 17:12:20 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -28,7 +28,7 @@ PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
 PY_EXT_DOC_L	   = pexpect-doc
-PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw Numeric-24.2 numarray-1.3.3 numpy-1.0.1 matplotlib-0.73.1 python-ldap-2.0.1 gnuplot-py-1.7 pysnmp-2.0.9
+PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw Numeric-24.2 numarray-1.3.3 python-ldap-2.0.1 gnuplot-py-1.7 pysnmp-2.0.9
 
 
 PEXPECT: pexpect-0.999.tgz
@@ -55,32 +55,6 @@ PMW: Pmw.1.2.tar.gz
 	@echo "== Building Python Mega Widgets"
 	@gtar -zxvf Pmw.1.2.tar.gz;
 
-MATPLOTLIB: matplotlib-0.73.1.tar.gz
-	@echo "== Building matplotlib"
-	@gtar -zxvf matplotlib-0.73.1.tar.gz;
-	@cd matplotlib-0.73.1; cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'ACSROOT\'\\],/g >> setupext.py.tmp
-	@mv matplotlib-0.73.1/setupext.py.tmp matplotlib-0.73.1/setupext.py
-	@cd matplotlib-0.73.1; cat setup.py | sed s/BUILD_GTKAGG\ \ \ \ \ \ \ =\ \'auto\'/BUILD_GTKAGG=0/g >> setup.py.tmp
-	@mv matplotlib-0.73.1/setup.py.tmp matplotlib-0.73.1/setup.py
-	@cd matplotlib-0.73.1; cat setup.py | sed s/BUILD_GTK\ \ \ \ \ \ \ \ \ \ =\ \'auto\'/BUILD_GTK=0/g >> setup.py.tmp
-	@mv matplotlib-0.73.1/setup.py.tmp matplotlib-0.73.1/setup.py
-	@cd matplotlib-0.73.1; cat setup.py | sed s/BUILD_TKAGG\ \ \ \ \ \ \ \ =\ \'auto\'/BUILD_TKAGG=1/g >> setup.py.tmp
-	@mv matplotlib-0.73.1/setup.py.tmp matplotlib-0.73.1/setup.py
-	@cd matplotlib-0.73.1; \
-	export BUILD_AGG=1; \
-	python setup.py build; \
-	python setup.py install; 
-
-
-MATPLOTLIB_CONFIG: 
-	@cd $(PYTHON_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/numerix\ \ \ \ \ \ :\ Numeric/numerix\ \ \ \ \ \ :\ numarray/g >> .matplotlibrc.tmp
-	@cd $(PYTHON_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
-	@cd $(PYTHON_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> .matplotlibrc.tmp
-	@cd $(PYTHON_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
-	@cd $(PYTHON_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/interactive\ \ :\ False/interactive\ \ :\ True/g >> .matplotlibrc.tmp
-	@cd $(PYTHON_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
-
-
 #
 # We need a patch for pychecker since the setup.py script
 # is script in such a way that it does not allow to properly install the
@@ -101,11 +75,6 @@ NUMARRAY: numarray-1.3.3.tar.gz
 	@echo "== Building numarray"
 	@gtar -zxvf numarray-1.3.3.tar.gz;
 	@cd numarray-1.3.3; python setup.py install --gencode; 
-
-NUMPY: numpy-1.0.1.tar.gz
-	@echo "== Building numpy"
-	@gtar -zxvf numpy-1.0.1.tar.gz;
-	@cd numpy-1.0.1; python setup.py install; 
 
 LDAP: python-ldap-2.0.1.tar.gz
 	@echo "== Building Python LDAP"
@@ -136,7 +105,7 @@ PY_DOC :
 	$(foreach file, $(PY_EXT_DOC_L), - $(AT) cd ../doc; if [ -e $(file).tgz ]; then echo "== Extracting external documentation: $(file).tgz"; gtar -zxvf $(file).tgz; fi )
 
 
-#PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP PYXML
+#PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY LDAP GNUPLOT SNMP PYXML
 PY_DISUTIL_BUILD : PYXB PYXML LXML NUMERIC SUDS
 	echo "== Building/Installing external Python modules now..."
 
@@ -170,7 +139,7 @@ clean : clean_all
 	$(RM) *~ ../*~
 	$(RM) ../doc/doc ../doc/api ../doc/idl
 	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
-	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.2 lxml-2.2.6 suds-0.4
+	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 PyXB-1.1.2 lxml-2.2.6 suds-0.4
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
