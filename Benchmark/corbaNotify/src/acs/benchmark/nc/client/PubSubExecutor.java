@@ -289,7 +289,7 @@ public class PubSubExecutor extends ComponentClient
 				// even if some others should terminate by themselves
 				if (executionTimeMax > 0) {
 					try {
-						m_logger.info("Will sleep for " + executionTimeMax + " " + executionTimeMaxUnit.toString() + "...");
+						m_logger.info("Will sleep for " + executionTimeMax + " " + executionTimeMaxUnit.toString().toLowerCase() + "...");
 						executionTimeMaxUnit.sleep(executionTimeMax);
 					} catch (Exception ex) {
 						errors.add(ex);
@@ -311,7 +311,7 @@ public class PubSubExecutor extends ComponentClient
 			// we could avoid the casting if we keep a separate list of subscriber and supplier comps...
 			if (comp instanceof CorbaNotifyCompBaseOperations) {
 				CorbaNotifyCompBaseOperations pubSubComp = (CorbaNotifyCompBaseOperations) comp;
-				pubSubComp.interrupt(); // this does nothing if the comp has already finished its NC work
+				pubSubComp.ncDisconnect();
 			}
 		}
 		componentAccessUtil.releaseAllComponents(true);
