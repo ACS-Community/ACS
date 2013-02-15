@@ -231,7 +231,8 @@ public class ComponentClient
 	/**
 	 * Initializes the alarm system, using {@link ACSAlarmSystemInterfaceFactory#init(alma.acs.container.ContainerServicesBase)}.
 	 * Override this method only in special cases such as the eventGUI, when a client does not need to access the alarm system
-	 * and has special classpath problems with the CERN alarm system jar files. 
+	 * and has special classpath problems with the CERN alarm system jar files.
+	 * @see #tearDownAlarmSystem() 
 	 */
 	protected void initAlarmSystem() throws Exception {
 		try {
@@ -243,6 +244,16 @@ public class ComponentClient
 
     
    
+	/**
+	 * Stops and cleans up the alarm system, using {@link ACSAlarmSystemInterfaceFactory#done()}.
+	 * Override this method only in special cases such as the eventGUI, when a client does not need to access the alarm system
+	 * and has special classpath problems with the CERN alarm system jar files. 
+	 * @see #initAlarmSystem()
+	 */
+	protected void tearDownAlarmSystem() {
+		ACSAlarmSystemInterfaceFactory.done();
+	}
+
 	/**
      * Sets up the client logger(s) to send log records to the remote log service.
      * This method starts a separate thread and returns immediately.
@@ -329,7 +340,7 @@ public class ComponentClient
 			
 			m_containerServices.releaseAllComponents();
 			
-			ACSAlarmSystemInterfaceFactory.done();
+			tearDownAlarmSystem();
 			
 			m_containerServices.cleanUp();
 			
