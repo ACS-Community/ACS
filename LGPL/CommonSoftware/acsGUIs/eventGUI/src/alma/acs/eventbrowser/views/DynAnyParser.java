@@ -32,7 +32,6 @@ import org.omg.DynamicAny.DynEnum;
 import org.omg.DynamicAny.DynSequence;
 import org.omg.DynamicAny.DynStruct;
 import org.omg.DynamicAny.NameValuePair;
-import org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode;
 import org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 import org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
 
@@ -50,15 +49,13 @@ public class DynAnyParser {
 	private boolean cancelFlag = false;
 
 	public DynAnyParser(Any anyToParse, String eventName) {
-		daFactory = EventModel.getDynAnyFactory();
 		try {
+			daFactory = EventModel.getInstance().getDynAnyFactory();
 			dynAny = daFactory.create_dyn_any(anyToParse);
 			this.eventName = eventName;
-		} catch (InconsistentTypeCode e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
+		} catch (Exception ex) { // e.g. InconsistentTypeCode
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
 		}
 	}
 
