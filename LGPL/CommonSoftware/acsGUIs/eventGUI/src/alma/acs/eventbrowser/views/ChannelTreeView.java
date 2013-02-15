@@ -28,7 +28,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -47,8 +46,8 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
-import alma.acs.eventbrowser.model.ChannelParticipantName;
 import alma.acs.eventbrowser.model.ChannelData;
+import alma.acs.eventbrowser.model.ChannelParticipantName;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.model.MCStatistics;
 import alma.acs.eventbrowser.model.NotifyServiceData;
@@ -127,7 +126,13 @@ public class ChannelTreeView extends ViewPart {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		viewer.setInput(NotifyServices.getInstance()); // TODO: Complete the hierarchy and add an adapter for the NotifyServiceData
+		try {
+			// TODO: Complete the hierarchy and add an adapter for the NotifyServiceData
+			viewer.setInput(EventModel.getInstance().getNotifyServiceTotals());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex); // should never happen since we will not be the first user (=creator) of the EventModel singleton
+		}
 		getSite().setSelectionProvider(viewer);
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "alma.acs.eventbrowser.viewer");

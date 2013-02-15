@@ -21,8 +21,8 @@
 package alma.acs.eventbrowser.views;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -55,11 +55,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
-import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
-import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.model.NotifyServiceData;
-import alma.acs.exceptions.AcsJException;
 
 
 /**
@@ -86,6 +83,9 @@ public class ServiceSummaryView extends ViewPart {
 	private Action startMonitoringAction;
 	private Action doubleClickAction;
 	
+	/**
+	 * We retrieve the NotifyServices from the EventModel
+	 */
 	private EventModel em;
 
 	private long howOften = 10000l;
@@ -110,13 +110,8 @@ public class ServiceSummaryView extends ViewPart {
 			if (serviceMonitoringThread != null) serviceMonitoringThread.interrupt();
 		}
 		public Object[] getElements(Object parent) {
-			ArrayList<NotifyServiceData> cdlist = null;
-			try {
-				cdlist = em.getNotifyServiceTotals();
-			} catch (AcsJException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			List<NotifyServiceData> cdlist = null;
+			cdlist = em.getNotifyServiceTotals().getServices();
 			NotifyServiceData[] l;
 			if (cdlist != null)
 				l = cdlist.toArray(new NotifyServiceData[cdlist.size()]);
