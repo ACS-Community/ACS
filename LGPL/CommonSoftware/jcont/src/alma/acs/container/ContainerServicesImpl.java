@@ -824,6 +824,11 @@ public class ContainerServicesImpl implements ContainerServices
 				else if (ex instanceof AcsJComponentDeactivationFailedEx) {
 					delegate.errorComponentReleaseFailed((AcsJComponentDeactivationFailedEx)ex);
 				}
+				else if (ex instanceof AcsJUnexpectedExceptionEx) {
+					// This is thrown by jmanager :: ManagerProxyImpl#release_component_async if it gets a non-AcsJException
+					// from container#deactivate_component, e.g. org.omg.CORBA.COMM_FAILURE (leading to an internal com.cosylab.acs.maci.RemoteException)
+					delegate.errorCommunicationFailure(ex); // strictly speaking the wrong method, but better than nothing.
+				}
 				else {
 					m_logger.log(Level.WARNING, "Received unexpected exception from manager#release_component_async, please report to ACS developers.", ex);
 					delegate.errorCommunicationFailure(ex); // strictly speaking the wrong method, but better than nothing.
