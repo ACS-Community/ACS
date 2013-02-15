@@ -198,7 +198,7 @@ fi
 
 if [ ! -e ../PRODUCTS/scipy-0.7.2.tar.gz ]
 then
-  echo Error: numpy sources are missing
+  echo Error: scipy sources are missing
 else
   echo "== Building scipy"
   tar -zxf scipy-0.7.2.tar.gz
@@ -206,6 +206,18 @@ else
   $PYTHON_INTR setup.py config_fc --fcompiler=gnu95 install
   popd
 fi
+
+if [ ! -e ../PRODUCTS/pyephem-3.7.5.1.tar.gz ]
+then
+  echo Error: pyephem sources are missing
+else
+  echo "== Building pyephem"
+  tar -zxf pyephem-3.7.5.1.tar.gz
+  pushd pyephem-3.7.5.1
+  $PYTHON_INTR setup.py install
+  popd
+fi
+
 
 if [ ! -e ../PRODUCTS/pexpect-2.3.tar.gz ]
 then
