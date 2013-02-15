@@ -20,29 +20,30 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Encapsulates a <code>List&lt;NotifyServiceData&gt;</code>.
+ * It gets created by {@link EventModel} to pass around its list of Notify Services.
+ * <p>
+ * TODO: This class is used in various eclipse views. Perhaps it could be replaced there 
+ * by a simple list. We are no longer using this class as a singleton, which is why
+ * it would make sense to remove it further.
+ */
 public class NotifyServices {
-	private static NotifyServices instance = null;
-	private ArrayList<NotifyServiceData> services;
 	
-	private NotifyServices() {
-		services = new ArrayList<NotifyServiceData>(10);
+	private final List<NotifyServiceData> services;
+	
+	NotifyServices(List<NotifyServiceData> services) {
+		this.services = services;
 	}
 	
-	public static NotifyServices getInstance() {
-		if (instance == null) {
-			instance = new NotifyServices();
-		}
-		return instance;
-	}
-	
-	public ArrayList<NotifyServiceData> getServices() {
+	public List<NotifyServiceData> getServices() {
 		return services;
 	}
 	
-	public void addService(NotifyServiceData data) {
-		services.add(data);
-	}
+//	public void addService(NotifyServiceData data) {
+//		services.add(data);
+//	}
 
 }
