@@ -119,52 +119,53 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 	/**
 	 * @see alma.jconttest.ContainerServicesTesterOperations#testGetReferenceWithCustomClientSideTimeout(String)
 	 */
-	public boolean testGetReferenceWithCustomClientSideTimeout(String compName)
-	{
+	public boolean testGetReferenceWithCustomClientSideTimeout() {
 		boolean ret = true;
-		try
-		{
-            org.omg.CORBA.Object compObj = m_containerServices.getComponent(compName);
-		    DummyComponent comp = alma.jconttest.DummyComponentHelper.narrow(compObj);
-		    int waitTime = 20 ; //secs.
-		    int timeout = 10 ; //secs.
-            //first let's try to call the IF without a timeout
-            try{
-                comp.callThatTakesSomeTime(waitTime * 1000);	
-            }catch(org.omg.CORBA.TIMEOUT e){
-                m_logger.log(Level.WARNING, "It is not supposed to get a timeout before waitTime");
-                ret = false;
-            }
-        
-            //then we call the object to assing a timeout of 10 seconds
-            compObj = m_containerServices.getReferenceWithCustomClientSideTimeout(compObj,timeout);
-		    comp = alma.jconttest.DummyComponentHelper.narrow(compObj);
-            
-            //we call again the IF
-            StopWatch sw = new StopWatch(m_logger);
-            try{
-                comp.callThatTakesSomeTime(waitTime *1000);	
-                m_logger.log(Level.WARNING, "It is supposed to get a timeout before waitTime");
-                ret = false;
-            }catch(org.omg.CORBA.TIMEOUT e){
-                //Expected exception catch
-            }
-       
-			int elapsedTime = (int) sw.getLapTimeMillis()/1000;
-            if(Math.abs(elapsedTime-timeout) > 2){
-                ret = false;
-                m_logger.log(Level.WARNING, "The timeout was much greater/lesser than the ammount assigned to elapsed="+elapsedTime);
-            }
+		try {
+			String compName = "DefaultDummyComp";
+			org.omg.CORBA.Object compObj = m_containerServices.getComponent(compName);
+			DummyComponent comp = alma.jconttest.DummyComponentHelper.narrow(compObj);
+			int waitTime = 18 ; //secs. (should be at most 10 s longer than 'timeout' 
+								// because component deactivation blocks only 10 seconds on a still running operation. 
+			int timeout = 10; // secs.
+			// first let's try to call the IF without a timeout
+			try {
+				comp.callThatTakesSomeTime(waitTime * 1000);
+			} catch (org.omg.CORBA.TIMEOUT e) {
+				m_logger.log(Level.WARNING, "No TIMEOUT exception expected for a 20 second call, without applying a special client-side timeout.");
+				ret = false;
+			}
+
+			// then we call the ContainerServices to assign a timeout of 10 seconds
+			org.omg.CORBA.Object compObjWithTimeout = m_containerServices.getReferenceWithCustomClientSideTimeout(compObj, timeout);
+			DummyComponent compWithTimeout = alma.jconttest.DummyComponentHelper.narrow(compObjWithTimeout);
+
+			// we call again the IF
+			StopWatch sw = new StopWatch(m_logger);
+			try {
+				compWithTimeout.callThatTakesSomeTime(waitTime * 1000);
+				m_logger.log(Level.WARNING, "TIMEOUT exception expected after " + timeout + " seconds.");
+				ret = false;
+			} catch (org.omg.CORBA.TIMEOUT e) {
+				m_logger.info("Good: got a TIMEOUT exception from DefaultDummyComp#callThatTakesSomeTime");
+			}
+
+			int elapsedTime = (int) sw.getLapTimeMillis() / 1000;
+			if (Math.abs(elapsedTime - timeout) > 2) {
+				ret = false;
+				m_logger.log(Level.WARNING, "TIMEOUT exception caught as expected, but after " + elapsedTime + 
+						" seconds instead of the expected " + timeout + " seconds.");
+			}
+			// the release call should block for the remaining 8 s that 'callThatTakesSomeTime' keeps running after our client timeout.
 			m_containerServices.releaseComponent(compName);
+		} catch (Exception ex) {
+			m_logger.log(Level.WARNING, "Failure in testGetReferenceWithCustomClientSideTimeout, will return 'false'.", ex);
+			ret = false;
 		}
-		catch (Exception e)
-		{
-			m_logger.warning(e.toString());
-            ret = false;
-		}
-        return ret;
+		return ret;
 	}
 
+	
 	/**
 	 * @see alma.jconttest.ContainerServicesTesterOperations#testGetDefaultIdentifierArchive(org.omg.CORBA.StringHolder)
 	 */
