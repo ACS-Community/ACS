@@ -41,7 +41,13 @@ module jconttest
 
 		boolean testGetDynamicDummyComponent(out string compName); 
 		
-		boolean testGetReferenceWithCustomClientSideTimeout(in string compName); 
+		/**
+		 * Will retrieve component 'DefaultDummyComp', then wrap the comp reference 
+		 * using ContainerServices#getReferenceWithCustomClientSideTimeout to assign a 10 second timeout,
+		 * and will call method 'DummyComponent#callThatTakesSomeTime' to check the timeout.
+		 * @return true if the test passed.
+		 */
+		boolean testGetReferenceWithCustomClientSideTimeout(); 
 		
 		boolean testGetDefaultIdentifierArchive(out string compName);
 
