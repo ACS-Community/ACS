@@ -44,7 +44,7 @@ public class LogTooltipHelper {
 	 * (for this reason existing &lt; and &gt; in the original string are replaced by &lt; and &gt;)
 	 * 
 	 * @param c The component to set the tooltip 
-	 * @param text The string to display in the tooltip
+	 * @param text The HTML string to display in the tooltip
 	 * @param colWidth The max number of chars for each line of the tooltip
 	 */
 	public static void setToolTip(JComponent  c, String text, int colWidth) {
@@ -61,13 +61,14 @@ public class LogTooltipHelper {
 			for (int t=0; t<text.length(); t++) {
 				if (++count>=colWidth) {
 					count=0;
-					str.append('\n');
+					str.append("<BR>");
 				}
 				char ch = text.charAt(t);
-				str.append(ch);
 				if (ch=='\n') {
+					str.append("<BR>");
 					count=0;
 				} else {
+					str.append(ch);
 					count++;
 				}
 			}
@@ -75,11 +76,7 @@ public class LogTooltipHelper {
 		} else {
 			toolTip=text;
 		}
-		// Format the string as HTML
-		toolTip=toolTip.replaceAll("<","&lt;");
-		toolTip=toolTip.replaceAll(">","&gt;");
-		toolTip=toolTip.replaceAll("\n", "<BR>");
 		// Eventually, set the tooltip
-		c.setToolTipText("<HTML><PRE>"+toolTip+"</PRE></HTML>");
+		c.setToolTipText(toolTip);
 	}
 }
