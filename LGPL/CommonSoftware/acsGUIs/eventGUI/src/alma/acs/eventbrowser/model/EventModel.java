@@ -69,7 +69,7 @@ import alma.acs.util.StopWatch;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.36 2013/02/15 16:33:24 hsommer Exp $
+ * $Id: EventModel.java,v 1.37 2013/02/18 13:56:26 hsommer Exp $
  */
 public class EventModel {
 	
@@ -156,7 +156,7 @@ public class EventModel {
 				protected void initAlarmSystem() {
 					m_logger.info("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
 				}
-//				@Override // todo uncomment this once jcong :: ComponentClient changes are checked in
+				@Override 
 				protected void tearDownAlarmSystem() {
 					// nothing. Overloaded to avoid "java.lang.IllegalStateException: Trying close with null ContainerServicesBase"
 				}
