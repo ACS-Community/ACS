@@ -21,13 +21,6 @@ public class PubSubComponentAccessUtil extends ComponentAccessUtil
 		super(contSrv);
 	}
 
-//	/**
-//	 * @deprecated Use {@link #getDynamicSupplierComponent(String, String, ImplLangT)}
-//	 */
-//	public CorbaNotifySupplierOperations getDynamicJavaSupplierComponent(String componentName, String containerName) throws AcsJContainerServicesEx {
-//		return getDynamicSupplierComponent(componentName, containerName, ImplLangT.JAVA);
-//	}
-	
 	public CorbaNotifySupplierOperations getDynamicSupplierComponent(String componentName, String containerName, ImplLangT implLang) throws AcsJContainerServicesEx {
 		String code = null;
 		switch (implLang.getType()) {
@@ -45,14 +38,6 @@ public class PubSubComponentAccessUtil extends ComponentAccessUtil
 		return getDynamicComponent(compSpec, CorbaNotifySupplierOperations.class);
 	}
 
-	
-	/**
-	 * @deprecated Use {@link #getDynamicSubscriberComponent(String, String, ImplLangT)}
-	 */
-	public CorbaNotifyConsumerOperations getDynamicJavaSubscriberComponent(String componentName, String containerName) throws AcsJContainerServicesEx {
-		return getDynamicSubscriberComponent(componentName, containerName, ImplLangT.JAVA);
-	}
-	
 	public CorbaNotifyConsumerOperations getDynamicSubscriberComponent(String componentName, String containerName, ImplLangT implLang) throws AcsJContainerServicesEx {
 		String code = null;
 		switch (implLang.getType()) {
