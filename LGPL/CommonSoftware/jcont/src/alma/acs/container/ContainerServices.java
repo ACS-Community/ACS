@@ -384,7 +384,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 * and also do not want to bother about a try/catch block.
 	 *
 	 * @param componentUrl the name/curl of the component instance as used by the manager
-	 * @param callback may be <code>null</code> if you do not need to wait for component activation or to see the results.
+	 * @param callback may be <code>null</code> if you do not need to wait for component deactivation or to see the results.
 	 *                 An new instance of <code>ComponentReleaseCallback</code> is required for every call.
 	 * @since ACS 9.1
 	 */
