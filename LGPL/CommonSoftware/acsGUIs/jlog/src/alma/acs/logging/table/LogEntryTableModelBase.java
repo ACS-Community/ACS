@@ -261,10 +261,14 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 				return Boolean.valueOf(log.hasDatas());
 			} else {
 				Object val=log.getField(LogField.values()[column-1]);
-				if (val==null) {
+				if (val==null || val.toString()==null || val.toString().isEmpty()) {
 					return emptyString;
 				}
-				return htmlStartTAG+val.toString()+htmlCloseTAG;
+				// Format the string as HTML
+				String ret=val.toString().replaceAll("<","&lt;");
+				ret=ret.replaceAll(">","&gt;");
+				ret=ret.replaceAll("\n", "<BR>");
+				return htmlStartTAG+ret+htmlCloseTAG;
 			}
 		}
 		}
