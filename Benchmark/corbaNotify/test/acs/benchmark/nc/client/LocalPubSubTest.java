@@ -28,6 +28,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -76,6 +77,9 @@ public class LocalPubSubTest extends ComponentClient
 	
 	private final String supplierContainerName = "localSupplierContainer1";
 	
+	ExecutorService singThrExec;
+	
+	
 	/**
 	 * TODO: Check if this rule and the getMethodName() call in setUp() can be moved up to ComponentClient,
 	 *      if that adds a runtime dependency on junit, and how bad that would be.
@@ -115,6 +119,8 @@ public class LocalPubSubTest extends ComponentClient
 		assertThat(containerUtil.isContainerLoggedIn(supplierContainerName), is(true));
 		
 		componentAccessUtil = new PubSubComponentAccessUtil(getContainerServices());
+		
+		singThrExec = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory());
 	}
 
 	@After
@@ -127,6 +133,8 @@ public class LocalPubSubTest extends ComponentClient
 			containerUtil.stopContainer(localhostName, supplierContainerName);
 			containerUtil.logoutFromManager();
 		}
+		singThrExec.shutdownNow();
+		singThrExec.awaitTermination(1, TimeUnit.SECONDS);
 		super.tearDown();
 	}
 
@@ -199,7 +207,7 @@ public class LocalPubSubTest extends ComponentClient
 		String subscriberComponentName = "JavaSubscriber-1";
 		try {
 			containerUtil.startContainer(localhostName, ContainerImplLangType.JAVA, subscriberContainerName, null, true);
-			final CorbaNotifyConsumerOperations subscriberComp = componentAccessUtil.getDynamicJavaSubscriberComponent(subscriberComponentName, subscriberContainerName);
+			final CorbaNotifyConsumerOperations subscriberComp = componentAccessUtil.getDynamicSubscriberComponent(subscriberComponentName, subscriberContainerName, ImplLangT.JAVA);
 			subscriberComp.ncConnect(ncNames);
 			m_logger.info("Connected subscriber to NC " + ncNames[0]);
 			Callable<Integer> runSubscriber = new Callable<Integer>() {
@@ -209,8 +217,7 @@ public class LocalPubSubTest extends ComponentClient
 					return subscriberComp.receiveEvents(ncEventSpecs, 0, numEvents);
 				}
 			};
-			Future<Integer> subscriberCallFuture = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory())
-														.submit(runSubscriber);
+			Future<Integer> subscriberCallFuture = singThrExec.submit(runSubscriber);
 			Thread.sleep(100); // to "ensure" that the subscriber is ready before we publish events 
 	
 			// Create dynamic supplier component
