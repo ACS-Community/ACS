@@ -68,57 +68,74 @@ public class ComponentTestclient extends ComponentClientTestCase
 		m_contSrvTesterComp = ContainerServicesTesterHelper.narrow(compObj);
 	}
 	
-    public void testComponentName() {
+	protected void tearDown() throws Exception {
+		if (m_contSrvTesterComp != null) {
+			getContainerServices().releaseComponent(CONTSRVCOMP_INSTANCE);
+			m_contSrvTesterComp = null;
+		}
+		super.tearDown();
+	}
+	
+	
+	public void testComponentName() {
 		StringHolder nameHolder = new StringHolder();
 		boolean ret = m_contSrvTesterComp.testComponentName(nameHolder);
-		assertTrue("test execution successful on the server component", ret);		
+		assertTrue("test execution successful on the server component", ret);
 		assertEquals(CONTSRVCOMP_INSTANCE, nameHolder.value);
 	}
 	
 	public void testStateManager() {
 		StringHolder stateNameHolder = new StringHolder();
 		boolean ret = m_contSrvTesterComp.testStateManager(stateNameHolder);
-		assertTrue("test execution successful on the server component", ret);		
+		assertTrue("test execution successful on the server component", ret);
 		assertEquals("OPERATIONAL", stateNameHolder.value);
 	}
 	
     /**
-    * This test will use custom client side timeout, ignoring Container Timeout 
+    * This test will use custom client side timeout, ignoring Container Timeout. 
+    * It is the client version of {@link #testGetReferenceWithCustomClientSideTimeout()}
+    * where m_contSrvTesterComp will take over the role of this junit test client for testing the timeout.
     **/
     public void testTimeout() throws Exception {
-        org.omg.CORBA.Object compObj = getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
-        DummyComponent comp = DummyComponentHelper.narrow(compObj);
-        int waitTime = 20 ; //secs.
-        int timeout = 10 ; //secs.
-        //first let's try to call the IF without a timeout
-        try{
-            comp.callThatTakesSomeTime(waitTime * 1000);	
-        }catch(org.omg.CORBA.TIMEOUT e){
-            fail("It is not supposed to get a timeout before waitTime");
-        }
-    
-        //then we call the object to assing a timeout of 10 seconds
-        compObj = getContainerServices().getReferenceWithCustomClientSideTimeout(compObj,timeout);
-        comp = DummyComponentHelper.narrow(compObj);
-        
-        //we call again the IF
-        StopWatch sw = new StopWatch(m_logger);
-        try{
-            comp.callThatTakesSomeTime(waitTime *1000);	
-            fail("It is supposed to get a timeout before waitTime");
-        }catch(org.omg.CORBA.TIMEOUT e){
-            //Expected exception catch
-        }
-   
-        int elapsedTime = (int) sw.getLapTimeMillis()/1000;
-        if(Math.abs(elapsedTime-timeout) > 2){
-            fail("The timeout was much greater/lesser than the ammount assigned to elapsed="+elapsedTime);
-        }
-        getContainerServices().releaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
-    }
+		try {
+			org.omg.CORBA.Object compObj = getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+			DummyComponent comp = DummyComponentHelper.narrow(compObj);
+			int waitTime = 18 ; //secs. (should be at most 10 s longer than 'timeout' 
+			                    // because component deactivation blocks only 10 seconds on a still running operation. 
+			int timeout = 10 ; //secs.
+			//first let's try to call the IF without a timeout
+			try{
+			    comp.callThatTakesSomeTime(waitTime * 1000);
+			}catch(org.omg.CORBA.TIMEOUT e){
+			    fail("It is not supposed to get a timeout before waitTime");
+			}
+
+			//then we call the object to assign a timeout of 10 seconds
+			compObj = getContainerServices().getReferenceWithCustomClientSideTimeout(compObj, timeout);
+			comp = DummyComponentHelper.narrow(compObj);
+			
+			//we call again the IF
+			StopWatch sw = new StopWatch(m_logger);
+			try{
+			    comp.callThatTakesSomeTime(waitTime * 1000);
+			    fail("It is supposed to get a timeout before waitTime");
+			}catch(org.omg.CORBA.TIMEOUT e){
+			    //Expected exception catch
+			}
+
+			int elapsedTime = (int) sw.getLapTimeMillis()/1000;
+			if(Math.abs(elapsedTime-timeout) > 2){
+			    fail("The timeout was much greater/lesser than the amount assigned to elapsed="+elapsedTime);
+			}
+		} finally {
+			// the release call should block for the remaining 8 s that 'callThatTakesSomeTime' executes after our client timeout.
+			getContainerServices().releaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		}
+	}
+
+
 	public void testGetReferenceWithCustomClientSideTimeout() {
-        String compName = "DefaultDummyComp";
-		boolean ret = m_contSrvTesterComp.testGetReferenceWithCustomClientSideTimeout(compName);
+		boolean ret = m_contSrvTesterComp.testGetReferenceWithCustomClientSideTimeout();
 		assertTrue("test execution successful on the server component", ret);
 	}
 
