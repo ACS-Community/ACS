@@ -912,10 +912,14 @@ public class ContainerServicesImpl implements ContainerServices
 				}
 				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl, myCBlong);
 			}
-			m_logger.info("client '" + m_clientName + "' has successfully released a component with curl=" + curl);
+			m_logger.info("client '" + m_clientName + "' has successfully delivered a component release request for curl=" + curl);
 
-			if (callback == null) { // otherwise this step should be deferred until we receive the callback, to not abort running calls with COMM_FAILURE
+			if (callback == null) { 
 				stub._release();
+			}
+			else {
+				// _release() is deferred until ComponentReleaseCallbackCorbaHandler gets the callback,
+				// to not abort running calls with COMM_FAILURE
 			}
 		} 
 		catch (AcsJNoPermissionEx ex) {
