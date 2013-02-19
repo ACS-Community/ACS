@@ -248,7 +248,7 @@ public class PubSubExecutor extends ComponentClient
 				}
 				ImplLangT implLang = deriveComponentImplLang(pubSpec, pubSubSpec);
 				
-				// Get the subscriber component. This may retrieve the same component more than once if it should use more than one NC
+				// Get the publisher component. This may retrieve the same component more than once if it should use more than one NC
 				// (which will result in multiple NCPublisher instances created by that component).
 				CorbaNotifySupplierOperations publisherComp = 
 						componentAccessUtil.getDynamicSupplierComponent(pubSpec.getComponentName(), pubSpec.getContainerName(), implLang);
