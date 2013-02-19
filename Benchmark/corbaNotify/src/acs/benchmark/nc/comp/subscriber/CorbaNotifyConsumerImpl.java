@@ -71,6 +71,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 		
 		private final Class<T> clazz;
 		private final String antennaName; 
+		private final int processingDelayMillis;
 		private final CountDownLatch sharedEventCountdown;
 		private final AtomicLong firstEventTimeMillis;
 		
@@ -83,9 +84,10 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 		 *                              The first event will set the current system time if it finds it with that -1 value.
 		 *                              Other receivers may have set the time already.
 		 */
-		protected TestEventHandler(Class<T> clazz, String antennaName, CountDownLatch sharedEventCountdown, AtomicLong firstEventTimeMillis) {
+		protected TestEventHandler(Class<T> clazz, String antennaName, int processingDelayMillis, CountDownLatch sharedEventCountdown, AtomicLong firstEventTimeMillis) {
 			this.clazz = clazz;
 			this.antennaName = antennaName;
+			this.processingDelayMillis = processingDelayMillis;
 			this.sharedEventCountdown = sharedEventCountdown;
 			this.firstEventTimeMillis = firstEventTimeMillis;
 		}
@@ -100,6 +102,13 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 			firstEventTimeMillis.compareAndSet(-1, System.nanoTime());
 			if (sharedEventCountdown != null) {
 				sharedEventCountdown.countDown();
+			}
+			if (processingDelayMillis > 0) {
+				try {
+					Thread.sleep(processingDelayMillis);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
@@ -117,12 +126,13 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 	protected TestEventHandler<? extends IDLEntity> createEventHandler(
 			String eventName, 
 			String antennaName, 
+			int processingDelayMillis,
 			CountDownLatch sharedEventCountdown, 
 			AtomicLong firstEventReceivedTimeNanos ) {
 		TestEventHandler<? extends IDLEntity> ret = null;
 		
 		if (eventName.equals("MountStatusData")) {
-			ret= new TestEventHandler<MountStatusData>(MountStatusData.class, antennaName, sharedEventCountdown, firstEventReceivedTimeNanos) {
+			ret= new TestEventHandler<MountStatusData>(MountStatusData.class, antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos) {
 				public void receive(MountStatusData event, EventDescription eventDescrip) {
 					super.receive(event, eventDescrip);
 					// TODO: do something with event.antennaName;
@@ -130,10 +140,10 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 			};
 		}
 		else if (eventName.equals("LightweightMountStatusData")) {
-			ret= new TestEventHandler<LightweightMountStatusData>(LightweightMountStatusData.class, antennaName, sharedEventCountdown, firstEventReceivedTimeNanos);
+			ret= new TestEventHandler<LightweightMountStatusData>(LightweightMountStatusData.class, antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos);
 		}
 		else if (eventName.equals("SomeOtherEventType")) {
-			ret= new TestEventHandler<SomeOtherEventType>(SomeOtherEventType.class, antennaName, sharedEventCountdown, firstEventReceivedTimeNanos);
+			ret= new TestEventHandler<SomeOtherEventType>(SomeOtherEventType.class, antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos);
 		}
 		else {
 			throw new IllegalArgumentException("Unsupported event type '" + eventName + "'.");
@@ -145,11 +155,12 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 	public int receiveEvents(NcEventSpec[] ncEventSpecs, int processingDelayMillis, int numberOfEvents)
 			throws CouldntPerformActionEx {
 		
-//		m_logger.info("Will receive events on " + ncEventSpecs.length + " NC(s), with processingDelayMillis=" + processingDelayMillis
-//				+ ", numberOfEvents=" + (numberOfEvents > 0 ? numberOfEvents : "infinite") );
+		m_logger.info("Will receive events on " + ncEventSpecs.length + " NC(s), with processingDelayMillis=" + processingDelayMillis
+				+ ", numberOfEvents=" + (numberOfEvents > 0 ? numberOfEvents : "infinite") );
 		
 		// Set up receivers
 		
+		// sync object used to wait for numberOfEvents (if specified)
 		CountDownLatch sharedEventCountdown = null;
 		if (numberOfEvents > 0) {
 			sharedEventCountdown = new CountDownLatch(numberOfEvents);
@@ -161,6 +172,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 		final AtomicLong firstEventReceivedTimeNanos = new AtomicLong(-1);
 		
 		try {
+			// iterate over NCs
 			for (NcEventSpec ncEventSpec : ncEventSpecs) {
 				AcsEventSubscriber<IDLEntity> sub = subsOrPubs.get(ncEventSpec.ncName);
 				if (sub == null) {
@@ -169,8 +181,10 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 //				else {
 //					m_logger.info("Dealing with subscriber for NC=" + ncEventSpec.ncName + ", which is in state "+ sub.getLifecycleState());
 //				}
+				
+				// iterate over event types
 				for (String eventName : ncEventSpec.eventNames) {
-					sub.addSubscription(createEventHandler(eventName, ncEventSpec.antennaName, sharedEventCountdown, firstEventReceivedTimeNanos));
+					sub.addSubscription(createEventHandler(eventName, ncEventSpec.antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos));
 					m_logger.info("Added subscription for event=" + eventName + ", NC=" + ncEventSpec.ncName);
 				}
 				sub.startReceivingEvents();
@@ -182,7 +196,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 			ex.printStackTrace();
 			throw new AcsJCouldntPerformActionEx(ex).toCouldntPerformActionEx();
 		}
-		m_logger.info(ncEventSpecs.length + " subscriber(s) set up to receive events in " + sw.getLapTimeMillis() + " ms.");
+		m_logger.info(ncEventSpecs.length + " subscriber(s) set up to receive events, which took " + sw.getLapTimeMillis() + " ms.");
 		
 		if (numberOfEvents > 0) {
 			m_logger.info("Will wait for a total of " + numberOfEvents + " events to be received, with timeout after 10 minutes.");
@@ -210,7 +224,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 			long receptionTimeNanos = ( numberOfEvents > 0 && firstEventReceivedTimeNanos.longValue() > 0 
 					? (System.nanoTime() - firstEventReceivedTimeNanos.longValue()) 
 					: -1 );
-			return (int) (receptionTimeNanos / 1000000);
+			return (int) TimeUnit.NANOSECONDS.toMillis(receptionTimeNanos);
 		}
 	}
 
