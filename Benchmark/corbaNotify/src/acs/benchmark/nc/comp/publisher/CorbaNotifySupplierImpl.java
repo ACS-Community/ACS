@@ -22,10 +22,12 @@ package acs.benchmark.nc.comp.publisher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import org.omg.CORBA.portable.IDLEntity;
 
@@ -52,6 +54,8 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 	 */
 	private final List<PublishEventRunnable> runnables = new ArrayList<PublishEventRunnable>();
 
+	private final List<ExecutorService> runnersToInterrupt = new ArrayList<ExecutorService>();
+	
 //	@Override
 //	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
 //		super.initialize(containerServices);
@@ -145,9 +149,12 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 					m_logger.info("Supplier for NC '" + ncName + "' done sending " + eventsMax + " events.");
 					cancelPeriodicRuns();
 				}
+				// some progress logging. Arbitrarily log every 100th event sent
+				if (eventsSent % 100 == 0) {
+					m_logger.fine("Published a total of " + eventsSent + " events on NC " + ncName);
+				}
 			} catch (AcsJException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				m_logger.log(Level.WARNING, "Publishing event failed for NC " + ncName, ex);
 			}
 		}
 	}
@@ -179,7 +186,7 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 			SomeOtherEventType data = new SomeOtherEventType();
 			ret = data;
 		}
-		// @TODO Add support for more events types as needed
+		// @TODO Add support for more event types as needed
 		else {
 			throw new IllegalArgumentException("Unsupported event type '" + eventName + "'.");
 		}
@@ -190,6 +197,11 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 	@Override
 	public int sendEvents(NcEventSpec[] ncEventSpecs, int eventPeriodMillis, int numberOfEvents)
 			throws CouldntPerformActionEx {
+		
+		if (cancel) {
+			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx("Method sendEvents cannot be called after interrupt / ncDisconnect.");
+			throw ex.toCouldntPerformActionEx();
+		}
 		
 		StopWatch sw = null;
 		ScheduledThreadPoolExecutor runner = null; 
@@ -239,7 +251,9 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 			runner.setExecuteExistingDelayedTasksAfterShutdownPolicy(true);
 			runner.shutdown();
 			try {
-				boolean cleanTermination = runner.awaitTermination(10, TimeUnit.MINUTES); // 10 min timeout, just to clean up resources eventually.
+				// 10 min timeout, just to clean up resources eventually.
+				// TODO: Offer a workaround for special long-running tests
+				boolean cleanTermination = runner.awaitTermination(10, TimeUnit.MINUTES); 
 				if (!cleanTermination) {
 					m_logger.warning("Unforeseen termination of event suppliers after 10 min (timeout).");
 					cancel = true;
@@ -249,6 +263,7 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 			}
 		}
 		else {
+			runnersToInterrupt.add(runner);
 			m_logger.info(msgBase + "Will return and asynchronously continue publishing events, until interrupt() gets called.");
 		}
 		
@@ -266,6 +281,15 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 		for (PublishEventRunnable runnable : runnables) {
 			runnable.cancelPeriodicRuns();
 		}
+		for (ExecutorService runner : runnersToInterrupt) {
+			runner.shutdown(); // to avoid the log "Forcibly terminating surviving thread" at a subsequent component deactivation
+			try {
+				runner.awaitTermination(5, TimeUnit.SECONDS);
+			} catch (InterruptedException ex) {
+				m_logger.log(Level.WARNING, "", ex);
+			}
+		}
+		runnersToInterrupt.clear();
 		m_logger.info("Stopped publishing events.");
 	}
 
