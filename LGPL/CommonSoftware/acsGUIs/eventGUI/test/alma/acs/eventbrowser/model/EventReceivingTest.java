@@ -57,7 +57,7 @@ public class EventReceivingTest extends TestCase {
 		}
 		try {
 			consumer = em.getAdminConsumer("blar");
-			consumer.consumerReady();
+			consumer.startReceivingEvents();
 		} catch (AcsJException e) {
 			e.printStackTrace();
 			fail();

@@ -69,7 +69,7 @@ import alma.acs.util.StopWatch;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.37 2013/02/18 13:56:26 hsommer Exp $
+ * $Id: EventModel.java,v 1.38 2013/02/19 12:11:31 hsommer Exp $
  */
 public class EventModel {
 	
@@ -455,7 +455,7 @@ public class EventModel {
 			for (AdminConsumer consumer : consumers.values()) {
 				try {
 					if (!readyConsumers.contains(consumer)) {
-						consumer.consumerReady();
+						consumer.startReceivingEvents();
 						readyConsumers.add(consumer);
 					}
 				} catch (AcsJException ex) {
@@ -468,7 +468,7 @@ public class EventModel {
 
 	public synchronized AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
 		if (!consumerMap.containsKey(channelName)) {
-			AdminConsumer adm = new AdminConsumer(channelName,cs);
+			AdminConsumer adm = new AdminConsumer(channelName, cs, nctx);
 			consumerMap.put(channelName, adm);
 			subscribedChannels.add(channelName);
 			return adm;
@@ -550,7 +550,11 @@ public class EventModel {
 	public synchronized void closeSelectedConsumer(String channelName, boolean deselect) {
 		if (consumerMap.containsKey(channelName)) {
 			AdminConsumer consumer = consumerMap.get(channelName);
+			try {
 			consumer.disconnect();
+			} catch (Exception ex) {
+				m_logger.log(Level.WARNING, "Failed to close subscriber: ", ex);
+			}
 			consumerMap.remove(channelName);
 		}
 		if (deselect && !subscribedChannels.remove(channelName))
