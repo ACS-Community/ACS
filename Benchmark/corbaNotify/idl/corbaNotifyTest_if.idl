@@ -176,6 +176,7 @@ module benchmark
          * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
          * Without defined number of events, this call will return immediately, and the supplier component
          * will keep sending events until interrupt() gets called.
+         * This method may be called multiple times, but only before "interrupt" or "ncDisconnect" are called.
          * 
          * @return The time it took (in ms) to send the specified number of events. 
          *         This may be a bit shorter than the time experienced by the client for the call.
