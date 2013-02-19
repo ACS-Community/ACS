@@ -21,69 +21,68 @@
 package alma.acs.eventbrowser.model;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.Any;
-import org.omg.CORBA.TypeCode;
-import org.omg.CORBA.TypeCodePackage.BadKind;
-import org.omg.CORBA.TypeCodePackage.Bounds;
-import org.omg.CosEventComm.Disconnected;
-import org.omg.CosNotification.EventType;
+import org.omg.CORBA.portable.IDLEntity;
+import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.StructuredEvent;
-import org.omg.CosNotifyComm.InvalidEventType;
 
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.views.EventData;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.refactored.NCSubscriber;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 
-public class AdminConsumer extends Consumer {
+/**
+ * 
+ */
+public class AdminConsumer extends NCSubscriber<IDLEntity> {
 	
-	private static final EventType et = new EventType("*","*");
-	private static final EventType[] eta = {et};
-	private static final EventType[] etNone = {};
 	private static long totalEventCount = 0;
-	private int channelEventCount;
-	private HashMap<String, Integer> evtCounter;
+	private final AtomicLong channelEventCount = new AtomicLong(0);
+	
+	/**
+	 * key = type name, value = counter for events of the given type.
+	 */
+	private final HashMap<String, AtomicLong> evtCounter;
+	
 	private static boolean printDetails;
 
-	public AdminConsumer(String channelName, ContainerServicesBase services)
+	public AdminConsumer(String channelName, ContainerServicesBase services, NamingContext namingService)
 			throws AcsJException {
-		super(channelName, services);
-		try {
-			evtCounter = new HashMap<String, Integer>();
-			m_consumerAdmin.subscription_change(eta, etNone);
-		} catch (InvalidEventType e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		super(channelName, null, services, namingService, "EventGuiNcConsumer", IDLEntity.class);
+		
+		addGenericSubscription(new GenericCallback() {
+			@Override
+			public void receiveGeneric(Object event, EventDescription eventDescrip) {
+				logger.warning("Unexpected call to 'receiveGeneric', which should not happen with our non-standard use of NCSubscriber.");
+			}
+		});
+		
+		evtCounter = new HashMap<String, AtomicLong>();
 	}
 
-	public AdminConsumer(String arg0, String arg1, ContainerServicesBase arg2)
-			throws AcsJException {
-		super(arg0, arg1, arg2);
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
-	protected String getNotificationFactoryName() {
-		// TODO Auto-generated method stub
-		return super.getNotificationFactoryName();
-	}
-
-	@Override
-	public void push_structured_event(StructuredEvent evt) throws Disconnected {
-//		super.push_structured_event(evt);
-		channelEventCount++;
+	public boolean push_structured_event_called(StructuredEvent evt) {
+		channelEventCount.incrementAndGet();
 //		String evtName = evt.header.fixed_header.event_name; // Normally empty, as ACSEventAdmin.py states?
 		String evtTypeName = evt.header.fixed_header.event_type.type_name;
-		if (evtCounter.containsKey(evtTypeName))
-			evtCounter.put(evtTypeName, evtCounter.get(evtTypeName)+1);
-		else
-			evtCounter.put(evtTypeName, 1);
+		
+		AtomicLong typeCounter = evtCounter.get(evtTypeName);
+		if (typeCounter == null) {
+			synchronized (evtCounter) {
+				typeCounter = evtCounter.get(evtTypeName);
+				if (typeCounter == null) {
+					typeCounter = new AtomicLong(0);
+					evtCounter.put(evtTypeName, typeCounter);
+				}
+			} 
+		}
+		typeCounter.incrementAndGet();
 
 //		String domainName = evt.header.fixed_header.event_type.domain_name; // Always ALMA?
 //		Any data = evt.filterable_data[0].value;
@@ -92,7 +91,8 @@ public class AdminConsumer extends Consumer {
 //		String component = eDescrip.name;
 //		long count = eDescrip.count;
 		Any eventAny = evt.filterable_data[0].value;
-		boolean oresult = Application.equeue.offer(new EventData(eDescrip.timestamp,eDescrip.name,eDescrip.count,evt.header.fixed_header.event_type.type_name,evtCounter.get(evtTypeName),m_channelName, eventAny));
+		boolean oresult = Application.equeue.offer(
+				new EventData(eDescrip.timestamp, eDescrip.name, eDescrip.count, evt.header.fixed_header.event_type.type_name, typeCounter.get(), channelName, eventAny) );
 		// TEST CODE FOR SLOW RECEIVER
 //		try {
 //			Thread.sleep(5000);
@@ -101,17 +101,19 @@ public class AdminConsumer extends Consumer {
 //			
 //		}
 		if (!oresult)
-			m_logger.severe("Couldn't queue event # "+channelEventCount);
+			logger.severe("Couldn't queue event # "+channelEventCount.get());
 		if (++totalEventCount % 100 == 0) { // Maybe this is redundant with the "Total rows processed" log
-			m_logger.fine("A total of "+totalEventCount+" events have been received.");
-			m_logger.fine("Event queue size is now: "
+			logger.fine("A total of "+totalEventCount+" events have been received.");
+			logger.fine("Event queue size is now: "
 					+ Application.equeue.size() + " elements.");
 		}
 			//		m_logger.fine("Time "+eDescrip.timestamp+" "+m_channelName+" "+eDescrip.name+" "+eDescrip.count+" "+channelEventCount+" "
 			//				+" "+evtTypeName+" "+evtCounter.get(evtTypeName));
 			// Uncomment following line only for stress testing.
 			//try { Thread.sleep(5000); } catch(InterruptedException e) {}// EVIL!!!!!!!!!!
-
+		
+		// Prevent further processing of this event by the subscriber framework
+		return false;
 	}
 
 	public static boolean getPrintDetails() {
