@@ -14,6 +14,9 @@
 1 - Alarm message received from source: <PS,ALARM_SOURCE_PS,1> Status: TERMINATE
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNT,1> Status: TERMINATE
 1 - Alarm message received from source: <Antenna,ALARM_SOURCE_ANTENNA,1> Status: TERMINATE
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully released a component with curl=ALARM_SOURCE_ANTENNA
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully released a component with curl=ALARM_SOURCE_MOUNT
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully released a component with curl=ALARM_SOURCE_PS
 1 - Invoking methods on java components (MULTIPLICITY REDUCTION)
 1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,0> Status: ACTIVE
 1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,1> Status: ACTIVE
@@ -25,8 +28,10 @@
 1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,2> Status: TERMINATE
 1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,3> Status: TERMINATE
 1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,4> Status: TERMINATE
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully released a component with curl=MULTIPLE_FAILURES
 1 - Invoking methods on C++ components
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: ACTIVE
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully released a component with curl=ALARM_SOURCE_MOUNTCPP
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] AlarmSourceFactory closed
 1 - ----------T--:--:--.--- DELOUSE [TestSendLaserSources] Closing the AlarmSourceFactory
