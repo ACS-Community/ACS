@@ -47,7 +47,7 @@ public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implement
 	/**
 	 * Flag set by interrupt method
 	 */
-	protected volatile boolean cancel;
+	protected volatile boolean cancel = false;
 
 //	@Override
 //	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
