@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: CERNAlarmTestSender.py,v 1.3 2012/03/27 10:16:02 acaproni Exp $"
+# "@(#) $Id: CERNAlarmTestSender.py,v 1.4 2013/02/19 15:22:28 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -44,6 +44,7 @@ def alarmDataHandler(some_param):
         if pos!=-1:
             triplet = triplet[:pos+1]
         print "Triplet received",triplet.strip()
+        sys.stdout.flush()
         msgCount += 1
     return
 
