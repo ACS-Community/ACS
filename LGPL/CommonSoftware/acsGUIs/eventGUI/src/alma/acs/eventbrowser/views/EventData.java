@@ -40,7 +40,7 @@ public class EventData extends AbstractEventData {
 	private final Any eventAny;
 
 	
-	public EventData(long time, String srcObj, long count, String type, Integer typeCount, String chanName, Any any) {
+	public EventData(long time, String srcObj, long count, String type, Long typeCount, String chanName, Any any) {
 		timestamp = time;
 		sourceObject = srcObj;
 		channelEventCount = count;
