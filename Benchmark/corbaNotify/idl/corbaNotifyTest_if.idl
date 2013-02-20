@@ -146,7 +146,18 @@ module benchmark
          * as part of this call (while NCs that were already connected from previous calls to this method will not be disconnected).
          */
         void ncConnect(in maci::stringSeq ncNames) raises (ACSErrTypeCommon::CouldntPerformActionEx);
-        
+
+        /** 
+         * Configures the logging of events sent or received.
+         * With multiplesOfEventCount <= 0, event logging is disabled.
+         * With multiplesOfEventCount == 1, all events are logged.
+         * With multiplesOfEventCount > 1, only every multiplesOfEventCount-th event gets logged. 
+         * Default is 100.
+         * Log level is DEBUG.
+         * This method can be called at any time.
+         */
+        void setEventLogging(in long multiplesOfEventCount);
+
         /** 
          * Interrupt a running series of sending/receiving NC events. 
          * If nothing is running, returns silently.
@@ -205,6 +216,7 @@ module benchmark
          * If a fixed number of events are specified in "numberOfEvents" then the call will return only when all of these events have been received.
          * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
          * Without defined number of events, this call will return immediately.
+         * ??? This method should be called exactly once, after ncConnect and before interrupt/ncDisconnect.
          * 
          * @return The time it took (in ms) to receive the specified number of events, starting to count when the first event arrives. 
          *         This time may be shorter than the time experienced by the client for the call.
