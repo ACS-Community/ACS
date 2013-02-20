@@ -219,6 +219,19 @@ public class ComponentAccessUtil {
 	}
 	
 	
+	/**
+	 * Lists the names of the component instances that have already been retrieved. 
+	 */
+	public List<String> getCachedComponentNames() {
+		List<String> ret = new ArrayList<String>();
+		synchronized (compName2Comp) {
+			for (String name : compName2Comp.keySet()) {
+				ret.add(name);
+			}
+		}
+		return ret;
+	}
+
 	public List<ACSComponentOperations> getCachedComponents() {
 		List<ACSComponentOperations> ret = new ArrayList<ACSComponentOperations>();
 		synchronized (compName2Comp) {
