@@ -22,6 +22,8 @@ package acs.benchmark.nc.comp.subscriber;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.portable.IDLEntity;
@@ -32,6 +34,7 @@ import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsEventSubscriber.Callback;
 import alma.acs.util.StopWatch;
@@ -44,7 +47,22 @@ import alma.benchmark.SomeOtherEventType;
 
 public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscriber<IDLEntity>> implements CorbaNotifyConsumerOperations
 {
+	private AtomicBoolean receiveMethodCalled = new AtomicBoolean(false);
+	
+	/**
+	 * This field will hold the timestamp of the first event received, 
+	 * no matter which one of the receivers got it.
+	 */
+	private final AtomicLong firstEventReceivedTimeNanos = new AtomicLong(-1);
 
+	private final AtomicInteger eventsReceivedCounter = new AtomicInteger(0);
+	
+	/**
+	 * Will be null in case of 'infinite' event subscription
+	 */
+	private CountDownLatch sharedEventCountdown;
+
+	
 //	@Override
 //	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
 //		super.initialize(containerServices);
@@ -67,29 +85,25 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 		sub.disconnect();
 	}
 
-	protected static class TestEventHandler<T extends IDLEntity> implements Callback<T> {
+	/**
+	 * The event handler used for all NC subscriptions, one instance per NC and per event type.
+	 * @param <T>  The event type
+	 */
+	protected class TestEventHandler<T extends IDLEntity> implements Callback<T> {
 		
 		private final Class<T> clazz;
 		private final String antennaName; 
 		private final int processingDelayMillis;
-		private final CountDownLatch sharedEventCountdown;
-		private final AtomicLong firstEventTimeMillis;
 		
 		/**
 		 * @param clazz  Class of the event (IDL struct) 
 		 * @param antennaName  Expected antenna name in MountStatusData or LightweightMountStatusData events. 
 		 *                     May be null for other events or if antenna name does not matter. Currently not used anyway. 
-		 * @param sharedEventCountdown  Used to optionally sync on expected number of events (total, over all NCs). May be null.
-		 * @param firstEventTimeMillis  Must be initialized to <code>-1</code>. 
-		 *                              The first event will set the current system time if it finds it with that -1 value.
-		 *                              Other receivers may have set the time already.
 		 */
-		protected TestEventHandler(Class<T> clazz, String antennaName, int processingDelayMillis, CountDownLatch sharedEventCountdown, AtomicLong firstEventTimeMillis) {
+		protected TestEventHandler(Class<T> clazz, String antennaName, int processingDelayMillis) {
 			this.clazz = clazz;
 			this.antennaName = antennaName;
 			this.processingDelayMillis = processingDelayMillis;
-			this.sharedEventCountdown = sharedEventCountdown;
-			this.firstEventTimeMillis = firstEventTimeMillis;
 		}
 		
 		@Override
@@ -99,10 +113,19 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 
 		@Override
 		public void receive(T event, EventDescription eventDescrip) {
-			firstEventTimeMillis.compareAndSet(-1, System.nanoTime());
+			// initial event stuff
+			firstEventReceivedTimeNanos.compareAndSet(-1, System.nanoTime());
+			// event counters
+			int eventCount = eventsReceivedCounter.incrementAndGet();
 			if (sharedEventCountdown != null) {
 				sharedEventCountdown.countDown();
 			}
+			// progress logging
+			int modDiv = logMultiplesOfEventCount.get();
+			if (modDiv > 0 && eventCount % modDiv == 0) {
+				m_logger.log(AcsLogLevel.DEBUG, "Have received a total of " + eventCount + " events, last was a " + event.getClass().getSimpleName());
+			}
+			// simulate event processing, if specified
 			if (processingDelayMillis > 0) {
 				try {
 					Thread.sleep(processingDelayMillis);
@@ -119,20 +142,17 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 	 * but hardcoded for a few known event struct names that can be used for the tests.
 	 * 
 	 * @param eventName  Currently supported are "MountStatusData", "LightweightMountStatusData", "SomeOtherEventType"
-	 * @param firstEventReceivedTimeNanos 
 	 * @return
 	 * @throws IllegalArgumentException  If eventName is not supported.
 	 */
 	protected TestEventHandler<? extends IDLEntity> createEventHandler(
 			String eventName, 
 			String antennaName, 
-			int processingDelayMillis,
-			CountDownLatch sharedEventCountdown, 
-			AtomicLong firstEventReceivedTimeNanos ) {
+			int processingDelayMillis) {
 		TestEventHandler<? extends IDLEntity> ret = null;
 		
 		if (eventName.equals("MountStatusData")) {
-			ret= new TestEventHandler<MountStatusData>(MountStatusData.class, antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos) {
+			ret= new TestEventHandler<MountStatusData>(MountStatusData.class, antennaName, processingDelayMillis) {
 				public void receive(MountStatusData event, EventDescription eventDescrip) {
 					super.receive(event, eventDescrip);
 					// TODO: do something with event.antennaName;
@@ -140,10 +160,10 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 			};
 		}
 		else if (eventName.equals("LightweightMountStatusData")) {
-			ret= new TestEventHandler<LightweightMountStatusData>(LightweightMountStatusData.class, antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos);
+			ret= new TestEventHandler<LightweightMountStatusData>(LightweightMountStatusData.class, antennaName, processingDelayMillis);
 		}
 		else if (eventName.equals("SomeOtherEventType")) {
-			ret= new TestEventHandler<SomeOtherEventType>(SomeOtherEventType.class, antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos);
+			ret= new TestEventHandler<SomeOtherEventType>(SomeOtherEventType.class, antennaName, processingDelayMillis);
 		}
 		else {
 			throw new IllegalArgumentException("Unsupported event type '" + eventName + "'.");
@@ -151,9 +171,20 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 		return ret;
 	}
 	
+	
+	
 	@Override
 	public int receiveEvents(NcEventSpec[] ncEventSpecs, int processingDelayMillis, int numberOfEvents)
 			throws CouldntPerformActionEx {
+		
+		if (receiveMethodCalled.getAndSet(true)) {
+			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx("Method receiveEvents can be called only once during the component lifecycle.");
+			throw ex.toCouldntPerformActionEx();
+		}
+		if (cancel) {
+			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx("Method receiveEvents cannot be called after interrupt / ncDisconnect.");
+			throw ex.toCouldntPerformActionEx();
+		}
 		
 		m_logger.info("Will receive events on " + ncEventSpecs.length + " NC(s), with processingDelayMillis=" + processingDelayMillis
 				+ ", numberOfEvents=" + (numberOfEvents > 0 ? numberOfEvents : "infinite") );
@@ -161,15 +192,11 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 		// Set up receivers
 		
 		// sync object used to wait for numberOfEvents (if specified)
-		CountDownLatch sharedEventCountdown = null;
 		if (numberOfEvents > 0) {
 			sharedEventCountdown = new CountDownLatch(numberOfEvents);
 		}
 
 		StopWatch sw = new StopWatch();
-		
-		// This field will hold the timestamp of the first event received, no matter which one of the receivers got it.
-		final AtomicLong firstEventReceivedTimeNanos = new AtomicLong(-1);
 		
 		try {
 			// iterate over NCs
@@ -184,7 +211,7 @@ public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl<AcsEventSubscri
 				
 				// iterate over event types
 				for (String eventName : ncEventSpec.eventNames) {
-					sub.addSubscription(createEventHandler(eventName, ncEventSpec.antennaName, processingDelayMillis, sharedEventCountdown, firstEventReceivedTimeNanos));
+					sub.addSubscription(createEventHandler(eventName, ncEventSpec.antennaName, processingDelayMillis));
 					m_logger.info("Added subscription for event=" + eventName + ", NC=" + ncEventSpec.ncName);
 				}
 				sub.startReceivingEvents();
