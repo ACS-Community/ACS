@@ -65,7 +65,7 @@
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIDoublePropCompleteTest#testRODouble] unSubscribeAll()
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' has successfully released a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' has successfully delivered a component release request for curl=TEST_COMPONENT
 1 - 
 1 - 
 1 - OK (1 test)

@@ -36,7 +36,7 @@
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] unSubscribeAll()
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully released a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully delivered a component release request for curl=TEST_COMPONENT
 1 - 
 1 - 
 1 - OK (1 test)

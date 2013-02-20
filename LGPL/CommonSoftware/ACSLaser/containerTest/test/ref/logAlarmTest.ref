@@ -4,10 +4,10 @@
 1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 10000 INFO logs from component TestcompJavaUnthrottled: xxxx
 1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 1000 DEBUG logs from component TestcompJavaUnthrottled: xxxx
 1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 1000 DEBUG logs from component TestcompJavaUnthrottled: xxxx
-1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] client 'ContainerLoggingAlarmTest' has successfully released a component with curl=TestcompJavaUnthrottled
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] client 'ContainerLoggingAlarmTest' has successfully delivered a component release request for curl=TestcompJavaUnthrottled
 1 - .----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] ----------------- Running test testLogThrottleAlarm ----------------- 
 1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] elapsed time in ms to send 1000 DEBUG logs from component TestcompJavaThrottled: xxxx
-1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] client 'ContainerLoggingAlarmTest' has successfully released a component with curl=TestcompJavaThrottled
+1 - ----------T--:--:--.--- INFO [ContainerLoggingAlarmTest] client 'ContainerLoggingAlarmTest' has successfully delivered a component release request for curl=TestcompJavaThrottled
 1 - 
 1 - 
 1 - OK (2 tests)

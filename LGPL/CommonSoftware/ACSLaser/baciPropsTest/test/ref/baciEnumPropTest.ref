@@ -40,7 +40,7 @@
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIEnumPropertyTest#testROEnum] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIEnumPropertyTest#testROEnum] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIEnumPropertyTest#testROEnum] unSubscribeAll()
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully released a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully delivered a component release request for curl=TEST_COMPONENT
 1 - 
 1 - 
 1 - OK (1 test)

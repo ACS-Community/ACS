@@ -24,13 +24,13 @@
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER4_PYTHON has received 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER5_PYTHON has received 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER6_PYTHON has received 15 blocks
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER1_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER2_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER3_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER4_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER5_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER6_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=SUPPLIER_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER1_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER2_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER3_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER4_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER5_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER6_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=SUPPLIER_PYTHON
 1 - 
 1 - Time: <seconds>
 1 - 

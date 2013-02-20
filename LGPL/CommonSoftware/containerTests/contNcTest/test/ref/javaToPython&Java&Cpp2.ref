@@ -33,16 +33,16 @@
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER3_PYTHON has received 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER3_JAVA has received 15 blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER3_CPP has received 15 blocks
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER1_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER1_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER1_CPP
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER2_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER2_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER2_CPP
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER3_PYTHON
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER3_JAVA
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=CONSUMER3_CPP
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully released a component with curl=SUPPLIER_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER1_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER1_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER1_CPP
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER2_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER2_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER2_CPP
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER3_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER3_JAVA
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER3_CPP
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=SUPPLIER_JAVA
 1 - 
 1 - Time: <seconds>
 1 - 
