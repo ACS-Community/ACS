@@ -69,11 +69,11 @@ Default QoS Profile for BulkDataNT.
                         </element>
                         
                         <element>
-                            <name>dds.transport.TCPv4.tcp1.parent.send_socket_buffer_size</name>
+                            <name>dds.transport.TCPv4.tcp1.send_socket_buffer_size</name>
                             <value>65536</value>
                         </element>
                         <element>
-                            <name>dds.transport.TCPv4.tcp1.parent.recv_socket_buffer_size</name>
+                            <name>dds.transport.TCPv4.tcp1.recv_socket_buffer_size</name>
                             <value>131072</value>
                         </element>
                         
