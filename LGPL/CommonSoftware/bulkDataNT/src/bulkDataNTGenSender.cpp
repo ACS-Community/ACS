@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.15 2013/02/11 18:34:38 rbourtem Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.16 2013/02/20 09:23:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -60,13 +60,27 @@ int main(int argc, char *argv[])
 	unsigned int totalDataSize=65000;
 	unsigned int loop=1;
 	double throttling=0.0;
+	string qosLib="BulkDataQoSLibrary";
 	list<char *> flowNames;
 
 
 	// Parse the args
     ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:nc");
+
+    if(get_opts.long_option(ACE_TEXT ("qos_lib"), 0, ACE_Get_Opt::ARG_REQUIRED) == -1)
+    {
+    	cerr << "long option: qos_lib can not be added" << endl;
+    	return -1;
+    }
+
     while(( c = get_opts()) != -1 ) {
     	switch(c) {
+
+    	case 0: //long option (qos_lib)
+    	{
+    		qosLib = get_opts.opt_arg();
+    		break;
+    	}
     	case 'l':
     	{
     		loop = atoi(get_opts.opt_arg());
@@ -143,6 +157,8 @@ int main(int argc, char *argv[])
 
 
     ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
+
+
     while(recreate)
     {
     	unsigned int numOfCreatedFlows=0;
@@ -153,27 +169,48 @@ int main(int argc, char *argv[])
     		double sumThrouhgput=0;
     		vector<double> 	throughputSums;
     		// first we need a stream
-    		BulkDataNTSenderStream senderStream(streamName);
+    		SenderStreamConfiguration scfg;
+    		//scfg.setParticipantPerStream(true);
+    		scfg.setQosLibrary(qosLib.c_str()); //"TCPBulkDataQoSLibrary");
+    		//scfg.setQosProfile("TCPDefaultStreamQosProfile");
+    		BulkDataNTSenderStream senderStream(streamName, scfg);
 
     		// let's create flows
     		list<char *>::iterator it;
+    		SenderFlowConfiguration cfg;
+    		cfg.setACKsTimeout(ACKtimeout);
+        	cfg.setSendFrameTimeout(sendTimeout);
+        	cfg.setThrottling(throttling);
+    		cfg.setQosLibrary(qosLib.c_str());//"TCPBulkDataQoSLibrary");
+
     		for(it = flowNames.begin(); it != flowNames.end(); it++) {
-    			SenderFlowConfiguration cfg;
-    			cfg.setACKsTimeout(ACKtimeout);
-    			cfg.setSendFrameTimeout(sendTimeout);
-    			cfg.setThrottling(throttling);
+    			//std::cout << cfg.getQosProfile() << std::endl;
     			BulkDataNTSenderFlow *flow = senderStream.createFlow((*it), cfg);
     			flows.push_back(flow);
+    		//	cfg.setProfileQos("TCPDefaultStreamQosProfile");
     		}
+
+/*
+    		SenderStreamConfiguration scfg100;
+    		scfg100.setParticipantPerStream(true);
+    		scfg100.setQosLibrary("XBulkDataQoSLibrary");
+    		BulkDataNTSenderStream senderStream100("TEST", scfg100);
+    		cfg.setQosLibrary("XBulkDataQoSLibrary");
+    		BulkDataNTSenderFlow *flow = senderStream100.createFlow("55", cfg);
+    		flows.push_back(flow);
+    		flowNames.push_back("55");
+*/
 
     		// print out what we have created
     		std::vector<string> tmpFlowNames = senderStream.getFlowNames();
+//    		tmpFlowNames.push_back("55");
     		std::cout << "The following " << senderStream.getFlowNumber() << " flow(s) has/have been created:[ ";
     		for(unsigned int i=0;i<tmpFlowNames.size(); i++)
     			std::cout << tmpFlowNames[i] << " ";
     		std::cout << "] on stream: " << streamName << std::endl;
 
     		numOfCreatedFlows = senderStream.getFlowNumber();
+  //  		numOfCreatedFlows++;
 
     		std::cout << "press ENTER to send data (start/data/stop) to connected receivers ..." << std::endl;
     		if (waitForKey) getchar();
@@ -270,8 +307,10 @@ int main(int argc, char *argv[])
     	}catch(ACSErr::ACSbaseExImpl &ex)
     	{
     		recreate=false; //in case of an error we exit the while loop
+    	/* problem by TCP ???
     		for(unsigned int i=0; i<numOfCreatedFlows; i++)
     		    flows[i]->dumpStatistics();
+    		    */
 
     		ex.log();
     	}

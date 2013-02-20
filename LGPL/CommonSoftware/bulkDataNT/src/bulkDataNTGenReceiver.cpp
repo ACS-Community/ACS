@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.11 2012/11/19 14:53:58 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.12 2013/02/20 09:23:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
 	ReceiverStreamConfiguration streamCfg;
 	ReceiverFlowConfiguration flowCfg;
 	char *streamName = "DefaultStream";
+	string qosLib="BulkDataQoSLibrary";
 	/*char unicastPortQoS[250];
 	unsigned int unicastPort=24000;
 	*/
@@ -124,9 +125,20 @@ int main(int argc, char *argv[])
 
 	// Parse the args
 	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u::n");
+	if(get_opts.long_option(ACE_TEXT ("qos_lib"), 0, ACE_Get_Opt::ARG_REQUIRED) == -1)
+	    {
+	    	cerr << "long option: qos_lib can not be added" << endl;
+	    	return -1;
+	    }
+
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
+			case 0: //long option (qos_lib)
+			{
+				qosLib = get_opts.opt_arg();
+				break;
+			}
 			case 'n':
 			{
 				TestCB::cbReceivePrint=false;
@@ -177,9 +189,18 @@ int main(int argc, char *argv[])
 	ACS_CHECK_LOGGER;
 
 	//streamCfg.setUseIncrementUnicastPort(false);
+	//streamCfg.setParticipantPerStream(true);
+	streamCfg.setQosLibrary(qosLib.c_str());//"TCPBulkDataQoSLibrary");
+
+/*	ReceiverStreamConfiguration streamCfg100;
+	streamCfg100.setQosLibrary("XBulkDataQoSLibrary");
+	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream100("TEST", streamCfg100);
+*/
 	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream(streamName, streamCfg);
 
+
 	//flowCfg.setUnicastPort(47000);
+	flowCfg.setQosLibrary(qosLib.c_str());//"TCPBulkDataQoSLibrary");
 	list<char *>::iterator it;
 	//unsigned int j=0;
 	for(it = flows.begin(); it != flows.end(); it++) {
@@ -193,6 +214,8 @@ int main(int argc, char *argv[])
 		*/
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg);
 		flow->getCallback<TestCB>();
+		//flowCfg.setProfileQos("TCPDefaultStreamQosProfile");
+//		BulkDataNTReceiverFlow *flow100 = receiverStream100.createFlow((*it), flowCfg);
 	}
 
 	std::vector<string> flowNames = receiverStream.getFlowNames();
