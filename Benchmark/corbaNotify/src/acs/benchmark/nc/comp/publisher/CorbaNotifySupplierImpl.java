@@ -90,7 +90,7 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 		private final List<IDLEntity> events;
 		private final AcsEventPublisher<IDLEntity> pub;
 		private final int eventsMax;
-		private int eventsSent;
+		private volatile int eventsSent;
 		private ScheduledFuture<?> future;
 		private int lastEventIndex = -1;
 		
@@ -145,13 +145,15 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 			try {
 				pub.publishEvent(events.get(lastEventIndex));
 				eventsSent++;
+				// progress logging
+				int modDiv = logMultiplesOfEventCount.get();
+				if (modDiv > 0 && eventsSent % modDiv == 0) {
+					m_logger.log(AcsLogLevel.DEBUG, "Have published a total of " + eventsSent + " events on NC " + ncName);
+				}
+				
 				if (eventsMax > 0 && eventsSent == eventsMax) {
 					m_logger.info("Supplier for NC '" + ncName + "' done sending " + eventsMax + " events.");
 					cancelPeriodicRuns();
-				}
-				// some progress logging. Arbitrarily log every 100th event sent
-				if (eventsSent % 100 == 0) {
-					m_logger.fine("Published a total of " + eventsSent + " events on NC " + ncName);
 				}
 			} catch (AcsJException ex) {
 				m_logger.log(Level.WARNING, "Publishing event failed for NC " + ncName, ex);

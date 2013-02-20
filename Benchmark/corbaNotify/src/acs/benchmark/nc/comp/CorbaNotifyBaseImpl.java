@@ -22,6 +22,7 @@ package acs.benchmark.nc.comp;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
@@ -48,6 +49,8 @@ public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implement
 	 * Flag set by interrupt method
 	 */
 	protected volatile boolean cancel = false;
+	
+	protected final AtomicInteger logMultiplesOfEventCount = new AtomicInteger(100);
 
 //	@Override
 //	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
@@ -116,6 +119,11 @@ public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implement
 	@Override
 	public void interrupt() {
 		cancel = true;
+	}
+
+	@Override
+	public void setEventLogging(int multiplesOfEventCount) {
+		logMultiplesOfEventCount.set(multiplesOfEventCount);
 	}
 
 }
