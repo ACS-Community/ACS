@@ -25,6 +25,7 @@
 from Acspy.Clients.SimpleClient import PySimpleClient
 from sys                        import argv
 from sys                        import exit
+from sys                        import stdout
 from TMCDB                      import MonitorCollector
 from TMCDB                      import propertySerailNumber
 from omniORB                    import any
@@ -93,5 +94,6 @@ mc.deregisterMonitoredDevice('MC_TEST_PROPERTIES_COMPONENT')
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])
 simpleClient.disconnect()
+stdout.flush()
 
 

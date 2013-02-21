@@ -25,6 +25,7 @@
 from Acspy.Clients.SimpleClient import PySimpleClient
 from sys                        import argv
 from sys                        import exit
+from sys                        import stdout      
 from TMCDB                      import MonitorCollector
 from TMCDB                      import propertySerailNumber
 import MonitorErrImpl
@@ -36,6 +37,7 @@ simpleClient = PySimpleClient()
 mc = simpleClient.getComponent(argv[1])
 
 try:
+    print "DeviceWithSeqAndMultipleSerial"
     psns =[propertySerailNumber('ROdoubleSeqPM', ['12124']),propertySerailNumber('RWdoubleSeqPM', ['3432535'])]    
     mc.registerMonitoredDeviceWithMultipleSerial('AMSSEQ1', psns)    
     mc.startMonitoring('AMSSEQ1')    
@@ -50,5 +52,6 @@ mc.deregisterMonitoredDevice('AMSSEQ1')
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])
 simpleClient.disconnect()
+stdout.flush()
 
 
