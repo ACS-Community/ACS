@@ -11,7 +11,7 @@
     </Autoload>
     
     <LoggingConfig
-    	minLogLevel="8"
+    	minLogLevel="3"
     	minLogLevelLocal="8"
     	centralizedLogger="Log"
     	maxLogQueueSize="1000"
@@ -19,9 +19,8 @@
     	dispatchPacketSize="5"
     	flushPeriodSeconds="10"
     	>
-    	<log:_ Name="jacorb@silentContainer" minLogLevel="8" minLogLevelLocal="8" />
+    	<log:_ Name="jacorb@silentContainer" minLogLevel="3" minLogLevelLocal="8" />
         <log:_ Name="DefaultDataReceiver" minLogLevel="5" minLogLevelLocal="5" />
     </LoggingConfig>
 
 </Container>
-

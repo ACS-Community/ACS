@@ -34,12 +34,12 @@ import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.util.StopWatch;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-import alma.acs.util.StopWatch;
 
 
 /**
@@ -103,29 +103,32 @@ public class ComponentTestclient extends ComponentClientTestCase
 			int waitTime = 18 ; //secs. (should be at most 10 s longer than 'timeout' 
 			                    // because component deactivation blocks only 10 seconds on a still running operation. 
 			int timeout = 10 ; //secs.
-			//first let's try to call the IF without a timeout
-			try{
+			
+			//first let's try to call the IF without applicable client-side timeout
+			try {
 			    comp.callThatTakesSomeTime(waitTime * 1000);
-			}catch(org.omg.CORBA.TIMEOUT e){
+			} catch(org.omg.CORBA.TIMEOUT e){
 			    fail("It is not supposed to get a timeout before waitTime");
 			}
 
-			//then we call the object to assign a timeout of 10 seconds
+			// then we call the ContainerServices to assign a timeout of 10 seconds
 			compObj = getContainerServices().getReferenceWithCustomClientSideTimeout(compObj, timeout);
 			comp = DummyComponentHelper.narrow(compObj);
 			
 			//we call again the IF
 			StopWatch sw = new StopWatch(m_logger);
-			try{
+			try {
 			    comp.callThatTakesSomeTime(waitTime * 1000);
 			    fail("It is supposed to get a timeout before waitTime");
-			}catch(org.omg.CORBA.TIMEOUT e){
-			    //Expected exception catch
+			} catch(org.omg.CORBA.TIMEOUT e){
+				m_logger.info("Good: Got TIMEOUT exception from calling " + DEFAULT_DUMMYCOMP_INSTANCE + "#callThatTakesSomeTime with configured client timeout = " + timeout + " seconds.");
 			}
 
 			int elapsedTime = (int) sw.getLapTimeMillis()/1000;
-			if(Math.abs(elapsedTime-timeout) > 2){
-			    fail("The timeout was much greater/lesser than the amount assigned to elapsed="+elapsedTime);
+			if(Math.abs(elapsedTime-timeout) > 1) {
+				String msg = "TIMEOUT exception caught as expected, but after " + elapsedTime + 
+						" seconds instead of the expected " + timeout + " seconds.";
+				fail(msg);
 			}
 		} finally {
 			// the release call should block for the remaining 8 s that 'callThatTakesSomeTime' executes after our client timeout.
