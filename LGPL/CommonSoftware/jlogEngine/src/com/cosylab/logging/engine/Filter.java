@@ -312,6 +312,10 @@ public class Filter {
 		if (field == LogField.ENTRYTYPE) {
 			obj = Integer.valueOf(((LogTypeHelper) obj).ordinal());
 		}
+		// The timestamp is converted to Date
+		if (field == LogField.TIMESTAMP) {
+			obj = new Date((Long)obj);
+		}
 
 		// Temporary: Used to remember if the test passes
 		// and apply the not policy (if requested)
