@@ -38,6 +38,6 @@ public class TestMain
 				
 		System.out.println("current thread class loader is " + Thread.currentThread().getContextClassLoader().getClass().getName());
 		
-		TestMain instance = new TestMain();
+		new TestMain();
 	}
 }
