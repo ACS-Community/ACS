@@ -69,7 +69,7 @@ import alma.acs.util.StopWatch;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.38 2013/02/19 12:11:31 hsommer Exp $
+ * $Id: EventModel.java,v 1.39 2013/02/22 15:36:44 hsommer Exp $
  */
 public class EventModel {
 	
@@ -534,8 +534,8 @@ public class EventModel {
 	private synchronized void getArchiveConsumer() {
 		if (archiveConsumer == null) {
 				try {
-					archiveConsumer = new ArchiveConsumer(cs,new ArchiveReceiver());
-					archiveConsumer.consumerReady();
+					archiveConsumer = new ArchiveConsumer(new ArchiveReceiver(), cs, nctx);
+					archiveConsumer.startReceivingEvents();
 				} catch (AcsJException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -570,7 +570,11 @@ public class EventModel {
 	
 	public void closeArchiveConsumer() {
 		if (archiveConsumer != null) {
-			archiveConsumer.disconnect();
+			try {
+				archiveConsumer.disconnect();
+			} catch (Exception ex) {
+				m_logger.log(Level.WARNING, "Got an exception disconnecting the archive consumer.", ex);
+			}
 			archiveConsumer = null;
 		}
 	}
