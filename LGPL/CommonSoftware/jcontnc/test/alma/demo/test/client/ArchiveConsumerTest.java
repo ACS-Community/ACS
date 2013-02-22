@@ -19,33 +19,49 @@
  */
 package alma.demo.test.client;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertThat;
+
+import java.util.Date;
+
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
+
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.nc.ArchiveConsumer;
+import alma.acs.nc.ArchiveConsumer.ArchiveReceiver;
+import alma.acs.util.IsoDateFormat;
+import alma.acs.util.UTCUtility;
 
 /**
  * Currently this test is started via "acsStartJava junit.textui.TestRunner alma.demo.test.client.ArchiveConsumerTest",
  * and then 3 seconds later the "archiveeventsSupplier" is run, which sends off events and terminates.
  * Then TAT waits 30 seconds for this test to receive these events.
  */
-public class ArchiveConsumerTest extends ComponentClientTestCase
+public class ArchiveConsumerTest extends ComponentClientTestCase implements ArchiveReceiver
 {
 	private ArchiveConsumer m_consumer;
-	private int count = 0;
+	private volatile int count = 0;
 
 	/**
-	 * @param managerLoc
 	 * @throws Exception
 	 */
 	public ArchiveConsumerTest() throws Exception {
 		super(ArchiveConsumerTest.class.getSimpleName());
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		m_consumer = new ArchiveConsumer(getContainerServices(), this);
-		m_consumer.consumerReady();
+		
+		NamingContext ncRef = NamingContextHelper.narrow(
+				getContainerServices().getAdvancedContainerServices().getORB().resolve_initial_references("NameService") );
+
+		m_consumer = new ArchiveConsumer(this, getContainerServices(), ncRef);
+		m_consumer.startReceivingEvents();
 	}
 	
+	@Override
 	protected void tearDown() throws Exception {
 		m_consumer.disconnect();
 		super.tearDown();
@@ -56,14 +72,23 @@ public class ArchiveConsumerTest extends ComponentClientTestCase
 	 * will be checked by TAT based on the output from {@link #receive(Long, String, String, Object)}.
 	 */
 	public void testReceiveFor15Seconds() throws Exception {
+		
+		// receive and count events for a while
 		Thread.sleep(15000);
-		assertTrue("Should have received at least 11 events, but was " + count, count >= 11);
+		
+		assertThat("ArchivingChannel events received", count, greaterThanOrEqualTo(11) );
 		System.out.println("Test passed!");
 	}
 	
-	public void receive(Long a, String b, String c, Object d) {
-		m_logger.info("receive method: b=" + b + ", c=" + c + ", d(type)=" + d.getClass());
+	
+	@Override
+	public void receive(long timeStamp, String device, String property, Object value) {
+		
 		count++;
+
+		String isoTimeStamp = IsoDateFormat.formatDate(new Date(UTCUtility.utcOmgToJava(timeStamp)));
+		m_logger.info("ArchivingChannel data received: timeStamp=" + isoTimeStamp + ", device=" + device + 
+				", property=" + property + ", value(type)=" + value.getClass().getSimpleName());
 	}
 
 }
