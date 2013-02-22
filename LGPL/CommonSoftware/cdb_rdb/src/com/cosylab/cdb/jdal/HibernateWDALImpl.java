@@ -1673,6 +1673,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						if (comp == null)
 							throw new RuntimeException("Component with ID " + component.getComponentId() + " does not exist.");
 						bindNonExpandedComponentXMLToAlmaBranch(session, almaRoot, comp);
+						// TODO why do not add to already loaded components list??!!!
 					}
 				};
 				plugin.loadControlDevices(session, config, bindCallback);
@@ -1797,6 +1798,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	{
 		// now find its submap
 		path = getNormalizedPath(path); 
+		final String fullName = path + "/" + name;
 		while (path != null && path.length() > 0)
 		{
 			// remove trailing slashes, to have unique curl (used for key)
@@ -1813,6 +1815,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			// hierarchical component (has it own XML) with children components
 			Object parentObj = parentMap.get(parentPath);
 			if (parentObj instanceof ComponentDAOImplSaver) {
+				
+				m_logger.fine("Transforming non-hierachical to hierachical node for " + parentPath + " (of " + fullName + ")");
+				
 				ComponentData cd = new ComponentData();
 				try {
 					cd.setData(((ComponentDAOImplSaver)parentObj).component.XMLDoc);
@@ -1840,17 +1845,23 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		{
 	        if (current instanceof ComponentData && objectToBind instanceof ComponentDAOImplSaver)
 	        {
+				m_logger.fine("Overriding XMLDoc of already bound node of " + fullName);
 				try {
-					((ComponentData)parentMap.get(name)).setData(((ComponentDAOImplSaver)objectToBind).component.XMLDoc);
+					((ComponentData)current).setData(((ComponentDAOImplSaver)objectToBind).component.XMLDoc);
 				} catch (Throwable th) {
 					// should never happen, but still print it out
 					th.printStackTrace();
 				}
 	        }
+	        else if (current instanceof ComponentData && objectToBind instanceof ComponentData)
+	        {
+				m_logger.fine("Overriding XMLDoc of already bound node of " + fullName + ", but keeping its subnodes.");
+				((ComponentData)current).setData(((ComponentData)objectToBind).getExtraData());
+	        }
 	        else
 	        {
 	        	// still override, but with warning
-	        	m_logger.warning("Overriding component node: " + path + "/" + name);
+	        	m_logger.warning("Overriding component node: " + fullName);
 	        	parentMap.put(name, objectToBind);
 	        }
 		}

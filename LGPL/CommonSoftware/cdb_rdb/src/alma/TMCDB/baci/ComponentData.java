@@ -60,6 +60,11 @@ public class ComponentData implements java.io.Serializable, ExtraDataFeature {
 		_extraData = ExtraDataFeatureUtil.getExtraDataMap(xmlData);
 	}
 
+	public void setData(Element data)
+	{
+		_extraData = data;
+	}
+
 	/**
      * Default Constructor for Component.  Setter methods must be used to insert data.
      */
