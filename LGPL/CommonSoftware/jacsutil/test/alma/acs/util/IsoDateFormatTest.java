@@ -23,26 +23,26 @@
 package alma.acs.util;
 
 
-import java.util.Date;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-//import static org.junit.Assert.assertEquals;
-//import org.junit.Test;
+import java.util.Date;
+
+import org.junit.Test;
 
 
 /**
  * @author hsommer
  */
-public class IsoDateFormatTest extends TestCase // TODO remove this extends once TATJUnitRunner has been upgraded to JUnit4
+public class IsoDateFormatTest
 {
-	//@Test
+	@Test
 	public void testFormatDate() throws Exception {
 		Date date = new Date(1345678901234L);
 		String isoTimestamp = IsoDateFormat.formatDate(date);
 		assertEquals("2012-08-22T23:41:41.234", isoTimestamp);
 	}
 
-	//@Test
+	@Test
 	public void testParseTimestamp() throws Exception {
 		Date date = IsoDateFormat.parseIsoTimestamp("2011-09-12T15:40:47.568");
 		assertEquals(1315842047568L, date.getTime());
