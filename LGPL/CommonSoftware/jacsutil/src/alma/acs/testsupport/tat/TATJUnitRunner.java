@@ -27,14 +27,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import junit.framework.Test;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
+import junit.runner.Version;
 import junit.textui.ResultPrinter;
 import junit.textui.TestRunner;
+
+import org.junit.internal.JUnitSystem;
+import org.junit.internal.TextListener;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.RunListener;
 
 /**
  * Replacement for <code>junit.textui.TestRunner</code> 
@@ -90,168 +93,76 @@ import junit.textui.TestRunner;
  */
 public class TATJUnitRunner 
 {
-	private static PrintStream s_oldSysOut = System.out;
-	private static PrintStream s_oldSysErr = System.err;
+	private PrintStream oldSysOut;
+	private PrintStream oldSysErr;
 
-	private static FileOutputStream s_fileoutstream;
-	private static FileOutputStream s_fileerrstream;
+	private File sysOutFile;
+	private PrintStream newSysOut;
 
-	private static FileOutputStream s_fileresultstream;
+	private File sysErrFile;
+	private PrintStream newSysErr;
 
-	private static String outFilename;
-	private static String errFilename;
-	private static String resFilename;
+	private File resultFile;
+	private PrintStream resultOut;
 
-	private static void redirectSysOutputStreams() throws FileNotFoundException
+	private JUnitCore delegate = new JUnitCore();
+
+
+	private void createStreams(Class<?> testClass) throws IOException
 	{
-		s_oldSysOut = System.out;		
-		s_fileoutstream = new FileOutputStream(outFilename);
-		System.setOut(new PrintStream(s_fileoutstream,true));
+		sysOutFile = createTmpFile("sysout", testClass);
+		newSysOut = new PrintStream(new FileOutputStream(sysOutFile, true));
 
-		s_oldSysErr = System.err;
-		s_fileerrstream = new FileOutputStream(errFilename);
-		System.setErr(new PrintStream(s_fileerrstream,true));
+		sysErrFile = createTmpFile("syserr", testClass);
+		newSysErr = new PrintStream(new FileOutputStream(sysErrFile, true));
+		
+		resultFile = createTmpFile("result", testClass);
+		resultOut = new PrintStream(new FileOutputStream(resultFile, true));
 	}
 	
-	private static void restoreSysOutputStreams()
-	{
-		System.setOut(s_oldSysOut);
-		System.setErr(s_oldSysErr);
+	private void redirectSysStreams() throws IOException {
+	
+		oldSysOut = System.out;
+		System.setOut(newSysOut);
+
+		oldSysErr = System.err;
+		System.setErr(newSysErr);
+	}	
+
+	
+	private void restoreSysStreams() {
+	
+		System.setOut(oldSysOut);
+		System.setErr(oldSysErr);
 	}
 
-	private static void closeFiles() {
-		try {
-			s_fileoutstream.close();
-		} catch (IOException ex) {
-			System.err.print("Couldn't close file:" + ex.getMessage());
-		}
-		try {
-			s_fileerrstream.close();
-		} catch (IOException ex) {
-			System.err.print("Couldn't close file:" + ex.getMessage());
-		}
-		try {
-			s_fileresultstream.close();
-		} catch (IOException ex) {
-			System.err.print("Couldn't close file:" + ex.getMessage());
-		}
+	private void closeStreams() {
+		newSysOut.close();
+		newSysErr.close();
+		resultOut.close();
 	}
 	
+
+
 	/**
-	 * Runs a suite extracted from a TestCase subclass.
-	 * 
-	 * Redirects System.out and System.err so that successful test runs will not
-	 * produce any output, while in case of failure/error they get dumped to
-	 * System.err.
+	 * Dumps the content of the specified file to System.err and, if all goes well, deletes that file.  
+	 * @param source
+	 * @param sectionHeader
 	 */
-	public static void run(Class testClass) 
-            throws FileNotFoundException
-	{
-		//s_resultstream = new StringOutputStream();
-		s_fileresultstream = new FileOutputStream(resFilename);
-		redirectSysOutputStreams();
-	
-		Test suite = null;
-		
-		// try static method suite()
-		try
-		{
-			Method suiteMethod = testClass.getMethod("suite", (Class[]) null);
-			if (Modifier.isStatic(suiteMethod.getModifiers()))
-			{
-				suite = (Test) suiteMethod.invoke(null, (Object[]) null);
-			}
-		}
-		catch (Exception e)
-		{
-		}
-	
-		// if not suite(), then extract "testXXX" methods...
-		if (suite == null)
-		{
-			suite = new TestSuite(testClass);
-		}
-		
-		run(suite);	
-	}
-
-	
-	/**
-	 * Note that if this method should become public in the future (and thus can be called directly, 
-	 * rather than from {@link #run(Class)}, the handling of the output streams
-	 * and the like must be shared properly between the two run methods.  
-	 * @param suite
-	 */
-	private static void run(Test suite)
-	{
-		ResultPrinter resultPrinter = new ResultPrinter(new PrintStream(s_fileresultstream,true));
-		TestRunner testRunner = new TestRunner(resultPrinter);
-
-		TestResult r = null;
-		try
-		{
-			r = testRunner.doRun(suite);
-		}
-		catch (Exception ex)
-		{
-			// not for "Errors" as opposed to "Failures",
-			// but really mean exceptions thrown inside the JUnit framework,
-			// which should never happen
-			restoreSysOutputStreams();
-			System.err.println("Exception was thrown during test execution: ");
-			ex.printStackTrace();
-
-			closeFiles();
-			traceOutput(false);
-
-			System.exit(TestRunner.EXCEPTION_EXIT);
-		}
-
-		restoreSysOutputStreams();
-
-		// in either case print a summary which automated tools can analyze (SPR ALMASW2005121)
-		int total = r.runCount();
-		int success = total - r.failureCount() - r.errorCount();
-		String runnerReport = "TEST_RUNNER_REPORT success/total: " + success + "/" + total;
-		System.out.println(runnerReport);
-
-		if (r.wasSuccessful()) {
-			System.out.println("JUnit test run succeeded");
-			closeFiles();
-			File file = new File(outFilename);
-			file.delete();
-			file = new File(errFilename);
-			file.delete();
-			file = new File(resFilename);
-			file.delete();
-		} 
-		else {
-			System.err
-					.println("JUnitRunner: Errors and/or failures during test execution!\n");
-			closeFiles();
-			traceOutput(true);
-
-			System.exit(TestRunner.FAILURE_EXIT);
-		}
-		
-	}
-
-
-	private static void traceOutput(boolean isFailure) {
-		byte buffer[] = new byte[1024];
+	private void dumpAndDeleteCapturedFile(File source, String sectionHeader) {
+		byte buffer[] = new byte[2048];
 		int status = -1;
 		boolean error = false;
 		try {
-			FileInputStream resultFile = new FileInputStream(resFilename);
-			System.err.println("Test execution trace: ");
+			FileInputStream sourceStream = new FileInputStream(source);
+			System.err.println(sectionHeader);
 			System.err.println("<<<<<<<<<<<<<<<<<<<");
-			//System.err.println(s_resultstream.toString());
 			do {
 				try {
-					status = resultFile.read(buffer);
+					status = sourceStream.read(buffer);
 				} catch (IOException ex) {
 					error = true;
-					System.err.print("Error reading file:" + ex.getMessage());
+					System.err.print("Error reading file: " + ex.getMessage());
 				}
 				if (status > 0)
 					System.err.write(buffer, 0, status);
@@ -259,116 +170,124 @@ public class TATJUnitRunner
 			System.err.println(">>>>>>>>>>>>>>>>>>>");
 			System.err.println();
 			try {
-				resultFile.close();
+				sourceStream.close();
 			} catch (IOException ex) {
 				error = true;
-				System.err.print("Couldn't close file:" + ex.getMessage());
+				System.err.print("Couldn't close file: " + ex.getMessage());
 			}
 		} catch (FileNotFoundException ex) {
 			error = true;
-			System.err.print("Error opening file:" + ex.getMessage());
+			System.err.print("Error opening file: " + ex.getMessage());
 		}
+		
 		if (!error) {
-			File file = new File(resFilename);
-			file.delete();
+			source.delete();
 		}
-		error = false;
+	}
+	
 
+	
+	/**
+	 * Modified version of {@link JUnitCore#runMain(JUnitSystem, String...)}.
+	 * We restrict ourselves to running only one test class (or suite) at a time.
+	 * @param testClassName
+	 * @return
+	 * @throws IOException 
+	 */
+	public Result runMain(Class<? >testClass) throws IOException  {
+		
+		Result result = null;
 		try {
-			FileInputStream stdoutFile = new FileInputStream(outFilename);
-			System.err.println("System.out during test execution: ");
-			System.err.println("<<<<<<<<<<<<<<<<<<<");
-			//System.err.println(s_outstream.toString());
-			do {
-				try {
-					status = stdoutFile.read(buffer);
-				} catch (IOException ex) {
-					error = true;
-					System.err.print("Error reading file:" + ex.getMessage());
+			createStreams(testClass);
+			redirectSysStreams();
+			JUnitSystem system = new JUnitSystem() {
+				public void exit(int code) {
+					System.exit(code);
 				}
-				if (status > 0)
-					System.err.write(buffer, 0, status);
-			} while (status > 0);
-			System.err.println(">>>>>>>>>>>>>>>>>>>");
-			System.err.println();
-			try {
-				stdoutFile.close();
-			} catch (IOException ex) {
-				error = true;
-				System.err.print("Couldn't close file:" + ex.getMessage());
-			}
-
-		} catch (FileNotFoundException ex) {
-			error = true;
-			System.err.print("Error opening file:" + ex.getMessage());
-		}
-		if (!error) {
-			File file = new File(outFilename);
-			file.delete();
-		}
-		error = false;
-
-		try {
-			FileInputStream stderrFile = new FileInputStream(errFilename);
-			System.err.println("System.err during test execution: ");
-			System.err.println("<<<<<<<<<<<<<<<<<<<");
-			//System.err.println(s_errstream.toString());
-			do {
-				try {
-					status = stderrFile.read(buffer);
-				} catch (IOException ex) {
-					error = true;
-					System.err.print("Error reading file:" + ex.getMessage());
+				public PrintStream out() {
+					return resultOut;
 				}
-				if (status > 0)
-					System.err.write(buffer, 0, status);
-			} while (status > 0);
-			System.err.println(">>>>>>>>>>>>>>>>>>>");
-			try {
-				stderrFile.close();
-			} catch (IOException ex) {
-				error = true;
-				System.err.print("Couldn't close file:" + ex.getMessage());
-			}
-		} catch (FileNotFoundException ex) {
-			error = true;
-			System.err.print("Error opening file:" + ex.getMessage());
+			};
+			system.out().println("JUnit version " + Version.id());
+			RunListener listener= new TextListener(system);
+			delegate.addListener(listener); // or should we listen directly?
+	
+			result = delegate.run(testClass);
 		}
-		if (!error) {
-			File file = new File(errFilename);
-			file.delete();
+		finally {
+			restoreSysStreams();
+			closeStreams();
+		}
+		
+		
+		// in either case print a summary which automated tools can analyze (SPR ALMASW2005121)
+		int total = result.getRunCount();
+		int success = total - result.getFailureCount();
+		String runnerReport = "TEST_RUNNER_REPORT success/total: " + success + "/" + total;
+		System.out.println(runnerReport);
+
+		if (result.wasSuccessful()) {
+			System.out.println("JUnit test run succeeded");
+			sysOutFile.delete();
+			sysErrFile.delete();
+			resultFile.delete();
+		} 
+		else {
+			System.err.println("JUnitRunner: Errors and/or failures during test execution!\n");
+			// Dump the JUnit test runner output, the captured stdout, and the captured stderr of the text execution to System.err. 
+			dumpAndDeleteCapturedFile(resultFile, "Test execution trace:");
+			dumpAndDeleteCapturedFile(sysOutFile, "System.out during test execution:");
+			dumpAndDeleteCapturedFile(sysErrFile, "System.err during test execution:");
+
+			System.exit(TestRunner.FAILURE_EXIT);
 		}
 
+		return result;
 	}
 
-
+	
+	/**
+	 * @param prefix One of stdout, stderr, result
+	 * @param testClass
+	 * @return
+	 * @throws IOException
+	 */
+	private File createTmpFile(String prefix, Class<?> testClass) throws IOException {
+		File tmpFile = File.createTempFile(prefix + "-" + testClass.getSimpleName() + "-", ".log", new File(System.getProperty("user.dir")));
+		return tmpFile;
+	}
+	
+	
+	/**
+	 * @throws FileNotFoundException Hack, even other IOException will be wrapped by FileNotFoundException just for temporary backward compatibility. 
+	 * @deprecated  This method is used for compatibility with the old JUnit-3 based version of this class. It will be removed after ACS 11.2.
+	 */
+	public static void run(Class testClass) throws FileNotFoundException {
+		TATJUnitRunner inst = new TATJUnitRunner();
+		try {
+			inst.runMain(testClass);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			throw new FileNotFoundException(ex.toString());
+		}
+	}
+	
+	
 	public static void main(String[] args)
 	{
-		try
-		{
-			Class testClass = null;
-			
-			if (args.length < 1 || args[0] == null || 
-				args[0].length() == 0)
-			{
-				System.err.println("usage: JUnitRunner testclassname");
+		try {
+			if (args.length < 1 || args[0] == null || args[0].length() == 0) {
+				System.err.println("usage: JUnit4Runner testclassname");
 			}
-			else
-			{
+			else {
+				TATJUnitRunner inst = new TATJUnitRunner();
 				String testClassName = args[0];
-				outFilename = "stdout-" + testClassName + ".log";
-				errFilename = "stderr-" + testClassName + ".log";
-				resFilename = "result-" + testClassName + ".log";
-				testClass = Class.forName(testClassName);
+				Class<?> testClass = Class.forName(testClassName);  // or should we first redirect the streams, in case of static initializers?
+				inst.runMain(testClass);
 			}
-			
-			run(testClass);
-		} catch (FileNotFoundException ex) {
-			System.err.print("Error opening file:" + ex.getMessage());
-			System.exit(TestRunner.EXCEPTION_EXIT);
 		} catch (Throwable thr) {
 			thr.printStackTrace();
-			System.exit(TestRunner.EXCEPTION_EXIT);
+			System.exit(TestRunner.EXCEPTION_EXIT); // todo use junit4 constants
 		}
 		
 		System.exit(TestRunner.SUCCESS_EXIT);
