@@ -30,16 +30,17 @@ package alma.demo.test.EventILConsumerImpl;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.Consumer;
+import alma.acs.nc.OldConsumer;
 import alma.acsnc.EventDescription;
 import alma.demo.ConsumerCompOperations;
 /**
+ * TODO: Either remove this test or port it to the new NCSubscriber
  *
  * @author  dfugate
  */
 public class EventConsumerImpl extends ComponentImplBase implements ConsumerCompOperations
 {
-   private Consumer m_consumer = null;
+   private OldConsumer m_consumer = null;
    private long m_count = 0;
    
    /**
@@ -57,7 +58,7 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
       try
       {
          //subscribe to real channel and name
-         m_consumer = new Consumer("blarIL", m_containerServices);
+         m_consumer = new OldConsumer("blarIL", m_containerServices);
          m_consumer.addSubscription(EventDescription.class, this);
          
          //NOW FOR SOME TESTS!!!
