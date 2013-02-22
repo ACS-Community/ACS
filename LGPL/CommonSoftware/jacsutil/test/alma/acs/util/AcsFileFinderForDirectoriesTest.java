@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import junit.framework.JUnit4TestAdapter;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +21,6 @@ import alma.acs.testsupport.TestLogger;
 
 public class AcsFileFinderForDirectoriesTest
 {
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(AcsFileFinderForDirectoriesTest.class);
-	}
-
 	private Logger logger;
 	
 	private File rootDir1;
