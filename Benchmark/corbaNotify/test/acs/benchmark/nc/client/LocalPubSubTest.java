@@ -33,8 +33,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.JUnit4TestAdapter;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -89,13 +87,6 @@ public class LocalPubSubTest extends ComponentClient
 	@Rule 
 	public TestName testName = new TestName();
 	
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(LocalPubSubTest.class);
-	}
-
 	public LocalPubSubTest() throws Exception {
 		super(null, AcsLocations.figureOutManagerLocation(), LocalPubSubTest.class.getSimpleName());
 	}

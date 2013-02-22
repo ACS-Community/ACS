@@ -17,8 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.JUnit4TestAdapter;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,13 +43,6 @@ public class InMemoryNcTest
 	private AcsLogger logger;
 	private ContainerServicesBase services;
 	
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(InMemoryNcTest.class);
-	}
-
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////// Dummy data and receivers ///////////////////////////////////

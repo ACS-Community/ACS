@@ -25,7 +25,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
-import junit.framework.JUnit4TestAdapter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -74,13 +73,6 @@ public class FrameworkLoggerTest extends ComponentClient
 	
 	private ClientLogManager clientLogManager;
 	
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(FrameworkLoggerTest.class);
-	}
-
 	public FrameworkLoggerTest() throws Exception {
 		super(null, AcsLocations.figureOutManagerLocation(), FrameworkLoggerTest.class.getSimpleName());
 	}

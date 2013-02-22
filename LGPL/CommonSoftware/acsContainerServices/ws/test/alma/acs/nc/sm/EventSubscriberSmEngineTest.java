@@ -18,8 +18,6 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.Set;
 
-import junit.framework.JUnit4TestAdapter;
-
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
 import org.apache.commons.scxml.SCInstance;
@@ -93,13 +91,6 @@ public class EventSubscriberSmEngineTest
 	@Rule 
 	public TestName testName = new TestName();
 	
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(EventSubscriberSmEngineTest.class);
-	}
-
 
 	@Before
 	public void setUp() throws Exception {

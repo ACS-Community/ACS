@@ -3,7 +3,6 @@ package alma.acs.logging.adapters;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import junit.framework.JUnit4TestAdapter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,15 +14,11 @@ import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 
 
+/**
+ * Tests the interception of log4j logs by the ACS logging framework.
+ */
 public class Log4jAdapterTest extends JUnit4StandaloneTestBase
 {
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(Log4jAdapterTest.class);
-	}
-
 	public Log4jAdapterTest() throws Exception {
 	}
 

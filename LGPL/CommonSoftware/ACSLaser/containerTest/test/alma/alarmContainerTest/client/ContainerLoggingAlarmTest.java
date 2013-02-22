@@ -1,17 +1,10 @@
 package alma.alarmContainerTest.client;
 
-import static org.junit.Assert.*;
-
-import java.util.logging.Logger;
-
-import junit.framework.JUnit4TestAdapter;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
 
 import alma.acs.component.client.ComponentClient;
 import alma.acs.logging.AcsLogLevel;
@@ -20,14 +13,6 @@ import alma.acs.util.AcsLocations;
 import alma.acs.util.StopWatch;
 import alma.alarmContainerTest.AlarmTestComponent;
 import alma.alarmContainerTest.AlarmTestComponentHelper;
-
-
-
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Creates logs via a component. 
@@ -51,13 +36,6 @@ public class ContainerLoggingAlarmTest extends ComponentClient
 	@Rule 
 	public TestName testName = new TestName();
 	
-	/**
-	 * For compatibility with JUnit3 based TATJUnitRunner
-	 */
-	public static junit.framework.Test suite() {
-		return new JUnit4TestAdapter(ContainerLoggingAlarmTest.class);
-	}
-
 	
 	@Before
 	public void setUp() throws Exception {
