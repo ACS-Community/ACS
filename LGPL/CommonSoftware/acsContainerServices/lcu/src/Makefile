@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2005/04/22 13:52:58 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.4 2013/02/22 09:05:27 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -54,7 +54,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = acsContainerServices.h
+INCLUDES        = 
 
 ACSERRDEF = acsErrTypeContainerServices acsErrTypeLifeCycle
 
