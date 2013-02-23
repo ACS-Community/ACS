@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.11 2013/02/23 21:00:47 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.12 2013/02/23 23:51:44 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -109,7 +109,7 @@ class bulkDataNTtestSuite:
                 print 'Problem to execute: ' + self.sendersData[h].command
                 
         print 'Going to send data'
-        time.sleep(3)                
+        time.sleep(10)                
         for h in sorted(self.sendersData):
             print '----> Triggering sending data for host: '+h
             sp = self.sendersData[h].process           
@@ -133,7 +133,7 @@ class bulkDataNTtestSuite:
             else:
                 print 'Command for host: '+h+' : '+self.sendersData[h].command+' exited with an error: ', sp.returncode, sp.stderr.read()
         print '----> All senders terminated. Waiting a few seconds for synchronization'
-        time.sleep(3)                
+        time.sleep(10)                
                  
     #######################################################
     #   Starts the receiver
@@ -271,7 +271,7 @@ class bulkDataNTtestSuite:
                 if match is not None:
                     elements = line.split(" ")
                     hours   = int(elements[0][11:13])
-                    minutes = int(elements[0][14:15])
+                    minutes = int(elements[0][14:16])
                     seconds = float(elements[0][17:24])
                     time    = hours*3600+minutes*60+seconds
                     outLine = '%s, %.3f, %s\n' % (elements[0][11:24], time, elements[9])
