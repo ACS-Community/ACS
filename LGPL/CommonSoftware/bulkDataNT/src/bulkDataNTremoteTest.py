@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.10 2013/02/14 16:16:30 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.11 2013/02/23 21:00:47 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -291,9 +291,22 @@ class bulkDataNTtestSuite:
         histoFile.write("set output \"resultH.png\"\n")
         histoFile.write("replot\n")
         histoFile.close()
-        
-        os.system("gnuplot -p " + plotFileName)
-        os.system("gnuplot -p " + histoFileName)
+
+        # GCH 20130223
+        # We have to use different command line options for
+        # different versions of pgplot.
+        # For the time being I have seen in ALMA version 4.0 and 4.4
+        #
+        cmd = Popen("gnuplot --version", shell=True, stdout=PIPE)
+        output = cmd.stdout.read()
+        elements = output.split()
+        if elements[1] == "4.0":
+           persistOpt="-persist"
+        else:
+           persistOpt="-p"
+           
+        os.system("gnuplot " + persistOpt + " " + plotFileName)
+        os.system("gnuplot " + persistOpt + " " + histoFileName)
 
 ####################################################
 #
