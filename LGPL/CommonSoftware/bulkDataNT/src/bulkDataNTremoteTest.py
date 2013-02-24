@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.13 2013/02/24 22:26:04 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.14 2013/02/24 23:28:04 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -86,16 +86,18 @@ class bulkDataNTtestSuite:
             # Builds the flows names
             flowString = format(flow, "02d")
             outFile    = "bulkDataNTGenSender."+h+"-"+flowString
-#            sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
-#                       " '" + self.preCmd + " bulkDataNTGenSender -l " + 
-#                       str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
-#                       " --qos_lib="+self.qos_lib+
-#                       " -o "+str(self.throttle)+
-#                       self.postCmd+outFile+"'")
+
             sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
                        " '" + self.preCmd + " bulkDataNTGenSender -l " + 
                        str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
-                        self.postCmd+outFile+"'")
+                       " --qos_lib="+self.qos_lib+
+                       " -o "+str(self.throttle)+
+                       self.postCmd+outFile+"'")
+#            sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
+#                       " '" + self.preCmd + " bulkDataNTGenSender -l " + 
+#                       str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
+#                        self.postCmd+outFile+"'")
+
             self.sendersData[h+'-'+flowString]= RemoteProcData(h, sndCmd, None, outFile)
             flow+=1
 
@@ -177,7 +179,9 @@ class bulkDataNTtestSuite:
             xxxcastString="-u"
         outFile = "bulkDataNTGenReceiver."+rcvHost
         rcvCmd = ("ssh " + os.environ['USER']+ "@" + rcvHost + 
-                  " '" + self.preCmd + " bulkDataNTGenReceiver -n -s TS -f "+flowString+" "+xxxcastString+
+                  " '" + self.preCmd + " bulkDataNTGenReceiver -n -s TS -f "+flowString+
+                  " "+xxxcastString+
+                  " --qos_lib="+self.qos_lib+
                   self.postCmd+outFile+"'")
         print ' Executing command: '+ rcvCmd
         process = Popen(rcvCmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
@@ -338,7 +342,7 @@ if __name__ == '__main__':
     throttle    = 0
     qos_lib     = "BulkDataQoSLibrary"
     
-    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:mv", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose", "process"])
+    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:mv", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose", "process", "throttle=", "qos_lib="])
     for o,a in opts:
         if o in ("-h", "--help"):
             print sys.argv[0]+' - Command line options'
