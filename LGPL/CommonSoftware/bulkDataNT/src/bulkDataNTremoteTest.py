@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.12 2013/02/23 23:51:44 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.13 2013/02/24 22:26:04 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -56,7 +56,8 @@ class RemoteProcData:
 
 class bulkDataNTtestSuite:
     
-    def __init__(self, hosts, size=640000, loops=10, sourceFile='.bash_profile', acsdataEnv=None):
+    def __init__(self, hosts, size=640000, loops=10, sourceFile='.bash_profile', acsdataEnv=None,
+                 throttle=0, qos_lib="BulkDataQoSLibrary"):
         self.hosts = hosts
         self.numOfHosts = len(hosts)
         self.dataSizeInBytes=size
@@ -65,6 +66,8 @@ class bulkDataNTtestSuite:
         self.receiverData = None
         self.sourceFile=sourceFile
         self.acsdataEnv = acsdataEnv
+        self.throttle = throttle
+        self.qos_lib = qos_lib
         self.preCmd="source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; "
 
         if self.acsdataEnv is not None:
@@ -83,10 +86,16 @@ class bulkDataNTtestSuite:
             # Builds the flows names
             flowString = format(flow, "02d")
             outFile    = "bulkDataNTGenSender."+h+"-"+flowString
+#            sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
+#                       " '" + self.preCmd + " bulkDataNTGenSender -l " + 
+#                       str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
+#                       " --qos_lib="+self.qos_lib+
+#                       " -o "+str(self.throttle)+
+#                       self.postCmd+outFile+"'")
             sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
                        " '" + self.preCmd + " bulkDataNTGenSender -l " + 
                        str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
-                       self.postCmd+outFile+"'")
+                        self.postCmd+outFile+"'")
             self.sendersData[h+'-'+flowString]= RemoteProcData(h, sndCmd, None, outFile)
             flow+=1
 
@@ -326,6 +335,8 @@ if __name__ == '__main__':
     verbose     = False
     multicast   = False
     processRes  = False
+    throttle    = 0
+    qos_lib     = "BulkDataQoSLibrary"
     
     opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:mv", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose", "process"])
     for o,a in opts:
@@ -342,6 +353,10 @@ if __name__ == '__main__':
             print '  [--source=file to be sourced]   : File to be sourced at ssh login. Default: ',sf
             print '  [--acsdata=path to ACSDATA for configuration files]'
             print '  [--process]                     : Process results to extract statistics and plots'
+            print '  [--throttle=MBsec]              : Throttling in MBytes/sec. Default: 0.0 (no throttling)'
+            print '  [--qos_lib=qosLibName]          : Name for the QoS library to use.'
+            print '                                    Default:     BulkDataQoSLibrary'
+            print '                                    Alternative: TCPBulkDataQoSLibrary'
             print '  -h or --help                    : This help'
             sys.exit()
         elif o in ("-s", "--senders"):
@@ -363,10 +378,15 @@ if __name__ == '__main__':
             print 'ACSDATA: '+ acsdata
         elif o=="--process":
             processRes=True
+        elif o=="--throttle":
+            throttle=a
+            print 'throttle: '+throttle
+        elif o=="--qos_lib":
+            qos_lib=a
+            print 'qos_lib: '+qos_lib
         elif o in ("-v", "--verbose"):
             verbose=True
-            print 'source file: '+sf
-            
+           
     if senderHosts is None:
         print 'No sender has been given (use option -s/--senders=)!'
         sys.exit()
@@ -375,7 +395,7 @@ if __name__ == '__main__':
     # Instantiate the object that actually runs the tests, by passing the
     # command line parameters reeived from the command line.
     #
-    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf)
+    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf, throttle=throttle, qos_lib=qos_lib)
 
     #
     # Starts the receiver, collecting from all senders
