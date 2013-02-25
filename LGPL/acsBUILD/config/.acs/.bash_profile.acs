@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.125 2013/02/05 12:59:27 acaproni Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.126 2013/02/25 11:39:03 hsommer Exp $"
 #
 #
 #
@@ -161,7 +161,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=ACS-11.1
+   ALMASW_RELEASE=ACS-11.2
 fi
 
 # Combined absolute path where ACS software and tools are installed.
