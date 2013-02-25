@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.26 2012/12/12 16:34:22 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.27 2013/02/25 09:48:30 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@
 #    None
 #------------------------------------------------------------------------
 
-DEBUG=on
+DEBUG=on 
 #COMPONENT_HELPERS=on
 
 # 
