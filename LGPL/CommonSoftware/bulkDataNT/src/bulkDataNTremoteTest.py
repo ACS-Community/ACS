@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.14 2013/02/24 23:28:04 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.15 2013/02/25 19:04:36 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -259,8 +259,42 @@ class bulkDataNTtestSuite:
             histoFile.write(comma + '\"' + dataFileName +
                             '\" using (bin($3,bw)+bw/2):(1.0) smooth frequency w boxes ti ' +
                             '\"' + dataFileName + ' dist\"')
+            #
+            # Reset counters to calculate effective data transfer rate
+            #
+            timeInitial = 0
+            timeFinal   = 0
+            bytesTotal  = 0
             comma = ","
             for line in inputFile.readlines():
+                
+                #
+                # Saves the first timestamp when starting sending data.
+                #
+                match = re.search('Going to send parameter:',line)
+                if match is not None:
+                    elements = line.split(" ")
+                    hours       = int(elements[0][11:13])
+                    minutes     = int(elements[0][14:16])
+                    seconds     = float(elements[0][17:24])
+                    timeInitial = hours*3600+minutes*60+seconds
+                    
+                #
+                # Sums up the bytes in each iteration.
+                #
+                match = re.search('DataWriter protocol status',line)
+                if match is not None:
+                    elements   = line.replace("(", "#").replace(")", "#").split("#")
+                    bytesTotal = int(elements[1])
+                    elements = line.split(" ")
+                    hours       = int(elements[0][11:13])
+                    minutes     = int(elements[0][14:16])
+                    seconds     = float(elements[0][17:24])
+                    timeFinal   = hours*3600+minutes*60+seconds
+                    effectiveRate = bytesTotal/1000000/(timeFinal-timeInitial) # is a MB 1*10 6 or 1024*1024 bytes?
+                    print "\tEffective data rate   : %f MBytes/sec" % effectiveRate
+
+                    
                 #
                 # Extracts statistics and writes them on STDOUT
                 #
@@ -289,6 +323,7 @@ class bulkDataNTtestSuite:
                     time    = hours*3600+minutes*60+seconds
                     outLine = '%s, %.3f, %s\n' % (elements[0][11:24], time, elements[9])
                     dataFile.write(outLine)
+
                     
             inputFile.close()
             dataFile.close()
