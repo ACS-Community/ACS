@@ -87,8 +87,17 @@ public class Filter {
 	 * @param isLethal The activation state of the filter 
 	 * @param notFilter Usage of the filter (normal or not)
 	 */
-	private Filter(LogField field, Constraint constraint, boolean isLethal,
-			boolean notFilter) {
+	private Filter(
+			LogField field, 
+			Constraint constraint, 
+			boolean isLethal,
+			boolean notFilter) throws InvalidFilterConstraintException	{
+		if (field==null) {
+			throw new InvalidFilterConstraintException("No log field specified in filter");
+		}
+		if (constraint==null) {
+			throw new InvalidFilterConstraintException("No constraint specified in filter");
+		}
 		this.field = field;
 		this.constraint = constraint;
 		this.isLethal = isLethal;
@@ -96,20 +105,27 @@ public class Filter {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor for {@link Constraint} types <code>MINMAX</code>, <code>MINIMUM</code> and <code>MAXIMUM</code>.
 	 */
-	public Filter(LogField field, boolean isLethal, Comparable minimum,
-			Comparable maximum, boolean notFilter)
-			throws InvalidFilterConstraintException {
+	public Filter(
+			LogField field, 
+			boolean isLethal, 
+			Comparable minimum,
+			Comparable maximum, 
+			boolean notFilter) throws InvalidFilterConstraintException {
 		this(field, Constraint.MINMAX, isLethal, notFilter);
-
-		if ((minimum == null) && (maximum == null))
-			throw new InvalidFilterConstraintException(
-					"No constraint specified");
+		
+		if ((minimum == null) && (maximum == null)) {
+			throw new InvalidFilterConstraintException("No constraint specified");
+		}
+		
+		if (minimum==null) {
+			constraint = Constraint.MAXIMUM;
+		}
 
 		if (minimum != null) {
-			if (!(field.getType().isInstance(minimum))) {
-				throw new InvalidFilterConstraintException("Invalid minimum");
+			if (!(minimum instanceof Comparable)) {
+				throw new InvalidFilterConstraintException("Invalid minimum: "+minimum);
 			}
 			this.minimum = minimum;
 		} else {
@@ -117,76 +133,41 @@ public class Filter {
 		}
 
 		if (maximum != null) {
-			if (!(field.getType().isInstance(maximum)))
-				throw new InvalidFilterConstraintException("Invalid maximum");
+			if (!((maximum instanceof Comparable)))
+				throw new InvalidFilterConstraintException("Invalid maximum "+maximum);
 			this.maximum = maximum;
 		} else {
 			constraint = Constraint.MINIMUM;
 		}
-	}
-
-	/**
-	 * 
-	 */
-	public Filter(LogField field, boolean isLethal, Integer exact,
-			boolean notFilter) throws InvalidFilterConstraintException {
-		this(field, Constraint.EXACT, isLethal, notFilter);
-
-		this.exact = exact;
-	}
-
-	/**
-	 * Insert the method's description here. Creation date: (2/7/02 2:46:21 PM)
-	 * 
-	 * @param field
-	 *            int
-	 * @param isLethal
-	 *            boolean
-	 * @param minimum
-	 *            java.lang.Integer
-	 * @param maximum
-	 *            java.lang.Integer
-	 */
-	public Filter(LogField field, boolean isLethal, Integer minimum,
-			Integer maximum, boolean notFilter)
-			throws InvalidFilterConstraintException {
-		this(field, Constraint.MINMAX, isLethal, notFilter);
-
-		if ((minimum == null) && (maximum == null)) {
-			throw new InvalidFilterConstraintException(
-					"No constraint specified");
-		}
-
-		if (minimum != null) {
-			this.minimum = minimum;
-		} else {
-			constraint = Constraint.MAXIMUM;
-		}
-
-		if (maximum != null) {
-			this.maximum = maximum;
-		} else {
-			constraint = Constraint.MINIMUM;
+		// Ensure that max>min if Constraint type is still MINMAX
+		if (constraint==Constraint.MINMAX) {
+			if (this.maximum.compareTo(this.minimum)<0) {
+				throw new InvalidFilterConstraintException("Invalid constraint max<min: "+maximum+"<"+minimum);
+			}
 		}
 	}
-
+	
 	/**
-	 * 
+	 * Constructor for {@link Constraint} types <code>EXACT</code>
 	 */
 	public Filter(LogField field, boolean isLethal, Object exact, boolean notFilter)
 			throws InvalidFilterConstraintException {
 		this(field, Constraint.EXACT, isLethal, notFilter);
 
-		if (field.getType() != exact.getClass())
-			throw new InvalidFilterConstraintException("Invalid exact value: "
-					+ exact);
+		if (exact==null) {
+			throw new InvalidFilterConstraintException("The value for comparison can't be null");
+		}
+		if (field==LogField.TIMESTAMP && !(exact instanceof Date)) {
+			throw new InvalidFilterConstraintException("Invalid exact timestamp should be a Date instead of "+ exact.getClass().getName());
+		} else if (field!=LogField.TIMESTAMP && field.getType() != exact.getClass())
+			throw new InvalidFilterConstraintException("Invalid exact value: "	+ exact);
 
 		this.exact = exact;
 	}
 
 	/**
-	 * Build a filter with a regular expression Check if the string is a valid
-	 * regular expression
+	 * Build a filter with a regular expression i.e. {@link Constraint} types <code>STRING_WILDCHAR</code>.
+	 * It checks if the string is a valid regular expression
 	 */
 	public Filter(LogField field, boolean isLethal, String regularExpression,
 			boolean notFilter) throws InvalidFilterConstraintException,
@@ -207,76 +188,7 @@ public class Filter {
 	}
 
 	/**
-	 * Insert the method's description here. Creation date: (2/7/02 2:48:18 PM)
-	 * 
-	 * @param field
-	 *            int
-	 * @param isLethal
-	 *            boolean
-	 * @param minimum
-	 *            java.lang.String
-	 * @param maximum
-	 *            java.lang.String
-	 */
-	public Filter(LogField field, boolean isLethal, String minimum,
-			String maximum, boolean notFilter)
-			throws InvalidFilterConstraintException {
-		this(field, Constraint.MINMAX, isLethal, notFilter);
-		// System.out.println("short, boolean, Comparable, Comparable");
-
-		if ((minimum == null) && (maximum == null))
-			throw new InvalidFilterConstraintException(
-					"No constraint specified");
-
-		if (minimum != null) {
-			this.minimum = minimum;
-		} else {
-			constraint = Constraint.MAXIMUM;
-		}
-
-		if (maximum != null) {
-			this.maximum = maximum;
-		} else {
-			constraint = Constraint.MINIMUM;
-		}
-	}
-
-	/**
-	 * Insert the method's description here. Creation date: (2/7/02 2:47:35 PM)
-	 * 
-	 * @param field
-	 *            int
-	 * @param isLethal
-	 *            boolean
-	 * @param minimum
-	 *            java.util.Date
-	 * @param maximum
-	 *            java.util.Date
-	 */
-	public Filter(LogField field, boolean isLethal, Date minimum, Date maximum,
-			boolean notFilter) throws InvalidFilterConstraintException {
-		this(field, Constraint.MINMAX, isLethal, notFilter);
-		// System.out.println("short, boolean, Comparable, Comparable");
-
-		if ((minimum == null) && (maximum == null))
-			throw new InvalidFilterConstraintException(
-					"No constraint specified");
-
-		if (minimum != null) {
-			this.minimum = minimum;
-		} else {
-			constraint = Constraint.MAXIMUM;
-		}
-
-		if (maximum != null) {
-			this.maximum = maximum;
-		} else {
-			constraint = Constraint.MINIMUM;
-		}
-	}
-
-	/**
-	 * The most imporant method of this class. Returns true if LogEntryXML
+	 * The most important method of this class. Returns true if LogEntryXML
 	 * passes through the filter and false otherwise.
 	 * 
 	 * If this instance is a non-lethal filter and is called in lethal
@@ -709,7 +621,7 @@ public class Filter {
 			f = new Filter(field, isLethal, minInt, maxInt, notPolicy);
 		} else {
 			// Unrecognized type
-			throw new IllegalArgumentException("Unrecognized type");
+			throw new IllegalArgumentException("Unrecognized filter type");
 		}
 		return f;
 	}
