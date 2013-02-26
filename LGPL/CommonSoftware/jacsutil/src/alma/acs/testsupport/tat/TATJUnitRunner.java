@@ -27,6 +27,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import junit.framework.Test;
 import junit.runner.Version;
@@ -106,6 +110,11 @@ public class TATJUnitRunner
 	private PrintStream resultOut;
 
 	private JUnitCore delegate = new JUnitCore();
+	
+	/**
+	 * true if the class under test has the {@link KeepTestOutput} annotation.
+	 */
+	private boolean keepTestOutput = false;
 
 
 	private void createStreams(Class<?> testClass) throws IOException
@@ -180,7 +189,7 @@ public class TATJUnitRunner
 			System.err.print("Error opening file: " + ex.getMessage());
 		}
 		
-		if (!error) {
+		if (!error && !keepTestOutput) {
 			source.delete();
 		}
 	}
@@ -190,14 +199,16 @@ public class TATJUnitRunner
 	/**
 	 * Modified version of {@link JUnitCore#runMain(JUnitSystem, String...)}.
 	 * We restrict ourselves to running only one test class (or suite) at a time.
-	 * @param testClassName
-	 * @return
+	 * This method is not thread-safe!
+	 * @param testClass
+	 * @return the result
 	 * @throws IOException 
 	 */
-	public Result runMain(Class<? >testClass) throws IOException  {
+	public Result runMain(Class<?> testClass) throws IOException  {
 		
 		Result result = null;
 		try {
+			keepTestOutput = testClass.isAnnotationPresent(KeepTestOutput.class);
 			createStreams(testClass);
 			redirectSysStreams();
 			JUnitSystem system = new JUnitSystem() {
@@ -228,10 +239,12 @@ public class TATJUnitRunner
 
 		if (result.wasSuccessful()) {
 			System.out.println("JUnit test run succeeded");
-			sysOutFile.delete();
-			sysErrFile.delete();
-			resultFile.delete();
-		} 
+			if (!keepTestOutput) {
+				sysOutFile.delete();
+				sysErrFile.delete();
+				resultFile.delete();
+			}
+		}
 		else {
 			System.err.println("JUnitRunner: Errors and/or failures during test execution!\n");
 			// Dump the JUnit test runner output, the captured stdout, and the captured stderr of the text execution to System.err. 
@@ -292,4 +305,16 @@ public class TATJUnitRunner
 		
 		System.exit(TestRunner.SUCCESS_EXIT);
 	}
+
+	/**
+	 * Test classes can use this annotation to cause TATJUnitRunner to keep the 
+	 * tmp files with the stdout, stderr and test output. 
+	 * This has no influence on what output TAT sees, but allows checking the test output 
+	 * which is normally not available any more after the test succeeds.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public static @interface KeepTestOutput {
+	}
+
 }
