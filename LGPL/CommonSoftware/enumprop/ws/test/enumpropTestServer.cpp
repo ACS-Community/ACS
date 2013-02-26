@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.56 2011/10/16 08:43:58 hsommer Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.57 2013/02/26 15:31:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.56 2011/10/16 08:43:58 hsommer Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.57 2013/02/26 15:31:08 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -53,6 +53,9 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace ACS;
 using namespace baci;
+
+// we need at global level the servant
+enumpropTestDeviceImpl *ep_servant = NULL;
 
 // We need an implementation of the ContainerServices here because
 // 1. the component fails if the pointer to the ContainerServices it receives
@@ -244,6 +247,8 @@ void TerminationSignalHandler(int)
     
     try
 	{
+    	// first delete the servant
+    ep_servant->_remove_ref();
 	// false - avoid deadlock; true would try to wait for all requests
 	// to complete before returning, but because we are calling it from within
 	// a request, we would be blocking it from 
@@ -281,7 +286,6 @@ int main(int l_argc, char* l_argv[])
     int   devCount = l_argc-1;
 
     CORBA::String_var ior;
-    enumpropTestDeviceImpl *ep_servant = NULL;
     ENUMPROP_TEST::enumpropTestDevice_var ep;
 
     int count = 0;
@@ -364,13 +368,13 @@ int main(int l_argc, char* l_argv[])
 
 	}//for
 
+    ACE_Time_Value tv;
+    tv.sec(1);
     ACS_SHORT_LOG((LM_INFO,"enumpropTestServer: Waiting for requests ... "));
     BACI_CORBA::getORB()->run();
 
     ACS_SHORT_LOG((LM_INFO,"enumpropTestServer: Exiting."));
-    
-    ep_servant->_remove_ref(); 
- 
+
 
     ACS_SHORT_LOG((LM_INFO,"enumpropTestServer: Releasing CORBA."));
 
