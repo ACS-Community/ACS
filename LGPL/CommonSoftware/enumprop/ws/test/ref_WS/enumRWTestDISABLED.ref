@@ -1,7 +1,7 @@
 2 - CORBA initialized successfully
+1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Starting
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
-1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Starting
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 1 - ----------T--:--:--.--- [GlobalLogger - ] Using ACS alarm system
@@ -38,8 +38,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
-1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
+1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'EPTESTDEVICE1:currentStates_monitorEventDispatcher' (archiving: 0, triggerTime: 10000000)
@@ -75,25 +75,25 @@
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
-1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
+1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
-1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
-1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Writing IOR for EPTESTDEVICE1 into file...
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Waiting for requests ... 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::sendAlarm] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
@@ -106,7 +106,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Value and value: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <enumpropTestDevice#currentStates,EPTESTDEVICE1,1> ACTIVE
-1 - DISABLE
 2 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Going in main loop sleep...
@@ -115,16 +114,18 @@
 3 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 3 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 3 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
+3 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED
 3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
-3 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED     alarm_on
-3 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED
 3 - ----------T--:--:--.--- [GlobalLogger - ] 2 DIAGNOSE
 3 - ----------T--:--:--.--- [GlobalLogger - ] 3 SHUTDOWN
 3 - ----------T--:--:--.--- [GlobalLogger - ] 4 INITIALIZE
-3 - ----------T--:--:--.--- [GlobalLogger - ] 5 ON     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] 5 ON
 3 - ----------T--:--:--.--- [GlobalLogger - ] 6 OFF
 3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
 3 - ----------T--:--:--.--- [GlobalLogger - ] Setting current state to: DISABLED
+1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+1 - 
 3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -134,5 +135,34 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Exit ... 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::~AlarmenumpropEventStrategy] 
+1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: DISABLED (0)
+1 - 
+3 - ----------T--:--:--.--- [GlobalLogger - ] Setting (non_blocking) current state to: DISABLED
+1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+1 - 
+3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: DISABLED (0)
+1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+3 - ----------T--:--:--.--- [GlobalLogger - ] Setting (async) current state to: DISABLED
+1 - 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+1 - 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: DISABLED (0)
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - ] enumpropTestDeviceImpl::serverShutdown
