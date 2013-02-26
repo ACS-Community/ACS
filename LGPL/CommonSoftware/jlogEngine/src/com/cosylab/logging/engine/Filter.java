@@ -153,16 +153,19 @@ public class Filter {
 	public Filter(LogField field, boolean isLethal, Object exact, boolean notFilter)
 			throws InvalidFilterConstraintException {
 		this(field, Constraint.EXACT, isLethal, notFilter);
-
 		if (exact==null) {
 			throw new InvalidFilterConstraintException("The value for comparison can't be null");
 		}
 		if (field==LogField.TIMESTAMP && !(exact instanceof Date)) {
 			throw new InvalidFilterConstraintException("Invalid exact timestamp should be a Date instead of "+ exact.getClass().getName());
 		} else if (field!=LogField.TIMESTAMP && field.getType() != exact.getClass())
-			throw new InvalidFilterConstraintException("Invalid exact value: "	+ exact);
+			throw new InvalidFilterConstraintException("Invalid exact value: "	+ exact+", Expected class type "+field.getType().getName()+" but received type is "+exact.getClass().getName());
 
-		this.exact = exact;
+		if (field==LogField.ENTRYTYPE) {
+			this.exact = ((LogTypeHelper)exact).ordinal();
+		} else {
+			this.exact = exact;
+		}
 	}
 
 	/**
