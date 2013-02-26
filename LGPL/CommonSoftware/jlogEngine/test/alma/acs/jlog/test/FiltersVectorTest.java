@@ -26,8 +26,11 @@ import junit.framework.TestCase;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.IsoDateFormat;
 
+import com.cosylab.logging.engine.ExactFilter;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.MinMaxFilter;
+import com.cosylab.logging.engine.RegExpFilter;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -35,7 +38,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 /**
  * Test the {@link FiltersVector} class.
  * @author  acaproni
- * @version $Id: FiltersVectorTest.java,v 1.1 2013/02/25 15:39:19 acaproni Exp $
+ * @version $Id: FiltersVectorTest.java,v 1.2 2013/02/26 17:02:53 acaproni Exp $
  * @since ACS 11.2
  */
 public class FiltersVectorTest extends TestCase {
@@ -146,10 +149,10 @@ public class FiltersVectorTest extends TestCase {
 	public void testHasActiveFilters() throws Exception {
 		//No active filters yet
 		assertFalse("The vector should be empty at startup",filters.hasActiveFilters());
-		Filter exactLogMessageFilter= new Filter(LogField.LOGMESSAGE, lethal, "A message", false);
+		Filter exactLogMessageFilter= new ExactFilter(LogField.LOGMESSAGE, lethal, "A message", false);
 		filters.addFilter(exactLogMessageFilter, false);
 		assertFalse("The vector should contain one filter but not active",filters.hasActiveFilters());
-		Filter stackLvlFilter= new Filter(LogField.STACKLEVEL, lethal, Integer.valueOf(5), false);
+		Filter stackLvlFilter= new ExactFilter(LogField.STACKLEVEL, lethal, Integer.valueOf(5), false);
 		filters.addFilter(stackLvlFilter, true);
 		assertTrue("The vector should contain one active filter",filters.hasActiveFilters());
 		filters.clear();
@@ -165,9 +168,9 @@ public class FiltersVectorTest extends TestCase {
 		assertTrue("All logs accepted if no filters", filters.applyFilters(log2));
 		assertTrue("All logs accepted if no filters", filters.applyFilters(log3));
 		// All logs are accepted if the vector has filters but no one is active
-		Filter exactLogMessageFilter= new Filter(LogField.LOGMESSAGE, lethal, "A message for a log", false);
+		Filter exactLogMessageFilter= new ExactFilter(LogField.LOGMESSAGE, lethal, "A message for a log", false);
 		filters.addFilter(exactLogMessageFilter, false);
-		Filter stackLvlFilter= new Filter(LogField.STACKLEVEL, lethal, Integer.valueOf(12), false);
+		Filter stackLvlFilter= new ExactFilter(LogField.STACKLEVEL, lethal, Integer.valueOf(12), false);
 		filters.addFilter(stackLvlFilter, false);
 		assertTrue("All logs accepted if no filters", filters.applyFilters(log1));
 		assertTrue("All logs accepted if no filters", filters.applyFilters(log2));
@@ -183,8 +186,8 @@ public class FiltersVectorTest extends TestCase {
 		filters.clear();
 		assertFalse("The empty vector has no active filters",filters.hasActiveFilters());
 		// Test with 2 filters
-		Filter exactLogMessageFilter2= new Filter(LogField.LOGMESSAGE, lethal, "A message for log2", false);
-		Filter lineFilter= new Filter(LogField.LINE, lethal, Integer.valueOf(95), false);
+		Filter exactLogMessageFilter2= new ExactFilter(LogField.LOGMESSAGE, lethal, "A message for log2", false);
+		Filter lineFilter= new ExactFilter(LogField.LINE, lethal, Integer.valueOf(95), false);
 		filters.addFilter(exactLogMessageFilter2, true);
 		filters.addFilter(lineFilter, true);
 		assertFalse("log1 should NOT be accepted", filters.applyFilters(log1));
@@ -208,19 +211,28 @@ public class FiltersVectorTest extends TestCase {
 	 */
 	public void testLoadSave() throws Exception {
 		// Define few interesting filters
-		Filter exactLogMessageFilter= new Filter(LogField.LOGMESSAGE, lethal, "One message", false);
-		Filter regExpLogMessageFilter= new Filter(LogField.SOURCEOBJECT, lethal, "RegExpr.*", false);
+		Filter exactLogMessageFilter= new ExactFilter(LogField.LOGMESSAGE, lethal, "One message", false);
+		Filter regExpLogMessageFilter= new RegExpFilter(LogField.SOURCEOBJECT, lethal, "RegExpr.*", false);
 		Date maxDate = df.parseIsoTimestamp("2013-08-07T15:10:10.512");
 		Date minDate = df.parseIsoTimestamp("2013-08-02T15:10:10.512");
-		Filter minMaxDateFilter= new Filter(LogField.TIMESTAMP,lethal,minDate,maxDate,false);
+		Filter minMaxDateFilter= new MinMaxFilter(LogField.TIMESTAMP,lethal,minDate,maxDate,false);
 		Integer maxType = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.NOTICE).ordinal();
 		Integer minType = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.DEBUG).ordinal();
-		Filter minMaxTypeFilter= new Filter(LogField.ENTRYTYPE,lethal,minType,maxType,false);
+		Filter minMaxTypeFilter= new MinMaxFilter(LogField.ENTRYTYPE,lethal,minType,maxType,false);
+		Date excatDate = df.parseIsoTimestamp("2011-09-02T10:21:18.333");
+		Filter exactDateFilter= new ExactFilter(LogField.TIMESTAMP, lethal, excatDate, false);
+		Filter exactStackLevelFilter= new ExactFilter(LogField.STACKLEVEL, lethal, Integer.valueOf(13), false);
+		Filter minMaxLineFilter= new MinMaxFilter(LogField.LINE,lethal,Integer.valueOf(7),Integer.valueOf(320),false);
+		Filter exactTypeFilter= new ExactFilter(LogField.ENTRYTYPE, lethal, LogTypeHelper.EMERGENCY, false);
 		filters.addFilter(exactLogMessageFilter, true);
 		filters.addFilter(regExpLogMessageFilter, false);
 		filters.addFilter(minMaxDateFilter, true);
 		filters.addFilter(minMaxTypeFilter, false);
-		assertEquals("We added only 4 filters!",4, filters.size());
+		filters.addFilter(exactDateFilter,true);
+		filters.addFilter(exactStackLevelFilter,true);
+		filters.addFilter(minMaxLineFilter, false);
+		filters.addFilter(exactTypeFilter, false);
+		assertEquals("We added 8 filters!",8, filters.size());
 		System.out.println("Filters to save: "+filters.getFilterString());
 		// Save filters
 		String dir = System.getProperty("user.dir");
@@ -233,7 +245,7 @@ public class FiltersVectorTest extends TestCase {
 		filters.loadFilters(outF, true, fileName);
 		System.out.println("Loaded filters: "+filters.getFilterString());
 		// Check each filter
-		assertEquals("Loaded filters differ from saved filters",4, filters.size());
+		assertEquals("Loaded filters differ from saved filters",8, filters.size());
 		for (int t=0; t<filters.size(); t++) {
 			Filter flt = filters.get(t);
 			System.out.println(flt.toString());
@@ -243,8 +255,11 @@ public class FiltersVectorTest extends TestCase {
 		assertFalse("Invalid \"ENABLED\" state",filters.isActive(1));
 		assertTrue("Invalid \"ENABLED\" state",filters.isActive(2));
 		assertFalse("Invalid \"ENABLED\" state",filters.isActive(3));
-		
+		assertTrue("Invalid \"ENABLED\" state",filters.isActive(4));
+		assertTrue("Invalid \"ENABLED\" state",filters.isActive(5));
+		assertFalse("Invalid \"ENABLED\" state",filters.isActive(6));
+		assertFalse("Invalid \"ENABLED\" state",filters.isActive(7));
 		// Remove the file
-		outF.delete();
+		//outF.delete();
 	}
 }
