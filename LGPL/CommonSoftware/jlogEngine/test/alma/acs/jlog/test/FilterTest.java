@@ -23,6 +23,7 @@ import java.util.Date;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.IsoDateFormat;
 
+import com.cosylab.logging.LogEntryTest;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
 import com.cosylab.logging.engine.log.LogEntry;
@@ -32,7 +33,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 import junit.framework.TestCase;
 /** 
  * @author  acaproni
- * @version $Id: FilterTest.java,v 1.1 2013/02/25 14:04:02 acaproni Exp $
+ * @version $Id: FilterTest.java,v 1.2 2013/02/26 09:58:54 acaproni Exp $
  * @since   ACS 11.2
  */
 
@@ -166,6 +167,10 @@ public class FilterTest extends TestCase {
 		Date noDate = df.parseIsoTimestamp("2013-08-04T16:10:10.888");
 		Filter noDateFilter= new Filter(LogField.TIMESTAMP, lethal, noDate, false);
 		assertFalse("Exact filetrs should have discarded this timestamp",noDateFilter.applyTo(log1, lethal));
+		// Test the LogEntryType
+		Filter logTypeFiletr= new Filter(LogField.ENTRYTYPE, lethal, LogTypeHelper.INFO, false);
+		assertTrue("This log type filter should have accepted this type",logTypeFiletr.applyTo(log1, lethal));
+		assertFalse("This log type filter should have discarded this type",logTypeFiletr.applyTo(log2, lethal));
 	}
 	
 	/**
