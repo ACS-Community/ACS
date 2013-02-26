@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.27 2013/02/25 09:48:30 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.28 2013/02/26 15:28:54 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -99,6 +99,8 @@ all:	do_all
 
 clean : clean_all
 	$(RM) *~
+	$(RM) *\.log
+	$(RM) sed\.scan
 	$(RM) tmp
 	$(RM) tatlogs
 	@echo " . . . clean done"
