@@ -112,6 +112,8 @@ public class CastorUnmarshalMapper extends TypeMapper
 		Unmarshaller unmarsh = new Unmarshaller(newObjectClass);
 		unmarsh.setValidation(false);
 		unmarsh.setWhitespacePreserve(true);
+//		unmarsh.setIgnoreExtraAttributes(true);
+//		unmarsh.setIgnoreExtraElements(true);
 		Object entity;
 		try {
 			entity = unmarsh.unmarshal(new StringReader(entStruct.xmlString));

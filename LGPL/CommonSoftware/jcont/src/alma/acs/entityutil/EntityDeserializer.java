@@ -113,6 +113,8 @@ public class EntityDeserializer
 			Unmarshaller unmarsh = new Unmarshaller(entityClass);
 			unmarsh.setValidation(false);
 			unmarsh.setWhitespacePreserve(true);
+//			unmarsh.setIgnoreExtraAttributes(true);
+//			unmarsh.setIgnoreExtraElements(true);
 			entity = unmarsh.unmarshal(new StringReader(xmlString));
 		}
 		catch (Exception e)
