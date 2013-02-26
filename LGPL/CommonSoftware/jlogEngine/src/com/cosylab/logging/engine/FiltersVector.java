@@ -41,6 +41,7 @@ import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
 import org.jdom.adapters.JAXPDOMAdapter;
 
+import com.cosylab.logging.engine.Filter.Constraint;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 
@@ -283,6 +284,7 @@ public class FiltersVector extends Vector<Filter> {
         	Boolean enabled=null;
         	Element element = (Element) it.next();
         	String type = element.getAttributeValue("type");
+        	Constraint constraint = Constraint.fromName(type);
         	Element lethalElement = element.getChild("LETHAL");
         	if (lethalElement!=null) {
         		lethalStr=lethalElement.getText();
@@ -338,6 +340,7 @@ public class FiltersVector extends Vector<Filter> {
         	
         	// Build the filter
         	Filter filter = Filter.buildFilter(
+        			constraint,
         			field,
         			lethalStr,
 					notStr,
