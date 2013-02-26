@@ -34,6 +34,7 @@ import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.testsupport.tat.TATJUnitRunner.KeepTestOutput;
 import alma.acs.util.StopWatch;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
@@ -46,6 +47,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
  * @author hsommer
  * created Sep 17, 2004 3:49:45 PM
  */
+@KeepTestOutput // Todo: remove once we resolved the issue with spurious COMM_FAILURE exceptions.
 public class ComponentTestclient extends ComponentClientTestCase
 {
 	private static final String CONTSRVCOMP_INSTANCE = "CONT_SERVICES_TESTER";
@@ -57,6 +59,9 @@ public class ComponentTestclient extends ComponentClientTestCase
 	public ComponentTestclient() throws Exception
 	{
 		super("ComponentTestclient");
+		
+//		System.out.println("JacORB dump incoming = " + System.getProperty("jacorb.debug.dump_incoming_messages"));
+//		System.out.println("JacORB dump outgoing = " + System.getProperty("jacorb.debug.dump_outgoing_messages"));
 	}
 
 	protected void setUp() throws Exception

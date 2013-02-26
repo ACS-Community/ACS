@@ -22,7 +22,10 @@
 #
 
 echo "=== Running all JUnit tests of module jcont which require a container infrastructure"
-    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.ComponentTestclient
+
+# TODO: Remove the jacorb dumps once we figured out the spurious COMM_FAILURE issues
+    acsStartJava -endorsed -D jacorb.debug.dump_incoming_messages=on -D jacorb.debug.dump_outgoing_messages=on alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.ComponentTestclient
+
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.AcsCorbaTestWithContainer
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ClientPendingReplyTimeoutTest
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest

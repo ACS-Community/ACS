@@ -31,15 +31,18 @@ echo $ACS_CDB
 acsutilTATPrologue -l
 
 echo " Starting Test Java Container"
+
+AUX_JAVA_OPTIONS=$JAVA_OPTIONS
+# Todo: remove jacorb dumps once we resolved the issue with spurious COMM_FAILURE exceptions.
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.debug.dump_incoming_messages=on -Djacorb.debug.dump_outgoing_messages=on" 
 acsutilAwaitContainerStart -java frodoContainer
 acsutilAwaitContainerStart -java frodoContainerWithTimeout1
 acsutilAwaitContainerStart -java silentContainer
+export JAVA_OPTIONS=$AUX_JAVA_OPTIONS
+
 acsutilAwaitContainerStart -java dynamicTestContainer
-AUX_JAVA_OPTIONS=$JAVA_OPTIONS
 
 export JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.connection.client.pending_reply_timeout=500000 "
 acsutilAwaitContainerStart -java frodoContainerWithTimeout2
 acsutilAwaitContainerStart -java frodoContainerWithTimeout3
-
 export JAVA_OPTIONS=$AUX_JAVA_OPTIONS
-
