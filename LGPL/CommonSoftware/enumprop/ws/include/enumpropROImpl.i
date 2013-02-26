@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.61 2012/11/20 15:17:07 acaproni Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.62 2013/02/26 15:26:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,8 +25,8 @@ Alarmpattern
 template <ACS_ENUM_C>
 ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, baci::BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
-    initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0), alarmSystemEnabled_m(true),
-    monitorEventDispatcher_mp(0), alarmSystemMonitorEnumProp_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
+    initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
+    monitorEventDispatcher_mp(0), alarmSystemMonitorEnumProp_mp(0), historyStart_m(-1), historyTurnaround_m(false), alarmSystemEnabled_m(true), m_enumLength(0)
     {
 
 	ACS_TRACE("ROEnumImpl::ROEnumImpl");

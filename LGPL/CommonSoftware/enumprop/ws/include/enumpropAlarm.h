@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropAlarm.h,v 1.37 2008/10/01 02:33:31 cparedes Exp $"
+* "@(#) $Id: enumpropAlarm.h,v 1.38 2013/02/26 15:26:24 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -77,7 +77,7 @@ public:
 
   virtual int getId(void);
   virtual const char* getName(void);
-  virtual char* getObjectState(void);
+  virtual const char* getObjectState(void);
   virtual void setObjectState(const char * state);
 
   /* --------------- [ Subscription interface ] --------------- */ 

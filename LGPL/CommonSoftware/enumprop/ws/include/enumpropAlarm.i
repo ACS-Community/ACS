@@ -135,7 +135,7 @@ const char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getName(void)
 }
  
 template <class T, class ROT, class AlarmT>
-char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getObjectState(void)
+const char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getObjectState(void)
 {
   ACE_TCHAR *buffer;
   ACE_NEW_RETURN (buffer, ACE_TCHAR[MAX_RECORD_SIZE], 0);
