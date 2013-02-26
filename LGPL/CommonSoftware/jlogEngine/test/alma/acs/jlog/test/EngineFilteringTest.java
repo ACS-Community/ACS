@@ -232,7 +232,7 @@ public class EngineFilteringTest
 		assertNull(engine.getFilters());
 		
 		// Create a filter
-		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
+		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO,false);
 		assertNotNull(f);
 		
 		// Add the filter
@@ -243,7 +243,7 @@ public class EngineFilteringTest
 		assertTrue(engine.getFilters().hasActiveFilters());
 		
 		// Create and add another filter
-		Filter f2 = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.DEBUG.ordinal(),false);
+		Filter f2 = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.DEBUG,false);
 		assertNotNull(f2);
 		assertEquals("Sizes differ", 1, engine.getFilters().size());
 		
@@ -260,11 +260,11 @@ public class EngineFilteringTest
 		assertNull(engine.getFilters());
 		
 		// Create a filter
-		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
+		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO,false);
 		assertNotNull(f);
 		
 		// Create and add another filter
-		Filter f2 = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.DEBUG.ordinal(),false);
+		Filter f2 = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.DEBUG,false);
 		assertNotNull(f2);
 		
 		// Setup the filters vector
@@ -309,7 +309,7 @@ public class EngineFilteringTest
 		Collection<ILogEntry> flushLogs = CacheUtils.generateLogsType(100, LogTypeHelper.NOTICE);
 		
 		// Create a filter for the type INFO
-		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
+		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO,false);
 		assertNotNull(f);
 		
 		// And a filter for the source name
