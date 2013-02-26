@@ -22,12 +22,13 @@
 package com.cosylab.logging.engine;
 
 import java.util.Date;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 
 /**
@@ -43,8 +44,15 @@ import com.cosylab.logging.engine.log.LogField;
  * <LI>notFilter: A boolean that the filter has to be used as a not specification 
  * (i.e. log entries pass if DO NOT match the filter)</LI>
  * </UL>
+ * <P>
+ * The constraint must match they type of the field to match as defined in {@link LogField#fieldClass}.
+ * <code>Filter</code> allows to accepts different value types for the following cases ({@link #checkAndConvertObjectType(LogField, Object)}):
+ * <UL>
+ * 	<LI><code>ENTRYTYPE</code>: can be a {@link LogTypeHelper} as well as a {@link Integer} (the latter is used internally for comparison)
+ *  <LI><code>TIMESTAMP</code>: can be a {@link Date} as well as a {@link Long} (the latter is used internally for comparison)
+ * </UL>
  */
-public class Filter {
+public abstract class Filter {
 	
 	/**
 	 * The possible comparison types
@@ -57,37 +65,59 @@ public class Filter {
 		MAXIMUM,
 		MINMAX,
 		EXACT,   
-		STRING_WILDCHAR
+		STRING_WILDCHAR;
+		
+		/**
+		 * Build a Constraint from its name as returned by {@link #name()}.
+		 * 
+		 * @param name The name of the constraint
+		 * @return The Constraint with the passed name
+		 * @throws InvalidFilterConstraintException If the passed name does not represent any Constraint
+		 */
+		public static Constraint fromName(String name) throws InvalidFilterConstraintException {
+			if (name==null || name.isEmpty()) {
+				throw new IllegalArgumentException("Invalid name to build a Constraint");
+			}
+			for (Constraint c: Constraint.values()) {
+				if (c.name().equalsIgnoreCase(name.trim())) {
+					return c;
+				}
+			}
+			throw new InvalidFilterConstraintException("No Constraint with name "+name);
+		}
 	}
 	
-	// Filterable field
-	public LogField field = null;
-	// Constraint type
-	public Constraint constraint = null;
+	/**
+	 *  Filterable field
+	 */
+	protected LogField field = null;
 	
-	// Lethalicity
-	private boolean isLethal = false;
+	/**
+	 *  Constraint type
+	 */
+	protected Constraint constraint = null;
 	
-	// The boolean that specifies how to use the filter (NOT policy)
-	// The variable defaults to false (the filter is normal)
-	private boolean notFilter = false;
+	/**
+	 *  Lethalicity
+	 */
+	protected boolean isLethal = false;
 	
-	// Constraints
-	public String regularExpression = null;
-
-	public Comparable minimum = null;
-	public Comparable maximum = null;
-	public Object exact = null;
+	/**
+	 * The boolean that specifies how to use the filter (NOT policy)
+	 * The variable defaults to false (the filter is normal)
+	 */
+	protected boolean notFilter = false;
+	
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param field The field
 	 * @param constraint The constraint
 	 * @param isLethal The activation state of the filter 
 	 * @param notFilter Usage of the filter (normal or not)
 	 */
-	private Filter(
+	protected Filter(
 			LogField field, 
 			Constraint constraint, 
 			boolean isLethal,
@@ -104,92 +134,59 @@ public class Filter {
 		this.notFilter = notFilter;
 	}
 
+	
+	
+	
 	/**
-	 * Constructor for {@link Constraint} types <code>MINMAX</code>, <code>MINIMUM</code> and <code>MAXIMUM</code>.
+	 * Sometimes for optimization, it is possible to have a file of one class
+	 * and an object of another type.
+	 * For example for the timestamp it is possible to pass a {@link Date} or a {@link Long} and both
+	 * should work upon conversion.
+	 * 
+	 * @param field The filed used by this Filter for comparison
+	 * @param obj The object to compare; can be <code>null</code>
+	 * @return The object of the converted type
+	 * @throws InvalidFilterConstraintException In case of mismatch
 	 */
-	public Filter(
-			LogField field, 
-			boolean isLethal, 
-			Comparable minimum,
-			Comparable maximum, 
-			boolean notFilter) throws InvalidFilterConstraintException {
-		this(field, Constraint.MINMAX, isLethal, notFilter);
-		
-		if ((minimum == null) && (maximum == null)) {
-			throw new InvalidFilterConstraintException("No constraint specified");
+	protected Comparable checkAndConvertObjectType(LogField field, Comparable obj) throws InvalidFilterConstraintException {
+		if (field==null) {
+			throw new IllegalArgumentException("The passed LogFiled can't be null");
 		}
-		
-		if (minimum==null) {
-			constraint = Constraint.MAXIMUM;
+		if (obj==null) {
+			return null;
 		}
 
-		if (minimum != null) {
-			if (!(minimum instanceof Comparable)) {
-				throw new InvalidFilterConstraintException("Invalid minimum: "+minimum);
+		switch (field) {
+		case ENTRYTYPE: {
+			if (obj instanceof LogTypeHelper) {
+				return obj;
+			} else if (obj instanceof Integer) {
+				LogTypeHelper ret;
+				try { 
+				ret=LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger((Integer)obj));
+				} catch (AcsJIllegalArgumentEx ex) {
+					throw new InvalidFilterConstraintException("Invalid definition for LogEntryType: "+obj);
+				}
+				return ret;
+			} else {
+				throw new InvalidFilterConstraintException("Invalid class for ENTRYTYPE object "+obj.toString()+": "+obj.getClass().getName());
 			}
-			this.minimum = minimum;
-		} else {
-			constraint = Constraint.MAXIMUM;
 		}
-
-		if (maximum != null) {
-			if (!((maximum instanceof Comparable)))
-				throw new InvalidFilterConstraintException("Invalid maximum "+maximum);
-			this.maximum = maximum;
-		} else {
-			constraint = Constraint.MINIMUM;
-		}
-		// Ensure that max>min if Constraint type is still MINMAX
-		if (constraint==Constraint.MINMAX) {
-			if (this.maximum.compareTo(this.minimum)<0) {
-				throw new InvalidFilterConstraintException("Invalid constraint max<min: "+maximum+"<"+minimum);
+		case TIMESTAMP: {
+			if (obj instanceof Date) {
+				return Long.valueOf(((Date)obj).getTime());
+			} else if (obj instanceof Long) {
+				return obj;
+			} else {
+				throw new InvalidFilterConstraintException("Invalid class for TIMESTAMP object "+obj.toString()+": "+obj.getClass().getName());
 			}
+		}
+		default: {
+			return obj;
+		}
 		}
 	}
 	
-	/**
-	 * Constructor for {@link Constraint} types <code>EXACT</code>
-	 */
-	public Filter(LogField field, boolean isLethal, Object exact, boolean notFilter)
-			throws InvalidFilterConstraintException {
-		this(field, Constraint.EXACT, isLethal, notFilter);
-		if (exact==null) {
-			throw new InvalidFilterConstraintException("The value for comparison can't be null");
-		}
-		if (field==LogField.TIMESTAMP && !(exact instanceof Date)) {
-			throw new InvalidFilterConstraintException("Invalid exact timestamp should be a Date instead of "+ exact.getClass().getName());
-		} else if (field!=LogField.TIMESTAMP && field.getType() != exact.getClass())
-			throw new InvalidFilterConstraintException("Invalid exact value: "	+ exact+", Expected class type "+field.getType().getName()+" but received type is "+exact.getClass().getName());
-
-		if (field==LogField.ENTRYTYPE) {
-			this.exact = ((LogTypeHelper)exact).ordinal();
-		} else {
-			this.exact = exact;
-		}
-	}
-
-	/**
-	 * Build a filter with a regular expression i.e. {@link Constraint} types <code>STRING_WILDCHAR</code>.
-	 * It checks if the string is a valid regular expression
-	 */
-	public Filter(LogField field, boolean isLethal, String regularExpression,
-			boolean notFilter) throws InvalidFilterConstraintException,
-			PatternSyntaxException {
-		this(field, Constraint.STRING_WILDCHAR, isLethal, notFilter);
-		// System.out.println("short, boolean, String");
-		// System.out.println(field+" "+isLethal+" "+regularExpression);
-
-		if (!(field.getType().equals(String.class)))
-			throw new InvalidFilterConstraintException(
-					"Invalid regular expression: " + regularExpression);
-
-		// Build a pattern to ensure if the regular expression is valid
-		this.regularExpression = null;
-		Pattern p = Pattern.compile(regularExpression);
-
-		this.regularExpression = regularExpression;
-	}
-
 	/**
 	 * The most important method of this class. Returns true if LogEntryXML
 	 * passes through the filter and false otherwise.
@@ -215,124 +212,20 @@ public class Filter {
 	 * @param obj The object to apply the filter to
 	 * @return <code>true</code> if the object matches the filter
 	 */
-	private boolean applyTo(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		
-		boolean minimumCondition = true;
-		boolean maximumCondition = true;
-		
-		// The log type is converted to Integer
-		if (field == LogField.ENTRYTYPE) {
-			obj = Integer.valueOf(((LogTypeHelper) obj).ordinal());
-		}
-		// The timestamp is converted to Date
-		if (field == LogField.TIMESTAMP) {
-			obj = new Date((Long)obj);
-		}
-
-		// Temporary: Used to remember if the test passes
-		// and apply the not policy (if requested)
-		boolean res = false;
-
-		if (constraint == Constraint.STRING_WILDCHAR) {
-			// Here the regular expression should be well formed
-			try {
-				res = Pattern.matches(regularExpression,
-						(String) obj);
-			} catch (PatternSyntaxException exception) {
-				// This is a problem! Ignore the filter returning true
-				return true;
-			}
-		} else if (constraint == Constraint.EXACT) {
-				res = exact.equals(obj);
-		} else {
-			Comparable logField = (Comparable) (obj);
-			if ((constraint == Constraint.MINIMUM) || (constraint == Constraint.MINMAX)) {
-				minimumCondition = minimum.compareTo(logField) <= 0;
-			}
-
-			if ((constraint == Constraint.MAXIMUM) || (constraint == Constraint.MINMAX)) {
-				maximumCondition = maximum.compareTo(logField) >= 0;
-			}
-
-			res = minimumCondition && maximumCondition;
-		}
-
-		if (notFilter)
-			return !res;
-		else
-			return res;
-	}
-
+	abstract protected boolean applyTo(Object obj); 
+	
 	/**
-	 * Build a description of the filter
+	 * Append to the buffer, the XML for the specific type of filter.
 	 * 
-	 * @return The description of the filter
+	 * @param buffer The buffer to append data into.
 	 */
-	public String toString() {
-		StringBuffer type = new StringBuffer();
-
-		// The string is built by reading the regularExpression, max, min and
-		// exact fields of the filter
-		// If the filter is defined on the entry type 1 (i.e. debug, trace...)
-		// then the number is replaced by the string describing the type itself
-		switch (constraint) {
-		case MINMAX:
-			type.append("Mininum = ");
-			if (field == LogField.ENTRYTYPE)
-				type.append(LogTypeHelper.values()[(Integer.parseInt(minimum
-						.toString()))].logEntryType);
-			else
-				type.append(minimum.toString());
-			type.append(", Maximum = ");
-			if (field == LogField.ENTRYTYPE)
-				type.append(LogTypeHelper.values()[(Integer.parseInt(maximum
-						.toString()))].logEntryType);
-			else
-				type.append(maximum.toString());
-			break;
-		case MINIMUM:
-			type.append("Minimum = ");
-			if (field == LogField.ENTRYTYPE)
-				type.append(LogTypeHelper.values()[(Integer.parseInt(minimum
-						.toString()))].logEntryType);
-			else
-				type.append(minimum.toString());
-			break;
-		case MAXIMUM:
-			type.append("Maximum = ");
-			if (field == LogField.ENTRYTYPE)
-				type.append(LogTypeHelper.values()[(Integer.parseInt(maximum
-						.toString()))].logEntryType);
-			else
-				type.append(maximum.toString());
-			break;
-		case STRING_WILDCHAR:
-			type.append("Regular exp. mask = " + regularExpression);
-			break;
-		case EXACT:
-			type.append("Exact value = ");
-			if (field == LogField.ENTRYTYPE)
-				type.append(LogTypeHelper.values()[(Integer.parseInt(exact
-						.toString()))].logEntryType);
-			else
-				type.append(exact.toString());
-			break;
-		default:
-			type.append("Undeclared");
-			break;
-		}
-
-		type.insert(0, field.getName() + ", ");
-		if (notFilter)
-			type.insert(0, "NOT ");
-		return type.toString();
-	}
+	protected abstract void appendSpecializedXML(StringBuffer buffer);
 
 	/**
-	 * Build an XML representation of the filter
+	 * Build an XML representation of the filter.
+	 * <P>
+	 * The initial part of the XML of each filter is common to all the types of filters.
+	 * The part depending on the specialized filter is added by {@link #appendSpecializedXML(StringBuffer)}.
 	 * 
 	 * @return The XML representing the filter
 	 */
@@ -363,52 +256,11 @@ public class Filter {
 			buffer.append(0);
 		}
 		buffer.append("\t\t</APPLYNOT>\n");
-		// The wildchar
-		if (regularExpression != null) {
-			buffer.append("\t\t<WILDCHAR>" + regularExpression + "</WILDCHAR>");
-		}
-		if (minimum != null) {
-			buffer.append("\t\t<MIN class=\""
-					+ minimum.getClass().toString().substring(6) + "\">");
-			if (minimum.getClass().toString().substring(6).compareTo(
-					"java.util.Date") == 0) {
-				// If it is a Date the we save the date as a long
-				java.util.Date date = (java.util.Date) (minimum);
-				buffer.append(date.getTime());
-			} else {
-				buffer.append(minimum.toString());
-			}
-			buffer.append("</MIN>\n");
-		}
-		if (maximum != null) {
-			buffer.append("\t\t<MAX class=\""
-					+ maximum.getClass().toString().substring(6) + "\">");
-			if (maximum.getClass().toString().substring(6).compareTo(
-					"java.util.Date") == 0) {
-				// If it is a Date the we save the date as a long
-				java.util.Date date = (java.util.Date) (maximum);
-				buffer.append(date.getTime());
-			} else {
-				buffer.append(maximum.toString());
-			}
-			buffer.append("</MAX>\n");
-		}
-		if (exact != null) {
-			buffer.append("\t\t<EXACT class=\""
-					+ exact.getClass().toString().substring(6) + "\">");
-			if (exact.getClass().toString().substring(6).compareTo(
-					"java.util.Date") == 0) {
-				// If it is a Date the we save the date as a long
-				java.util.Date date = (java.util.Date) (exact);
-				buffer.append(date.getTime());
-			} else {
-				buffer.append(exact.toString());
-			}
-			buffer.append("</EXACT>\n");
-		}
+		appendSpecializedXML(buffer);
 		buffer.append("\t</FILTER>\n");
 		return buffer.toString();
 	}
+	
 
 	/**
 	 * Return the NOT policy
@@ -433,36 +285,24 @@ public class Filter {
 	 * building the object, the value of each parameter is checked This method
 	 * is too long (and boring) for my taste but it is very easy
 	 * 
-	 * @param field
-	 *            The filed parameter fo Filter
-	 * @param lethal
-	 *            The isLethal parameter of Filter
-	 * @param not
-	 *            The applyAsNOT parameter of Filter
-	 * @param min
-	 *            The minimum parameter of Filter
-	 * @param minType
-	 *            The type of minimum
-	 * @param max
-	 *            The max parameter of Filter
-	 * @param maxType
-	 *            The type of max
-	 * @param exact
-	 *            The exact parameter of Filter
-	 * @param exactType
-	 *            The type of exact
-	 * @param wildChar
-	 *            The regularExpression parameter of Filter
-	 * 
+	 * @param type The type of filter to build
+	 * @param field The filed parameter fo Filter
+	 * @param lethal The isLethal parameter of Filter
+	 * @param not The applyAsNOT parameter of Filter
+	 * @param min The minimum parameter of Filter
+	 * @param minType The type of minimum
+	 * @param max The max parameter of Filter
+	 * @param maxType The type of max
+	 * @param exact The exact parameter of Filter
+	 * @param exactType The type of exact
+	 * @param wildChar The regularExpression parameter of Filter
 	 * @return The Filter object built or null if an error occurred decoding the
 	 *         parameters
-	 * @throws Exception
-	 *             in case of error building the filter
+	 * @throws Exception in case of error building the filter
 	 */
-	public static Filter buildFilter(LogField field, String lethal, String not,
+	public static Filter buildFilter(Constraint type, LogField field, String lethal, String not,
 			String min, String minType, String max, String maxType,
 			String exact, String exactType, String wildChar) throws Exception {
-		Filter f = null;
 		// Trim all the strings
 		if (lethal != null) {
 			lethal = lethal.trim();
@@ -491,8 +331,8 @@ public class Filter {
 		if (wildChar != null) {
 			wildChar = wildChar.trim();
 		}
+		
 		// Read the int from field
-		int fieldInt;
 		if (field == null) {
 			throw new IllegalArgumentException("Parameter field can't be null");
 		}
@@ -542,91 +382,105 @@ public class Filter {
 			}
 		}
 		//
-		// Build the filter
+		// Finally build the filter
 		//
-
-		// WILDCHAR
-		if (wildChar != null) {
-			f = new Filter(field, isLethal, wildChar, notPolicy);
-			return f;
-		}
-		// EXACT
-		if (exact != null) {
-			if (exactType.compareTo("java.lang.Integer") == 0) {
-				Integer integer;
-				try {
-					integer = new Integer(exact);
-				} catch (NumberFormatException e) {
-					throw new IllegalArgumentException("Wrong int parameter "
-							+ exact);
+		if (type==Constraint.STRING_WILDCHAR) {
+			return new RegExpFilter(field, isLethal, wildChar, notPolicy);
+		} else if (type==Constraint.EXACT) {
+			if (exact!=null && !exact.isEmpty() && exactType!=null && !exactType.isEmpty()) {
+				if (exactType.equals(Integer.class.getName())) {
+					Integer integer;
+					try {
+						integer = new Integer(exact);
+					} catch (NumberFormatException e) {
+						throw new IllegalArgumentException("Wrong int parameter "
+								+ exact);
+					}
+					return new ExactFilter(field, isLethal, integer, notPolicy);
+				} else if (exactType.equals(Long.class.getName())) {
+					Long date = null;
+					try {
+						date = Long.decode(exact);
+					} catch (NumberFormatException e) {
+						throw new IllegalArgumentException("Wrong date parameter "+ exact);
+					}
+					return new ExactFilter(field, isLethal, date, notPolicy);
+				} else if (exactType.equals(String.class.getName())) {
+					return new ExactFilter(field, isLethal, exact, notPolicy);
+				} else if (exactType.equals(LogTypeHelper.class.getName())) {
+					LogTypeHelper logType=LogTypeHelper.fromLogTypeDescription(exact);
+					return new ExactFilter(field, isLethal, logType, notPolicy);
+				} else {
+					// Unrecognized type
+					throw new IllegalArgumentException("Unrecognized type "+exactType);
 				}
-				f = new Filter(field, isLethal, integer, notPolicy);
-			} else if (exactType.compareTo("java.util.Date") == 0) {
-				Date date = null;
-				try {
-					date = new Date(Long.parseLong(exact));
-				} catch (NumberFormatException e) {
-					throw new IllegalArgumentException("Wrong date parameter "
-							+ exact);
-				}
-				f = new Filter(field, isLethal, date, notPolicy);
-			} else if (exactType.compareTo("java.lang.String") == 0) {
-				f = new Filter(field, isLethal, (Object) exact, notPolicy);
 			} else {
-				// Unrecognized type
-				throw new IllegalArgumentException("Unrecognized type "
-						+ exactType);
+				throw new IllegalArgumentException("Value and type can't be null/empty to build a ExactFilter");
 			}
-			return f;
-		}
-		// MINMAX (it implements MINIMUM and MAXIMUM)
-		if (minType == null) {
-			minType = maxType;
+		} else if (type==Constraint.MINMAX || type==Constraint.MINIMUM || type==Constraint.MAXIMUM) {
+			if (minType == null) {
+				minType = maxType;
+			} else {
+				maxType = minType;
+			}
+			if (minType.equals(String.class.getName())) {
+				return new MinMaxFilter(field, isLethal, min, max, notPolicy);
+			} else if (minType.equals(Long.class.getName())) {
+				Long minDate = null;
+				Long maxDate = null;
+				try {
+					if (min != null) {
+						minDate = Long.decode(min);
+					}
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException("Wrong min date parameter "
+							+ min);
+				}
+				try {
+					if (max != null) {
+						maxDate = Long.decode(max);
+					}
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException("Wrong max date parameter "
+							+ max);
+				}
+				return new MinMaxFilter(field, isLethal, minDate, maxDate, notPolicy);
+			} else if (minType.equals(Integer.class.getName())) {
+				Integer minInt = null;
+				Integer maxInt = null;
+				try {
+					if (min != null) {
+						minInt = new Integer(min);
+					}
+					if (max != null) {
+						maxInt = new Integer(max);
+					}
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException("Invalid min/max " + min
+							+ "/" + max);
+				}
+				return new MinMaxFilter(field, isLethal, minInt, maxInt, notPolicy);	
+			} else if (minType.equals(LogTypeHelper.class.getName())) {
+				LogTypeHelper minLogType = null;
+				LogTypeHelper maxLogType = null;
+				try {
+					if (min != null) {
+						minLogType= LogTypeHelper.fromLogTypeDescription(min);
+					}
+					if (max != null) {
+						maxLogType= LogTypeHelper.fromLogTypeDescription(max);
+					}
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException("Invalid min/max " + min
+							+ "/" + max);
+				}
+				return new MinMaxFilter(field, isLethal, minLogType, maxLogType, notPolicy);	
+			} else {
+				throw new IllegalArgumentException("Min/Max values/type can't be null/empty to build a MinMaxFilter");
+			}
 		} else {
-			maxType = minType;
+			throw new Exception("Error building a filter");
 		}
-		if (minType.compareTo("java.lang.String") == 0) {
-			f = new Filter(field, isLethal, min, max, notPolicy);
-		} else if (minType.compareTo("java.util.Date") == 0) {
-			Date minDate = null;
-			Date maxDate = null;
-			try {
-				if (min != null) {
-					minDate = new Date(Long.parseLong(min));
-				}
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Wrong min date parameter "
-						+ min);
-			}
-			try {
-				if (max != null) {
-					maxDate = new Date(Long.parseLong(max));
-				}
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Wrong max date parameter "
-						+ max);
-			}
-			f = new Filter(field, isLethal, minDate, maxDate, notPolicy);
-		} else if (minType.compareTo("java.lang.Integer") == 0) {
-			Integer minInt = null;
-			Integer maxInt = null;
-			try {
-				if (min != null) {
-					minInt = new Integer(min);
-				}
-				if (max != null) {
-					maxInt = new Integer(max);
-				}
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Invalid min/max " + min
-						+ "/" + max);
-			}
-			f = new Filter(field, isLethal, minInt, maxInt, notPolicy);
-		} else {
-			// Unrecognized type
-			throw new IllegalArgumentException("Unrecognized filter type");
-		}
-		return f;
 	}
 
 	/**
