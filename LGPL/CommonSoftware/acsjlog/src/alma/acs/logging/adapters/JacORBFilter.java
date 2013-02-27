@@ -22,9 +22,12 @@
 
 package alma.acs.logging.adapters;
 
+import java.util.Date;
 import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
+import alma.acs.util.IsoDateFormat;
 
 
 /**
@@ -126,15 +129,15 @@ public class JacORBFilter implements Filter {
 				// and org.jacorb.orb.giop.GIOPConnection.getMessage() are very special.
 				// They get enabled via properties 'jacorb.debug.dump_outgoing_messages' 
 				// and 'jacorb.debug.dump_incoming_messages' and logged as INFO.
-				// If they are enabled, we want to see them regardless of log level configuration,
-				// but only in the local logs (otherwise there may be even "positive feedback"
-				// leading to log explosion).
+				// If they are enabled, we still want to see them only in the local logs 
+				// (otherwise there may be even "positive feedback" leading to log explosion).
 				// A cleaner concept would be to only flag this LogRecord as "log only locally", 
 				// return "isLoggable = true" and leave the rest to the local and remote log handlers.
 				// The fact that we are dealing with a generic LogRecord (not AcsLogRecord) makes this
 				// option also ugly though (LogParameterUtil tricks), and thus we just print and drop 
 				// the log right away here.
-				System.out.println(message);
+				String timeStamp = IsoDateFormat.formatDate(new Date(record.getMillis()));
+				System.out.println(timeStamp + " " + message);
 				isLoggable = false;
 			}
 			// from INFO to discard
