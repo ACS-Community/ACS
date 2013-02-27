@@ -32,10 +32,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import junit.framework.Test;
 import junit.runner.Version;
-import junit.textui.ResultPrinter;
-import junit.textui.TestRunner;
 
 import org.junit.internal.JUnitSystem;
 import org.junit.internal.TextListener;
@@ -44,49 +41,44 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
 
 /**
- * Replacement for <code>junit.textui.TestRunner</code> 
- * that helps avoid some issues with using JUnit 
- * embedded in ALMA TAT scripts.
+ * Replacement for a standard JUnit runner such as JUnit3's <code>junit.textui.TestRunner</code>,
+ * or JUnit4's {@link JUnitCore}, which helps avoid some issues with using JUnit embedded in ALMA TAT scripts.
  * <p>
  * Note that the intent is not to get rid of the output-based testing that TAT offers,
  * but to complement it with result-based testing as JUnit proposes it, 
  * and to make the latter easier in a TAT environment.
  * Both approaches have their merit, so chose one depending on what you want to test.
  * <p>
- * Internally calls {@link TestRunner#doRun(Test)}, controlling the 
- * {@link ResultPrinter} output as well as <code>System.out</code> 
- * and <code>System.err</code>.
+ * TATJUnitRunner internally calls {@link JUnitCore#run(Class...)}, controlling the {@link RunListener} output 
+ * as well as <code>System.out</code> and <code>System.err</code>.
  * <p>
- * Fixes the following issues
+ * This class fixes the following issues
  * <ol>
- * <li>If the tests succeed, <code>TestRunner</code> produces too much output,
- * 		which forces test developers to provide TAT with reference output files
- * 		of all successful JUnit test runs, which seems absurd given that JUnit
- * 		does all error checks already itself.<br>
- * 		<code>TATJUnitRunner</code> produces no output for successful tests,
+ * <li>If the tests succeed, <code>JUnitCore</code> produces too much output,
+ * 		leading to unnecessary maintenance work.<br>
+ * 		<code>TATJUnitRunner</code> produces only very simple fixed output for successful tests,
  * 		which means it suppresses
  * 		<ul>
- * 		<li><code>TestRunner</code>s output
+ * 		<li><code>JUnitCore</code> output
  * 		<li>any other output to <code>System.out</code>
  * 		<li>any other output to <code>System.err</code>
  * 		</ul>
- * 		Both <code>TestRunner</code> and <code>TATJUnitRunner</code> 
+ * 		Instead, it prints 2 fixed lines, as required by TAT / NRI for gathering test statistics.
+ * 		Both <code>JUnitCore</code> and <code>TATJUnitRunner</code> 
  * 		return an exit code <code>0</code> to indicate a successful run.
- * <li>If a test fails (either JUnit "failure" or "error"),
+ * <li>If a test fails (JUnit3: either "failure" or "error"),
  * 		<code>TestRunner</code> reports this in the execution summary, 
- * 		without giving any details on the problem, e.g. the assertion
+ * 		without giving enough details on the problem, e.g. the assertion
  * 		that caused the failure.<br>
  * 		<code>TATJUnitRunner</code> in this case becomes rather verbose
  * 		and dumps on <code>System.err</code>
  * 		<ul>
- * 		<li>the detailed <code>TestRunner</code> output 
- * 			using a <code>ResultPrinter</code>.
+ * 		<li>the detailed test runner output.
  * 		<li>any output to <code>System.out</code> during test execution
  * 		<li>any output to <code>System.err</code> during test execution
  * 		</ul>
- * 		Both <code>TestRunner</code> and <code>TATJUnitRunner</code> 
- * 		return an exit code <code>1</code> for a failure and
- * 		<code>2</code> for an error.
+ * 		Both <code>JUnitCore</code> and <code>TATJUnitRunner</code> 
+ * 		return an exit code <code>1</code> for a failure.
  * </ol>
  * For either failure or success, the following line is printed as the first line to stdout,
  * so that TAT or other tools can analyze how many tests have run, and how many succeeded: <br>
@@ -251,8 +243,6 @@ public class TATJUnitRunner
 			dumpAndDeleteCapturedFile(resultFile, "Test execution trace:");
 			dumpAndDeleteCapturedFile(sysOutFile, "System.out during test execution:");
 			dumpAndDeleteCapturedFile(sysErrFile, "System.err during test execution:");
-
-			System.exit(TestRunner.FAILURE_EXIT);
 		}
 
 		return result;
@@ -288,6 +278,7 @@ public class TATJUnitRunner
 	
 	public static void main(String[] args)
 	{
+		Result result = null;
 		try {
 			if (args.length < 1 || args[0] == null || args[0].length() == 0) {
 				System.err.println("usage: JUnit4Runner testclassname");
@@ -296,14 +287,18 @@ public class TATJUnitRunner
 				TATJUnitRunner inst = new TATJUnitRunner();
 				String testClassName = args[0];
 				Class<?> testClass = Class.forName(testClassName);  // or should we first redirect the streams, in case of static initializers?
-				inst.runMain(testClass);
+				result = inst.runMain(testClass);
 			}
 		} catch (Throwable thr) {
 			thr.printStackTrace();
-			System.exit(TestRunner.EXCEPTION_EXIT); // todo use junit4 constants
+			System.exit(1); 
 		}
-		
-		System.exit(TestRunner.SUCCESS_EXIT);
+		if (result.wasSuccessful()) {
+			System.exit(0);
+		}
+		else {
+			System.exit(1);
+		}
 	}
 
 	/**
