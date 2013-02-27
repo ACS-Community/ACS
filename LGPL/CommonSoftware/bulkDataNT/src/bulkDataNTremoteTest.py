@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.15 2013/02/25 19:04:36 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.16 2013/02/27 17:27:25 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -49,29 +49,38 @@ class RemoteProcData:
 # Assumptions:
 # - All hosts have a common, shared, home directory
 # - Output files will be written in:
-#   ~/bulkDataNTGenSender.$HOST+flowString
+#   filePath/self.filePrefix+GenSender.$HOST+flowString
+#   ATTENTION: filePath is by default the home and it must be an
+#              absolut path IDENTICALLY shared by all machines involved
 # - ssh is used for remote login.
 #   Must be configured not to require a password.
 ###########################################################################
 
 class bulkDataNTtestSuite:
     
-    def __init__(self, hosts, size=640000, loops=10, sourceFile='.bash_profile', acsdataEnv=None,
-                 throttle=0, qos_lib="BulkDataQoSLibrary"):
-        self.hosts = hosts
-        self.numOfHosts = len(hosts)
-        self.dataSizeInBytes=size
-        self.loops=loops
-        self.sendersData = {}
-        self.receiverData = None
-        self.sourceFile=sourceFile
-        self.acsdataEnv = acsdataEnv
-        self.throttle = throttle
-        self.qos_lib = qos_lib
-        self.preCmd="source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; "
+    def __init__(self, startTime, hosts, size=640000, loops=10, sourceFile='.bash_profile', acsdataEnv=None,
+                 throttle=0, qos_lib="BulkDataQoSLibrary", filePrefix='', filePath=None):
+        self.startTime       = startTime
+        self.hosts           = hosts
+        self.numOfHosts      = len(hosts)
+        self.dataSizeInBytes = size
+        self.loops           = loops
+        self.sendersData     = {}
+        self.receiverData    = None
+        self.sourceFile      = sourceFile
+        self.acsdataEnv      = acsdataEnv
+        self.throttle        = throttle
+        self.qos_lib         = qos_lib
+        self.filePrefix      = filePrefix
+        self.filePath        = filePath
+        
+        self.preCmd = "source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; "
 
         if self.acsdataEnv is not None:
             self.preCmd+="export ACSDATA="+self.acsdataEnv+"; "
+
+        if self.filePath is None:
+            self.filePath = os.getenv("HOME")+"/"
 
         if verbose == False:
             self.postCmd=" | grep -v lost > "
@@ -85,7 +94,7 @@ class bulkDataNTtestSuite:
         for h in self.hosts:
             # Builds the flows names
             flowString = format(flow, "02d")
-            outFile    = "bulkDataNTGenSender."+h+"-"+flowString
+            outFile    = self.filePath+self.filePrefix+"GenSender."+h+"-"+flowString
 
             sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
                        " '" + self.preCmd + " bulkDataNTGenSender -l " + 
@@ -93,11 +102,6 @@ class bulkDataNTtestSuite:
                        " --qos_lib="+self.qos_lib+
                        " -o "+str(self.throttle)+
                        self.postCmd+outFile+"'")
-#            sndCmd = ("ssh " + os.environ['USER']+ "@" + h + 
-#                       " '" + self.preCmd + " bulkDataNTGenSender -l " + 
-#                       str(self.loops)+" -b "+str(self.dataSizeInBytes)+" -s TS -f "+flowString+
-#                        self.postCmd+outFile+"'")
-
             self.sendersData[h+'-'+flowString]= RemoteProcData(h, sndCmd, None, outFile)
             flow+=1
 
@@ -177,7 +181,7 @@ class bulkDataNTtestSuite:
             xxxcastString=""
         else:
             xxxcastString="-u"
-        outFile = "bulkDataNTGenReceiver."+rcvHost
+        outFile = self.filePath+self.filePrefix+"GenReceiver."+rcvHost
         rcvCmd = ("ssh " + os.environ['USER']+ "@" + rcvHost + 
                   " '" + self.preCmd + " bulkDataNTGenReceiver -n -s TS -f "+flowString+
                   " "+xxxcastString+
@@ -219,14 +223,14 @@ class bulkDataNTtestSuite:
     ######################################
     def processTestResults(self):
 
-        plotFileName   = 'bulkDataNTremoteTest-time.plot'
+        plotFileName   = self.filePath+self.filePrefix+'Result'+'.plot'
         plotFile       = open(plotFileName,'w')
         plotFile.write('set title \"Throughput over time\"\n')
         plotFile.write('set xlabel \"time [sec.msec]\"\n')
         plotFile.write('set ylabel \"Data Rate [MBytes/sec]\"\n')
         plotFile.write('plot ')
 
-        histoFileName  = 'bulkDataNTremoteTest-histo.plot'
+        histoFileName  = self.filePath+self.filePrefix+'ResultH'+'.plot'
         histoFile      = open(histoFileName,'w')
         histoFile.write('set title \"Throughput distribution\"\n')
         histoFile.write('set datafile separator \",\"\n')
@@ -250,7 +254,7 @@ class bulkDataNTtestSuite:
         comma = ""
         for h in sorted(self.sendersData):
             print    "---->   Processing            : "+self.sendersData[h].outFile
-            inputFile = open(os.path.expanduser("~")+"/"+self.sendersData[h].outFile)
+            inputFile = open(self.sendersData[h].outFile)
             dataFileName = self.sendersData[h].outFile+'.TP'
             dataFile  = open(dataFileName,'w')
 
@@ -292,7 +296,7 @@ class bulkDataNTtestSuite:
                     seconds     = float(elements[0][17:24])
                     timeFinal   = hours*3600+minutes*60+seconds
                     effectiveRate = bytesTotal/1000000/(timeFinal-timeInitial) # is a MB 1*10 6 or 1024*1024 bytes?
-                    print "\tEffective data rate   : %f MBytes/sec" % effectiveRate
+                    print "----> Effective data rate   : %f MBytes/sec" % effectiveRate
 
                     
                 #
@@ -301,15 +305,15 @@ class bulkDataNTtestSuite:
                 match = re.search('Average transfer rate for all',line)
                 if match is not None:
                     elements = line.split()
-                    print "\tAverage transfer rate : "+elements[11]+" "+elements[12]
+                    print "----> Average transfer rate : "+elements[11]+" "+elements[12]
                 match = re.search('protocol',line)
                 if match is not None:
                     elements = line.split("[")
-                    print "\tProtocol status       : "+elements[2].replace("\n", "").replace("]", "")
+                    print "----> Protocol status       : "+elements[2].replace("\n", "").replace("]", "")
                 match = re.search('cache Status:',line)
                 if match is not None:
                     elements = line.split(":",3)
-                    print "\tCache status          :"+elements[3].replace("\n", "")
+                    print "----> Cache status          :"+elements[3].replace("\n", "")
                 #
                 # Extracts transfer rates for each sample
                 # and writes them in the output file, to be used for plotting
@@ -330,13 +334,13 @@ class bulkDataNTtestSuite:
 
         plotFile.write('\n')
         plotFile.write("set terminal png\n")
-        plotFile.write("set output \"result.png\"\n")
+        plotFile.write("set output \""+self.filePath+self.filePrefix+"Result.png\"\n")
         plotFile.write("replot\n")
         plotFile.close()
 
         histoFile.write('\n')
         histoFile.write("set terminal png\n")
-        histoFile.write("set output \"resultH.png\"\n")
+        histoFile.write("set output \""+self.filePath+self.filePrefix+"ResultH.png\"\n")
         histoFile.write("replot\n")
         histoFile.close()
 
@@ -408,21 +412,17 @@ if __name__ == '__main__':
             multicast=True
         elif o in ("-r", "--receivers"):
             receiverHost=a
-            print 'option -r/--receivers= only one receiver supported in this version'
+            print 'Warning: option -r/--receivers= only one receiver supported in this version'
         elif o=="--source":
             sf=a
-            print 'source file: '+sf
         elif o=="--acsdata":
             acsdata=a
-            print 'ACSDATA: '+ acsdata
         elif o=="--process":
             processRes=True
         elif o=="--throttle":
             throttle=a
-            print 'throttle: '+throttle
         elif o=="--qos_lib":
             qos_lib=a
-            print 'qos_lib: '+qos_lib
         elif o in ("-v", "--verbose"):
             verbose=True
            
@@ -431,40 +431,70 @@ if __name__ == '__main__':
         sys.exit()
 
     #
+    # Prints first of all the complete given command line
+    # Then the starting time.
+    # The starting time will be also saved to be appended to all file names.
+    #
+    startTime = time.strftime("%Y%m%d:%H:%M:%S")
+    print '---------------------------------------------------------------------------'
+    print "----> Command line: " + " ".join(sys.argv[:])
+    print "----> Start time  : " + startTime
+
+    #
+    # This prefix will be appended to all file names.
+    # Now it is a file name + the start time
+    # ToDo: Add a command line option to override the default
+    #
+    filePrefix = "bdTest-"+startTime+"-"
+
+    #
+    #
+    #
+    filePath = os.getenv("HOME")+"/"
+    #
     # Instantiate the object that actually runs the tests, by passing the
     # command line parameters reeived from the command line.
     #
-    testSuit = bulkDataNTtestSuite(hosts=senderHosts, size=b, loops=l, sourceFile=sf, throttle=throttle, qos_lib=qos_lib)
+    testSuite = bulkDataNTtestSuite(startTime=startTime, filePrefix=filePrefix,
+                                    hosts=senderHosts, size=b, loops=l,
+                                    sourceFile=sf,
+                                    throttle=throttle, qos_lib=qos_lib)
 
     #
     # Starts the receiver, collecting from all senders
     #
     if receiverHost is not None:
-        print '=================> Starting receiver'
-        testSuit.startReceiver(receiverHost, multicast) 
+        print '----> Starting receiver'
+        testSuite.startReceiver(receiverHost, multicast) 
     print '---------------------------------------------------------------------------'
 
     #
     # Starts one or more senders
     # and return when all data has been send and the senders have exited.
     #
-    print '=================> Starting Senders'
-    testSuit.runSenders()
+    print '----> Starting Senders'
+    testSuite.runSenders()
 
     #
     # Stops the receiver
     #
     if receiverHost is not None:
         print '---------------------------------------------------------------------------'
-        print '=================> Stopping receiver'
-        testSuit.stopReceiver()
+        print '----> Stopping receiver'
+        testSuite.stopReceiver()
+
+    #
+    # Prints the time all processes have exited
+    #
+    print '---------------------------------------------------------------------------'
+    print "----> Finish time : " + time.strftime("%Y%m%d:%H:%M:%S")
 
     #
     # Process test results
     #
     if processRes is True:
-        print '=================> Process test results'
-        testSuit.processTestResults()
+        print '----> Process test results'
+        testSuite.processTestResults()
 
     
 # ___oOo___
