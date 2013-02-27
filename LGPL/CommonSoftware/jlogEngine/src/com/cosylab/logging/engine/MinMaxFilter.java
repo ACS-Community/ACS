@@ -19,10 +19,7 @@ ALMA - Atacama Large Millimiter Array
 package com.cosylab.logging.engine;
 
 import java.util.Date;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
-import com.cosylab.logging.engine.Filter.Constraint;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
@@ -208,5 +205,21 @@ public class MinMaxFilter extends Filter {
 			}
 			buffer.append("</MAX>\n");
 		}
+	}
+
+
+	/**
+	 * @return the minimum
+	 */
+	public Comparable getMinimum() {
+		return minimum;
+	}
+
+
+	/**
+	 * @return the maximum
+	 */
+	public Comparable getMaximum() {
+		return maximum;
 	}
 }

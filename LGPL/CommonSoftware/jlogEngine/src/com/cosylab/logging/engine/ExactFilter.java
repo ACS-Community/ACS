@@ -108,4 +108,11 @@ public class ExactFilter extends Filter {
 		}
 		buffer.append("</EXACT>\n");
 	}
+
+	/**
+	 * @return the exact
+	 */
+	public Object getExact() {
+		return exact;
+	}
 }

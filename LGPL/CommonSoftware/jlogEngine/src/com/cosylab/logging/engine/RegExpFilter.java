@@ -112,5 +112,12 @@ public class RegExpFilter extends Filter {
 		buffer.append(regularExpression);
 		buffer.append("</WILDCHAR>\n");
 	}
+
+	/**
+	 * @return the regularExpression
+	 */
+	public String getRegularExpression() {
+		return regularExpression;
+	}
 	
 }
