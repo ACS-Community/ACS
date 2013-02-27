@@ -38,7 +38,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 /**
  * Test the {@link FiltersVector} class.
  * @author  acaproni
- * @version $Id: FiltersVectorTest.java,v 1.2 2013/02/26 17:02:53 acaproni Exp $
+ * @version $Id: FiltersVectorTest.java,v 1.3 2013/02/27 07:17:47 acaproni Exp $
  * @since ACS 11.2
  */
 public class FiltersVectorTest extends TestCase {
@@ -260,6 +260,6 @@ public class FiltersVectorTest extends TestCase {
 		assertFalse("Invalid \"ENABLED\" state",filters.isActive(6));
 		assertFalse("Invalid \"ENABLED\" state",filters.isActive(7));
 		// Remove the file
-		//outF.delete();
+		outF.delete();
 	}
 }
