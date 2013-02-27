@@ -26,6 +26,7 @@ import java.util.Date;
 import javax.swing.JCheckBox;
 
 import com.cosylab.gui.components.r2.DateTimeChooser;
+import com.cosylab.logging.engine.MinMaxFilter;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
 /**
@@ -101,7 +102,7 @@ public Filter getFilter() throws FilterParameterException {
 	}
 
 	try {
-		return new Filter(getFieldIndex(), isLethal(), min, max,notCheck.isSelected());
+		return new MinMaxFilter(getFieldIndex(), isLethal(), min, max,notCheck.isSelected());
 	} catch (InvalidFilterConstraintException e) {
 		throw new FilterParameterException(e.getMessage());
 	}
@@ -111,18 +112,18 @@ public Filter getFilter() throws FilterParameterException {
  * Creation date: (2/7/02 11:59:47 AM)
  * @param f com.cosylab.logging.engine.Filter
  */
-public void setFilter(com.cosylab.logging.engine.Filter f) {
+public void setFilter(Filter f) {
 	if (f == null)
 		return;
 		
-	if ((f.constraint == Filter.Constraint.MINMAX) || (f.constraint == Filter.Constraint.MINIMUM)) {
-		minimum.setDate((Date)f.minimum);
+	if ((f.getConstraint() == Filter.Constraint.MINMAX) || (f.getConstraint() == Filter.Constraint.MINIMUM)) {
+		minimum.setDate(new Date((Long)((MinMaxFilter)f).getMinimum()));
 		minimumCheck.setSelected(true);
 	} else {
 		minimumCheck.setSelected(false);
 	}
-	if ((f.constraint == Filter.Constraint.MINMAX) || (f.constraint == Filter.Constraint.MAXIMUM)) {
-		maximum.setDate((Date)f.maximum);
+	if ((f.getConstraint() == Filter.Constraint.MINMAX) || (f.getConstraint() == Filter.Constraint.MAXIMUM)) {
+		maximum.setDate(new Date((Long)((MinMaxFilter)f).getMaximum()));
 		maximumCheck.setSelected(true);
 	} else {
 		maximumCheck.setSelected(false);

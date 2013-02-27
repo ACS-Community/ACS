@@ -30,6 +30,8 @@ import javax.swing.JPanel;
 
 import com.cosylab.gui.components.r2.JIntegerTextField;
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.ExactFilter;
+import com.cosylab.logging.engine.MinMaxFilter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
 
 /**
@@ -126,7 +128,7 @@ public Filter getFilter() throws FilterParameterException {
 	
 	if (bexact) {
 		try {
-			return new Filter(
+			return new ExactFilter(
 					getFieldIndex(), 
 					isLethal(), 
 					Integer.valueOf(exact.getIntegerValue()),
@@ -150,7 +152,7 @@ public Filter getFilter() throws FilterParameterException {
 	}
 
 	try {
-		return new Filter(getFieldIndex(), isLethal(), min, max,notCheck.isSelected());
+		return new MinMaxFilter(getFieldIndex(), isLethal(), min, max,notCheck.isSelected());
 	} catch (InvalidFilterConstraintException e) {
 		throw new FilterParameterException(e.getMessage());
 	}
@@ -180,10 +182,10 @@ public void setFilter(Filter f) {
 	if (f == null)
 		return;
 
-	switch (f.constraint) {
+	switch (f.getConstraint()) {
 		case EXACT:
 			exactCheck.setSelected(true);
-			exact.setIntegerValue(((Number) f.exact).intValue());
+			exact.setIntegerValue(((Number) ((ExactFilter)f).getExact()).intValue());
 			break;
 		case MINIMUM :
 			setMinimum(f);
@@ -205,7 +207,7 @@ public void setFilter(Filter f) {
  */
 private void setMaximum(Filter f) {
 	maximumCheck.setSelected(true);
-	maximum.setIntegerValue(((Number) f.maximum).intValue());
+	maximum.setIntegerValue(((Number) ((MinMaxFilter)f).getMaximum()).intValue());
 }
 /**
  * Insert the method's description here.
@@ -214,6 +216,6 @@ private void setMaximum(Filter f) {
  */
 private void setMinimum(Filter f) {
 	minimumCheck.setSelected(true);
-	minimum.setIntegerValue(((Number) f.minimum).intValue());
+	minimum.setIntegerValue(((Number)  ((MinMaxFilter)f).getMinimum()).intValue());
 }
 }

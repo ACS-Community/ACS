@@ -28,6 +28,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.ExactFilter;
+import com.cosylab.logging.engine.RegExpFilter;
+
 /**
  * Serves the purpose of filtering according to a string.  
  * Creation date: (2/7/02 11:29:37 AM)
@@ -96,10 +99,10 @@ public Filter getFilter() throws FilterParameterException {
 	    if (exact.getText().length() == 0)
 		    throw new FilterParameterException("Cannot use empty string");
 		try {
-			return new com.cosylab.logging.engine.Filter(
+			return new ExactFilter(
 				getFieldIndex(),
 				isLethal(),
-				(Object) (exact.getText()),
+				exact.getText(),
 				notCheck.isSelected());
 		} catch (Exception e) {
 			throw new FilterParameterException(e.getMessage());
@@ -109,7 +112,7 @@ public Filter getFilter() throws FilterParameterException {
 	    if (regexp.getText().length() == 0)
 		    throw new FilterParameterException("Cannot use empty string");
 		try {
-			return new com.cosylab.logging.engine.Filter(
+			return new RegExpFilter(
 				getFieldIndex(),
 				isLethal(),
 				regexp.getText(),
@@ -129,14 +132,14 @@ public void setFilter(com.cosylab.logging.engine.Filter f) {
 	if (f == null)
 		return;
 		
-	switch (f.constraint) {
+	switch (f.getConstraint()) {
 		case EXACT :
 			exactCheck.setSelected(true);
-			exact.setText((String)f.exact);
+			exact.setText((String)((ExactFilter)f).getExact());
 			break;
 		case STRING_WILDCHAR :
 			regexpCheck.setSelected(true);
-			regexp.setText((String)f.regularExpression);
+			regexp.setText((String)((RegExpFilter)f).getRegularExpression());
 			break;
 	}
 	notCheck.setSelected(f.notPolicyApplyed());

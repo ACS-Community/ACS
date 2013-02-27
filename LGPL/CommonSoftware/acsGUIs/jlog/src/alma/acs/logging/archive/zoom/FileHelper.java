@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.MinMaxFilter;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
@@ -193,8 +194,8 @@ public class FileHelper implements ACSRemoteErrorListener {
 		Filter dateFilter=null;
 		Filter levelFilter=null;
 		try {
-			dateFilter = new Filter(LogField.TIMESTAMP,false,startTime,endTime,false);
-			levelFilter = new Filter(LogField.ENTRYTYPE,false,minLogLevel.ordinal(),maxLogLevel.ordinal(),false);
+			dateFilter = new MinMaxFilter(LogField.TIMESTAMP,false,startTime,endTime,false);
+			levelFilter = new MinMaxFilter(LogField.ENTRYTYPE,false,minLogLevel,maxLogLevel,false);
 		} catch (InvalidFilterConstraintException e) {
 			throw new ZoomException("Error setting the filters", e);
 		}

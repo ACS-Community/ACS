@@ -25,6 +25,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JPanel;
+
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.log.LogField;
 
@@ -35,7 +37,7 @@ import com.cosylab.logging.engine.log.LogField;
  * 
  * @author:
  */
-public abstract class FilterParameterPanel extends javax.swing.JPanel {
+public abstract class FilterParameterPanel extends JPanel {
 	/**
 	 * The field filtered
 	 */

@@ -230,7 +230,7 @@ public class FieldClassChooser extends JComboBox {
 		if (f == null)
 			return;
 
-		setSelectedIndex(f.field.ordinal());
+		setSelectedIndex(f.getField().ordinal());
 		if (currentEditor != null) {
 			currentEditor.setFilter(f);
 		}
