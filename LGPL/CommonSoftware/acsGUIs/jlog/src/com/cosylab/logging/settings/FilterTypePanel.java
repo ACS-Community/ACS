@@ -34,6 +34,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.ExactFilter;
+import com.cosylab.logging.engine.MinMaxFilter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
@@ -95,15 +97,11 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		minimumCheck.addItemListener(this);
 		panelTop.add(minimumCheck, newConstraints(1, 4, 0, 0, 0));
 		
-		String[] Descriptions = new String[LogTypeHelper.values().length];
-		int t=0;
-		for (LogTypeHelper log: LogTypeHelper.values()) {
-			Descriptions[t++]=log.logEntryType;
-		}
-		minimum = new JComboBox(Descriptions);
+		LogTypeHelper[] logTypes = LogTypeHelper.values();
+		minimum = new JComboBox(logTypes);
 		minimum.setSelectedIndex(0);
 		minimum.setEditable(false);
-		minimum.setMaximumRowCount(Descriptions.length);
+		minimum.setMaximumRowCount(logTypes.length);
 		minimum.setRenderer(rendererMin);
 		panelTop.add(minimum, newConstraints(2, 0, 0, 4, 0));
 
@@ -111,10 +109,10 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		maximumCheck.addItemListener(this);
 		panelTop.add(maximumCheck, newConstraints(3, 4, 0, 0, 0));
 
-		maximum = new JComboBox(Descriptions);
+		maximum = new JComboBox(logTypes);
 		maximum.setSelectedIndex(0);
 		maximum.setEditable(false);
-		maximum.setMaximumRowCount(Descriptions.length);
+		maximum.setMaximumRowCount(logTypes.length);
 		maximum.setRenderer(rendererMax);
 		panelTop.add(maximum, newConstraints(4, 0, 0, 4, 0));
 
@@ -125,10 +123,10 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		exactCheck.addItemListener(this);
 		panelBottom.add(exactCheck, newConstraints(0, 4, 0, 0, 0));
 
-		exact = new JComboBox(Descriptions);
+		exact = new JComboBox(logTypes);
 		exact.setSelectedIndex(0);
 		exact.setEditable(false);
-		exact.setMaximumRowCount(Descriptions.length);
+		exact.setMaximumRowCount(logTypes.length);
 		exact.setRenderer(rendererExact);
 		panelBottom.add(exact, newConstraints(1, 0, 0, 4, 0));
 	}
@@ -141,26 +139,27 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		boolean bmax = maximumCheck.isSelected();
 		boolean bexact = exactCheck.isSelected();
 
-		Integer min = null;
-		Integer max = null;
+		LogTypeHelper min = null;
+		LogTypeHelper max = null;
 		
 		if (bexact) {
 			try {
-				return new Filter(
+				return new ExactFilter(
 						getFieldIndex(), 
 						isLethal(), 
-						Integer.valueOf(exact.getSelectedIndex()),
+						(LogTypeHelper)exact.getSelectedItem(),
 						notCheck.isSelected());
 			} catch (InvalidFilterConstraintException e) {
+				e.printStackTrace();
 				throw new FilterParameterException(e.getMessage());
 			}
 		}
 
 		if (bmin) {
-			min = Integer.valueOf(minimum.getSelectedIndex());
+			min = (LogTypeHelper)minimum.getSelectedItem();
 		}
 		if (bmax) {
-			max = Integer.valueOf(maximum.getSelectedIndex());
+			max = (LogTypeHelper)maximum.getSelectedItem();
 		}
 
 		if ((min != null) && (max != null)) {
@@ -170,7 +169,7 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		}
 
 		try {
-			return new Filter(getFieldIndex(), isLethal(), min, max,notCheck.isSelected());
+			return new MinMaxFilter(getFieldIndex(), isLethal(), min, max,notCheck.isSelected());
 		} catch (InvalidFilterConstraintException e) {
 			throw new FilterParameterException(e.getMessage());
 		}
@@ -183,24 +182,24 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		if (f == null)
 			return;
 
-		switch (f.constraint) {
+		switch (f.getConstraint()) {
 			case EXACT :
 				exactCheck.setSelected(true);
-				exact.setSelectedIndex(((Number)f.exact).intValue());
+				exact.setSelectedIndex(((LogTypeHelper)((ExactFilter)f).getExact()).ordinal());
 				break;
 			case MINIMUM :
 				minimumCheck.setSelected(true);
-				minimum.setSelectedIndex(((Number)f.minimum).intValue());
+				minimum.setSelectedIndex(((LogTypeHelper)((MinMaxFilter)f).getMinimum()).ordinal());
 				break;
 			case MAXIMUM :
 				maximumCheck.setSelected(true);
-				maximum.setSelectedIndex(((Number)f.maximum).intValue());
+				maximum.setSelectedIndex(((LogTypeHelper)((MinMaxFilter)f).getMaximum()).ordinal());
 				break;
 			case MINMAX :
 				minimumCheck.setSelected(true);
-				minimum.setSelectedIndex(((Number)f.minimum).intValue());
+				minimum.setSelectedIndex(((LogTypeHelper)((MinMaxFilter)f).getMinimum()).ordinal());
 				maximumCheck.setSelected(true);
-				maximum.setSelectedIndex(((Number)f.maximum).intValue());
+				maximum.setSelectedIndex(((LogTypeHelper)((MinMaxFilter)f).getMaximum()).ordinal());
 				break;
 		}
 		notCheck.setSelected(f.notPolicyApplyed());
