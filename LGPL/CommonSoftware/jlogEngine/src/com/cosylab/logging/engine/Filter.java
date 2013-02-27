@@ -90,23 +90,23 @@ public abstract class Filter {
 	/**
 	 *  Filterable field
 	 */
-	protected LogField field = null;
+	protected final LogField field;
 	
 	/**
 	 *  Constraint type
 	 */
-	protected Constraint constraint = null;
+	protected Constraint constraint;
 	
 	/**
 	 *  Lethalicity
 	 */
-	protected boolean isLethal = false;
+	protected final boolean isLethal;
 	
 	/**
 	 * The boolean that specifies how to use the filter (NOT policy)
 	 * The variable defaults to false (the filter is normal)
 	 */
-	protected boolean notFilter = false;
+	protected final boolean notFilter;
 	
 
 	/**
@@ -490,6 +490,13 @@ public abstract class Filter {
 	 */
 	public LogField getField() {
 		return field;
+	}
+
+	/**
+	 * @return the constraint
+	 */
+	public Constraint getConstraint() {
+		return constraint;
 	}
 
 }
