@@ -58,6 +58,7 @@
 		<xsd:attribute name="containerName" type="xsd:string" use="required" />
 		<xsd:attribute name="componentName" type="xsd:string" use="required" />
 		<xsd:attribute name="numberOfEvents" type="xsd:int" use="optional" />
+		<xsd:attribute name="logMultiplesOfEventCount" type="xsd:int" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="PublisherSpecT">

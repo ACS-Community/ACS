@@ -50,7 +50,15 @@ public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implement
 	 */
 	protected volatile boolean cancel = false;
 	
-	protected final AtomicInteger logMultiplesOfEventCount = new AtomicInteger(100);
+	/**
+	 * <ul>
+	 *   <li>value <= 0: No event logging (default)
+	 *   <li>1: log every event
+	 *   <li>value > 1: log every Nth event
+	 * </ul>
+	 * @see #setEventLogging(int)
+	 */
+	protected final AtomicInteger logMultiplesOfEventCount = new AtomicInteger(0);
 
 //	@Override
 //	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
@@ -124,6 +132,17 @@ public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implement
 	@Override
 	public void setEventLogging(int multiplesOfEventCount) {
 		logMultiplesOfEventCount.set(multiplesOfEventCount);
+		String msg = "Will log ";
+		if (multiplesOfEventCount <= 0) {
+			msg += "no events";
+		}
+		else if (multiplesOfEventCount == 1) {
+			msg += "every event";
+		}
+		else if (multiplesOfEventCount > 1) {
+			msg += "every " + multiplesOfEventCount + "th event";
+		}
+		m_logger.info(msg);
 	}
 
 }

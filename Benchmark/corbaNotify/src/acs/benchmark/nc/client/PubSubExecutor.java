@@ -221,8 +221,16 @@ public class PubSubExecutor extends ComponentClient
 				
 				// Get the subscriber component. This may retrieve the same component more than once if it should use more than one NC
 				// (which will result in multiple NCSubscriber instances created by that component).
+				// TODO: pack this into one call, now that the comp will fail on the second call !!!
+				if (componentAccessUtil.getCachedComponentNames().contains(subSpec.getComponentName())) {
+					m_logger.info("Multiple subscribers specified for component " + subSpec.getComponentName() + ". This is legal, but unusual. Some values may be overwritten.");
+				}
 				CorbaNotifyConsumerOperations subscriberComp = 
 						componentAccessUtil.getDynamicSubscriberComponent(subSpec.getComponentName(), subSpec.getContainerName(), implLang);
+				
+				if (subSpec.hasLogMultiplesOfEventCount()) {
+					subscriberComp.setEventLogging(subSpec.getLogMultiplesOfEventCount());
+				}
 				
 				PubSubRunner runner = new PubSubRunner(subSpec, subscriberComp, pubSubExec, m_logger) {
 					@Override
@@ -250,8 +258,15 @@ public class PubSubExecutor extends ComponentClient
 				
 				// Get the publisher component. This may retrieve the same component more than once if it should use more than one NC
 				// (which will result in multiple NCPublisher instances created by that component).
+				if (componentAccessUtil.getCachedComponentNames().contains(pubSpec.getComponentName())) {
+					m_logger.info("Multiple publishers specified for component " + pubSpec.getComponentName() + ". This is legal, but unusual. Some values may be overwritten.");
+				}
 				CorbaNotifySupplierOperations publisherComp = 
 						componentAccessUtil.getDynamicSupplierComponent(pubSpec.getComponentName(), pubSpec.getContainerName(), implLang);
+				
+				if (pubSpec.hasLogMultiplesOfEventCount()) {
+					publisherComp.setEventLogging(pubSpec.getLogMultiplesOfEventCount());
+				}
 				
 				PubSubRunner runner = new PubSubRunner(pubSpec, publisherComp, pubSubExec, m_logger) {
 					@Override
