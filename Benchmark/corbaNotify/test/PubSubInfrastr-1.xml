@@ -24,9 +24,7 @@
 <PubSubInfrastructureSpec>
 
   <TestDescription>
-    A simple pub-sub setup for basic tests. 
-    It runs publishers and subscribers for a fixed time, independently of the number of events that are sent or received.
-    See the 'Termination' element used, as opposed to 'numberOfEvents' attributes.
+    A simple pub-sub setup for basic tests. It runs publishers and subscribers for a fixed time, independently of the number of events that are sent or received. See the 'Termination' element used, as opposed to 'numberOfEvents' attributes.
   </TestDescription>
   
   <Container containerName="publisherContainer-1" implLang="java" />
@@ -34,28 +32,47 @@
   <Container containerName="subscriberContainer" implLang="java" hostName="myStaticallySetHostName" />
   
   
-  <Publisher containerName="publisherContainer-1" componentName="Pub-1" eventPeriodMillis="48" >
+  <Publisher 
+      componentName="Pub-1"
+      containerName="publisherContainer-1" 
+      eventPeriodMillis="200" 
+      logMultiplesOfEventCount="1" >
     <NC>CONTROL_REALTIME</NC>
     <EventName>LightweightMountStatusData</EventName>
+    <EventName>SomeOtherEventType</EventName>
   </Publisher>
   
-  <Publisher containerName="publisherContainer-2" componentName="PubMaxSpeed" >
+  <Publisher 
+      componentName="PubMaxSpeed"
+      containerName="publisherContainer-2" >
     <NC>MY_OTHER_NC</NC>
     <EventName>LightweightMountStatusData</EventName>
   </Publisher>
   
   
-  <Subscriber containerName="subscriberContainer" componentName="Sub-1" processingDelayMillis="2">
+  <Subscriber 
+      componentName="Sub-1" 
+      containerName="subscriberContainer" 
+      processingDelayMillis="2"
+      logMultiplesOfEventCount="1" >
     <NC>CONTROL_REALTIME</NC>
     <EventName>LightweightMountStatusData</EventName>
     <EventName>MountStatusData</EventName>
   </Subscriber>
 
-  <Subscriber containerName="subscriberContainer" componentName="Sub-2">
+  <Subscriber 
+      componentName="Sub-2"
+      containerName="subscriberContainer" >
     <NC>MY_OTHER_NC</NC>
     <EventName>LightweightMountStatusData</EventName>
   </Subscriber>
 
-  <Termination timeout="10" timeUnit="MINUTES" />
+  <Logging
+    defaultLevelMinLocal="3"
+    defaultLevelMin="4"
+    jacorbLevelMin="5"
+  />
+  
+  <Termination timeout="1" timeUnit="MINUTES" />
   
 </PubSubInfrastructureSpec>
