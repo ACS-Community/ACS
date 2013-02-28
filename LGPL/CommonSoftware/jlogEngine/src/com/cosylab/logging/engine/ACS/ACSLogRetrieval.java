@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.43 2012/11/09 16:59:20 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.44 2013/02/28 08:52:13 acaproni Exp $
  * @since    
  */
 
@@ -315,6 +315,8 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 		} catch (Exception pce) {
 			throw new LogEngineException("Error starting the ACSLogRetrieval",pce);
 		}
+		
+		cache.start();
 		
 		thread = new Thread(this,"ACSLogRetrieval");
 		thread.setDaemon(true);
