@@ -5,12 +5,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     
     <NotificationServiceMapping DefaultNotificationService="NotifyEventChannelFactory">
+    
         <Domains>
             <_ Name="ALARMSYSTEM" NotificationService="AlarmNotifyEventChannelFactory"/>
         </Domains>
+        
         <Channels_>
+            <!-- The following NC mapping requires to start "acsNotifyService -s -w -n RealtimeNc" before accessing NC CONTROL_REALTIME -->
             <_ Name="CONTROL_REALTIME" NotificationService="RealtimeNcNotifyEventChannelFactory"/>
         </Channels_>
+        
     </NotificationServiceMapping>
     
 </Channels>
