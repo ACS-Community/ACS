@@ -365,12 +365,6 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		{
 			throw new RemoteException("Failed to invoke 'ping()' method.", ex);
 		}
-		finally 
-		{
-			// release immediately to allow GC all the relevant resources, see #release()
-			if (wrappedClient != null)
-				wrappedClient._release();
-		}
 	}
 
 	/**
