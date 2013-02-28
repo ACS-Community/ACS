@@ -143,12 +143,14 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublish
 				lastEventIndex++;
 			}
 			try {
-				pub.publishEvent(events.get(lastEventIndex));
+				IDLEntity eventToPublish = events.get(lastEventIndex);
+				pub.publishEvent(eventToPublish);
 				eventsSent++;
 				// progress logging
 				int modDiv = logMultiplesOfEventCount.get();
 				if (modDiv > 0 && eventsSent % modDiv == 0) {
-					m_logger.log(AcsLogLevel.DEBUG, "Have published a total of " + eventsSent + " events on NC " + ncName);
+					m_logger.log(AcsLogLevel.DEBUG, "Have published a total of " + eventsSent + " events on NC " + ncName + 
+							", last was a " + eventToPublish.getClass().getSimpleName());
 				}
 				
 				if (eventsMax > 0 && eventsSent == eventsMax) {
