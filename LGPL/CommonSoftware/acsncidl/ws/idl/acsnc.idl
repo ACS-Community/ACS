@@ -81,9 +81,13 @@ module acsnc
     ////////////////////////////////////////////////////////////////////////
     //The following definitions are used internally by all language mappings.
     ////////////////////////////////////////////////////////////////////////
+    
     /**
      * FILTER_LANGUAGE_NAME is the default filtering language used by the addFilter
      * consumer (API) method.
+     * TODO: Rename this from "ETCL" to "EXTENDED_TCL", as stated in the Corba Notification Service spec,
+     *       chapter 3.2.1.1 constraint_grammar. The "ETCL" was a mistake by TAO, fixed in 2002, but still 
+     *       supported for backward compatibility (see orbsvcs/Notify/ETCL_FilterFactory.cpp)
      */
     const string FILTER_LANGUAGE_NAME = "ETCL";
 
