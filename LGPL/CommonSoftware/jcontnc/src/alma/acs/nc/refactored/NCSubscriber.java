@@ -88,6 +88,7 @@ import alma.acs.nc.AcsEventSubscriberImplBase;
 import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.Helper;
+import alma.acs.nc.NcFilterInspector;
 import alma.acs.nc.ReconnectableParticipant;
 import alma.acs.ncconfig.EventDescriptor;
 import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
@@ -217,9 +218,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 	/**
 	 * Contains a list of the added and removed subscription filters applied.
-	 * <p>
-	 * TODO: Does this sentence make sense? Events on this list will be processed to check if the event should be
-	 * accepted or discarded.
+	 * Key = Event type name (Class#getSimpleName())
+	 * Value = Filter ID (assigned by the NC)
 	 */
 	protected final Map<String, Integer> subscriptionsFilters = new HashMap<String, Integer>();
 
@@ -570,10 +570,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	@Override
 	protected void notifyFirstSubscription(Class<?> structClass) throws AcsJEventSubscriptionEx {
 		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
-		String eventTypeNameLong = ( structClass == null ? "*" : structClass.getName() );
 		try {
 			int filterId = addFilter(eventTypeNameShort);
-			subscriptionsFilters.put(eventTypeNameLong, filterId);
+			subscriptionsFilters.put(eventTypeNameShort, filterId);
 		} catch (AcsJCORBAProblemEx e) {
 			throw new AcsJEventSubscriptionEx(e);
 		}
@@ -581,14 +580,19 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	
 	@Override
 	protected void notifySubscriptionRemoved(Class<?> structClass) throws AcsJEventSubscriptionEx {
-//		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
-		String eventTypeNameLong = ( structClass == null ? "*" : structClass.getName() );
+		String eventTypeNameShort = ( structClass == null ? "*" : structClass.getSimpleName() );
 		try {
-			proxySupplier.remove_filter(subscriptionsFilters.get(eventTypeNameLong));
-			subscriptionsFilters.remove(eventTypeNameLong);
+			proxySupplier.remove_filter(subscriptionsFilters.get(eventTypeNameShort));
+			subscriptionsFilters.remove(eventTypeNameShort);
+			
+			if (logger.isLoggable(AcsLogLevel.DELOUSE)) {
+				NcFilterInspector insp = new NcFilterInspector(
+						proxySupplier, channelName + "::" + clientName + "::ProxySupplier", logger);
+				logger.log(AcsLogLevel.DELOUSE, "Removed filter for '" + eventTypeNameShort + "'. Current " + insp.getFilterInfo());
+			}
 		} catch (FilterNotFound e) {
 			throw new AcsJEventSubscriptionEx("Filter for '"
-					+ eventTypeNameLong + "' not found on the server side: ", e);
+					+ eventTypeNameShort + "' not found on the server side: ", e);
 		}
 		// If receivers is empty we just discard everything
 		if (receivers.isEmpty()) {
@@ -669,7 +673,12 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 				// create a new consumer admin
 				IntHolder consumerAdminIDHolder = new IntHolder();
-				retBase = channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
+				// We use filters only on proxy objects, not on admin objects.
+				// An admin object without filters will opt to pass all events.
+				// We need a logical AND to be used when comparing the event passing decisions
+				// made by the set of proxy supplier filters and by the admin object.
+				InterFilterGroupOperator adminProxyFilterLogic = InterFilterGroupOperator.AND_OP; 
+				retBase = channel.new_for_consumers(adminProxyFilterLogic, consumerAdminIDHolder);
 
 				// Create a dummy proxy in the new consumer admin.
 				// 
@@ -768,6 +777,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	
 	/**
 	 * This method manages the filtering capabilities used to control subscriptions.
+	 * <p>
+	 * A constraint evaluates to true when both of the following conditions are true:
+	 *   A member of the constraint's EventTypeSeq matches the message's event type.
+	 *   The constraint expression evaluates to true.
 	 * 
 	 * @return FilterID (see OMG NotificationService spec 3.2.4.1)
 	 * @throws AcsJCORBAProblemEx
@@ -780,15 +793,30 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			Filter filter = filterFactory.create_filter(getFilterLanguage());
 
 			// Information needed to construct the constraint expression object
-			// (any domain, THE type)
+			// (any domain, THE event type)
+			// Note that TAO will internally convert the event type name 
+			// to the expression "$type_name=='<our_eventTypeName>'", 
+			// see orbsvcs/Notify/Notify_Constraint_Interpreter.cpp
 			EventType[] t_info = { new EventType("*", eventTypeName) };
 
 			// Add constraint expression object to the filter
-			ConstraintExp[] cexp = { new ConstraintExp(t_info, "") };
+			String constraint_expr = ""; // no constraints other than the eventTypeName already given above
+			ConstraintExp[] cexp = { new ConstraintExp(t_info, constraint_expr) }; 
 			filter.add_constraints(cexp);
 
 			// Add the filter to the proxy and return the filter ID
-			return proxySupplier.add_filter(filter);
+			int filterId = proxySupplier.add_filter(filter);
+			
+			if (logger.isLoggable(AcsLogLevel.DELOUSE)) {
+				NcFilterInspector insp = new NcFilterInspector(
+						proxySupplier, channelName + "::" + clientName + "::ProxySupplier", logger);
+				logger.log(AcsLogLevel.DELOUSE, "Added filter for '" + eventTypeName + "'. Current " + insp.getFilterInfo());
+				
+//				NcFilterInspector insp2 = new NcFilterInspector(
+//						sharedConsumerAdmin, channelName + "::" + clientName + "::Admin", logger);
+//				logger.log(AcsLogLevel.DEBUG, "Admin filters: " + insp2.getFilterInfo());
+			}
+			return filterId;
 
 		} catch (org.omg.CosNotifyFilter.InvalidGrammar e) {
 			Throwable cause = new Throwable("'" + eventTypeName
@@ -803,10 +831,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 
 	}
-	
 
 	/**
-	 * This method is used to discard all events. Is called when there are no
+	 * This method is used to discard all events. It is called when there are no
 	 * subscriptions left or if the {@link #removeSubscription()} method is
 	 * called with null as parameter.
 	 */
@@ -817,7 +844,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		proxySupplier.remove_all_filters();
 		subscriptionsFilters.clear();
 		try {
-			addFilter("");
+			// If no filters are attached, the default behavior is to pass all events.
+			// Thus we attach a dummy forwarding filter, to enable the one-filter-must-match behavior.
+			addFilter("EVENT_TYPE_THAT_NEVER_MATCHES");
 		} catch (AcsJCORBAProblemEx e) {
 			logger.log(AcsLogLevel.ERROR, "Cannot add all-exclusive filter, we'll keep receiving events, but no handler will receive them");
 		}
@@ -862,8 +891,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	/**
 	 * 
 	 * This method returns a string to the type of filter constraint language to
-	 * be used for filtering events which is normally equivalent to
-	 * acsnc::FILTER_LANGUAGE_NAME.
+	 * be used for filtering events, which is normally equivalent to
+	 * acsnc::FILTER_LANGUAGE_NAME (ETCL = Extended Trader Constraint Language).
 	 * 
 	 * @return pointer to a constant string.
 	 */
