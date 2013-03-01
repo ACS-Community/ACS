@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.28 2012/01/09 14:39:47 tstaig Exp $"
+# "@(#) $Id: buildPython,v 1.29 2013/03/01 11:37:54 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -10,6 +10,7 @@
 # sturolla  2005-10-09  ported to bourne shell + add external subroutin for OS checking
 # agrimstrup 2007-07-10 modified build to create shared library for Python interpreter
 # agrimstrup 2007-08-22 updated Python to version 2.5.1 
+# eallaert  2013-03-01  determine Tcl/Tk version dynamically instead of hardcoding
 #
 
 #************************************************************************
@@ -119,6 +120,8 @@ then
     echo ""
 fi
 
+TCL_VERSION=`echo 'puts $tcl_version; exit'| tclsh`
+
 if [ "$OS" = "SOLARIS" ]
 # SunOS: here inserted modifications in the  Modules/Setup.dist script.
 then
@@ -138,7 +141,7 @@ then
    cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/openwin/include,\1/usr/openwin/include,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
-   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.4 -ltcl8.4,g" >> Modules/Setup.dist.tmp
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk$TCL_VERSION -ltcl$TCL_VERSION,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
    cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/openwin/lib,\1/usr/openwin/lib,g" >> Modules/Setup.dist.tmp
@@ -169,12 +172,7 @@ then
    cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
-   if [ "$DISTRO" = "RHLX" -a \( "$REL" = "7.2" -o  "$REL" = "7.3" \) ]
-   then
-     cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.3 -ltcl8.3,g" >> Modules/Setup.dist.tmp
-   else
-     cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.4 -ltcl8.4,g" >> Modules/Setup.dist.tmp
-   fi
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk$TCL_VERSION -ltcl$TCL_VERSION,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
    cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/lib -L/usr/lib64,g" >> Modules/Setup.dist.tmp
@@ -205,12 +203,7 @@ then
    cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
-   if [ "$DISTRO" = "RHLX" -a \( "$REL" = "7.2" -o  "$REL" = "7.3" \) ]
-   then
-     cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.3 -ltcl8.3,g" >> Modules/Setup.dist.tmp
-   else
-     cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.4 -ltcl8.4,g" >> Modules/Setup.dist.tmp
-   fi
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk$TCL_VERSION -ltcl$TCL_VERSION,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
    cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/lib -L/usr/lib64,g" >> Modules/Setup.dist.tmp
