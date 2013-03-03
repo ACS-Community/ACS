@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.17 2013/03/01 21:56:05 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.18 2013/03/03 19:14:48 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -64,7 +64,7 @@ class bulkDataNTtestSuite:
         self.senders         = senders
         self.numOfSenders    = len(senders)
         self.receivers       = receivers
-        self.numOfSenders    = len(receivers)
+        self.numOfReceivers  = len(receivers)
         self.dataSizeInBytes = size
         self.loops           = loops
         self.sendersData     = {}
@@ -76,6 +76,13 @@ class bulkDataNTtestSuite:
         self.filePrefix      = filePrefix
         self.filePath        = filePath
         self.multicast       = multicast
+
+        #
+        ### GCH ### This is the base, default unicast port
+        #           I will see later, but the strategy now is to increase
+        #           is automatically is there are more receivers on the same host
+        #
+        self.baseUnicastPort = 4800        
         
         self.preCmd = "source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; "
 
@@ -127,13 +134,20 @@ class bulkDataNTtestSuite:
             comma=","
             flow+=1
                   
-        if self.multicast == True:
-            xxxcastString=""
-        else:
-            xxxcastString="-u"
-
         seqNum = 0
-        for h in self.receivers:
+        previousReceiver = ""
+        for h in sorted(self.receivers):
+            print "Now: " + h + " Before: " + previousReceiver
+            if self.multicast == True:
+                xxxcastString=""
+            else:
+               if h != previousReceiver:
+                   port = self.baseUnicastPort 
+               else:
+                   port = port+1
+               xxxcastString="-u%d" % (port)
+               previousReceiver = h
+               
             # Builds the flows names
             seqString = format(seqNum, "02d")
             outFile    = self.filePath+self.filePrefix+"GenReceiver."+h+"-"+seqString
@@ -526,5 +540,9 @@ if __name__ == '__main__':
         print '----> Process test results'
         testSuite.processTestResults()
 
+    #
+    # The end, in a readable way
+    #
+    print '\n\n   ___oOo___   \n\n'
     
 # ___oOo___
