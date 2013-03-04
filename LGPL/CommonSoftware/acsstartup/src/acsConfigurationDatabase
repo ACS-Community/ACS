@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsConfigurationDatabase,v 1.9 2013/03/04 09:10:29 msekoran Exp $"
+# "@(#) $Id: acsConfigurationDatabase,v 1.10 2013/03/04 09:33:07 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -210,7 +210,7 @@ then
   fi
 
   ACS_NAME_SERVICE=`acsstartupNSRef`
-  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name CDB -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name CDB -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
 
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------

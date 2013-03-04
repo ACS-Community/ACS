@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.30 2013/03/04 09:10:29 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.31 2013/03/04 09:33:07 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -250,8 +250,13 @@ then
   fi
 
   ACS_NAME_SERVICE=`acsstartupNSRef`
-  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
-  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
+  if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
+  then
+    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name $NOTIFY_EVENT_CHANNEL -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  fi
+  
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
 
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------
