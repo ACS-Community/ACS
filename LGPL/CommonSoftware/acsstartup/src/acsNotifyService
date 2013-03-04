@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.29 2012/05/31 15:03:11 acaproni Exp $"
+# "@(#) $Id: acsNotifyService,v 1.30 2013/03/04 09:10:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -248,6 +248,10 @@ then
     ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
   fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
 
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------

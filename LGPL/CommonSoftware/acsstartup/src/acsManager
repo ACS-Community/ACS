@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsManager,v 1.6 2012/05/31 14:56:22 acaproni Exp $"
+# "@(#) $Id: acsManager,v 1.7 2013/03/04 09:10:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -200,6 +200,9 @@ then
       ACS_LOG_ERROR "$COMMAND" "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
       exit $EC_CANNOTUSE
     fi
+
+    ACS_NAME_SERVICE=`acsstartupNSRef`
+    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name Manager -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
 
     # MANAGER SHUTDOWN
     # --------------------------------------------------------------------------

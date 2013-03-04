@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.14 2012/05/31 15:04:37 acaproni Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.15 2013/03/04 09:10:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -209,6 +209,9 @@ then
     ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
   fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name InterfaceRepository -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS &
 
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------
