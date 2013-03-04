@@ -1,0 +1,60 @@
+#! /bin/bash
+. acsstartupConstants
+
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsstartupNotifyServiceStart,v 1.1 2013/03/04 10:33:31 msekoran Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# msekoran  2013-03-04  Created (extracted from acsNotifyService)
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
+# in order to get the correct svc.conf service configuration file.
+STARTUP_DIR=$PWD
+cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
+($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
+cd $STARTUP_DIR
+
+if [ -e $NOTIFY_SERVICE_PIDFILE ]
+then
+  # Block until the IOR shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $NOTIFY_IOR -b "IOR:"
+  then
+    exit $EC_TIMEOUT
+  fi
+fi
+
+if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
+then
+  # Create the archiving channel now
+  acsstartupCreateChannel --name_service $ACS_NAME_SERVICE --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
+fi
+# Register Monitor and Control Notify Service extension to the naming service
+$ACE_ROOT/bin/tao_nsadd --ns $ACS_NAME_SERVICE --rebind --name MC_${CL_NS_TYPE}NotifyEventChannelFactory --ior `cat $INSTANCE_DIR/iors/${CL_NS_TYPE}NotifyMCIOR` 2>&1 | tee $NOTIFY_OUT
