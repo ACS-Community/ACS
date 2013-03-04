@@ -19,7 +19,7 @@
  */
 package alma.demo.test.client;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.util.Date;
@@ -34,14 +34,14 @@ import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
 
 /**
- * Currently this test is started via "acsStartJava junit.textui.TestRunner alma.demo.test.client.ArchiveConsumerTest",
- * and then 3 seconds later the "archiveeventsSupplier" is run, which sends off events and terminates.
- * Then TAT waits 30 seconds for this test to receive these events.
+ * Currently this test is started via "acsStartJava NoDotJUnitRunner alma.demo.test.client.ArchiveConsumerTest",
+ * and then 4 seconds later the "archiveeventsSupplier" is run, which sends off events and terminates.
+ * Then TAT waits a total of 30 seconds, in which this test should receive the archive events.
  */
 public class ArchiveConsumerTest extends ComponentClientTestCase implements ArchiveReceiver
 {
 	private ArchiveConsumer m_consumer;
-	private volatile int count = 0;
+	private volatile int count;
 
 	/**
 	 * @throws Exception
@@ -58,7 +58,6 @@ public class ArchiveConsumerTest extends ComponentClientTestCase implements Arch
 				getContainerServices().getAdvancedContainerServices().getORB().resolve_initial_references("NameService") );
 
 		m_consumer = new ArchiveConsumer(this, getContainerServices(), ncRef);
-		m_consumer.startReceivingEvents();
 	}
 	
 	@Override
@@ -68,20 +67,25 @@ public class ArchiveConsumerTest extends ComponentClientTestCase implements Arch
 	}
 	
 	/**
-	 * The types of events, as they get fired by the archiveeventsSupplier application,
+	 * The types of the 11 events, as they get fired by the jcontnc/test/archiveeventsSupplier.cpp test supplier,
 	 * will be checked by TAT based on the output from {@link #receive(Long, String, String, Object)}.
+	 * Here we only validate the number of events received.
 	 */
 	public void testReceiveFor15Seconds() throws Exception {
 		
-		// receive and count events for a while
+		count = 0;
+		m_consumer.startReceivingEvents();
+		m_logger.info(getClass().getSimpleName() + " is receiving archive events for the next 15 seconds.");
+
+		// receive and count events 
 		Thread.sleep(15000);
 		
-		assertThat("ArchivingChannel events received", count, greaterThanOrEqualTo(11) );
-		System.out.println("Test passed!");
+		assertThat("ArchivingChannel events received", count, equalTo(11) );
+		m_logger.info("Test passed, got the expected 11 archive events.");
 	}
 	
 	
-	@Override
+	@Override // ArchiveReceiver
 	public void receive(long timeStamp, String device, String property, Object value) {
 		
 		count++;
