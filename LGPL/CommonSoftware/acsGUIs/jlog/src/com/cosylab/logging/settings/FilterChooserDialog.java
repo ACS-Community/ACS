@@ -521,12 +521,8 @@ public class FilterChooserDialog extends JDialog {
 				fileToSave = new File(fileToSave.getAbsolutePath() + ".xml");
 			}
 			if (fileToSave != null) {
-				try {
-					filters.saveFilters(fileToSave);
-					filterFileName = fileToSave.getAbsolutePath();
-				} catch (IOException e) {
-					System.err.println("Exception: " + e.toString());
-				}
+				filterFileName = fileToSave.getAbsolutePath();
+				saveFilters(fileToSave.getAbsolutePath());
 			}
 		}
 	}
