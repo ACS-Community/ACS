@@ -19,14 +19,14 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: onchangeMonitorTest.cpp,v 1.40 2008/10/01 02:33:31 cparedes Exp $"
+* "@(#) $Id: onchangeMonitorTest.cpp,v 1.41 2013/03/05 16:17:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram    2002/11/14 created
 */
 
-static char *rcsId="@(#) $Id: onchangeMonitorTest.cpp,v 1.40 2008/10/01 02:33:31 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: onchangeMonitorTest.cpp,v 1.41 2013/03/05 16:17:36 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciS.h>
@@ -125,18 +125,19 @@ int main(int argc, char* argv[])
 	    }
 	ACS_SHORT_LOG((LM_DEBUG, "Device narrowed."));
 
+
 	// Get current stat
 	ENUMPROP_TEST::ROStates_var currentState = dev->currentState();
 	
-	
+
 	//   get states description	
 	ACS::stringSeq_var description = currentState->statesDescription( );
 	
-        
-	TestCBpattern cbStates (currentState.in());
-        ACS::CBpattern_var cbStatesObj = cbStates._this();
 
-        ACS::CBDescIn desc;
+	TestCBpattern *cbStates  =new TestCBpattern(currentState.in());
+    ACS::CBpattern_var cbStatesObj = cbStates->_this();
+
+    ACS::CBDescIn desc;
 	desc.id_tag = 1;
 	ACS::Monitorpattern_var monitor = currentState->create_monitor(cbStatesObj.in(), desc);
 	monitor->set_timer_trigger(50000000); //=disable
@@ -156,9 +157,11 @@ int main(int argc, char* argv[])
 	ACE_Time_Value t5(5);
 	BACI_CORBA::getORB()->run(t5);
 
+	//currentState->_remove_ref();
 
-	BACI_CORBA::DoneCORBA();
+    BACI_CORBA::DoneCORBA();
 
+	LoggingProxy::done();
 	// Delete the logger last.
 	delete m_logger;
 	}
@@ -168,6 +171,7 @@ int main(int argc, char* argv[])
 	return -1;
 	}
     ACE_CHECK_RETURN (-1);
+
     
     return 0;
 }
