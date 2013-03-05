@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.56 2013/02/06 15:31:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.57 2013/03/05 15:19:33 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.56 2013/02/06 15:31:18 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.57 2013/03/05 15:19:33 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -34,6 +34,49 @@ using namespace AcsBulkdata;
 using namespace std;
 using namespace ACS_DDS_Errors;
 using namespace ACS_BD_Errors;
+
+class HangingFinder
+{
+  public:
+    HangingFinder(unsigned long  thresholdMSec, char *location)
+	{
+	    thresholdMSec_m  = thresholdMSec;
+	    startTime_m      = ACE_OS::gettimeofday();  
+
+	    strncpy(location_m, location, 19);
+	    location_m[19]='\0';
+	}
+
+    ~HangingFinder() { Evaluate(); }
+
+    void Evaluate()
+	{
+	    ACE_Time_Value elapsedTime_m = ACE_OS::gettimeofday() - startTime_m;
+	    if( elapsedTime_m.msec() > thresholdMSec_m)
+		{
+		counterNo++;
+		ACS_SHORT_LOG((LM_DEBUG, "XXX %s - Detected hanging time of %ld msec, consec bad: %d, ok: %d", 
+			       location_m, elapsedTime_m.msec(),counterNo, counterYes));
+		counterYes=0;
+		}
+	    else
+		{
+		counterYes++;
+		counterNo=0;
+		}
+	}
+
+  private:
+    ACE_Time_Value startTime_m;
+    unsigned long  thresholdMSec_m;
+    char           location_m[20];
+    static int     counterNo;        
+    static int     counterYes;        
+};
+
+int HangingFinder::counterNo  = 0;
+int HangingFinder::counterYes = 0;
+
 
 const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataSendState", "StopState" };
 
@@ -209,7 +252,6 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
 	try{
-
 		if (currentState_m!=DataRcvState)
 		{
 			SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
@@ -323,7 +365,12 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	if (param!=0 && len!=0)
 		frame_m->data.from_array(param, len);
 
+	{
+	//======= GCH Hanging Finder
+	HangingFinder finder = HangingFinder(500, "writeFrame 0");
+	//======= GCH Hanging Finder
 	ret = ddsDataWriter_m->write(*frame_m, DDS::HANDLE_NIL);
+	}
 
 	if( ret != DDS::RETCODE_OK)
 	{
@@ -331,7 +378,9 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		{
 			dumpStatistics();
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			toEx.setSenderName(senderStream_m->getName().c_str()); toEx.setFlowName(flowName_m.c_str());
+			toEx.setSenderName(senderStream_m->getName().c_str()); 
+			toEx.setFlowName(flowName_m.c_str());
+			
 			toEx.setTimeout(senderFlowCfg_m.getSendFrameTimeout());
 			toEx.setFrameCount(restFrameCount);
 			throw toEx;
@@ -339,16 +388,20 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		{
 			dumpStatistics();
 			SendFrameGenericErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
+			sfEx.setSenderName(senderStream_m->getName().c_str()); 
+			sfEx.setFlowName(flowName_m.c_str());
+
 			sfEx.setFrameCount(restFrameCount);
 			sfEx.setRetCode(ret);
 			throw sfEx;
 		}//if-else
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) %d for flow: %s", dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
-		// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) %d for flow: %s", 
+			       dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+		// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+		
+		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);		
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics();
@@ -359,8 +412,10 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		}//if
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) after waiting: %d", dataType2String[dataType], status.unacknowledged_sample_count)); //RTI
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) after waiting: %d", 
+			       dataType2String[dataType], status.unacknowledged_sample_count)); //RTI
 		//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+
 	}//if (ret != DDS::RETCODE_OK)
 
 
