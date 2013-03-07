@@ -19,9 +19,23 @@
 
 package alma.acs.nc.refactored;
 
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.omg.CORBA.portable.IDLEntity;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
@@ -29,20 +43,23 @@ import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.component.client.ComponentClient;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber.Callback;
 import alma.acs.nc.AcsEventSubscriber.GenericCallback;
+import alma.acs.nc.refactored.NCSubscriber.NoEventReceiverListener;
+import alma.acs.util.AcsLocations;
 import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;
 
 /**
- * Test class for the new generation of NC Subscribers.
+ * Tests for NCSubscriber.
  * 
- * @author rtobar
+ * @author rtobar, hsommer
  */
-public class NCSubscriberTest extends ComponentClientTestCase {
+public class NCSubscriberTest extends ComponentClient {
+
 
 	private static String CHANNEL_NAME = "pink-floyd";
 	
@@ -62,17 +79,33 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 */
 	private AcsEventPublisher<IDLEntity> m_publisher;
 
+	/**
+	 * Test event types, to be used when calling {@link #publish(int, EventType)}.
+	 */
 	private enum EventType {
 		statusBlock1,
 		statusBlock2
 	}
 
 	public NCSubscriberTest() throws Exception {
-		super("NCSubscriberTest");
+		super(null, AcsLocations.figureOutManagerLocation(), NCSubscriberTest.class.getSimpleName());
 	}
 
+	/**
+	 * TODO: Check if this rule and the getMethodName() call in setUp() can be moved up to ComponentClient,
+	 *      if that adds a runtime dependency on junit, and how bad that would be.
+	 *      Probably we should add a class ComponentClientTestCaseJUnit4 that extends ComponentClient
+	 *      and only adds this testname business.
+	 */
+	@Rule 
+	public TestName testName = new TestName();
+	
+
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
+		String testMethodName = testName.getMethodName();
+		m_logger.info("----------------- " + testMethodName + " ----------------- ");
+		
 		m_publisher = getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
 		newSharedSubscriber();
 
@@ -80,9 +113,19 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertEquals(1, m_subscriber.proxySupplier.get_all_filters().length);
 	}
 
+	@After
+	public void tearDown() throws Exception {
+		m_publisher.disconnect();
+		if (m_subscriber != null && !m_subscriber.isDisconnected()) {
+			m_subscriber.disconnect();
+		}
+		super.tearDown();
+	}
+
+
 	/**
 	 * Creates an NCSubscriber and stores it in {@link #m_subscriber}.
-	 * If we alrady had a subscriber, that one gets disconnected first.
+	 * If we already had a subscriber, that one gets disconnected first.
 	 */
 	private void newSharedSubscriber() throws AcsJContainerServicesEx, AcsJIllegalStateEventEx, AcsJCouldntPerformActionEx {
 		if (m_subscriber != null && !m_subscriber.isDisconnected()) {
@@ -92,11 +135,9 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	}
 
 
-	public void tearDown() throws Exception {
-		m_publisher.disconnect();
-		super.tearDown();
-	}
-
+	/**
+	 */
+	@Test
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void testAddSubscription() throws Exception {
 
@@ -153,6 +194,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 	}
 
+	@Test
 	public void testRemoveSubscription() throws Exception {
 
 		// Invalid removals, then subscription //
@@ -201,9 +243,10 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 	}
 
-	public void testSubscriptionbyEventTypeReceiving() throws Exception {
+	@Test
+	public void testSubscriptionByEventTypeReceiving() throws Exception {
 
-		int nEvents = 10;
+		final int nEvents = 10;
 
 		// Simple case: 1 receiver per event type, publisher publishes same amount of events for each type
 		CountDownLatch c1 = new CountDownLatch(nEvents);
@@ -214,12 +257,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 		publish(nEvents, EventType.statusBlock1);
 		publish(nEvents, EventType.statusBlock2);
-		c1.await(10, TimeUnit.SECONDS);
-		c2.await(10, TimeUnit.SECONDS);
-		m_subscriber.disconnect();
-
-		assertEquals(0, c1.getCount());
-		assertEquals(0, c2.getCount());
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertTrue(c2.await(10, TimeUnit.SECONDS));
 
 		// Overriding case: 1 receiver per event type, 2nd receiver is overridden
 		newSharedSubscriber();
@@ -233,14 +272,9 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 		publish(nEvents, EventType.statusBlock1);
 		publish(nEvents, EventType.statusBlock2);
-		c1.await(10, TimeUnit.SECONDS);
-		c2.await(10, TimeUnit.SECONDS);
-		c3.await(10, TimeUnit.SECONDS);
-		m_subscriber.disconnect();
-
-		assertEquals(0,  c1.getCount());
-		assertEquals(10, c2.getCount());
-		assertEquals(0,  c3.getCount());
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertTrue(c3.await(10, TimeUnit.SECONDS));
+		assertEquals(nEvents, c2.getCount()); 
 
 		// Overriding case 2: 1 receiver per event type, 2nd receiver is overridden two times, but second time is invalid
 		newSharedSubscriber();
@@ -261,17 +295,16 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 		publish(nEvents, EventType.statusBlock1);
 		publish(nEvents, EventType.statusBlock2);
-		c1.await(10, TimeUnit.SECONDS);
-		c2.await(10, TimeUnit.SECONDS);
-		c3.await(10, TimeUnit.SECONDS);
-		m_subscriber.disconnect();
-
-		assertEquals(0,  c1.getCount());
-		assertEquals(0,  c2.getCount());
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertTrue(c2.await(10, TimeUnit.SECONDS));
+		assertFalse(c3.await(10, TimeUnit.SECONDS));
 		assertEquals(nEvents, c3.getCount());
+		m_subscriber.disconnect();
 
 	}
 
+	
+	@Test
 	public void testSubscriptionGenericReceiving() throws Exception {
 
 		int nEvents = 10;
@@ -338,6 +371,90 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 	}
 
+	
+	/**
+	 * Asserts that only subscribed events arrive at the subscriber client, 
+	 * while others get filtered out already on the server.
+	 * See also http://jira.alma.cl/browse/COMP-9076
+	 */
+	@Test
+	public void testServerSideEventTypeFiltering() throws Exception {
+		final int nEvents = 10;
+		
+		// Verify that our test finds a filter leak when it exists.
+		// For that, we use one typed subscription but publish two event types.
+		CountDownLatch cLeak = new CountDownLatch(nEvents);
+		newSharedSubscriberWithFilterLeakCheck(null, cLeak);
+		// Note that calling 'm_subscriber.proxySupplier.remove_all_filters()'
+		// does not work here. Apparently after adding and removing filters, we do not return
+		// to the initial "all events pass" behavior. 
+		m_subscriber.addFilter("*");
+		CountDownLatch c1 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.startReceivingEvents();
+		publish(nEvents, EventType.statusBlock2); // they should leak
+		publish(nEvents, EventType.statusBlock1);
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertTrue("Expecting a leak in the server-side event filter", cLeak.await(10, TimeUnit.SECONDS));
+		
+		// Again 1 typed subscription and 2 event types published, but without artificial filter leak
+		List<String> leakedEvents = new ArrayList<String>();
+		newSharedSubscriberWithFilterLeakCheck(leakedEvents, null);
+		c1 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.startReceivingEvents();
+		publish(nEvents, EventType.statusBlock2); // should be filtered out
+		publish(nEvents, EventType.statusBlock1);
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertThat(leakedEvents, empty());
+
+		// add generic subscription
+		newSharedSubscriberWithFilterLeakCheck(leakedEvents, null);
+		c1 = new CountDownLatch(nEvents);
+		CountDownLatch c2 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.addGenericSubscription(new GenericEventReceiver(c2));
+		m_subscriber.startReceivingEvents();
+		publish(nEvents, EventType.statusBlock2); 
+		publish(nEvents, EventType.statusBlock1);
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertTrue(c2.await(10, TimeUnit.SECONDS));
+		assertThat(leakedEvents, empty());
+		
+		// remove generic subscription
+		newSharedSubscriberWithFilterLeakCheck(leakedEvents, null);
+		c1 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.startReceivingEvents();
+		publish(nEvents, EventType.statusBlock2); // should be filtered out
+		publish(nEvents, EventType.statusBlock1);
+		assertTrue(c1.await(10, TimeUnit.SECONDS));
+		assertThat(leakedEvents, empty());
+	}
+	
+	/**
+	 * Sets up a hacked subscriber that reports stray events (normally they only get logged).
+	 * @see #testServerSideEventTypeFiltering()
+	 */
+	private void newSharedSubscriberWithFilterLeakCheck(final List<String> leakedEvents, final CountDownLatch cLeak) throws Exception {
+		newSharedSubscriber();
+		NoEventReceiverListener filterLeakListener = new NoEventReceiverListener() {
+			@Override
+			public void noEventReceiver(String eventName) {
+				m_logger.info("Leaked event: " + eventName);
+				if (leakedEvents != null) {
+					leakedEvents.add(eventName);
+				}
+				if (cLeak != null) {
+					cLeak.countDown();
+				}
+			}
+		};
+		m_subscriber.setNoEventReceiverListener(filterLeakListener);
+	}
+
+	
+	@Test
 	public void testLifecycle() throws Exception {
 
 		// We're totally disconnected, try to do illegal stuff
@@ -452,6 +569,9 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		}
 	}
 
+	/**
+	 * Receives <code>statusBlockEvent1</code> events.
+	 */
 	private class EventReceiver1 extends EventReceiverWithCounter implements Callback<statusBlockEvent1> {
 
 		public EventReceiver1() {
@@ -471,6 +591,9 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		}
 	}
 
+	/**
+	 * Receives <code>statusBlockEvent2</code> events.
+	 */
 	private class EventReceiver2 extends EventReceiverWithCounter implements Callback<statusBlockEvent2> {
 
 		public EventReceiver2() {
