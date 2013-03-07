@@ -19,14 +19,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.container.ContainerServicesBase;
-import alma.acs.logging.AcsLogger;
-import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsEventSubscriber.GenericCallback;
@@ -35,12 +32,8 @@ import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 
 
-public class InMemoryNcTest
+public class InMemoryNcTest extends JUnit4StandaloneTestBase
 {
-	@Rule 
-	public TestName testName = new TestName();
-	
-	private AcsLogger logger;
 	private ContainerServicesBase services;
 	
 
@@ -232,13 +225,13 @@ public class InMemoryNcTest
 	
 	@Before
 	public void setUp() throws Exception {
-		String testMethodName = testName.getMethodName();
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(testMethodName, false);
+		super.setUp();
 		services = new DummyContainerServicesBase(testMethodName, logger);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		super.tearDown();
 	}
 
 	/**

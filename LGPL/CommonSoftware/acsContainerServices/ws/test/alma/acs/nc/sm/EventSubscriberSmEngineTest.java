@@ -24,16 +24,14 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.TriggerEvent;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
-import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 import alma.acs.nc.sm.generated.EventSubscriberActionDispatcher;
 import alma.acs.nc.sm.generated.EventSubscriberAllActionsHandler;
 import alma.acs.nc.sm.generated.EventSubscriberSignal;
@@ -45,9 +43,8 @@ import alma.acs.util.StopWatch;
 /**
  * A stand-alone test for the generated SCXML-based subscriber state machine.
  */
-public class EventSubscriberSmEngineTest
+public class EventSubscriberSmEngineTest extends JUnit4StandaloneTestBase 
 {
-	private AcsLogger logger;
 	private MyActionHandler actionHandler;
 	private EventSubscriberStateMachine engine;
 
@@ -88,14 +85,10 @@ public class EventSubscriberSmEngineTest
 		}
 	}
 	
-	@Rule 
-	public TestName testName = new TestName();
-	
 
 	@Before
 	public void setUp() throws Exception {
-		String testMethodName = testName.getMethodName();
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(testMethodName, false);
+		super.setUp();
 		configureLogging(AcsLogLevelDefinition.INFO);
 		
 		StopWatch sw = new StopWatch();
@@ -111,10 +104,10 @@ public class EventSubscriberSmEngineTest
 	@After
 	public void tearDown() throws Exception {
 		// TODO: nothing to clean up in the engine??
+		super.tearDown();
 	}
 
 	private void configureLogging(AcsLogLevelDefinition localLevel) {
-		String testMethodName = testName.getMethodName();
 		String scxmlLoggerName = "scxml@" + testMethodName;
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		logConfig.setMinLogLevelLocal(localLevel, scxmlLoggerName);
