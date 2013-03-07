@@ -19,9 +19,6 @@ import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
  */
 public class Log4jAdapterTest extends JUnit4StandaloneTestBase
 {
-	public Log4jAdapterTest() throws Exception {
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
