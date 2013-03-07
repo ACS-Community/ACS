@@ -12,18 +12,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import alma.acs.algorithms.DataBinner;
 import alma.acs.algorithms.DataBinner.BinnedTimeValues;
 import alma.acs.algorithms.DataBinner.TimeValue;
-import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 import alma.acs.manager.logparser.ManagerStdoutParser.ComponentRequest;
 import alma.acs.manager.logparser.ManagerStdoutParser.ComponentRequestKey;
 import alma.acs.util.IsoDateFormat;
@@ -33,19 +31,19 @@ import alma.acs.util.IsoDateFormat;
  * Test for manager stdout log parser. 
  * This test can be modified to analyze other manager output data for debugging.
  */
-public class ManagerStdoutParserTest
+public class ManagerStdoutParserTest extends JUnit4StandaloneTestBase
 {
-	private Logger logger;
-	
-	@Rule 
-	public TestName name = new TestName();
-
 	@Before
 	public void setUp() throws Exception {
-		this.logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name.getMethodName(), false);
-		logger.info("--------- " + name.getMethodName() + " ---------");
+		super.setUp();
+		logger.info("--------- " + testMethodName + " ---------");
 	}
 
+	@After
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
+	
 	@Test
 	public void testParseLine() throws Exception {
 		ManagerStdoutParser parser = new ManagerStdoutParser(logger);
@@ -76,20 +74,20 @@ public class ManagerStdoutParserTest
 	
 	@Test
 	public void testParseManagerOutput() throws Exception, ParseException {
-		String fileName = "sampleOutput/acsManager_2011-09-30_17.45.21.295";
+		String fileName = "sampleOutput/acsManager_2012-03-20_16.48.20.642";
 		ManagerStdoutParser parser = new ManagerStdoutParser(logger);
 		List<ComponentRequest> requests = parser.parse(new File(fileName));
 		
-		// some statistics for AIV-6529
-		long t0 = IsoDateFormat.parseIsoTimestamp("2011-10-01T02:50:00.000").getTime();
-		long t1 = IsoDateFormat.parseIsoTimestamp("2011-10-01T03:30:00.000").getTime();
+		// to select only logs between these two timestamps
+		long t0 = IsoDateFormat.parseIsoTimestamp("2011-11-13T20:47:17.328").getTime();
+		long t1 = IsoDateFormat.parseIsoTimestamp("2011-11-13T21:29:48.314").getTime();
 		
 		List<TimeValue<ComponentRequest>> data = new ArrayList<TimeValue<ComponentRequest>>();
 		for (ComponentRequest r : requests) {
-			if (r.timeRequested >= t0 && r.timeRequested <= t1) {
+//			if (r.timeRequested >= t0 && r.timeRequested <= t1) {
 				data.add(new TimeValue<ComponentRequest>(r.timeRequested, r));
-//				System.out.println(toISO(r.timeRequested) + ", " + (r.timeProvided-r.timeRequested) + ", " + r.key.curl.substring(8) + ", " + r.key.clientName);
-			}
+				System.out.println(toISO(r.timeRequested) + ", " + (r.timeProvided-r.timeRequested) + ", " + r.key.curl.substring(8) + ", " + r.key.clientName);
+//			}
 		}
 		Collections.sort(data);
 		
