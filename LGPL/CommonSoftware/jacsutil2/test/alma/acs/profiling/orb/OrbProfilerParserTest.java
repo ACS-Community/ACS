@@ -1,32 +1,23 @@
 package alma.acs.profiling.orb;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
-import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 
 
-public class OrbProfilerParserTest
+public class OrbProfilerParserTest extends JUnit4StandaloneTestBase
 {
-	private Logger logger;
-
-	@Rule 
-	public TestName name = new TestName();
-
 	@Before
 	public void setUp() throws Exception {
-		this.logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name.getMethodName(), false);
+		super.setUp();
 	}
 
 	/**

@@ -8,43 +8,34 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import alma.acs.algorithms.DataBinner;
 import alma.acs.algorithms.DataBinner.BinnedTimeValues;
 import alma.acs.algorithms.DataBinner.TimeValue;
-import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 import alma.acs.util.IsoDateFormat;
 
 
-public class OrbProfilerStatisticsTest
+public class OrbProfilerStatisticsTest extends JUnit4StandaloneTestBase
 {
-	private Logger logger;
-
-	@Rule 
-	public TestName name = new TestName();
-
 	@Before
 	public void setUp() throws Exception {
-		this.logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name.getMethodName(), false);
+		super.setUp();
 	}
 
 	@Test
 	public void testRounding() throws Exception {
-		OrbProfilerStatistics stat = new OrbProfilerStatistics(null, logger);
-		assertEquals(0, stat.floor(0, 1));
-		assertEquals(0, stat.floor(0, 5));
-		assertEquals(0, stat.floor(9, 10));
-		assertEquals(10, stat.floor(10, 10));
-		assertEquals(10, stat.floor(11, 10));
-//		assertEquals(10, stat.ceiling(9, 10));
-//		assertEquals(10, stat.ceiling(10, 10));
-//		assertEquals(20, stat.ceiling(11, 10));
+		assertEquals(0, OrbProfilerStatistics.floor(0, 1));
+		assertEquals(0, OrbProfilerStatistics.floor(0, 5));
+		assertEquals(0, OrbProfilerStatistics.floor(9, 10));
+		assertEquals(10, OrbProfilerStatistics.floor(10, 10));
+		assertEquals(10, OrbProfilerStatistics.floor(11, 10));
+//		assertEquals(10, OrbProfilerStatistics.ceiling(9, 10));
+//		assertEquals(10, OrbProfilerStatistics.ceiling(10, 10));
+//		assertEquals(20, OrbProfilerStatistics.ceiling(11, 10));
 	}
 	
 	@Test
