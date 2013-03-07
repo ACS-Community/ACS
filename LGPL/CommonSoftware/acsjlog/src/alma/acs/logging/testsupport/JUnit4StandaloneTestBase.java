@@ -8,7 +8,10 @@ import alma.acs.logging.ClientLogManager;
 
 /**
  * Convenience base class for stand-alone tests using JUnit 4 or higher (those that do not use the ACS runtime).
- * It creates a logger using the name of the currently executing test method.
+ * It creates a logger (field {@link #logger}), using the name of the currently executing test method.
+ * <p>
+ * @see #setUp()
+ * @see #tearDown()
  */
 public class JUnit4StandaloneTestBase
 {
@@ -30,8 +33,6 @@ public class JUnit4StandaloneTestBase
 	 */
 	protected AcsLogger logger;
 
-	public JUnit4StandaloneTestBase() throws Exception {
-	}
 
 	/**
 	 * Subclass should override this method, annotate it with <code>@Before</code>,
