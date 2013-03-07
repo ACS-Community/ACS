@@ -236,6 +236,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 */
 	private boolean firstSubclassVeto = true;
 
+	/**
+	 * To be used only for unit tests.
+	 */
+	private volatile NoEventReceiverListener noEventReceiverListener;
+
 	
 	/**
 	 * Creates a new instance of NCSubscriber.
@@ -536,8 +541,26 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		// With server-side filtering set up, we should never get an unexpected event type.
 		// Thus we log this problem.
 		LOG_NC_EventReceive_NoHandler.log(logger, channelName, getNotificationFactoryName(), eventName);
+		if (noEventReceiverListener != null) {
+			noEventReceiverListener.noEventReceiver(eventName);
+		}
 	}
 
+	/**
+	 * To be used only for unit tests.
+	 */
+	static interface NoEventReceiverListener {
+		void noEventReceiver(String eventName);
+	}
+	
+	/**
+	 * To be used only for unit tests.
+	 */
+	void setNoEventReceiverListener(NoEventReceiverListener noEventReceiverListener) {
+		this.noEventReceiverListener = noEventReceiverListener;
+		logger.info("Will notify test listener '" + noEventReceiverListener.getClass().getName() + "' of events without matching receiver.");
+	}
+	
 	@Override
 	protected void logQueueShutdownError(int timeoutMillis, int remainingEvents) {
 		logger.info("Disconnecting from NC '" + channelName + "' before all events have been processed, in spite of " +
@@ -559,10 +582,15 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 
 	/**
-	 * @TODO: Unify treatment of event name. Currently we sometimes use qualified or unqualified names,
-	 * which will create chaos if anyone uses similar event types with same name but different package. 
-	 * Must be fixed across supplier and subscribers, taking into account IDL names vs. Java packages, 
-	 * because also C++ events carry the name in the Corba structure.
+	 * Adds a filter on the server-side supplier proxy that lets the given event type pass through.
+	 * <p>
+	 * Note that we derive the event type name from the simple class name of <code>struct</code>, 
+	 * as done in other parts of ACS, which requires IDL event structs to have globally unique names 
+	 * across IDL name spaces.
+	 * <p>
+	 * If <code>structClass</code> is <code>null</code> (generic subscription), 
+	 * then "<code>*</code>" is used as the event type name,
+	 * which in ETCL is understood as a wildcard for all event type names. 
 	 * 
 	 * @param structClass
 	 * @throws AcsJEventSubscriptionEx
@@ -785,7 +813,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * @return FilterID (see OMG NotificationService spec 3.2.4.1)
 	 * @throws AcsJCORBAProblemEx
 	 */
-	private int addFilter(String eventTypeName) throws AcsJCORBAProblemEx {
+	protected int addFilter(String eventTypeName) throws AcsJCORBAProblemEx {
 
 		try {
 			// Create the filter
@@ -847,6 +875,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			// If no filters are attached, the default behavior is to pass all events.
 			// Thus we attach a dummy forwarding filter, to enable the one-filter-must-match behavior.
 			addFilter("EVENT_TYPE_THAT_NEVER_MATCHES");
+			// TODO: It seems that once a filter was added, calling 'remove_all_filters' does not restore
+			//       the "pass all" behavior, cf. NCSubscriberTest#testServerSideEventTypeFiltering() comments.
+			//       Thus we may be able to delete this dummy filter again, although it seems a bit risky.
 		} catch (AcsJCORBAProblemEx e) {
 			logger.log(AcsLogLevel.ERROR, "Cannot add all-exclusive filter, we'll keep receiving events, but no handler will receive them");
 		}
