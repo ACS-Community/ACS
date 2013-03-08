@@ -206,7 +206,6 @@ public class CategoryClientTest extends ComponentClientTestCase implements Alarm
 		for (Alarm alarm: alarmsReceived) {
 			assertEquals("Alex", alarm.getResponsiblePerson().getFirstName());
 			assertEquals("123456", alarm.getResponsiblePerson().getGsmNumber());
-			assertEquals("test@eso.org", alarm.getResponsiblePerson().getEMail());
 			assertEquals("http://tempuri.org", alarm.getHelpURL().toString());
 			
 			AlarmsFromCDB cdbAlarm = AlarmsFromCDB.getCDBAlarm(
