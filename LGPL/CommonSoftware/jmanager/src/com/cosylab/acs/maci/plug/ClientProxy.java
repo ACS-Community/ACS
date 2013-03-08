@@ -350,6 +350,10 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		si.ijs.maci.Client wrappedClient = null;
 		try
 		{
+			// NOTE: JacORB returns the same instance (wrappedClient == client)
+			// so calling _release() explicitly on it, would cause problemd (e.g. connection loss),
+			// however C++ TAO returns different instance.
+			// Be careful when JacORB is replaced with other ORB!
 			wrappedClient = wrapForRoundtripTimeout(client, pingTimeoutSec);
 			return wrappedClient.ping();
 		}
