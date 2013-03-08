@@ -28,7 +28,7 @@ echo "=== Running all JUnit tests related to the client"
 
     # Start SlowComponentClient, sleep 1 second, call tearDown(), then kill process -- shutdown hook should not trigger tearDown() again
     acsStartJava alma.acs.component.client.ShutdownHookTest 1 1 1 &
-    sleep 5
+    sleep 7
     pid=$(jobs -l | awk '{print $2}')
     pid=$(ps -o pid --ppid $pid | grep -v PID)
     kill $pid
