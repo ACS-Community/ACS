@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: OSFWeather.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Id: OSFWeather.xml,v 1.2 2013/03/08 08:49:12 acaproni Exp $
 $Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/OSFWeather/OSFWeather.xml,v $
 -->
 <fault-family name="OSFWeather" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
   <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
   <help-url>http://tempuri.org</help-url>
-  <contact email="" gsm="" name="TBD"/>
+  <contact gsm="" name="TBD"/>
   <fault-code value="1">
     <priority>1</priority>
     <cause>It can be a network problem or a database problem.</cause>

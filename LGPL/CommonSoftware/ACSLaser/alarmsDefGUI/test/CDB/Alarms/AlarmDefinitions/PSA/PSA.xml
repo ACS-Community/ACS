@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: PSA.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Id: PSA.xml,v 1.2 2013/03/08 08:49:12 acaproni Exp $
 $Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/PSA/PSA.xml,v $
 -->
 <fault-family name="PSA"
@@ -145,7 +145,7 @@ $Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarms
     </fault-code>
     <fault-code value="16777216">
         <priority>3</priority>
-        <cause>Ambient Temperature out of valid range [10ºC--22ºC]</cause>
+        <cause>Ambient Temperature out of valid range [10C--22C]</cause>
         <action>NONE DEFINED</action>
         <consequence>NONE DEFINED</consequence>
         <problem-description>Ambient Temperature detected on PSA out of valid range.</problem-description>
