@@ -19,4 +19,5 @@ DEBUG
 FINER
 FINE
 DELOUSE
+WARN - could not load configuration, using defaults
 MomConfig
