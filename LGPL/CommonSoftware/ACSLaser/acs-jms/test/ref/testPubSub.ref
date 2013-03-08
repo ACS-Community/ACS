@@ -1,13 +1,11 @@
 1 -  -D user.dir=xxx -- junit.textui.TestRunner alma.acsjms.test.PubSubTest
 1 - 
-1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] -------------------------------
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Alarm system type: ACS
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] component 'alma.acsjms.test.PubSubTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [PubSubTest#testTopicConnection] Connected to DAO 'MACI/Channels'.
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- DELOUSE [PubSubTest#testTopicConnection] Successfully created an NC, w/o configuration yet. [ logName='LOG_NC_ChannelCreatedRaw_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] Successfully created an NC consumer proxy object. [ logName='LOG_NC_ConsumerProxyCreation_OK' ConsumerProxyId='4' ConsumerProxyName='alma.acsjms.test.PubSubTest-xxx' ProxyCreationAttempts='1' ClientName='alma.acsjms.test.PubSubTest' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@PubSubTest#testTopicConnection created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
@@ -17,7 +15,6 @@
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] intercepted a call to 'alma.acsjms.test.PubSubTest/alma.acsnc.OSPushConsumer#push_structured_event'.
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] returning from alma.acsjms.test.PubSubTest/alma.acsnc.OSPushConsumer#push_structured_event after xxx ms.
-1 - ----------T--:--:--.--- DELOUSE [PubSubTest#testTopicConnection] Closing the AlarmSourceFactory
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] AlarmSourceFactory closed
 1 - 
 1 - 

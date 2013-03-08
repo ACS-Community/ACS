@@ -3,6 +3,7 @@ DEBUG \[acsStartJava\]
 Starting Java application:
 FINE
 FINEST
+DELOUSE
 Time:
 export
 getAdvancedContainerServices
