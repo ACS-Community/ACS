@@ -1,5 +1,4 @@
 1 - 
-1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] Alarm system type: CERN
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] cmw-mom/acs-jms initialized
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@DemoTest created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
@@ -34,4 +33,3 @@
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
 1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=ALARM_SOURCE_MOUNTCPP
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] AlarmSourceFactory closed
-1 - ----------T--:--:--.--- DELOUSE [TestSendLaserSources] Closing the AlarmSourceFactory
