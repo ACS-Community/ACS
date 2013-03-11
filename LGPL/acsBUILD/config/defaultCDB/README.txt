@@ -23,7 +23,7 @@ Components are deployed on the following default containers:
   Some components rely on the availability of other components 
   allocated to bilboContainer
 
-- baragornContainer
+- aragornContainer
   is a Python container
 
 It is necessary to have the three containers running to get all functionality.
