@@ -9,17 +9,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.omg.CORBA.Any;
 import org.omg.CORBA.Object;
+import org.omg.CORBA.Policy;
+import org.omg.CORBA.SetOverrideType;
 import org.omg.CORBA.TIMEOUT;
 import org.omg.CORBA.TRANSIENT;
+import org.omg.Messaging.RELATIVE_RT_TIMEOUT_POLICY_TYPE;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.acs.util.IorParser;
 import alma.acs.util.UTCUtility;
 
 import com.cosylab.acs.maci.AuthenticationData;
+import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
-import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
@@ -306,6 +311,34 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	}
 
 	/**
+	 * ping() CORBA client-side timeout JVM property name.
+	 */
+	private static final String NAME_PING_TIMEOUT = "manager.pingCallTimeout";
+
+	/**
+	 * Default ping timeout.
+	 */
+	private static final double DEFAULT_PING_TIMEOUT_DEFAULT_SEC = 20.0;
+	
+	private static double pingTimeoutSec = DEFAULT_PING_TIMEOUT_DEFAULT_SEC; 
+	
+	static {
+		String secValue = System.getProperty(NAME_PING_TIMEOUT);
+		if (secValue != null)
+		{
+			try 
+			{
+				pingTimeoutSec = Double.parseDouble(secValue);
+			} catch (Throwable th) {
+				// noop
+			}
+
+			// at least one second
+			pingTimeoutSec = Math.max(1.0, pingTimeoutSec);
+		}
+	}
+	
+	/**
 	 * @see com.cosylab.acs.maci.Client#ping()
 	 */
 	public boolean ping() throws RemoteException
@@ -314,9 +347,15 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		if (client == null)
 			return false;
 
+		si.ijs.maci.Client wrappedClient = null;
 		try
 		{
-			return client.ping();
+			// NOTE: JacORB returns the same instance (wrappedClient == client)
+			// so calling _release() explicitly on it, would cause problemd (e.g. connection loss),
+			// however C++ TAO returns different instance.
+			// Be careful when JacORB is replaced with other ORB!
+			wrappedClient = wrapForRoundtripTimeout(client, pingTimeoutSec);
+			return wrappedClient.ping();
 		}
 		catch (TIMEOUT te)
 		{
@@ -329,6 +368,35 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		catch (Throwable ex)
 		{
 			throw new RemoteException("Failed to invoke 'ping()' method.", ex);
+		}
+	}
+
+	/**
+	 * <p>
+	 * Impl note: The corba spec (v 2.4, 4.3.8.1) describes the difference between 
+	 * SetOverrideType.SET_OVERRIDE and SetOverrideType.ADD_OVERRIDE. It is not clear to me (HSO) 
+	 * which one should be used, or if there is no practical difference.
+	 * @param corbaRef
+	 * @param timeoutSeconds
+	 * @return
+	 * @throws AcsJCORBAProblemEx
+	 */
+	public si.ijs.maci.Client wrapForRoundtripTimeout(si.ijs.maci.Client corbaRef, double timeoutSeconds) throws AcsJCORBAProblemEx {
+		
+		try
+		{
+			org.omg.CORBA.ORB orb = getOrb();
+			Any rrtPolicyAny = orb.create_any();
+			rrtPolicyAny.insert_ulonglong(UTCUtility.durationJavaMillisToOmg((long)timeoutSeconds*1000));
+			Policy p = orb.create_policy(RELATIVE_RT_TIMEOUT_POLICY_TYPE.value, rrtPolicyAny);
+			org.omg.CORBA.Object ret = corbaRef._set_policy_override (new Policy[]{ p }, SetOverrideType.SET_OVERRIDE);
+			p.destroy();
+			return si.ijs.maci.ClientHelper.narrow(ret);
+		}
+		catch (Throwable thr) {
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(thr);
+			ex2.setInfo("Failed to set the object-level client-side corba roundtrip timeout to " + timeoutSeconds);
+			throw ex2;
 		}
 	}
 
@@ -415,22 +483,26 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	/**
 	 * @see java.lang.Object#equals(Object)
 	 */
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (client == null)
 			return (obj == null);
-		else if (obj instanceof si.ijs.maci.Client)
-		{
-			try
-			{
-				return client._is_equivalent((si.ijs.maci.Client)obj);
-			}
-			catch (Exception ex)
-			{
+		else if (obj instanceof si.ijs.maci.Client) {
+			try {
+				// compare IORs (encoded host, port, object name, ...)
+				return client.toString().equals(((si.ijs.maci.Client)obj).toString());
+				//return client._is_equivalent((si.ijs.maci.Client) obj);
+			} catch (Exception ex) {
 				return false;
 			}
-		}
-		else
+		} else if (obj instanceof ClientProxy) {
+			try {
+				// compare IORs (encoded host, port, object name, ...)
+				return ior.equals(((ClientProxy) obj).ior);
+				//return client._is_equivalent(((ClientProxy) obj).getClient());
+			} catch (Exception ex) {
+				return false;
+			}
+		} else
 			return false;
 	}
 
