@@ -4,7 +4,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsstartupNotifyServiceStart,v 1.1 2013/03/04 10:33:31 msekoran Exp $"
+# "@(#) $Id: acsstartupNotifyServiceStart,v 1.2 2013/03/13 08:23:17 msekoran Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -42,13 +42,10 @@ cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
 ($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
 cd $STARTUP_DIR
 
-if [ -e $NOTIFY_SERVICE_PIDFILE ]
+# Block until the IOR shows up in the the correct file
+if ! acsutilBlock -t $MAX_TIMEOUT -f $NOTIFY_IOR -b "IOR:"
 then
-  # Block until the IOR shows up in the the correct file
-  if ! acsutilBlock -t $MAX_TIMEOUT -f $NOTIFY_IOR -b "IOR:"
-  then
-    exit $EC_TIMEOUT
-  fi
+  exit $EC_TIMEOUT
 fi
 
 if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
