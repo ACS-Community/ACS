@@ -760,6 +760,196 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		// noop
 	}
 
+	/* (non-Javadoc)
+	 * @see com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin#updateControlDevices(org.hibernate.Session, alma.acs.tmcdb.Configuration, com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin.ControlDeviceBindCallback)
+	 */
+	public void updateControlDevices(Session session, Configuration config, ControlDeviceBindCallback bindCallback, String curl) {
+		// noop
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin#updateEpilogue(org.hibernate.Session, alma.acs.tmcdb.Configuration, java.util.Map)
+	 */
+	public void updateEpilogue(Session session, Configuration config, Map<String, Object> rootMap, String curl) {
+		//updateEpilogue(session, config, rootMap, m_logger, curl);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin#updateEpilogue(org.hibernate.Session, alma.acs.tmcdb.Configuration, java.util.Map)
+	 */
+	@SuppressWarnings("unchecked")
+	public static void updateEpilogue(Session session, Configuration config, Map<String, Object> rootMap, Logger m_logger, String curl) {
+		if(!curl.startsWith("Alarms"))
+			return;
+		else if(curl.matches("Alarms")) {
+			loadEpilogue(session, config, rootMap, m_logger);
+			return;
+		}
+		String c = curl.replaceFirst("Alarms/", "");
+
+		try
+		{
+			DOMConfigurationAccessor conf = new DOMConfigurationAccessor();
+			conf.setSession(session);
+
+			Map<String, Object> alarmsRoot = new RootMap<String, Object>();
+			
+			Map<String, Object> administrativeRoot = new RootMap<String, Object>();
+			alarmsRoot.put("Administrative", administrativeRoot);
+
+			administrativeRoot.put("AlarmSystemConfiguration", new AlarmSystemConfiguration());
+			
+			Categories categoriesMap = new Categories(session, config, conf, rootMap, m_logger);
+			administrativeRoot.put("Categories", categoriesMap);
+			
+			conf.put(Categories.CATEGORY_DEFINITION_PATH, categoriesMap);
+
+			// categories
+			int counter = 0;
+			List<AlarmCategory> categories = session.createCriteria(AlarmCategory.class).add(Restrictions.eq("configuration", config)).list();
+			for (AlarmCategory category : categories)
+			{
+				ArrayList<String> families = new ArrayList<String>();
+				for (FaultFamily family : category.getFaultFamilies())
+					families.add(family.getFamilyName());
+				
+				categoriesMap.put("category" + String.valueOf(counter++), 
+						new alma.TMCDB.alarm.Category(
+								category.getPath(), 
+								category.getDescription(),
+								category.getIsDefault(),
+								families.toArray(new String[families.size()])));
+			}
+			
+			// fault families
+			Map<String, alma.TMCDB.alarm.FaultFamily> faultFamiliesMap = new FaultFamiliesMap(session, config, conf, rootMap, m_logger);
+			alarmsRoot.put("AlarmDefinitions", faultFamiliesMap);
+
+			conf.put(FaultFamiliesMap.ALARM_CATEGORY_DEFINITION_PATH, faultFamiliesMap);
+
+			counter = 0;
+			List<FaultFamily> families = session.createCriteria(FaultFamily.class).add(Restrictions.eq("configuration", config)).addOrder(Order.asc("familyName")).list();
+			for (FaultFamily family : families)
+			{
+				Contact contact = family.getContact();
+				
+				alma.TMCDB.alarm.FaultFamily faultFamily =
+					new alma.TMCDB.alarm.FaultFamily(
+						family.getFamilyName(),
+						family.getAlarmSource(),
+						family.getHelpURL(),
+						new alma.TMCDB.alarm.Contact(
+								contact.getContactName(),
+								contact.getEmail(), 
+								contact.getGsm()));
+					
+				faultFamiliesMap.put("fault-family" + String.valueOf(counter++), faultFamily);
+				
+				// fault codes
+				int codeCounter = 0;
+				List<FaultCode> faultCodes = session.createCriteria(FaultCode.class).
+												add(Restrictions.eq("faultFamily", family)).list();
+				for (FaultCode faultCode : faultCodes)
+				{
+					faultFamily._.put("fault-code" + String.valueOf(codeCounter++),
+							new alma.TMCDB.alarm.FaultCode(
+									faultCode.getCodeValue(),
+									faultCode.getIsInstant(),
+									faultCode.getPriority(),
+									faultCode.getCause(),
+									faultCode.getAction(),
+									faultCode.getConsequence(),
+									faultCode.getProblemDescription()));
+				}
+
+				// default fault member
+				DefaultMember defaultMember = (DefaultMember)session.createCriteria(DefaultMember.class).
+					add(Restrictions.eq("faultFamily", family)).uniqueResult();
+				if (defaultMember != null)
+				{
+					alma.TMCDB.alarm.Location location = getLocation(session, defaultMember.getLocation());
+					
+					faultFamily._.put("fault-member-default", new FaultMemberDefault(location));
+				}
+				
+				
+				// fault members
+				int faultMemberCounter = 0;
+				List<FaultMember> faultMembers = session.createCriteria(FaultMember.class).
+					add(Restrictions.eq("faultFamily", family)).list();
+				for (FaultMember faultMember : faultMembers)
+				{
+					alma.TMCDB.alarm.Location location = getLocation(session, faultMember.getLocation());
+					
+					faultFamily._.put("fault-member" + String.valueOf(faultMemberCounter++),
+							new alma.TMCDB.alarm.FaultMember(faultMember.getMemberName(), location));
+				}
+			}
+
+			// reductions
+			ReductionDefinitions redDefs = new ReductionDefinitions(session, config, conf, rootMap, m_logger);
+			administrativeRoot.put("ReductionDefinitions", redDefs);
+
+			int linkCount = 0;
+			List<alma.acs.tmcdb.ReductionLink> links = session.createCriteria(alma.acs.tmcdb.ReductionLink.class).add(Restrictions.eq("configuration", config)).list();
+			for (alma.acs.tmcdb.ReductionLink link : links)
+			{
+				alma.acs.tmcdb.AlarmDefinition parent = link.getAlarmDefinitionByParentalarmdefid();
+				alma.acs.tmcdb.AlarmDefinition child = link.getAlarmDefinitionByChildalarmdefid();
+				ReductionLinks toLink;
+				if (link.getAction() == ReductionLinkAction.CREATE)
+					toLink = redDefs.getLinksToCreate();
+				else if (link.getAction() == ReductionLinkAction.REMOVE)
+					toLink = redDefs.getLinksToRemove();
+				else
+					throw new RuntimeException("unsupported reduction link action '" + link.getAction() + "' for ReductionLink with id: " + link.getReductionLinkId());
+					
+				toLink._.put("link" + (linkCount++),
+						new ReductionLink(link.getType().toString(),
+								new AlarmDefinition(
+										parent.getFaultFamily(),
+										parent.getFaultMember(),
+										parent.getFaultCode()),
+								new AlarmDefinition(
+										child.getFaultFamily(),
+										child.getFaultMember(),
+										child.getFaultCode())
+						));
+			}
+
+			
+			int thresholdCount = 0;
+			List<alma.acs.tmcdb.ReductionThreshold> thresholds = session.createCriteria(alma.acs.tmcdb.ReductionThreshold.class).add(Restrictions.eq("configuration", config)).list();
+			for (alma.acs.tmcdb.ReductionThreshold threshold : thresholds)
+			{
+				alma.acs.tmcdb.AlarmDefinition alarm = threshold.getAlarmDefinition();
+					
+				redDefs.getThresholds()._.put("threshold" + (thresholdCount++),
+						new alma.TMCDB.alarm.ReductionThreshold(threshold.getValue(),
+								new AlarmDefinition(
+										alarm.getFaultFamily(),
+										alarm.getFaultMember(),
+										alarm.getFaultCode())
+						));
+			}
+			
+			// alarm configuration
+			rootMap.put("Alarms", alarmsRoot);
+		}
+		catch (Throwable th)
+		{
+			m_logger.log(Level.SEVERE, "Failed to update all the alarm data.", th);
+		}
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin#updatePrologue(org.hibernate.Session, alma.acs.tmcdb.Configuration, java.util.Map)
+	 */
+	public void updatePrologue(Session session, Configuration config, Map<String, Object> rootMap, String curl) {
+		// noop
+	}
+
 	public String[] getCreateTablesScriptList(String backend) {
 		return null;
 	}

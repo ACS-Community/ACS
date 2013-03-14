@@ -69,6 +69,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Criterion;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.ORB;
@@ -1673,7 +1674,6 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						if (comp == null)
 							throw new RuntimeException("Component with ID " + component.getComponentId() + " does not exist.");
 						bindNonExpandedComponentXMLToAlmaBranch(session, almaRoot, comp);
-						// TODO why do not add to already loaded components list??!!!
 					}
 				};
 				plugin.loadControlDevices(session, config, bindCallback);
@@ -1798,7 +1798,6 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	{
 		// now find its submap
 		path = getNormalizedPath(path); 
-		final String fullName = path + "/" + name;
 		while (path != null && path.length() > 0)
 		{
 			// remove trailing slashes, to have unique curl (used for key)
@@ -1815,9 +1814,6 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			// hierarchical component (has it own XML) with children components
 			Object parentObj = parentMap.get(parentPath);
 			if (parentObj instanceof ComponentDAOImplSaver) {
-				
-				m_logger.fine("Transforming non-hierachical to hierachical node for " + parentPath + " (of " + fullName + ")");
-				
 				ComponentData cd = new ComponentData();
 				try {
 					cd.setData(((ComponentDAOImplSaver)parentObj).component.XMLDoc);
@@ -1845,23 +1841,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		{
 	        if (current instanceof ComponentData && objectToBind instanceof ComponentDAOImplSaver)
 	        {
-				m_logger.fine("Overriding XMLDoc of already bound node of " + fullName);
 				try {
-					((ComponentData)current).setData(((ComponentDAOImplSaver)objectToBind).component.XMLDoc);
+					((ComponentData)parentMap.get(name)).setData(((ComponentDAOImplSaver)objectToBind).component.XMLDoc);
 				} catch (Throwable th) {
 					// should never happen, but still print it out
 					th.printStackTrace();
 				}
 	        }
-	        else if (current instanceof ComponentData && objectToBind instanceof ComponentData)
-	        {
-				m_logger.fine("Overriding XMLDoc of already bound node of " + fullName + ", but keeping its subnodes.");
-				((ComponentData)current).setData(((ComponentData)objectToBind).getExtraData());
-	        }
 	        else
 	        {
 	        	// still override, but with warning
-	        	m_logger.warning("Overriding component node: " + fullName);
+	        	m_logger.warning("Overriding component node: " + path + "/" + name);
 	        	parentMap.put(name, objectToBind);
 	        }
 		}
@@ -1881,6 +1871,20 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
         } 
         catch (NoSuchMethodException nsme) {
         	result = session.createCriteria(type).add(Restrictions.eq("ConfigurationId", configId)).list();
+        }
+        return result;
+	}
+	
+	public List getListForConfiguration(Session session, Class type, Criterion cr) throws Throwable
+	{
+		List<Computer> result = null;
+        try
+        {
+        	type.getMethod("getConfiguration", (Class[])null);
+        	result = session.createCriteria(type).add(Restrictions.eq("configuration", config)).add(cr).list();
+        } 
+        catch (NoSuchMethodException nsme) {
+        	result = session.createCriteria(type).add(Restrictions.eq("ConfigurationId", configId)).add(cr).list();
         }
         return result;
 	}
@@ -1949,7 +1953,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 
 		Map<String, Object> rootMap = new RootMap<String, Object>();
 		rootNode = rootMap;
-		
+
 		// useful in case of reload (when rootNode was not null)
 		System.gc();
 		
@@ -2482,6 +2486,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			catch (Throwable t)
 			{
 				// @todo not clean, just to be consistent v DAL impl
+				t.printStackTrace();
 				String info = "DAL::get_DAO_Servant " + t;
 				AcsJCDBXMLErrorEx xmlErr = new AcsJCDBXMLErrorEx(t);
 				xmlErr.setErrorString(info);
@@ -2983,45 +2988,68 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			if (map.containsKey(curl)) {
 				DAO dao = (DAO) map.get(curl);
 				Object objDAO = objMap.get(curl);
-				
+
+				//New Implementation!
+				dao.destroy();
+				byte[] id = curl.getBytes();
+				try {
+					poa.deactivate_object(id);
+				} catch (Throwable th) {
+					th.printStackTrace();
+				}
+				objMap.remove(curl);
+				map.remove(curl);
+
 				Object node = curl.length() == 0 ? rootNode : DOMJavaClassIntrospector.getNode(curl, rootNode);
-				if (node == null || DOMJavaClassIntrospector.isPrimitive(node.getClass()))
-				{
-					// no longer exists
-					dao.destroy();
-					objMap.remove(curl);
-					map.remove(curl);
+				if (node == null || DOMJavaClassIntrospector.isPrimitive(node.getClass())) {
+					return;
 				}
+
+				try {
+					get_DAO_Servant(curl);
+				} catch(Throwable th) {
+					th.printStackTrace();
+				}
+				//End new implementation.
 				
-				if (objDAO instanceof DAOImpl)
-				{
-					if (node instanceof XMLTreeNode)
-						((DAOImpl)objDAO).setRootNode((XMLTreeNode)node);
-					else
-					{
-						// type changed, destroy this one and reactivate new
-						dao.destroy();
-						objMap.remove(curl);
-						map.remove(curl);
-						try {
-							get_DAO(curl);
-						} catch (Throwable th) { th.printStackTrace(); }
-					}
-				}
-				else if (objDAO instanceof HibernateWDAOImpl)
-				{
-					if (node instanceof XMLTreeNode)
-					{
-						// type changed, destroy this one and reactivate new
-						dao.destroy();
-						map.remove(curl);
-						try {
-							get_DAO(curl);
-						} catch (Throwable th) { th.printStackTrace(); }
-					}
-					else
-						((HibernateWDAOImpl)objDAO).setRootNode(node);
-				}
+				//Object node = curl.length() == 0 ? rootNode : DOMJavaClassIntrospector.getNode(curl, rootNode);
+				//if (node == null || DOMJavaClassIntrospector.isPrimitive(node.getClass()))
+				//{
+				//	// no longer exists
+				//	dao.destroy();
+				//	objMap.remove(curl);
+				//	map.remove(curl);
+				//}
+				//
+				//if (objDAO instanceof DAOImpl)
+				//{
+				//	if (node instanceof XMLTreeNode)
+				//		((DAOImpl)objDAO).setRootNode((XMLTreeNode)node);
+				//	else
+				//	{
+				//		// type changed, destroy this one and reactivate new
+				//		dao.destroy();
+				//		objMap.remove(curl);
+				//		map.remove(curl);
+				//		try {
+				//			get_DAO_Servant(curl);
+				//		} catch (Throwable th) { th.printStackTrace(); }
+				//	}
+				//}
+				//else if (objDAO instanceof HibernateWDAOImpl)
+				//{
+				//	if (node instanceof XMLTreeNode)
+				//	{
+				//		// type changed, destroy this one and reactivate new
+				//		dao.destroy();
+				//		map.remove(curl);
+				//		try {
+				//			get_DAO_Servant(curl);
+				//		} catch (Throwable th) { th.printStackTrace(); }
+				//	}
+				//	else
+				//		((HibernateWDAOImpl)objDAO).setRootNode(node);
+				//}
 				
 			}
 		}
@@ -3284,20 +3312,24 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		}
 	}
 
-	public void clear_cache(String curl) {
+	protected void clearCache(String curl) {
 		// NOTICE: this really does not reload the data from DB...
 		
 		// first take care of our own map
+		m_logger.info("clear_cache(curl): clearCache1");
 		object_changed(curl);
+		m_logger.info("clear_cache(curl): clearCache2");
 
 		// then notify all registered listeners
 		synchronized (listenedCurls) {
 			boolean needToSave = false;
 			ArrayList<Integer> listeners = listenedCurls.get(curl);
+			m_logger.info("clear_cache(curl): clearCache3");
 			if (listeners == null) {
 				return;
 			}
 			ArrayList<Integer> invalidListeners = new ArrayList<Integer>();
+			m_logger.info("clear_cache(curl): clearCache4");
 			for (int i = 0; i < listeners.size(); i++) {
 				DALChangeListener listener = null;
 				synchronized (regListeners) {
@@ -3312,6 +3344,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					invalidListeners.add(listeners.get(i));
 				}
 			}
+			m_logger.info("clear_cache(curl): clearCache5");
 			// now remove invalid listeners if any
 			for (int i = 0; i < invalidListeners.size(); i++) {
 				listeners.remove(invalidListeners.get(i));
@@ -3320,13 +3353,1090 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				}
 				needToSave = true;
 			}
+			m_logger.info("clear_cache(curl): clearCache6");
 			if (needToSave) {
 				cleanListenedCurls();
 				saveListeners();
 			}
+			m_logger.info("clear_cache(curl): clearCache7");
 		}
 	}
+
+	public void clear_cache(String curl) {
+		System.out.println("clear_cache(curl)");
+		if (loadInProgress.get()) {
+			m_logger.warning("Incoming Corba call denied (NO_RESOURCES) because data is being loaded.");
+			throw new NO_RESOURCES("load in progress");
+		}
+		curl = curl.replaceAll("/+","/");
+		//Reload curl data from DB
+		if(curl.matches("/")) {
+			System.out.println("clear_cache_all()");
+			clear_cache_all();
+			return;
+		} else {
+			loadInProgress.set(true);
+			m_logger.info("clear_cache(curl): Main1");
+			try {
+				hibernateUtil.getSession().clear();
+			} catch (Throwable th) {
+				th.printStackTrace();
+			}
+			m_logger.info("clear_cache(curl): Main2");
+			String c = curl.replaceFirst("^/", "");
+			c = curl.replaceFirst("/$", "");
+			if (plugin != null) {
+				try {
+					Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+					Session session = hibernateUtil.getSession();
+					plugin.updatePrologue(session, config, rootMap, c);
+				}
+				catch (Throwable th) {
+					this.m_logger.log(Level.SEVERE, "Failure in plugin " + plugin.getClass().getName(), th);
+					th.printStackTrace();
+				}
+			}
+			m_logger.info("clear_cache(curl): Main3");
+			if(c.startsWith("MACI")) {
+				loadMACI(c, true);
+			//} else if (c.startsWith("Alarms"){
+			//	loadAlarms(c);
+			} else if (c.startsWith(COMPONENT_TREE_NAME)){
+				loadComponentsTree(c, true);
+			} else {
+				System.out.println("Unsupported curl: "+ curl);
+			}
+			m_logger.info("clear_cache(curl): Main4");
+			if (plugin != null) {
+				try {
+					Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+					Session session = hibernateUtil.getSession();
+					plugin.updateEpilogue(session, config, rootMap, c);
+				}
+				catch (Throwable th) {
+					this.m_logger.log(Level.SEVERE, "Failure in plugin " + plugin.getClass().getName(), th);
+					th.printStackTrace();
+				}
+			}
+			m_logger.info("clear_cache(curl): Main5");
+			loadInProgress.set(false);
+		}
+
+		//Set<String> curls = new HashSet<String>();
+		//curls.add(curl);
+		//synchronized (daoMap) {
+		//	Iterator iter = daoMap.keySet().iterator();
+		//	while (iter.hasNext()) {
+		//		String c = (String) iter.next();
+		//		if(c.startsWith(curl))
+		//			curls.add(c);
+		//	}
+		//}
+		//synchronized (wdaoMap) {
+		//	Iterator iter = wdaoMap.keySet().iterator();
+		//	while (iter.hasNext()) {
+		//		String c = (String) iter.next();
+		//		if(c.startsWith(curl))
+		//			curls.add(c);
+		//	}
+		//}
+		//
+		//synchronized (listenedCurls) {
+		//	Iterator iter = listenedCurls.keySet().iterator();
+		//	while (iter.hasNext()) {
+		//		String c = (String) iter.next();
+		//		if(c.startsWith(curl))
+		//			curls.add(c);
+		//	}
+		//}
+
+		Set<String> curls = new HashSet<String>();
+		synchronized (daoMap) {
+			curls.addAll(daoMap.keySet());
+		}
+		m_logger.info("clear_cache(curl): Main6");
+		synchronized (wdaoMap) {
+			curls.addAll(wdaoMap.keySet());
+		}
+		m_logger.info("clear_cache(curl): Main7");
+		
+		synchronized (listenedCurls) {
+			Iterator iter = listenedCurls.keySet().iterator();
+			while (iter.hasNext()) {
+				String c = (String) iter.next();
+				curls.add(c);
+			}
+		}
+		m_logger.info("clear_cache(curl): Main8");
+
+		for (String c : curls)
+			clearCache(c);
+		m_logger.info("clear_cache(curl): Main9");
+	}
+
+	protected void loadMACI(String curl, boolean reload) {
+		System.out.println("loadMACI");
+		m_logger.info("clear_cache(curl): MACI1");
+		if(curl.matches("MACI")) {
+			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			if(reload) {
+				rootMap.put("MACI", (Object) null);
+				System.gc();
+			}
+			m_logger.info("clear_cache(curl): MACI2a");
+			rootMap.put("MACI", new RootMap<String, Object>());
+			m_logger.info("clear_cache(curl): MACI3a");
+			loadComponents("Components", false);
+			m_logger.info("clear_cache(curl): MACI4a");
+			loadContainers("Containers", false);
+			m_logger.info("clear_cache(curl): MACI5a");
+			loadManagers("Managers", false);
+			m_logger.info("clear_cache(curl): MACI6a");
+			loadChannels("Channels", false);
+			m_logger.info("clear_cache(curl): MACI7a");
+			//loadAcsServices("AcsServices", false);
+		} else {
+			String c = curl.replaceFirst("MACI/","");
+			if(c.startsWith("Components")){
+				loadComponents(c, true);
+			} else if(c.startsWith("Containers")){
+				loadContainers(c, true);
+			} else if(c.startsWith("Managers")){
+				loadManagers(c, true);
+			} else if(c.startsWith("Channels")){
+				loadChannels(c, true);
+			//} else if(c.startsWith("AcsServices")){
+			//	loadAcsServices(c, true);
+			} else {
+				System.out.println("Unsupported curl: MACI/"+ curl);
+			}
+			m_logger.info("clear_cache(curl): MACI2b");
+		}
+	}
+
+	protected void loadComponents(String curl, boolean reload) {
+		System.out.println("loadComponents");
+		m_logger.info("clear_cache(curl): Components1");
+		if(curl.matches("Components")) {
+			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			if(reload) {
+				((Map<String, Object>)rootMap.get("MACI")).put("Components", null);
+				System.gc();
+			}
+			m_logger.info("clear_cache(curl): Components2a");
+			((Map<String, Object>)rootMap.get("MACI")).put("Components", getComponentsTableMap());
+			m_logger.info("clear_cache(curl): Components3a");
+		} else {
+			String c = curl.replaceFirst("Components/","");
+			updateComponentsTableMap(c);
+			m_logger.info("clear_cache(curl): Components2b");
+		}
+	}
+	protected void loadContainers(String curl, boolean reload) {
+		System.out.println("loadContainers");
+		m_logger.info("clear_cache(curl): Containers1");
+		if(curl.matches("Containers")) {
+			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			if(reload) {
+				((Map<String, Object>)rootMap.get("MACI")).put("Containers", null);
+				System.gc();
+			}
+			m_logger.info("clear_cache(curl): Containers2a");
+			((Map<String, Object>)rootMap.get("MACI")).put("Containers", getContainersTableMap());
+			m_logger.info("clear_cache(curl): Containers3a");
+		} else {
+			String c = curl.replaceFirst("Containers/","");
+			updateContainersTableMap(c);
+			m_logger.info("clear_cache(curl): Containers2b");
+		}
+	}
+	protected void loadManagers(String curl, boolean reload) {
+		System.out.println("loadManagers");
+		m_logger.info("clear_cache(curl): Managers1");
+		if(curl.matches("Managers")) {
+			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			if(reload) {
+				((Map<String, Object>)rootMap.get("MACI")).put("Managers", null);
+				System.gc();
+			}
+			m_logger.info("clear_cache(curl): Managers2a");
+			((Map<String, Object>)rootMap.get("MACI")).put("Managers", getManagersTableMap());
+			m_logger.info("clear_cache(curl): Managers3a");
+		} else {
+			String c = curl.replaceFirst("Managers/","");
+			if(c.equals("Manager")) {
+				updateManagersTableMap(c);
+			} else {
+				System.out.println("Only one manager with name 'Manager' is accepted at the moment");
+				//updateManagersTableMap(c);
+			}
+			m_logger.info("clear_cache(curl): Managers2b");
+		}
+	}
+	protected void loadChannels(String curl, boolean reload) {
+		System.out.println("loadChannels");
+		m_logger.info("clear_cache(curl): Channels1");
+		if(curl.matches("Channels")) {
+			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			if(reload) {
+				((Map<String, Object>)rootMap.get("MACI")).put("Channels", null);
+				System.gc();
+			}
+			m_logger.info("clear_cache(curl): Channels2a");
+			((Map<String, Object>)rootMap.get("MACI")).put("Channels", getChannelsTableMap());
+			m_logger.info("clear_cache(curl): Channels3a");
+		} else {
+			String c = curl.replaceFirst("Channels/","");
+			updateChannelsTableMap(c);
+			m_logger.info("clear_cache(curl): Channels2b");
+		}
+	}
+
+	//protected void loadAcsServices(String curl, boolean reload) {
+	//	System.out.println("loadAcsServices");
+	//	if(curl.matches("AcsServices")) {
+	//	} else {
+	//		String c = curl.replaceFirst("AcsServices/","");
+	//	}
+	//}
+
+	//protected void loadAlarms(String curl) {
+	//	if(curl.matches("Alarms")) {
+	//		loadAdministrative("Administrative");
+	//		loadAlarmDefinitions("AlarmDefinitions");
+	//	} else {
+	//		String c = curl.replaceFirst("Alarms/","");
+	//		if(c.startsWith("Administrative")) {
+	//			loadAdministrative(c);
+	//		} else if(c.startsWith("AlarmDefinitions")) {
+	//			loadAlarmDefinitions(c);
+	//		} else {
+	//			System.out.println("Unsupported curl: ", curl);
+	//		}
+	//	}
+	//}
+
+	//protected void loadAdministrative(String curl) {
+	//	if(curl.matches("Administrative")) {
+	//		loadAlarmSystemConfiguration("AlarmSystemConfiguration");
+	//		loadCategories("Categories");
+	//		loadReductionDefinitions("ReductionDefinitions");
+	//	} else {
+	//		String c = curl.replaceFirst("Administrative/");
+	//	}
+	//}
+
+
+	//protected void loadAlarmDefinitions(String curl) {
+	//	if(curl.matches("AlarmDefinitions")) {
+	//	} else {
+	//		String c = curl.replaceFirst("AlarmDefinitions/");
+	//	}
+	//}
+
+	protected void loadComponentsTree(String curl, boolean reload) {
+		System.out.println("loadComponentsTree");
+		m_logger.info("clear_cache(curl): TREE1");
+		if(curl.matches(new String(COMPONENT_TREE_NAME))) {
+			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			if(reload) {
+				rootMap.put(COMPONENT_TREE_NAME, null);
+				System.gc();
+			}
+			m_logger.info("clear_cache(curl): TREE2a");
+			rootMap.put(COMPONENT_TREE_NAME, getAlmaBranch());
+		} else {
+			String c = curl.replaceFirst(new String(COMPONENT_TREE_NAME+"/"),"");
+			updateAlmaBranch(c);
+			m_logger.info("clear_cache(curl): TREE2b");
+		}
+	}
+
+	public Map<String, Object> getManagersTableMap() {
+		m_logger.info("clear_cache(curl): ManagersTable1");
+		Map<String, Object> managersMap = new RootMap<String, Object>();
+		try
+		{
+			Session session = hibernateUtil.getSession();
+			m_logger.info("clear_cache(curl): ManagersTable2");
+			List managerList = getListForConfiguration(session, alma.TMCDB.maci.Manager.class);
+			m_logger.info("clear_cache(curl): ManagersTable3");
+			if (!managerList.isEmpty())
+				managersMap.put("Manager", managerList.get(0));
+			else
+				managersMap.put("Manager", getDefaultMangerConfig());
+			m_logger.info("clear_cache(curl): ManagersTable4");
+			
+			String additionalServices = getAcsServices(session, config);
+			m_logger.info("clear_cache(curl): ManagersTable5");
+			if (additionalServices != null)
+			{
+				alma.TMCDB.maci.Manager manager = (alma.TMCDB.maci.Manager)managersMap.get("Manager");
+				m_logger.info("clear_cache(curl): ManagersTable6");
+				String currentServices = manager.getServiceComponents();
+				m_logger.info("clear_cache(curl): ManagersTable7");
+				if (currentServices == null || currentServices.length() == 0)
+					manager.setServiceComponents(additionalServices);
+				else
+					// there might be duplicates, but they do not harm
+					manager.setServiceComponents(currentServices + "," + additionalServices);
+				m_logger.info("clear_cache(curl): ManagersTable8");
+			}
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
+		m_logger.info("clear_cache(curl): ManagersTable9");
+		return managersMap;
+	}
+
+	protected Criterion getRegularExpressionRestriction(String columnName, String re) {
+		if(forceInMemory) {
+			return Restrictions.sqlRestriction("REGEXP_MATCHES("+columnName+", ?)", re, org.hibernate.Hibernate.STRING); //HSQLDB
+		} else {
+			//return Restrictions.sqlRestriction(columnName+" rlike ?", re, org.hibernate.Hibernate.STRING); //MySQL
+			return Restrictions.sqlRestriction("REGEXP_LIKE("+columnName+", ?)", re, org.hibernate.Hibernate.STRING); //Oracle
+		}
+	}
+
+	protected void updateComponentsTableMap(String curl) 
+	{
+		m_logger.info("clear_cache(curl): ComponentsTable1");
+		final String keyField = "Name";
+		final Class type = alma.TMCDB.maci.Component.class;
+		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+		Map<String, Object> map = (Map<String, Object>)((Map<String, Object>) rootMap.get("MACI")).get("Components");
+		m_logger.info("clear_cache(curl): ComponentsTable2");
+		try
+		{
+			Session session = hibernateUtil.getSession();
+			
+			Method accessor = DOMJavaClassIntrospector.getAccessorMethod(type, keyField);
+			m_logger.info("clear_cache(curl): ComponentsTable3");
+			Field field = null;
+			if (accessor == null)
+			{
+				try
+				{
+					field = type.getField(keyField);
+				}
+				catch (Throwable th) {
+					throw new IllegalStateException("failed to obtain key ");
+				}
+			}
+			m_logger.info("clear_cache(curl): ComponentsTable4");
+
+			String els[] = curl.split("/");
+			String rpath = "/*";
+			String rsubpath = "/*";
+			String rcpath = "/*";
+			String rcname = els[els.length - 1];
+			for (int i = 0; i < els.length; i++) {
+				rpath    += els[i];
+				rsubpath += els[i];
+				if (i < els.length - 1) {
+					rpath    += "/+";
+					rsubpath += "/+";
+					rcpath   += els[i];
+					if( i < els.length - 2)
+						rcpath += "/+";
+				}
+			}
+			rpath    += "/*";
+			rsubpath += "/+.*";
+			rcpath   += "/*";
+			
+			System.out.println(rpath);
+			System.out.println(rsubpath);
+			System.out.println(rcpath+"|"+rcname);
+			m_logger.info("clear_cache(curl): ComponentsTable5");
+
+			//Consider the cases where the curl matches exactly the Path, where
+			//it is part of the path and when it matches exactly the path and
+			//the component name.
+			Criterion cr = Restrictions.disjunction()
+							.add(getRegularExpressionRestriction("Path", rpath))
+							.add(getRegularExpressionRestriction("Path", rsubpath))
+							.add(Restrictions.and(getRegularExpressionRestriction("Path", rcpath), Restrictions.eq("Name",rcname)));
+
+			m_logger.info("clear_cache(curl): ComponentsTable6");
+			List list = getListForConfiguration(session, type, cr);
+			m_logger.info("clear_cache(curl): ComponentsTable7");
+
+			System.out.println("\nFound the following Components");
+			for(Object data : list) {
+				System.out.println(((alma.TMCDB.maci.Component)data).Path+"/"+((alma.TMCDB.maci.Component)data).getName());
+			}
+			m_logger.info("clear_cache(curl): ComponentsTable8");
+
+			//Remove the entries from existing maps.
+			System.out.println("\nChecking maps to remove");
+			Map rParentMap = map;
+			for(int i = 0; i < els.length; i++) {
+				System.out.println("Checking path "+els[i]+".");
+				System.out.println("Parent keys: "+rParentMap.keySet().toString());
+				Object data = rParentMap.get(els[i]);
+				if (data == null) {
+					System.out.println("No element found with the given curl");
+					break;
+				} else {
+					if (data instanceof alma.TMCDB.maci.Component) {
+						System.out.println("Instance of Component (Component!).");
+					} else if (data instanceof alma.TMCDB.maci.ComponentNode) {
+						System.out.println("Instance of ComponentNode (Path!).");
+					} else {
+						System.out.println("Unknown type! Details: "+data.toString());
+					}
+					if (i < els.length - 1) {
+						System.out.println("There are elements remaining, so we proceed to next element in path.");
+						rParentMap = ((alma.TMCDB.maci.ComponentNode) data)._;
+					} else {
+						System.out.println("There are no elements remaining, we remove all entries from this element in path and on.");
+						rParentMap.remove(els[i]);
+					}
+				}
+			}
+			m_logger.info("clear_cache(curl): ComponentsTable9");
+
+			// Sort the list by path + component to ensure that parent components are added before their children
+			Comparator<alma.TMCDB.maci.Component> comparator = new Comparator<alma.TMCDB.maci.Component>() {
+				public int compare(alma.TMCDB.maci.Component o1, alma.TMCDB.maci.Component o2) {
+					String fullName1 = ((o1.Path == null ? "" : o1.Path) + "/") + o1.getName();
+					String fullName2 = ((o2.Path == null ? "" : o2.Path) + "/") + o2.getName();
+					return fullName1.compareTo(fullName2);
+				}
+			};
+			Collections.sort(list, comparator);
+			m_logger.info("clear_cache(curl): ComponentsTable10");
+
+			for (Object data : list)
+			{
+				String baseKey;
+				if (accessor != null)
+					baseKey = accessor.invoke(data, (Object[])null).toString();
+				else //if (field != null)
+					baseKey = field.get(data).toString();
+				
+				// baseKey should not be null
+				
+				Map parentMap = map;
+				alma.TMCDB.maci.Component component = (alma.TMCDB.maci.Component)data;
+				
+				// some cleaning
+				if (component.getComponentLogger().getMinLogLevel() == -1 &&
+					component.getComponentLogger().getMinLogLevelLocal() == -1)
+					component.setComponentLogger(null);
+				
+				// now find its map
+				String path = getNormalizedPath(component.Path); 
+				while (path != null && path.length() > 0)
+				{
+					// remove trailing slashes, to have unique curl (used for key)
+					if (path.charAt(0) == '/')
+					{
+						path = path.substring(1);
+						continue;
+					}
+					
+					int pos = path.indexOf('/');
+					String parentPath = (pos > 0) ? path.substring(0, pos) : path;
+					String subpath = (pos > 0) ? path.substring(pos+1, path.length()) : null;
+
+					alma.TMCDB.maci.ComponentNode parentComponent = (alma.TMCDB.maci.ComponentNode)parentMap.get(parentPath);
+					if (parentComponent == null)
+					{
+						parentComponent = new alma.TMCDB.maci.ComponentNode();
+						parentMap.put(parentPath, parentComponent);
+					}
+
+					parentMap = parentComponent._;
+					path = subpath;
+				}
+				
+				// unique key generation
+				int count = 0;
+				String key = baseKey;
+				while (parentMap.containsKey(key))
+					key = baseKey + String.valueOf(++count);
+				
+				parentMap.put(key, data);
+				
+				if (data instanceof alma.TMCDB.maci.Component) {
+					alma.TMCDB.maci.Component comp = (alma.TMCDB.maci.Component) data;
+					m_logger.finer("Loaded component name=" + comp.Path + comp.getName() + ", type=" + comp.getType() + 
+							", container=" + comp.getContainer() + ", implLang=" + comp.getImplLang());
+				}
+				else {
+					m_logger.warning("Bad component class '" + data.getClass().getName() + "' read from TMCDB.");
+				}
+
+				m_logger.info("clear_cache(curl): ComponentsTable11");
+			}
+			m_logger.info("clear_cache(curl): ComponentsTable12");
+
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
+		m_logger.info("clear_cache(curl): ComponentsTable13");
+	}
+
+	public void updateContainersTableMap(String curl) 
+	{
+		m_logger.info("clear_cache(curl): ContainersTable1");
+		final String keyField = "Name";
+		final Class type = alma.TMCDB.maci.Container.class;
+		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+		Map<String, Object> map = (Map<String, Object>)((Map<String, Object>) rootMap.get("MACI")).get("Containers");
+		m_logger.info("clear_cache(curl): ContainersTable2");
+		try
+		{
+			Session session = hibernateUtil.getSession();
+
+			Method accessor = DOMJavaClassIntrospector.getAccessorMethod(type, keyField);
+			Field field = null;
+			if (accessor == null)
+			{
+				try
+				{
+					field = type.getField(keyField);
+				}
+				catch (Throwable th) {
+					throw new IllegalStateException("failed to obtain key ");
+				}
+			}
+			m_logger.info("clear_cache(curl): ContainersTable3");
+			
+			String els[] = curl.split("/");
+			String rpath = "/*";
+			String rsubpath = "/*";
+			String rcpath = "/*";
+			String rcname = els[els.length - 1];
+			for (int i = 0; i < els.length; i++) {
+				rpath    += els[i];
+				rsubpath += els[i];
+				if (i < els.length - 1) {
+					rpath    += "/+";
+					rsubpath += "/+";
+					rcpath   += els[i];
+					if( i < els.length - 2)
+						rcpath += "/+";
+				}
+			}
+			rpath    += "/*";
+			rsubpath += "/+.*";
+			rcpath   += "/*";
+			
+			System.out.println(rpath);
+			System.out.println(rsubpath);
+			System.out.println(rcpath+"|"+rcname);
+			m_logger.info("clear_cache(curl): ContainersTable4");
+
+			//Consider the cases where the curl matches exactly the Path, where
+			//it is part of the path and when it matches exactly the path and
+			//the component name.
+			Criterion cr = Restrictions.disjunction()
+							.add(getRegularExpressionRestriction("Path", rpath))
+							.add(getRegularExpressionRestriction("Path", rsubpath))
+							.add(Restrictions.and(getRegularExpressionRestriction("Path", rcpath), Restrictions.eq("Name",rcname)));
+
+			m_logger.info("clear_cache(curl): ContainersTable5");
+			List list = getListForConfiguration(session, type, cr);
+			m_logger.info("clear_cache(curl): ContainersTable6");
+
+			System.out.println("\nFound the following Containers");
+			for(Object data : list) {
+				System.out.println(((alma.TMCDB.maci.Container)data).Path+"/"+((alma.TMCDB.maci.Container)data).getName());
+			}
+
+			//Remove the entries from existing maps.
+			System.out.println("\nChecking maps to remove");
+			m_logger.info("clear_cache(curl): ContainersTable7");
+			Map rParentMap = map;
+			for(int i = 0; i < els.length; i++) {
+				System.out.println("Checking path "+els[i]+".");
+				System.out.println("Parent keys: "+rParentMap.keySet().toString());
+				Object data = rParentMap.get(els[i]);
+				if (data == null) {
+					System.out.println("No element found with the given curl");
+					break;
+				} else {
+					if (data instanceof alma.TMCDB.maci.Container) {
+						System.out.println("Instance of Container (Container!).");
+					} else if (data instanceof alma.TMCDB.maci.ContainerNode) {
+						System.out.println("Instance of ContainerNode (Path!).");
+					} else {
+						System.out.println("Unknown type! Details: "+data.toString());
+					}
+					if (i < els.length - 1) {
+						System.out.println("There are elements remaining, so we proceed to next element in path.");
+						rParentMap = ((alma.TMCDB.maci.ContainerNode) data)._;
+					} else {
+						System.out.println("There are no elements remaining, we remove all entries from this element in path and on.");
+						rParentMap.remove(els[i]);
+					}
+				}
+			}
+			m_logger.info("clear_cache(curl): ContainersTable8");
+
+			// Sort the list by path + component to ensure that parent containers are added before their children
+			Comparator<alma.TMCDB.maci.Container> comparator = new Comparator<alma.TMCDB.maci.Container>() {
+				public int compare(alma.TMCDB.maci.Container o1, alma.TMCDB.maci.Container o2) {
+					String fullName1 = ((o1.Path == null ? "" : o1.Path) + "/") + o1.getName();
+					String fullName2 = ((o2.Path == null ? "" : o2.Path) + "/") + o2.getName();
+					return fullName1.compareTo(fullName2);
+				}
+			};
+			Collections.sort(list, comparator);
+
+			m_logger.info("clear_cache(curl): ContainersTable9");
+			for (Object data : list)
+			{
+				String baseKey;
+				if (accessor != null)
+					baseKey = accessor.invoke(data, (Object[])null).toString();
+				else //if (field != null)
+					baseKey = field.get(data).toString();
+				
+				// baseKey should not be null
+				
+				Map parentMap = map;
+				alma.TMCDB.maci.Container container = (alma.TMCDB.maci.Container)data;
+				
+				// do not include this
+				if (DUMMY_CONTAINER_FLAG.equals(container.getDeployInfo().getTypeModifiers()))
+					continue;
+				
+				// some cleaning
+				if (container.getDeployInfo() != null && container.getDeployInfo().getHost() == null)
+					container.setDeployInfo(null);
+				
+				// now find its map
+				String path = getNormalizedPath(container.Path); 
+				while (path != null && path.length() > 0)
+				{
+					// remove trailing slashes, to have unique curl (used for key)
+					if (path.charAt(0) == '/')
+					{
+						path = path.substring(1);
+						continue;
+					}
+					
+					int pos = path.indexOf('/');
+					String parentPath = (pos > 0) ? path.substring(0, pos) : path;
+					String subpath = (pos > 0) ? path.substring(pos+1, path.length()) : null;
+
+					alma.TMCDB.maci.ContainerNode parentContainer = (alma.TMCDB.maci.ContainerNode)parentMap.get(parentPath);
+					if (parentContainer == null)
+					{
+						parentContainer = new alma.TMCDB.maci.ContainerNode();
+						parentMap.put(parentPath, parentContainer);
+					}
+
+					parentMap = parentContainer._;
+					path = subpath;
+				}
+				
+				// unique key generation
+				int count = 0;
+				String key = baseKey;
+				while (parentMap.containsKey(key))
+					key = baseKey + String.valueOf(++count);
+
+				parentMap.put(key, data);
+				
+				if (data instanceof alma.TMCDB.maci.Container) {
+					alma.TMCDB.maci.Container cont = (alma.TMCDB.maci.Container) data;
+					m_logger.finer("Loaded container name=" + cont.Path + cont.getName() + ", implLang=" + cont.getImplLang());
+				}
+				else {
+					m_logger.warning("Bad container class '" + data.getClass().getName() + "' read from TMCDB.");
+				}
+				m_logger.info("clear_cache(curl): ContainersTable10");
+			}
+			m_logger.info("clear_cache(curl): ContainersTable11");
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
+		m_logger.info("clear_cache(curl): ContainersTable12");
+	}
+
+	protected void updateManagersTableMap(String curl) {
+		m_logger.info("clear_cache(curl): ManagersTable1");
+		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+		Map<String, Object> managersMap = (Map<String, Object>) rootMap.get("Managers");
+		m_logger.info("clear_cache(curl): ManagersTable2");
+		try
+		{
+			Session session = hibernateUtil.getSession();
+			Criterion cr = Restrictions.eq("Name", curl);
+			List managerList = getListForConfiguration(session, alma.TMCDB.maci.Manager.class, cr);
+			m_logger.info("clear_cache(curl): ManagersTable3");
+			if (!managerList.isEmpty())
+				managersMap.put("Manager", managerList.get(0));
+			else
+				managersMap.put("Manager", getDefaultMangerConfig());
+			
+			m_logger.info("clear_cache(curl): ManagersTable4");
+			String additionalServices = getAcsServices(session, config);
+			m_logger.info("clear_cache(curl): ManagersTable5");
+			if (additionalServices != null)
+			{
+				alma.TMCDB.maci.Manager manager = (alma.TMCDB.maci.Manager)managersMap.get("Manager");
+				String currentServices = manager.getServiceComponents();
+				m_logger.info("clear_cache(curl): ManagersTable6");
+				if (currentServices == null || currentServices.length() == 0)
+					manager.setServiceComponents(additionalServices);
+				else
+					// there might be duplicates, but they do not harm
+					manager.setServiceComponents(currentServices + "," + additionalServices);
+				m_logger.info("clear_cache(curl): ManagersTable7");
+			}
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
+		m_logger.info("clear_cache(curl): ManagersTable8");
+	}
 	
+	public void updateChannelsTableMap(String curl) 
+	{
+		m_logger.info("clear_cache(curl): ChannelsTable1");
+		final String keyField = "Name";
+		final Class type = alma.TMCDB.maci.EventChannel.class;
+		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+		Channels channels = (Channels)((Map<String, Object>) rootMap.get("MACI")).get("Channels");
+		m_logger.info("clear_cache(curl): ChannelsTable2");
+		try
+		{
+			Session session = hibernateUtil.getSession();
+
+			Method accessor = DOMJavaClassIntrospector.getAccessorMethod(type, keyField);
+			Field field = null;
+			if (accessor == null)
+			{
+				try
+				{
+					field = type.getField(keyField);
+				}
+				catch (Throwable th) {
+					throw new IllegalStateException("failed to obtain key ");
+				}
+			}
+			
+			if (channels == null)
+				channels = new Channels();
+
+			Map<String, EventChannelNode> map;
+			map = channels._;
+			m_logger.info("clear_cache(curl): ChannelsTable3");
+			
+			
+    		alma.TMCDB.maci.NotificationServiceMapping mapping =
+				(alma.TMCDB.maci.NotificationServiceMapping)session.createCriteria(alma.TMCDB.maci.NotificationServiceMapping.class).add(Restrictions.eq("ConfigurationId", configId)).uniqueResult();
+			m_logger.info("clear_cache(curl): ChannelsTable4");
+			if (mapping != null) {
+				channels.setNotificationServiceMapping(mapping);
+			}
+			m_logger.info("clear_cache(curl): ChannelsTable5");
+
+			String els[] = curl.split("/");
+			String rpath = "/*";
+			String rsubpath = "/*";
+			String rcpath = "/*";
+			String rcname = els[els.length - 1];
+			for (int i = 0; i < els.length; i++) {
+				rpath    += els[i];
+				rsubpath += els[i];
+				if (i < els.length - 1) {
+					rpath    += "/+";
+					rsubpath += "/+";
+					rcpath   += els[i];
+					if( i < els.length - 2)
+						rcpath += "/+";
+				}
+			}
+			rpath    += "/*";
+			rsubpath += "/+.*";
+			rcpath   += "/*";
+			
+			System.out.println(rpath);
+			System.out.println(rsubpath);
+			System.out.println(rcpath+"|"+rcname);
+			m_logger.info("clear_cache(curl): ChannelsTable6");
+
+			//Consider the cases where the curl matches exactly the Path, where
+			//it is part of the path and when it matches exactly the path and
+			//the component name.
+			Criterion cr = Restrictions.disjunction()
+							.add(getRegularExpressionRestriction("Path", rpath))
+							.add(getRegularExpressionRestriction("Path", rsubpath))
+							.add(Restrictions.and(getRegularExpressionRestriction("Path", rcpath), Restrictions.eq("Name",rcname)));
+
+			List list = getListForConfiguration(session, type, cr);
+			m_logger.info("clear_cache(curl): ChannelsTable7");
+
+			System.out.println("\nFound the following Containers");
+			for(Object data : list) {
+				System.out.println(((alma.TMCDB.maci.Container)data).Path+"/"+((alma.TMCDB.maci.Container)data).getName());
+			}
+
+			//Remove the entries from existing maps.
+			System.out.println("\nChecking maps to remove");
+			m_logger.info("clear_cache(curl): ChannelsTable8");
+			Map<String, EventChannelNode> rParentMap = map;
+			for(int i = 0; i < els.length; i++) {
+				System.out.println("Checking path "+els[i]+".");
+				System.out.println("Parent keys: "+rParentMap.keySet().toString());
+				Object data = rParentMap.get(els[i]);
+				if (data == null) {
+					System.out.println("No element found with the given curl");
+					break;
+				} else {
+					if (data instanceof alma.TMCDB.maci.EventChannel) {
+						System.out.println("Instance of EventChannel (EventChannel!).");
+					} else if (data instanceof alma.TMCDB.maci.EventChannelNode) {
+						System.out.println("Instance of ContainerNode (Path!).");
+					} else {
+						System.out.println("Unknown type! Details: "+data.toString());
+					}
+					if (i < els.length - 1) {
+						System.out.println("There are elements remaining, so we proceed to next element in path.");
+						rParentMap = ((alma.TMCDB.maci.EventChannelNode) data)._;
+					} else {
+						System.out.println("There are no elements remaining, we remove all entries from this element in path and on.");
+						rParentMap.remove(els[i]);
+					}
+				}
+			}
+			m_logger.info("clear_cache(curl): ChannelsTable9");
+	    
+			for (Object data : list)
+			{
+				String baseKey;
+				if (accessor != null)
+					baseKey = accessor.invoke(data, (Object[])null).toString();
+				else //if (field != null)
+					baseKey = field.get(data).toString();
+				
+				// baseKey should not be null
+				
+				Map parentMap = map;
+				alma.TMCDB.maci.EventChannel channel = (alma.TMCDB.maci.EventChannel)data;
+				
+				// now find its map
+				String path = getNormalizedPath(channel.Path); 
+				while (path != null && path.length() > 0)
+				{
+					// remove trailing slashes, to have unique curl (used for key)
+					if (path.charAt(0) == '/')
+					{
+						path = path.substring(1);
+						continue;
+					}
+					
+					int pos = path.indexOf('/');
+					String parentPath = (pos > 0) ? path.substring(0, pos) : path;
+					String subpath = (pos > 0) ? path.substring(pos+1, path.length()) : null;
+
+					alma.TMCDB.maci.EventChannelNode parentChannel = (alma.TMCDB.maci.EventChannelNode)parentMap.get(parentPath);
+					if (parentChannel == null)
+					{
+						parentChannel = new alma.TMCDB.maci.EventChannelNode();
+						parentMap.put(parentPath, parentChannel);
+					}
+
+					parentMap = parentChannel._;
+					path = subpath;
+				}
+				
+				// unique key generation
+				int count = 0;
+				String key = baseKey;
+				while (parentMap.containsKey(key))
+					key = baseKey + String.valueOf(++count);
+
+				parentMap.put(key, data);
+				m_logger.info("clear_cache(curl): ChannelsTable10");
+			}
+			m_logger.info("clear_cache(curl): ChannelsTable11");
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
+		m_logger.info("clear_cache(curl): ChannelsTable12");
+	}
+
+	protected  void updateAlmaBranch(String curl)
+	{
+		m_logger.info("clear_cache(curl): AlmaBranch1");
+		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+		final Map<String, Object> almaRoot = (Map<String, Object>) rootMap.get(COMPONENT_TREE_NAME);
+
+		m_logger.info("clear_cache(curl): AlmaBranch2");
+		try
+		{
+			Session session = hibernateUtil.getSession(); 
+			schemaResourceResolverLoader.setSession(session);
+
+			String els[] = curl.split("/");
+			String rpath = "/*";
+			String rsubpath = "/*";
+			String rcpath = "/*";
+			String rcname = els[els.length - 1];
+			for (int i = 0; i < els.length; i++) {
+				rpath    += els[i];
+				rsubpath += els[i];
+				if (i < els.length - 1) {
+					rpath    += "/+";
+					rsubpath += "/+";
+					rcpath   += els[i];
+					if( i < els.length - 2)
+						rcpath += "/+";
+				}
+			}
+			rpath    += "/*";
+			rsubpath += "/+.*";
+			rcpath   += "/*";
+			
+			System.out.println(rpath);
+			System.out.println(rsubpath);
+			System.out.println(rcpath+"|"+rcname);
+			m_logger.info("clear_cache(curl): AlmaBranch3");
+
+			//Consider the cases where the curl matches exactly the Path, where
+			//it is part of the path and when it matches exactly the path and
+			//the component name.
+			Criterion cr = Restrictions.disjunction()
+							.add(getRegularExpressionRestriction("Path", rpath))
+							.add(getRegularExpressionRestriction("Path", rsubpath))
+							.add(Restrictions.and(getRegularExpressionRestriction("Path", rcpath), Restrictions.eq("Name",rcname)));
+
+			//Remove the entries from existing maps.
+			System.out.println("\nChecking maps to remove");
+			m_logger.info("clear_cache(curl): AlmaBranch4");
+			Map rParentMap = almaRoot;
+			for(int i = 0; i < els.length; i++) {
+				System.out.println("Checking path "+els[i]+".");
+				System.out.println("Parent keys: "+rParentMap.keySet().toString());
+				Object data = rParentMap.get(els[i]);
+				if (data == null) {
+					System.out.println("No element found with the given curl");
+					break;
+				} else {
+					if (data instanceof ComponentDAOImplSaver) {
+						System.out.println("Instance of ComponentDAOImplSaver (Component!).");
+					} else if (data instanceof ComponentData) {
+						System.out.println("Instance of ComponentData (Path!).");
+					} else {
+						System.out.println("Unknown type! Details: "+data.toString());
+					}
+					if (i < els.length - 1) {
+						System.out.println("There are elements remaining, so we proceed to next element in path.");
+						rParentMap = ((ComponentData) data)._;
+					} else {
+						System.out.println("There are no elements remaining, we remove all entries from this element in path and on.");
+						rParentMap.remove(els[i]);
+					}
+				}
+			}
+			m_logger.info("clear_cache(curl): AlmaBranch5");
+			
+			final Set<String> loadedComponents = new HashSet<String>();
+			
+			//
+			// add control devices
+			//
+			m_logger.info("clear_cache(curl): AlmaBranch6");
+			if (plugin != null)
+			{
+				final HibernateWDALPlugin.ControlDeviceBindCallback bindCallback = new HibernateWDALPlugin.ControlDeviceBindCallback() {
+					public void bindToComponentBranch(String name, String path, Object objectToBind) {
+						bindToAlmaBranch(almaRoot, name, path, objectToBind);
+						if (!loadedComponents.contains(path + "/" + name))
+							loadedComponents.add(path + "/" + name);
+					}
+					public void bindNonExpandedXMLToComponentBranch(Session session, Component component) {
+						alma.TMCDB.maci.Component comp = (alma.TMCDB.maci.Component)session.createCriteria(alma.TMCDB.maci.Component.class).
+							add(Restrictions.eq("ComponentId", component.getComponentId())).uniqueResult();
+						if (comp == null)
+							throw new RuntimeException("Component with ID " + component.getComponentId() + " does not exist.");
+						bindNonExpandedComponentXMLToAlmaBranch(session, almaRoot, comp);
+					}
+				};
+				plugin.updateControlDevices(session, config, bindCallback, curl);
+			}
+			m_logger.info("clear_cache(curl): AlmaBranch7");
+			
+			//
+			// add devices
+			//
+			Iterator componentList = session.createCriteria(alma.TMCDB.maci.Component.class).
+				add(Restrictions.eq("Control", false)).
+				add(Restrictions.eq("ConfigurationId", configId)).add(cr).list().iterator();
+
+			System.out.println("\nFound the following Components");
+			m_logger.info("clear_cache(curl): AlmaBranch8");
+			//while(componentList.hasNext()) {
+			//	Object data = componentList.next();
+			//	System.out.println(((alma.TMCDB.maci.Component)data).Path+"/"+((alma.TMCDB.maci.Component)data).getName());
+			//}
+
+			while (componentList.hasNext())
+			{
+				alma.TMCDB.maci.Component component = (alma.TMCDB.maci.Component)componentList.next();
+				System.out.println(component.Path+"/"+component.getName());
+				
+				// already loaded by plugins, skip
+				if (loadedComponents.contains(component.Path + "/" + component.getName()))
+					continue;
+				
+		        String query = "FROM alma.TMCDB.baci.BACIPropertyType WHERE ComponentId = " + component.ComponentId;
+		        List propertyList = session.createQuery(query).list();
+				System.out.println("Size: " + propertyList.size());
+		        if (propertyList.size() > 0)
+		        {
+		        	ComponentData componentData = new ComponentData();
+		            try {
+		            	componentData.setData(component.XMLDoc);
+					} catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					// add properties
+					for (Iterator iter = propertyList.iterator(); iter.hasNext(); )
+					{
+						BACIPropertyType baciProperty = (BACIPropertyType) iter.next();
+						//componentData._.put(baciProperty.PropertyName, baciProperty);
+						componentData._.put(baciProperty.PropertyName, new EmptyStringHandlerBACIPropertyType(baciProperty));
+					}
+
+					// bind object to map tree
+					bindToAlmaBranch(almaRoot, component.getName(), component.Path, componentData);
+				}
+		        else if (component.XMLDoc != null)
+		        {
+		        	bindNonExpandedComponentXMLToAlmaBranch(session, almaRoot, component);
+		        }
+				m_logger.info("clear_cache(curl): AlmaBranch9");
+			}
+			m_logger.info("clear_cache(curl): AlmaBranch10");
+			
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
+		m_logger.info("clear_cache(curl): AlmaBranch11");
+	}
+
 	volatile boolean firstTime = true;
 	public void clear_cache_all() {
 
@@ -3354,7 +4464,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		}
 
 		for (String curl : curls)
-			clear_cache(curl);
+			clearCache(curl);
 		
 	}
 

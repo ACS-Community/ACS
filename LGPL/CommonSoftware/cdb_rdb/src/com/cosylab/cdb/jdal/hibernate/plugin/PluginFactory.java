@@ -151,6 +151,46 @@ public class PluginFactory {
 			}
 		}
 
+		// update
+		public void updatePrologue(Session session, Configuration config, Map<String, Object> rootMap, String curl)
+		{ 
+			for (HibernateWDALPlugin plugin : plugins) {
+				try {
+					logger.finer("Calling updatePrologue() on " + plugin.getName());
+					plugin.updatePrologue(session, config, rootMap, curl);
+				}
+				catch (Throwable th) {
+					logger.log(Level.SEVERE, "Call updatePrologue() on " + plugin.getName() + " failed.", th);
+				}
+			}
+		}
+		
+		public void updateControlDevices(Session session, Configuration config, ControlDeviceBindCallback bindCallback, String curl)
+		{
+			for (HibernateWDALPlugin plugin : plugins) {
+				try {
+					logger.finer("Calling updateControlDevices() on " + plugin.getName());
+					plugin.updateControlDevices(session, config, bindCallback, curl);
+				}
+				catch (Throwable th) {
+					logger.log(Level.SEVERE, "Call updateControlDevices() on " + plugin.getName() + " failed.", th);
+				}
+			}
+		}
+		
+		public void updateEpilogue(Session session, Configuration config, Map<String, Object> rootMap, String curl)
+		{
+			for (HibernateWDALPlugin plugin : plugins) {
+				try {
+					logger.finer("Calling updateEpilogue() on " + plugin.getName());
+					plugin.updateEpilogue(session, config, rootMap, curl);
+				}
+				catch (Throwable th) {
+					logger.log(Level.SEVERE, "Call updateEpilogue() on " + plugin.getName() + " failed.", th);
+				}
+			}
+		}
+
 		// import
 		public void importPrologue(Session session, Configuration config, CDBAccess cdbAccess)
 		{
@@ -226,6 +266,12 @@ public class PluginFactory {
 		public void loadControlDevices(Session session, Configuration config, ControlDeviceBindCallback bindCallback) {}
 		
 		public void loadEpilogue(Session session, Configuration config, Map<String, Object> rootMap) {}
+
+		public void updatePrologue(Session session, Configuration config, Map<String, Object> rootMap, String curl) {}
+		
+		public void updateControlDevices(Session session, Configuration config, ControlDeviceBindCallback bindCallback, String curl) {}
+		
+		public void updateEpilogue(Session session, Configuration config, Map<String, Object> rootMap, String curl) {}
 
 		public void importPrologue(Session session, Configuration config, CDBAccess cdbAccess) {}
 		

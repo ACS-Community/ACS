@@ -65,6 +65,11 @@ public interface HibernateWDALPlugin  {
 	void loadControlDevices(Session session, Configuration config, ControlDeviceBindCallback bindCallback);
 	void loadEpilogue(Session session, Configuration config, Map<String, Object> rootMap);
 
+	// update
+	void updatePrologue(Session session, Configuration config, Map<String, Object> rootMap, String curl);
+	void updateControlDevices(Session session, Configuration config, ControlDeviceBindCallback bindCallback, String curl);
+	void updateEpilogue(Session session, Configuration config, Map<String, Object> rootMap, String curl);
+
 	// import
 	void importPrologue(Session session, Configuration config, CDBAccess cdbAccess);
 	void controlDeviceImportEpilogue(Session session, Configuration config, CDBAccess cdbAccess, String cdbComponentName, Component component);
