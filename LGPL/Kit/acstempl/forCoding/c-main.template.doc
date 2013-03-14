@@ -1,7 +1,6 @@
 #------------------------------------------------------------------------
 # E.S.O. - ACS project
 # 
-# "@(#) $Id: c-main.template.doc,v 1.19+ 2002/11/12 10:34:15 vltsccm Exp $" 
 # 
 # who        when      what
 # ---------  --------  ----------------------------------------------
@@ -118,7 +117,6 @@
 *   #define _POSIX_SOURCE 1      <<<< if you delete this line you SHALL comment
 *                                     why POSIX does not apply for this file
 *                                   >>>>do not change the following lines<<<<
-*   static char *rcsId="@(#) ...."; 
 *   
 *   /* 
 *    * System Headers 

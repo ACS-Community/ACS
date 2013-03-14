@@ -1,7 +1,7 @@
 #%#------------------------------------------------------------------------
 #%# E.S.O. - ACS project
 #%# 
-#%# "@(#) $Id: RELEASE_NOTES.template,v 1.21 2004/04/08 12:40:31 mzampare Exp $" 
+#%# "@(#) $Id: RELEASE_NOTES.template,v 1.22 2013/03/14 11:59:17 mpasquat Exp $" 
 #%# 
 #%# Template for release notes              
 #%# 
@@ -26,8 +26,6 @@ Module:
 From: 
    NNNNNNNN
 
-Version: 
-   "@(#) $I>-<d$"
 
 Documents:
 

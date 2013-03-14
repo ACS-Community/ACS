@@ -32,8 +32,6 @@
 *      From: 
 *         The author of the modification (in the template, the current username)
 *      
-*      Version: 
-*         The rcsId string (provided by the template)
 *      
 *      Documents:
 *         A list of document related with this software in the following format:
@@ -84,8 +82,6 @@
 *      From: 
 *         G.Filippi
 *      
-*      Version: 
-*            "@(#) ...."
 *      
 *      Documents:
 *         [1] VLT-MAN-ESO-99999-0234, 1.0 10/02/94 --- Dummy Used Manual

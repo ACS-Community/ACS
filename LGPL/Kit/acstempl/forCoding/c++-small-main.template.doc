@@ -22,7 +22,6 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $I>-<d$"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,7 +62,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: c++-small-main.template.doc,v 1.20 2002/12/05 19:09:19 vltsccm Exp $"; 
 
 
 int main(int argc, char *argv[])

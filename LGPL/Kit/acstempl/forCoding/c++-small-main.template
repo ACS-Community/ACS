@@ -1,7 +1,7 @@
 #%#------------------------------------------------------------------------
 #%# E.S.O. - ACS project
 #%# 
-#%# "@(#) $Id: c++-small-main.template,v 1.22 2011/07/11 06:45:01 mpasquat Exp $"
+#%# "@(#) $Id: c++-small-main.template,v 1.23 2013/03/14 11:59:17 mpasquat Exp $"
 #%# 
 #%# Template for c++ small main program
 #%# 
@@ -22,7 +22,6 @@
 /*******************************************************************************
 * PPPPPPPP
 *
-* "@(#) $I>-<d$"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,7 +62,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: c++-small-main.template,v 1.22 2011/07/11 06:45:01 mpasquat Exp $"; 
 
 
 int main(int argc, char *argv[])
