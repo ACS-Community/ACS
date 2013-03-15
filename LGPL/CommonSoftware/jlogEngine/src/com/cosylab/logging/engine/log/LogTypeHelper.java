@@ -53,7 +53,8 @@ public enum LogTypeHelper {
     ERROR(AcsLogLevelDefinition.ERROR,"Error"),
     CRITICAL(AcsLogLevelDefinition.CRITICAL,"Critical"),
     ALERT(AcsLogLevelDefinition.ALERT,"Alert"),
-    EMERGENCY(AcsLogLevelDefinition.EMERGENCY,"Emergency");
+    EMERGENCY(AcsLogLevelDefinition.EMERGENCY,"Emergency"),
+    OFF(AcsLogLevelDefinition.OFF,"Off");
 	
 	// The string describing this entry type
 	public final String logEntryType;
