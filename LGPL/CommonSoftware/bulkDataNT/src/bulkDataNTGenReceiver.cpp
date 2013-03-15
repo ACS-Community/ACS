@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.12 2013/02/20 09:23:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.13 2013/03/15 17:42:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 	unsigned int unicastPort=24000;
 	*/
 	//char multicastAdd[100];
-	list<char *> flows;
+	list<char *> flowNames;
 
 	// Parse the args
 	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u::n");
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 				ACE_Tokenizer tok(get_opts.opt_arg());
 				tok.delimiter_replace(',', 0);
 				for(char *p = tok.next(); p; p = tok.next())
-					flows.push_back(p);
+					flowNames.push_back(p);
 				break;
 			}
 			case 'd':
@@ -181,12 +181,14 @@ int main(int argc, char *argv[])
 
 	}//while
 
-	if( flows.size() == 0 )
+	if( flowNames.size() == 0 )
 		print_usage(argv);
 
 	LoggingProxy m_logger(0, 0, 31, 0);
 	LoggingProxy::init (&m_logger);
 	ACS_CHECK_LOGGER;
+
+	vector<BulkDataNTReceiverFlow*> flows;
 
 	//streamCfg.setUseIncrementUnicastPort(false);
 	//streamCfg.setParticipantPerStream(true);
@@ -203,7 +205,7 @@ int main(int argc, char *argv[])
 	flowCfg.setQosLibrary(qosLib.c_str());//"TCPBulkDataQoSLibrary");
 	list<char *>::iterator it;
 	//unsigned int j=0;
-	for(it = flows.begin(); it != flows.end(); it++) {
+	for(it = flowNames.begin(); it != flowNames.end(); it++) {
 		/*
 		sprintf(unicastPortQoS, "<datareader_qos><unicast><value><element><receive_port>%ud</receive_port></element></value></unicast></datareader_qos>", unicastPort++);
 		flowCfg.setDDSReceiverFlowQoS((*it), unicastPortQoS);
@@ -213,15 +215,16 @@ int main(int argc, char *argv[])
 		flowCfg.setMulticastAddress(multicastAdd);
 		*/
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg);
+		flows.push_back(flow);
 		flow->getCallback<TestCB>();
 		//flowCfg.setProfileQos("TCPDefaultStreamQosProfile");
 //		BulkDataNTReceiverFlow *flow100 = receiverStream100.createFlow((*it), flowCfg);
 	}
 
-	std::vector<string> flowNames = receiverStream.getFlowNames();
+	std::vector<string> actflowNames = receiverStream.getFlowNames();
 	std::cout << "Waiting on the following " << receiverStream.getFlowNumber() << " flow(s):[ ";
-	for(unsigned int i=0;i<flowNames.size(); i++)
-		std::cout << flowNames[i] << " ";
+	for(unsigned int i=0;i<actflowNames.size(); i++)
+		std::cout << actflowNames[i] << " ";
 	std::cout << "] of stream: " <<  streamName << std::endl;
 
 
@@ -229,4 +232,9 @@ int main(int argc, char *argv[])
 	std::cout << "Press a key to exit.." << std::endl;
 	getchar();
 
+	unsigned int numOfCreatedFlows = receiverStream.getFlowNumber();
+	for(unsigned int i=0; i<numOfCreatedFlows; i++)
+	{
+	    		    flows[i]->dumpStatistics();
+	 }
 }
