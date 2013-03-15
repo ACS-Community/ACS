@@ -473,6 +473,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			System.err.println("Function not yet implemented by "+getName());
 			return errret;
 		}
+		// @todo should this be OFF (OFF is kind of special)
 		int minval = LogTypeHelper.EMERGENCY.getAcsCoreLevel().value;
 		for (LogLevelHelper l : levels) {
 			int val = isLocal ? l.getLocalLevel() : l.getGlobalLevel();

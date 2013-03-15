@@ -89,6 +89,7 @@ public class TrendPnl extends JPanel {
 		logTraces[LogTypeHelper.CRITICAL.ordinal()].setColor(Color.magenta);
 		logTraces[LogTypeHelper.ALERT.ordinal()].setColor(Color.yellow);
 		logTraces[LogTypeHelper.EMERGENCY.ordinal()].setColor(Color.cyan);
+		logTraces[LogTypeHelper.OFF.ordinal()].setColor(Color.darkGray);
 		x+=LogDetailsDispatcher.NUMBER_LISTENERS_INTERVAL;
 	}
 	

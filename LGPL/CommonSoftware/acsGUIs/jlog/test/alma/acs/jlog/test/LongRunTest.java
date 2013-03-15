@@ -207,7 +207,7 @@ public class LongRunTest extends Thread {
 	 *
 	 */
 	private void publishLogsBlock() {
-		for (int t=0; t<9; t++) {
+		for (int t=0; t<10; t++) {
 			AcsLogLevel level=null;
 			switch (t) {
 			case 0: {
@@ -243,6 +243,10 @@ public class LongRunTest extends Thread {
 				}
 				case 8: {
 					level=AcsLogLevel.ALERT;
+					break;
+				}
+				case 9: {
+					level=AcsLogLevel.OFF;
 					break;
 				}
 				default: {

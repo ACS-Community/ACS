@@ -50,7 +50,8 @@ public enum EntryTypeIcon {
     ERROR_ICON(LogTypeHelper.ERROR,"/error.gif"),
     CRITICAL_ICON(LogTypeHelper.CRITICAL,"/critical.gif"),
     ALERT_ICON(LogTypeHelper.ALERT,"/alert.gif"),
-    EMERGENCY_ICON(LogTypeHelper.EMERGENCY,"/emergency.gif");
+    EMERGENCY_ICON(LogTypeHelper.EMERGENCY,"/emergency.gif"),
+    OFF_ICON(LogTypeHelper.OFF,"/off.png");
 	
 	// The icon
 	public final ImageIcon icon;
