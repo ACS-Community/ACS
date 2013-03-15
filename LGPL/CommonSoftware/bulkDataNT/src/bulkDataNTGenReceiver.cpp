@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.13 2013/03/15 17:42:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.14 2013/03/15 17:51:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,14 +55,22 @@ public:
 			std::cout <<  *(char*)(userParam_p+i);
 		}
 		std::cout << " of size: " << size << std::endl;
+		frameCount = 0;
+		rcvDataStartStop = 0;
+
 		return 0;
-	}
+	}//cbStart
 
 	int cbReceive(unsigned char* data, unsigned  int size)
 	{
+
+		rcvDataStartStop+=size;
+		totalRcvData+=size;
+		frameCount++;
 		if (cbReceivePrint)
 		{
-			std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " :";
+			std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " (";
+			std::cout <<  rcvDataStartStop << ", " << frameCount << ") :";
 			/*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
@@ -82,7 +90,6 @@ public:
 		      }
 
 		  }
-		totalRcvData+=size;
 		return 0;
 	}
 
@@ -98,6 +105,8 @@ private:
 	std::string fn; ///flow Name
 	std::string sn; ///stream name
 	unsigned int totalRcvData; ///total size of all received data
+	unsigned int rcvDataStartStop; ///size of received data between Start/stop
+	unsigned int frameCount; ///frame count
 };
 
 long TestCB::cbDealy = 0;
