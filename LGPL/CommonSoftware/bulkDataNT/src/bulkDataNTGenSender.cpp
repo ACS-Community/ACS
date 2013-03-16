@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.16 2013/02/20 09:23:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenSender.cpp,v 1.17 2013/03/16 21:01:30 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-s] \t streamName. Default: 'DefaultStream'" << endl;
 	cout << "\t-f \t flow1Name[,flow2Name,flow3Name..." << endl;
 	cout << "\t[-b] \t data size in bytes. Default: 65000" << endl;
+	cout << "\t[-r] \t read data from this file instead of sending fake data" << endl;
 	cout << "\t[-p] \t parameter (startSend()). Default: 'defalutParamter'" << endl;
 	cout << "\t[-l] \t # of loops/iterations. Default: 1" << endl;
 	cout << "\t[-n] \t no wait for a key" << endl;
@@ -55,7 +56,8 @@ int main(int argc, char *argv[])
 	double send_time, sendTimeout=5.0, ACKtimeout=2.0;
 	ACE_Time_Value start_time, elapsed_time;
 	char *streamName = "DefaultStream";
-	std::string param="defalutParamter";
+	char *inputFilename = 0;
+	std::string param="defaultParameter";
 	unsigned int dataSize=65000;
 	unsigned int totalDataSize=65000;
 	unsigned int loop=1;
@@ -65,7 +67,7 @@ int main(int argc, char *argv[])
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:nc");
+    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:ncr:");
 
     if(get_opts.long_option(ACE_TEXT ("qos_lib"), 0, ACE_Get_Opt::ARG_REQUIRED) == -1)
     {
@@ -133,6 +135,11 @@ int main(int argc, char *argv[])
     	case 'c':
     	{
     		cdpProtocolCompatible = true;
+    		break;
+    	}
+    	case 'r':
+    	{
+    		inputFilename = strdup(get_opts.opt_arg());
     		break;
     	}
     	default:
@@ -220,6 +227,34 @@ int main(int argc, char *argv[])
 
     		while(sendData)
     		{
+    			// Check if we're using a file to send data or we're
+    			// creating fake data
+    			unsigned char *data =0;
+    			if( inputFilename == 0 )
+    			{
+    				data = new unsigned char[dataSize];
+    				for (unsigned int i=0; i<dataSize; i++)	data[i]=i;
+    			}
+    			else
+    			{
+    				cout << "Reading flow data from " << inputFilename << endl;
+    				std::ifstream inputFile(inputFilename, std::ios::binary);
+    				if( !inputFile.is_open() ) {
+    					recreate = false;
+    					cerr << "ERROR: File " << inputFilename << " could not be read" << endl;
+    					break;
+    				}
+
+    				std::vector<char> fileContents((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+    				std::vector<char>::size_type size = fileContents.size();
+    				data = new unsigned char[size];
+    				memcpy(data, (unsigned char *)fileContents.data(), size);
+    				uint16_t paramSize = data[0];
+    				param = std::string((char *)data+1, paramSize);
+    				data = data + (1 + paramSize);
+    				dataSize = size - 1 - paramSize;
+    			}
+
     			// first startSend
     			for(unsigned int i=0; i<numOfCreatedFlows; i++)
     			{
@@ -236,10 +271,8 @@ int main(int argc, char *argv[])
     				throughputSums[i]=0.0;
     			}//for
     			sumThrouhgput=0.0;
-    			// then sendData
-    			unsigned char *data= new unsigned char[dataSize];
-    			for (unsigned int i=0; i<dataSize; i++)	data[i]=i;
 
+    			// then sendData
     			for(unsigned int j=1; j<=loop; j++)
     			{
     				std::cout << "Loop: " << j << " of " << loop << std::endl;

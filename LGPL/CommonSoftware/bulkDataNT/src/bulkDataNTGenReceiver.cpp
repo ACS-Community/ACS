@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.15 2013/03/16 20:25:02 rtobar Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.16 2013/03/16 21:01:30 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -294,6 +294,7 @@ int main(int argc, char *argv[])
 			std::ostream_iterator<unsigned char> it(ofs);
 			std::copy(data.begin(), data.end(), it);
 			ofs.close();
+			cout << "Dumped contents for flow " << flows[i]->getName() << " to " << filename << endl;
 		}
 		delete callbacks[i];
 	 }
