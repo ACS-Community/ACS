@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.14 2013/03/15 17:51:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTGenReceiver.cpp,v 1.15 2013/03/16 20:25:02 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,6 +25,7 @@
 #include "bulkDataNTReceiverStream.h"
 #include "bulkDataNTCallback.h"
 #include <iostream>
+#include <iosfwd>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
 
@@ -33,7 +34,8 @@ using namespace std;
 class  TestCB:  public BulkDataNTCallback
 {
 public:
-	TestCB()
+	TestCB() :
+		dataToStore(0)
 	{
 		totalRcvData=0;
 	}
@@ -50,9 +52,15 @@ public:
 		sn = getStreamName();
 
 		std::cout << "cbStart[ " << sn << "#" << fn  << " ]: got a parameter: ";
+		if( storeData ) {
+			dataToStore.push_back(size); // TODO: this trims an uint into an unsigned char (2/4 bytes to 1)
+		}
 		for(unsigned int i=0; i<size; i++)
 		{
 			std::cout <<  *(char*)(userParam_p+i);
+			if( storeData ) {
+				dataToStore.push_back(*(userParam_p+i));
+			}
 		}
 		std::cout << " of size: " << size << std::endl;
 		frameCount = 0;
@@ -81,7 +89,7 @@ public:
 		if (cbDealy>0) 
 		  {
 		    ACE_Time_Value start_time, elapsed_time;
-                    start_time =  ACE_OS::gettimeofday(); 
+		    start_time =  ACE_OS::gettimeofday();
 		    elapsed_time =  ACE_OS::gettimeofday() - start_time;
 		    // usleep(cbDealy);
 		    while (elapsed_time.usec() <  cbDealy)
@@ -90,6 +98,12 @@ public:
 		      }
 
 		  }
+
+		if( storeData ) {
+			for(unsigned int i=0; i<size; i++) {
+				dataToStore.push_back(*(data + i));
+			}
+		}
 		return 0;
 	}
 
@@ -99,21 +113,37 @@ public:
 		return 0;
 	}
 
+	void setStoreData(bool shouldStoreData) {
+		storeData = shouldStoreData;
+	}
+
+	list<unsigned char> getData() {
+		return dataToStore;
+	}
+
+	uint16_t getUserParamSize() {
+		return userParamSize;
+	}
+
 	static long cbDealy;
 	static bool cbReceivePrint;
+
 private:
 	std::string fn; ///flow Name
 	std::string sn; ///stream name
 	unsigned int totalRcvData; ///total size of all received data
 	unsigned int rcvDataStartStop; ///size of received data between Start/stop
 	unsigned int frameCount; ///frame count
+	bool storeData;
+	uint16_t userParamSize;
+	list<unsigned char> dataToStore;
 };
 
 long TestCB::cbDealy = 0;
 bool TestCB::cbReceivePrint=true;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive] [-w output filename prefix]" << endl;
 	exit(1);
 }
 
@@ -125,6 +155,7 @@ int main(int argc, char *argv[])
 	ReceiverStreamConfiguration streamCfg;
 	ReceiverFlowConfiguration flowCfg;
 	char *streamName = "DefaultStream";
+	char *outputFilenamePrefix = 0;
 	string qosLib="BulkDataQoSLibrary";
 	/*char unicastPortQoS[250];
 	unsigned int unicastPort=24000;
@@ -133,7 +164,7 @@ int main(int argc, char *argv[])
 	list<char *> flowNames;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u::n");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u::nw:");
 	if(get_opts.long_option(ACE_TEXT ("qos_lib"), 0, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	    {
 	    	cerr << "long option: qos_lib can not be added" << endl;
@@ -186,6 +217,11 @@ int main(int argc, char *argv[])
 				TestCB::cbDealy = atoi(get_opts.opt_arg());
 				break;
 			}
+			case 'w':
+			{
+				outputFilenamePrefix = strdup(get_opts.opt_arg());
+				break;
+			}
 		}//case
 
 	}//while
@@ -198,6 +234,7 @@ int main(int argc, char *argv[])
 	ACS_CHECK_LOGGER;
 
 	vector<BulkDataNTReceiverFlow*> flows;
+	vector<TestCB*> callbacks;
 
 	//streamCfg.setUseIncrementUnicastPort(false);
 	//streamCfg.setParticipantPerStream(true);
@@ -223,9 +260,12 @@ int main(int argc, char *argv[])
 		sprintf(multicastAdd, "225.3.2.%d", j++);
 		flowCfg.setMulticastAddress(multicastAdd);
 		*/
-		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg);
+		TestCB *cb = new TestCB();
+		cb->setStoreData(outputFilenamePrefix != 0);
+		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg, cb);
 		flows.push_back(flow);
-		flow->getCallback<TestCB>();
+		callbacks.push_back(cb);
+//		flow->getCallback<TestCB>();
 		//flowCfg.setProfileQos("TCPDefaultStreamQosProfile");
 //		BulkDataNTReceiverFlow *flow100 = receiverStream100.createFlow((*it), flowCfg);
 	}
@@ -236,14 +276,26 @@ int main(int argc, char *argv[])
 		std::cout << actflowNames[i] << " ";
 	std::cout << "] of stream: " <<  streamName << std::endl;
 
-
-
 	std::cout << "Press a key to exit.." << std::endl;
 	getchar();
 
 	unsigned int numOfCreatedFlows = receiverStream.getFlowNumber();
 	for(unsigned int i=0; i<numOfCreatedFlows; i++)
 	{
-	    		    flows[i]->dumpStatistics();
+		flows[i]->dumpStatistics();
+		if( outputFilenamePrefix != 0 ) {
+			string filename;
+			filename += outputFilenamePrefix;
+			filename += "_";
+			filename += flows[i]->getName();
+
+			list<unsigned char> data = callbacks[i]->getData();
+			std::ofstream ofs(filename.c_str());
+			std::ostream_iterator<unsigned char> it(ofs);
+			std::copy(data.begin(), data.end(), it);
+			ofs.close();
+		}
+		delete callbacks[i];
 	 }
+
 }
