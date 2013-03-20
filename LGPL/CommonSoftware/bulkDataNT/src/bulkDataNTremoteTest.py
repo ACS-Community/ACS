@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: bulkDataNTremoteTest.py,v 1.18 2013/03/03 19:14:48 gchiozzi Exp $"
+# "@(#) $Id: bulkDataNTremoteTest.py,v 1.18 2013/03/03 19:14:49 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -84,7 +84,8 @@ class bulkDataNTtestSuite:
         #
         self.baseUnicastPort = 4800        
         
-        self.preCmd = "source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG=1; export ACS_LOG_STDOUT=2; "
+        self.preCmd = "source " + self.sourceFile + "; export ENABLE_BULKDATA_NT=true; export BULKDATA_NT_DEBUG="
+        self.preCmd+=str(bd_nt_debug)+ "; export ACS_LOG_STDOUT=2; "
 
         if self.acsdataEnv is not None:
             self.preCmd+="export ACSDATA="+self.acsdataEnv+"; "
@@ -179,7 +180,7 @@ class bulkDataNTtestSuite:
                 print 'Problem to execute: ' + self.sendersData[h].command
                 
         print 'Going to send data'
-        time.sleep(10)                
+        time.sleep(40)                
         for h in sorted(self.sendersData):
             print '----> Triggering sending data for host: '+h
             sp = self.sendersData[h].process           
@@ -420,8 +421,9 @@ if __name__ == '__main__':
     processRes  = False
     throttle    = 0
     qos_lib     = "BulkDataQoSLibrary"
+    bd_nt_debug = 1
     
-    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:mv", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose", "process", "throttle=", "qos_lib="])
+    opts, args = getopt.getopt(sys.argv[1:], "hs:r:b:l:mv", ["help", "senders=", "receivers=", "source=", "acsdata=", "verbose", "process", "throttle=", "qos_lib=", "bulkdata_nt_debug="])
     for o,a in opts:
         if o in ("-h", "--help"):
             print sys.argv[0]+' - Command line options'
@@ -438,6 +440,7 @@ if __name__ == '__main__':
             print '  [--process]                     : Process results to extract statistics and plots'
             print '  [--throttle=MBsec]              : Throttling in MBytes/sec. Default: 0.0 (no throttling)'
             print '  [--qos_lib=qosLibName]          : Name for the QoS library to use.'
+            print '  [--bulkdata_nt_debug=level]     : BDNT debug level (BULKDATA_NT_DEBUG). 0 - no debug'
             print '                                    Default:     BulkDataQoSLibrary'
             print '                                    Alternative: TCPBulkDataQoSLibrary'
             print '  -h or --help                    : This help'
@@ -456,6 +459,8 @@ if __name__ == '__main__':
             sf=a
         elif o=="--acsdata":
             acsdata=a
+        elif o=="--bulkdata_nt_debug":
+           bd_nt_debug=a
         elif o=="--process":
             processRes=True
         elif o=="--throttle":
