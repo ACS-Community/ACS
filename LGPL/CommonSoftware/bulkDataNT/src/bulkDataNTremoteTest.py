@@ -180,7 +180,7 @@ class bulkDataNTtestSuite:
                 print 'Problem to execute: ' + self.sendersData[h].command
                 
         print 'Going to send data'
-        time.sleep(40)                
+        time.sleep(10)                
         for h in sorted(self.sendersData):
             print '----> Triggering sending data for host: '+h
             sp = self.sendersData[h].process           
