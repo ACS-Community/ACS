@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************
  * 
- * "@(#) $Id: bulkDataNTArrayThread.h,v 1.1 2013/02/11 18:37:33 rbourtem Exp $"
+ * "@(#) $Id: bulkDataNTArrayThread.h,v 1.1 2013/02/11 18:37:36 rbourtem Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -92,7 +92,11 @@ public:
 	 */
 	BulkDataNTArrayThread(const ACE_CString &name,
 			const std::string &streamName,
-			const std::string &sendFlowName);
+			const std::string &sendFlowName,
+			const std::string &qosLib,
+			const double &throttling,
+			const double &sendTimeout,
+			const double &ACKTimeout);
 
 	/** destructor.
 	 */
@@ -117,6 +121,12 @@ public:
 	 */
 	void startSequence();
 
+	/** stop a sub-scan sequence.
+         ** @exception BDNTEx
+         */
+        void stopSequence();
+
+
 private:
 
 	ACE_CString name;
@@ -124,6 +134,8 @@ private:
 	std::string m_streamName;
 
 	std::string m_sendFlowName;
+
+	std::string m_qosLib;
 
 	/** End of sequence status as returned by the loop handler method.
 	 */
@@ -153,7 +165,7 @@ private:
 	/** Timeout for guarded access operations.
 	 */
 	static const ACS::TimeInterval m_accessTimeout = 50000000LLU;
-
+	//static const ACS::TimeInterval m_accessTimeout = 5000000000LLU;
 	/** Memory heap reference to request/release memory.
 	 */
 	//Corr::CDP::MemoryHeap *m_mh_p;
@@ -203,6 +215,17 @@ private:
 	 */
 	bool m_addDataEventLogFlag;
 
+	/** condition variable object for stopping a sequence.
+         ** The stop sequence method waits on this variable for feedback from
+         ** thread after it has actually stopped. The method itself raises
+         ** the stop flag that's check by the thread. The associated mutex is
+         ** the one declared above as m_accessMutex.
+         ** Note: seems to be convenient to use a conditional variable for this
+         ** purpose given that the 'wait' call helps releasing the access mutex
+         ** that needs to be released any how.
+         */
+         pthread_cond_t m_stopCondition;
+
 	/** flag used to synchronize the stopping of a sequence.
 	 ** The stopSequence method sets the stop flag and then it waits for the
 	 ** thread to acknowledge by signaling this condition variable and checking
@@ -214,6 +237,12 @@ private:
 	 ** is already running
 	 */
 	bool sequenceAlreadyRunningFlag;
+
+	double m_throttling;
+
+	double m_sendTimeout;
+
+	double m_ACKTimeout;
 
 	/** signals the thread to exit it's main running loop.
 	 ** This is a re-implementation of the base method. We need
@@ -248,6 +277,10 @@ private:
 	void deleteFrontEndBuffer(const ACS::TimeInterval _to, std::list< std::pair<uint8_t *, size_t> > &out);
 
 	void relyDataToStreamer(std::list< std::pair<uint8_t *, size_t> > &data);
+
+	/** Abort sequence by aborting streaming
+         */
+        void abort(const std::string &reason);
 };
 };
 
