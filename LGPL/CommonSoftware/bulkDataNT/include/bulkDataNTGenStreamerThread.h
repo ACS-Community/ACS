@@ -64,7 +64,13 @@ class StreamerThread : public ACS::Thread
 public:
 	/** constructor.
 	 */
-	StreamerThread(const char *threadName, const std::string & streamName, const std::string &sendFlowName);
+	StreamerThread(	const char *threadName,
+			const std::string & streamName,
+			const std::string &sendFlowName,
+			const std::string &qosLib,
+			const double & throttling,
+			const double & sendTimeout,
+			const double & ACKTimeout);
 
 	/** Destructor flushes remaining data and stops the thread.
 	 */
@@ -74,10 +80,10 @@ public:
 	 */
 	void send(uint8_t * data, size_t size);
 
-	/** Send abort message and stop flow.
+	/** Stop flow.
 	 */
-	void abort(uint8_t * data, size_t size);
-
+	//  void abort(uint8_t * data, size_t size);
+	void abort();
 	/** Waits until a given blob is completed or aborted, it
 	 ** simply invokes wait() on base Streamer class which is
 	 ** actually private.
@@ -151,14 +157,22 @@ private:
 	/** Timeout for guarded access operations.
 	 */
 	static const ACS::TimeInterval m_accessTimeout = 50000000LLU;
-
+	//static const ACS::TimeInterval m_accessTimeout = 5000000000LLU;
 	std::string m_streamName;
 
 	std::string m_sendFlowName;
 
+	std::string m_qosLib;
+
 	BulkDataNTSenderStream * m_senderStream;
 
 	BulkDataNTSenderFlow *m_sendFlow;
+
+	double m_throttling;
+	
+	double m_sendTimeout;
+	
+	double m_ACKTimeout;
 };
 };
 
