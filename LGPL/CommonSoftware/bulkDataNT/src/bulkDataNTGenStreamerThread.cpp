@@ -67,14 +67,24 @@ using namespace AcsBulkdata;
 const ACS::TimeInterval StreamerThread::m_accessTimeout;
 
 //----------------------------------------------------------------------------------
-StreamerThread::StreamerThread(const char *threadName, const string & streamName, const string & sendFlowName):
+StreamerThread::StreamerThread( const char *threadName,
+				const string & streamName,
+				const string & sendFlowName,
+				const string & qosLib,
+				const double & throttling,
+				const double &sendTimeout,
+				const double &ACKTimeout):
     ACS::Thread(threadName, m_accessTimeout + 10000000LLU),
     m_isThreadRunning(true),
     m_isAbort(false),
     m_streamName(streamName),
     m_sendFlowName(sendFlowName),
+    m_qosLib(qosLib),
     m_senderStream(0),
-    m_sendFlow(0)
+    m_sendFlow(0),
+    m_throttling(throttling),
+    m_sendTimeout(sendTimeout),
+    m_ACKTimeout(ACKTimeout)
 {
     int rc;
 
@@ -103,17 +113,18 @@ StreamerThread::StreamerThread(const char *threadName, const string & streamName
     }
 
     // Create the stream
-
-    // create the flow
-    m_senderStream = new BulkDataNTSenderStream(streamName.c_str());
+	SenderStreamConfiguration scfg;
+	scfg.setParticipantPerStream(true);
+	scfg.setQosLibrary(m_qosLib.c_str());
+	m_senderStream = new BulkDataNTSenderStream(streamName.c_str(),scfg);
 
     // let's create flows
     list<char *>::iterator it;
     SenderFlowConfiguration cfg;
-    // TODO
-    /*cfg.setACKsTimeout(ACKtimeout);
-    	cfg.setSendFrameTimeout(sendTimeout);
-    	cfg.setThrottling(throttling);*/
+	cfg.setQosLibrary(m_qosLib.c_str());
+	cfg.setACKsTimeout(m_ACKTimeout);
+    	cfg.setSendFrameTimeout(m_sendTimeout);
+    	cfg.setThrottling(m_throttling);
     m_sendFlow = m_senderStream->createFlow(m_sendFlowName.c_str(), cfg);
 
     // print out what we have created
@@ -213,7 +224,8 @@ void StreamerThread::send(uint8_t * data, size_t size)
 }
 
 //----------------------------------------------------------------------------------
-void StreamerThread::abort(uint8_t * data, size_t size)
+//void StreamerThread::abort(uint8_t * data, size_t size)
+void StreamerThread::abort()
 {
     string isError("");
 
@@ -238,7 +250,7 @@ void StreamerThread::abort(uint8_t * data, size_t size)
     //
     // add data pointer to list
     //
-    m_data.push_back(pair<uint8_t *, size_t>(data, size));
+    ///m_data.push_back(pair<uint8_t *, size_t>(data, size));
 
     //
     // signal that the list contains new data
@@ -285,7 +297,7 @@ void StreamerThread::run()
     {
         list<pair<uint8_t *, size_t> > data;
 
-        cout << getName() << ": Wait for data available" << endl;
+        // cout << getName() << ": Wait for data available" << endl;
 
         //
         // wait for data available
@@ -304,7 +316,7 @@ void StreamerThread::run()
             break;
         }
 
-        cout << getName() << ": data available!" << endl;
+       // cout << getName() << ": data available!" << endl;
 
         //
         // lock the list before accessing it
@@ -339,7 +351,7 @@ void StreamerThread::run()
         m_data.clear();
 
         //
-        // copy the actul abort flag status, we must read it only
+        // copy the actual abort flag status, we must read it only
         // while holding the mutex.
         //
         isAbort = m_isAbort;
@@ -349,25 +361,28 @@ void StreamerThread::run()
         //
         pthread_mutex_unlock(&m_accessMutex);
 
-        cout << getName() << ": Ready to send via DDS" << endl;
+       // cout << getName() << ": Ready to send via DDS" << endl;
 
         sumThrouhgput=0.0;
         //
         // iterate through items in the list streaming them out,
         // the last item is to be 'abort' if the flag is set
         //
-        for ( list<pair<uint8_t *, size_t> >::iterator i = data.begin();
+        /*for ( list<pair<uint8_t *, size_t> >::iterator i = data.begin();
               i != (isAbort ? --data.end() : data.end());
+              ++i )*/
+        for ( list<pair<uint8_t *, size_t> >::iterator i = data.begin();
+              i != data.end();
               ++i )
         {
             try
             {
-            	// TODO send through DDS
+            	// send through DDS
             	dataSize = i->second;
             	m_sendFlow->startSend((const unsigned char*)&dataSize, sizeof(unsigned int));
             	//ACS_SHORT_LOG((LM_INFO, "Going to send : %d Bytes of data to flow: '%s' to %d receiver(s)", dataSize, m_sendFlowName.c_str(), m_sendFlow->getNumberOfReceivers()));
             	ACS_LOG(LM_RUNTIME_CONTEXT,__FUNCTION__,(LM_INFO,"Going to send : %d Bytes of data to flow: '%s' to %d receiver(s)", dataSize, m_sendFlowName.c_str(), m_sendFlow->getNumberOfReceivers()));
-            	cout << "Going to send  " << dataSize << " Bytes of data to flow " << endl;
+            	//cout << "Going to send  " << dataSize << " Bytes of data to flow " << m_sendFlowName << endl;
             	start_time = ACE_OS::gettimeofday();
             	m_sendFlow->sendData(i->first,i->second);
             	elapsed_time = ACE_OS::gettimeofday() - start_time;
@@ -396,13 +411,28 @@ void StreamerThread::run()
         //
         if ( isAbort )
         {
-            ACS_SHORT_LOG((LM_DEBUG, "streamer thread aborting blob "));
-
+            ACS_SHORT_LOG((LM_DEBUG, "streamer thread aborting "));
+		cout << "streamer thread aborting" << endl;
             /*try
             {
-                Streamer<BulkData::SenderTemporal>::abort((--data.end())->first, *((--data.end())->second));
+            	// send through DDS
+            	dataSize = --data.end()->second;
+            	m_sendFlow->startSend((const unsigned char*)&dataSize, sizeof(unsigned int));
+            	//ACS_SHORT_LOG((LM_INFO, "Going to send : %d Bytes of data to flow: '%s' to %d receiver(s)", dataSize, m_sendFlowName.c_str(), m_sendFlow->getNumberOfReceivers()));
+            	ACS_LOG(LM_RUNTIME_CONTEXT,__FUNCTION__,(LM_INFO,"Going to send : %d Bytes of data to flow: '%s' to %d receiver(s)", dataSize, m_sendFlowName.c_str(), m_sendFlow->getNumberOfReceivers()));
+            	cout << "Going to send  " << dataSize << " Bytes of data to flow " << m_sendFlowName << endl;
+            	start_time = ACE_OS::gettimeofday();
+            	m_sendFlow->sendData(--data.end()->first,--data.end()->second);
+            	elapsed_time = ACE_OS::gettimeofday() - start_time;
+            	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+            	throuhgput = (dataSize/(1024.0*1024.0))/send_time;
+            	ACS_SHORT_LOG((LM_INFO, "Transfer rate for flow '%s': %f MBytes/sec",
+            			m_sendFlowName.c_str(), throuhgput));
+            	sumThrouhgput+=throuhgput;
+            	m_sendFlow->stopSend();
+            	//Blob::Streamer<BulkData::SenderTemporal>::send(i->first, *(i->second));
             }
-            catch ( CorrEx &ex )
+            catch ( BDNTEx &ex )
             {
                 ACS_SHORT_LOG((LM_ERROR, "%s", ex.asString().c_str()));
             }*/
@@ -410,7 +440,7 @@ void StreamerThread::run()
             //
             // get rid of memory that was allocated before us
             //
-            //delete ((--data.end())->second);
+            //delete ((--data.end())->first);
 
             //
             // announce that abort has completed
