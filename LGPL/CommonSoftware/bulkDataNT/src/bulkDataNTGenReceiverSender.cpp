@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTGenReceiverSender.cpp,v 1.2 2013/02/11 18:37:33 rbourtem Exp $"
+ * "@(#) $Id: bulkDataNTGenReceiverSender.cpp,v 1.2 2013/02/11 18:37:36 rbourtem Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -156,13 +156,13 @@ public:
 	{
 		if (cbReceivePrint)
 		{
-			std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " :";
+			//std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " :";
 			/*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
 		}
 			 */
-			std::cout << std::endl;
+			//std::cout << std::endl;
 		}
 		if (cbDelay>0)
 		{
@@ -299,6 +299,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-ru \t [receiver unicast port] receiver unicast mode]" << endl;
 	cout << "\t[-rm \t receiver multicast address]" << endl;
 	cout << "\t[-rv \t additional printing in cbReceive]" << endl;
+	cout << "\t[-rqos_lib \t receiver QOS library]. Default BulkDataQoSLibrary." << endl;
 	cout << "\t[-ss \t senderStreamName]" << endl;
 	cout << "\t[-sf \t senderFlowName]" << endl;
 	cout << "\t[-sb \t sender data size in bytes]. Default: 65000" << endl;
@@ -308,6 +309,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-st \t send frame timeout in sec]. Default: 5.0" << endl;
 	cout << "\t[-sa \t send ACK timeout in sec]. Default: 2.0" << endl;
 	cout << "\t[-so \t send throttling in MBytes/sec]. Default: 0.0 (no throttling)" << endl;
+	cout << "\t[-sqos_lib \t sender QOS library]. Default BulkDataQoSLibrary." << endl;
 	exit(1);
 }
 
@@ -316,7 +318,7 @@ int main(int argc, char *argv[])
 {
 	int option;
 	bool waitForKey=true;
-	bool sendData=true;
+	//bool sendData=true;
 	//bool recreate=true;
 	unsigned int loop=1;
 	double throttling=0.0;
@@ -329,19 +331,23 @@ int main(int argc, char *argv[])
 	SenderFlowConfiguration sendFlowCfg;
 	const int RECEIVER_STREAM_NAME_OPTION 	= 1;
 	const int RECEIVER_FLOWS_NAMES_OPTION	= 2;
-	const int RECEIVER_DELAY_OPTION			= 3;
+	const int RECEIVER_DELAY_OPTION		= 3;
 	const int RECEIVER_UNICAST_OPTION       = 4;
-	const int RECEIVER_MULTICAST_OPTION		= 5;
-	const int SENDER_STREAM_NAME_OPTION 	= 6;
-	const int SENDER_FLOW_NAMES_OPTION 		= 7;
-	const int SENDER_DATA_SIZE_OPTION		= 8;
-	const int SENDER_START_SEND_PARAM_OPTION = 9;
-	const int SENDER_NBLOOPS_OPTION			= 10;
-	const int SENDER_NO_KEY_WAIT_OPTION		= 11;
-	const int SENDER_FRAME_TIMEOUT_OPTION	= 12;
-	const int SENDER_ACK_TIMEOUT_OPTION		= 13;
-	const int SENDER_THROTTLING_OPTION		= 14;
+	const int RECEIVER_MULTICAST_OPTION	= 5;
+	const int RECEIVER_QOS_LIB_OPTION	= 6;
+	const int SENDER_STREAM_NAME_OPTION 	= 7;
+	const int SENDER_FLOW_NAME_OPTION 	= 8;
+	const int SENDER_DATA_SIZE_OPTION	= 9;
+	const int SENDER_START_SEND_PARAM_OPTION = 10;
+	const int SENDER_NBLOOPS_OPTION		= 11;
+	const int SENDER_NO_KEY_WAIT_OPTION	= 12;
+	const int SENDER_FRAME_TIMEOUT_OPTION	= 13;
+	const int SENDER_ACK_TIMEOUT_OPTION	= 14;
+	const int SENDER_THROTTLING_OPTION	= 15;
+	const int SENDER_QOS_LIB_OPTION		= 16;
 	vector <BulkDataNTReceiverFlow *> receiverFlowsList;
+	string rcvQosLib = "BulkDataQoSLibrary";
+	string sndQosLib = "BulkDataQoSLibrary";
 
 	string recvStreamName = "DefaultRcvStream";
 	string senderStreamName = "DefaultSendStream";
@@ -352,7 +358,6 @@ int main(int argc, char *argv[])
 	 */
 	//char multicastAdd[100];
 	list<char *> recvFlows;
-	list<char *> sendFlows;
 	unsigned int dataSize=65000;
 
 	// Parse the args
@@ -368,15 +373,18 @@ int main(int argc, char *argv[])
 	if (get_opts.long_option(ACE_TEXT ("rd"), RECEIVER_DELAY_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	{		return -1;	}
 	// receiver unicast option
-	if (get_opts.long_option(ACE_TEXT ("ru"), RECEIVER_UNICAST_OPTION, ACE_Get_Opt::ARG_OPTIONAL) == -1)
+	if (get_opts.long_option(ACE_TEXT ("ru"), RECEIVER_UNICAST_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	{		return -1;	}
 	// receiver multicast (rm) option
 	if (get_opts.long_option(ACE_TEXT ("rm"), RECEIVER_MULTICAST_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	{		return -1;	}
+	if (get_opts.long_option(ACE_TEXT ("rqos_lib"), RECEIVER_QOS_LIB_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
+        {               return -1;      }
 	get_opts.long_option(ACE_TEXT ("rv"), 'v');
+	
 
 	// sender flows names list (sf) option
-	if(get_opts.long_option(ACE_TEXT ("sf"), SENDER_FLOW_NAMES_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
+	if(get_opts.long_option(ACE_TEXT ("sf"), SENDER_FLOW_NAME_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	{		return -1; 	}
 	// sender stream name (ss) option
 	if (get_opts.long_option(ACE_TEXT ("ss"), SENDER_STREAM_NAME_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
@@ -402,7 +410,9 @@ int main(int argc, char *argv[])
 	// Sender Throttling (so) option
 	if (get_opts.long_option(ACE_TEXT ("so"), SENDER_THROTTLING_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
 	{		return -1;	}
-
+	if (get_opts.long_option(ACE_TEXT ("sqos_lib"), SENDER_QOS_LIB_OPTION, ACE_Get_Opt::ARG_REQUIRED) == -1)
+        {               return -1;      }
+	
 	while(( option = get_opts()) != -1 )
 	{
 		switch(option) {
@@ -439,7 +449,7 @@ int main(int argc, char *argv[])
 			cout << "receiver Stream Name = " << recvStreamName << endl;
 			break;
 		}
-		case SENDER_FLOW_NAMES_OPTION:
+		case SENDER_FLOW_NAME_OPTION:
 		{
 			senderFlowName = get_opts.opt_arg();
 			cout << "sender flow name = " << senderFlowName << endl;
@@ -457,6 +467,11 @@ int main(int argc, char *argv[])
 		{
 			TestReceiverCB::cbDelay = atoi(get_opts.opt_arg());
 			break;
+		}
+		case RECEIVER_QOS_LIB_OPTION:
+		{
+			rcvQosLib = get_opts.opt_arg();
+			cout << "Receiver QOS library name = " << rcvQosLib << endl;
 		}
 		case SENDER_START_SEND_PARAM_OPTION:
 		{
@@ -493,6 +508,11 @@ int main(int argc, char *argv[])
 			throttling = atof(get_opts.opt_arg());
 			break;
 		}
+		case SENDER_QOS_LIB_OPTION:
+		{
+			sndQosLib = get_opts.opt_arg();
+			cout << "Sender QOS library name = " << sndQosLib << endl;
+		}
 		}// switch (option)
 	}//while
 
@@ -504,9 +524,20 @@ int main(int argc, char *argv[])
 	ACS_CHECK_LOGGER;
 
 	//streamCfg.setUseIncrementUnicastPort(false);
-	AcsBulkdata::BulkDataNTReceiverStream<TestReceiverCB> receiverStream(recvStreamName.c_str(), recvStreamCfg);
-
+	recvStreamCfg.setQosLibrary(rcvQosLib.c_str());
+	recvStreamCfg.setParticipantPerStream(true);
+	AcsBulkdata::BulkDataNTReceiverStream<TestReceiverCB> * receiverStream = 0;
+	try
+	{
+		receiverStream = new AcsBulkdata::BulkDataNTReceiverStream<TestReceiverCB>(recvStreamName.c_str(), recvStreamCfg);
+	}
+	catch(StreamCreateProblemExImpl &ex)
+	{
+		cerr << "Problem creating receiver stream " << recvStreamName << endl;
+		exit(-1);
+	}
 	//flowCfg.setUnicastPort(47000);
+	recvFlowCfg.setQosLibrary(rcvQosLib.c_str());
 	list<char *>::iterator it;
 	//unsigned int j=0;
 	// Create Receiver flows
@@ -519,26 +550,27 @@ int main(int argc, char *argv[])
 		sprintf(multicastAdd, "225.3.2.%d", j++);
 		flowCfg.setMulticastAddress(multicastAdd);
 		 */
-		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), recvFlowCfg);
+		BulkDataNTReceiverFlow *flow = receiverStream->createFlow((*it), recvFlowCfg);
 		receiverFlowsList.push_back(flow);
 	}
 
-	std::vector<string> flowNames = receiverStream.getFlowNames();
-	std::cout << "Waiting on the following " << receiverStream.getFlowNumber() << " flow(s):[ ";
+	std::vector<string> flowNames = receiverStream->getFlowNames();
+	std::cout << "Waiting on the following " << receiverStream->getFlowNumber() << " flow(s):[ ";
 	for(unsigned int i=0;i<flowNames.size(); i++)
 		std::cout << flowNames[i] << " ";
 	std::cout << "] of stream: " <<  recvStreamName << std::endl;
 
 
 	//
-	// processing threads, note that we are not jet trying to support simultaneous
+	// processing threads, note that we are not yet trying to support simultaneous
 	// arrays, therefore, the dimension of the array is set to 1.
 	//
 	//std::vector<BulkDataNTArrayThread *> arrayThread_p;
 
 	// Create the sender thread
 	BulkDataNTArrayThread *senderThread;
-	senderThread = new BulkDataNTArrayThread("SENDER_THREAD",senderStreamName, senderFlowName);
+	senderThread = new BulkDataNTArrayThread("SENDER_THREAD",senderStreamName, senderFlowName, sndQosLib,
+							throttling,sendTimeout,ACKtimeout);
 	senderThread->resume();
 
 	TestReceiverCB * cbtmp = NULL;
@@ -551,17 +583,26 @@ int main(int argc, char *argv[])
 
 	ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
 
-	std::cout << "press ENTER to transmit data to connected receivers ..." << std::endl;
-	if (waitForKey) getchar();
-	sendData=true;
-	senderThread->startSequence();
-
-	std::cout << "press ENTER to stop transmitting data" << std::endl;
+	//std::cout << "press ENTER to transmit data to connected receivers ..." << std::endl;
+	//if (waitForKey) getchar();
+	//sendData=true;
+	try
+	{
+		senderThread->startSequence();
+	}
+	catch(StreamCreateProblemExImpl &ex)
+	{
+		cerr << "Problem starting sequence (Stream creation problem)" << endl;
+		delete receiverStream;
+		exit(-1);
+	}
+	std::cout << std::endl;
+	std::cout << "press ENTER to stop transmitting data" << std::endl << std::endl;
 	//int c=getchar();
-	getchar();
-
-	//senderThread->stopSequence();
-
+	int c=getchar();
+	senderThread->stopSequence();
+	if (c == '\n')
+		std::cout << "Stop requested by the user..." << std::endl;
 
 	/*while(recreate)
 	{
@@ -688,13 +729,13 @@ int main(int argc, char *argv[])
 			ex.log();
 		}
 	}//while(recreate)*/
-
-
+	// cout << "Stopping the array thread" << endl;
 	if(!senderThread->stop())
 	{
 		ACS_SHORT_LOG((LM_DEBUG,"failed to stop sender thread (%s)",
 							senderThread->getName().c_str()));
 	}
 	delete senderThread;
+	delete receiverStream;
 	m_logger.flush();
 }
