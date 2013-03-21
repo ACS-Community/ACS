@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************
  * 
- * "@(#) $Id: bulkDataNTArrayThread.cpp,v 1.1 2013/02/11 18:37:33 rbourtem Exp $"
+ * "@(#) $Id: bulkDataNTArrayThread.cpp,v 1.1 2013/02/11 18:37:36 rbourtem Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -75,14 +75,22 @@ const ACS::TimeInterval ArrayThread::m_wvrIntegrationTimeMax;*/
 //----------------------------------------------------------------------------------
 BulkDataNTArrayThread::BulkDataNTArrayThread(const ACE_CString &name,
 		const string &streamName,
-		const string &sendFlowName):
+		const string &sendFlowName,
+		const string &qosLib,
+		const double &throttling,
+		const double &sendTimeout,
+		const double &ACKTimeout):
 		ACS::Thread(name, m_accessTimeout + 10000000LLU),
 		m_streamName(streamName),
 		m_sendFlowName(sendFlowName),
+		m_qosLib(qosLib),
 		m_Streamer(0),
 		m_addDataEventLogFlag(false),
 		m_sequenceStopFlag(false),
-		sequenceAlreadyRunningFlag(false)
+		sequenceAlreadyRunningFlag(false),
+		m_throttling(throttling),
+		m_sendTimeout(sendTimeout),
+		m_ACKTimeout(ACKTimeout)
 {
 	int rc = 0;
 
@@ -101,6 +109,13 @@ BulkDataNTArrayThread::BulkDataNTArrayThread(const ACE_CString &name,
 	if ( (rc = pthread_cond_init(&m_condition, NULL)) )
 	{
 		BDNT_EX_THROW_EX("failed to initialize condition variable (err=%d)", rc);
+	}
+	//
+	// create conditional variable used for stop-sequence synchronization
+	//
+	if ( (rc = pthread_cond_init(&m_stopCondition, NULL)) )
+	{
+		BDNT_EX_THROW_EX("failed to initialize stop-sequence condition variable (err=%d)", rc);
 	}
 
 }
@@ -131,7 +146,7 @@ BulkDataNTArrayThread::~BulkDataNTArrayThread()
     //
     // delete stop-sequence condition variable
     //
-    //pthread_cond_destroy(&m_stopCondition);
+    pthread_cond_destroy(&m_stopCondition);
 
     //
     // delete new data condition variable
@@ -191,7 +206,7 @@ void BulkDataNTArrayThread::run()
         }
         
         ACS_SHORT_LOG((LM_DEBUG, "array thread waiting for sequence (%s)",name.c_str()));
-        //cout << "array thread waiting for sequence" << endl;
+       // cout << "array thread waiting for sequence" << endl;
 
         // if no sequence running then wait for it, the loop must break
         // when data has arrived or when the thread is being requested 
@@ -208,7 +223,7 @@ void BulkDataNTArrayThread::run()
             }
         }
 
-        cout << "no longer waiting..." << endl;
+       // cout << "no longer waiting..." << endl;
         // if we were requested to terminate then break the
         // big loop now, otherwise a sequence was just started
         if ( threadStopRequested )
@@ -225,7 +240,7 @@ void BulkDataNTArrayThread::run()
                        "sub-array thread started sequence of length %zd",
                        m_basket.getRunningMap().size()));*/
 
-        cout << "sub-array thread started sequence" << endl;
+//        cout << "sub-array thread started sequence" << endl;
 
         // in case of any exception in the loop then record it in
         // this variable
@@ -269,26 +284,25 @@ void BulkDataNTArrayThread::run()
         case SequenceEndStatus_STOPPED:
 
         	// TODO
-        	///abort("sub-scan sequence has been willfully stopped");
+        	abort("sub-scan sequence has been willfully stopped");
 
             //
             // reset the flag for letting the stopSequence method know
             // that we are correctly acknowledging
             //
             m_sequenceStopFlag = false;
-            
+            // cout << "Signal the stopCondition" << endl; 
             //
             // signal the condition, the stopSequence method is waiting
             // on it.
-            // TODO
-            ///pthread_cond_broadcast(&m_stopCondition);
+            pthread_cond_broadcast(&m_stopCondition);
 
             break;
 
         case SequenceEndStatus_EXCEPTION:
             
         	// TODO
-        	///abort(ex.asString());
+        	abort(ex.asString());
 
             break;
         }
@@ -321,6 +335,7 @@ void BulkDataNTArrayThread::run()
         //
         // delete blob streamer threads
         //
+	
         /*for ( map<SpectralResolutionTypeMod::SpectralResolutionType, Corr::CDP::Master::Blob::StreamerThread *>::iterator i = m_blobStreamer.begin();
               i != m_blobStreamer.end();*/
              // /* empty update */ )
@@ -352,14 +367,11 @@ void BulkDataNTArrayThread::run()
         // is not running any more.
         //
         //m_basket.clearRunningList();
-
-        sequenceAlreadyRunningFlag = false;
-
         //
         // now that we are finished with a sub-scan we must be sure to unlock
         // the access mutex.
         //
-        //pthread_mutex_unlock(&m_accessMutex);
+        pthread_mutex_unlock(&m_accessMutex);
 
     } /* while ( check() ) */
 
@@ -378,10 +390,27 @@ TheThreadEnd:
     ACS_SHORT_LOG((LM_DEBUG, "sub-array thread has stopped (%s)", name.c_str()));
 }
 
+//---------------------------------------------------------------------------------
+void BulkDataNTArrayThread::abort(const string &reason)
+{
+	std::cout << reason << std::endl;
+	if(m_Streamer != 0)
+	{
+		m_Streamer->abort();
+		// cout << "Streamer thread aborted" << endl;
+		m_Streamer->stop();
+		// cout << "Streamer thread had been stopped" << endl;
+		delete m_Streamer;
+		m_Streamer = 0;
+	}
+	sequenceAlreadyRunningFlag = false;
+	//cout << "BulkDataNTArrayThread::abort(): exiting" << endl;
+}
+
 //----------------------------------------------------------------------------------
 bool BulkDataNTArrayThread::addDataEvent(const uint8_t *buffer, const size_t size)
 {
-	cout << "addDataEvent started (" << name << ")" <<  endl;
+	//cout << "addDataEvent started (" << name << ")" <<  endl;
 
 	///ThreadSyncGuard guard(__PRETTY_FUNCTION__, &obj_p->m_eventListMutex);
 	ThreadSyncGuard guard(__PRETTY_FUNCTION__, &m_eventListMutex);
@@ -417,7 +446,7 @@ bool BulkDataNTArrayThread::addDataEvent(const uint8_t *buffer, const size_t siz
     // signal consumer thread that data is now available
     pthread_cond_signal(&m_newDataCondition);
 
-    cout << "addDataEvent ended (" << name << ")" <<  endl;
+    //cout << "addDataEvent ended (" << name << ")" <<  endl;
     // descoping will now unlock the mutex
     return true;
 }
@@ -464,7 +493,7 @@ bool BulkDataNTArrayThread::addDataEvent(const uint8_t *buffer, const size_t siz
 //----------------------------------------------------------------------------------
 BulkDataNTArrayThread::SequenceEndStatus BulkDataNTArrayThread::handleSequenceLoop()
 {
-	cout << "handleSequenceLoop started" << endl;
+	// cout << "handleSequenceLoop started" << endl;
 	ACS_SHORT_LOG((LM_DEBUG, "handleSequenceLoop started (%s)", name.c_str()));
 
 	ACS::TimeInterval dataTimeout;
@@ -482,6 +511,7 @@ BulkDataNTArrayThread::SequenceEndStatus BulkDataNTArrayThread::handleSequenceLo
 	//
 	if ( m_sequenceStopFlag )
 	{
+		sequenceAlreadyRunningFlag = false;
 		return SequenceEndStatus_STOPPED;
 	}
 
@@ -490,7 +520,7 @@ BulkDataNTArrayThread::SequenceEndStatus BulkDataNTArrayThread::handleSequenceLo
 	//
 	if ( buffers.empty() )
 	{
-		cerr << "data did not arrive on time (to=" << dataTimeout << ")" << endl;
+		//cerr << "data did not arrive on time (to=" << dataTimeout << ")" << endl;
 		return SequenceEndStatus_TIMEOUT;
 	}
 
@@ -604,7 +634,7 @@ BulkDataNTArrayThread::SequenceEndStatus BulkDataNTArrayThread::handleSequenceLo
 //---------------------------------------------------------------------------------
 void BulkDataNTArrayThread::deleteFrontEndBuffer(const ACS::TimeInterval _to, list< pair<uint8_t *, size_t> > &out)
 {
-	cout << __PRETTY_FUNCTION__ << ": started" << endl;
+	//cout << __PRETTY_FUNCTION__ << ": started" << endl;
     ACS::TimeInterval to = _to;
     ACS::Time now = getTimeStamp();
     ThreadSyncGuard guard(__PRETTY_FUNCTION__, &m_eventListMutex);
@@ -643,7 +673,7 @@ void BulkDataNTArrayThread::deleteFrontEndBuffer(const ACS::TimeInterval _to, li
     //
     bool waitStatus = true;
 
-    cout << __PRETTY_FUNCTION__ << "keep waiting until data available or timeout" << endl;
+   // cout << __PRETTY_FUNCTION__ << "keep waiting until data available or timeout" << endl;
 
     //
     // keep waiting until data available or timeout
@@ -673,7 +703,7 @@ void BulkDataNTArrayThread::deleteFrontEndBuffer(const ACS::TimeInterval _to, li
         return;
     }
 
-    cout << __PRETTY_FUNCTION__ << "Buffer no longer empty!" << endl;
+   // cout << __PRETTY_FUNCTION__ << "Buffer no longer empty!" << endl;
 
     //
     // make a copy of the complete list, all buffers in the
@@ -695,7 +725,7 @@ void BulkDataNTArrayThread::deleteFrontEndBuffer(const ACS::TimeInterval _to, li
 //----------------------------------------------------------------------------------
 void BulkDataNTArrayThread::waitForDataEvent(const ACS::TimeInterval to, list< pair<uint8_t *, size_t> > &out)
 {
-	cout << __PRETTY_FUNCTION__ << " started" << endl;
+	//cout << __PRETTY_FUNCTION__ << " started" << endl;
     //
     // before going into waiting for data we unlock
     // the global access mutex
@@ -715,12 +745,12 @@ void BulkDataNTArrayThread::waitForDataEvent(const ACS::TimeInterval to, list< p
     {
     	BDNT_EX_THROW_EX("timeout on reacquiring access mutex (to=%" PRIi64 ")", m_accessTimeout);
     }
-    cout << __PRETTY_FUNCTION__ << " stopped" << endl;
+    // cout << __PRETTY_FUNCTION__ << " stopped" << endl;
 }
 
 void BulkDataNTArrayThread::startSequence()
 {
-    cout << "startSequence() started" << endl;
+    //cout << "startSequence() started" << endl;
 
     //
     // guard access
@@ -803,9 +833,15 @@ void BulkDataNTArrayThread::startSequence()
     threadName = "streamerThread";
     try
     {
-        m_Streamer = new StreamerThread(threadName.c_str(),m_streamName,m_sendFlowName);
+        m_Streamer = new StreamerThread(threadName.c_str(),m_streamName,m_sendFlowName,
+					m_qosLib, m_throttling, m_sendTimeout, m_ACKTimeout);
     }
-    catch ( ... )
+	catch(ACS_BD_Errors::StreamCreateProblemExImpl &ex)
+	{
+		cerr << "Problem creating sender stream " << m_streamName << endl;
+		throw ex;
+	}
+	catch ( ... )
     {
         //
         // cleanup those data-collectors created before in this same method
@@ -852,14 +888,14 @@ void BulkDataNTArrayThread::startSequence()
     // this method goes out of scope.
     //
     pthread_cond_broadcast(&m_condition);
-    cout << "start_sequence() ended" << endl;
+    //cout << "start_sequence() ended" << endl;
 }
 
 
 void BulkDataNTArrayThread::relyDataToStreamer(list< pair<uint8_t *, size_t> > &data)
 {
 
-	cout << "relyDataToStreamer() start" << endl;
+	//cout << "relyDataToStreamer() start" << endl;
 
     BDNTEx ex;
 
@@ -990,5 +1026,139 @@ void BulkDataNTArrayThread::relyDataToStreamer(list< pair<uint8_t *, size_t> > &
 
     BDNT_EX_THROW_EX("%s", ex.asString().c_str());
 }
+
+//----------------------------------------------------------------------------------
+void BulkDataNTArrayThread::stopSequence()
+{
+    BDNTEx ex;
+
+    //
+    // guard access
+    //
+    ThreadSyncGuard guard(getName().c_str(), &m_accessMutex, m_accessTimeout);
+
+    //
+    // well, if there is nothing running then complain
+    //
+    /*if ( m_basket.getRunningMap().empty() )
+    {
+        ACS_SHORT_LOG((LM_DEBUG,
+                       "no sequence currently running (%d/%s)",
+                       m_basket.getArray().arrayIndex,
+                       m_basket.getArray().arrayID.in()));
+
+        return;
+    }*/
+
+    //
+    // as to eventually declare a timeout while waiting for the thread
+    // to stop processing the current sub-scan we need to know the time
+    // length of the integrations for the executing sub-scan.
+    // Note: it is expensive to figure out which exact sub-scan in the sequence
+    // is actually running. For the time being take the maximum integration
+    // time.
+    // Note: remember that the expected behavior for 'stop' is to stop at the
+    // end of the current integration.
+    //
+    ACS::TimeInterval timeout = 0;
+    /*for ( ConfigBasket::RunningMap::const_iterator i = m_basket.getRunningMap().begin();
+          i != m_basket.getRunningMap().end();
+          ++i )
+    {
+        //
+        // keep track of the maximum value
+        //
+        if ( m_basket.getConfig(ConfigBasket::ConfigType(i->second.m_calibId().second)).integrationDuration > timeout )
+        {
+            timeout = m_basket.getConfig(ConfigBasket::ConfigType(i->second.m_calibId().second)).integrationDuration;
+        }
+    }*/
+
+    //
+    // provide 1 extra second of grace (avoid latency jittering)
+    //
+    //timeout += 10000000LLU;
+	timeout = 30000000LLU; // 3 sec
+
+    //
+    // set sequence stop-flag, this is the flag being check by the thread
+    //
+    m_sequenceStopFlag = true;
+
+    //
+    // unfortunatelly, at the beginning of a sub-scan the thread is waiting
+    // for data. In order to make it wake up and check the stop flag we need
+    // lock the list's mutex, add a dummy pointer to the list, signal
+    // the condition and then unlock the mutex.
+    //
+    if ( !Pthread::Mutex::lock(__PRETTY_FUNCTION__, m_eventListMutex, m_accessTimeout, true) )
+    {
+        BDNT_EX_THROW_EX("failed to lock front-end-buffer's mutex (to=%" PRIi64 ")", m_accessTimeout);
+    }
+
+    //
+    // we are holding the mutex, add a dummy
+    //
+    m_frontEndBuffer.push_back(pair<uint8_t *, size_t>(NULL, 0));
+
+    //
+    // signal new data to force the thread to recheck for the stop flag.
+    // If at this moment the thread is not waiting for the condition then
+    // next time it come to check for data it will immediately discover
+   // the dummy and check for the stop flag.
+    //
+    pthread_cond_signal(&m_newDataCondition);
+
+    //
+    // after signaling the condition then remember to unlock the mutex
+    //
+    pthread_mutex_unlock(&m_eventListMutex);
+
+//	cout << "stopSequence(): Waiting for the thread to acknowlegde" << endl;
+    //
+    // wait for the thread to acknowledge
+    //
+    try
+    {
+        bool waitStatus = Pthread::CondVar::wait(m_stopCondition, m_accessMutex, timeout);
+
+        if ( !waitStatus )
+        {
+            BDNT_EX_THROW_EX("thread loop did not acknowledge stop within %" PRId64 " [acs] (%s)", timeout, getName().c_str());
+        }
+        if ( waitStatus && m_sequenceStopFlag )
+        {
+            BDNT_EX_THROW_EX("wait status is true but flag was not unset (%s)", getName().c_str());
+        }
+
+        //ACS_SHORT_LOG((LM_INFO, "thread acknowledged stop successfully (%s)", m_basket.getArray().arrayID.in()));
+//	cout << "thread acknowledged stop successfully" << endl;
+    }
+    catch ( BDNTEx &_ex )
+    {
+        ex = _ex;
+    }
+
+    //ACS_SHORT_LOG((LM_INFO, "commanding nodes to stop sequence (%s)", m_basket.getArray().arrayID.in()));
+	sequenceAlreadyRunningFlag = false;
+    //
+    // command nodes to stop sequence. We stop the nodes last because we
+   // are supposed to stop at the end of the current integration and not
+    // immediately.
+    //
+    //m_nodesCluster_p->stopSubscanSequence(m_basket.getArrayId().c_str());
+
+    //
+    // if there was an error while waiting the thread to stop then complain
+    //
+    /*if ( ex.isError() )
+    {
+        throw ex;
+    }*/
+
+    //ACS_SHORT_LOG((LM_INFO, "sequence stopped successfully (%s)", m_basket.getArray().arrayID.in()));
+//	cout << "sequence stopped successfully" << endl;
+}
+
 
 /*___oOo___*/
