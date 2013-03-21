@@ -43,6 +43,7 @@ void print_usage(char *argv[]) {
 	cout << "\t[-a] \t ACK timeout in sec. Default: 2.0" << endl;
 	cout << "\t[-o] \t throttling in MBytes/sec. Default: 0.0 (no throttling)" << endl;
 	cout << "\t[-c] \t CDP protocol compatibility (-p option ignored and parameter = data size as unsigned int)" << endl;
+	cout << "\t[-L] \t # of sequences to send (outer Loop)" << endl;
 	exit(1);
 }
 
@@ -64,10 +65,11 @@ int main(int argc, char *argv[])
 	double throttling=0.0;
 	string qosLib="BulkDataQoSLibrary";
 	list<char *> flowNames;
+	unsigned int nbSeq = 1;
 
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:ncr:");
+    ACE_Get_Opt get_opts (argc, argv, "o:f:s:b:p:l:t:a:ncr:L:");
 
     if(get_opts.long_option(ACE_TEXT ("qos_lib"), 0, ACE_Get_Opt::ARG_REQUIRED) == -1)
     {
@@ -83,6 +85,12 @@ int main(int argc, char *argv[])
     		qosLib = get_opts.opt_arg();
     		break;
     	}
+	case 'L':
+	{
+		nbSeq = atoi(get_opts.opt_arg());
+		cout << "nbseq = " << nbSeq << endl;
+		break;
+	}
     	case 'l':
     	{
     		loop = atoi(get_opts.opt_arg());
@@ -174,6 +182,7 @@ int main(int argc, char *argv[])
     	{
     		double throuhgput=0;
     		double sumThrouhgput=0;
+		double sumTotalThroughput = 0;
     		vector<double> 	throughputSums;
     		// first we need a stream
     		SenderStreamConfiguration scfg;
@@ -219,8 +228,11 @@ int main(int argc, char *argv[])
     		numOfCreatedFlows = senderStream.getFlowNumber();
   //  		numOfCreatedFlows++;
 
-    		std::cout << "press ENTER to send data (start/data/stop) to connected receivers ..." << std::endl;
-    		if (waitForKey) getchar();
+    		if (waitForKey)
+		{    		
+			std::cout << "press ENTER to send data (start/data/stop) to connected receivers ..." << std::endl;
+	 		getchar();
+		}
     		sendData=true;
 
     		throughputSums.resize(numOfCreatedFlows);
@@ -256,60 +268,69 @@ int main(int argc, char *argv[])
     			}
 
     			// first startSend
-    			for(unsigned int i=0; i<numOfCreatedFlows; i++)
-    			{
-    				if(cdpProtocolCompatible)
+			sumTotalThroughput = 0.0;
+    			for(unsigned int n=1; n<=nbSeq; n++)
+			{
+				std::cout << "Outer Loop: " << n << " of " << nbSeq << std::endl;
+				for(unsigned int i=0; i<numOfCreatedFlows; i++)
     				{
-        				ACS_SHORT_LOG((LM_INFO, "Going to send parameter (= dataSize*nb_loops): '%d' to flow: '%s' to %d receiver(s)", totalDataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
-        				flows[i]->startSend((const unsigned char*)&totalDataSize,sizeof(unsigned int));
-    				}
-    				else
+    					if(cdpProtocolCompatible)
+    					{
+        					ACS_SHORT_LOG((LM_INFO, "Going to send parameter (= dataSize*nb_loops): '%d' to flow: '%s' to %d receiver(s)", totalDataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+        					flows[i]->startSend((const unsigned char*)&totalDataSize,sizeof(unsigned int));
+    					}
+    					else
+    					{
+        					ACS_SHORT_LOG((LM_INFO, "Going to send parameter: '%s' to flow: '%s' to %d receiver(s)", param.c_str(), tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+        					flows[i]->startSend((const unsigned char*)param.c_str(), param.size());
+    					}
+    					throughputSums[i]=0.0;
+    				}//for(unsigned int i=0; i<numOfCreatedFlows; i++)
+	    			sumThrouhgput=0.0;
+	
+    				// then sendData
+    				for(unsigned int j=1; j<=loop; j++)
     				{
-        				ACS_SHORT_LOG((LM_INFO, "Going to send parameter: '%s' to flow: '%s' to %d receiver(s)", param.c_str(), tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
-        				flows[i]->startSend((const unsigned char*)param.c_str(), param.size());
-    				}
-    				throughputSums[i]=0.0;
-    			}//for
-    			sumThrouhgput=0.0;
-
-    			// then sendData
-    			for(unsigned int j=1; j<=loop; j++)
-    			{
-    				std::cout << "Loop: " << j << " of " << loop << std::endl;
+	    				std::cout << "Loop: " << j << " of " << loop << std::endl;
+    					for(unsigned int i=0; i<numOfCreatedFlows; i++)
+    					{
+    						ACS_SHORT_LOG((LM_INFO, "Going to send [%d/%d - %d/%d]: %d Bytes of data to flow: '%s' to %d receiver(s)", n, nbSeq,j, loop, dataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+	    					start_time = ACE_OS::gettimeofday();
+    						flows[i]->sendData(data, dataSize);
+    						elapsed_time = ACE_OS::gettimeofday() - start_time;
+    						send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
+    						throuhgput = (dataSize/(1024.0*1024.0))/send_time;
+    						ACS_SHORT_LOG((LM_INFO, "Outer Loop [%d/%d] Inner loop [%d/%d] Transfer rate for flow '%s': %f MBytes/sec",
+    								n,nbSeq,j,loop,tmpFlowNames[i].c_str(), throuhgput));
+    						sumThrouhgput+=throuhgput;
+						sumTotalThroughput+=throuhgput;
+    						throughputSums[i]+=throuhgput;
+    					}//for i
+    				}//for j
+	
+	
+    				// and stopSend
     				for(unsigned int i=0; i<numOfCreatedFlows; i++)
     				{
-    					ACS_SHORT_LOG((LM_INFO, "Going to send [%d/%d]: %d Bytes of data to flow: '%s' to %d receiver(s)", j, loop, dataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
-    					start_time = ACE_OS::gettimeofday();
-    					flows[i]->sendData(data, dataSize);
-    					elapsed_time = ACE_OS::gettimeofday() - start_time;
-    					send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-    					throuhgput = (dataSize/(1024.0*1024.0))/send_time;
-    					ACS_SHORT_LOG((LM_INFO, "Transfer rate for flow '%s': %f MBytes/sec",
-    							tmpFlowNames[i].c_str(), throuhgput));
-    					sumThrouhgput+=throuhgput;
-    					throughputSums[i]+=throuhgput;
-    				}//for i
-    			}//for j
+    					ACS_SHORT_LOG((LM_INFO, "Outer loop [%d/%d]: Average transfer rate for flow '%s': %f MBytes/sec",
+    											n,nbSeq,tmpFlowNames[i].c_str(), throughputSums[i]/loop));
+    					ACS_SHORT_LOG((LM_INFO, "Going to send stop to flow: '%s' to %d receiver(s)",
+    											tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+    					flows[i]->stopSend();
+    				}//for
+				ACS_SHORT_LOG((LM_INFO, "\033[0;34m Outer loop [%d/%d]: Average transfer rate for all the flow(s): %f MBytes/sec \033[0m",
+    			    					n,nbSeq,sumThrouhgput/(loop*numOfCreatedFlows)));
 
+			} // for(unsigned int n=0; n<nbSeq; n++)
+			ACS_SHORT_LOG((LM_INFO, "\033[0;31m Average transfer rate for all the flow(s): %f MBytes/sec \033[0m",
+  			    					sumTotalThroughput/(nbSeq*loop*numOfCreatedFlows)));
 
-    			// and stopSend
-    			for(unsigned int i=0; i<numOfCreatedFlows; i++)
-    			{
-    				ACS_SHORT_LOG((LM_INFO, "Average transfer rate for flow '%s': %f MBytes/sec",
-    										tmpFlowNames[i].c_str(), throughputSums[i]/loop));
-    				ACS_SHORT_LOG((LM_INFO, "Going to send stop to flow: '%s' to %d receiver(s)",
-    										tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
-    				flows[i]->stopSend();
-    			}//for
-
-    			ACS_SHORT_LOG((LM_INFO, "Average transfer rate for all the flow(s): %f MBytes/sec",
-    			    					sumThrouhgput/(loop*numOfCreatedFlows)));
 
     			if (!waitForKey) //we exit both loops
-    				{
-    				recreate=false;
-    				break;
-    				}
+			{
+    			recreate=false;
+    			break;
+  			}
 
     			std::cout << "press 'r' for re-send data, 'c' for re-create stream+flow(s), and any other key for exit + ENTER" << std::endl;
     			int c=getchar();
