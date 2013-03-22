@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.49 2013/02/06 15:33:41 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.49 2013/02/06 23:12:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,8 +43,15 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 
   try
   {
-	  if (factory_m==0)	  createDDSFactory();  //it is enough to have one factory
-	  factoryRefCount_m++;
+
+	  //TBD: Maybe factory and global DDS stream should be treated with singleton, but at least for global stream there is no default ctor
+	  {//critical section
+		  // Maybe we should wait with timeout here
+		  ACE_GUARD (ACE_Recursive_Thread_Mutex, protDDSFActory, DDSFactoryMutex_m); // protection
+
+		  if (factory_m==0)	  createDDSFactory();  //it is enough to have one factory
+		  factoryRefCount_m++;
+	  }//end of critical section
 
 	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
@@ -54,17 +61,21 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 	  }
 	  else
 	  {
-		  // for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
-		  // also a participant per stream
-		  if (BulkDataNTStream::globalParticipantRefCount_m==0 && BulkDataNTStream::globalParticipant_m==0)
-		  {
-			  participant_m = BulkDataNTStream::globalParticipant_m = createDDSParticipant();
-		  }
-		  else
-		  {
-			  participant_m = BulkDataNTStream::globalParticipant_m;
-		  }
-		  BulkDataNTStream::globalParticipantRefCount_m++;   // but we need to know how many users of participant do we have
+		  {//Beginning of critical section
+			  // Maybe we should wait with timeout here
+			  ACE_GUARD (ACE_Recursive_Thread_Mutex, protGlobalPart, globalPartMutex_m); // protection
+			  // for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
+			  // also a participant per stream
+			  if (BulkDataNTStream::globalParticipantRefCount_m==0 && BulkDataNTStream::globalParticipant_m==0)
+			  {
+				  participant_m = BulkDataNTStream::globalParticipant_m = createDDSParticipant();
+			  }
+			  else
+			  {
+				  participant_m = BulkDataNTStream::globalParticipant_m;
+			  }
+			  BulkDataNTStream::globalParticipantRefCount_m++;   // but we need to know how many users of participant do we have
+		  }//end critical section
 		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to use global participant for stream: %s.", streamName_m.c_str()));
 	  }//if-else (configuration_m.participantPerStream)
 
@@ -88,6 +99,7 @@ BulkDataNTStream::~BulkDataNTStream()
 	  destroyDDSParticipant(participant_m);
   }else
   {
+	  ACE_GUARD (ACE_Recursive_Thread_Mutex, protGlobalPart, globalPartMutex_m); // protection
 	  BulkDataNTStream::globalParticipantRefCount_m--;
 	  if (BulkDataNTStream::globalParticipantRefCount_m==0)
 	  {
@@ -95,10 +107,16 @@ BulkDataNTStream::~BulkDataNTStream()
 		  destroyDDSParticipant(BulkDataNTStream::globalParticipant_m);
 		  BulkDataNTStream::globalParticipant_m=0;
 	  }
-  }
+  }//if-else
 
   participant_m=0;
-  destroyDDSFactory(); // we do not need to call, but .... it just decrease the counter
+  {//critical section
+	  // Maybe we should wait with timeout here
+	  ACE_GUARD (ACE_Recursive_Thread_Mutex, protDDSFActory, DDSFactoryMutex_m); // protection
+	  destroyDDSFactory(); // we do not need to call, but .... it just decrease the counter
+
+  }//end of critical section
+
 }//~BulkDataNTStream
 
 

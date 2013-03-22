@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.17 2012/09/13 14:02:38 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.17 2012/09/13 14:02:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -95,7 +95,8 @@ protected:
 	static unsigned int globalParticipantRefCount_m; /// how many streams do need the participant
 	static DDS::DomainParticipant* globalParticipant_m; /// if we use just one participant
 	DDS::DomainParticipant* participant_m; /// could be a newly created per stream or used global one
-
+	ACE_Recursive_Thread_Mutex globalPartMutex_m; /// protection global participant + counter
+	ACE_Recursive_Thread_Mutex DDSFactoryMutex_m; /// protection DDS factory ( counter)
 };//class BulkDataNTStream
 
 };
