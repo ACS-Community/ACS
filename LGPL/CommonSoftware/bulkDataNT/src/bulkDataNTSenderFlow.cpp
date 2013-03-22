@@ -120,6 +120,8 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
       throw ex;
     }//if
 
+  frame_m->data.maximum(0); //we need if we want to use loaning
+
   setACKsTimeout(senderFlowCfg_m.getACKsTimeout());
   setThrottling(senderFlowCfg_m.getThrottling());
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Sender Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
@@ -270,10 +272,13 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration, true/*=0*/);
 			}else
 			{
-				start_time = ACE_OS::gettimeofday();
+				if (throttling_m!=0.0) // is throttling "enabled"
+				{
+					start_time = ACE_OS::gettimeofday();
+				}
 				// if we wait for ACKs for example after: (iteration%50==0) then we have more NACKS than if we do not wait !!
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration, 0/*we do not ask for ACKs*/);
-				if (throttling_m!=0.0) // is throttling "enable"
+				if (throttling_m!=0.0) // is throttling "enabled"
 				{
 					// here we wait for less than msec
 					elapsed_time = ACE_OS::gettimeofday() - start_time;
@@ -358,19 +363,15 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		throw ftlEx;
 	}//if
 
-	//frame
 	frame_m->typeOfdata = dataType;
-	frame_m->data.length(len);
+//	frame_m->data.length(len);
 	frame_m->restDataLength = restFrameCount; //we need it just in some cases, but we can always set to 0
 	if (param!=0 && len!=0)
-		frame_m->data.from_array(param, len);
+		frame_m->data.loan_contiguous(const_cast<DDS_Octet*>(param), len, len);
+//		frame_m->data.from_array(param, len);
 
-	{
-	//======= GCH Hanging Finder
-	HangingFinder finder = HangingFinder(500, "writeFrame 0");
-	//======= GCH Hanging Finder
 	ret = ddsDataWriter_m->write(*frame_m, DDS::HANDLE_NIL);
-	}
+	frame_m->data.unloan();
 
 	if( ret != DDS::RETCODE_OK)
 	{
@@ -419,18 +420,18 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	}//if (ret != DDS::RETCODE_OK)
 
 
-	//we wait for ACKs if it is explecitly asked or if it was the last frame (only frame)
+	//we wait for ACKs if it is explicitly asked or if it was the last frame (only frame)
 	if (waitForACKs || restFrameCount==0)
 	{
-		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		if (DDSConfiguration::debugLevel>0)
 		{
-			// the message can cause perfomance penality for small data sizes
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			// the message can cause performance penalty for small data sizes
 			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s before waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
 		}
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
-		//ret = DDS::RETCODE_OK;
+
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics();
