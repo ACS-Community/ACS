@@ -393,7 +393,7 @@ void BulkDataNTReaderListener::on_sample_rejected( DDS::DataReader*, const DDS::
 			LoggingProxy::AddData("repeatCount", "%d", rg.count() );
 
 		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-				(LM_WARNING, "Sample Rejected, but MOT lost (need to be resent): reason %d, change: %d, total: %d!",
+				(LM_WARNING, "Sample Rejected, but NOT lost (need to be resent): reason %d, change: %d, total: %d!",
 						srs.last_reason, srs.total_count_change, srs.total_count));
 	}
 }//on_sample_rejected
