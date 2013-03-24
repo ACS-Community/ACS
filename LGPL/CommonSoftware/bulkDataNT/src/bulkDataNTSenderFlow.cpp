@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53.2.1 2013/02/07 08:31:50 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.57 2013/03/05 15:19:33 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.53.2.1 2013/02/07 08:31:50 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.57 2013/03/05 15:19:33 gchiozzi Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -34,6 +34,7 @@ using namespace AcsBulkdata;
 using namespace std;
 using namespace ACS_DDS_Errors;
 using namespace ACS_BD_Errors;
+
 
 const char *BulkDataNTSenderFlow::state2String[] = {"StartState", "DataSendState", "StopState" };
 
@@ -76,6 +77,8 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
       ex.setDataType("ACSBulkData::BulkDataNTFrameTypeSupport");
       throw ex;
     }//if
+
+  frame_m->data.maximum(0); //we need if we want to use loaning
 
   setACKsTimeout(senderFlowCfg_m.getACKsTimeout());
   setThrottling(senderFlowCfg_m.getThrottling());
@@ -209,7 +212,6 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
 	try{
-
 		if (currentState_m!=DataRcvState)
 		{
 			SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
@@ -228,10 +230,13 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration, true/*=0*/);
 			}else
 			{
-				start_time = ACE_OS::gettimeofday();
+				if (throttling_m!=0.0) // is throttling "enabled"
+				{
+					start_time = ACE_OS::gettimeofday();
+				}
 				// if we wait for ACKs for example after: (iteration%50==0) then we have more NACKS than if we do not wait !!
 				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration, 0/*we do not ask for ACKs*/);
-				if (throttling_m!=0.0) // is throttling "enable"
+				if (throttling_m!=0.0) // is throttling "enabled"
 				{
 					// here we wait for less than msec
 					elapsed_time = ACE_OS::gettimeofday() - start_time;
@@ -316,14 +321,15 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		throw ftlEx;
 	}//if
 
-	//frame
 	frame_m->typeOfdata = dataType;
-	frame_m->data.length(len);
+//	frame_m->data.length(len);
 	frame_m->restDataLength = restFrameCount; //we need it just in some cases, but we can always set to 0
 	if (param!=0 && len!=0)
-		frame_m->data.from_array(param, len);
+		frame_m->data.loan_contiguous(const_cast<DDS_Octet*>(param), len, len);
+//		frame_m->data.from_array(param, len);
 
 	ret = ddsDataWriter_m->write(*frame_m, DDS::HANDLE_NIL);
+	frame_m->data.unloan();
 
 	if( ret != DDS::RETCODE_OK)
 	{
@@ -331,7 +337,9 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		{
 			dumpStatistics();
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			toEx.setSenderName(senderStream_m->getName().c_str()); toEx.setFlowName(flowName_m.c_str());
+			toEx.setSenderName(senderStream_m->getName().c_str()); 
+			toEx.setFlowName(flowName_m.c_str());
+			
 			toEx.setTimeout(senderFlowCfg_m.getSendFrameTimeout());
 			toEx.setFrameCount(restFrameCount);
 			throw toEx;
@@ -339,16 +347,20 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		{
 			dumpStatistics();
 			SendFrameGenericErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
+			sfEx.setSenderName(senderStream_m->getName().c_str()); 
+			sfEx.setFlowName(flowName_m.c_str());
+
 			sfEx.setFrameCount(restFrameCount);
 			sfEx.setRetCode(ret);
 			throw sfEx;
 		}//if-else
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) %d for flow: %s", dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
-		// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) %d for flow: %s", 
+			       dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+		// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+		
+		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);		
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics();
@@ -359,23 +371,25 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		}//if
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) after waiting: %d", dataType2String[dataType], status.unacknowledged_sample_count)); //RTI
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) after waiting: %d", 
+			       dataType2String[dataType], status.unacknowledged_sample_count)); //RTI
 		//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+
 	}//if (ret != DDS::RETCODE_OK)
 
 
-	//we wait for ACKs if it is explecitly asked or if it was the last frame (only frame)
+	//we wait for ACKs if it is explicitly asked or if it was the last frame (only frame)
 	if (waitForACKs || restFrameCount==0)
 	{
-		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		if (DDSConfiguration::debugLevel>0)
 		{
-			// the message can cause perfomance penality for small data sizes
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			// the message can cause performance penalty for small data sizes
 			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s before waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
 		}
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
-		//ret = DDS::RETCODE_OK;
+
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics();
