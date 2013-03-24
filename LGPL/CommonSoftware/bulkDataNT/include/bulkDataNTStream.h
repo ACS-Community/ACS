@@ -95,7 +95,8 @@ protected:
 	static unsigned int globalParticipantRefCount_m; /// how many streams do need the participant
 	static DDS::DomainParticipant* globalParticipant_m; /// if we use just one participant
 	DDS::DomainParticipant* participant_m; /// could be a newly created per stream or used global one
-
+	ACE_Recursive_Thread_Mutex globalPartMutex_m; /// protection global participant + counter
+	ACE_Recursive_Thread_Mutex DDSFactoryMutex_m; /// protection DDS factory ( counter)
 };//class BulkDataNTStream
 
 };
