@@ -127,5 +127,26 @@ void AcsBulkdata::BulkDataNTReceiverFlow::disableCallingCB()
 	dataReaderListener_m->disableCallingCB();
 }
 
+void AcsBulkdata::BulkDataNTReceiverFlow::dumpStatistics()
+{
+	DDS::DataReaderProtocolStatus drps;
+	DDS::DataReaderCacheStatus drcs;
+
+	ddsDataReader_m->get_datareader_protocol_status(drps);
+
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+			(LM_DEBUG, "DataReader protocol status for flow: %s [sample received: %lld (%lld). Sent: HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld). Rejected: %lld]",
+					flowName_m.c_str(),
+					drps.received_sample_count_change, drps.received_sample_bytes_change,
+					drps.received_heartbeat_count_change, drps.received_heartbeat_bytes_change,
+					drps.sent_ack_count_change, drps.sent_ack_bytes_change,
+					drps.sent_nack_count_change, drps.sent_nack_bytes_change,
+					drps.rejected_sample_count_change));
+
+	ddsDataReader_m->get_datareader_cache_status(drcs);
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+			(LM_DEBUG, "DataReader cache Status: sample count (peak): %lld (%lld)", drcs.sample_count, drcs.sample_count_peak));
+
+}//void dumpStatistics()
 
 /*___oOo___*/

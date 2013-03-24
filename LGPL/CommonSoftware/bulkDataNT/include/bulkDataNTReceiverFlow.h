@@ -89,6 +89,8 @@ public:
 	/// Disables calling user's CB (cbStart, cbReceiver, cbStop)
 	void disableCallingCB();
 
+	void dumpStatistics();
+
 protected:
 	AcsBulkdata::BulkDataNTReceiverStreamBase *receiverStream_m;
 
