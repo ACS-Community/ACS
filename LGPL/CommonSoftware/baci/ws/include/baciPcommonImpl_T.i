@@ -99,7 +99,6 @@ baci::PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent*
       ACS_DEBUG("baci::PcommonImpl&lt;&gt;::PcommonImpl", "No DevIO provided - created DevIOMem.");
     }
   
-  ACS_DEBUG("baci::PcommonImpl&lt;&gt;::PcommonImpl", "Successfully created.");
 }
 
 template<ACS_P_C> baci::PcommonImpl<ACS_P_TL>::~PcommonImpl()

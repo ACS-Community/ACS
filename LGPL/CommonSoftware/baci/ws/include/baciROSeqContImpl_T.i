@@ -38,7 +38,6 @@ baci::ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACICompo
     }//if
 
   this->initialization_m = 0;   // property successfuly initialized
-  ACS_DEBUG("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl", "Successfully created.");  
 }
 
 template <ACS_RO_C> 

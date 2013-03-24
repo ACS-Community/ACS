@@ -42,7 +42,6 @@ baci::RWcontImpl<ACS_RW_TL>::RWcontImpl(const ACE_CString& name, BACIComponent* 
     }
 
   this->initialization_m = 0;
-  ACS_DEBUG("baci::RWcontImpl&lt;&gt;::RWcontImpl", "Successfully created.");
 }
 
 template<ACS_RW_C> 
@@ -66,7 +65,6 @@ baci::RWcontImpl<ACS_RW_TL>::RWcontImpl(bool init, const ACE_CString& name, BACI
     }
   
   this->initialization_m = 0;
-  ACS_DEBUG("baci::RWcontImpl&lt;&gt;::RWcontImpl", "Successfully created.");
 }
 
 

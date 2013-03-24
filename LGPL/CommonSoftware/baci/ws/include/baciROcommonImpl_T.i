@@ -70,10 +70,6 @@ baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACICompone
      descIn.id_tag = 0;
      this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
      }  //if
-
-  ACS_DEBUG("baci::ROcommonImpl&lt;&gt;::ROcommonImpl", "Successfully created.");
-// TMP uncment
-//initialization_m = 0;
 }
 
 template<ACS_RO_C> 
@@ -98,12 +94,6 @@ baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, 
       descIn.id_tag = 0;
       this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
       }  //if
-
-  ACS_DEBUG("baci::ROcommonImpl&lt;&gt;::ROcommonImpl", "Successfully created.");
-
-  // property successfuly initialized
-// TMP uncment
-//initialization_m = 0;
 }//ROcommonImpl
 
 template<ACS_RO_C> baci::ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()

@@ -31,7 +31,6 @@ baci::RWdiscImpl<ACS_RW_TL>:: RWdiscImpl(const ACE_CString& name,
 {
     ACS_TRACE("baci::RWdiscImpl&lt;&gt;::RWdiscImpl"); 
     this->initialization_m = (initValue==true) ? 0 : 1; // should be removed
-    ACS_DEBUG("baci::RWdiscImpl&lt;&gt;::RWdiscImpl", "Successfully created.");
 }
 
 
