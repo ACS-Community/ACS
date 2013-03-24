@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.5 2012/02/16 15:19:40 hsommer Exp $"
+* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.5.14.1 2013/02/22 10:29:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.5 2012/02/16 15:19:40 hsommer Exp $";
+static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.5.14.1 2013/02/22 10:29:16 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorCollectorImpl.h"
@@ -325,9 +325,9 @@ TMCDB::MonitorDataBlocks * MonitorCollectorImpl::getMonitorData ()
     AUTO_TRACE("MonitorCollectorImpl::getMonitorData");
 
     ACE_Hash_Map_Entry <ACE_CString, MonitorComponent*> *entry;
-    ACE_Hash_Map_Iterator <ACE_CString, MonitorComponent*, ACE_Recursive_Thread_Mutex> iter(monitorComponents_m);
-
     ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m, new TMCDB::MonitorDataBlocks()); // protection
+
+    ACE_Hash_Map_Iterator <ACE_CString, MonitorComponent*, ACE_Recursive_Thread_Mutex> iter(monitorComponents_m);
 
 
     TMCDB::MonitorDataBlocks *monitorDataBlock = new TMCDB::MonitorDataBlocks(numOfComponents_m);
