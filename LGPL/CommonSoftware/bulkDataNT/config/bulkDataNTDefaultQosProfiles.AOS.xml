@@ -32,7 +32,7 @@ Default QoS Profile for BulkDataNT.
                     <mask>DDS_TRANSPORTBUILTIN_UDPv4</mask>
                 </transport_builtin>
                 <receiver_pool>
-                    <buffer_size>65536</buffer_size>
+                    <buffer_size>2097152</buffer_size>
                 </receiver_pool>
                 <event>
                     <max_count>16384</max_count>
@@ -46,11 +46,11 @@ Default QoS Profile for BulkDataNT.
                         </element>
                         <element>
                             <name>dds.transport.UDPv4.builtin.send_socket_buffer_size</name>
-                            <value>65536</value>
+                            <value>524288</value>
                         </element>
                         <element>
                             <name>dds.transport.UDPv4.builtin.recv_socket_buffer_size</name>
-                            <value>131072</value>
+                            <value>2097152</value>
                         </element>
                         <element>
                             <name>dds.transport.UDPv4.builtin.multicast_ttl</name>
@@ -95,7 +95,7 @@ Default QoS Profile for BulkDataNT.
                 
                 <resource_limits>
                     <max_samples>5</max_samples>
-                    <initial_samples>1</initial_samples>
+                    <initial_samples>5</initial_samples>
                     <initial_instances>1</initial_instances>
                     <max_instances>1</max_instances>
                     <max_samples_per_instance>5</max_samples_per_instance>
@@ -103,18 +103,23 @@ Default QoS Profile for BulkDataNT.
                 <protocol>
                     <push_on_write>true</push_on_write>
                     <rtps_reliable_writer>
-                        <min_send_window_size>5</min_send_window_size>
-                        <max_send_window_size>5</max_send_window_size>
+                        <min_send_window_size>2</min_send_window_size>
+                        <max_send_window_size>15</max_send_window_size>
                         
-                        <high_watermark>1</high_watermark>
+                        <high_watermark>3</high_watermark>
                         <fast_heartbeat_period>
                             <sec>0</sec>
-                            <nanosec>500000000</nanosec>
+                            <nanosec>100000000</nanosec>
                         </fast_heartbeat_period>
                         <heartbeats_per_max_samples>5</heartbeats_per_max_samples>
                         <heartbeat_period>
-                            <sec>604800</sec>
+                            <sec>0</sec>
+                            <nanosec>600000000</nanosec>                            
                         </heartbeat_period>
+                        <late_joiner_heartbeat_period>
+                            <sec>0</sec>
+                            <nanosec>300000000</nanosec>
+                        </late_joiner_heartbeat_period>
                         <max_heartbeat_retries>100</max_heartbeat_retries>
                         <min_nack_response_delay>
                             <sec>0</sec>
@@ -124,7 +129,7 @@ Default QoS Profile for BulkDataNT.
                             <sec>0</sec>
                             <nanosec>0</nanosec>
                         </max_nack_response_delay>
-                        <max_bytes_per_nack_response>65500</max_bytes_per_nack_response>
+                        <max_bytes_per_nack_response>655000</max_bytes_per_nack_response>
                     </rtps_reliable_writer>
                 </protocol>
             </datawriter_qos>
@@ -155,12 +160,12 @@ Default QoS Profile for BulkDataNT.
                     <max_remote_writers_per_sample>1</max_remote_writers_per_sample>
                     <initial_remote_writers_per_instance>1</initial_remote_writers_per_instance>
                     <max_remote_writers_per_instance>1</max_remote_writers_per_instance>
-                    <max_samples_per_remote_writer>100</max_samples_per_remote_writer>
+                    <max_samples_per_remote_writer>50</max_samples_per_remote_writer>
                 </reader_resource_limits>
                 <resource_limits>
-                    <max_samples>100</max_samples>
-                    <initial_samples>100</initial_samples>
-                    <max_samples_per_instance>100</max_samples_per_instance>
+                    <max_samples>50</max_samples>
+                    <initial_samples>50</initial_samples>
+                    <max_samples_per_instance>50</max_samples_per_instance>
                 </resource_limits>
                 
                 <protocol>
@@ -173,6 +178,10 @@ Default QoS Profile for BulkDataNT.
                             <sec>0</sec>
                             <nanosec>100000</nanosec>
                         </max_heartbeat_response_delay>
+                        <heartbeat_suppression_duration>
+                            <sec>0</sec>
+                            <nanosec>10000000</nanosec>
+                        </heartbeat_suppression_duration>
                     </rtps_reliable_reader>
                 </protocol>
             </datareader_qos>
@@ -234,7 +243,7 @@ Default QoS Profile for BulkDataNT.
                         
                         <element>
                             <name>dds.transport.TCPv4.tcp1.server_bind_port</name>
-                            <value>9501</value>
+                            <value>9601</value>
                         </element>
                                              
                         <element>
