@@ -35,7 +35,6 @@ baci::PcontImpl<ACS_P_TL>::PcontImpl(const ACE_CString& name, BACIProperty *prop
 	      (LM_ERROR, "Failed to read static data for '%s'", name.c_str()));
       return;
       }
-  ACS_DEBUG("baci::PcontImpl&lt;&gt;::PcontImpl", "Successfully created.");
 }
  
 template<ACS_P_C> baci::PcontImpl<ACS_P_TL>::~PcontImpl()

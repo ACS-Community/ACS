@@ -42,10 +42,6 @@ baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* 
       {
       this->alarmSystemMonitor_mp = new AlarmSystemMonitorCont<TS, PropType>(this, this->monitorEventDispatcher_mp);
       }//if
-
-  ACS_DEBUG("baci::ROcontImpl&lt;&gt;::ROcontImpl", "Successfully created.");
-
-  // property successfuly initialized
   this->initialization_m = 0;
 }
 

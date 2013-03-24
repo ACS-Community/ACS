@@ -52,9 +52,6 @@ baci::RWcommonImpl<ACS_RW_TL>::RWcommonImpl(const ACE_CString& name, BACICompone
 	  }
       ACS_DEBUG("baci::RWcommonImpl&lt;&gt;::RWcommonImpl", "DevIO initial value set to the default value.");
       }
-
-//  initialization_m = 0;
-  ACS_DEBUG("baci::RWcommonImpl&lt;&gt;::RWcommonImpl", "Successfully created.");
 }
 
 template<ACS_RW_C> 
@@ -62,8 +59,6 @@ baci::RWcommonImpl<ACS_RW_TL>::RWcommonImpl(bool init, const ACE_CString& name, 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO) 
 {
   ACS_TRACE("baci::RWcommonImpl&lt;&gt;::RWcommonImpl");
-  
-  ACS_DEBUG("baci::RWcommonImpl&lt;&gt;::RWcommonImpl", "Successfully created.");
 }
 
 template<ACS_RW_C> baci::RWcommonImpl<ACS_RW_TL>::~RWcommonImpl()

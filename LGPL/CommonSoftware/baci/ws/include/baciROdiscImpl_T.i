@@ -32,7 +32,6 @@ baci::ROdiscImpl<ACS_RO_TL>::ROdiscImpl(const ACE_CString& name, BACIComponent *
 	alarmSystemMonitor_mp = new AlarmSystemMonitorDisc<T, PropType>(this, this->monitorEventDispatcher_mp);
 	}//if
 */
-//TBD:    ACS_DEBUG("baci::ROdiscImpl&lt;&gt;::ROdiscImpl", "Successfully created.");
     this->initialization_m = initalize;
 }
 
@@ -49,8 +48,6 @@ baci::ROdiscImpl<ACS_RO_TL>::ROdiscImpl(bool init, const ACE_CString& name, BACI
 	alarmSystemMonitor_mp = new AlarmSystemMonitorDisc<TS, PropType>(this, this->monitorEventDispatcher_mp);
 	}//if
 */
-
-//TBD::    ACS_DEBUG("baci::ROdiscImpl&lt;&gt;::ROdiscImpl", "Successfully created.");
     this->initialization_m = initalize;
 }//ROdiscImpl
 

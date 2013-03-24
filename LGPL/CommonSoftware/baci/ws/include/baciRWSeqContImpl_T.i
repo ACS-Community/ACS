@@ -35,7 +35,6 @@ baci::RWSeqContImpl<ACS_RW_TL>::RWSeqContImpl(const ACE_CString& name, BACICompo
 	}
 
   this->initialization_m = 0; // property successfuly initialized
-  ACS_DEBUG("baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl", "Successfully created.");  
 }
 
 template <ACS_RW_C> 

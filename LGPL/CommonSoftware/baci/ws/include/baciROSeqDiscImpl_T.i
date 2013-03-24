@@ -39,7 +39,6 @@ ROSeqDiscImpl<ACS_RO_TL>::ROSeqDiscImpl(const ACE_CString& name, BACIComponent *
 	}//if
 #endif
   initialization_m = 0;   // property successfuly initialized
-  ACS_DEBUG("baci::ROSeqDiscImpl&lt;&gt;::ROSeqDiscImpl", "Successfully created.");  
 }
 
 template <ACS_RO_C> 
