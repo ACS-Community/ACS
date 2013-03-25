@@ -472,6 +472,27 @@ show_modules:
 #
 ACS_TAG = $(shell awk -F/ '/^\/Makefile/{print substr($$6,2)}' CVS/Entries)
 
+SVN_URL = $(shell svn info '$(PWD)/Makefile'|grep URL)
+SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')
+
+#
+#
+# This target puts the SVN tag for the ACS/Makefile file
+# (if exists) into a file, so that it can be used
+# to mark an installation.
+#
+svn-tag:
+	@ $(ECHO) "Evaluating current ACS TAG"; \
+	if [ X$(SVN_TAG) != X ]; then \
+               $(ECHO) "ACS tag is: $(SVN_TAG)"; \
+               $(ECHO) $(SVN_TAG) > ACS_TAG ; \
+            else \
+              if [ -f ACS_TAG ]; then\
+                $(ECHO) "CVS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
+              else \
+                $(ECHO) "No CVS tag available"; \
+              fi; \
+          fi
 #
 #
 # This target puts the CVS tag for the ACS/Makefile file
