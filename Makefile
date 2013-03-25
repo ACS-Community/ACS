@@ -168,7 +168,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	cvs-tag clean_log checkModuleTree prepare update
+build: 	svn-tag clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -177,7 +177,7 @@ build: 	cvs-tag clean_log checkModuleTree prepare update
 # Per each module it executes:
 #    make clean all man install clean
 #
-build_clean:   	cvs-tag clean_log checkModuleTree prepare update_clean
+build_clean:   	svn-tag clean_log checkModuleTree prepare update_clean
 	@$(ECHO) "... done"
 
 #
@@ -190,7 +190,7 @@ build_clean:   	cvs-tag clean_log checkModuleTree prepare update_clean
 # This is useful to discover circular dependencies between
 # modules.
 #
-build_clean_test:   	cvs-tag clean_log checkModuleTree prepare update_clean_test
+build_clean_test:   	svn-tag clean_log checkModuleTree prepare update_clean_test
 	@$(ECHO) "... done"
 
 #
@@ -199,7 +199,7 @@ build_clean_test:   	cvs-tag clean_log checkModuleTree prepare update_clean_test
 # Per each module it executes:
 #    make clean all man install clean
 #
-rebuild:	cvs-tag clean_log update
+rebuild:	svn-tag clean_log update
 	@$(ECHO) "... done"
 
 clean_log:
@@ -258,7 +258,7 @@ prepare:
 #   that is the LAST module fails the whole Make does not fail
 #
 
-update:	cvs-tag checkModuleTree
+update:	svn-tag checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -465,13 +465,11 @@ show_modules:
 ################################################################
 
 #
-# This expression extracts the CVS tag for the ACS/Makefile file
-# (if exists) from the CVS files.
+# This expression extracts the SVN tag for the ACS/Makefile file
+# (if exists).
 # This does not warranty that all files have the same tag,
 # but it is at least an indication.
 #
-ACS_TAG = $(shell awk -F/ '/^\/Makefile/{print substr($$6,2)}' CVS/Entries)
-
 SVN_URL = $(shell svn info '$(PWD)/Makefile'|grep URL)
 SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')
 
@@ -490,24 +488,6 @@ svn-tag:
               if [ -f ACS_TAG ]; then\
                 $(ECHO) "CVS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
               else \
-                $(ECHO) "No CVS tag available"; \
-              fi; \
-          fi
-#
-#
-# This target puts the CVS tag for the ACS/Makefile file
-# (if exists) into a file, so that it can be used
-# to mark an installation.
-#
-cvs-tag:
-	@ $(ECHO) "Evaluating current ACS TAG"; \
-          if [ X$(ACS_TAG) != X ]; then \
-               $(ECHO) "CVS tag is: $(ACS_TAG)"; \
-               $(ECHO) $(ACS_TAG) > ACS_TAG ; \
-            else \
-              if [ -f ACS_TAG ]; then\
-                $(ECHO) "CVS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
-	      else \
                 $(ECHO) "No CVS tag available"; \
               fi; \
           fi
@@ -533,7 +513,7 @@ cvs-get-version:
 # This target gets from CVS all files needed for an LGPL distribution 
 #
 LGPL_FILES=README README-new-release LGPL
-cvs-get-lgpl: cvs-tag cvs-get-version
+cvs-get-lgpl: svn-tag cvs-get-version
 	@ $(ECHO) "Extracting from CVS LGPL files"; \
           if [ X$(ACS_TAG) != X ]; then \
              $(ECHO) "CVS tag is: $(ACS_TAG)"; \
@@ -547,7 +527,7 @@ cvs-get-lgpl: cvs-tag cvs-get-version
 # This target gets from CVS a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-cvs-get-no-lgpl: cvs-tag cvs-get-version cvs-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
+cvs-get-no-lgpl: svn-tag cvs-get-version cvs-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
 
 cvs-get-no-lgpl-extract: 
 	@  $(ECHO) "Extracting from CVS NO-LGPL files"; \
