@@ -482,7 +482,7 @@ SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(N
 # to mark an installation.
 #
 svn-tag:
-	@ $(ECHO) "Evaluating current ACS TAG"; \
+	@ $(ECHO) "Evaluating current ACS TAG from $(SVN_URL)"; \
 	if [ X$(SVN_TAG) != X ]; then \
                $(ECHO) "ACS tag is: $(SVN_TAG)"; \
                $(ECHO) $(SVN_TAG) > ACS_TAG ; \
