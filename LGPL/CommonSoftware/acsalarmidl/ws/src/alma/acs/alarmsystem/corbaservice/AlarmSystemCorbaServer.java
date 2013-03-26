@@ -138,12 +138,14 @@ public class AlarmSystemCorbaServer implements Runnable {
 		AlarmSystemCorbaServer server = null;
 		try {
 			server = new AlarmSystemCorbaServer(logger,args);
-			// TODO: it might be cleaner to block the main thread while the service is running.
 		} catch (Throwable t) {
 			System.err.println("Error instantiating the alarm service: "+t.getMessage());
 			t.printStackTrace();
 			System.exit(-1);
 		}
+		
+		System.out.println("The alarm service is ready and waiting");
+		server.run();
 	}
 
 	/**
@@ -226,8 +228,6 @@ public class AlarmSystemCorbaServer implements Runnable {
 			alarmObject = asPOA.servant_to_reference(laserComponent);
 		}
 		registerToNamingService(alarmObject);
-		new Thread(this, "AlarmSystemCORBAHelper").start();
-		System.out.println("The alarm service is ready and waiting");
 	}
 	
 	/**
@@ -687,6 +687,8 @@ public class AlarmSystemCorbaServer implements Runnable {
 		} catch (ConcurrentModificationException ex) {
 			System.out.println("ORB shutdown produced a ConcurrentModificationException (see also known JacORB bug http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537)" + 
 					" which may be related to surviving AlarmService instances we see in modular tests.");
+			// since shutdown failed, we have to kill the process forcefully
+			System.exit(-1);
 		}
 		poaManager=null;
 		rootPOA=null;

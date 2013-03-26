@@ -60,7 +60,7 @@ module alarmsystem
 		/**
 		 * shutdown the alarm service
 		 */
-		void shutdown();
+		oneway void shutdown();
 		/*
 		 * Return the type of alarm service: true means ACS implementation
 		 *                                   false means CERN implementation
