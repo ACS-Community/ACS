@@ -168,7 +168,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	cvs-tag svn-tag clean_log checkModuleTree prepare update
+build: 	svn-tag svn-tag clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -177,7 +177,7 @@ build: 	cvs-tag svn-tag clean_log checkModuleTree prepare update
 # Per each module it executes:
 #    make clean all man install clean
 #
-build_clean:   	cvs-tag svn-tag clean_log checkModuleTree prepare update_clean
+build_clean:   	svn-tag svn-tag clean_log checkModuleTree prepare update_clean
 	@$(ECHO) "... done"
 
 #
@@ -190,7 +190,7 @@ build_clean:   	cvs-tag svn-tag clean_log checkModuleTree prepare update_clean
 # This is useful to discover circular dependencies between
 # modules.
 #
-build_clean_test:   	cvs-tag svn-tag clean_log checkModuleTree prepare update_clean_test
+build_clean_test:   	svn-tag svn-tag clean_log checkModuleTree prepare update_clean_test
 	@$(ECHO) "... done"
 
 #
@@ -199,7 +199,7 @@ build_clean_test:   	cvs-tag svn-tag clean_log checkModuleTree prepare update_cl
 # Per each module it executes:
 #    make clean all man install clean
 #
-rebuild:	cvs-tag svn-tag clean_log update
+rebuild:	svn-tag svn-tag clean_log update
 	@$(ECHO) "... done"
 
 clean_log:
@@ -258,7 +258,7 @@ prepare:
 #   that is the LAST module fails the whole Make does not fail
 #
 
-update:	cvs-tag svn-tag checkModuleTree
+update:	svn-tag svn-tag checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -458,116 +458,84 @@ show_modules:
 	@$(ECHO) ${MODULES}
 
 ################################################################
-# CVS targets.
+# SVN targets.
 # 
-# The following targets and expressions are helpers for CVS
+# The following targets and expressions are helpers for SVN
 # operations on the ACS tree.
 ################################################################
 
 #
-# This expression extracts the CVS tag for the ACS/Makefile file
-# (if exists) from the CVS files.
+# This expression extracts the SVN tag for the ACS/Makefile file
+# (if exists).
 # This does not warranty that all files have the same tag,
 # but it is at least an indication.
 #
-CVS_ACS_TAG = $(shell awk -F/ '/^\/Makefile/{print substr($$6,2)}' CVS/Entries)
-SVN_ACS_TAG := $(shell cat .svn/all-wcprops|grep tags|cut -d'/' -f7|uniq)
+SVN_URL = $(shell svn info '$(PWD)/Makefile'|grep URL)
+SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')
 
 #
 #
-# This target puts the CVS tag for the ACS/Makefile file
+# This target puts the SVN tag for the ACS/Makefile file
 # (if exists) into a file, so that it can be used
 # to mark an installation.
 #
-cvs-tag:
-	@ $(ECHO) "Evaluating current ACS TAG"; \
-          if [ "X$(CVS_ACS_TAG)" != "X" ]; then \
-               $(ECHO) "CVS tag is: $(CVS_ACS_TAG)"; \
-               $(ECHO) $(CVS_ACS_TAG) > ACS_TAG ; \
-            else \
-              if [ -f ACS_TAG ]; then\
-                $(ECHO) "CVS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
-              else \
-                $(ECHO) "No CVS tag available"; \
-              fi; \
-          fi
-
 svn-tag:
-	@ $(ECHO) "Evaluating current ACS TAG"; \
-          if [ "X$(SVN_ACS_TAG)" != "X" ]; then \
-               $(ECHO) "Subversion tag is: $(SVN_ACS_TAG)"; \
-               $(ECHO) $(SVN_ACS_TAG) > ACS_TAG ; \
+	@ $(ECHO) "Evaluating current ACS TAG from $(SVN_URL)"; \
+        if [ X$(SVN_TAG) != X ]; then \
+               $(ECHO) "SVN tag is: $(SVN_TAG)"; \
+               $(ECHO) $(SVN_TAG) > ACS_TAG ; \
             else \
               if [ -f ACS_TAG ]; then\
-                $(ECHO) "Subversion tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
+                $(ECHO) "ACS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
               else \
-                $(ECHO) "No Subversion tag available"; \
+                $(ECHO) "No SVN tag available"; \
               fi; \
           fi
 
 #
-# This target gets from CVS the correct 
-# ACS_VERSION ACS_PATCH_LEVEL files
-# Use this target to extract the needed files
-# from CVS if not available already.
+# This target gets from SVN the correct 
+# ACS_VERSION and ACS_PATCH_LEVEL files.
 #
-cvs-get-version:
-	@ $(ECHO) "Extracting from CVS version files"; \
-          if [ X$(ACS_TAG) != X ]; then \
-             $(ECHO) "CVS/SVN tag is: $(ACS_TAG)"; \
-             svn -q update ACS_VERSION ACS_PATCH_LEVEL ;\
+# I ported the cvs-get-version to work with SVN,
+# but believe that it will not be needed anymore because of
+# the diffrences between CVS and SVN.
+#
+svn-get-version:
+	@ $(ECHO) "Extracting from SVN version files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No CVS/SVN tag available"; \
-             svn -q update ACS_VERSION ACS_PATCH_LEVEL; \
-          fi
-
+             $(ECHO) "No SVN tag available"; \
+          fi; \
+          svn update --quiet ACS_PATCH_LEVEL ACS_VERSION
 
 #
-# This target gets from CVS all files needed for an LGPL distribution 
+# This target gets from SVN all files needed for an LGPL distribution 
 #
 LGPL_FILES=README README-new-release LGPL
-cvs-get-lgpl: cvs-tag svn-tag cvs-get-version
-	@ $(ECHO) "Extracting from CVS LGPL files"; \
-          if [ X$(ACS_TAG) != X ]; then \
-             $(ECHO) "CVS/SVN tag is: $(ACS_TAG)"; \
-             svn -q update $(LGPL_FILES) ;\
+svn-get-lgpl: svn-tag svn-get-version
+        @ $(ECHO) "Extracting from SVN LGPL files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No CVS/SVN tag available"; \
-             svn -q update README $(LGPL_FILES); \
-          fi
+             $(ECHO) "No SVN tag available"; \
+          fi; \
+          svn update --quiet $(LGPL_FILES)
 
 #
-# This target gets from CVS a complete ACS code distribution 
+# This target gets from SVN a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-cvs-get-no-lgpl: cvs-tag svn-tag cvs-get-version cvs-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
+svn-get-no-lgpl: svn-tag svn-get-version svn-get-lgpl svn-get-no-lgpl-extract 
 
-cvs-get-no-lgpl-extract: 
-	@  $(ECHO) "Extracting from CVS NO-LGPL files"; \
-          if [ X$(ACS_TAG) != X ]; then \
-             $(ECHO) "CVS/SVN tag is: $(ACS_TAG)"; \
-             svn -q update $(NO-LGPL_FILES) ;\
+svn-get-no-lgpl-extract: 
+	@  $(ECHO) "Extracting from SVN NO-LGPL files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No CVS/SVN tag available"; \
-             svn -q update $(NO-LGPL_FILES); \
-          fi
-
-#
-# This target gets from CVS the files that are specific for RH-9.
-# This includes the RTOS branch and the Kit with the Makefile 
-# The update is done only in the case we really are on RH-9
-#
-REDHAT_RELEASE := $(shell if [ -f /etc/redhat-release ]; then cat /etc/redhat-release; else echo "NOREDHAT"; fi )
-
-RH9-BRANCH=ACS-6_0-RTOS-3_1-B
-
-cvs-update-for-rtos31:
-ifeq ("$(REDHAT_RELEASE)","Red Hat Linux release 9 (Shrike)")
-	@$(ECHO) "Updating from CVS using RTOS-3_1 tag $(RH9-BRANCH)" 
-	svn -q update LGPL/Kit 
-	svn -q update NO-LGPL/rtos
-     endif
-
+             $(ECHO) "No SVN tag available"; \
+          fi; \
+          svn update --quiet $(NO-LGPL_FILES)
 
 #
 # Standard targets
