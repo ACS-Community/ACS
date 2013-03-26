@@ -167,7 +167,7 @@ public class CacheUtils {
 			df.format(dt,dateSB,pos);
 
 			StringBuilder logStr = new StringBuilder("<");
-			int typePos = rnd.nextInt(LogTypeHelper.values().length);
+			int typePos = rnd.nextInt(LogTypeHelper.values().length-1);
 			LogTypeHelper type = LogTypeHelper.values()[typePos];
 			
 			if (type==LogTypeHelper.TRACE) {
