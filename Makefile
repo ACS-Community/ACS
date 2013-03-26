@@ -458,9 +458,9 @@ show_modules:
 	@$(ECHO) ${MODULES}
 
 ################################################################
-# CVS targets.
+# SVN targets.
 # 
-# The following targets and expressions are helpers for CVS
+# The following targets and expressions are helpers for SVN
 # operations on the ACS tree.
 ################################################################
 
@@ -486,9 +486,9 @@ svn-tag:
                $(ECHO) $(SVN_TAG) > ACS_TAG ; \
             else \
               if [ -f ACS_TAG ]; then\
-                $(ECHO) "CVS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
+                $(ECHO) "ACS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
               else \
-                $(ECHO) "No CVS tag available"; \
+                $(ECHO) "No SVN tag available"; \
               fi; \
           fi
 
@@ -523,37 +523,19 @@ svn-get-lgpl: svn-tag svn-get-version
 	  svn update --quiet $(LGPL_FILES)
 
 #
-# This target gets from CVS a complete ACS code distribution 
+# This target gets from SVN a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-cvs-get-no-lgpl: svn-tag svn-get-version svn-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
+svn-get-no-lgpl: svn-tag svn-get-version svn-get-lgpl svn-get-no-lgpl-extract 
 
-cvs-get-no-lgpl-extract: 
-	@  $(ECHO) "Extracting from CVS NO-LGPL files"; \
-          if [ X$(ACS_TAG) != X ]; then \
-             $(ECHO) "CVS tag is: $(ACS_TAG)"; \
-             cvs -Q update -P -d -r $(ACS_TAG) $(NO-LGPL_FILES) ;\
+svn-get-no-lgpl-extract: 
+	@  $(ECHO) "Extracting from SVN NO-LGPL files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No CVS tag available"; \
-             cvs -Q update -P -d $(NO-LGPL_FILES); \
-          fi
-
-#
-# This target gets from CVS the files that are specific for RH-9.
-# This includes the RTOS branch and the Kit with the Makefile 
-# The update is done only in the case we really are on RH-9
-#
-REDHAT_RELEASE := $(shell if [ -f /etc/redhat-release ]; then cat /etc/redhat-release; else echo "NOREDHAT"; fi )
-
-RH9-BRANCH=ACS-6_0-RTOS-3_1-B
-
-cvs-update-for-rtos31:
-     ifeq ("$(REDHAT_RELEASE)","Red Hat Linux release 9 (Shrike)")
-	@$(ECHO) "Updating from CVS using RTOS-3_1 tag $(RH9-BRANCH)" 
-	cvs -Q update -P -d -r $(RH9-BRANCH) LGPL/Kit 
-	cvs -Q update -P -d -r $(RH9-BRANCH) NO-LGPL/rtos
-     endif
-
+             $(ECHO) "No SVN tag available"; \
+          fi; \
+	  svn update --quiet $(NO-LGPL_FILES)
 
 #
 # Standard targets
