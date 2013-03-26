@@ -482,7 +482,7 @@ SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(N
 svn-tag:
 	@ $(ECHO) "Evaluating current ACS TAG from $(SVN_URL)"; \
 	if [ X$(SVN_TAG) != X ]; then \
-               $(ECHO) "ACS tag is: $(SVN_TAG)"; \
+               $(ECHO) "SVN tag is: $(SVN_TAG)"; \
                $(ECHO) $(SVN_TAG) > ACS_TAG ; \
             else \
               if [ -f ACS_TAG ]; then\
@@ -493,27 +493,27 @@ svn-tag:
           fi
 
 #
-# This target gets from CVS the correct 
-# ACS_VERSION ACS_PATCH_LEVEL files
-# Use this target to extract the needed files
-# from CVS if not available already.
+# This target gets from SVN the correct 
+# ACS_VERSION and ACS_PATCH_LEVEL files.
 #
-cvs-get-version:
-	@ $(ECHO) "Extracting from CVS version files"; \
-          if [ X$(ACS_TAG) != X ]; then \
-             $(ECHO) "CVS tag is: $(ACS_TAG)"; \
-             cvs -Q update -P -d -r $(ACS_TAG) ACS_VERSION ACS_PATCH_LEVEL ;\
+# I ported the cvs-get-version to work with SVN,
+# but believe that it will not be needed anymore because of
+# the diffrences between CVS and SVN.
+#
+svs-get-version:
+	@ $(ECHO) "Extracting from SVN version files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No CVS tag available"; \
-             cvs -Q update -P -d ACS_VERSION ACS_PATCH_LEVEL; \
-          fi
-
+             $(ECHO) "No SVN tag available"; \
+          fi; \
+	  svn update --quiet ACS_PATCH_LEVEL ACS_VERSION
 
 #
 # This target gets from CVS all files needed for an LGPL distribution 
 #
 LGPL_FILES=README README-new-release LGPL
-cvs-get-lgpl: svn-tag cvs-get-version
+cvs-get-lgpl: svn-tag svs-get-version
 	@ $(ECHO) "Extracting from CVS LGPL files"; \
           if [ X$(ACS_TAG) != X ]; then \
              $(ECHO) "CVS tag is: $(ACS_TAG)"; \
@@ -527,7 +527,7 @@ cvs-get-lgpl: svn-tag cvs-get-version
 # This target gets from CVS a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-cvs-get-no-lgpl: svn-tag cvs-get-version cvs-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
+cvs-get-no-lgpl: svn-tag svs-get-version cvs-get-lgpl cvs-get-no-lgpl-extract cvs-update-for-rtos31
 
 cvs-get-no-lgpl-extract: 
 	@  $(ECHO) "Extracting from CVS NO-LGPL files"; \
