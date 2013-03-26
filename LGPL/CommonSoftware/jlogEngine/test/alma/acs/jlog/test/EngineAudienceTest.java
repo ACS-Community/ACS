@@ -166,10 +166,12 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		// Generate 1000 log of each type
 		Collection<ILogEntry> logs = new Vector<ILogEntry>();
 		for (LogTypeHelper logType: LogTypeHelper.values()) {
-			Collection<ILogEntry> tempLogs = CacheUtils.generateLogsType(1000, logType);
-			logs.addAll(tempLogs);
+			if (logType!=LogTypeHelper.OFF) {
+				Collection<ILogEntry> tempLogs = CacheUtils.generateLogsType(1000, logType);
+				logs.addAll(tempLogs);
+			}
 		}
-		assertEquals(1000*LogTypeHelper.values().length, logs.size());
+		assertEquals(1000*(LogTypeHelper.values().length-1), logs.size());
 		for (ILogEntry log: logs) {
 			logRetieval.addLog(log.toXMLString());
 		}
@@ -191,6 +193,9 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		// only one of them with audience OPERATOR
 		logs.clear();
 		for (LogTypeHelper logType: LogTypeHelper.values()) {
+			if (logType==LogTypeHelper.OFF) {
+				continue;
+			}
 			Date dt = new Date(System.currentTimeMillis());
 			StringBuffer dateSB = new StringBuffer();
 			FieldPosition pos = new FieldPosition(0);
@@ -230,7 +235,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 			ILogEntry logNoOp = parser.parse(logNoOperatorStr.toString());
 			logs.add(logNoOp);
 		}
-		assertEquals(2*LogTypeHelper.values().length, logs.size());
+		assertEquals(2*(LogTypeHelper.values().length-1), logs.size());
 		
 		numOfReceivedLogs=0;
 		numOfReceivedXMLLogs=0;

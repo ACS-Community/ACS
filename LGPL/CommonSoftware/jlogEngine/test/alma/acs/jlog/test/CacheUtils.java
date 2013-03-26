@@ -158,7 +158,7 @@ public class CacheUtils {
 			df.format(dt,dateSB,pos);
 
 			StringBuilder logStr = new StringBuilder("<");
-			int typePos = rnd.nextInt(LogTypeHelper.values().length);
+			int typePos = rnd.nextInt(LogTypeHelper.values().length-1);
 			LogTypeHelper type = LogTypeHelper.values()[typePos];
 			
 			if (type==LogTypeHelper.TRACE) {
@@ -194,6 +194,9 @@ public class CacheUtils {
 	 */
 	
 	public static Collection<ILogEntry> generateLogsType(int numOfLogs, LogTypeHelper logType) throws Exception {
+		if (logType==LogTypeHelper.OFF) {
+			throw new IllegalArgumentException("Cannot publish logs with level OFF");
+		}
 		Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
 		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
 		SimpleDateFormat df = new IsoDateFormat();
