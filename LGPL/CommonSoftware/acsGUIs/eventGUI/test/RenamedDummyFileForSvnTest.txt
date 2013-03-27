@@ -1,0 +1,2 @@
+This file was created as eventGUI/test/DummyFileForSvnTest.txt
+Then it got renamed to eventGUI/test/RenamedDummyFileForSvnTest.txt
