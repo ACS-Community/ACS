@@ -514,7 +514,7 @@ svn-get-version:
 #
 LGPL_FILES=README README-new-release LGPL
 svn-get-lgpl: svn-tag svn-get-version
-        @ $(ECHO) "Extracting from SVN LGPL files"; \
+	@  $(ECHO) "Extracting from SVN LGPL files"; \
           if [ X$(SVN_TAG) != X ]; then \
              $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
