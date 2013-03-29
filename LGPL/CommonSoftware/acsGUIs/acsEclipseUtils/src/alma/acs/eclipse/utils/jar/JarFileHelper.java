@@ -212,6 +212,7 @@ public class JarFileHelper {
 	        	sz++;
 	        }
 	    }
+	    jar.close();
 	    return sz;
 	}
 	
@@ -265,6 +266,7 @@ public class JarFileHelper {
 	        String str=em1.nextElement().toString().trim();
 	        addJavaClass(str,javaClasses);
 	      }
+	      jar.close();
 	}
 	
 	/**

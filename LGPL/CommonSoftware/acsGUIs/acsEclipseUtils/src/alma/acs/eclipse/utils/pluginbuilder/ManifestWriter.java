@@ -23,7 +23,6 @@ package alma.acs.eclipse.utils.pluginbuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Arrays;
 import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -114,9 +113,9 @@ public class ManifestWriter {
 	private final Attributes.Name bundleVersionName= new Attributes.Name("Bundle-Version");
 	
 	/**
-	 * The version is statically set to 1.0.0
+	 * The bundle version
 	 */
-	private static final String version="1.0.0";
+	private String bundleVersion;
 	
 	/**
 	 * The attribute name for Bundle-ClassPath 
@@ -166,6 +165,7 @@ public class ManifestWriter {
 			boolean bundleByReference, 
 			String[] finalJarsLocations, 
 			String[] dependencies,
+			String bundleVersion,
 			Logger logger) {
 		if (folder==null || !folder.canWrite()) {
 			throw new IllegalArgumentException("Invalid folder for the manifest");
@@ -179,6 +179,13 @@ public class ManifestWriter {
 		this.bundlingByReference = bundleByReference;
 		this.finalJarsLocations = finalJarsLocations;
 		this.dependencies=dependencies;
+		if (bundleVersion != null && !bundleVersion.trim().isEmpty()) {
+			this.bundleVersion = bundleVersion;
+		}
+		else {
+			this.bundleVersion = "1.0.0";
+		}
+		this.bundleVersion = bundleVersion;
 		this.logger=logger;
 		manifestFolder=folder;
 		this.pluginFolder=pluginFolder;
@@ -199,7 +206,7 @@ public class ManifestWriter {
 		attrs.put(bundleManifestVersionName, "2");
 		attrs.put(bundleName, pluginFolder.getName()+pluginBundleName);
 		attrs.put(bundleSymbolicName, pluginFolder.getName()+"; singleton=true");
-		attrs.put(bundleVersionName, version);
+		attrs.put(bundleVersionName, bundleVersion);
 		attrs.put(bundleVendorName, vendor);
 		attrs.put(bundleActivationPolicyName,activationPolicy);
 		

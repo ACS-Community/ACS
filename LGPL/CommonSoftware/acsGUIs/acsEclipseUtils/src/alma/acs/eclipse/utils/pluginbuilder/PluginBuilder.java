@@ -22,7 +22,6 @@
 package alma.acs.eclipse.utils.pluginbuilder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -116,9 +115,16 @@ public class PluginBuilder {
 	private String[] requiredPlugins;
 	
 	/**
+	 * The bundle version currently gets derived from the bundle name ('_' suffix). 
+	 * It may be null if the bundle name does not contain an underscore. Then the ManifestWriter will use 1.0.0 as default.
+	 */
+	private String bundleVersion;
+
+	/**
 	 * The logger to print info and debug messages
 	 */
 	private static final Logger logger=Logger.getLogger(PluginBuilder.class.getName());
+	//private static final Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(PluginBuilder.class.getSimpleName(), false);
 	
 	/**
 	 * The handler getting logs
@@ -226,8 +232,13 @@ public class PluginBuilder {
 		// Check if the name is a valid plugin name
 		// 
 		// The check is done by checking if the name contains dots and underscore
+		// The version is derived from the suffix after the underscore. Perhaps a separate option would be better than underscore in the name.
 		if (name.indexOf('.')<0 || name.indexOf('_')<0) {
-			logger.warning("Plugin name does not follow eclipse rules (it should be something like eso.alma.ecs_3.0.0)");
+			logger.warning("Plugin name '" + name + "' does not follow eclipse rules (it should be something like eso.alma.ecs_3.0.0).");
+		}
+		else {
+			bundleVersion = name.substring(name.indexOf('_') + 1);
+			name = name.substring(0, name.indexOf('_'));
 		}
 
 		this.finalJarsLocations = new String[jars.length];
@@ -342,6 +353,7 @@ public class PluginBuilder {
 				!wrapJars, 
 				finalJarsLocations, 
 				requiredPlugins, 
+				bundleVersion,
 				logger);
 		manifestWriter.write();
 	}
