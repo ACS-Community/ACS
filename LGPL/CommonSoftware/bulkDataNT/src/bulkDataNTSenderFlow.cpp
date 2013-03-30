@@ -371,7 +371,8 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 //		frame_m->data.from_array(param, len);
 
 	ret = ddsDataWriter_m->write(*frame_m, DDS::HANDLE_NIL);
-	frame_m->data.unloan();
+	if (param!=0 && len!=0)
+		frame_m->data.unloan();
 
 	if( ret != DDS::RETCODE_OK)
 	{
