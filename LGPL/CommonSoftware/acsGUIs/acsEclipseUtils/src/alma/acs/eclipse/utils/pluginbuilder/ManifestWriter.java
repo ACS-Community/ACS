@@ -185,7 +185,6 @@ public class ManifestWriter {
 		else {
 			this.bundleVersion = "1.0.0";
 		}
-		this.bundleVersion = bundleVersion;
 		this.logger=logger;
 		manifestFolder=folder;
 		this.pluginFolder=pluginFolder;
