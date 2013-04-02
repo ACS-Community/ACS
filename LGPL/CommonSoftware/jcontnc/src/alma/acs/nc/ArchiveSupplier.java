@@ -24,7 +24,6 @@ import org.omg.CosNotification.StructuredEvent;
 
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.refactored.NCPublisher;
 import alma.acs.util.UTCUtility;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;

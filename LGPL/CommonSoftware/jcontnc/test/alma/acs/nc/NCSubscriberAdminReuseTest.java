@@ -1,4 +1,4 @@
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -22,7 +22,7 @@ import gov.sandia.NotifyMonitoringExt.EventChannel;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.concurrent.ThreadBurstExecutorService;
 import alma.acs.nc.AcsEventSubscriber;
-import alma.acs.nc.OldConsumer;
+import alma.acs.nc.NCSubscriber;
 import alma.acs.nc.Helper;
 import alma.acscommon.NC_KIND;
 
@@ -114,7 +114,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	 */
 	public void testNewAndOldNCsTogether() throws Exception {
 
-		List<OldConsumer> consumers = new ArrayList<OldConsumer>();
+		List<Consumer> consumers = new ArrayList<Consumer>();
 		for(int i=1; i<=10; i++) {
 
 			// Create the maximum number of proxies per admin
@@ -122,7 +122,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 			AcsEventSubscriber[] subscribers = new AcsEventSubscriber[NCSubscriber.PROXIES_PER_ADMIN];
 			for(int j=0; j!=NCSubscriber.PROXIES_PER_ADMIN; j++) {
 				subscribers[j] = getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, IDLEntity.class);
-				OldConsumer c = new OldConsumer(CHANNEL_NAME, getContainerServices());
+				Consumer c = new Consumer(CHANNEL_NAME, getContainerServices());
 				consumers.add(c);
 			}
 			assertEquals(i*(1 + NCSubscriber.PROXIES_PER_ADMIN), channel.get_all_consumeradmins().length);
@@ -153,7 +153,7 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		assertEquals(10*NCSubscriber.PROXIES_PER_ADMIN, lonelyAdmins);
 
 		// Manually free these old filthy consumers
-		for(OldConsumer c: consumers)
+		for(Consumer c: consumers)
 			c.disconnect();
 	}
 

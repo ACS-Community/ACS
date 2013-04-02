@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
 
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,11 +85,6 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsEventSubscriberImplBase;
-import alma.acs.nc.AcsNcReconnectionCallback;
-import alma.acs.nc.AnyAide;
-import alma.acs.nc.Helper;
-import alma.acs.nc.NcFilterInspector;
-import alma.acs.nc.ReconnectableParticipant;
 import alma.acs.ncconfig.EventDescriptor;
 import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;

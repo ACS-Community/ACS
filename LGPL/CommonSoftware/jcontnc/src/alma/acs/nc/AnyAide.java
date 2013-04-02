@@ -47,12 +47,10 @@ import alma.acs.exceptions.AcsJException;
  * developers' lives, please send this suggestion to the alma-sw-common@nrao.edu
  * or acs-discuss@nrao.edu mailing lists.
  * 
- * @TODO make package-private once we no longer have a separate "refactored" subpackage.
- * 
  * @author dfugate
  * @version $Id$
  */
-public class AnyAide {
+class AnyAide {
 
 	/** reference to the container services */
 	private final ContainerServicesBase m_containerServices;

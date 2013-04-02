@@ -25,7 +25,6 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.refactored.NCSubscriber;
 import alma.acsnc.EventDescription;
 
 /**

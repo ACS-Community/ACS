@@ -1,4 +1,4 @@
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import java.util.Date;
 import java.util.logging.Level;
@@ -16,6 +16,7 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acs.nc.NCSubscriber;
 import alma.acs.nc.AcsEventSubscriber.Callback;
 import alma.acsnc.EventDescription;
 

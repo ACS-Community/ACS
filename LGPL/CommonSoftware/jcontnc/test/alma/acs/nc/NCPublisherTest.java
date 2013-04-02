@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
 
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import java.util.logging.Logger;
 
@@ -26,6 +26,7 @@ import alma.ADMINTEST1.statusBlockEvent1;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.Helper;
+import alma.acs.nc.NCPublisher;
 
 /**
  * This test class aims to test the NCPublisher class.

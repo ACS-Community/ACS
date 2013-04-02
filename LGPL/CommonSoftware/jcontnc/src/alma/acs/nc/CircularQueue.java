@@ -25,7 +25,6 @@ import java.util.Vector;
 
 import org.omg.CosNotification.StructuredEvent;
 
-import alma.acs.nc.refactored.NCPublisher;
 
 /**
  * Circular Queue that can buffer events while the Notify Service is down.

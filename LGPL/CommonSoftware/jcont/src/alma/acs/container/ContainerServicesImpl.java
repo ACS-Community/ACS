@@ -171,12 +171,12 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * Subscriber instance gets created using reflection, since module jcontnc must come after jcont for other reasons.
 	 */
-	private final String CLASSNAME_NC_SUBSCRIBER = "alma.acs.nc.refactored.NCSubscriber";
+	private final String CLASSNAME_NC_SUBSCRIBER = "alma.acs.nc.NCSubscriber";
 	
 	/**
 	 * Publisher instance gets created using reflection, since module jcontnc must come after jcont for other reasons.
 	 */
-	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
+	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.NCPublisher";
 
 	/**
 	 * Instead of using "synchronized" lazy factory methods, there is this separate sync object 

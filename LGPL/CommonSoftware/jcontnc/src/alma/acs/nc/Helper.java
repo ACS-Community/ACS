@@ -274,8 +274,6 @@ public class Helper {
 	 * This method gets a reference to the event channel. If it is not already
 	 * registered with the naming service, it is created.
 	 * 
-	 * @TODO Make "protected" again once we no longer have NC classes in separate subpackge "refactored".
-	 *  
 	 * @return Reference to the event channel specified by channelName. Never null.
 	 * @param channelName
 	 *           Name of the event channel registered with the CORBA Naming
@@ -288,7 +286,7 @@ public class Helper {
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
 	 */
-	public EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
+	protected EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException 
 	{
 		enforceSingleNC(channelName);

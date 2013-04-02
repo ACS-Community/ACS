@@ -33,7 +33,7 @@ import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.refactored.NCPublisher;
+import alma.acs.nc.NCPublisher;
 import alma.acsnc.EventDescription;
 import alma.demo.SupplierCompOperations;
 

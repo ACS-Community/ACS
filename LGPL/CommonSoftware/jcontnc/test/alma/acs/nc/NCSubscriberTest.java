@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
 
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
@@ -46,9 +46,10 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventPublisher;
+import alma.acs.nc.NCSubscriber;
 import alma.acs.nc.AcsEventSubscriber.Callback;
 import alma.acs.nc.AcsEventSubscriber.GenericCallback;
-import alma.acs.nc.refactored.NCSubscriber.NoEventReceiverListener;
+import alma.acs.nc.NCSubscriber.NoEventReceiverListener;
 import alma.acs.util.AcsLocations;
 import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;

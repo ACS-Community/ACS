@@ -32,7 +32,7 @@ import alma.FRIDGE.FridgeControlPackage.NestedFridgeEventSeqHolder;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.OldConsumer;
+import alma.acs.nc.Consumer;
 import alma.acsnc.EventDescription;
 import alma.demo.ConsumerCompOperations;
 import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
@@ -44,7 +44,7 @@ import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
  */
 public class EventConsumerImpl extends ComponentImplBase implements ConsumerCompOperations 
 {
-	private OldConsumer m_consumer = null;
+	private Consumer m_consumer = null;
 
 	private long m_count = 0;
 
@@ -60,7 +60,7 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 
 		try {
 			//subscribe to real channel and name
-			m_consumer = new OldConsumer("blar", m_containerServices);
+			m_consumer = new Consumer("blar", m_containerServices);
 			
 			m_consumer.addSubscription(EventDescription.class, this);
 //			m_consumer.addSubscription(NestedFridgeEventSeqHolder.class, this);

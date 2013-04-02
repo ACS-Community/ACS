@@ -1,10 +1,11 @@
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import alma.ADMINTEST1.OnOffStates;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Helper;
+import alma.acs.nc.NCPublisher;
 import alma.acs.util.CmdLineArgs;
 import alma.acs.util.CmdLineRegisteredOption;
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
 
-package alma.acs.nc.refactored;
+package alma.acs.nc;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
@@ -67,11 +67,6 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventPublisher;
-import alma.acs.nc.AcsNcReconnectionCallback;
-import alma.acs.nc.AnyAide;
-import alma.acs.nc.CircularQueue;
-import alma.acs.nc.Helper;
-import alma.acs.nc.ReconnectableParticipant;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -91,13 +86,19 @@ import alma.acsncErrType.wrappers.AcsJPublishEventFailureEx;
  * As of 2006-12, HSO is not sure why this complex design was chosen, instead of using structured events without the Any wrapping inside. 
  * Possibly it offers some flexibility for generic consumer tools written in languages that have no introspection. 
  * <p>
- * @TODO (HSO): figure out if the CORBA impl is thread safe. Fix this class accordingly, 
- * or document that it is not thread safe otherwise.
- * <p>
  * Note about refactoring: NCPublisher gets instantiated in module jcont using java reflection.
  * Thus if you change the package, name, or constructor of this class, 
  * make sure to fix {@link alma.acs.container.ContainerServicesImpl#CLASSNAME_NC_PUBLISHER}
  * or its use to get the constructor.
+ * <p>
+ * @TODO (HSO): figure out if the CORBA impl is thread safe. Fix this class accordingly, 
+ * or document that it is not thread safe otherwise.
+ * 
+ * @param <T> The event (base) type. If all events published by an instance of this class are of the same type,
+ *            e.g., <code>MyEventStructFromIDL</code>, then that type should be used; 
+ *            otherwise the common base type <code>IDLEntity</code> should be used. <br>
+ *            Note that we currently cannot use the restriction <code>T extends IDLEntity</code>
+ *            because of <code>ArchiveSupplier</code> which <code>extends NCPublisher&lt;Object&gt;</code>.
  * 
  * @author jslopez, hsommer
  */
@@ -569,8 +570,9 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
-	 * Takes a generic Java object and tries to pack it into a CORBA Any and
-	 * publish it to the event channel. This will fail if the parameter is not
+	 * Takes the given Java object and tries to pack it into a CORBA Any and
+	 * publish it to the notification channel. 
+	 * This will fail if the parameter is not
 	 * CORBA-generated from a user-defined IDL struct. In simple terms, trying
 	 * to publish native Java types is impossible because they have no CORBA
 	 * mapping to say Python or C++ types.
