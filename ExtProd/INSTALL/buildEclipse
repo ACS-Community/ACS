@@ -61,7 +61,31 @@ echo "done"
 echo ""
 
 
+#
+# Starting with ACS 11.2 we also install Eclipse 4 (currently 4.2.2)
+# under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse4.
+# Some time in the future we should remove the Eclipse 3 installation.
+#
+TOPDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse4
+if [ -d $TOPDIR ]
+then
+  echo $TOPDIR directory exists already. I clean it up.
+  rm -rf $TOPDIR
+fi
+SDKDIR=$TOPDIR/SDKandDeltaPack
+mkdir $TOPDIR
+mkdir $SDKDIR
+VERSION=4.2.2
+echo "unpacking the archives for Eclipse "$VERSION
+SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
+cd $SDKDIR
+tar zxf $SDKFILE
+DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
+unzip -oq $DELTAPACKFILE
+echo "done"
+echo ""
+
+
 cd $CURR_DIR
 echo Eclipse installation done
 date
-
