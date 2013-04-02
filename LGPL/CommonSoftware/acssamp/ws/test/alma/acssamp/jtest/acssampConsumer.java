@@ -23,7 +23,7 @@ import org.omg.CosNotification.StructuredEvent;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.refactored.NCSubscriber;
+import alma.acs.nc.NCSubscriber;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
 import alma.acsnc.EventDescription;
@@ -84,7 +84,7 @@ public class acssampConsumer extends NCSubscriber<IDLEntity>
 	 * @see alma.acs.nc.Consumer#push_structured_event(org.omg.CosNotification.StructuredEvent)
 	 */
 	/* (non-Javadoc)
-	 * @see alma.acs.nc.refactored.NCSubscriber#push_structured_event_called(org.omg.CosNotification.StructuredEvent)
+	 * @see alma.acs.nc.NCSubscriber#push_structured_event_called(org.omg.CosNotification.StructuredEvent)
 	 */
 	@Override
 	protected boolean push_structured_event_called(StructuredEvent structuredEvent) {

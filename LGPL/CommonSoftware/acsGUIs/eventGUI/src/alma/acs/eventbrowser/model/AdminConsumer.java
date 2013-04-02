@@ -32,7 +32,7 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.views.EventData;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.refactored.NCSubscriber;
+import alma.acs.nc.NCSubscriber;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 

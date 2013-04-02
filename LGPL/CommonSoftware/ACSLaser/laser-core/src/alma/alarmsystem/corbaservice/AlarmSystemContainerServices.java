@@ -58,8 +58,8 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Helper;
-import alma.acs.nc.refactored.NCPublisher;
-import alma.acs.nc.refactored.NCSubscriber;
+import alma.acs.nc.NCPublisher;
+import alma.acs.nc.NCSubscriber;
 
 public class AlarmSystemContainerServices implements ContainerServicesBase {
 	

@@ -64,7 +64,7 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	/**
 	 * NCPublisher can be instantiated only using reflection, because modules jcontnc comes after jmanager
 	 */
-	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
+	private final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.NCPublisher";
 	
 	private final ThreadFactory threadFactory;
 	

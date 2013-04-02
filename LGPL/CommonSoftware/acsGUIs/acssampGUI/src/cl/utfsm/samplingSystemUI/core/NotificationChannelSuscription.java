@@ -33,7 +33,7 @@ import org.omg.CosNotification.StructuredEvent;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.acs.container.ContainerServices;
-import alma.acs.nc.refactored.NCSubscriber;
+import alma.acs.nc.NCSubscriber;
 import alma.acsnc.EventDescription;
 import alma.acssamp.SampObjPackage.SampDataBlock;
 import alma.acssamp.SampObjPackage.SampDataBlockSeqHelper;
