@@ -181,6 +181,17 @@ public:
 
             ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d completed.", descOut_.id_tag);
         }
+        catch( CORBA::SystemException &_ex )
+        	{
+        	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+        							    "maci::ActivationMethod::call");
+        	corbaProblemEx.setMinor(_ex.minor());
+        	corbaProblemEx.setCompletionStatus(_ex.completed());
+        	corbaProblemEx.setInfo(_ex._info().c_str());
+        	maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+        						 "maci::ActivationMethod::call");
+        	corbaProblemEx.log();
+        	}
         catch(...)
         {
             ACSErrTypeCommon::UnknownExImpl uex(__FILE__, __LINE__,
