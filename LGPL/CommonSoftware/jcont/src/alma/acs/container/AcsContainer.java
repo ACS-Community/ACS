@@ -311,19 +311,11 @@ public class AcsContainer extends ContainerPOA
 		ClientLogManager.LogAlarmHandler logAlarmHandler = new ClientLogManager.LogAlarmHandler() {
 			@Override
 			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
-				try {
-					m_alarmContainerServices.getAlarmSource().raiseAlarm(faultFamily, faultMember, faultCode);
-				} catch (AcsJContainerServicesEx e) {
-					throw new AcsJCouldntPerformActionEx(e);
-				}
+				m_alarmContainerServices.getAlarmSource().raiseAlarm(faultFamily, faultMember, faultCode);
 			}
 			@Override
 			public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
-				try {
-					m_alarmContainerServices.getAlarmSource().clearAlarm(faultFamily, faultMember, faultCode);
-				} catch (AcsJContainerServicesEx e) {
-					e.printStackTrace();
-				}
+				m_alarmContainerServices.getAlarmSource().clearAlarm(faultFamily, faultMember, faultCode);
 			}
 		};
 		ClientLogManager.getAcsLogManager().enableLoggingAlarms(logAlarmHandler);

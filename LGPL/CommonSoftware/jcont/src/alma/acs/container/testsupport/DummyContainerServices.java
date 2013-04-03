@@ -297,7 +297,7 @@ public class DummyContainerServices extends DummyContainerServicesBase implement
 	}
 
 	@Override
-	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
+	public AlarmSource getAlarmSource() {
 		return alarmSource;
 	}
 

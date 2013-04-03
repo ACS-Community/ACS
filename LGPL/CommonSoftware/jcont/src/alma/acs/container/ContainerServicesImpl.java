@@ -1437,7 +1437,7 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 
 	@Override
-	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
+	public AlarmSource getAlarmSource() {
 		return ACSAlarmSystemInterfaceFactory.getAlarmSource(this);
 	}
 

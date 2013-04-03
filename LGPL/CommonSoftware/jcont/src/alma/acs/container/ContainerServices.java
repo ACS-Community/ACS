@@ -566,9 +566,8 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @TODO: We could remove the AcsJContainerServicesEx declaration, it is currently not needed.
 	 * 
 	 * @return The {@link AlarmSource} owned by this object
-	 * @throws AcsJContainerServicesEx if anything goes wrong
 	 */
-	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx;
+	public AlarmSource getAlarmSource();
 
     /////////////////////////////////////////////////////////////
     // other

@@ -320,7 +320,7 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	@Override
-	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
+	public AlarmSource getAlarmSource() {
 		return delegate.getAlarmSource();
 	}
 }
