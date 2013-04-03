@@ -36,12 +36,7 @@ import java.util.Properties;
 class MountImpl extends ComponentImplBase implements MountOperations {
 	Antenna antenna;
 	public void faultMount() {
-		try {
-			m_containerServices.getAlarmSource().raiseAlarm("Mount","ALARM_SOURCE_MOUNT",1);
-		}catch (AcsJContainerServicesEx ex) {
-			// This can never happen actually but the exception is still present in 
-			// ContainerServices.///
-		}
+		m_containerServices.getAlarmSource().raiseAlarm("Mount","ALARM_SOURCE_MOUNT",1);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
@@ -51,12 +46,7 @@ class MountImpl extends ComponentImplBase implements MountOperations {
 		}
 	}
 	public void terminate_faultMount() {
-		try {
-			m_containerServices.getAlarmSource().clearAlarm("Mount","ALARM_SOURCE_MOUNT",1);
-		}catch (AcsJContainerServicesEx ex) {
-			// This can never happen actually but the exception is still present in 
-			// ContainerServices.///
-		}
+		m_containerServices.getAlarmSource().clearAlarm("Mount","ALARM_SOURCE_MOUNT",1);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}

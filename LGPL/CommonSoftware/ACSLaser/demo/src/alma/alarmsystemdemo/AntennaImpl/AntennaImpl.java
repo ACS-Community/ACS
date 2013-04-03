@@ -34,19 +34,9 @@ import java.util.Properties;
 class AntennaImpl extends ComponentImplBase implements AntennaOperations
 {
 	public void faultAntenna() {
-		try {
-			m_containerServices.getAlarmSource().raiseAlarm("Antenna","ALARM_SOURCE_ANTENNA",1);
-		}catch (AcsJContainerServicesEx ex) {
-			// This can never happen actually but the exception is still present in 
-			// ContainerServices.///
-		}
+		m_containerServices.getAlarmSource().raiseAlarm("Antenna","ALARM_SOURCE_ANTENNA",1);
 	} 
 	public void terminate_faultAntenna() {
-		try {
-			m_containerServices.getAlarmSource().clearAlarm("Antenna","ALARM_SOURCE_ANTENNA",1);	
-		} catch (AcsJContainerServicesEx ex) {
-			// This can never happen actually but the exception is still present in 
-			// ContainerServices.///
-		}
+		m_containerServices.getAlarmSource().clearAlarm("Antenna","ALARM_SOURCE_ANTENNA",1);	
 	}
 }

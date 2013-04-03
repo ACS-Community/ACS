@@ -63,12 +63,7 @@ public class MFImpl extends ComponentImplBase implements MFOperations {
 	 */
 	public void multiFault() {
 		for (int fc: FCs) {
-			try {
-				m_containerServices.getAlarmSource().raiseAlarm(FF, FM, fc);
-			} catch (AcsJContainerServicesEx ex) {
-				// This can never happen actually but the exception is still present in 
-				// ContainerServices.///
-			}
+			m_containerServices.getAlarmSource().raiseAlarm(FF, FM, fc);
 			// Give the user time to see what happens in the alarm panel
 			try {
 				Thread.sleep(5000);
@@ -81,12 +76,7 @@ public class MFImpl extends ComponentImplBase implements MFOperations {
 	 */
 	public void terminate_multiFault() {
 		for (int fc: FCs) {
-			try {
-				m_containerServices.getAlarmSource().clearAlarm(FF, FM, fc);
-			} catch (AcsJContainerServicesEx ex) {
-				// This can never happen actually but the exception is still present in 
-				// ContainerServices.///
-			}
+			m_containerServices.getAlarmSource().clearAlarm(FF, FM, fc);
 			// Give the user time to see what happens in the alarm panel
 			try {
 				Thread.sleep(5000);

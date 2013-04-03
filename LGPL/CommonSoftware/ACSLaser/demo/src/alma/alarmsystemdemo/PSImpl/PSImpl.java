@@ -40,12 +40,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 	Mount mount = null;
 	
 	public void faultPS() {
-		try {
-			m_containerServices.getAlarmSource().raiseAlarm("PS","ALARM_SOURCE_PS",1);
-		} catch (AcsJContainerServicesEx ex) {
-			// This can never happen actually but the exception is still present in 
-			// ContainerServices.///
-		}
+		m_containerServices.getAlarmSource().raiseAlarm("PS","ALARM_SOURCE_PS",1);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
@@ -55,12 +50,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 		}
 	}
 	public void terminate_faultPS() {
-		try {
-			m_containerServices.getAlarmSource().clearAlarm("PS","ALARM_SOURCE_PS",1);
-		} catch (AcsJContainerServicesEx ex) {
-			// This can never happen actually but the exception is still present in 
-			// ContainerServices.///
-		}
+		m_containerServices.getAlarmSource().clearAlarm("PS","ALARM_SOURCE_PS",1);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
