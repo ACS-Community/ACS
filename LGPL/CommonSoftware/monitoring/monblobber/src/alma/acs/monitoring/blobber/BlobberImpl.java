@@ -84,11 +84,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
 		super.initialize(inContainerServices);
 
-		try {
-			alarmSource = inContainerServices.getAlarmSource();
-		} catch (AcsJContainerServicesEx ex) {
-			throw new ComponentLifecycleException(ex);
-		}
+		alarmSource = inContainerServices.getAlarmSource();
 		
 		// clear alarm that might have been left active from a previous run
 		alarmSource.clearAlarm("Monitoring", "MonitorArchiver", 2); // @TODO use component-specific alarm triplet
