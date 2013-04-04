@@ -44,6 +44,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import alma.acs.eventbrowser.model.EventData;
 import alma.acs.eventbrowser.model.EventModel;
 
 public class EventDetailView extends ViewPart {
@@ -122,7 +123,7 @@ public class EventDetailView extends ViewPart {
 		ISelectionService selsvc = getSite().getWorkbenchWindow()
 				.getSelectionService();
 		selsvc.addSelectionListener(
-				alma.acs.eventbrowser.views.EventListView.ID, mylistener);
+				alma.acs.eventbrowser.parts.EventListPart.ID, mylistener);
 
 	}
 

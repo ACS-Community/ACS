@@ -20,16 +20,21 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import alma.acs.eventbrowser.Application;
-import alma.acs.eventbrowser.views.ArchiveEventData;
+import java.util.concurrent.BlockingQueue;
 import alma.acs.nc.ArchiveConsumer;
 
 public class ArchiveReceiver implements ArchiveConsumer.ArchiveReceiver {
 	
+	private final BlockingQueue<ArchiveEventData> archQueue;
+
+	ArchiveReceiver(BlockingQueue<ArchiveEventData> archQueue) {
+		this.archQueue = archQueue;
+	}
+	
 	@Override
 	public void receive(long timeStamp, String device, String property, Object value) {
 		ArchiveEventData adata = new ArchiveEventData(timeStamp, device, property, value);
-		Application.archQueue.add(adata);
+		archQueue.add(adata);
 		System.out.println(adata.toString()); // For diagnostic purposes
 	}
 }

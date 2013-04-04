@@ -22,6 +22,10 @@ package alma.acs.eventbrowser.model;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 
+/**
+ * Used as "parent" of ChannelConsumers, ChannelData, ChannelQueueSize, ChannelSuppliers, MCStatistics, SlowestConsumers
+ * and in views/EventGuiAdapterFactory
+ */
 public abstract class AbstractNotifyServiceElement {
 	protected AbstractNotifyServiceElement parent;
 	protected NotificationServiceMonitorControl mc;

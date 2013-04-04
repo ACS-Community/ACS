@@ -29,9 +29,9 @@ import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 
 public class NotifyServiceData extends AbstractNotifyServiceElement implements Comparable<NotifyServiceData> {
 
-	private HashMap<String, ChannelData> channels;
-	private EventChannelFactory efact;
-	private String factoryName;
+	private final HashMap<String, ChannelData> channels;
+	private final EventChannelFactory efact;
+	private final String factoryName;
 	
 	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc, int[] adminCounts, int[] adminDeltas) {
 		super(name, null, mc, adminCounts, adminDeltas);

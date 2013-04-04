@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ * Gets created by EventModel#getChannelStatistics()
  * @author jschwarz
  *
  */

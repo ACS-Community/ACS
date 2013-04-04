@@ -21,6 +21,7 @@
 package alma.acs.eventbrowser.model;
 
 import java.util.HashMap;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.Any;
@@ -29,8 +30,6 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.StructuredEvent;
 
 import alma.acs.container.ContainerServicesBase;
-import alma.acs.eventbrowser.Application;
-import alma.acs.eventbrowser.views.EventData;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.NCSubscriber;
 import alma.acsnc.EventDescription;
@@ -49,11 +48,18 @@ public class AdminConsumer extends NCSubscriber<IDLEntity> {
 	 */
 	private final HashMap<String, AtomicLong> evtCounter;
 	
+	private final BlockingQueue<EventData> equeue;
+	
+	/**
+	 * If true, log event details to stdout
+	 */
 	private static boolean printDetails;
 
-	public AdminConsumer(String channelName, ContainerServicesBase services, NamingContext namingService)
+	public AdminConsumer(String channelName, ContainerServicesBase services, NamingContext namingService, BlockingQueue<EventData> equeue)
 			throws AcsJException {
 		super(channelName, null, services, namingService, "EventGuiNcConsumer", IDLEntity.class);
+		
+		this.equeue = equeue;
 		
 		addGenericSubscription(new GenericCallback() {
 			@Override
@@ -91,7 +97,7 @@ public class AdminConsumer extends NCSubscriber<IDLEntity> {
 //		String component = eDescrip.name;
 //		long count = eDescrip.count;
 		Any eventAny = evt.filterable_data[0].value;
-		boolean oresult = Application.equeue.offer(
+		boolean oresult = equeue.offer(
 				new EventData(eDescrip.timestamp, eDescrip.name, eDescrip.count, evt.header.fixed_header.event_type.type_name, typeCounter.get(), channelName, eventAny) );
 		// TEST CODE FOR SLOW RECEIVER
 //		try {
@@ -105,7 +111,7 @@ public class AdminConsumer extends NCSubscriber<IDLEntity> {
 		if (++totalEventCount % 100 == 0) { // Maybe this is redundant with the "Total rows processed" log
 			logger.fine("A total of "+totalEventCount+" events have been received.");
 			logger.fine("Event queue size is now: "
-					+ Application.equeue.size() + " elements.");
+					+ equeue.size() + " elements.");
 		}
 			//		m_logger.fine("Time "+eDescrip.timestamp+" "+m_channelName+" "+eDescrip.name+" "+eDescrip.count+" "+channelEventCount+" "
 			//				+" "+evtTypeName+" "+evtCounter.get(evtTypeName));

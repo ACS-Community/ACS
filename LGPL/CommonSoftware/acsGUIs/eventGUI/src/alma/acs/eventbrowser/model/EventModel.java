@@ -25,15 +25,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.BindingIteratorHolder;
@@ -52,7 +49,6 @@ import org.omg.DynamicAny.DynAnyFactoryHelper;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
-import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
@@ -62,7 +58,6 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.ArchiveConsumer;
 import alma.acs.nc.Helper;
-import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
 import alma.acs.util.StopWatch;
 
@@ -85,12 +80,14 @@ public class EventModel {
 	private final ORB orb;
 	private final Logger m_logger;
 	private final ContainerServices cs;
-	private final Helper notifyHelper;
 	private final DynAnyFactory dynAnyFactory;
 	private final NamingContext nctx;
 	
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
 	
+	private final ArrayBlockingQueue<EventData> equeue = new ArrayBlockingQueue<EventData>(50000);
+	private final ArrayBlockingQueue<ArchiveEventData> archQueue = new ArrayBlockingQueue<ArchiveEventData>(100000);
+
 	/**
 	 * maps each event channel name to the event channel
 	 */
@@ -116,31 +113,51 @@ public class EventModel {
 	private ArchiveConsumer archiveConsumer;
 	
 	
-	private EventModel() throws Exception {
+	/**
+	 * TODO: Remove singleton pattern and either register domain objects in a high (shared) node of IEclipseContexts,
+	 * to be created by the Eclipse DI container, 
+	 * or turn the entire domain layer into an OSGI service (which is again a singleton...).
+	 * See also http://www.eclipse.org/forums/index.php/t/333467/,
+	 * http://blog.maxant.co.uk/pebble/2011/08/04/1312486560000.html
+	 * <p>
+	 * TODO: move the detection of NotifyService out of the ctor, to make the application start faster, 
+	 * but also to react to new or disappeared notifyservices during the application lifetime.
+	 * Detecting all services, NCs, and reading out the participant information should probably become a 
+	 * job (http://www.vogella.com/articles/EclipseJobs/article.html) triggered by the respective views.
+	 * <p>
+	 * We declare <code>Throwable</code> so that this constructor can catch, print and re-throw even the nastiest errors,
+	 * which in case of VerifyError etc are otherwise not well shown by the Eclipse container.
+	 */
+	private EventModel() throws Throwable {
 		
-		notifyServices = Collections.synchronizedList(new ArrayList<NotifyServiceData>()); 
-		channelMap = new HashMap<String, EventChannel>();
-		lastConsumerAndSupplierCount = new HashMap<String, int[]>();
-		consumerMap = new HashMap<String, AdminConsumer>();
-		readyConsumers = new ArrayList<AdminConsumer>();
-		subscribedChannels = new HashSet<String>();
+		try {
+			notifyServices = Collections.synchronizedList(new ArrayList<NotifyServiceData>()); 
+			channelMap = new HashMap<String, EventChannel>();
+			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
+			consumerMap = new HashMap<String, AdminConsumer>();
+			readyConsumers = new ArrayList<AdminConsumer>();
+			subscribedChannels = new HashSet<String>();
+	
+			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
+			ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 
-		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
-		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+			setupAcsConnections();
 
-		setupAcsConnections();
-		cs = acc.getContainerServices();
-		orb = acc.getAcsCorba().getORB();
-		
-		// do we need this?
-		System.setProperty("ORBInitRef.NameService", System.getenv("ACS_NAME_SERVICE"));
-		
-		dynAnyFactory = DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
-		
-		notifyHelper = new Helper(cs);
-		nctx = notifyHelper.getNamingService();
-		
-		getAllNotifyServices();
+			cs = acc.getContainerServices();
+			orb = acc.getAcsCorba().getORB();
+			
+			dynAnyFactory = DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
+			
+			Helper notifyHelper = new Helper(cs); // todo get NS from the manager instead of this Helper
+			nctx = notifyHelper.getNamingService();
+			
+			getAllNotifyServices();
+			
+		} catch (Throwable thr) {
+			thr.printStackTrace();
+			throw thr;
+		}
+		m_logger.info("*** EventModel() ctor finished ***");
 	}
 
 	/**
@@ -148,43 +165,22 @@ public class EventModel {
 	 * @throws Exception
 	 */
 	private void setupAcsConnections() throws Exception {
+		
 		String managerLoc = AcsLocations.figureOutManagerLocation();
 
-		try {
-			acc = new AdvancedComponentClient(m_logger, managerLoc, eventGuiId) {
-				@Override
-				protected void initAlarmSystem() {
-					m_logger.info("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
-				}
-				@Override 
-				protected void tearDownAlarmSystem() {
-					// nothing. Overloaded to avoid "java.lang.IllegalStateException: Trying close with null ContainerServicesBase"
-				}
-			};
-		} catch (Exception e) {
-			if (PlatformUI.isWorkbenchRunning()) {
-				MessageDialog dialog = new MessageDialog(null,"Can't create client",null,"The eventGUI client cannot be created. You might want to check the ACS host and instance.\n"+
-						"ACS instance used: " + ACSPorts.getBasePort() + "; Looked for manager at " + managerLoc,
-						MessageDialog.ERROR, new String[]{"OK"}, 0);
-				dialog.open();
-				IStatus status = new Status(IStatus.ERROR, eventGuiId, 0, "Couldn't create component client", e);
-				Platform.getLog(Platform.getBundle(eventGuiId)).log(status);
+		acc = new AdvancedComponentClient(m_logger, managerLoc, eventGuiId) {
+			@Override
+			protected void initAlarmSystem() {
+				m_logger.info("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
 			}
-			else {
-				m_logger.log(Level.SEVERE,"Can't create advanced component client.",e);
+			@Override 
+			protected void tearDownAlarmSystem() {
+				// nothing. Overloaded to avoid "java.lang.IllegalStateException: Trying close with null ContainerServicesBase"
 			}
-			throw(e);
-		}
+		};
 	}
 
 	/**
-	 * This routine returns an array of NotificationServiceMonitorControl objects (provided by the
-	 * ACE/TAO Monitoring extensions) by resolving the IORs for these objects that are stored in
-	 * the $ACS_TMP/ACS_INSTANCE.x/iors/ directory. 
-	 * @throws org.omg.CosNaming.NamingContextPackage.InvalidName 
-	 * @throws CannotProceed
-	 * @throws InvalidName
-	 * @throws NotFound 
 	 */
 	private NotificationServiceMonitorControl getMonitorControl(String notifyBindingName) throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, NotFound  {
 
@@ -203,16 +199,20 @@ public class EventModel {
 		return nsmc;
 	}
 	
-	public synchronized static EventModel getInstance() throws Exception {
+	public synchronized static EventModel getInstance() throws Throwable {
 		if (modelInstance == null) 
 			modelInstance = new EventModel();
 		return modelInstance;
 	}
 	
+	/**
+	 * @TODO: Logger should be created separately and get injected
+	 */
 	public Logger getLogger() {
 		return m_logger;
 	}
 	
+
 	/**
 	 * Broken out from the c'tor.
 	 */
@@ -222,7 +222,8 @@ public class EventModel {
 
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
-
+		
+		// Get names of all objects bound in the naming service
 		nctx.list(-1, bl, bi);
 		for (Binding binding : bl.value) {
 			String id = binding.binding_name[0].id;
@@ -234,7 +235,8 @@ public class EventModel {
 				if (bindingKind != null && bindingKind.isEmpty()) {
 					NameComponent nc_array[] = { new NameComponent(id, "") };
 
-					// we skip the manager for access to services, because since ACS 10.2 only specially registered services
+					// Get the object reference from the naming service.
+					// We skip the manager for access to services, because since ACS 10.2 only specially registered services
 					// would be available in the get_service call and we want more flexibility for this special tool.
 					org.omg.CORBA.Object obj = nctx.resolve(nc_array);
 
@@ -259,6 +261,17 @@ public class EventModel {
 		m_logger.info("Found " + efactNames.size() + " notify service instances: " + StringUtils.join(efactNames, ' '));
 	}
 	
+	
+	/**
+	 * Gets the event queue, for read and write access.
+	 */
+	public BlockingQueue<EventData> getEventQueue() {
+		return equeue;
+	}
+	
+	public BlockingQueue<ArchiveEventData> getArchQueue() {
+		return archQueue;
+	}
 	
 	/**
 	 * @param id
@@ -381,6 +394,7 @@ public class EventModel {
 					//m_logger.info("Channel: " + channelName + " has " + adminCounts[0] + " consumers and " + adminCounts[1] + " suppliers.");
 	
 					// ?? this we could skip had we gotten the NC from the NotifyService...
+					Helper notifyHelper = new Helper(cs, nctx); // helper per NC, to avoid "java.lang.IllegalArgumentException: Helper for NC 'CONTROL_REALTIME' cannot be used also for 'MY_OTHER_NC'."
 					String notifyServiceName = simplifyNotifyServiceName(notifyHelper.getNotificationFactoryNameForChannel(channelName));
 					
 					for (NotifyServiceData nsData : notifyServices) {
@@ -468,7 +482,7 @@ public class EventModel {
 
 	public synchronized AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
 		if (!consumerMap.containsKey(channelName)) {
-			AdminConsumer adm = new AdminConsumer(channelName, cs, nctx);
+			AdminConsumer adm = new AdminConsumer(channelName, cs, nctx, equeue);
 			consumerMap.put(channelName, adm);
 			subscribedChannels.add(channelName);
 			return adm;
@@ -534,7 +548,7 @@ public class EventModel {
 	private synchronized void getArchiveConsumer() {
 		if (archiveConsumer == null) {
 				try {
-					archiveConsumer = new ArchiveConsumer(new ArchiveReceiver(), cs, nctx);
+					archiveConsumer = new ArchiveConsumer(new ArchiveReceiver(archQueue), cs, nctx);
 					archiveConsumer.startReceivingEvents();
 				} catch (AcsJException e) {
 					// TODO Auto-generated catch block
@@ -551,7 +565,7 @@ public class EventModel {
 		if (consumerMap.containsKey(channelName)) {
 			AdminConsumer consumer = consumerMap.get(channelName);
 			try {
-			consumer.disconnect();
+				consumer.disconnect();
 			} catch (Exception ex) {
 				m_logger.log(Level.WARNING, "Failed to close subscriber: ", ex);
 			}
@@ -590,7 +604,10 @@ public class EventModel {
 		}
 	}
 
-	public boolean isSubscribed(String channelName) { // TODO: Is this going to work for purposes of disabling the "Subscribe to channel" option?
+	/**
+	 * Note that this method may be called very frequently, to determine whether menu items are selected/enabled, thus it must be fast.
+	 */
+	public boolean isSubscribed(String channelName) { 
 		return subscribedChannels.contains(channelName);
 	}
 	

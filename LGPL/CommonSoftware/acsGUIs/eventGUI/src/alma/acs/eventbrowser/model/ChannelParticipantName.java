@@ -20,6 +20,10 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+/**
+ * Gets created in the getStatistics methods of ChannelConsumers, ChannelSuppliers, SlowesteConsumers
+ *
+ */
 public class ChannelParticipantName {
 	private String consumerName;
 	private MCStatistics parent;

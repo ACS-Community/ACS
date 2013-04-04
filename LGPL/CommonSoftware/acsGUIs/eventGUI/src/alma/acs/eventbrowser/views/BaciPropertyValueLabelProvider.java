@@ -22,6 +22,8 @@ package alma.acs.eventbrowser.views;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
+import alma.acs.eventbrowser.model.ArchiveEventData;
+
 public class BaciPropertyValueLabelProvider extends ColumnLabelProvider {
 
 	@Override

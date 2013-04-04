@@ -52,7 +52,11 @@ import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.AdminConsumer;
+import alma.acs.eventbrowser.model.ArchiveEventData;
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.eventbrowser.parts.EventSourceLabelProvider;
+import alma.acs.eventbrowser.parts.PopulateEventList;
+import alma.acs.eventbrowser.parts.TimeStampLabelProvider;
 
 public class ArchivingListView extends ViewPart {
 

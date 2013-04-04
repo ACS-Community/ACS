@@ -20,6 +20,7 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.preferences;
 
+
 /**
  * Constant definitions for plug-in preferences
  */
@@ -34,3 +35,16 @@ public class PreferenceConstants {
 	public static final String P_STRING = "stringPreference";
 	
 }
+
+// From e3 Application class:
+//public static boolean isMonitoring() {
+//	return monitorinalma.acs.eventbrowser.lifecycle.public static void setMonitoring(boolean monitoring) {
+//	Application.monitoring = monitoring;
+//}
+//
+//private boolean getMonitoringPreference() {
+//    IPreferencesService service = Plaalma.acs.eventbrowser.lifecycle.getPreferencesService();
+//    return service.getBoolean(Application.PLUGIN_ID,
+//                    MonitoringPreferencePage.AUTO_MONITOR, false, null);
+//
+//}

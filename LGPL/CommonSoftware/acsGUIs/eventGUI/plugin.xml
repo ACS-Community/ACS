@@ -1,215 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.2"?>
 <plugin>
 
    <extension
-         id="application"
-         point="org.eclipse.core.runtime.applications">
-      <application>
-         <run
-               class="alma.acs.eventbrowser.Application">
-         </run>
-      </application>
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            name="ACS_eventGUI product"
+            application="org.eclipse.e4.ui.workbench.swt.E4Application">
+         <property
+               name="clearPersistedState"
+               value="true">
+         </property>
+         <property
+               name="applicationCSS"
+               value="platform:/plugin/ACS_eventGUI/css/default.css">
+         </property>
+         <property
+               name="appName"
+               value="ACS_eventGUI product">
+         </property>
+         <property
+               name="lifeCycleURI"
+               value="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.lifecycle.E4LifecycleHandler">
+         </property>
+      </product>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            name="Event Browser Perspective"
-            class="alma.acs.eventbrowser.Perspective"
-            id="alma.acs.eventbrowser.perspective">
-      </perspective>
+         point="org.eclipse.help.toc">
+      <!-- The Eclipse 3 help facility (see http://www.vogella.com/articles/EclipseRCPHelpSystem/article.html)
+           has not yet been ported to eclipse 4. 
+           See http://stackoverflow.com/questions/12115862/eclipse-e4-and-org-eclipse-help-ui,
+           
+       -->
+      <toc
+         file="toc.xml"
+         primary="true">
+      </toc>
    </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            category="alma.acs.eventbrowser"
-            class="alma.acs.eventbrowser.views.ChannelTreeView"
-            icon="icons/sample.gif"
-            id="alma.acs.eventbrowser.views.channeltree"
-            name="ChannelTree"
-            restorable="true">
-      </view>
-      <view
-            category="alma.acs.eventbrowser"
-            class="alma.acs.eventbrowser.views.ServiceSummaryView"
-            icon="icons/sample.gif"
-            id="alma.acs.eventbrowser.views.servicesummary"
-            name="Notify Service Summary">
-      </view>
-      <view
-            allowMultiple="false"
-            class="alma.acs.eventbrowser.views.EventListView"
-            icon="icons/sample.gif"
-            id="alma.acs.eventbrowser.views.eventlist"
-            name="Event List"
-            restorable="true">
-      </view>
-      <view
-            allowMultiple="false"
-            class="alma.acs.eventbrowser.views.EventDetailView"
-            icon="icons/sample.gif"
-            id="alma.acs.eventbrowser.views.eventdetail"
-            name="Event Details"
-            restorable="true">
-      </view>
-      <view
-            allowMultiple="false"
-            class="alma.acs.eventbrowser.views.ArchivingListView"
-            icon="icons/sample.gif"
-            id="alma.acs.eventbrowser.views.archivingList"
-            name="Archiving List"
-            restorable="true">
-      </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.ui.resourcePerspective">
-         <view
-               id="alma.acs.eventbrowser.views.servicesummary"
-               ratio="0.35"
-               relationship="stack"
-               relative="org.eclipse.ui.editorss">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="*">
-         <view
-               closeable="false"
-               id="alma.acs.eventbrowser.views.servicesummary"
-               minimized="false"
-               moveable="true"
-               ratio="0.25f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               standalone="true"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="alma.acs.eventbrowser.views.channeltree"
-               minimized="false"
-               moveable="true"
-               ratio="0.25f"
-               relationship="stack"
-               relative="alma.acs.eventbrowser.views.servicesummary"
-               showTitle="true"
-               standalone="true"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="alma.acs.eventbrowser.views.eventlist"
-               minimized="false"
-               moveable="true"
-               ratio="0.95f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               standalone="true"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="alma.acs.eventbrowser.views.archivingList"
-               minimized="false"
-               moveable="true"
-               relationship="stack"
-               relative="alma.acs.eventbrowser.views.eventlist"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="alma.acs.eventbrowser.views.eventdetail"
-               minimized="false"
-               moveable="true"
-               ratio="0.65f"
-               relationship="bottom"
-               relative="alma.acs.eventbrowser.views.eventlist"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
-      </perspectiveExtension>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="alma.acs.eventbrowser.preferences.MonitoringPreferencePage"
-            id="alma.acs.eventbrowser.preferences.MonitoringPreferencePage"
-            name="Monitoring Preferences">
-      </page>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="alma.acs.eventbrowser.preferences.PreferenceInitializer">
-      </initializer>
-   </extension>
-      <extension
-            point="org.eclipse.ui.startup">
-         <startup
-               class="alma.acs.eventbrowser.Application"></startup>
-      </extension>
-      <extension
-            id="product"
-            point="org.eclipse.core.runtime.products">
-         <product
-               application="ACS_eventGUI.application"
-               name="ACS_eventGUI product">
-            <property
-                  name="appName"
-                  value="ACS_eventGUI product">
-            </property>
-         </product>
-      </extension>
-      <extension
-            point="org.eclipse.ui.commands">
-         <command
-               defaultHandler="alma.acs.eventbrowser.commands.CopyDetailsToClipboard"
-               description="Copy selected event details to clipboard"
-               id="alma.acs.eventbrowser.commands.Copy"
-               name="Copy">
-         </command>
-      </extension>
-      <extension
-            point="org.eclipse.ui.menus">
-         <menuContribution
-               locationURI="popup:alma.acs.eventbrowser.views.eventdetail">
-            <command
-                  commandId="alma.acs.eventbrowser.commands.Copy"
-                  label="Copy selection"
-                  style="push">
-            </command>
-         </menuContribution>
-      </extension>
-      <extension
-            point="org.eclipse.help.toc">
-         <toc
-               file="toc.xml"
-               primary="true">
-         </toc>
-         <toc
-               file="tocconcepts.xml">
-         </toc>
-         <toc
-               file="tocgettingstarted.xml">
-         </toc>
-         <toc
-               file="tocreference.xml">
-         </toc>
-         <toc
-               file="toctasks.xml">
-         </toc>
-      </extension>
 
 </plugin>

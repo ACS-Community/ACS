@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- TODO: Do we really need this? See help on "Plug-in Development Environment Guide > Tasks > PDE Build > Automated building of features" -->
+
 <feature
       id="ACS_eventGUI"
       label="eventGUI"
@@ -19,22 +22,22 @@
    </license>
 
    <includes
-         id="org.eclipse.rcp"
+         id="org.eclipse.e4.rcp"
          version="0.0.0"
          os="linux"
          ws="gtk"
          arch="x86"/>
 
    <requires>
-      <import plugin="alma.acs.rcp.jars"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.workbench"/>
+      <import feature="org.eclipse.e4.rcp" version="1.1.2.v20130130-191718-91FUvGP7GIX2Kgz-z-gvjMvXV1NS"/> 
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.w3c.css.sac"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
       <import plugin="org.eclipse.help.webapp"/>
-      <import feature="org.eclipse.rcp" version="3.6.1.r361_v20100827-9OArFLdFjY-ThSQXmKvKz0_T"/>
+      <import plugin="alma.acs.rcp.jars" version="2.0.0"/>
    </requires>
 
    <plugin

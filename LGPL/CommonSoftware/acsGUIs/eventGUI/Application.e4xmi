@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_2Ru3AIfsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ide.application" bindingContexts="_2Ru3CIfsEeKqHMDmIyAJOQ">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_2Ru3AYfsEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.trimmedwindow" selectedElement="_2RwFL4fsEeKqHMDmIyAJOQ" label="ALMA ACS Event Browser" tooltip="" x="100" y="100" width="1200" height="1100">
+    <children xsi:type="advanced:PerspectiveStack" xmi:id="_2RwFL4fsEeKqHMDmIyAJOQ">
+      <children xsi:type="advanced:Perspective" xmi:id="_2RwFMIfsEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.perspective" label="the perspective">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_2RwFMYfsEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partsashcontainer.main" horizontal="true">
+          <children xsi:type="basic:PartStack" xmi:id="_2RwFMofsEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partstack.left" containerData="40" selectedElement="_2RwFM4fsEeKqHMDmIyAJOQ">
+            <children xsi:type="basic:Part" xmi:id="_2RwFM4fsEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.servicesummary" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.ServiceSummaryPart" label="Notify Service Summary" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif" bindingContexts="_kHacoIpSEeK8-N5-rFZ8jw">
+              <menus xmi:id="_VGqcoIgVEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.viewmenu.servicesummary">
+                <tags>ViewMenu</tags>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_xvC4UIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.2" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:MenuSeparator" xmi:id="__kB0MJBwEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.menuseparator.0"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_zS0_QIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.3" label="Periodic refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
+              </menus>
+              <menus xsi:type="menu:PopupMenu" xmi:id="_NmA0oIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.popupmenu.servicesummary" label="ServiceSummaryPopupMenu">
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_2u18sIpQEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.0" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_fbJqMIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.1" label="Periodic refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
+              </menus>
+              <toolbar xmi:id="_mLw10IpZEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.toolbar.0">
+                <children xsi:type="menu:HandledToolItem" xmi:id="_niKoEIpZEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledtoolitem.0" label="" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Update the statistics" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledToolItem" xmi:id="_N_fEwIppEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledtoolitem.1" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Periodic refresh of service data" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
+              </toolbar>
+            </children>
+            <children xsi:type="basic:Part" xmi:id="_6sjFYIgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.servicechanneltree" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.ChannelTreePart" label="Channel Tree" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif" bindingContexts="_kHacoIpSEeK8-N5-rFZ8jw">
+              <menus xmi:id="_1zNP0JBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.menu.0">
+                <tags>ViewMenu</tags>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_B5f2wJBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledmenuitem.5" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:MenuSeparator" xmi:id="_DdxF4JBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.menuseparator.1"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_InlfYJBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledmenuitem.6" label="Periodic refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
+              </menus>
+              <menus xsi:type="menu:PopupMenu" xmi:id="_0Nze8JGFEeKqB6s3z7KcNw" elementId="alma.acs.eventgui.popupmenu.channeltree" label="ChannelTreePopupMenu">
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_7ZUqcJGFEeKqB6s3z7KcNw" elementId="alma.acs.eventgui.handledmenuitem.0" label="Subscribe to all events on this channel." iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" type="Check" command="_VTt6cJGHEeKqB6s3z7KcNw"/>
+              </menus>
+              <toolbar xmi:id="_5lFmAJBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.toolbar.1">
+                <children xsi:type="menu:HandledToolItem" xmi:id="_86rBwJBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledtoolitem.2" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Update the channel statistics" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledToolItem" xmi:id="_LeLugJBwEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledtoolitem.3" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Periodic updating of channel data" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
+              </toolbar>
+            </children>
+          </children>
+          <children xsi:type="basic:PartSashContainer" xmi:id="_YGYioIgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partsashcontainer.right" containerData="60">
+            <children xsi:type="basic:PartStack" xmi:id="_iVKDwIgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partstack.right.upper" containerData="70">
+              <children xsi:type="basic:Part" xmi:id="_nOxBkIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.eventlist" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.EventListPart" label="Event List" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif">
+                <menus xsi:type="menu:PopupMenu" xmi:id="_eE4RoJa3EeKImJzkOYoibw" elementId="alma.acs.eventgui.popupmenu.eventlist">
+                  <children xsi:type="menu:HandledMenuItem" xmi:id="_rpiJcJa3EeKImJzkOYoibw" elementId="alma.acs.eventgui.handledmenuitem.1" label="Clear events" iconURI="platform:/plugin/ACS_eventGUI/icons/delete.gif" tooltip="Clear all events from the table" command="_7MHtkJa3EeKImJzkOYoibw"/>
+                  <children xsi:type="menu:HandledMenuItem" xmi:id="_D0J6YJa4EeKImJzkOYoibw" elementId="alma.acs.eventgui.handledmenuitem.toggleeventdetails" label="Toggle event details" tooltip="Toggle display of event details to STDOUT"/>
+                </menus>
+                <toolbar xmi:id="_r8JYEJbmEeK1FuB0G4fhcg" elementId="alma.acs.eventgui.toolbar.0">
+                  <children xsi:type="menu:ToolControl" xmi:id="_u-fHsJbmEeK1FuB0G4fhcg" elementId="alma.acs.eventgui.toolcontrol.eventTypeFilter" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.EventListFilterToolControl"/>
+                </toolbar>
+              </children>
+              <children xsi:type="basic:Part" xmi:id="_qKEVEIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.archivinglist" label="Archiving List" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>
+            </children>
+            <children xsi:type="basic:PartStack" xmi:id="_i1qv0IgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partstack.rightlower" containerData="30">
+              <children xsi:type="basic:Part" xmi:id="_7_01sIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.eventdetails" label="Event Details" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>
+            </children>
+          </children>
+        </children>
+      </children>
+    </children>
+    <mainMenu xmi:id="_f8uDAIpAEeK2erf4L1IoYQ" elementId="org.eclipse.ui.main.menu">
+      <children xsi:type="menu:Menu" xmi:id="_gI-OrH0AEeKtkfw_hTZC1g" label="Event Browser">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_NYKtQIpBEeK2erf4L1IoYQ" elementId="" label="Preferences" command="_RkJpsIo6EeK2erf4L1IoYQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_gI-Or30AEeKtkfw_hTZC1g" label="Exit" command="_2Ru3C4fsEeKqHMDmIyAJOQ"/>
+      </children>
+      <children xsi:type="menu:Menu" xmi:id="_gI-OsH0AEeKtkfw_hTZC1g" label="Help">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_gI-OsX0AEeKtkfw_hTZC1g" label="About" command="_2RwFJYfsEeKqHMDmIyAJOQ"/>
+      </children>
+    </mainMenu>
+    <trimBars xmi:id="_6_CtsI1dEeKU15sjak1qzg" elementId="alma.acs.eventgui.trimbar.0" side="Bottom">
+      <children xsi:type="menu:ToolControl" xmi:id="_91Qs4I1dEeKU15sjak1qzg" elementId="alma.acs.eventgui.toolcontrol.statusbar" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.status.MyStatusBar"/>
+    </trimBars>
+  </children>
+  <handlers xmi:id="_2Ru3DIfsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.file.exit" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.QuitHandler" command="_2Ru3C4fsEeKqHMDmIyAJOQ"/>
+  <handlers xmi:id="_2RwFJofsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.help.aboutAction" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.AboutHandler" command="_2RwFJYfsEeKqHMDmIyAJOQ"/>
+  <handlers xmi:id="_ghcZUIpDEeK8-N5-rFZ8jw" elementId="org.eclipse.ui.window.preferences" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.PreferencesHandler" command="_RkJpsIo6EeK2erf4L1IoYQ"/>
+  <handlers xmi:id="_9L1LAI_yEeKHRJWpUImd0g" elementId="alma.acs.eventgui.handler.notifyServiceRefresh" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.SingleRefreshHandler" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+  <handlers xmi:id="_ebMX4JItEeKNA-l6uWotxA" elementId="alma.acs.eventgui.handler.periodicRefresh" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.PeriodicRefreshHandler" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
+  <handlers xmi:id="_p-57YJb-EeK1FuB0G4fhcg" elementId="alma.acs.eventgui.handler.clearEvents" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.ClearEventsHandler" command="_7MHtkJa3EeKImJzkOYoibw"/>
+  <handlers xmi:id="_8elfIJd0EeKG980mzAyvzw" elementId="alma.acs.eventgui.handler.subscribeSingleNC" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.SubscribeNCHandler" command="_VTt6cJGHEeKqB6s3z7KcNw"/>
+  <bindingTables xmi:id="_2Ru3DYfsEeKqHMDmIyAJOQ" bindingContext="_2Ru3CIfsEeKqHMDmIyAJOQ">
+    <bindings xmi:id="_2Ru3DofsEeKqHMDmIyAJOQ" keySequence="M1+Q" command="_2Ru3C4fsEeKqHMDmIyAJOQ"/>
+    <bindings xmi:id="_2RwFIYfsEeKqHMDmIyAJOQ" keySequence="M1+O"/>
+    <bindings xmi:id="_2RwFJ4fsEeKqHMDmIyAJOQ" keySequence="M1+A" command="_2RwFJYfsEeKqHMDmIyAJOQ"/>
+  </bindingTables>
+  <bindingTables xmi:id="_D6heYIpSEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.bindingtable.1" bindingContext="_kHacoIpSEeK8-N5-rFZ8jw">
+    <bindings xmi:id="_IXVn8IpSEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.keybinding.0" keySequence="F5" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+  </bindingTables>
+  <rootContext xmi:id="_2Ru3CIfsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
+    <children xmi:id="_2Ru3CYfsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
+    <children xmi:id="_2Ru3CofsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
+    <children xmi:id="_kHacoIpSEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.bindingcontext.inServerPart" name="In a Notify Service part"/>
+  </rootContext>
+  <commands xmi:id="_2Ru3C4fsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
+  <commands xmi:id="_2RwFJYfsEeKqHMDmIyAJOQ" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
+  <commands xmi:id="_RkJpsIo6EeK2erf4L1IoYQ" elementId="org.eclipse.ui.window.preferences" commandName="preferencesCommand"/>
+  <commands xmi:id="_1nz5oIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.commands.refresh" commandName="refreshCommand"/>
+  <commands xmi:id="_4LG80IpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.commands.periodicRefresh" commandName="periodicRefreshCommand"/>
+  <commands xmi:id="_VTt6cJGHEeKqB6s3z7KcNw" elementId="alma.acs.eventgui.command.subscribeNC" commandName="subscribeNCCommand"/>
+  <commands xmi:id="_7MHtkJa3EeKImJzkOYoibw" elementId="alma.acs.eventgui.command.clearEvents" commandName="clearEventsCommand"/>
+  <addons xmi:id="_2Ru3AofsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
+  <addons xmi:id="_2Ru3A4fsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
+  <addons xmi:id="_2Ru3BIfsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
+  <addons xmi:id="_2Ru3BYfsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
+  <addons xmi:id="_2Ru3BofsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
+  <addons xmi:id="_2Ru3B4fsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+</application:Application>

@@ -27,6 +27,9 @@ import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.Inval
 /** This class encapsulates the list of slowest consumers in a particular channel returned
  * by the TAO M&C Extensions to the Notify Service; it is only relevant when the size of the queue
  * in the same channel is of non-zero length.
+ * 
+ * It gets created by ChannelData
+ * 
  * @author jschwarz
  *
  */
