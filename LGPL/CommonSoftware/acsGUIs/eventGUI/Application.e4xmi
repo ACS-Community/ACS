@@ -48,7 +48,7 @@
                   <children xsi:type="menu:ToolControl" xmi:id="_u-fHsJbmEeK1FuB0G4fhcg" elementId="alma.acs.eventgui.toolcontrol.eventTypeFilter" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.EventListFilterToolControl"/>
                 </toolbar>
               </children>
-              <children xsi:type="basic:Part" xmi:id="_qKEVEIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.archivinglist" label="Archiving List" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>
+              <children xsi:type="basic:Part" xmi:id="_qKEVEIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.archivinglist" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.ArchivingListPart" label="Archiving List" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_i1qv0IgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partstack.rightlower" containerData="30">
               <children xsi:type="basic:Part" xmi:id="_7_01sIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.eventdetails" label="Event Details" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>

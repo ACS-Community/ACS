@@ -547,13 +547,13 @@ public class EventModel {
 	 */
 	private synchronized void getArchiveConsumer() {
 		if (archiveConsumer == null) {
-				try {
-					archiveConsumer = new ArchiveConsumer(new ArchiveReceiver(archQueue), cs, nctx);
-					archiveConsumer.startReceivingEvents();
-				} catch (AcsJException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				archiveConsumer = new ArchiveConsumer(new ArchiveReceiver(archQueue), cs, nctx);
+				archiveConsumer.startReceivingEvents();
+				m_logger.info("Subscribed to monitoring/archiving events.");
+			} catch (AcsJException ex) {
+				m_logger.log(Level.WARNING, "Failed to subcribe to monitoring/archiving events.", ex);
+			}
 		}
 	}
 	
@@ -582,10 +582,11 @@ public class EventModel {
 		subscribedChannels = new HashSet<String>(MAX_NUMBER_OF_CHANNELS*5); // reset the list
 	}
 	
-	public void closeArchiveConsumer() {
+	public synchronized void closeArchiveConsumer() {
 		if (archiveConsumer != null) {
 			try {
 				archiveConsumer.disconnect();
+				m_logger.info("Closed subscriber for baci monitoring events");
 			} catch (Exception ex) {
 				m_logger.log(Level.WARNING, "Got an exception disconnecting the archive consumer.", ex);
 			}
@@ -598,9 +599,8 @@ public class EventModel {
 			closeAllConsumers();
 			closeArchiveConsumer();
 			acc.tearDown();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception ex) {
+			m_logger.log(Level.WARNING, "Error in EventModel#tearDown: ", ex);
 		}
 	}
 

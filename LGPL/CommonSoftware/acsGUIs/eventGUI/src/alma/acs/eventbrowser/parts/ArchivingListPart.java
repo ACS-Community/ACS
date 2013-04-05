@@ -1,6 +1,6 @@
 /*******************************************************************************
  * ALMA - Atacama Large Millimeter Array
- * Copyright (c) ESO - European Southern Observatory, 2013
+ * Copyright (c) ESO - European Southern Observatory, 2011
  * (in the framework of the ALMA collaboration).
  * All rights reserved.
  * 
@@ -18,10 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-
 package alma.acs.eventbrowser.parts;
 
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -29,45 +27,44 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.core.services.statusreporter.StatusReporter;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.di.UISynchronize;
-import org.eclipse.e4.ui.model.application.ui.menu.MPopupMenu;
-import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import alma.acs.eventbrowser.model.EventData;
+import alma.acs.eventbrowser.model.ArchiveEventData;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.status.StatusLineWriter;
 
-
 /**
- * TODO: check http://tomsondev.bestsolution.at/2011/10/07/jface-viewer-and-eclipse-databinding-with-10-000-objects/
+ * The "archiving list" displays events from the archiving NC, which contain monitoring data from baci properties.
+ * The event data format is different from "normal" NCs.
+ * <p>
+ * Currently this view is simpler than the EventListPart, without view/context menu nor event details.
+ * This means that there is no way to show the values of array type events besides something like "[F@2445d7".
+ * Alma is not using this NC monitoring/archiving mechanism any more, so that we are not likely to enhance this view further.
  */
-public class EventListPart implements IEventListPart {
+public class ArchivingListPart implements IEventListPart {
 
 	@Inject 
 	private UISynchronize uiSync;
 
 	private TableViewer viewer;
-	private ViewerFilter tableFilter;
 
 	private EventModel em;
 	
 	private PopulateEventList pel;
-	private Logger logger;
 	
+	private Logger logger;
+
 	/**
 	 * Blocking (popup) status report.
 	 */
@@ -76,18 +73,13 @@ public class EventListPart implements IEventListPart {
 
 	private Thread eventListThread;
 	private Thread channelRefreshThread;
-
-
-	/**
-	 * The constructor.
-	 */
-	public EventListPart() {
-	}
 	
-	/**
-	 */
+
+	public ArchivingListPart() {
+	}
+
 	@PostConstruct
-	public void postConstruct(Composite parent, final IEclipseContext context, IEventBroker eventBroker, EMenuService menuService) {
+	public void postConstruct(Composite parent, IEventBroker eventBroker) {
 		try {
 			em = EventModel.getInstance();
 		} catch (Throwable thr) {
@@ -105,9 +97,7 @@ public class EventListPart implements IEventListPart {
 		gridLayout.verticalSpacing = 0;
 		parent.setLayout(gridLayout);
 		
-		// TODO: We currently have the filter text control in the regular view toolbar.
-		//       The e3 eventGUI had a "custom tool bar" inserted here.
-		//       We should decide which way it's better.
+//		buildCustomToolBar(parent);
 		
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		Table table = viewer.getTable();
@@ -124,107 +114,69 @@ public class EventListPart implements IEventListPart {
 		tvcol.setLabelProvider(new TimeStampLabelProvider());
 		TableColumn col = tvcol.getColumn();
 		col.setText("Timestamp");
-		col.setWidth(180);
+		col.setWidth(190);
 		col.setAlignment(SWT.LEFT);
 
 		tvcol = new TableViewerColumn(viewer, SWT.NONE, 1);
 		tvcol.setLabelProvider(new EventSourceLabelProvider());
 		col = tvcol.getColumn();
-		col.setText("Event source");
+		col.setText("Device");
 		col.setWidth(100);
 		col.setAlignment(SWT.LEFT);
 
 		tvcol = new TableViewerColumn(viewer, SWT.NONE, 2);
-		tvcol.setLabelProvider(new CountLabelProvider());
+		tvcol.setLabelProvider(new BaciParameterLabelProvider());
 		col = tvcol.getColumn();
-		col.setText("# Events in channel");
-		col.setWidth(50);
+		col.setText("Property");
+		col.setWidth(100);
 		col.setAlignment(SWT.LEFT);
 
 		tvcol = new TableViewerColumn(viewer, SWT.NONE, 3);
-		tvcol.setLabelProvider(new EventTypeLabelProvider());
+		tvcol.setLabelProvider(new BaciPropertyValueLabelProvider());
 		col = tvcol.getColumn();
-		col.setText("Event type");
-		col.setWidth(50);
+		col.setText("Value");
+		col.setWidth(100);
 		col.setAlignment(SWT.LEFT);
-
-		tvcol = new TableViewerColumn(viewer, SWT.NONE, 4);
-		tvcol.setLabelProvider(new EventTypeCountLabelProvider());
-		col = tvcol.getColumn();
-		col.setText("# Events this type");
-		col.setWidth(50);
-		col.setAlignment(SWT.LEFT);		
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getTable());
 
-		viewer.setContentProvider(new EventListViewContentProvider(em));
-		// viewer.setComparator(new ServiceViewerComparator());
-		
-		// TODO: Take care of selections and help system. Here's the E3 code:
-//		getSite().setSelectionProvider(viewer); // In order to be able to display event detail
-	
+		viewer.setContentProvider(new ArchivingListContentProvider(em));
 		viewer.setInput(new Object());
 
-		hookContextMenu(menuService);
-		
-		pel = new PopulateEventList(logger, viewer, new StatusLineWriter(eventBroker), em.getEventQueue(), "NC Events");
+		pel = new PopulateEventList(logger, viewer, new StatusLineWriter(eventBroker), em.getArchQueue(), "Monitor points");
 		
 		// TODO: Change this polling for the server-side flag
-		channelRefreshThread = pel.getChannelRefreshThread(em); 
+		channelRefreshThread = pel.getChannelRefreshThread(em);
 		channelRefreshThread.start();
-		
 //		em.refreshChannelSubscriptions(); // TODO: remove workaround
 		
 		eventListThread = pel.getThreadForEventList();
 		eventListThread.start();
 	}
 	
-
+	
 	/**
+	 * Currently (when porting eventGUI from e3 to e4), there is no filtering
+	 * available for the archive list. 
+	 * We could have just not implemented IEventListPart, but anyway put an empty 
+	 * implementation here to show how this archiving list could also have a ToolBar with an EventListFilterToolControl.
+	 * 
 	 * @see alma.acs.eventGui2.parts.IEventListPart#notifyEventTypeFilterChange(java.lang.String)
 	 */
 	@Override
 	public void notifyEventTypeFilterChanged(final String filterText) {
-//		System.out.println("EventListPart#notifyEventTypeFilterChange : " + filterText);
-		if (tableFilter != null) {
-			viewer.removeFilter(tableFilter);
-		}
-		tableFilter = new ViewerFilter() {
-			@Override
-			public boolean select(Viewer viewer, Object parentElement,
-					Object element) {
-				if (filterText.equals("")) {
-					return true;
-				}
-				EventData row = (EventData)element;
-				String column = row.getEventTypeName();
-				if (column.toUpperCase(Locale.ENGLISH).contains(filterText.toUpperCase(Locale.ENGLISH))) {
-					return true;
-				}
-				return false;
-			}
-		};
-		viewer.addFilter(tableFilter);
-		viewer.refresh();
 	}
 
-	private void hookContextMenu(EMenuService menuService) {
-		// For the case of popup (mouse) menues we actually reference the menu ID from the Application.e4xmi
-		MPopupMenu menu = menuService.registerContextMenu(viewer.getTable(), "alma.acs.eventgui.popupmenu.eventlist");
-		if (menu == null) {
-			System.out.println("EventListPart popup menu is null!");
-		}
-	}
-	
+
+	/** 
+	 * Currently not called (there is no corresponding menu / command).
+	 * 
+	 * @see alma.acs.eventbrowser.parts.IEventListPart#clearList()
+	 */
 	@Override
 	public void clearList() {
-		// TODO: This asyncExec from the e3 impl is suspicious. Probably should run this as a Job in a non-UI thread and from there update the UI
-		uiSync.asyncExec(new Runnable() {
-			public void run() {
-				viewer.getTable().removeAll();
-				viewer.refresh();
-			};
-		});
+		viewer.getTable().removeAll();
+		viewer.refresh();
 	}
 
 	@Focus
@@ -236,7 +188,9 @@ public class EventListPart implements IEventListPart {
 	public void preDestroy() {
 		channelRefreshThread.interrupt();
 		eventListThread.interrupt();
-		em.closeAllConsumers();
+		em.closeArchiveConsumer();
+		logger.info("Average archiving rate: "+ArchiveEventData.getAverageRate()+" monitor points/s");
 	}
-
+	
+	
 }

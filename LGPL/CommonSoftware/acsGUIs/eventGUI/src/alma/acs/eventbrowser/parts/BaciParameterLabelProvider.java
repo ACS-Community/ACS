@@ -18,17 +18,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.eventbrowser.views;
+package alma.acs.eventbrowser.parts;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-
 import alma.acs.eventbrowser.model.ArchiveEventData;
 
 public class BaciParameterLabelProvider extends ColumnLabelProvider {
 	@Override
 	public String getText(Object element) {
-		if (element instanceof ArchiveEventData)
+		if (element instanceof ArchiveEventData) {
 			return ((ArchiveEventData) element).getParameter();
+		}
 		return super.getText(element);
 	}
 

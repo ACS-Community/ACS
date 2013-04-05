@@ -18,24 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.eventbrowser.views;
-
-import java.util.ArrayList;
+package alma.acs.eventbrowser.parts;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.AbstractEventData;
 import alma.acs.eventbrowser.model.ArchiveEventData;
 import alma.acs.eventbrowser.model.EventData;
+import alma.acs.eventbrowser.model.EventModel;
 
-public class ArchivingListViewContentProvider implements IStructuredContentProvider {
+public class ArchivingListContentProvider implements IStructuredContentProvider {
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+	private final EventModel eventModel;
+	
+	public ArchivingListContentProvider(EventModel eventModel) {
+		this.eventModel = eventModel;
 	}
 
 	@Override
@@ -46,11 +44,19 @@ public class ArchivingListViewContentProvider implements IStructuredContentProvi
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (Application.archQueue.isEmpty())
+		if (eventModel.getArchQueue().isEmpty()) {
 			return new EventData[0];
-		AbstractEventData[] ed = Application.archQueue.toArray(new ArchiveEventData[0]);
-		Application.archQueue.clear();
+		}
+		AbstractEventData[] ed = eventModel.getArchQueue().toArray(new ArchiveEventData[0]);
+		eventModel.getArchQueue().clear();
 		return ed;
 	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+
+	}
+
 
 }

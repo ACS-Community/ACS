@@ -18,17 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.eventbrowser.views;
+package alma.acs.eventbrowser.parts;
 
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 
-public class EventTypeFilter extends ViewerFilter {
+import alma.acs.eventbrowser.model.ArchiveEventData;
+
+public class BaciPropertyValueLabelProvider extends ColumnLabelProvider {
 
 	@Override
-	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		// TODO Auto-generated method stub
-		return false;
+	public String getText(Object element) {
+		if (element instanceof ArchiveEventData) {
+			return ((ArchiveEventData) element).getValue().toString();
+		}
+		return super.getText(element);
 	}
 
 }
