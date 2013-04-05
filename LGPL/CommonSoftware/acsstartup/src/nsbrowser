@@ -35,7 +35,7 @@
 #
 
 # NameService reference is set by acsStartJava
-acsStartJava org.jacorb.naming.namemanager.NameManager &
+acsStartJava org.jacorb.naming.namemanager.NameManager 
 
 #
 # ___oOo___
