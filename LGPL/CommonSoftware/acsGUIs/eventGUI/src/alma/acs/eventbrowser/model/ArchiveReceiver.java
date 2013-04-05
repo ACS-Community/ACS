@@ -35,6 +35,6 @@ public class ArchiveReceiver implements ArchiveConsumer.ArchiveReceiver {
 	public void receive(long timeStamp, String device, String property, Object value) {
 		ArchiveEventData adata = new ArchiveEventData(timeStamp, device, property, value);
 		archQueue.add(adata);
-		System.out.println(adata.toString()); // For diagnostic purposes
+//		System.out.println(adata.toString()); // For diagnostic purposes
 	}
 }

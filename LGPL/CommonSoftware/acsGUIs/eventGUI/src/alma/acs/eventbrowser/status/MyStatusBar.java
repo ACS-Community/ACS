@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.di.UISynchronize;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolControl;
@@ -75,8 +74,6 @@ public class MyStatusBar {
 	 */
 	private StatusLineManager slm;
 	
-	private IEventBroker eventBroker;
-	
 	private String currentMessage = "";
 
 //	private boolean isTimedMessage;
@@ -86,7 +83,7 @@ public class MyStatusBar {
 	private Job msgRestoreJob;
 	
 	@PostConstruct
-	void  createControls(Composite parent, MToolControl toolControl, IEventBroker eventBroker) {
+	void  createControls(Composite parent, MToolControl toolControl) {
 		if (!toolControl.isVisible()) {
 			System.out.println("Skipping creation of status bar as it is marked invisible in the model.");
 			return;
