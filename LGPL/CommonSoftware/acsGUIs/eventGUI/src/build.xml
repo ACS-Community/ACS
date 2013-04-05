@@ -30,9 +30,6 @@
 				<exclude name="eventGUI/idl/**" />
 			</fileset>
 		</copy>
-		<!-- TODO: Remove deletion of the old e3 view classes once the e4 porting is finished -->
-		<delete dir="${buildDirectory}/plugins/eventGUI/src/alma/acs/eventbrowser/views" />
-		
 		<copy todir="${buildDirectory}/features/${pluginID}">
 			<fileset dir="features">
 				<include name="*" />

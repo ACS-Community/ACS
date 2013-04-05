@@ -35,8 +35,12 @@ import org.eclipse.e4.core.services.statusreporter.StatusReporter;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.di.UISynchronize;
 import org.eclipse.e4.ui.model.application.ui.menu.MPopupMenu;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -57,6 +61,12 @@ import alma.acs.eventbrowser.status.StatusLineWriter;
  */
 public class EventListPart implements IEventListPart {
 
+	/**
+	 * We publish a single selected table row to be used by the event details part. 
+	 */
+	@Inject
+	private ESelectionService selectionService;
+	
 	@Inject 
 	private UISynchronize uiSync;
 
@@ -153,16 +163,23 @@ public class EventListPart implements IEventListPart {
 		col = tvcol.getColumn();
 		col.setText("# Events this type");
 		col.setWidth(50);
-		col.setAlignment(SWT.LEFT);		
+		col.setAlignment(SWT.LEFT);
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getTable());
 
 		viewer.setContentProvider(new EventListViewContentProvider(em));
-		// viewer.setComparator(new ServiceViewerComparator());
 		
-		// TODO: Take care of selections and help system. Here's the E3 code:
-//		getSite().setSelectionProvider(viewer); // In order to be able to display event detail
-	
+		// Attach a selection listener to our event list that will post the selected event for the event details list
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.size() == 1) {
+					selectionService.setSelection(selection.getFirstElement());
+				}
+			}
+		});
+		
 		viewer.setInput(new Object());
 
 		hookContextMenu(menuService);

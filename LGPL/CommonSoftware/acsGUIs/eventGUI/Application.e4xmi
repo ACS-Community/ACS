@@ -51,7 +51,12 @@
               <children xsi:type="basic:Part" xmi:id="_qKEVEIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.archivinglist" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.ArchivingListPart" label="Archiving List" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_i1qv0IgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.partstack.rightlower" containerData="30">
-              <children xsi:type="basic:Part" xmi:id="_7_01sIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.eventdetails" label="Event Details" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif"/>
+              <children xsi:type="basic:Part" xmi:id="_7_01sIgBEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.eventdetails" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.EventDetailPart" label="Event Details" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif">
+                <handlers xmi:id="_sxLI8J30EeKjy4ICcBBLyA" elementId="alma.acs.eventgui.handler.copyDetailsToClipboard" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.handlers.CopyDetailsToClipboardHandler" command="_kGHdUJ30EeKjy4ICcBBLyA"/>
+                <menus xsi:type="menu:PopupMenu" xmi:id="_mcQVoJ3xEeKjy4ICcBBLyA" elementId="alma.acs.eventgui.popupmenu.eventdetail" label="EventDetailPopupMenu">
+                  <children xsi:type="menu:HandledMenuItem" xmi:id="_z8FX0J3xEeKjy4ICcBBLyA" elementId="alma.acs.eventgui.handledmenuitem.copyEventDetails" label="Copy selection" command="_kGHdUJ30EeKjy4ICcBBLyA"/>
+                </menus>
+              </children>
             </children>
           </children>
         </children>
@@ -97,6 +102,7 @@
   <commands xmi:id="_4LG80IpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.commands.periodicRefresh" commandName="periodicRefreshCommand"/>
   <commands xmi:id="_VTt6cJGHEeKqB6s3z7KcNw" elementId="alma.acs.eventgui.command.subscribeNC" commandName="subscribeNCCommand"/>
   <commands xmi:id="_7MHtkJa3EeKImJzkOYoibw" elementId="alma.acs.eventgui.command.clearEvents" commandName="clearEventsCommand"/>
+  <commands xmi:id="_kGHdUJ30EeKjy4ICcBBLyA" elementId="alma.acs.eventgui.command.copyDetailsToClipboard" commandName="copyDetailsToClipboardCommand"/>
   <addons xmi:id="_2Ru3AofsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_2Ru3A4fsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_2Ru3BIfsEeKqHMDmIyAJOQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
