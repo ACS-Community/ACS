@@ -71,7 +71,8 @@ class SimpleSupplier : public Supplier
      * @param data The templated data structure to be published.
 	  * @param evProcCallback Pointer to the callback to handle event's fate, by
 	  * default is null
-     * @throw ACSErrTypeCommon::CORBAProblemEx
+     * @throw ACSErrTypeCommon::CORBAProblemExImpl
+     * @throw acsncErrType::PublishEventFailureExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
