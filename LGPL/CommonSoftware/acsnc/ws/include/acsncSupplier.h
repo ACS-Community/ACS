@@ -124,7 +124,8 @@ class Supplier :
 	  * @throw CORBA::TRANSIENT In case that the Notification Service is down
 	  * @throw nc::EventDroppedException In the case that que event buffer queue
 	  * discard a meesage.
-     * @throw ACSErrTypeCommon::CORBAProblemEx
+     * @throw acsncErrType::PublishEventFailureExImpl In case there's any other error
+     * while trying to publish the event
      * @return void
      * @htmlonly
        <br><hr>
