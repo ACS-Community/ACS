@@ -139,7 +139,11 @@ class Supplier :
      * Call this to publish a CORBA Any and implicitly have the structured event
      * "filled-out". It actually makes a call to the push_structured_event() 
      * method of consumers.
-     * @throw ACSErrTypeCommon::CORBAProblemEx
+	  * @throw CORBA::TRANSIENT In case that the Notification Service is down
+	  * @throw nc::EventDroppedException In the case that que event buffer queue
+	  * discard a meesage.
+     * @throw acsncErrType::PublishEventFailureExImpl In case there's any other error
+     * while trying to publish the event
      * @htmlonly
        <br><hr>
        @endhtmlonly
