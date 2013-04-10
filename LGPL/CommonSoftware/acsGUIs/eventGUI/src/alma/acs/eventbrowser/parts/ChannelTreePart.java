@@ -35,6 +35,8 @@ import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.menu.MPopupMenu;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -113,16 +115,15 @@ public class ChannelTreePart {
 		// Provide the input to the ContentProvider
 		viewer.setInput(eventModel.getNotifyServicesRoot());
 
-		// TODO: Expand with doubleclick as part of the eventGUI improvements
-//		viewer.addDoubleClickListener(new IDoubleClickListener() {
-//			@Override
-//			public void doubleClick(DoubleClickEvent event) {
-//				IStructuredSelection thisSelection = (IStructuredSelection) event.getSelection();
-//				Object selectedNode = thisSelection.getFirstElement();
-//				viewer.setExpandedState(selectedNode, !viewer.getExpandedState(selectedNode));
-//				System.out.println("double click in ChannelTreePart#viewer");
-//			}
-//		});
+		// Expand with doubleclick
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection thisSelection = (IStructuredSelection) event.getSelection();
+				Object selectedNode = thisSelection.getFirstElement();
+				viewer.setExpandedState(selectedNode, !viewer.getExpandedState(selectedNode));
+			}
+		});
 		
 		// Attach a selection listener to our tree that will post selections to the ESelectionService
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {

@@ -8,23 +8,23 @@
             <children xsi:type="basic:Part" xmi:id="_2RwFM4fsEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.servicesummary" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.ServiceSummaryPart" label="Notify Service Summary" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif" bindingContexts="_kHacoIpSEeK8-N5-rFZ8jw">
               <menus xmi:id="_VGqcoIgVEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.viewmenu.servicesummary">
                 <tags>ViewMenu</tags>
-                <children xsi:type="menu:HandledMenuItem" xmi:id="_xvC4UIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.2" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_xvC4UIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.2" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/refresh.gif" tooltip="" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
                 <children xsi:type="menu:MenuSeparator" xmi:id="__kB0MJBwEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.menuseparator.0"/>
                 <children xsi:type="menu:HandledMenuItem" xmi:id="_zS0_QIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.3" label="Periodic refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
               </menus>
               <menus xsi:type="menu:PopupMenu" xmi:id="_NmA0oIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.popupmenu.servicesummary" label="ServiceSummaryPopupMenu">
-                <children xsi:type="menu:HandledMenuItem" xmi:id="_2u18sIpQEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.0" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_2u18sIpQEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.0" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/refresh.gif" tooltip="" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
                 <children xsi:type="menu:HandledMenuItem" xmi:id="_fbJqMIpEEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledmenuitem.1" label="Periodic refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
               </menus>
               <toolbar xmi:id="_mLw10IpZEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.toolbar.0">
-                <children xsi:type="menu:HandledToolItem" xmi:id="_niKoEIpZEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledtoolitem.0" label="" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Update the statistics" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledToolItem" xmi:id="_niKoEIpZEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledtoolitem.0" label="" iconURI="platform:/plugin/ACS_eventGUI/icons/refresh.gif" tooltip="Update the statistics" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
                 <children xsi:type="menu:HandledToolItem" xmi:id="_N_fEwIppEeK8-N5-rFZ8jw" elementId="alma.acs.eventgui.handledtoolitem.1" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Periodic refresh of service data" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
               </toolbar>
             </children>
             <children xsi:type="basic:Part" xmi:id="_6sjFYIgAEeKqHMDmIyAJOQ" elementId="alma.acs.eventgui.part.servicechanneltree" contributionURI="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.parts.ChannelTreePart" label="Channel Tree" iconURI="platform:/plugin/ACS_eventGUI/icons/sample.gif" bindingContexts="_kHacoIpSEeK8-N5-rFZ8jw">
               <menus xmi:id="_1zNP0JBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.menu.0">
                 <tags>ViewMenu</tags>
-                <children xsi:type="menu:HandledMenuItem" xmi:id="_B5f2wJBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledmenuitem.5" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_B5f2wJBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledmenuitem.5" label="Refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/refresh.gif" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
                 <children xsi:type="menu:MenuSeparator" xmi:id="_DdxF4JBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.menuseparator.1"/>
                 <children xsi:type="menu:HandledMenuItem" xmi:id="_InlfYJBxEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledmenuitem.6" label="Periodic refresh" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
               </menus>
@@ -32,7 +32,7 @@
                 <children xsi:type="menu:HandledMenuItem" xmi:id="_7ZUqcJGFEeKqB6s3z7KcNw" elementId="alma.acs.eventgui.handledmenuitem.0" label="Subscribe to all events on this channel." iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" type="Check" command="_VTt6cJGHEeKqB6s3z7KcNw"/>
               </menus>
               <toolbar xmi:id="_5lFmAJBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.toolbar.1">
-                <children xsi:type="menu:HandledToolItem" xmi:id="_86rBwJBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledtoolitem.2" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Update the channel statistics" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
+                <children xsi:type="menu:HandledToolItem" xmi:id="_86rBwJBvEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledtoolitem.2" iconURI="platform:/plugin/ACS_eventGUI/icons/refresh.gif" tooltip="Update the channel statistics" command="_1nz5oIpEEeK8-N5-rFZ8jw"/>
                 <children xsi:type="menu:HandledToolItem" xmi:id="_LeLugJBwEeKJFPTV2BOKBg" elementId="alma.acs.eventgui.handledtoolitem.3" iconURI="platform:/plugin/ACS_eventGUI/icons/info_tsk.gif" tooltip="Periodic updating of channel data" type="Check" command="_4LG80IpEEeK8-N5-rFZ8jw"/>
               </toolbar>
             </children>

@@ -21,6 +21,8 @@
 package alma.acs.eventbrowser.parts;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -33,8 +35,10 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
+import alma.acs.eventbrowser.model.ChannelConsumers;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.ChannelParticipantName;
+import alma.acs.eventbrowser.model.ChannelSuppliers;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.model.INames;
 import alma.acs.eventbrowser.model.MCStatistics;
@@ -137,7 +141,11 @@ public class ChannelTreeProviders {
 	/**
 	 * TODO: Inherit from StyledLabelProvider, see http://www.vogella.com/articles/EclipseJFaceTree/article.html 
 	 */
-	static class ChannelTreeLabelProvider extends LabelProvider {
+	static class ChannelTreeLabelProvider extends LabelProvider /*implements IFontProvider*/ {
+//		private FontRegistry registry = new FontRegistry();
+//		private final String systemFontSymbolicName = Display.getCurrent().getSystemFont().getFontData()[0].getName();
+		private final Map<String, Image> iconMap = new HashMap<String, Image>();
+		
 		@Override
 		public String getText(Object element) {
 			if (element instanceof NotifyServices) {
@@ -165,32 +173,59 @@ public class ChannelTreeProviders {
 
 		@Override
 		public Image getImage(Object element) {
-			/*
-			 * NotifyService:
-			 * 			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			 * 			return AbstractUIPlugin.imageDescriptorFromPlugin(Application.PLUGIN_ID, imageKey);
-			 * Channel: 
-			 * 			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			 * 			return AbstractUIPlugin.imageDescriptorFromPlugin(Application.PLUGIN_ID, imageKey);
-			 * 
-			 * Statistics:
-			 * 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			 *			return AbstractUIPlugin.imageDescriptorFromPlugin(Application.PLUGIN_ID, imageKey);
-			 */
-			Image ret = null; // TODO: instanceof ... getImage(...)
-			return ret;
+			if (element instanceof NotifyServiceData) {
+				return getImageFromFile("fldr_obj.gif");
+			}
+			else if (element instanceof ChannelData) {
+				ChannelData channelData = (ChannelData)element;
+				// both 'Channel' and 'Class' start with a 'C'...
+				if (channelData.isNewNc()) {
+					return getImageFromFile("newclass_wiz.gif");
+				}
+				else {
+					return getImageFromFile("class_obj.gif");
+				}
+			}
+			else if (element instanceof ChannelConsumers) {
+				// TODO find better icon
+				return getImageFromFile("import_brkpts.gif");
+			}
+			else if (element instanceof ChannelSuppliers) {
+				// TODO find better icon
+				return getImageFromFile("export_brkpts.gif");
+			}
+			
+			else {
+				return null;
+			}
 		}
 
 		/**
 		 * Helper Method to load the images.
-		 * Todo: cache in a map
 		 */
-		private Image getImage(String file) {
-			Bundle bundle = FrameworkUtil.getBundle(ChannelTreeLabelProvider.class);
-			URL url = FileLocator.find(bundle, new Path("icons/" + file), null);
-			ImageDescriptor image = ImageDescriptor.createFromURL(url);
-			return image.createImage();
+		private Image getImageFromFile(String file) {
+			Image ret = iconMap.get(file);
+			if (ret == null) {
+				Bundle bundle = FrameworkUtil.getBundle(ChannelTreeLabelProvider.class);
+				URL url = FileLocator.find(bundle, new Path("icons/" + file), null);
+				ImageDescriptor image = ImageDescriptor.createFromURL(url);
+				ret = image.createImage();
+				iconMap.put(file, ret);
+			}
+			return ret;
 		}
+		
+// Uncomment this to show new NCs in bold font. Probably the Class / new Class icons we have are better though.
+//		@Override
+//		public Font getFont(Object element) {
+//			if (element instanceof ChannelData) {
+//				ChannelData channelData = (ChannelData)element;
+//				if (channelData.isNewNc()) {
+//					return registry.getBold(systemFontSymbolicName);
+//				}
+//			}
+//			return null;
+//		}
 	}
 
 
