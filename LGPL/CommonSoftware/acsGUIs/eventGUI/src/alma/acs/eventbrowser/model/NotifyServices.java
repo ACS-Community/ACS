@@ -20,30 +20,59 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Encapsulates a <code>List&lt;NotifyServiceData&gt;</code>.
- * It gets created by {@link EventModel} to pass around its list of Notify Services.
+ * It gets created by {@link EventModel} to pass around its list of Notify Services to GUI elements.
  * <p>
- * TODO: This class is used in various eclipse views. Perhaps it could be replaced there 
- * by a simple list. We are no longer using this class as a singleton, which is why
- * it would make sense to remove it further.
+ * TODO: Replace with EMF generated class.
  */
 public class NotifyServices {
 	
-	private final List<NotifyServiceData> services;
+	private final Map<String, NotifyServiceData> services;
 	
-	NotifyServices(List<NotifyServiceData> services) {
+	NotifyServices(Map<String, NotifyServiceData> services) {
 		this.services = services;
 	}
 	
 	public List<NotifyServiceData> getServices() {
-		return services;
+		return new ArrayList<NotifyServiceData>(services.values());
 	}
 	
 //	public void addService(NotifyServiceData data) {
 //		services.add(data);
 //	}
+
+	public NotifyServiceData findHostingService(String channelName) {
+		for (NotifyServiceData service : services.values()) {
+			ChannelData channelData = service.getChannel(channelName);
+			if (channelData != null) {
+				return service;
+			}
+		}
+		return null;
+	}
+	
+	public ChannelData findChannel(String channelName) {
+		for (NotifyServiceData service : services.values()) {
+			ChannelData channelData = service.getChannel(channelName);
+			if (channelData != null) {
+				return channelData;
+			}
+		}
+		return null;
+	}
+
+	public List<ChannelData> getAllChannels() {
+		List<ChannelData> ret = new ArrayList<ChannelData>();
+		for (NotifyServiceData service : services.values()) {
+			ret.addAll(service.getChannels());
+		}
+		return ret;
+	}
+
 
 }

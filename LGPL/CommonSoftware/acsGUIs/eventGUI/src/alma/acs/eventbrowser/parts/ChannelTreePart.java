@@ -69,8 +69,6 @@ public class ChannelTreePart {
 	
 	private EventModel eventModel;
 
-	private long howOften = 10000l; // Default is every 10 seconds
-	
 	private class NameComparator extends ViewerComparator {
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
@@ -113,7 +111,7 @@ public class ChannelTreePart {
 		viewer.setComparator(new NameComparator());
 
 		// Provide the input to the ContentProvider
-		viewer.setInput(eventModel.getNotifyServiceTotals());
+		viewer.setInput(eventModel.getNotifyServicesRoot());
 
 		// TODO: Expand with doubleclick as part of the eventGUI improvements
 //		viewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -135,8 +133,7 @@ public class ChannelTreePart {
 			}
 		});
 		
-		// TODO: Take care of selections and help system. Here's the E3 code:
-//		getSite().setSelectionProvider(viewer);
+		// TODO: Take care of help system. Here's the E3 code:
 //		// Create the help context id for the viewer's control
 //		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "alma.acs.eventbrowser.viewer");
 
@@ -146,6 +143,8 @@ public class ChannelTreePart {
 		// TODO: this could be used by handlers etc, currently it's not
 		context.set(ChannelTreePart.class, this);
 
+		// initial data fill
+		viewer.refresh();
 	}
 	
 	

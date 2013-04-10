@@ -72,9 +72,8 @@ public class ArchivingListPart implements IEventListPart {
 	private StatusReporter statusReporter;
 
 	private Thread eventListThread;
-	private Thread channelRefreshThread;
-	
 
+	
 	public ArchivingListPart() {
 	}
 
@@ -145,11 +144,6 @@ public class ArchivingListPart implements IEventListPart {
 
 		pel = new PopulateEventList(logger, viewer, new StatusLineWriter(eventBroker), em.getArchQueue(), "Monitor points");
 		
-		// TODO: Change this polling for the server-side flag
-		channelRefreshThread = pel.getChannelRefreshThread(em);
-		channelRefreshThread.start();
-//		em.refreshChannelSubscriptions(); // TODO: remove workaround
-		
 		eventListThread = pel.getThreadForEventList();
 		eventListThread.start();
 	}
@@ -186,7 +180,6 @@ public class ArchivingListPart implements IEventListPart {
 		
 	@PreDestroy
 	public void preDestroy() {
-		channelRefreshThread.interrupt();
 		eventListThread.interrupt();
 		em.closeArchiveConsumer();
 		logger.info("Average archiving rate: "+ArchiveEventData.getAverageRate()+" monitor points/s");

@@ -115,7 +115,7 @@ public class EventDetailPart {
 		tvcol.setLabelProvider(new DetailNameLabelProvider());
 		TableColumn col = tvcol.getColumn();
 		col.setText("Name");
-		col.setWidth(180);
+		col.setWidth(200);
 		col.setAlignment(SWT.LEFT);
 
 		tvcol = new TableViewerColumn(viewer, SWT.NONE, 1);
@@ -129,7 +129,7 @@ public class EventDetailPart {
 		tvcol.setLabelProvider(new DetailValueLabelProvider());
 		col = tvcol.getColumn();
 		col.setText("Value");
-		col.setWidth(50);
+		col.setWidth(200);
 		col.setAlignment(SWT.LEFT);
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(

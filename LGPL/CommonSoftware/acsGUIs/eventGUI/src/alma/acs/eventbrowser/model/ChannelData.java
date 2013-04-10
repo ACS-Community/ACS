@@ -21,7 +21,9 @@
 package alma.acs.eventbrowser.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import org.omg.CosNotifyChannelAdmin.EventChannel;
+
 
 /**
  * Gets created by EventModel#getChannelStatistics()
@@ -30,16 +32,27 @@ import java.util.HashMap;
  */
 public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
 	
+	private final EventChannel corbaRef;
+	
+	private boolean isNewNc = true;
+	
+	private int numberConsumers;
+	private int numberSuppliers;
+	private int deltaConsumers;
+	private int deltaSuppliers;
+
 	private boolean subscribed = false;
-	private static HashMap<String,ChannelData> map = new HashMap<String,ChannelData>();
 	
 	private final ChannelConsumers ccon;
 	private final ChannelSuppliers csup;
 	private final ChannelQueueSize cqs;
 	private final SlowestConsumers slcon;
+
 	
-	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
-		super(name, parent, ((NotifyServiceData)parent).getMc(), adminCounts, adminDeltas);
+	public ChannelData(EventChannel corbaRef, String name, NotifyServiceData parent) {
+		super(name, parent, parent.getMc());
+		this.corbaRef = corbaRef;
+
 //		statistics.add(new SupplierCounts(this));
 //		statistics.add(new ConsumerCounts(this));
 		
@@ -47,19 +60,57 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 		csup = new ChannelSuppliers(this);
 		cqs = new ChannelQueueSize(this);
 		slcon = new SlowestConsumers(this);
+	}
+	
+	public void setIsNewNc(boolean isNewNc) {
+		this.isNewNc = isNewNc;
+	}
+	
+	public boolean isNewNc() {
+		return isNewNc;
+	}
+	
+	public EventChannel getCorbaRef() {
+		return corbaRef;
+	}
+	
+	public void setNumberConsumers(int numberConsumers) {
+		this.numberConsumers = numberConsumers;
+	}
 
-		map.put(name, this); // Add this instance to the static map for easy access
+	public void setNumberSuppliers(int numberSuppliers) {
+		this.numberSuppliers = numberSuppliers;
 	}
-	
-	/** This static method returns the ChannelData instance for a given channel name
-	 * @param channelName
-	 * @return
-	 */
-	public static ChannelData returnInstanceForChannel(String channelName) {
-		return map.get(channelName);
+
+	public void setDeltaConsumers(int numberConsumers) {
+		this.deltaConsumers = numberConsumers;
 	}
-	
-	
+
+	public void setDeltaSuppliers(int numberSuppliers) {
+		this.deltaSuppliers = numberSuppliers;
+	}
+
+	@Override
+	public int getNumberConsumers() {
+		return numberConsumers;
+	}
+
+	@Override
+	public int getNumberSuppliers() {
+		return numberSuppliers;
+	}
+
+	@Override
+	public int getDeltaConsumers() {
+		return deltaConsumers;
+	}
+
+	@Override
+	public int getDeltaSuppliers() {
+		return deltaSuppliers;
+	}
+
+
 	public ArrayList<MCStatistics> getStatistics() {
 		ArrayList<MCStatistics> statistics= new ArrayList<MCStatistics>(4);
 		statistics.add(ccon);
@@ -70,20 +121,19 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 		return statistics;
 	}
 	
-	// TODO: The following three methods are not used yet. They should make the model more Object-oriented
-	
-	public void subscribe() {
-		subscribed = true;
-	}
-	
-	public void unsubscribe() {
-		subscribed = false;
+	/**
+	 * Sets the subscription flag, without taking any subscription actions.
+	 */
+	public void setSubscribed(boolean isSubscribed) {
+		subscribed = isSubscribed;
 	}
 	
 	public boolean isSubscribed() {
 		return subscribed;
 	}
 
+	
+	
 	@Override
 	public int compareTo(ChannelData o) {
 		return getName().compareTo(o.getName());
@@ -101,5 +151,6 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 	public int hashCode() {
 		return getName().hashCode();
 	}
+
 }
 

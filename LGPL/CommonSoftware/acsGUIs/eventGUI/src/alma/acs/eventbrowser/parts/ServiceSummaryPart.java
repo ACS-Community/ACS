@@ -92,7 +92,7 @@ public class ServiceSummaryPart {
 		}
 		public Object[] getElements(Object parent) {
 			List<NotifyServiceData> cdlist = null;
-			cdlist = eventModel.getNotifyServiceTotals().getServices();
+			cdlist = eventModel.getNotifyServicesRoot().getServices();
 			NotifyServiceData[] l;
 			if (cdlist != null)
 				l = cdlist.toArray(new NotifyServiceData[cdlist.size()]);

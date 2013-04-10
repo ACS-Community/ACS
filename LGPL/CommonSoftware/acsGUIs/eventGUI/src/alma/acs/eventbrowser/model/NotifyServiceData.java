@@ -20,21 +20,33 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import gov.sandia.CosNotification.NotificationServiceMonitorControl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+
+
+/**
+ * Encapsulates a Corba notify service for use in the model and in GUI elements.
+ * <p>
+ * All equality and comparison methods are based on the simplified name.
+ */
 public class NotifyServiceData extends AbstractNotifyServiceElement implements Comparable<NotifyServiceData> {
 
 	private final HashMap<String, ChannelData> channels;
 	private final EventChannelFactory efact;
 	private final String factoryName;
 	
-	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc, int[] adminCounts, int[] adminDeltas) {
-		super(name, null, mc, adminCounts, adminDeltas);
+	/**
+	 * @param name The simplified display name
+	 * @param factoryName The full name (ID)
+	 * @param ecf Corba reference to the notify service
+	 * @param mc Corba reference to the monitor-control object (TAO extension)
+	 */
+	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc) {
+		super(name, null, mc);
 		channels = new HashMap<String, ChannelData>(10);
 		efact = ecf;
 		this.factoryName = factoryName;
@@ -44,6 +56,7 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 		return efact;
 	}
 	
+	
 	public ArrayList<ChannelData> getChannels() {
 		return new ArrayList<ChannelData>(channels.values());
 	}
@@ -52,16 +65,59 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 		return channels.get(channelName);
 	}
 	
-	public void addChannelAndConfirm(String channelName, ChannelData cdata) {
-			channels.put(channelName, cdata);
-			return;
+	public void addChannel(String channelName, ChannelData cdata) {
+		channels.put(channelName, cdata);
 	}
 	
 	public void removeChannel(String channelName) {
-		if (channels.containsKey(channelName))
-			channels.remove(channelName);
+		channels.remove(channelName);
 	}
 
+	/////////////////////////////////////////////////////
+
+	
+	@Override
+	public int getNumberConsumers() {
+		int ret = 0;
+		for (ChannelData channelData : getChannels()) {
+			ret += channelData.getNumberConsumers();
+		}
+		return ret;
+	}
+
+	@Override
+	public int getNumberSuppliers() {
+		int ret = 0;
+		for (ChannelData channelData : getChannels()) {
+			ret += channelData.getNumberSuppliers();
+		}
+		return ret;
+	}
+
+	@Override
+	public int getDeltaConsumers() {
+		int ret = 0;
+		for (ChannelData channelData : getChannels()) {
+			ret += channelData.getDeltaConsumers();
+		}
+		return ret;
+	}
+
+	@Override
+	public int getDeltaSuppliers() {
+		int ret = 0;
+		for (ChannelData channelData : getChannels()) {
+			ret += channelData.getDeltaSuppliers();
+		}
+		return ret;
+	}
+
+	public String getFactoryName() {
+		return factoryName;
+	}
+
+	/////////////////////////////////////////////////////
+	
 	public int compareTo(NotifyServiceData o) {
 		return getName().compareTo(o.getName());
 	}
@@ -79,7 +135,4 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 		return getName().hashCode();
 	}
 
-	public String getFactoryName() {
-		return factoryName;
-	}
 }

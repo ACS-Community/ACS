@@ -23,37 +23,24 @@ package alma.acs.eventbrowser.model;
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 
 /**
- * Used as "parent" of ChannelConsumers, ChannelData, ChannelQueueSize, ChannelSuppliers, MCStatistics, SlowestConsumers
+ * 
+ * Used as base class of ChannelData and NotifyServiceData, and as "tree parent" of ChannelConsumers, ChannelData, ChannelQueueSize, ChannelSuppliers, MCStatistics, SlowestConsumers
  * and in views/EventGuiAdapterFactory
  */
 public abstract class AbstractNotifyServiceElement {
-	protected AbstractNotifyServiceElement parent;
-	protected NotificationServiceMonitorControl mc;
-	protected String name;
 	
-	private int numberConsumers;
-	private int numberSuppliers;
-	private int deltaConsumers;
-	private int deltaSuppliers;
-
-	public AbstractNotifyServiceElement(String name, AbstractNotifyServiceElement parent,
-			NotificationServiceMonitorControl mc,
-			int[] adminCounts, int[] adminDeltas) {
+	protected final AbstractNotifyServiceElement parent;
+	protected final NotificationServiceMonitorControl mc;
+	protected final String name;
+	
+	public AbstractNotifyServiceElement(String name, AbstractNotifyServiceElement parent, NotificationServiceMonitorControl mc) {
 		this.name = name;
 		this.parent = parent;
-		this.numberConsumers = adminCounts[0];
-		this.numberSuppliers = adminCounts[1];
-		this.deltaConsumers = adminDeltas[0];
-		this.deltaSuppliers = adminDeltas[1];
 		this.mc = mc;
 	}
 	
 	public AbstractNotifyServiceElement getParent() {
 		return parent;
-	}
-	
-	public void setParent(AbstractNotifyServiceElement parent) {
-		this.parent = parent;
 	}
 	
 	public String getName() {
@@ -64,44 +51,22 @@ public abstract class AbstractNotifyServiceElement {
 		return mc;
 	}
 
-	public int getNumberConsumers() {
-		return numberConsumers;
-	}
-
-	public void setNumberConsumers(int numberConsumers) {
-		this.numberConsumers = numberConsumers;
-	}
-
-	public void setDeltaConsumers(int deltaConsumers) {
-		this.deltaConsumers = deltaConsumers;
-	}
-
-	public int getDeltaConsumers() {
-		return deltaConsumers;
-	}
-
-	public int getNumberSuppliers() {
-		return numberSuppliers;
-	}
-
-	public void setNumberSuppliers(int numberSuppliers) {
-		this.numberSuppliers = numberSuppliers;
-	}
-
-	public void setDeltaSuppliers(int deltaSuppliers) {
-		this.deltaSuppliers = deltaSuppliers;
-	}
-
-	public int getDeltaSuppliers() {
-		return deltaSuppliers;
-	}
+	
+	public abstract int getNumberConsumers();
+	
+	public abstract int getNumberSuppliers();
+	
+	public abstract int getDeltaConsumers();
+	
+	public abstract int getDeltaSuppliers();
+	
 
 	public String getNumConsumersAndDelta() {
-		return ""+numberConsumers+(deltaConsumers !=0 ? " ("+(deltaConsumers > 0 ? "+" : "")+deltaConsumers+")":"");
+		return "" + getNumberConsumers() + (getDeltaConsumers() !=0 ? " ("+(getDeltaConsumers() > 0 ? "+" : "")+getDeltaConsumers()+")" : "");
 	}
 
 	public String getNumSuppliersAndDelta() {
-		return ""+numberSuppliers+(deltaSuppliers !=0 ? " ("+(deltaSuppliers > 0 ? "+" : "")+deltaSuppliers+")":"");
+		return "" + getNumberSuppliers() + (getDeltaSuppliers() !=0 ? " ("+(getDeltaSuppliers() > 0 ? "+" : "")+getDeltaSuppliers()+")" : "");
 	}
 
 }

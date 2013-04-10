@@ -73,7 +73,7 @@ public class ChannelTreeProviders {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			NotifyServices allServices = eventModel.getNotifyServiceTotals();
+			NotifyServices allServices = eventModel.getNotifyServicesRoot();
 			return allServices.getServices().toArray();
 		}
 

@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
@@ -37,9 +38,9 @@ import org.omg.CosNaming.BindingIteratorHolder;
 import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
-import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
@@ -54,15 +55,13 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.ArchiveConsumer;
 import alma.acs.nc.Helper;
 import alma.acs.util.AcsLocations;
-import alma.acs.util.StopWatch;
 
 /**
- * @author jschwarz
+ * @author jschwarz, hsommer
  *
  * $Id: EventModel.java,v 1.39 2013/02/22 15:36:44 hsommer Exp $
  */
@@ -75,7 +74,14 @@ public class EventModel {
 	 */
 	private static EventModel modelInstance;
 	
-	private final List<NotifyServiceData> notifyServices;
+	/**
+	 * Key = service ID (e.g. "AlarmNotifyEventChannelFactory") <br>
+	 * Value = NotifyServiceData object
+	 * <p>
+	 * This is the root of our data model. From here we can go to NCs and their attributes.
+	 */
+	private final Map<String, NotifyServiceData> notifyServices;
+	
 	private AdvancedComponentClient acc;
 	private final ORB orb;
 	private final Logger m_logger;
@@ -83,33 +89,28 @@ public class EventModel {
 	private final DynAnyFactory dynAnyFactory;
 	private final NamingContext nctx;
 	
-	public static final int MAX_NUMBER_OF_CHANNELS = 100;
-	
 	private final ArrayBlockingQueue<EventData> equeue = new ArrayBlockingQueue<EventData>(50000);
 	private final ArrayBlockingQueue<ArchiveEventData> archQueue = new ArrayBlockingQueue<ArchiveEventData>(100000);
 
 	/**
-	 * maps each event channel name to the event channel
-	 */
-	private final HashMap<String, EventChannel> channelMap; 
-	
-	/**
-	 * key = name of NotifyService; value=int[] {consumerCount, supplierCount}
+	 * key = name of NotifyService or NC; value=int[] {consumerCount, supplierCount}
 	 * <p>
 	 * TODO: The handling for consumers seems to be based on the number of admin objects, 
 	 *       which is not always the same as the number of Consumers (new NCSubscriber differs!) 
 	 */
 	private final HashMap<String, int[]> lastConsumerAndSupplierCount;
 	
-	private HashSet<String> subscribedChannels; // all channels whose events the user wishes to monitor/display
-	
-	private final ArrayList<AdminConsumer> readyConsumers;
-	
 	/**
 	 * Consumers used by the eventGUI to subscribe to events on various NCs.
+	 * <p>
+	 * Todo: we could keep the consumer reference in the matching ChannelData object
+	 * and eliminate this map.
 	 */
 	private final HashMap<String, AdminConsumer> consumerMap;
 	
+	/**
+	 * Subscribes to monitoring/archiving events.
+	 */
 	private ArchiveConsumer archiveConsumer;
 	
 	
@@ -120,10 +121,8 @@ public class EventModel {
 	 * See also http://www.eclipse.org/forums/index.php/t/333467/,
 	 * http://blog.maxant.co.uk/pebble/2011/08/04/1312486560000.html
 	 * <p>
-	 * TODO: move the detection of NotifyService out of the ctor, to make the application start faster, 
-	 * but also to react to new or disappeared notifyservices during the application lifetime.
-	 * Detecting all services, NCs, and reading out the participant information should probably become a 
-	 * job (http://www.vogella.com/articles/EclipseJobs/article.html) triggered by the respective views.
+	 * TODO: move the detection of NotifyService out of the ctor, to make the application start faster.
+	 * This would require a first-time service-detection-independently-of-NCs mechanism. 
 	 * <p>
 	 * We declare <code>Throwable</code> so that this constructor can catch, print and re-throw even the nastiest errors,
 	 * which in case of VerifyError etc are otherwise not well shown by the Eclipse container.
@@ -131,27 +130,39 @@ public class EventModel {
 	private EventModel() throws Throwable {
 		
 		try {
-			notifyServices = Collections.synchronizedList(new ArrayList<NotifyServiceData>()); 
-			channelMap = new HashMap<String, EventChannel>();
+			notifyServices = new HashMap<String, NotifyServiceData>(); 
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
 			consumerMap = new HashMap<String, AdminConsumer>();
-			readyConsumers = new ArrayList<AdminConsumer>();
-			subscribedChannels = new HashSet<String>();
 	
 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
 			ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 
-			setupAcsConnections();
+			String managerLoc = AcsLocations.figureOutManagerLocation();
+
+			acc = new AdvancedComponentClient(m_logger, managerLoc, eventGuiId) {
+				@Override
+				protected void initAlarmSystem() {
+					m_logger.fine("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
+				}
+				@Override 
+				protected void tearDownAlarmSystem() {
+					// nothing. Overloaded to avoid "java.lang.IllegalStateException: Trying close with null ContainerServicesBase"
+				}
+			};
 
 			cs = acc.getContainerServices();
 			orb = acc.getAcsCorba().getORB();
 			
 			dynAnyFactory = DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
 			
-			Helper notifyHelper = new Helper(cs); // todo get NS from the manager instead of this Helper
-			nctx = notifyHelper.getNamingService();
+			nctx = NamingContextHelper.narrow(
+					acc.getAcsManagerProxy().get_service("NameService", false)
+			);
 			
-			getAllNotifyServices();
+			discoverNotifyServicesAndChannels(true);
+			
+			// todo: make this on-demand
+			getArchiveConsumer();
 			
 		} catch (Throwable thr) {
 			thr.printStackTrace();
@@ -160,45 +171,7 @@ public class EventModel {
 		m_logger.info("*** EventModel() ctor finished ***");
 	}
 
-	/**
-	 * Broken out from c'tor.
-	 * @throws Exception
-	 */
-	private void setupAcsConnections() throws Exception {
-		
-		String managerLoc = AcsLocations.figureOutManagerLocation();
 
-		acc = new AdvancedComponentClient(m_logger, managerLoc, eventGuiId) {
-			@Override
-			protected void initAlarmSystem() {
-				m_logger.info("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
-			}
-			@Override 
-			protected void tearDownAlarmSystem() {
-				// nothing. Overloaded to avoid "java.lang.IllegalStateException: Trying close with null ContainerServicesBase"
-			}
-		};
-	}
-
-	/**
-	 */
-	private NotificationServiceMonitorControl getMonitorControl(String notifyBindingName) throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, NotFound  {
-
-		NotificationServiceMonitorControl nsmc;
-		NameComponent[] ncomp = new NameComponent[1];
-
-		String name;
-		if (notifyBindingName == "") 
-			name = "MC_NotifyEventChannelFactory"; // default notify service isn't named, but MC is!
-		else
-			name = "MC_"+notifyBindingName;
-		ncomp[0] = new NameComponent(name,"");
-
-		nsmc = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
-
-		return nsmc;
-	}
-	
 	public synchronized static EventModel getInstance() throws Throwable {
 		if (modelInstance == null) 
 			modelInstance = new EventModel();
@@ -212,56 +185,6 @@ public class EventModel {
 		return m_logger;
 	}
 	
-
-	/**
-	 * Broken out from the c'tor.
-	 */
-	private void getAllNotifyServices() {
-		
-		ArrayList<String> efactNames = new ArrayList<String>(10);
-
-		BindingListHolder bl = new BindingListHolder();
-		BindingIteratorHolder bi = new BindingIteratorHolder();
-		
-		// Get names of all objects bound in the naming service
-		nctx.list(-1, bl, bi);
-		for (Binding binding : bl.value) {
-			String id = binding.binding_name[0].id;
-			String bindingKind = binding.binding_name[0].kind;
-			try {
-				// Currently ACS does not use a unique 'kind' value when binding NotifyService instances (see email HSO to ACA 20121126).
-				// However, NCs are registered using kind value == alma.acscommon.NC_KIND.value.
-				// NotifyServices have an empty kind field, which we can use to skip those objects from the NS that are surely not NotifyServices.
-				if (bindingKind != null && bindingKind.isEmpty()) {
-					NameComponent nc_array[] = { new NameComponent(id, "") };
-
-					// Get the object reference from the naming service.
-					// We skip the manager for access to services, because since ACS 10.2 only specially registered services
-					// would be available in the get_service call and we want more flexibility for this special tool.
-					org.omg.CORBA.Object obj = nctx.resolve(nc_array);
-
-					if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
-						String displayName = simplifyNotifyServiceName(id);
-						EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
-						efactNames.add(displayName);
-						NotificationServiceMonitorControl nsmc = null;
-						try {
-							nsmc = getMonitorControl(id);
-						} catch (Exception ex) {
-							m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + id + "'.", ex);
-						}
-						notifyServices.add(new NotifyServiceData(displayName, id, efact, nsmc, new int[2], new int[2]));
-					}
-				}
-			} catch (Exception ex) {
-				m_logger.log(Level.WARNING, "Failed to check whether service '" + id + "' is a NotifyService.", ex);
-			}
-		}
-		Collections.sort(efactNames);
-		m_logger.info("Found " + efactNames.size() + " notify service instances: " + StringUtils.join(efactNames, ' '));
-	}
-	
-	
 	/**
 	 * Gets the event queue, for read and write access.
 	 */
@@ -273,12 +196,205 @@ public class EventModel {
 		return archQueue;
 	}
 	
+
 	/**
+	 * Discovers services and bindings, retrieving only once the list of all
+	 * bindings from the naming service.
+	 * 
+	 * @param discoverServicesIndependentlyOfChannels
+	 *            If <code>true</code>, notify services will be searched for as
+	 *            an extra step, which will discover them early even when they
+	 *            don't host NCs.
+	 *            If <code>false</code>, notify services will only be discovered on demand 
+	 *            when we find one of their channels.
+	 */
+	private synchronized void discoverNotifyServicesAndChannels(boolean discoverServicesIndependentlyOfChannels) {
+		BindingListHolder bl = new BindingListHolder();
+		BindingIteratorHolder bi = new BindingIteratorHolder();
+		
+		// Get names of all objects bound in the naming service
+		nctx.list(-1, bl, bi);
+		
+		if (discoverServicesIndependentlyOfChannels) {
+			discoverNotifyServices(bl.value);
+		}
+		discoverChannels(bl.value);
+	}
+
+	/**
+	 * Checks the naming service for notify service instances and stores / updates them in {@link #notifyServices}.
+	 * This update does not include the NCs owned by the notify services, so that {@link #discoverChannels(Binding[])} 
+	 * should be called after this. 
+	 * <p>
+	 * Currently this discovery is "expensive" because a lot of other corba objects found in the naming service must be queried 
+	 * to check if they are notify service instances. See code comment about dedicated 'kind' marker.
+	 * <p>
+	 * This method is broken out from {@link #discoverNotifyServicesAndChannels(boolean)} to make it more readable. 
+	 * It should be called only from there, to keep services and NCs aligned.
+	 */
+	private synchronized void discoverNotifyServices(Binding[] bindings) {
+		
+		ArrayList<String> newNotifyServiceNames = new ArrayList<String>(10); // used for local logging only
+		Set<String> oldServiceIds = new HashSet<String>(notifyServices.keySet()); // used to detect services that have disappeared
+		
+		for (Binding binding : bindings) {
+			String id = binding.binding_name[0].id;
+			String bindingKind = binding.binding_name[0].kind;
+			try {
+				// Currently ACS does not use a unique 'kind' value when binding NotifyService instances (see email HSO to ACA 20121126).
+				// Adding this would save us unnecessary "_is_a" calls when discovering notify service instances.
+				// The fact that NotifyServices have an empty kind field we can use to skip those objects from the NS that are surely not NotifyServices.
+				if (bindingKind.isEmpty()) {
+					NameComponent nc_array[] = { new NameComponent(id, "") };
+
+					// Get the object reference from the naming service.
+					// We skip the manager for access to services, because since ACS 10.2 only specially registered services
+					// would be available in the get_service call and we want more flexibility for this special tool.
+					org.omg.CORBA.Object obj = nctx.resolve(nc_array);
+
+					if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
+						// our current naming service entry maps indeed to a notify service
+						oldServiceIds.remove(id);
+						if (!notifyServices.containsKey(id)) {
+							EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
+							String displayName = simplifyNotifyServiceName(id);
+							newNotifyServiceNames.add(displayName);
+							NotificationServiceMonitorControl nsmc = null;
+							try {
+								nsmc = getMonitorControl(id);
+							} catch (Exception ex) {
+								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + id + "'.", ex);
+							}
+							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, id, efact, nsmc);
+							notifyServices.put(id, notifyServiceData);
+						}
+						else {
+							// Todo: Should we always update the map, in case the corba objects have been relocated with a change of reference?
+						}
+					}
+				}
+			} catch (Exception ex) {
+				m_logger.log(Level.WARNING, "Failed to check whether service '" + id + "' is a NotifyService.", ex);
+			}
+		}
+		if (!newNotifyServiceNames.isEmpty()) {
+			Collections.sort(newNotifyServiceNames);
+			m_logger.info("Found " + newNotifyServiceNames.size() + " notify service instances: " + StringUtils.join(newNotifyServiceNames, ' '));
+		}
+		if (!oldServiceIds.isEmpty()) {
+			for (String oldServiceId : oldServiceIds) {
+				notifyServices.remove(oldServiceId);
+			}
+			m_logger.info("Removed " + oldServiceIds.size() + " notify service instances: " + StringUtils.join(oldServiceIds, ' '));
+		}
+	}
+	
+	
+	/**
+	 * Checks the naming service for NC instances and stores / updates them under the matching service from {@link #notifyServices}.
+	 * It does not query the NCs for consumers etc. though.
+	 * <p>
+	 * This method is broken out from {@link #discoverNotifyServicesAndChannels(boolean)} to make it more readable. 
+	 * It should be called only from there, to keep services and NCs aligned.
+	 */
+	private synchronized void discoverChannels(Binding[] bindings) {
+		
+		// known NC names, used to detect NCs that have disappeared
+		Set<String> oldNcNames = new HashSet<String>();
+		for (NotifyServiceData nsData : notifyServices.values()) {
+			for (ChannelData channelData : nsData.getChannels()) {
+				oldNcNames.add(channelData.getName());
+			}
+		}
+
+		// Note that it is useless to retrieve the NC from the notify service (get_event_channel(ncId) etc), 
+		// because the limited notification service API will not tell us the channel name
+		// even if we use the TAO extensions (where the NC names show up in the statistics but are not accessible through the API).
+		for (Binding binding : bindings) {
+			if (binding.binding_name[0].kind.equals(alma.acscommon.NC_KIND.value)) {
+				String channelName = binding.binding_name[0].id;
+				try {
+					// Check if we already know this NC. 
+					// The channelName must be unique across notify services (required for naming service registration), 
+					// so that we can simply search our maps.
+					ChannelData channelData = getNotifyServicesRoot().findChannel(channelName);
+					if (channelData != null) {
+						oldNcNames.remove(channelName);
+						channelData.setIsNewNc(false);
+					}
+					else {
+//						System.out.println("*** New NC " + channelName);
+						// A new NC. This will happen at startup, and later as NCs get added.
+						// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
+						Helper notifyHelper = new Helper(cs, nctx);
+						String serviceId = notifyHelper.getNotificationFactoryNameForChannel(channelName);
+						NotifyServiceData service = notifyServices.get(serviceId);
+						if (service == null) {
+							// If we do not auto-discover services as part of refreshing NCs, then a new NC hosted in a new service
+							// brings us here. We try to find the new service.
+							discoverNotifyServices(bindings);
+							service = notifyServices.get(serviceId);
+							String msg = "Unknown notify service '" + simplifyNotifyServiceName(serviceId) + "' required for NC '" + channelName + "'. ";
+							if (service != null) {
+								m_logger.info(msg + "Added the new service.");
+							}
+							else {
+								m_logger.warning(msg + "Failed to add the new service.");
+							}
+						}
+						if (service != null) {
+							EventChannel nc = resolveNotificationChannel(channelName);
+							ChannelData cdata = new ChannelData(nc, channelName, service);
+							cdata.setIsNewNc(true);
+							service.addChannel(channelName, cdata);
+						}
+					}
+				}
+				catch (Exception ex) {
+					m_logger.log(Level.WARNING, "Failed to map NC '" + channelName + "' to its notify service.", ex);
+				}
+			}
+		}
+		if (!oldNcNames.isEmpty()) {
+			// TODO: Change this when the eventGUI or other tools offers manual NC destruction
+			// Actually it could also be that an additional NotifyService with unused NCs was stopped, but in practice this does not happen.
+			m_logger.warning("Lost " + oldNcNames.size() + " NCs, which should not happen as we never destroy an NC even if it no longer gets used. " + StringUtils.join(oldNcNames, ' '));
+			
+			for (String oldNcName : oldNcNames) {
+				NotifyServiceData oldNcService = getNotifyServicesRoot().findHostingService(oldNcName);
+				ChannelData oldNcData = oldNcService.getChannel(oldNcName);
+				closeSelectedConsumer(oldNcData);
+				oldNcService.removeChannel(oldNcName);
+			}
+		}
+	}
+	
+
+	/**
+	 * Resolves the TAO monitor-control object that corresponds to the given notify service name.
+	 */
+	private NotificationServiceMonitorControl getMonitorControl(String notifyBindingName) 
+			throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, NotFound {
+
+		String name = "MC_" + notifyBindingName;
+		
+		NameComponent[] ncomp = new NameComponent[1];
+		ncomp[0] = new NameComponent(name, "");
+
+		NotificationServiceMonitorControl nsmc = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
+
+		return nsmc;
+	}
+	
+	
+	/**
+	 * Simplifies the notify service ID by cutting off the trailing "NotifyEventChannelFactory".
+	 * For the default NC service, whose ID is only this suffix, it returns "DefaultNotifyService".
 	 * @param id
-	 * @return
+	 * @return "Logging", "Alarm", "DefaultNotifyService", "MyRealtimeNotifyService", ...
 	 */
 	private String simplifyNotifyServiceName(String id) {
-		String displayName = id.substring(0,id.indexOf("NotifyEventChannelFactory"));
+		String displayName = id.substring(0, id.indexOf("NotifyEventChannelFactory"));
 		
 		if (displayName.equals("")) {
 			displayName = "DefaultNotifyService";
@@ -286,152 +402,81 @@ public class EventModel {
 		return displayName;
 	}
 
-	/**
-	 * TODO: Check if we can eliminate class NotifyServices
-	 * and return a list of NotifyServiceData.
-	 */
-	public NotifyServices getNotifyServiceTotals() {
+
+	public NotifyServices getNotifyServicesRoot() {
 		return new NotifyServices(notifyServices);
 	}
 
+
+
 	/**
-	 * Counts consumers and suppliers for every NC in every NotifyService,
-	 * and stores the results in {@link #lastConsumerAndSupplierCount}.
-	 * <p>
-	 * TODO: Use TAO extensions so that in error messages we can use the NC name instead of the NC index number.
+	 * Called by NotifyServiceUpdateJob (single/periodic refresh of service summary / channel tree).
 	 */
-	private void calculateNotifyServiceTotals() {
-
-		for (NotifyServiceData nsData : notifyServices) {
+	public synchronized void getChannelStatistics() {
+		
+		// TODO:  Make service-discovery-independently-of-channels configurable (preferences etc),
+		// to not ignore user-defined services that start late until they host NCs.
+		discoverNotifyServicesAndChannels(false);
+		
+		for (NotifyServiceData nsData : notifyServices.values()) {
 			
-			EventChannelFactory efact = nsData.getEventChannelFactory();
-			String efactName = nsData.getName();
-			
-			int nconsumers = 0;
-			int nsuppliers = 0;
-			int[] ncIds = efact.get_all_channels();
-			
-			for (int ncId : ncIds) {
-				try {
-					EventChannel nc = efact.get_event_channel(ncId);
-					// TODO: These calculations depend on the assumption that 1 consumer admin ==> 1 consumer
-					//       This is no longer true with NCSubscriber. Must check number of supplier proxies, 
-					//       and deduct the 1 marker/dummy proxy, see module jcontnc 
-					nconsumers += nc.get_all_consumeradmins().length;
-					nsuppliers += nc.get_all_supplieradmins().length;
-				} catch (ChannelNotFound ex) {
-					m_logger.log(AcsLogLevel.WARNING, "Failed to get NC '" + ncId + "'.", ex);
+			// iterate over NCs
+			for (ChannelData channelData : nsData.getChannels()) {
+				String channelName = channelData.getName();
+				EventChannel ec = channelData.getCorbaRef();
+				int[] consAndSupp = {0,0}; // initial or previous count of consumers / suppliers
+				if (channelData.isNewNc()) {
+					lastConsumerAndSupplierCount.put(channelName, consAndSupp);
+				} 
+				else if (lastConsumerAndSupplierCount.containsKey(channelName)) {
+					consAndSupp = lastConsumerAndSupplierCount.get(channelName);
 				}
+				
+				final String[] roleNames = {"consumer", "supplier"};
+				int [] adminCounts = new int[2];
+				int [] adminDeltas = new int[2];
+				adminCounts[0] = ec.get_all_consumeradmins().length;
+				adminCounts[1] = ec.get_all_supplieradmins().length;
+
+				// same code for consumer and supplier
+				for (int i = 0; i < adminCounts.length; i++) {
+					String cstr = channelName;
+					int cdiff = adminCounts[i] - consAndSupp[i];
+					if (cdiff != 0) {
+						if (cdiff > 0) {
+							cstr += " has added " + cdiff + " " + roleNames[i];
+						} 
+						else if (cdiff < 0) {
+							cstr += " has removed " + (-cdiff) + " " + roleNames[i];
+						}
+						cstr += (Math.abs(cdiff)!=1 ? "s." : ".");
+						m_logger.info(cstr);
+					}
+					adminDeltas[i] = cdiff;
+				}
+				lastConsumerAndSupplierCount.put(channelName, adminCounts);
+				//m_logger.info("Channel: " + channelName + " has " + adminCounts[0] + " consumers and " + adminCounts[1] + " suppliers.");
+
+				channelData.setNumberConsumers(adminCounts[0]);
+				channelData.setNumberSuppliers(adminCounts[1]);
+				channelData.setDeltaConsumers(adminDeltas[0]);
+				channelData.setDeltaSuppliers(adminDeltas[1]);
 			}
-			//System.out.printf("%s consumers: %d\n", efactName, nconsumers);
-			//System.out.printf("%s suppliers: %d\n", efactName, nsuppliers);
-			//System.out.printf("Number of channels for: %s %d \n", efactName, ncIds.length);
-			
-			nsData.setNumberConsumers(nconsumers);
-			nsData.setNumberSuppliers(nsuppliers);
-			
-			// The 0 values are an initialization, to display the change in numbers of consumers and suppliers
-			lastConsumerAndSupplierCount.put(efactName, new int[]{0,0});
 		}
 	}
-
-	public synchronized ArrayList<ChannelData> getChannelStatistics() {
-		
-		// TODO: Why call this, when we anyway recount the consumers etc below?
-		calculateNotifyServiceTotals();
-		
-		ArrayList<ChannelData> chdatList = new ArrayList<ChannelData>();
-		
-		BindingListHolder bl = new BindingListHolder();
-		BindingIteratorHolder bi = new BindingIteratorHolder();
-		
-		// TODO: why call naming service and not get NCs from the known NotifyService instances?
-		nctx.list(-1, bl, bi);
-		for (Binding binding : bl.value) {
-			if (binding.binding_name[0].kind.equals(alma.acscommon.NC_KIND.value)) {
-				String channelName = binding.binding_name[0].id;
-				EventChannel ec;
-				try {
-					ec = getNotificationChannel(channelName);
-
-					int[] consAndSupp = {0,0}; // initial or previous count of consumers / suppliers
-					if (!channelMap.containsKey(channelName)) {
-						// a new NC
-						channelMap.put(channelName, ec);
-						if (subscribedChannels.contains(channelName)) {// user wants to subscribe
-							AdminConsumer consumer = getAdminConsumer(channelName);
-							consumerMap.put(channelName, consumer); // user *has* subscribed
-						}
-						lastConsumerAndSupplierCount.put(channelName, consAndSupp);
-					} 
-					else if (lastConsumerAndSupplierCount.containsKey(channelName)) {
-						consAndSupp = lastConsumerAndSupplierCount.get(channelName);
-					}
-					
-					final String[] roleNames = {"consumer", "supplier"};
-					int [] adminCounts = new int[2];
-					int [] adminDeltas = new int[2];
-					adminCounts[0] = ec.get_all_consumeradmins().length;
-					adminCounts[1] = ec.get_all_supplieradmins().length;
-
-					// same code for consumer and supplier
-					for (int i = 0; i < adminCounts.length; i++) {
-						String cstr = channelName;
-						int cdiff = adminCounts[i] - consAndSupp[i];
-						if (cdiff != 0) {
-							if (cdiff > 0) {
-								cstr += " has added " + cdiff + " " + roleNames[i];
-							} 
-							else if (cdiff < 0) {
-								cstr += " has removed " + (-cdiff) + " " + roleNames[i];
-							}
-							cstr += (Math.abs(cdiff)!=1 ? "s." : ".");
-							m_logger.info(cstr);
-						}
-						adminDeltas[i] = cdiff;
-					}
-					lastConsumerAndSupplierCount.put(channelName, adminCounts);
-					//m_logger.info("Channel: " + channelName + " has " + adminCounts[0] + " consumers and " + adminCounts[1] + " suppliers.");
 	
-					// ?? this we could skip had we gotten the NC from the NotifyService...
-					Helper notifyHelper = new Helper(cs, nctx); // helper per NC, to avoid "java.lang.IllegalArgumentException: Helper for NC 'CONTROL_REALTIME' cannot be used also for 'MY_OTHER_NC'."
-					String notifyServiceName = simplifyNotifyServiceName(notifyHelper.getNotificationFactoryNameForChannel(channelName));
-					
-					for (NotifyServiceData nsData : notifyServices) {
-						if (nsData.getName().equals(notifyServiceName)) {
-							ChannelData cdata = new ChannelData(channelName, nsData, adminCounts, adminDeltas);
-							nsData.addChannelAndConfirm(channelName, cdata);
-							break;
-						}
-					}
-				} catch (AcsJException e) {
-					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel " + channelName, e);
-				}
-			}
-		}
-		return chdatList;	
-	}
 	
 	/**
-	 * This method gets a reference to the event channel. If it is not already
-	 * registered with the naming service, it is created.
+	 * Resolves a notification channel in the naming service.
 	 * 
 	 * @return Reference to the event channel specified by channelName.
 	 * @param channelName
-	 *           Name of the event channel registered with the CORBA Naming
-	 *           Service
-	 * @param channelKind
-	 *           Kind of the channel as registered with the CORBA naming service.
-	 * COMMENTED OUT: @param notifyFactoryName
-	 *           Name of the notification service as registered with the CORBA
-	 *           naming service.
+	 *           Name of the event channel registered with the CORBA Naming Service
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
 	 */
-	protected EventChannel getNotificationChannel(String channelName) 
-		throws AcsJException 
-	{
-		// return value
+	protected EventChannel resolveNotificationChannel(String channelName) throws AcsJException {
+
 		EventChannel retValue = null;
 
 		try {
@@ -442,7 +487,6 @@ public class EventModel {
 		catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
 			// No other suppliers have created the channel yet...create it
 			m_logger.info("The " + channelName + " channel has not been created yet.");
-//			return createNotificationChannel(channelName, channelKind, notifyFactoryName);
 			throw new AcsJUnexpectedExceptionEx(e);
 		} 
 		catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
@@ -462,87 +506,49 @@ public class EventModel {
 		return cs;
 	}
 	
-	public void refreshChannelSubscriptions() {
-		HashMap<String, AdminConsumer> consumers = getAllSelectedConsumers();
 
-		if (consumers != null) {
-			for (AdminConsumer consumer : consumers.values()) {
-				try {
-					if (!readyConsumers.contains(consumer)) {
-						consumer.startReceivingEvents();
-						readyConsumers.add(consumer);
-					}
-				} catch (AcsJException ex) {
-					m_logger.log(Level.WARNING, "Failed to start AdminConsumer ", ex);
-				}
+	private AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
+		synchronized (consumerMap) {
+			if (!consumerMap.containsKey(channelName)) {
+				AdminConsumer adm = new AdminConsumer(channelName, cs, nctx, equeue);
+				consumerMap.put(channelName, adm);
+				return adm;
 			}
+			return consumerMap.get(channelName);
 		}
 	}
 
-
-	public synchronized AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
-		if (!consumerMap.containsKey(channelName)) {
-			AdminConsumer adm = new AdminConsumer(channelName, cs, nctx, equeue);
-			consumerMap.put(channelName, adm);
-			subscribedChannels.add(channelName);
-			return adm;
-		}
-		return consumerMap.get(channelName);
-	}
-
+	
 	/**
-	 * The intention here is to return an array list of all consumers whose events the user
-	 * wants to monitor in the EventListView. "channelMap" indicates what channels are live;
-	 * "subscribedChannels" lists all channel that are to be (are being) monitored.
-	 * @return all consumers so selected
+	 * Called from SubscribeNCHandler. 
+	 * @throws AcsJException 
 	 */
-	public HashMap<String,AdminConsumer> getAllSelectedConsumers() {
-		int channelsProcessed = 0;
-		StopWatch sw = new StopWatch(m_logger);
+	public void addChannelSubscription(ChannelData channelData ) throws AcsJException {
+		String channelName = channelData.getName();
 		
-		// Get all NCs from the naming service.
-		// TODO: Since we already have the references to the NotifyServices, 
-		// wouldn't it be easier to get the NC refs from them?
-		BindingListHolder bl = new BindingListHolder();
-		BindingIteratorHolder bi = new BindingIteratorHolder();
-		nctx.list(-1, bl, bi);
-		for (Binding binding : bl.value) {
-			if (binding.binding_name[0].kind.equals(alma.acscommon.NC_KIND.value)) {
-				String channelName = binding.binding_name[0].id;
-				//m_logger.info("Found NC: " + channelName);
-				try {
-					EventChannel ec = getNotificationChannel(channelName);
-					if (!channelMap.containsKey(channelName) ) {
-						channelMap.put(channelName, ec);
-					}
-					synchronized (this) {
-						if (subscribedChannels.contains(channelName) && !consumerMap.containsKey(channelName)) {
-							AdminConsumer consumer = getAdminConsumer(channelName);
-							consumerMap.put(channelName, consumer);
-							channelsProcessed++;
-						}
-					}
-				} catch (AcsJException e) {
-					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
-				}
+		AdminConsumer consumer = null;
+		synchronized (consumerMap) {
+			// The subscription flag and the existence of a consumer for that NC must be in sync
+			if (channelData.isSubscribed() != consumerMap.containsKey(channelName)) {
+				m_logger.warning("Inconsistent state between channel flag and consumer map. Will not subscribe to " + channelName);
+				return;
 			}
+			else if (channelData.isSubscribed()) {
+				m_logger.warning("Already subscribed to " + channelName + ". Ignoring subscription request.");
+				return;
+			}
+			
+			channelData.setSubscribed(true);
+			consumer = getAdminConsumer(channelName);
 		}
-		sw.logLapTime("create " + channelsProcessed + " channels.");
-		getArchiveConsumer();
-		return consumerMap;
+		consumer.startReceivingEvents();
 	}
 	
-	public synchronized void addChannelSubscription(String channelName) {
-		subscribedChannels.add(channelName);
-	}
-	
-	public synchronized void subscribeToAllChannels() {
-		for (String channelName : channelMap.keySet()) {
-			subscribedChannels.add(channelName);
-		}
-	}
 
 	/**
+	 * TODO: Call this from mouse menu of Archiving NC instead of in the beginning.
+	 * (It used to be called once a minute from a thread of the event list / archiving list parts.)
+	 * 
 	 * Creates on demand an ArchiveConsumer and stores its reference in field {@link #archiveConsumer}.
 	 */
 	private synchronized void getArchiveConsumer() {
@@ -561,27 +567,37 @@ public class EventModel {
 		return dynAnyFactory;
 	}
 	
-	public synchronized void closeSelectedConsumer(String channelName, boolean deselect) {
-		if (consumerMap.containsKey(channelName)) {
-			AdminConsumer consumer = consumerMap.get(channelName);
-			try {
-				consumer.disconnect();
-			} catch (Exception ex) {
-				m_logger.log(Level.WARNING, "Failed to close subscriber: ", ex);
+	public void closeSelectedConsumer(ChannelData channelData) {
+		String channelName = channelData.getName();
+		
+		synchronized (consumerMap) {
+			if (consumerMap.containsKey(channelName)) {
+				AdminConsumer consumer = consumerMap.get(channelName);
+				try {
+					consumer.disconnect();
+				} catch (Exception ex) {
+					m_logger.log(Level.WARNING, "Failed to close subscriber: ", ex);
+				}
+				consumerMap.remove(channelName);
 			}
-			consumerMap.remove(channelName);
 		}
-		if (deselect && !subscribedChannels.remove(channelName))
-			m_logger.log(Level.WARNING,"Couldn't remove "+channelName+" from list of selected subscribers.");
+		channelData.setSubscribed(false);
 	}
 
-	public synchronized void closeAllConsumers() {
-		for (String channelName : subscribedChannels) {
-			closeSelectedConsumer(channelName, false);
+	public void closeAllConsumers() {
+		
+		synchronized (consumerMap) {
+			for (ChannelData channelData : getNotifyServicesRoot().getAllChannels()) {
+				if (channelData.isSubscribed()) {
+					closeSelectedConsumer(channelData);
+				}
+			}
 		}
-		subscribedChannels = new HashSet<String>(MAX_NUMBER_OF_CHANNELS*5); // reset the list
 	}
 	
+	/**
+	 * TODO: Call from mouse menu handler for the archiving NC
+	 */
 	public synchronized void closeArchiveConsumer() {
 		if (archiveConsumer != null) {
 			try {
@@ -607,8 +623,8 @@ public class EventModel {
 	/**
 	 * Note that this method may be called very frequently, to determine whether menu items are selected/enabled, thus it must be fast.
 	 */
-	public boolean isSubscribed(String channelName) { 
-		return subscribedChannels.contains(channelName);
+	public boolean isSubscribed(ChannelData channelData) {
+		return channelData.isSubscribed();
 	}
 	
 }

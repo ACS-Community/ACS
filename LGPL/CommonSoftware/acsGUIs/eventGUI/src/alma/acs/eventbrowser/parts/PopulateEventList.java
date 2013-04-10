@@ -79,7 +79,8 @@ public class PopulateEventList {
 	private final long max_memory = runtime.maxMemory();
 
 	Thread getThreadForEventList() {
-		Runnable t = new Runnable() {
+		Runnable eventListRunnable = new Runnable() {
+			
 			public Runnable r = new Runnable() {
 
 				private long totalNumberDrained;
@@ -143,32 +144,10 @@ public class PopulateEventList {
 			}
 		};
 
-		final Thread th = new Thread(t, threadName);
+		final Thread th = new Thread(eventListRunnable, threadName);
 
 		return th;
 	}
-
-	public Thread getChannelRefreshThread(final EventModel em) {
-		final Thread subscrTh = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (!Thread.currentThread().isInterrupted()) {
-					logger.info("Refreshing channel subscriptions");
-					em.refreshChannelSubscriptions();
-					try {
-						// TODO: Why not more than once a minute, especially if
-						// user wants to receive events from one or more NCs?
-						Thread.sleep(60000); // Check for new channels every minute
-					} catch (InterruptedException e) {
-						logger.fine("Subscription thread interrupted.");
-						break;
-					}
-				}
-			}
-		}, "Channel Refresh");
-		return subscrTh;
-	}
-
 
 	private void freeMemoryIfNecessary() {
 		long ultimateFreeMemory = max_memory - (runtime.totalMemory()-runtime.freeMemory());

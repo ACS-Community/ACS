@@ -85,7 +85,6 @@ public class EventListPart implements IEventListPart {
 	private StatusReporter statusReporter;
 
 	private Thread eventListThread;
-	private Thread channelRefreshThread;
 
 
 	/**
@@ -119,7 +118,7 @@ public class EventListPart implements IEventListPart {
 		//       The e3 eventGUI had a "custom tool bar" inserted here.
 		//       We should decide which way it's better.
 		
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -141,7 +140,7 @@ public class EventListPart implements IEventListPart {
 		tvcol.setLabelProvider(new EventSourceLabelProvider());
 		col = tvcol.getColumn();
 		col.setText("Event source");
-		col.setWidth(100);
+		col.setWidth(150);
 		col.setAlignment(SWT.LEFT);
 
 		tvcol = new TableViewerColumn(viewer, SWT.NONE, 2);
@@ -155,7 +154,7 @@ public class EventListPart implements IEventListPart {
 		tvcol.setLabelProvider(new EventTypeLabelProvider());
 		col = tvcol.getColumn();
 		col.setText("Event type");
-		col.setWidth(50);
+		col.setWidth(150);
 		col.setAlignment(SWT.LEFT);
 
 		tvcol = new TableViewerColumn(viewer, SWT.NONE, 4);
@@ -185,13 +184,6 @@ public class EventListPart implements IEventListPart {
 		hookContextMenu(menuService);
 		
 		pel = new PopulateEventList(logger, viewer, new StatusLineWriter(eventBroker), em.getEventQueue(), "NC Events");
-		
-		// TODO: Change this polling for the server-side flag
-		channelRefreshThread = pel.getChannelRefreshThread(em); 
-		channelRefreshThread.start();
-		
-//		em.refreshChannelSubscriptions(); // TODO: remove workaround
-		
 		eventListThread = pel.getThreadForEventList();
 		eventListThread.start();
 	}
@@ -251,9 +243,7 @@ public class EventListPart implements IEventListPart {
 		
 	@PreDestroy
 	public void preDestroy() {
-		channelRefreshThread.interrupt();
 		eventListThread.interrupt();
-		em.closeAllConsumers();
 	}
 
 }
