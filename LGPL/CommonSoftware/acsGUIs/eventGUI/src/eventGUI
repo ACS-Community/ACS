@@ -32,18 +32,9 @@ ACS_LOG_DEBUG "acsStartJava" "ACS Manager: $MANAGER_REFERENCE"
 
 export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE | awk -F: '{print $3}'`
 
-# If $ACS_NAME_SERVICE is not set, take the computer
-# where Manager is located
-
-if [ X"$ACS_NAME_SERVICE" = X ]; then
-   export ACS_NAME_SERVICE=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_NAMING_SERVICE_PORT/NameService
-fi
-
-ACS_LOG_DEBUG "acsStartJava" "ACS Name Service: $ACS_NAME_SERVICE"
-
 #If $ACS_INTERFACE_REPOSITORY is not set, take the computer, where Manager
 #is located
-
+# TODO: Check if we actually need this IFR reference!
 if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
    export ACS_INTERFACE_REPOSITORY=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository
 fi
@@ -55,10 +46,11 @@ $dir/lib/ACS_eventGUI/eventGUI \
      -vmargs \
      -DACS.repository=$ACS_INTERFACE_REPOSITORY \
      -DACS.manager=$MANAGER_REFERENCE \
-     -DORBInitRef.NameService=$ACS_NAME_SERVICE \
      -DACS.tmp=$ACS_TMP \
      -Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB \
      -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton \
+     -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory \
+     -DACS.log.minlevel.namedloggers="jacorb@eventGUI=5,5:scxml@eventGUI=5,5" \
+     -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory \
      $JAVA_OPTIONS
-
 
