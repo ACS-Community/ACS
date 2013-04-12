@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Display;
 
 import alma.acs.eventbrowser.model.ArchiveEventData;
 import alma.acs.eventbrowser.model.EventData;
-import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.status.StatusLineWriter;
 import alma.acs.util.StopWatch;
 

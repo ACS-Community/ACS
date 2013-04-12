@@ -32,7 +32,9 @@ import org.omg.CosNotifyChannelAdmin.EventChannel;
  */
 public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
 	
+	private final NotifyServiceData parent;
 	private final EventChannel corbaRef;
+	private int ncId = -1;
 	
 	private boolean isNewNc = true;
 	
@@ -40,6 +42,12 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 	private int numberSuppliers;
 	private int deltaConsumers;
 	private int deltaSuppliers;
+
+	/**
+	 * False for system NCs that are not registered in the naming service (which would confuse the NCSubscriber),
+	 * or NCs that transmit non-standard event types. 
+	 */
+	private boolean isSubscribable = true;
 
 	private boolean subscribed = false;
 	
@@ -50,16 +58,27 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 
 	
 	public ChannelData(EventChannel corbaRef, String name, NotifyServiceData parent) {
-		super(name, parent, parent.getMc());
+		super(name);
 		this.corbaRef = corbaRef;
-
-//		statistics.add(new SupplierCounts(this));
-//		statistics.add(new ConsumerCounts(this));
+		this.parent = parent;
 		
 		ccon = new ChannelConsumers(this);
 		csup = new ChannelSuppliers(this);
 		cqs = new ChannelQueueSize(this);
-		slcon = new SlowestConsumers(this);
+		slcon = new SlowestConsumers(this, cqs);
+	}
+	
+	public NotifyServiceData getParent() {
+		return parent;
+	}
+
+	/**
+	 * Returns the concatenation of the simple service name and the channel name, with a '#' in between.
+	 * This is useful to get globally unique NC names even for the case where
+	 * in the absence of a real name we use the channel Id as the name. 
+	 */
+	public String getQualifiedName() {
+		return ( parent.getName() + "#" + getName() );
 	}
 	
 	public void setIsNewNc(boolean isNewNc) {
@@ -70,10 +89,32 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 		return isNewNc;
 	}
 	
+	public boolean isSubscribable() {
+		return isSubscribable;
+	}
+
+	public void markUnsubscribable() {
+		this.isSubscribable = false;;
+	}
+
 	public EventChannel getCorbaRef() {
 		return corbaRef;
 	}
 	
+	public int getNcId() {
+		return ncId;
+	}
+
+	public void setNcId(int ncId) {
+		if (this.ncId < 0) {
+			// allow setting the id only once
+			this.ncId = ncId;
+		}
+		else {
+			throw new IllegalStateException("ncId has already been set.");
+		}
+	}
+
 	public void setNumberConsumers(int numberConsumers) {
 		this.numberConsumers = numberConsumers;
 	}
@@ -111,13 +152,17 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 	}
 
 
+	/**
+	 * The returned nodes will show up children of the NC in the channel tree view.
+	 */
 	public ArrayList<MCStatistics> getStatistics() {
 		ArrayList<MCStatistics> statistics= new ArrayList<MCStatistics>(4);
 		statistics.add(ccon);
 		statistics.add(csup);
 		statistics.add(cqs);
-		if (cqs.getQueueSize() != 0) // Only display "slowest consumers" for a non-zero queue
+		if (cqs.getQueueSize() != 0) {// Only display "slowest consumers" for a non-zero queue 
 			statistics.add(slcon);
+		}
 		return statistics;
 	}
 	

@@ -20,28 +20,21 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
 public class ChannelQueueSize extends MCStatistics {
 
-	public ChannelQueueSize(AbstractNotifyServiceElement parent) {
-		super(parent);
-		statName = "QueueSize";
+	public ChannelQueueSize(ChannelData parent) {
+		super(parent, "QueueSize");
 	}
 	
 	@Override
 	public String getStatistics() {
 		long sc = getQueueSize();
-		return statName+": "+String.valueOf(sc);
+		return mcStatName + ": " + String.valueOf(sc);
 	}
 
 	public long getQueueSize() {
-		long sc = 0;
-		try {
-			sc = (long) mc.get_statistic(channelPrefix+statName).data_union.num().last;
-		} catch (InvalidName e) {
-			System.out.println("Invalid name: "+channelPrefix+statName);
-		}
+		long sc = (long) getMcData().num().last;
 		return sc;
 	}
 	

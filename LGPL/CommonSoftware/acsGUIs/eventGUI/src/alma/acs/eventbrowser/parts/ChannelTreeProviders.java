@@ -40,7 +40,6 @@ import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.ChannelParticipantName;
 import alma.acs.eventbrowser.model.ChannelSuppliers;
 import alma.acs.eventbrowser.model.EventModel;
-import alma.acs.eventbrowser.model.INames;
 import alma.acs.eventbrowser.model.MCStatistics;
 import alma.acs.eventbrowser.model.NotifyServiceData;
 import alma.acs.eventbrowser.model.NotifyServices;
@@ -96,13 +95,7 @@ public class ChannelTreeProviders {
 				return ((ChannelData)parentElement).getStatistics().toArray();
 			}
 			else if (parentElement instanceof MCStatistics) {
-				// NC connection and performance details.
-				// This could be ChannelConsumers, ChannelSuppliers, ChannelQueueSize, SlowestConsumers
-				if (parentElement instanceof INames) {
-					// this could be ChannelConsumers, ChannelSuppliers, or SlowestConsumers
-					return ((INames)parentElement).getNames();
-				}
-				return new Object[0];
+				return ((MCStatistics)parentElement).getChildren();
 			}
 			return null;
 		}
@@ -150,6 +143,7 @@ public class ChannelTreeProviders {
 		public String getText(Object element) {
 			if (element instanceof NotifyServices) {
 				// the invisible root node. Not sure if this gets called ever.
+				System.out.println("*** Root node NotifyServices requested in ChannelTreeProviders#getText");
 				return "Notify Services";
 			}
 			else if (element instanceof NotifyServiceData) {

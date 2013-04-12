@@ -159,6 +159,12 @@ public class SubscribeNCHandler {
 				// otherwise we don't allow the subscription change
 				Boolean sharedIsSubscribed = null;
 				for (ChannelData nc : ncList) {
+					// all selected NCs must be subscribable
+					if (!nc.isSubscribable()) {
+						canExecute = false;
+						break;
+					}
+					
 					if (sharedIsSubscribed == null) {
 						// the first NC we are checking
 						sharedIsSubscribed = new Boolean(eventModel.isSubscribed(nc));

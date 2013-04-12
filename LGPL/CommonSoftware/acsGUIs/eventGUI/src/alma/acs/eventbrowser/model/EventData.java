@@ -68,7 +68,7 @@ public class EventData extends AbstractEventData {
 	 * @return Average number of events/s since the first one that was processed
 	 */
 	public static float getAverageRate() {
-		return ((float)getTotalEventsProcessed()*1000.f)/((float)(System.currentTimeMillis()-getTimeFirstEventProcessed()));
+		return (getTotalEventsProcessed()*1000.f)/(System.currentTimeMillis()-getTimeFirstEventProcessed());
 	}
 
 	public String getSourceObject() {

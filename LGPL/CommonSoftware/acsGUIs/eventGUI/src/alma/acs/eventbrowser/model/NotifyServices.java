@@ -48,7 +48,7 @@ public class NotifyServices {
 
 	public NotifyServiceData findHostingService(String channelName) {
 		for (NotifyServiceData service : services.values()) {
-			ChannelData channelData = service.getChannel(channelName);
+			ChannelData channelData = service.getChannelByName(channelName);
 			if (channelData != null) {
 				return service;
 			}
@@ -58,7 +58,7 @@ public class NotifyServices {
 	
 	public ChannelData findChannel(String channelName) {
 		for (NotifyServiceData service : services.values()) {
-			ChannelData channelData = service.getChannel(channelName);
+			ChannelData channelData = service.getChannelByName(channelName);
 			if (channelData != null) {
 				return channelData;
 			}

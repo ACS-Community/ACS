@@ -20,42 +20,25 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import java.util.ArrayList;
-
-import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
 /** This class encapsulates the list of all suppliers of events to a particular channel returned
  * by the TAO M&C Extensions to the Notify Service.
  * @author jschwarz
  *
  */
-public class ChannelSuppliers extends MCStatistics implements INames {
-	private  ArrayList<ChannelParticipantName> supplierNames;
+public class ChannelSuppliers extends MCStatistics {
 
-	public ChannelSuppliers(AbstractNotifyServiceElement parent) {
-		super(parent);
-		statName = "SupplierNames";
+	public ChannelSuppliers(ChannelData parent) {
+		super(parent, "SupplierNames");
 	}
 	
 	@Override
 	public String getStatistics() {
-		String sc[];
-		supplierNames = new ArrayList<ChannelParticipantName>();
-		try {
-			sc = mc.get_statistic(channelPrefix+statName).data_union.list();
-			for (int i = 0; i < sc.length; i++) {
-				supplierNames.add(new ChannelParticipantName(sc[i], this));
-			}
-		} catch (InvalidName e) {
-			System.out.println("Invalid name: "+channelPrefix+statName);
+		children.clear();
+		String sc[] = getMcData().list();
+		for (int i = 0; i < sc.length; i++) {
+			children.add(new ChannelParticipantName(sc[i], this));
 		}
-		return "Suppliers: "+parent.getNumSuppliersAndDelta();
+		return "Suppliers: " + getParent().getNumSuppliersAndDelta();
 	}
-	
-	public Object[] getNames() {
-		if (supplierNames == null)
-			return new Object[0];
-		return supplierNames.toArray();
-	}
-	
 }

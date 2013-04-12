@@ -22,7 +22,9 @@ package alma.acs.eventbrowser.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
@@ -38,6 +40,8 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	private final HashMap<String, ChannelData> channels;
 	private final EventChannelFactory efact;
 	private final String factoryName;
+	private final NotificationServiceMonitorControl mc;
+
 	
 	/**
 	 * @param name The simplified display name
@@ -46,24 +50,65 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	 * @param mc Corba reference to the monitor-control object (TAO extension)
 	 */
 	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc) {
-		super(name, null, mc);
+		super(name);
 		channels = new HashMap<String, ChannelData>(10);
 		efact = ecf;
 		this.factoryName = factoryName;
+		this.mc = mc;
 	}
 	
 	public EventChannelFactory getEventChannelFactory() {
 		return efact;
 	}
 	
-	
+	public NotificationServiceMonitorControl getMc() {
+		return mc;
+	}
+
+
 	public ArrayList<ChannelData> getChannels() {
 		return new ArrayList<ChannelData>(channels.values());
 	}
 	
-	public ChannelData getChannel(String channelName) {
+	public ChannelData getChannelByName(String channelName) {
 		return channels.get(channelName);
 	}
+	
+	public ChannelData getChannelById(int ncId) {
+		for (ChannelData nc : getChannels()) {
+			if (nc.getNcId() == ncId) {
+				return nc;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * This method can be used to merge incomplete NC information sets coming from the naming service,
+	 * the regular notify service API, and the MC TAO extension API.
+	 * <p>
+	 * The matching may fail even if the corba references point to the same NC object,
+	 * see {@link org.omg.CORBA.Object#_is_equivalent(org.omg.CORBA.Object)}.
+	 */
+	public ChannelData getChannelByCorbaRef(EventChannel corbaRef) {
+		for (ChannelData nc : getChannels()) {
+			if (nc.getCorbaRef()._is_equivalent(corbaRef)) {
+				return nc;
+			}
+		}
+		return null;
+	}
+	
+	public List<ChannelData> getNewChannels() {
+		List<ChannelData> ret = new ArrayList<ChannelData>();
+		for (ChannelData nc : getChannels()) {
+			if (nc.isNewNc()) {
+				ret.add(nc);
+			}
+		}
+		return ret;
+	}
+
 	
 	public void addChannel(String channelName, ChannelData cdata) {
 		channels.put(channelName, cdata);

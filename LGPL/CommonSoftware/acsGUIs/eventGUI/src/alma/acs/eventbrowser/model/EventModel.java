@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -41,6 +42,8 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
+import org.omg.CosNotifyChannelAdmin.AdminNotFound;
+import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
@@ -215,10 +218,19 @@ public class EventModel {
 		// Get names of all objects bound in the naming service
 		nctx.list(-1, bl, bi);
 		
-		if (discoverServicesIndependentlyOfChannels) {
-			discoverNotifyServices(bl.value);
+		// Extract the useful binding information Id and Kind
+		Map<String, String> bindingMap = new HashMap<String, String>();
+		for (Binding binding : bl.value) {
+			bindingMap.put(binding.binding_name[0].id, binding.binding_name[0].kind);
 		}
-		discoverChannels(bl.value);
+		
+		// notify services
+		if (discoverServicesIndependentlyOfChannels) {
+			discoverNotifyServices(bindingMap);
+		}
+		
+		// channels (NCs)
+		discoverChannels(bindingMap);
 	}
 
 	/**
@@ -231,21 +243,22 @@ public class EventModel {
 	 * <p>
 	 * This method is broken out from {@link #discoverNotifyServicesAndChannels(boolean)} to make it more readable. 
 	 * It should be called only from there, to keep services and NCs aligned.
+	 * 
+	 * @param bindingMap Name service bindings in the form key = bindingName, value = bindingKind
 	 */
-	private synchronized void discoverNotifyServices(Binding[] bindings) {
+	private synchronized void discoverNotifyServices(Map<String, String> bindingMap) {
 		
 		ArrayList<String> newNotifyServiceNames = new ArrayList<String>(10); // used for local logging only
 		Set<String> oldServiceIds = new HashSet<String>(notifyServices.keySet()); // used to detect services that have disappeared
 		
-		for (Binding binding : bindings) {
-			String id = binding.binding_name[0].id;
-			String bindingKind = binding.binding_name[0].kind;
+		for (String bindingName : bindingMap.keySet()) {
+			String bindingKind = bindingMap.get(bindingName);
 			try {
 				// Currently ACS does not use a unique 'kind' value when binding NotifyService instances (see email HSO to ACA 20121126).
 				// Adding this would save us unnecessary "_is_a" calls when discovering notify service instances.
 				// The fact that NotifyServices have an empty kind field we can use to skip those objects from the NS that are surely not NotifyServices.
 				if (bindingKind.isEmpty()) {
-					NameComponent nc_array[] = { new NameComponent(id, "") };
+					NameComponent nc_array[] = { new NameComponent(bindingName, "") };
 
 					// Get the object reference from the naming service.
 					// We skip the manager for access to services, because since ACS 10.2 only specially registered services
@@ -254,19 +267,19 @@ public class EventModel {
 
 					if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
 						// our current naming service entry maps indeed to a notify service
-						oldServiceIds.remove(id);
-						if (!notifyServices.containsKey(id)) {
+						oldServiceIds.remove(bindingName);
+						if (!notifyServices.containsKey(bindingName)) {
 							EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
-							String displayName = simplifyNotifyServiceName(id);
+							String displayName = simplifyNotifyServiceName(bindingName);
 							newNotifyServiceNames.add(displayName);
 							NotificationServiceMonitorControl nsmc = null;
 							try {
-								nsmc = getMonitorControl(id);
+								nsmc = getMonitorControl(bindingName);
 							} catch (Exception ex) {
-								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + id + "'.", ex);
+								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + bindingName + "'.", ex);
 							}
-							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, id, efact, nsmc);
-							notifyServices.put(id, notifyServiceData);
+							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc);
+							notifyServices.put(bindingName, notifyServiceData);
 						}
 						else {
 							// Todo: Should we always update the map, in case the corba objects have been relocated with a change of reference?
@@ -274,7 +287,7 @@ public class EventModel {
 					}
 				}
 			} catch (Exception ex) {
-				m_logger.log(Level.WARNING, "Failed to check whether service '" + id + "' is a NotifyService.", ex);
+				m_logger.log(Level.WARNING, "Failed to check whether service '" + bindingName + "' is a NotifyService.", ex);
 			}
 		}
 		if (!newNotifyServiceNames.isEmpty()) {
@@ -297,29 +310,33 @@ public class EventModel {
 	 * This method is broken out from {@link #discoverNotifyServicesAndChannels(boolean)} to make it more readable. 
 	 * It should be called only from there, to keep services and NCs aligned.
 	 */
-	private synchronized void discoverChannels(Binding[] bindings) {
+	private synchronized void discoverChannels(Map<String, String> bindingMap) {
 		
-		// known NC names, used to detect NCs that have disappeared
+		// known NC names, used to detect NCs that have disappeared. 
 		Set<String> oldNcNames = new HashSet<String>();
 		for (NotifyServiceData nsData : notifyServices.values()) {
 			for (ChannelData channelData : nsData.getChannels()) {
-				oldNcNames.add(channelData.getName());
+				oldNcNames.add(channelData.getQualifiedName());
 			}
 		}
 
 		// Note that it is useless to retrieve the NC from the notify service (get_event_channel(ncId) etc), 
 		// because the limited notification service API will not tell us the channel name
-		// even if we use the TAO extensions (where the NC names show up in the statistics but are not accessible through the API).
-		for (Binding binding : bindings) {
-			if (binding.binding_name[0].kind.equals(alma.acscommon.NC_KIND.value)) {
-				String channelName = binding.binding_name[0].id;
+		// even if we used the TAO extensions (where the NC names show up in the statistics but are not accessible through the API).
+		// However, we can get the NC names from the MC object, to be integrated with the other MCStatistics retrieval.
+		// Then we still need to obtain the NC corba reference separately in order to know about admin object details, 
+		// with the NC ref coming either from the naming service or perhaps from the notify service directly if we can match ncIDs with the MC data.
+		for (String bindingName : bindingMap.keySet()) {
+			String bindingKind = bindingMap.get(bindingName);
+			if (bindingKind.equals(alma.acscommon.NC_KIND.value)) {
+				String channelName = bindingName;
 				try {
 					// Check if we already know this NC. 
 					// The channelName must be unique across notify services (required for naming service registration), 
 					// so that we can simply search our maps.
 					ChannelData channelData = getNotifyServicesRoot().findChannel(channelName);
 					if (channelData != null) {
-						oldNcNames.remove(channelName);
+						oldNcNames.remove(channelData.getQualifiedName());
 						channelData.setIsNewNc(false);
 					}
 					else {
@@ -332,7 +349,7 @@ public class EventModel {
 						if (service == null) {
 							// If we do not auto-discover services as part of refreshing NCs, then a new NC hosted in a new service
 							// brings us here. We try to find the new service.
-							discoverNotifyServices(bindings);
+							discoverNotifyServices(bindingMap);
 							service = notifyServices.get(serviceId);
 							String msg = "Unknown notify service '" + simplifyNotifyServiceName(serviceId) + "' required for NC '" + channelName + "'. ";
 							if (service != null) {
@@ -355,14 +372,108 @@ public class EventModel {
 				}
 			}
 		}
+		
+		
+		// In addition to checking the name service for NCs, we also check the services and their MC objects. 
+		// Some system NCs are currently not getting registered in the naming service, and we want to display them too.
+		for (NotifyServiceData service : notifyServices.values()) {
+
+			// First set the missing ncId on new ChannelData objects
+			if (!service.getNewChannels().isEmpty()) { // check first if we can avoid the get_all_channels() remote call
+				int[] ncIds = service.getEventChannelFactory().get_all_channels();
+				for (int ncId : ncIds) {
+					if (service.getChannelById(ncId) == null) {
+						// our ncId is new... try to find matching known new NC
+						EventChannel newNc = null;
+						try {
+							newNc = service.getEventChannelFactory().get_event_channel(ncId);
+						} catch (ChannelNotFound ex) {
+							ex.printStackTrace(); // should never happen since we just got this Id from the service
+						}
+						ChannelData matchedNc = service.getChannelByCorbaRef(newNc);
+						if (matchedNc != null) {
+							if (matchedNc.isNewNc()) {
+								matchedNc.setNcId(ncId);
+								m_logger.fine("Service " + service.getName() + ": Matched ncId=" + ncId + " to new NC '" + matchedNc.getName() + "'.");
+							}
+							else {
+								m_logger.warning("Service " + service.getName() + ": Matched ncId=" + ncId + " to NC '" + matchedNc.getName() + "', but expect this NC to be new, which it isn't.");
+							}
+						}
+						else {
+							// ncId is the Id of a new NC that was not registered in the naming service (unless the corberef-based match failed).
+							// We don't create a ChannelData object yet, because we may get its real name below from the MC.
+						}
+					}
+				}
+			}
+			
+			// Then check the service's MC object for new (hopefully named) NCs.
+			MCProxy mcProxy = new MCProxy(service, m_logger);
+			List<String> ncNamesFromMc = mcProxy.listChannels();
+			for (String ncNameFromMc : ncNamesFromMc) {
+				if (service.getChannelByName(ncNameFromMc) == null) {
+					// The NC was not listed in the naming service under the name we got from MC. Possibilities are:
+					// (a) It is not registered in the naming service at all;
+					// (b) It is properly registered in the naming service with its human-readable name, but it was created without using the TAO extensions
+					//     and therefore we get only its integer ID from the MC API. 
+					try {
+						// Try if we have an ID instead of a name 
+						int ncId = Integer.parseInt(ncNameFromMc); // see NumberFormatException catch below
+						service.getEventChannelFactory().get_event_channel(ncId); // see ChannelNotFound catch below
+						// The NC was created without TAO extension name. 
+						// Check if we know this NC already from the naming service or from a previous round here.
+						ChannelData channelData = service.getChannelById(ncId);
+						if (channelData == null) {
+							// First time we see this NC. It is not in the naming service and there is nowhere we can get a decent name for it.
+							// We simply use the Id as its name.
+							// If this is a problem, then this NC should be created with TAO extension name, or should be registered in the NS.
+							m_logger.info("Service " + service.getName() + ": Found unnamed NC with ID='" + ncId + "' that is not registered in the naming service."); 
+							String newNcName = Integer.toString(ncId);
+							EventChannel unnamedNcCorbaRef = null;
+							try {
+								unnamedNcCorbaRef = service.getEventChannelFactory().get_event_channel(ncId);
+							} catch (ChannelNotFound ex) {
+								ex.printStackTrace(); // should not happen since we just got the ncId from the service
+							}
+							ChannelData newNcData = new ChannelData(unnamedNcCorbaRef, Integer.toString(ncId), service);
+							newNcData.markUnsubscribable();
+							newNcData.setIsNewNc(true);
+							newNcData.setNcId(ncId);
+							service.addChannel(newNcName, newNcData);
+						}
+					} catch (NumberFormatException ex) {
+						// The name was not an integer, and therefore also for sure not an ID.
+						// This means the NC was created using the TAO extensions, and yet it was not registered in the naming service.
+						m_logger.info("Service " + service.getName() + ": Found NC with name='" + ncNameFromMc + "' that is not registered in the naming service. This case was thought to not exist in practice and is therefore not supported yet by the eventGUI. Please inform ACS.");
+					} catch (ChannelNotFound ex) {
+						m_logger.warning("Strange NC '" + service.getName() + "/" + ncNameFromMc + 
+								"' reported by MC is not listed in the naming service and has an integer name that is not a channel ID.");
+					}
+				}
+				else if (!bindingMap.containsKey(ncNameFromMc)) {
+					// The NC is not in the naming service, but was added based on MC data in a previous round.
+					ChannelData nc = service.getChannelByName(ncNameFromMc);
+					nc.setIsNewNc(false);
+					oldNcNames.remove(nc.getQualifiedName());
+				}
+			}
+
+			//			for (String statName : nsData.getMc().get_statistic_names()) {
+//				System.out.println(statName);
+//			}
+			
+		}
+		
 		if (!oldNcNames.isEmpty()) {
 			// TODO: Change this when the eventGUI or other tools offers manual NC destruction
 			// Actually it could also be that an additional NotifyService with unused NCs was stopped, but in practice this does not happen.
-			m_logger.warning("Lost " + oldNcNames.size() + " NCs, which should not happen as we never destroy an NC even if it no longer gets used. " + StringUtils.join(oldNcNames, ' '));
+			m_logger.warning("Lost " + oldNcNames.size() + " NCs, which should not happen as we never destroy an NC even if it no longer gets used: " + StringUtils.join(oldNcNames, ' '));
 			
-			for (String oldNcName : oldNcNames) {
+			for (String oldNcQualifiedName : oldNcNames) {
+				String oldNcName = oldNcQualifiedName.substring(oldNcQualifiedName.indexOf('#')+1);
 				NotifyServiceData oldNcService = getNotifyServicesRoot().findHostingService(oldNcName);
-				ChannelData oldNcData = oldNcService.getChannel(oldNcName);
+				ChannelData oldNcData = oldNcService.getChannelByName(oldNcName);
 				closeSelectedConsumer(oldNcData);
 				oldNcService.removeChannel(oldNcName);
 			}
@@ -421,6 +532,7 @@ public class EventModel {
 		for (NotifyServiceData nsData : notifyServices.values()) {
 			
 			// iterate over NCs
+			// TODO: Rely only on MC data and skip these 'get_all_consumeradmins' calls.
 			for (ChannelData channelData : nsData.getChannels()) {
 				String channelName = channelData.getName();
 				EventChannel ec = channelData.getCorbaRef();
@@ -438,9 +550,17 @@ public class EventModel {
 				adminCounts[0] = ec.get_all_consumeradmins().length;
 				adminCounts[1] = ec.get_all_supplieradmins().length;
 
+//				for (int consumerAdminId : ec.get_all_consumeradmins()) {
+//					try {
+//						ec.get_consumeradmin(consumerAdminId);
+//					} catch (AdminNotFound ex) {
+//						ex.printStackTrace();
+//					}
+//				}
+				
 				// same code for consumer and supplier
 				for (int i = 0; i < adminCounts.length; i++) {
-					String cstr = channelName;
+					String cstr = channelData.getQualifiedName();
 					int cdiff = adminCounts[i] - consAndSupp[i];
 					if (cdiff != 0) {
 						if (cdiff > 0) {

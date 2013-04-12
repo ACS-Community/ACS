@@ -20,9 +20,6 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import java.util.ArrayList;
-
-import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
 /** This class encapsulates the list of slowest consumers in a particular channel returned
  * by the TAO M&C Extensions to the Notify Service; it is only relevant when the size of the queue
@@ -33,36 +30,28 @@ import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.Inval
  * @author jschwarz
  *
  */
-public class SlowestConsumers extends MCStatistics implements INames {
-	private  ArrayList<ChannelParticipantName> slowConsumerNames;
+public class SlowestConsumers extends MCStatistics {
+	
+	private final ChannelQueueSize queueSizeStats;
 
-	public SlowestConsumers(AbstractNotifyServiceElement parent) {
-		super(parent);
-		statName = "SlowestConsumers";
+	public SlowestConsumers(ChannelData parent, ChannelQueueSize queueSizeStats) {
+		super(parent, "SlowestConsumers");
+		this.queueSizeStats = queueSizeStats;
 	}
 	
 	@Override
 	public String getStatistics() {
-		try {
-			if (mc.get_statistic(channelPrefix+"QueueSize").data_union.num().last  < 1.0)
-				return null; // return "";
-			String sc[];
-			slowConsumerNames = new ArrayList<ChannelParticipantName>();
-
-			sc = mc.get_statistic(channelPrefix+statName).data_union.list();
-			for (int i = 0; i < sc.length; i++) {
-				slowConsumerNames.add(new ChannelParticipantName(sc[i], this));
-			}
-		} catch (InvalidName e) {
-			System.out.println("Invalid name: "+channelPrefix+statName);
+		
+		if (queueSizeStats.getQueueSize() < 1) {
+			return null; // return "";
 		}
-		return "Slowest consumers: "+slowConsumerNames.size();
-	}
-	
-	public Object[] getNames() {
-		if (slowConsumerNames == null)
-			return new Object[0];
-		return slowConsumerNames.toArray();
+		
+		children.clear(); 
+		String sc[] = getMcData().list();
+		for (String s : sc) {
+			children.add(new ChannelParticipantName(s, this));
+		}
+		return "Slowest consumers: " + children.size();
 	}
 	
 }

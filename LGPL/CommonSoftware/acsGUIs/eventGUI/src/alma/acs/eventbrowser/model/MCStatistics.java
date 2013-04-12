@@ -20,28 +20,56 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+import java.util.ArrayList;
+import java.util.List;
+
+import Monitor.UData;
+
+import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
 public abstract class MCStatistics {
 	
-	protected AbstractNotifyServiceElement parent;
-	protected String statistic;
-	protected String channelPrefix;
-	protected String factoryName;
-	protected String statName;
-	protected NotificationServiceMonitorControl mc;
+	private final ChannelData parent;
+	protected final String mcStatName;
+	protected final List<ChannelParticipantName> children = new ArrayList<ChannelParticipantName>();
+
+	private final String channelPrefix;
 	
-	public MCStatistics(AbstractNotifyServiceElement parent) {
+	public MCStatistics(ChannelData parent, String mcStatName) {
 		this.parent = parent;
-		factoryName = ((NotifyServiceData) ((ChannelData)getParent()).getParent()).getFactoryName();
-		channelPrefix = factoryName+"/"+((ChannelData)getParent()).getName()+"/";
-		mc = parent.getMc();
+		this.mcStatName = mcStatName;
+		String factoryName = getParent().getParent().getFactoryName();
+		String channelName = getParent().getName();
+		channelPrefix = factoryName + "/" + channelName + "/";
 	}
 	
+	/**
+	 * Subclass implementations retrieve notify service statistics from {@link #mc}. 
+	 */
 	public abstract String getStatistics();
 	
-	public AbstractNotifyServiceElement getParent() {
+	/**
+	 * This should be used by implementations of {@link #getStatistics()}.
+	 */
+	protected UData getMcData() {
+		try {
+			 return parent.getParent().getMc().get_statistic(channelPrefix + mcStatName).data_union;
+		} catch (InvalidName ex) {
+			// Todo: deal better with this error. Could be wrong channel name or an unsupported (misspelled etc) statistics name.
+			System.out.println("Invalid name: "+channelPrefix + mcStatName);
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	public ChannelData getParent() {
 		return parent;
+	}
+
+	/**
+	 * Gets the (possibly empty) {@link #children} list an Object[], which becomes tree node children.
+	 */
+	public Object[] getChildren() {
+		return children.toArray();
 	}
 
 }
