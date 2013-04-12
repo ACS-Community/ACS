@@ -114,13 +114,10 @@ man   : do_man
 
 install : install_all
 	@INSTALL_DIR=$$(searchFile bin/eventGUI); \
+	 echo "Will install to $$INSTALL_DIR/lib/ACS_eventGUI"; \
 	 cd $$INSTALL_DIR/lib; \
 	 rm -rf ACS_eventGUI; \
-	 unzip -o $(PWD)/../object/headlessTemp/I.eventGUIBuild/eventGUIBuild-linux.gtk.$(ZIP_SUFFIX).zip; \
-	 cd ACS_eventGUI; \
-	 acsdata=$$(echo $$ACSDATA | sed s/\\//\\\\\\\//g); \
-	 sed s/ACSDATA-DIR/$$acsdata/g eventGUI.ini > eventGUI.ini.new; \
-	 mv eventGUI.ini.new eventGUI.ini
+	 unzip -o $(PWD)/../object/headlessTemp/I.eventGUIBuild/eventGUIBuild-linux.gtk.$(ZIP_SUFFIX).zip;
 	@echo " . . . installation done"
 
 

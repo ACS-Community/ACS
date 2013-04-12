@@ -19,9 +19,6 @@
 
 #Set the port numbers...
 ACS_MANAGER_PORT=`getManagerPort`
-ACS_MANAGER_PORT=`getManagerPort`
-ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
-ACS_IR_PORT=`getIRPort`
 export HOST=`getIP`
 
 if [ X"$MANAGER_REFERENCE" = X ]; then  
@@ -30,25 +27,13 @@ fi
 
 ACS_LOG_DEBUG "acsStartJava" "ACS Manager: $MANAGER_REFERENCE"
 
-export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE | awk -F: '{print $3}'`
-
-#If $ACS_INTERFACE_REPOSITORY is not set, take the computer, where Manager
-#is located
-# TODO: Check if we actually need this IFR reference!
-if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
-   export ACS_INTERFACE_REPOSITORY=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository
-fi
-
 dir=$(searchFile bin/eventGUI)
 
 $dir/lib/ACS_eventGUI/eventGUI \
      -consoleLog \
      -vmargs \
-     -DACS.repository=$ACS_INTERFACE_REPOSITORY \
      -DACS.manager=$MANAGER_REFERENCE \
      -DACS.tmp=$ACS_TMP \
-     -Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB \
-     -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton \
      -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory \
      -DACS.log.minlevel.namedloggers="jacorb@eventGUI=5,5:scxml@eventGUI=5,5" \
      -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory \
