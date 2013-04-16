@@ -426,7 +426,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	{
 		if (DDSConfiguration::debugLevel>0)
 		{
-			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			// the message can cause performance penalty for small data sizes
 			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s before waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
