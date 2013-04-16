@@ -41,7 +41,9 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	private final EventChannelFactory efact;
 	private final String factoryName;
 	private final NotificationServiceMonitorControl mc;
-
+	
+	private final boolean isSystemNotifyService;
+	
 	
 	/**
 	 * @param name The simplified display name
@@ -49,12 +51,13 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	 * @param ecf Corba reference to the notify service
 	 * @param mc Corba reference to the monitor-control object (TAO extension)
 	 */
-	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc) {
+	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc, boolean isSystemNotifyService) {
 		super(name);
 		channels = new HashMap<String, ChannelData>(10);
 		efact = ecf;
 		this.factoryName = factoryName;
 		this.mc = mc;
+		this.isSystemNotifyService = isSystemNotifyService;
 	}
 	
 	public EventChannelFactory getEventChannelFactory() {
@@ -63,6 +66,14 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	
 	public NotificationServiceMonitorControl getMc() {
 		return mc;
+	}
+
+	/**
+	 * TODO: Possibly use this information to graphically distinguish between the notify service instances
+	 * always started by ACS, and any additional service instances. 
+	 */
+	public boolean isSystemNotifyService() {
+		return isSystemNotifyService;
 	}
 
 

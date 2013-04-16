@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.omg.CORBA.ORB;
+import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.BindingIteratorHolder;
 import org.omg.CosNaming.BindingListHolder;
@@ -48,6 +49,8 @@ import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
+import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
+import org.omg.CosNotifyChannelAdmin.ProxySupplier;
 import org.omg.DynamicAny.DynAnyFactory;
 import org.omg.DynamicAny.DynAnyFactoryHelper;
 
@@ -58,10 +61,16 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.ArchiveConsumer;
 import alma.acs.nc.Helper;
+import alma.acs.nc.NCSubscriber;
 import alma.acs.util.AcsLocations;
+import alma.acscommon.ALARM_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.NOTIFICATION_FACTORY_NAME;
 
 /**
  * @author jschwarz, hsommer
@@ -278,7 +287,12 @@ public class EventModel {
 							} catch (Exception ex) {
 								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + bindingName + "'.", ex);
 							}
-							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc);
+							boolean isSystemNotifyService = (
+									bindingName.equals(NOTIFICATION_FACTORY_NAME.value) ||
+									bindingName.equals(ALARM_NOTIFICATION_FACTORY_NAME.value) ||
+									bindingName.equals(ARCHIVE_NOTIFICATION_FACTORY_NAME.value) || 
+									bindingName.equals(LOGGING_NOTIFICATION_FACTORY_NAME.value) );
+							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc, isSystemNotifyService);
 							notifyServices.put(bindingName, notifyServiceData);
 						}
 						else {
@@ -340,9 +354,11 @@ public class EventModel {
 						channelData.setIsNewNc(false);
 					}
 					else {
-//						System.out.println("*** New NC " + channelName);
+						m_logger.fine("New NC " + channelName);
 						// A new NC. This will happen at startup, and later as NCs get added.
 						// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
+						// It fails when the NCs are mapped to a notify service via an "NC domain", as it is done 
+						// by the CERN alarm system, see discussion in COMP-8997
 						Helper notifyHelper = new Helper(cs, nctx);
 						String serviceId = notifyHelper.getNotificationFactoryNameForChannel(channelName);
 						NotifyServiceData service = notifyServices.get(serviceId);
@@ -374,8 +390,8 @@ public class EventModel {
 		}
 		
 		
-		// In addition to checking the name service for NCs, we also check the services and their MC objects. 
-		// Some system NCs are currently not getting registered in the naming service, and we want to display them too.
+		// In addition to querying the name service for NCs, we also query the notify services and their MC objects. 
+		// Some system NCs are currently not getting registered in the naming service, and we want to discover them too.
 		for (NotifyServiceData service : notifyServices.values()) {
 
 			// First set the missing ncId on new ChannelData objects
@@ -403,6 +419,7 @@ public class EventModel {
 						else {
 							// ncId is the Id of a new NC that was not registered in the naming service (unless the corberef-based match failed).
 							// We don't create a ChannelData object yet, because we may get its real name below from the MC.
+							
 						}
 					}
 				}
@@ -505,9 +522,9 @@ public class EventModel {
 	 * @return "Logging", "Alarm", "DefaultNotifyService", "MyRealtimeNotifyService", ...
 	 */
 	private String simplifyNotifyServiceName(String id) {
-		String displayName = id.substring(0, id.indexOf("NotifyEventChannelFactory"));
+		String displayName = id.substring(0, id.indexOf(NOTIFICATION_FACTORY_NAME.value));
 		
-		if (displayName.equals("")) {
+		if (displayName.isEmpty()) {
 			displayName = "DefaultNotifyService";
 		}
 		return displayName;
@@ -532,9 +549,10 @@ public class EventModel {
 		for (NotifyServiceData nsData : notifyServices.values()) {
 			
 			// iterate over NCs
-			// TODO: Rely only on MC data and skip these 'get_all_consumeradmins' calls.
+			// TODO: Try to rely only on MC data and skip these 'get_all_consumeradmins' etc calls,
+			// especially if we don't want to display the admin objects as tree nodes to show consumer allocation to the shared admins.
 			for (ChannelData channelData : nsData.getChannels()) {
-				String channelName = channelData.getName();
+				String channelName = channelData.getQualifiedName();
 				EventChannel ec = channelData.getCorbaRef();
 				int[] consAndSupp = {0,0}; // initial or previous count of consumers / suppliers
 				if (channelData.isNewNc()) {
@@ -544,24 +562,38 @@ public class EventModel {
 					consAndSupp = lastConsumerAndSupplierCount.get(channelName);
 				}
 				
-				final String[] roleNames = {"consumer", "supplier"};
-				int [] adminCounts = new int[2];
-				int [] adminDeltas = new int[2];
-				adminCounts[0] = ec.get_all_consumeradmins().length;
-				adminCounts[1] = ec.get_all_supplieradmins().length;
-
-//				for (int consumerAdminId : ec.get_all_consumeradmins()) {
-//					try {
-//						ec.get_consumeradmin(consumerAdminId);
-//					} catch (AdminNotFound ex) {
-//						ex.printStackTrace();
-//					}
-//				}
+				// for consumers we must count the proxies, cannot just deduce their number from the consumer admins
+				int consumerCount = 0;
+				for (int consumerAdminId : ec.get_all_consumeradmins()) {
+					try {
+						ConsumerAdmin consumerAdmin = ec.get_consumeradmin(consumerAdminId);
+						int[] push_suppliers_ids = consumerAdmin.push_suppliers();
+						for(int proxyID: push_suppliers_ids) {
+							try {
+								ProxySupplier proxy = consumerAdmin.get_proxy_supplier(proxyID);
+								if(!NCSubscriber.AdminReuseCompatibilityHack.isDummyProxy(proxy)) {
+									consumerCount++;
+								}
+							} catch(ProxyNotFound ex) {
+								m_logger.log(AcsLogLevel.NOTICE, "Proxy with ID='" + proxyID + "' not found for consumer admin with ID='" + consumerAdminId + "', " +
+										"even though this Id got listed a moment ago.", ex);
+							}
+						}
+					} catch (AdminNotFound ex) {
+						ex.printStackTrace();
+					}
+				}
 				
+				final String[] roleNames = {"consumer", "supplier"};
+				int [] proxyCounts = new int[2];
+				int [] proxyDeltas= new int[2];
+				proxyCounts[0] = consumerCount;
+				proxyCounts[1] = ec.get_all_supplieradmins().length; // currently for suppliers we have 1 admin object per supplier
+
 				// same code for consumer and supplier
-				for (int i = 0; i < adminCounts.length; i++) {
-					String cstr = channelData.getQualifiedName();
-					int cdiff = adminCounts[i] - consAndSupp[i];
+				for (int i = 0; i < proxyCounts.length; i++) {
+					String cstr = channelName;
+					int cdiff = proxyCounts[i] - consAndSupp[i];
 					if (cdiff != 0) {
 						if (cdiff > 0) {
 							cstr += " has added " + cdiff + " " + roleNames[i];
@@ -572,15 +604,15 @@ public class EventModel {
 						cstr += (Math.abs(cdiff)!=1 ? "s." : ".");
 						m_logger.info(cstr);
 					}
-					adminDeltas[i] = cdiff;
+					proxyDeltas[i] = cdiff;
 				}
-				lastConsumerAndSupplierCount.put(channelName, adminCounts);
+				lastConsumerAndSupplierCount.put(channelName, proxyCounts);
 				//m_logger.info("Channel: " + channelName + " has " + adminCounts[0] + " consumers and " + adminCounts[1] + " suppliers.");
 
-				channelData.setNumberConsumers(adminCounts[0]);
-				channelData.setNumberSuppliers(adminCounts[1]);
-				channelData.setDeltaConsumers(adminDeltas[0]);
-				channelData.setDeltaSuppliers(adminDeltas[1]);
+				channelData.setNumberConsumers(proxyCounts[0]);
+				channelData.setNumberSuppliers(proxyCounts[1]);
+				channelData.setDeltaConsumers(proxyDeltas[0]);
+				channelData.setDeltaSuppliers(proxyDeltas[1]);
 			}
 		}
 	}
