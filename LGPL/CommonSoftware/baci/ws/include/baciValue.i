@@ -595,17 +595,17 @@ LESS_THAN_DELTA_NUM_SEQ_TYPE(booleanSeq, BACIbooleanSeq, boolean, BACIboolean)
       }                                                                         \
       if(diff < 0)                                                              \
          diff = -diff;                                                          \
-      return ( (double)delta.ty##Value() > diff);                                       \
+      return (delta.doubleValue() > diff);                                       \
       break; }
 /**
  * Helper macro.
  */
-#define LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(ty, realType, deltaType, realDeltaType)         \
+#define LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(ty, realType)         \
     case ( type_##ty ): {                                                            \
-      double diff;                                                            \
+      BACIdouble diff;                                                            \
       for (CORBA::ULong i=0; i < (*( realType *)ptr_m.pointer).length(); i++) {      \
          if((*( realType *)ptr_m.pointer)[i] == 0) {                                   \
-            if((*( realType *)ptr_m.pointer)[i] == 0) continue;                \
+            if((*( realType *)value.ptr_m.pointer)[i] == 0) continue;                \
             else return false;                                                      \
          }                                                                         \
       	 if ((*( realType *)value.ptr_m.pointer)[i]>(*( realType *)ptr_m.pointer)[i])\
@@ -618,7 +618,7 @@ LESS_THAN_DELTA_NUM_SEQ_TYPE(booleanSeq, BACIbooleanSeq, boolean, BACIboolean)
          }                                                                           \
          if(diff < 0)                                                              \
             diff = -diff;                                                          \
-         if ((double)(delta.deltaType##Value())<=diff) return false;                         \
+         if (delta.doubleValue()<=diff) return false;                         \
       }                                                                              \
       return true;                                                                   \
       break; }
@@ -649,12 +649,12 @@ LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(longLong, BACIlongLong)
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(uLongLong, BACIuLongLong)
 LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(boolean, BACIboolean)
 // for sequences delta is scalar
-LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(doubleSeq, BACIdoubleSeq, double, BACIdouble)
-LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(floatSeq, BACIfloatSeq, float, BACIfloat)
-LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq, long, BACIlong)
-LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(uLongSeq, BACIuLongSeq, uLong, BACIuLong)
-LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(booleanSeq, BACIbooleanSeq, boolean, BACIboolean)
-/// LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(stringSeq, BACIstringSeq, string, BACIstring)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(doubleSeq, BACIdoubleSeq)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(floatSeq, BACIfloatSeq)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(uLongSeq, BACIuLongSeq)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(booleanSeq, BACIbooleanSeq)
+/// LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(stringSeq, BACIstringSeq)
 
     default:
       return false;
