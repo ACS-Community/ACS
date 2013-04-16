@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -83,8 +84,6 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.nc.AcsEventSubscriber;
-import alma.acs.nc.AcsEventSubscriberImplBase;
 import alma.acs.ncconfig.EventDescriptor;
 import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
 import alma.acsnc.EventDescription;
@@ -655,36 +654,17 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 				int adminID = consumerAdminIds[i];
 				try {
-
-					// Get the consumer admin. Then, check if any of its proxies is of type ANY_EVENT
-					// This is a temporary hack to recognize shared admins from those created by the old
-					// NC classes, and that are not meant to be reused
 					org.omg.CosNotifyChannelAdmin.ConsumerAdmin tmpAdmin = channel.get_consumeradmin(adminID);
-
 					int[] push_suppliers_ids = tmpAdmin.push_suppliers();
-					for(int proxyID: push_suppliers_ids) {
-						try {
-							ProxySupplier proxy = tmpAdmin.get_proxy_supplier(proxyID);
-							if(ProxyType.PUSH_ANY.equals(proxy.MyType())) {
-
-								// OK, we have a shared admin. Now, we do some simple load balancing,
-								// so we use this shared admin only if it has space for more proxies
-								// (the -1 goes because of the dummy proxy that is attached to the shared admin)
-								if( push_suppliers_ids.length-1 < PROXIES_PER_ADMIN) {
-									retBase = tmpAdmin;
-									consumerAdminId = adminID;
-									break;
-								}
-								// shortcut: don't check the remaining proxies and continue with the next admin
-								else
-									break;
-							}
-						} catch(ProxyNotFound e) {
-							logger.log(AcsLogLevel.NOTICE, "Proxy with ID='" + proxyID + "' not found for consumer admin with ID='" + adminID + "', " +
-									"will continue anyway to search for shared consumer admins", e);
+					AdminReuseCompatibilityHack adminReuseCompatibilityHack = new AdminReuseCompatibilityHack(channelName, tmpAdmin, logger);
+					if (adminReuseCompatibilityHack.isSharedAdmin()) {
+						// do some simple load balancing, so we use this shared admin only if it has space for more proxies
+						// (the -1 goes because of the dummy proxy that is attached to the shared admin)
+						if( push_suppliers_ids.length-1 < PROXIES_PER_ADMIN) {
+							retBase = tmpAdmin;
+							consumerAdminId = adminID;
 						}
 					}
-
 				} catch (AdminNotFound e) {
 					logger.log(AcsLogLevel.NOTICE, "Consumer admin with ID='" + adminID + "' not found for channel '" + channelName + "', " +
 							"will continue anyway to search for shared consumer admins", e);
@@ -703,24 +683,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 				InterFilterGroupOperator adminProxyFilterLogic = InterFilterGroupOperator.AND_OP; 
 				retBase = channel.new_for_consumers(adminProxyFilterLogic, consumerAdminIDHolder);
 
-				// Create a dummy proxy in the new consumer admin.
-				// 
-				// rtobar, Apr. 13th, 2011:
-				// This dummy proxy is not of a StructuredProxyPushSupplier, like the rest of the proxies
-				// that are created for the NC in the admin objects. This way we can recognize a shared consumer admin
-				// by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
-				//
-				// This hack is only needed while we are in transition between the old and new NC classes,
-				// and should get removed once the old classes are not used anymore (also not in C++ etc)
-				try {
-					retBase.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
-				} catch (AdminLimitExceeded e) {
-					retBase.destroy();
-					AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(e);
-					e2.setInfo("Coundn't attach dummy ANY_EVENT proxy to newly created shared admin consumer for channel '" + channelName + "'. Newly created shared admin is now destroyed.");
-					throw e2;
-				}
-
+				// @TODO: Remove this workaround once it is no longer needed.
+				AdminReuseCompatibilityHack hack = new AdminReuseCompatibilityHack(channelName, retBase, logger);
+				hack.markAsSharedAdmin();
+				
 				consumerAdminId = consumerAdminIDHolder.value;
 				created = true;
 			}
@@ -745,6 +711,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		return ret;
 	}
 
+	
+
+	
 	/**
 	 * Creates the proxy supplier (push-style, for structured events) 
 	 * that lives in the Notify server process, managed by the consumer admin object, and
@@ -1081,4 +1050,80 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 		
 	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////// AdminReuseCompatibilityHack  ////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Encapsulates the hack of using a dummy ProxyType.PUSH_ANY proxy to mark a shared consumer admin used by NCSubscriber
+	 * (or other next-gen subscribers), to distinguish it from non-reusable (subscriber-owned) admin objects 
+	 * as they are used by the old-generation subscribers.
+	 * <p>
+	 * @TODO: Remove this class once the hack is no longer needed.
+	 */
+	public static class AdminReuseCompatibilityHack {
+	
+		private final String channelName;
+		private final org.omg.CosNotifyChannelAdmin.ConsumerAdmin consumerAdmin;
+		private final Logger logger;
+		
+		public AdminReuseCompatibilityHack(String channelName, org.omg.CosNotifyChannelAdmin.ConsumerAdmin consumerAdmin, Logger logger) {
+			this.channelName = channelName;
+			this.consumerAdmin = consumerAdmin;
+			this.logger = logger;
+		}
+		
+		/**
+		 * Creates a dummy proxy in the given consumer admin.
+		 * This dummy proxy is not of a StructuredProxyPushSupplier, like the rest of the proxies that are created for the NC in the admin objects. 
+		 * This way we can recognize a shared consumer admin by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
+		 * This hack is only needed while we are in transition between the old and new NC classes, and should get removed once the old classes are not used 
+		 * anymore (also not in C++ etc)
+		 * @throws AcsJCORBAProblemEx 
+		 */
+		public void markAsSharedAdmin() throws AcsJCORBAProblemEx {
+			try {
+				consumerAdmin.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
+			} catch (AdminLimitExceeded e) {
+				consumerAdmin.destroy();
+				AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(e);
+				e2.setInfo("Coundn't attach dummy ANY_EVENT proxy to newly created shared admin consumer for channel '" + channelName + "'. Newly created shared admin is now destroyed.");
+				throw e2;
+			}
+		}
+
+		
+		/**
+		 * @return <code>true</code> if the given proxy is of type PUSH_ANY,
+		 *         which is used only to mark a shared consumer admin. 
+		 */
+		public static boolean isDummyProxy(ProxySupplier proxy) {
+			return ( ProxyType.PUSH_ANY.equals(proxy.MyType()) );
+		}
+
+		/**
+		 * @return <code>true</code> if our consumer admin is shared. In the future when all NC libs are ported, this should always be the case.
+		 */
+		public boolean isSharedAdmin() {
+			boolean ret = false;
+			int[] push_suppliers_ids = consumerAdmin.push_suppliers();
+			for(int proxyID: push_suppliers_ids) {
+				try {
+					ProxySupplier proxy = consumerAdmin.get_proxy_supplier(proxyID);
+					if(isDummyProxy(proxy)) {
+						ret = true;
+						break;
+					}
+				} catch(ProxyNotFound e) {
+					logger.log(AcsLogLevel.NOTICE, "Proxy with ID='" + proxyID + "' not found for consumer admin with ID='" + consumerAdmin.MyID() + "', " +
+							"will continue anyway to search for shared consumer admins", e);
+				}
+			}
+			return ret;
+		}
+		
+	}
+
 }
