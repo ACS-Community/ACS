@@ -22,5 +22,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="lib" path="ws/lib/ACSLogTypeExampleLTS.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
