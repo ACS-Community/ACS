@@ -95,6 +95,12 @@ public:
   static void loadRecovery(bool load);
 
   /**
+   * Set enable/disable recovery flag (enabled by default, must be explicitly disabled).
+   * @param bool enable 
+   */
+  static void enableRecovery(bool enable);
+
+  /**
    * Set activator name.
    * @param activator name
    */
@@ -165,6 +171,11 @@ private:
    * Load recovery data switch
    */                        
   static bool load_m;
+
+  /**
+   * Enable/disable recovery flag.
+   */
+  static bool enabled_m;
 
   /**
    * Activator name

@@ -39,6 +39,7 @@ namespace baci {
 
 BACIRecoveryManager* BACIRecoveryManager::instance_mp = 0;
 bool BACIRecoveryManager::load_m = false;
+bool BACIRecoveryManager::enabled_m = true;
 const char * BACIRecoveryManager::activatorName_mp = 0;
 
 BACIRecoveryManager::BACIRecoveryManager() {
@@ -68,8 +69,25 @@ BACIRecoveryManager::BACIRecoveryManager() {
 
   ACS_DEBUG_PARAM("baci::BACIRecoveryManager::BACIRecoveryManager", "Recovery filename: '%s.'", fileName.c_str());
 
-  store_mp = new RecoveryStore(fileName.c_str(), this->load_m);
+  // enabled by default
+  char *envVal = 0;
+  if ((envVal = getenv("ACS_BACI_RECOVERY_ENABLE")) && *envVal)
+  {
+    if (ACE_OS::strcmp(envVal, "0") == 0 ||
+        ACE_OS::strcasecmp(envVal, "false") == 0 ||
+        ACE_OS::strcasecmp(envVal, "n") == 0)
+       this->enabled_m = false;
+  }
+ 
+  if (!this->enabled_m)
+  {  
+       ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIRecoveryManager::BACIRecoveryManager", (LM_INFO, "Recovery disabled."));
+  }
 
+  if (this->enabled_m)
+    store_mp = new RecoveryStore(fileName.c_str(), this->load_m | this->enabled_m);
+  else
+    store_mp = 0;
 
   /*
   // debug info printout
@@ -91,12 +109,17 @@ BACIRecoveryManager::BACIRecoveryManager() {
   
 
 BACIRecoveryManager::~BACIRecoveryManager() {
-  delete store_mp;
+  if (store_mp) delete store_mp;
 }
 
 void
 BACIRecoveryManager::loadRecovery(bool load) {
     load_m = load;
+}
+
+void
+BACIRecoveryManager::enableRecovery(bool enable) {
+    enabled_m = enable;
 }
 
 void
@@ -126,6 +149,7 @@ BACIRecoveryManager::destroyInstance(void) {
 
 void
 BACIRecoveryManager::addRecoverableObject(RecoverableObject *object) {
+  if (!enabled_m || !store_mp) return; 
   const char *state_p = object->getObjectState();
   store_mp->log(ACE_CString(object->getName()), ACE_CString(state_p));
   delete[] state_p;
@@ -134,6 +158,7 @@ BACIRecoveryManager::addRecoverableObject(RecoverableObject *object) {
 
 void
 BACIRecoveryManager::updateRecoverableObject(RecoverableObject *object) {
+  if (!enabled_m || !store_mp) return;
   const char *state_p = object->getObjectState();
   store_mp->update(ACE_CString(object->getName()), ACE_CString(state_p));
   delete[] state_p;
@@ -141,6 +166,7 @@ BACIRecoveryManager::updateRecoverableObject(RecoverableObject *object) {
 
 void
 BACIRecoveryManager::removeRecoverableObject(RecoverableObject *object) {
+  if (!enabled_m || !store_mp) return;
   store_mp->remove(ACE_CString(object->getName()));
 }
 
@@ -148,7 +174,8 @@ BACIRecoveryManager::removeRecoverableObject(RecoverableObject *object) {
 ACE_CString_Vector
 BACIRecoveryManager::getObjectsStartingWith(const char* namePrefix) {
   ACE_CString_Vector objects;
-  
+  if (!enabled_m || !store_mp) return objects;
+ 
   RecoveryStore::STORE_HASH_MAP_ENTRY *entry_p = 0;
   for ( RecoveryStore::STORE_HASH_MAP_ITER hashIter = store_mp->get_iterator();
 	hashIter.next (entry_p) != 0;
@@ -166,6 +193,8 @@ BACIRecoveryManager::getObjectsStartingWith(const char* namePrefix) {
 const char*
 BACIRecoveryManager::getObjectState(const char* name) {
   ACE_CString data;
+  if (!enabled_m || !store_mp) return data.rep();
+
   store_mp->retrieve(ACE_CString(name), data);
   return data.rep();
 }
@@ -179,6 +208,8 @@ BACIRecoveryManager::generateObjectName(const char* namePrefix) {
 
   ACE_CString cstring;
   cstring.set(newName_p, 0);	// do not copy
+
+  if (!enabled_m || !store_mp) return newName_p;
 
   int n = 0;
   while (store_mp->exists(cstring)==0) {
