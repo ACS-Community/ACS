@@ -1,6 +1,6 @@
 <!-- ***************************************************************************
  * ALMA - Atacama Large Millimeter Array
- * Copyright (c) ESO - European Southern Observatory, 2011
+ * Copyright (c) ESO - European Southern Observatory, 2013
  * (in the framework of the ALMA collaboration).
  * All rights reserved.
  * 
@@ -38,7 +38,7 @@
 	<redirect:write select="$FileName">
 	<xsl:text>/*
 * ALMA - Atacama Large Millimiter Array
-* Copyright (c) ESO - European Southern Observatory, 2011
+* Copyright (c) ESO - European Southern Observatory, 2013
 * (in the framework of the ALMA collaboration).
 *
 * This library is free software; you can redistribute it and/or
@@ -73,6 +73,7 @@ import java.util.Map;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.AcsLogRecord;
+import alma.acs.logging.ts.TypesafeLogBase;
 
 </xsl:text>
 <xsl:text>
@@ -84,31 +85,20 @@ import alma.acs.logging.AcsLogRecord;
  */
 public class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
-		<xsl:value-of select="$logName"/><xsl:text> {
+		<xsl:value-of select="$logName"/><xsl:text> extends TypesafeLogBase {
 	public static final AcsLogLevel level = AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>;
-	private final Logger logger;
-	private final Map&lt;String, Object> nameValue;
-	private final AcsLogRecord lr;	
-	
+	public static final String msg = "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>";
+
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger) {
-		this.logger=logger;
-		if (logger instanceof AcsLogger) {
-			((AcsLogger)logger).addLoggerClass(this.getClass());
-		}
-		nameValue = new LinkedHashMap&lt;String, Object>();
-		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
-		lr = new AcsLogRecord(level, "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>", nameValue, logger.getName());
-		lr.setAudience("</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
+		this(logger, null, null);
 	}
+
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger, String array, String antenna) {
-		this(logger);
-		lr.setArray(array);
-		lr.setAntenna(antenna);
-	}	
+		super(logger, "</xsl:text><xsl:value-of select="$logName"/><xsl:text>", level, msg, array, antenna);
+	}
 	
 	/**
 	 * Convenience method for compact one-line logs.
-	 * @since ACS 7.0.1
 	 */
 	public static void log(Logger logger</xsl:text>
 	<xsl:for-each select="loggingts:Member">
@@ -131,26 +121,6 @@ public class </xsl:text>
 		}
 	}
 	
-	public void setArray(String array) {
-		lr.setArray(array);
-	}
-	public void setAntenna(String antenna) {
-		lr.setAntenna(antenna);
-	}
-	public String getArray(){
-		return lr.getArray();
-	}
-	public String getAntenna(){
-		return lr.getAntenna();
-	}
-	
-	/**
-	 * Logs the message through the Logger supplied in the constructor, with the configured log level.
-	 */	
-	public void log() {
-		logger.log(lr);
-	}
-	
 </xsl:text>
 	<xsl:for-each select="loggingts:Member"><xsl:text>
 	/**
@@ -158,7 +128,7 @@ public class </xsl:text>
 	 * @param </xsl:text><xsl:value-of select="@name"/><xsl:text>
 	 *			</xsl:text><xsl:value-of select="@description"/><xsl:text>
 	 */
-	public void set</xsl:text><xsl:value-of select="@name"/>
+	public </xsl:text><xsl:value-of select="$logName"/><xsl:text> set</xsl:text><xsl:value-of select="@name"/>
 		<xsl:text>(</xsl:text>        
 		<xsl:choose>
                 <xsl:when test='@type="string"'>
@@ -176,6 +146,7 @@ public class </xsl:text>
         </xsl:choose>
 	<xsl:text> value) {
 		nameValue.put("</xsl:text><xsl:value-of select="@name"/><xsl:text>", value);
+		return this;
 	}</xsl:text>	
 	</xsl:for-each>
 <xsl:text>
