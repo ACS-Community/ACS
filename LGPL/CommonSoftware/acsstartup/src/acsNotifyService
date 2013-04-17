@@ -213,6 +213,7 @@ case $CL_NS_TYPE in
     NOTIFY_EVENT_CHANNEL=AlarmChannel
     NOTIFY_EVENT_CHANNEL_FACTORY=AlarmNotifyEventChannelFactory
   ;; *)
+    CL_NS_TYPE=`echo $CL_NS_TYPE | sed s/NotifyEventChannelFactory$//g`
     NOTIFY_SERVICE_PIDFILE="$INSTANCE_DIR/$ACS_PID_DIR/${CL_NS_TYPE}_NotifyService_PID"
     NOTIFY_OUT="$INSTANCE_DIR/$ACS_OUT_DIR/${CL_NS_TYPE}_NotifyService.out"
     NOTIFY_IOR="$INSTANCE_DIR/$ACS_IOR_DIR/${CL_NS_TYPE}_NotifyServiceIOR"

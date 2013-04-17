@@ -32,3 +32,4 @@ s/java_pid[0-9]*.hprof/java_pidXXX.hprof/g
 s/-OAport [0-9][0-9][0-9][0-9]/-OAport nnnn/g
 s/Ran [0-9]* tests in [0-9]*.[0-9]*s/Ran x tests in x.xxs/g
 s/-Djava.endorsed.dirs=.*/-Djava.endorsed.dirs=xxxxx/g
+s/Endpoint: [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Endpoint: a.b.c.d:p/g

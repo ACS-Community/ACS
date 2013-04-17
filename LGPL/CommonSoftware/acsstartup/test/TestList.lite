@@ -72,4 +72,12 @@ PROLOGUE acsstartupTATPrologue
 12 testContainerPortLock "testContainerPortLock"
 
 13 testVmOptions "testVmOption.sh"
+
+14 testNotifyEventChannelFactorySuffix "acsNamingService -b 9 -s" "@SLEEP 2" \
+                                       "acsNotifyService -b 9 -s -n TESTNotifyEventChannelFactory" "@SLEEP 2" \
+                                       "acsstartupTest_nslist" "@SLEEP 2" \
+                                       "acsNotifyService -b 9 -k -n TEST" "@SLEEP 2" \
+                                       "acsstartupTest_nslist" "@SLEEP 2" \
+                                       "acsNamingService -b 9 -k"
+
 EPILOGUE acsstartupTATEpilogue
