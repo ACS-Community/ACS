@@ -112,7 +112,7 @@ public class ContainerSealant
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The handler create for every call to a component or offshoot (with lightweight implementation).
+	 * The handler created for every call to a component or offshoot (with lightweight implementation).
 	 * Will log method invocation and return.
 	 */
 	private static class ComponentInterceptionHandler implements DynamicInterceptor.InterceptionHandler {
@@ -198,9 +198,11 @@ public class ContainerSealant
 					throw new DATA_CONVERSION(msg + realThr.toString());
 				} 
 				else {
-					logger.log(Level.WARNING, "unexpected exception was thrown in functional method '" + qualMethodName
+					logger.log(Level.WARNING, "Unexpected exception was thrown in functional method '" + qualMethodName
 							+ "': ", realThr);
-					throw realThr;
+					// Wrapping our ex with CORBA.UNKNOWN changes the subsequent log from jacorb from Emergency to Info level.
+					// The client would in any case see an UNKNOWN ex. See http://jira.alma.cl/browse/COMP-1846.
+					throw new org.omg.CORBA.UNKNOWN(realThr.toString());
 				}
 			}
 			
