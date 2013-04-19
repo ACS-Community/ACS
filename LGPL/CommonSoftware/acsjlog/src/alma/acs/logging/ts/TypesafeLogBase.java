@@ -50,6 +50,7 @@ public abstract class TypesafeLogBase
 		
 		this.logger=logger;
 		if (logger instanceof AcsLogger) {
+			((AcsLogger)logger).addLoggerClass(TypesafeLogBase.class);
 			((AcsLogger)logger).addLoggerClass(this.getClass());
 		}
 		nameValue = new LinkedHashMap<String, Object>();
