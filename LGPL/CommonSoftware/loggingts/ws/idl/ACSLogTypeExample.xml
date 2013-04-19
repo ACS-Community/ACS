@@ -28,20 +28,20 @@
 	description="Longer description of the sample LogDefinitionType"
 	URL="http://someurl.org"
 	_prefix="alma"
-        xsi:schemaLocation="Alma/ACSLogTS ACSLogTS.xsd">
-        
+	xsi:schemaLocation="Alma/ACSLogTS ACSLogTS.xsd">
 	
 	<!--xsi:noNamespaceSchemaLocation="ACSLogTS.xsd"-->
 	<LogDefinition
-		logName="simpleLog"
+		logName="SimpleLog"
 		shortDescription="Simple Log"
 		description="This is a simple log without members"
 		URL="http://someurl.org"
 		priority="INFO"
 		audience="Curious people">
 	</LogDefinition>
+	
 	<LogDefinition
-		logName="complexLog"
+		logName="ComplexLog"
 		shortDescription="Complex Log"
 		description="This is a somewhat more complex log using members"
 		URL="http://someurl.org"
@@ -60,5 +60,6 @@
 			type="boolean"
 			description="member description"/>
 	</LogDefinition>
+	
 </LogDefinitionType>
 

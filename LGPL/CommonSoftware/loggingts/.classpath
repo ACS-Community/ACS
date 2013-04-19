@@ -23,5 +23,8 @@
 	<classpathentry kind="lib" path="ws/lib/ACSLogTypeExampleLTS.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

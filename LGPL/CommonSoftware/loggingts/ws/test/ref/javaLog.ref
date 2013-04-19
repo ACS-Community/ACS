@@ -3,32 +3,32 @@
 1 - Connection disconnected
 1 - Connecting
 1 - Connection established
-1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="58" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="xxx" Audience="Curious people"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data></Info>
+1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.LtsTestClient"  Line="61" Routine="main" Host="xxx" Process="LtsTestClient" SourceObject="LtsTestClient" Thread="main" LogId="xxx" Audience="Curious people"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[SimpleLog]]></Data></Info>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Info
-1 - Source Object: testLTSClient
-1 - File: alma.acs.loggingtstest.testLTSClient
-1 - Line: 58
-1 - Routine: main
-1 - Host: xxx
-1 - Process: xxxtestLTSClient
-1 - Thread: main
-1 - Log ID: xxx
-1 - Log Message: Simple Log
-1 - Audience: Curious people
-1 - Datas: 
-1 - 	logName : simpleLog
-1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="61" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="xxx" Audience="Curious people" Array="Array01" Antenna="Antenna01"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data></Info>
-1 - Log received: --- LogEntry ---
-1 - TimeStamp: xxx
-1 - Entry Type: Info
-1 - Source Object: testLTSClient
-1 - File: alma.acs.loggingtstest.testLTSClient
+1 - Source Object: LtsTestClient
+1 - File: alma.acs.loggingtstest.LtsTestClient
 1 - Line: 61
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxxtestLTSClient
+1 - Process: xxxLtsTestClient
+1 - Thread: main
+1 - Log ID: xxx
+1 - Log Message: Simple Log
+1 - Audience: Curious people
+1 - Datas: 
+1 - 	logName : SimpleLog
+1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.LtsTestClient"  Line="65" Routine="main" Host="xxx" Process="LtsTestClient" SourceObject="LtsTestClient" Thread="main" LogId="xxx" Audience="Curious people" Array="Array01" Antenna="Antenna01"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[SimpleLog]]></Data></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Info
+1 - Source Object: LtsTestClient
+1 - File: alma.acs.loggingtstest.LtsTestClient
+1 - Line: 65
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxxLtsTestClient
 1 - Thread: main
 1 - Log ID: xxx
 1 - Log Message: Simple Log
@@ -36,17 +36,17 @@
 1 - Array: Array01
 1 - Antenna: Antenna01
 1 - Datas: 
-1 - 	logName : simpleLog
-1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="68" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="People with too much time on their hands"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someBooleanMember"><![CDATA[true]]></Data></Warning>
+1 - 	logName : SimpleLog
+1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.LtsTestClient"  Line="73" Routine="main" Host="xxx" Process="LtsTestClient" SourceObject="LtsTestClient" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="People with too much time on their hands"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[ComplexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someBooleanMember"><![CDATA[true]]></Data></Warning>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Warning
-1 - Source Object: testLTSClient
-1 - File: alma.acs.loggingtstest.testLTSClient
-1 - Line: 68
+1 - Source Object: LtsTestClient
+1 - File: alma.acs.loggingtstest.LtsTestClient
+1 - Line: 73
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxxtestLTSClient
+1 - Process: xxxLtsTestClient
 1 - Thread: main
 1 - Log ID: xxx
 1 - Stack ID: unknown
@@ -54,17 +54,17 @@
 1 - Log Message: Complex Log
 1 - Audience: People with too much time on their hands
 1 - Datas: 
-1 - 	logName : complexLog	someDoubleMember : 3.14159	someStringMember : test string	someLongMember : 42	someBooleanMember : true
-1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="77" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="People with too much time on their hands" Array="Array01" Antenna="Antenna01"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someBooleanMember"><![CDATA[true]]></Data></Warning>
+1 - 	logName : ComplexLog	someDoubleMember : 3.14159	someStringMember : test string	someLongMember : 42	someBooleanMember : true
+1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.LtsTestClient"  Line="83" Routine="main" Host="xxx" Process="LtsTestClient" SourceObject="LtsTestClient" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="People with too much time on their hands" Array="Array01" Antenna="Antenna01"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[ComplexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someBooleanMember"><![CDATA[true]]></Data></Warning>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Warning
-1 - Source Object: testLTSClient
-1 - File: alma.acs.loggingtstest.testLTSClient
-1 - Line: 77
+1 - Source Object: LtsTestClient
+1 - File: alma.acs.loggingtstest.LtsTestClient
+1 - Line: 83
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxxtestLTSClient
+1 - Process: xxxLtsTestClient
 1 - Thread: main
 1 - Log ID: xxx
 1 - Stack ID: unknown
@@ -74,4 +74,42 @@
 1 - Array: Array01
 1 - Antenna: Antenna01
 1 - Datas: 
-1 - 	logName : complexLog	someDoubleMember : 3.14159	someStringMember : test string	someLongMember : 42	someBooleanMember : true
+1 - 	logName : ComplexLog	someDoubleMember : 3.14159	someStringMember : test string	someLongMember : 42	someBooleanMember : true
+1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.LtsTestClient"  Line="86" Routine="main" Host="xxx" Process="LtsTestClient" SourceObject="LtsTestClient" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="People with too much time on their hands"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[ComplexLog]]></Data><Data Name="someDoubleMember"><![CDATA[2.22]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someBooleanMember"><![CDATA[true]]></Data></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: LtsTestClient
+1 - File: alma.acs.loggingtstest.LtsTestClient
+1 - Line: 86
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxxLtsTestClient
+1 - Thread: main
+1 - Log ID: xxx
+1 - Stack ID: unknown
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Audience: People with too much time on their hands
+1 - Datas: 
+1 - 	logName : ComplexLog	someDoubleMember : 2.22	someStringMember : test string	someLongMember : 42	someBooleanMember : true
+1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.LtsTestClient"  Line="89" Routine="main" Host="xxx" Process="LtsTestClient" SourceObject="LtsTestClient" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="People with too much time on their hands" Array="myArray" Antenna="whatAntenna"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[ComplexLog]]></Data><Data Name="someBooleanMember"><![CDATA[false]]></Data><Data Name="someDoubleMember"><![CDATA[2.22]]></Data></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: LtsTestClient
+1 - File: alma.acs.loggingtstest.LtsTestClient
+1 - Line: 89
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxxLtsTestClient
+1 - Thread: main
+1 - Log ID: xxx
+1 - Stack ID: unknown
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Audience: People with too much time on their hands
+1 - Array: myArray
+1 - Antenna: whatAntenna
+1 - Datas: 
+1 - 	logName : ComplexLog	someBooleanMember : false	someDoubleMember : 2.22

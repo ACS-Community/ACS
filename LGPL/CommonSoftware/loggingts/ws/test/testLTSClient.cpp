@@ -49,21 +49,21 @@ int main(int argc, char *argv[])
 		client.login();
 	}
 
-	ACSLogTypeExample::simpleLog my_simpleLog(__FILE__,__LINE__,"main");
+	ACSLogTypeExample::SimpleLog my_simpleLog(__FILE__,__LINE__,"main");
 	my_simpleLog.log();
 
-	ACSLogTypeExample::simpleLog my_simpleLogAA(__FILE__,__LINE__,"main","Array01","Antenna01");
+	ACSLogTypeExample::SimpleLog my_simpleLogAA(__FILE__,__LINE__,"main","Array01","Antenna01");
 	my_simpleLogAA.log();
 
 
-	ACSLogTypeExample::complexLog my_complexLog(__FILE__,__LINE__,"main");
+	ACSLogTypeExample::ComplexLog my_complexLog(__FILE__,__LINE__,"main");
 	my_complexLog.setsomeDoubleMember(3.14159);
 	my_complexLog.setsomeStringMember("test string");
 	my_complexLog.setsomeLongMember(42);
 	my_complexLog.setsomeBooleanMember(true);
 	my_complexLog.log();
 
-	ACSLogTypeExample::complexLog my_complexLogAA(__FILE__,__LINE__,"main");
+	ACSLogTypeExample::ComplexLog my_complexLogAA(__FILE__,__LINE__,"main");
         my_complexLogAA.setArray("Array01");
         my_complexLogAA.setAntenna("Antenna01");
 	my_complexLogAA.setsomeDoubleMember(3.14159);

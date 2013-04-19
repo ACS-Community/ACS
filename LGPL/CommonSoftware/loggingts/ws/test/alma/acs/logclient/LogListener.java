@@ -14,9 +14,11 @@ import com.cosylab.logging.engine.log.LogField;
  * A class to test the receptions of the logs through the listeners.
  * The class instantiate a LCEngine and register itself as listeners.
  * The logs and messages received are printed in the stdout
+ * <p>
+ * Todo (hso): Could we have used alma.acs.logging.engine.LogReceiver
+ *             instead of adding this class for the loggingts test?
  * 
  * @author acaproni
- *
  */
 public class LogListener implements 
 	ACSLogConnectionListener, 
@@ -59,6 +61,7 @@ public class LogListener implements
 		System.exit(0);
 	}
 	
+	@Override
 	public void acsLogConnEstablished() {
 		System.out.println("Connection established");
 	}
@@ -111,7 +114,9 @@ public class LogListener implements
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void xmlEntryReceived(String str) {
-		if (str.indexOf("testLTSClientpy")>=0||str.indexOf("alma.acs.loggingtstest.testLTSClient")>=0||str.indexOf("testLTSClient.cpp")>=0) {
+		if (str.indexOf("testLTSClientpy")>=0 || 
+			str.indexOf("alma.acs.loggingtstest.LtsTestClient")>=0 ||
+			str.indexOf("testLTSClient.cpp")>=0) {
 	//	if (str.indexOf("testLTSClient")>=0){
 			System.out.println("RAW log: "+str);
 		}
@@ -141,7 +146,7 @@ public class LogListener implements
 		}
 		if (
 				fileField.compareTo("../bin/testLTSClientpy")==0 ||
-				fileField.compareTo("alma.acs.loggingtstest.testLTSClient")==0 ||
+				fileField.compareTo("alma.acs.loggingtstest.LtsTestClient")==0 ||
 				fileField.compareTo("testLTSClient.cpp")==0) {
 		//if(log.getField(ILogEntry.FIELD_FILE).toString().indexOf("testLTSClient")>=0){
 			System.out.println("Log received: "+log.toString());

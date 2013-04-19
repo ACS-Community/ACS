@@ -26,62 +26,85 @@ package alma.acs.loggingtstest;
 
 import java.util.logging.Logger;
 
-import alma.ACSLogTypeExample.complexLog;
-import alma.ACSLogTypeExample.simpleLog;
+import alma.ACSLogTypeExample.ComplexLog;
+import alma.ACSLogTypeExample.SimpleLog;
 import alma.acs.component.client.ComponentClient;
+import alma.acs.util.AcsLocations;
 
 /**
  * The test is based on TAT comparing with the reference output the log records sent by this class
  * and then received and printed by {@link alma.acs.logclient.LogListener}.
- * This is why we need to have the ACS manager available, to give access to the Log service. 
+ * This ensures that we test also the log details found only in the XML logs,
+ * and explains why we need to have ACS running and use a ComponentClient.
  */
-public class testLTSClient extends ComponentClient
+public class LtsTestClient
 { 
-	public testLTSClient(Logger logger, String managerLoc, String clientName) throws Exception
-	{
-		super(logger, managerLoc, clientName);
-	}
+	private static class RemoteLoggerProvider extends ComponentClient {
 
+		public RemoteLoggerProvider() throws Exception {
+			super(null, AcsLocations.figureOutManagerLocation(), LtsTestClient.class.getSimpleName());
+		}
+		
+		public Logger getLogger() {
+			return m_logger;
+		}
+	}
 	
 	public static void main(String[] args) {
+		RemoteLoggerProvider client = null;
 		try {
-			String managerLoc = System.getProperty("ACS.manager");
-			if (managerLoc == null) {
-				System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-				System.exit(-1);
-			}
-
-			testLTSClient client = new testLTSClient(null, managerLoc, "testLTSClient");			
-			Logger logger = client.m_logger;
+			client = new RemoteLoggerProvider();
+			Logger logger = client.getLogger();
 			
-			simpleLog slog=new simpleLog(logger);
-			slog.log();		
+			// log #1
+			SimpleLog slog = new SimpleLog(logger);
+			slog.log();
 			
-			simpleLog slogAA=new simpleLog(logger, "Array01", "Antenna01");
-			slogAA.log();		
+			// log #2
+			SimpleLog slogAA = new SimpleLog(logger, "Array01", "Antenna01");
+			slogAA.log();
 			
-			complexLog clog=new complexLog(logger);
+			// log #3
+			ComplexLog clog = new ComplexLog(logger);
 			clog.setsomeDoubleMember(3.14159);
 			clog.setsomeStringMember("test string");
 			clog.setsomeLongMember((long)42);
 			clog.setsomeBooleanMember(true);
 			clog.log();
 			
-			complexLog clogAA=new complexLog(logger);
-                        clogAA.setArray("Array01");
-                        clogAA.setAntenna("Antenna01");
+			// log #4
+			ComplexLog clogAA = new ComplexLog(logger);
+			clogAA.setArray("Array01");
+			clogAA.setAntenna("Antenna01");
 			clogAA.setsomeDoubleMember(3.14159);
 			clogAA.setsomeStringMember("test string");
 			clogAA.setsomeLongMember((long)42);
 			clogAA.setsomeBooleanMember(true);
 			clogAA.log();
+
+			// log #5
+			ComplexLog.log(logger, 2.22, "test string", 42l, true);
 			
+			// log #6
+			new ComplexLog(logger).setsomeBooleanMember(false).setsomeDoubleMember(2.22).setArray("myArray").setAntenna("whatAntenna").log();
+			
+			// To avoid "failed to flush logging queue because remote logging service has not been made available."
+			// when the client is too short-lived...
 			Thread.sleep(2000);
 		}
 		catch (Throwable thr) {
 			// bad luck
 			thr.printStackTrace();
 			System.exit(-1);
+		}
+		finally {
+			if (client != null) {
+				try {
+					client.tearDown();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 	}
 

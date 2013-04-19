@@ -23,8 +23,8 @@
 #
 #------------------------------------------------------------------------------
 
-#from loggingts.ACSLogTypeExample import simpleLog,complexLog
-from ACSLogTypeExampleLTS  import simpleLog,complexLog
+#from loggingts.ACSLogTypeExample import SimpleLog,ComplexLog
+from ACSLogTypeExampleLTS  import SimpleLog,ComplexLog
 
 # Import the acspy.PySimpleClient class
 from Acspy.Clients.SimpleClient import PySimpleClient
@@ -35,18 +35,18 @@ simpleClient = PySimpleClient()
 
 simpleClient.getLogger().logInfo("Starting test client.")
 
-simpleLog().log()
+SimpleLog().log()
 
-simpleLog("Array01","Antenna01").log()
+SimpleLog("Array01","Antenna01").log()
 
-a=complexLog()
+a=ComplexLog()
 a.setsomeDoubleMember(3.14159)
 a.setsomeStringMember("test string")
 a.setsomeLongMember(42)
 a.setsomeBooleanMember(True)
 a.log()
 
-b=complexLog()
+b=ComplexLog()
 b.setArray("Array01")
 b.setAntenna("Antenna01")
 b.setsomeDoubleMember(3.14159)

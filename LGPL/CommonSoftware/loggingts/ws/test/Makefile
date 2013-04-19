@@ -212,7 +212,12 @@ all:	do_all
 	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_all
+	$(RM) *~
+	$(RM) *\.log
+	$(RM) sed\.scan
+	$(RM) tmp
+	$(RM) tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
