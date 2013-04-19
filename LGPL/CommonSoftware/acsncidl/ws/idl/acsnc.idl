@@ -102,6 +102,9 @@ module acsnc
 
     /**
      * Typedef for "enum" values of known event channel domains that allow a hardcoded or CDB-based mapping from a channel to a notification service.  
+     * 
+     * TODO: Remove this typedef and its only use below for 'ALARMSYSTEM_DOMAIN_VAL'. 
+     *       We only use the string forms, e.g. ALARMSYSTEM_DOMAIN_NAME
      */
     typedef short domainNameValue;
 
@@ -114,6 +117,8 @@ module acsnc
      * Alarm System NC CDB mapping domain name.
      */
     const string ALARMSYSTEM_DOMAIN_NAME = "ALARMSYSTEM";
+    
+    
 
     ////////////////////////////////////////////////////////////////////////
     /** @interface ACSEventAdmin
@@ -121,6 +126,9 @@ module acsnc
      *  service.  This includes channel creation, destruction, and monitoring
      *  of events among other things.  Exception handling for the various 
      *  methods has yet to be determined.
+     * 
+     * TODO: Remove this interface. It is only used by the old event GUI in module acspy
+     *       which should be removed from ACS in favor of acsGUIs/eventGUI.
      */
     interface ACSEventAdmin : ACS::ACSComponent
 	{
