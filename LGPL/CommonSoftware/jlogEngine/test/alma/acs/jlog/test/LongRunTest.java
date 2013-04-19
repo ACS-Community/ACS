@@ -60,6 +60,14 @@ public class LongRunTest extends Thread {
 	// The logger
 	private Logger logger=null;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param endTime The actual time to stop sending logs (format HH:MM) 
+	 * @param msec Time interval between the sending of 2 block of logs
+	 * @param logInt Time interval between the sending of 2 logs
+	 * @throws IllegalArgumentException
+	 */
 	public LongRunTest(String endTime, String msec, String logInt) throws IllegalArgumentException {
 		if (endTime==null || msec==null) {
 			throw new IllegalArgumentException("Invalid null date/interval");
@@ -89,21 +97,19 @@ public class LongRunTest extends Thread {
 		}
 		try {
 			msec= Integer.parseInt(millisec);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Error decoding the interval "+millisec,e);
+		} catch (Throwable e) {
+			throw new IllegalArgumentException("Error decoding the interval between 2 blocks of logs: "+millisec,e);
 		}
 		if (msec<0) {
-			throw new IllegalArgumentException("Invalid interval "+millisec);
+			throw new IllegalArgumentException("Invalid interval between blocks of logs: "+millisec);
 		}
-		if (blockInt!=null) {
-			try {
-				blockInterval= Integer.parseInt(blockInt);
-			} catch (Exception e) {
-				throw new IllegalArgumentException("Error decoding the interval in a block "+blockInt,e);
-			}
-			if (msec<0) {
-				throw new IllegalArgumentException("Invalid interval in a block "+blockInt);
-			}
+		try {
+			blockInterval= Integer.parseInt(blockInt);
+		} catch (Throwable e) {
+			throw new IllegalArgumentException("Error decoding the interval between 2 logs: "+blockInt,e);
+		}
+		if (blockInterval<0) {
+			throw new IllegalArgumentException("Invalid interval between logs: "+blockInt);
 		}
 	}
 	
@@ -129,37 +135,20 @@ public class LongRunTest extends Thread {
 	}
 	
 	/**
-	 * Print the usage message on stdout
-	 *
-	 */
-	public static void usage() {
-		System.out.println("LongRunTest <end_time> <interval> [logLevelInterval]");
-		System.out.println("end_time: the time (hh:mm) to terminate sending logs");
-		System.out.println("interval: the interval (msec) between the sending of a block of logs");
-		System.out.println("logLevelInterval: the interval (msec) between the sending of two logs in a block");
-		System.out.println("Every interval msec, send publish one log of each log type (i.e. a block of logs).");
-		System.out.println("The logs in a block are published with a delay of logLevelInterval msec (default is 100 msec).");
-	}
-	
-	/**
 	 * The starting point of the application
 	 *
 	 */
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 		if (args.length!=2 && args.length!=3) {
-			LongRunTest.usage();
+			LongRunTest.printUsage();
 		} else {
 			LongRunTest test;
 			try {
-				if (args.length==2) {
-					test = new LongRunTest(args[0],args[1],null);
-				} else {
-					test = new LongRunTest(args[0],args[1],args[2]);
-				}
-			} catch (Exception e) {
+				test = new LongRunTest(args[0],args[1],args[2]);
+			} catch (Throwable e) {
 				System.err.println("Exception: "+e.getMessage());
 				e.printStackTrace(System.err);
-				LongRunTest.usage();
+				LongRunTest.printUsage();
 			}
 		}
 	}
@@ -202,7 +191,7 @@ public class LongRunTest extends Thread {
 	}
 	
 	/**
-	 * Logs a block of logs i.e. one log of each type separated byt
+	 * Logs a block of logs i.e. one log of each type separated by
 	 * LOGS_INTERVAL msec
 	 *
 	 */
@@ -211,8 +200,9 @@ public class LongRunTest extends Thread {
 			AcsLogLevel level=null;
 			switch (t) {
 			case 0: {
+				level=AcsLogLevel.DELOUSE;
 				break;
-			}
+				}
 				case 1: {
 					level=AcsLogLevel.DEBUG;
 					break;
@@ -276,4 +266,19 @@ public class LongRunTest extends Thread {
 			} catch (InterruptedException ie) {}
 		}
 	}
+	
+	/**
+	 * Print the usage string in the command line
+	 */
+	public static void printUsage() {
+		StringBuilder str = new StringBuilder("\nUSAGE: LongRunTest HH:MM String msecBlockInterval msecLogInterval\n");
+		str.append("\tHH:MM: Actual time to stop sending logs\n");
+		str.append("\tmsecBlockInterval: The interval in msec between the sending of two blocks of logs\n");
+		str.append("\tmsecLogInterval: The interval in msec between the sending of two logs\n");
+		str.append("LongRunTest sends longs until the actual time is HH:MM\n");
+		str.append("Logs are sent in blocks of 10, one log for each type separated by msecLogInterval msecs.\n");
+		str.append("After sending one block of logs, LongRunTest waits msecBlockInterval msecs before sending the next block.\n");
+		System.out.println(str.toString());
+	}
+	
 }
