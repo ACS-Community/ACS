@@ -320,7 +320,7 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	{
 		SendDataErrorExImpl sfEx(ex, __FILE__, __LINE__, __FUNCTION__);
 		sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
-		sfEx.setFrameCount(iteration); sfEx.setTotalFrameCount(numOfIter);
+		sfEx.setFrameCount(iteration+1); sfEx.setTotalFrameCount(numOfIter);
 		throw sfEx;
 	}//try-catch
 }//sendData
