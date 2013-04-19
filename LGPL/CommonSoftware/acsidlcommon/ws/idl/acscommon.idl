@@ -1124,6 +1124,22 @@ module acscommon
      *  Type field of logging events.
      */
     const string LOGGING_TYPE = "";
+    
+    /**
+     *  Separates the NC name from the NC domain name, to form a single entry
+     *  in the naming service. See http://jira.alma.cl/browse/COMP-9338.
+     *  Note that all of these fine-grained domains apply to "normal" NCs and therefore 
+     *  lie within the ALMADOMAIN defined above.
+     */
+    const string NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR = "@";
+    
+    /**
+     *  Default domain name to be used in the naming service bindings 
+     *  for NCs that were created without a domain such as ALARMSYSTEM.
+     *  See http://jira.alma.cl/browse/COMP-9338 and NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.
+     */
+    const string NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT = "DEFAULTDOMAIN";
+
 };
 
 #endif
