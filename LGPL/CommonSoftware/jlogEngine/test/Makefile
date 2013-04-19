@@ -75,7 +75,8 @@ SCRIPTS_L       =	jlogLogEntryTest \
 					jlogTestEngineCacheNotification \
 					jlogTestFilter \
 					jlogTestFiltersVector \
-					jlogStressCacheFile
+					jlogStressCacheFile \
+					jlogLongRunTest
 
 #>>>>> END OF standard rules
   
