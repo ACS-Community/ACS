@@ -86,15 +86,17 @@ import alma.acs.logging.ts.TypesafeLogBase;
 public class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text> extends TypesafeLogBase {
+	
 	public static final AcsLogLevel level = AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>;
+	public static final String audience = "</xsl:text><xsl:value-of select="@audience"/><xsl:text>";
 	public static final String msg = "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>";
-
+	
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger) {
 		this(logger, null, null);
 	}
 
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger, String array, String antenna) {
-		super(logger, "</xsl:text><xsl:value-of select="$logName"/><xsl:text>", level, msg, array, antenna);
+		super(logger, "</xsl:text><xsl:value-of select="$logName"/><xsl:text>", level, audience, msg, array, antenna);
 	}
 	
 	/**

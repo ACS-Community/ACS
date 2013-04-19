@@ -46,7 +46,7 @@ public abstract class TypesafeLogBase
 	protected final AcsLogRecord lr;
 
 	
-	protected TypesafeLogBase(Logger logger, String logName, AcsLogLevel level, String msg, String array, String antenna) {
+	protected TypesafeLogBase(Logger logger, String logName, AcsLogLevel level, String audience, String msg, String array, String antenna) {
 		
 		this.logger=logger;
 		if (logger instanceof AcsLogger) {
@@ -57,7 +57,7 @@ public abstract class TypesafeLogBase
 		nameValue.put("logName", logName);
 		
 		lr = new AcsLogRecord(level, msg, nameValue, logger.getName());
-		lr.setAudience("Developer");
+		lr.setAudience(audience);
 
 		lr.setArray(array);
 		lr.setAntenna(antenna);
