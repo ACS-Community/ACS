@@ -28,7 +28,6 @@
 package alma.acs.nc;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,6 +71,7 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.StopWatch;
+import alma.acscommon.NC_KIND;
 
 
 /**
@@ -106,32 +106,36 @@ public class Helper {
 	protected final Logger m_logger;
 	
 	/**
-	 * The name is used to enforce that a Helper instance can be used for not more than one notification channel.
-	 * Thus it is either null or has the name of the NC that this Helper is used for.
+	 * A Helper instance serves only one NC.
 	 */
-	protected volatile String theChannelName;
+	protected final String channelName;
 	
-	// channelId is used to reconnect to channel in case that Notify Server crashes
+	/**
+	 * channelId is used to reconnect to channel in case that Notify Server crashes
+	 */
 	private int channelId;
 	
 	// Provides access to channel's quality of service properties
 	private final ChannelProperties m_channelProperties;
 	
-	private EventChannelFactory notifyFactory;
-
-	/**
-	 * Map that's used similar to a log repeat guard, because the OMC was flooded with NC config problem logs 
-	 * (as of 2008-03-06). 
-	 * <p>
-	 * key = channel name; value = timestamp in ms when config error was found for the given channel.
-	 */
-	private final Map<String, Long> channelConfigProblems = new HashMap<String, Long>();
-
 	/**
 	 * Cached notify factory name where our NC is or should be hosted.
 	 * Avoids unnecessary CDB calls.
 	 */
 	private volatile String ncFactoryName;
+	
+	/**
+	 * TODO
+	 */
+	private EventChannelFactory notifyFactory;
+
+	/**
+	 * timestamp in ms when config error was found. Initialized to 0L.
+	 * <p>
+	 * Used similar to a log repeat guard, because the OMC was flooded with NC config problem logs 
+	 * (as of 2008-03-06). 
+	 */
+	private Long channelConfigProblemTimestamp = 0L;
 
 	/**
 	 * Random number generator, used to randomize client names 
@@ -146,24 +150,17 @@ public class Helper {
 	
 
 	/**
-	 * Creates a new instance of Helper, which includes resolving the naming service.
-	 * @param services A reference to the ContainerServices
-	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
-	 * @deprecated Use {@link #Helper(ContainerServicesBase, NamingContext)} instead, as done by NCPublisher and NCSubscriber
-	 *             that are integrated into the ContainerServices.
-	 */
-	public Helper(ContainerServicesBase services) throws AcsJException {
-		this(services, getNamingServiceInitial(services));
-	}
-
-	/**
 	 * Creates a new instance of Helper.
 	 * This constructor is preferred, because it makes dependencies explicit. 
+	 * @param channelName The NC that this Helper is made for.
 	 * @param services A reference to the ContainerServices
 	 * @param namingService Reference to the naming service.
 	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
 	 */
-	public Helper(ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+	public Helper(String channelName, ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+		
+		this.channelName = channelName;
+		
 		if (services == null) {
 			AcsJBadParameterEx ex = new AcsJBadParameterEx();
 			ex.setReason("Null reference obtained for the ContainerServices!");
@@ -256,7 +253,7 @@ public class Helper {
 	
 	
 	/**
-	 * The TAO extension's reconnect() methods call this, 
+	 * The TAO extension's reconnect() methods call this (via NCSubscriber etc),
 	 * so that we call again {@link org.omg.CosNotifyChannelAdmin.EventChannelFactoryOperations#get_event_channel(int)}.
 	 */
 	public EventChannel getNotificationChannel(EventChannelFactory ecf)
@@ -271,13 +268,17 @@ public class Helper {
 	}
 
 	/**
+	 * Calls {@link #getNotificationChannel(String, String)} with <code>channelKind=="channels"</code>.
+	 */
+	protected EventChannel getNotificationChannel(String notifyFactoryName) throws AcsJException {
+		return getNotificationChannel(NC_KIND.value, notifyFactoryName);
+	}
+
+	/**
 	 * This method gets a reference to the event channel. If it is not already
 	 * registered with the naming service, it is created.
 	 * 
 	 * @return Reference to the event channel specified by channelName. Never null.
-	 * @param channelName
-	 *           Name of the event channel registered with the CORBA Naming
-	 *           Service
 	 * @param channelKind
 	 *           Kind of the channel as registered with the CORBA naming service ("channels").
 	 * @param notifyFactoryName
@@ -286,11 +287,9 @@ public class Helper {
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
 	 */
-	protected EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
+	protected EventChannel getNotificationChannel(String channelKind, String notifyFactoryName) 
 		throws AcsJException 
 	{
-		enforceSingleNC(channelName);
-		
 		// return value
 		EventChannel retValue = null;
 		NameComponent[] t_NameSequence = { new NameComponent(channelName, channelKind) };
@@ -325,7 +324,7 @@ public class Helper {
 				// Let's try to create it, which may fail if some other consumer or supplier is currently doing the same,
 				// but only because we use the TAO extensions that support named NCs.
 				try {
-					retValue = createNotificationChannel(channelName, channelKind, notifyFactoryName);
+					retValue = createNotificationChannel(channelKind, notifyFactoryName);
 				} catch (NameAlreadyUsed ex) {
 					m_logger.log(Level.INFO, "NC '" + channelName + "' seems to be getting created. Will wait and try again in " + retrySleepSec + " seconds.", ex);
 					try {
@@ -418,8 +417,6 @@ public class Helper {
 	 * ACS consumer and supplier classes, see http://jira.alma.cl/browse/COMP-2808
 	 * 
 	 * @return Reference to the newly created channel.
-	 * @param channelName
-	 *           Name of the channel to create.
 	 * @param channelKind
 	 *           Kind of the channel as registered with the CORBA naming service.
 	 * @param notifyFactoryName
@@ -428,11 +425,9 @@ public class Helper {
 	 *            Standard ACS Java exception.
 	 * @throws NameAlreadyUsed thrown if the channel of this name already exists.
 	 */
-	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
+	protected EventChannel createNotificationChannel(String channelKind, String notifyFactoryName) 
 		throws AcsJException, NameAlreadyUsed
 	{
-		enforceSingleNC(channelName);
-		
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
 		
 		// return value
@@ -451,7 +446,6 @@ public class Helper {
 			retValue = createNotifyChannel_internal(
 					m_channelProperties.configQofS(channelName),
 					m_channelProperties.configAdminProps(channelName), 
-					channelName, 
 					channelIdHolder);
 			
 			// The fact that we got here without exception means that the channel name was not used yet.
@@ -504,10 +498,8 @@ public class Helper {
 	 * @throws NameAlreadyUsed if the call to NotifyFactory#create_named_channel fails with this exception.
 	 * @throws AcsJCORBAProblemEx if the TAO extension throws a NameMapError or if the QoS attributes cause a UnsupportedAdmin.
 	 */
-	protected EventChannel createNotifyChannel_internal(Property[] initial_qos, Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
+	protected EventChannel createNotifyChannel_internal(Property[] initial_qos, Property[] initial_admin, IntHolder channelIdHolder) 
 		throws NameAlreadyUsed, UnsupportedQoS, AcsJNarrowFailedEx, AcsJCORBAProblemEx {
-		
-		enforceSingleNC(channelName);
 		
 		EventChannel ret = null;
 		
@@ -539,7 +531,7 @@ public class Helper {
 			throw ex2;
 		} catch (UnsupportedAdmin ex) {
 			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(ex);
-			ex2.setInfo(createUnsupportedAdminLogMessage(ex, channelName));
+			ex2.setInfo(createUnsupportedAdminLogMessage(ex));
 			throw ex2;
 		}
 		return ret;
@@ -565,11 +557,9 @@ public class Helper {
 	 *            Service.
 	 * @warning this method assumes
 	 */
-	protected void destroyNotificationChannel(String channelName, String channelKind, org.omg.CosNotifyChannelAdmin.EventChannel channelRef)
+	protected void destroyNotificationChannel(String channelKind, org.omg.CosNotifyChannelAdmin.EventChannel channelRef)
 			throws AcsJException 
 	{
-		enforceSingleNC(channelName);
-		
 		try {
 			// destroy the remote CORBA object
 			channelRef.destroy();
@@ -611,23 +601,23 @@ public class Helper {
 	 * @param channelName	name of the channel.
 	 * @return notification channel factory name.
 	 */
-	public String getNotificationFactoryNameForChannel(String channelName)
+	public String getNotificationFactoryNameForChannel()
 	{
-		return getNotificationFactoryNameForChannel(channelName, null);
+		return getNotificationFactoryNameForChannel(null);
 	}
 	
 	/**
 	 * Gets the notification channel factory name for the given channel/domain.
+	 * 
+	 * Check-in-TODO: Fix usage in acsGUIs/eventGUI
+	 * 
 	 * <p>
 	 * Tries to use the optional mapping from the CDB, otherwise uses <code>"NotifyEventChannelFactory"</code>.
-	 * @param channelName	name of the channel.
 	 * @param domainName	name of the domain, <code>null</code> if undefined.
 	 * @return notification channel factory name.
 	 */
-	public String getNotificationFactoryNameForChannel(String channelName, String domainName) 
+	public String getNotificationFactoryNameForChannel(String domainName) 
 	{
-		enforceSingleNC(channelName);
-
 		// try local cache
 		if (ncFactoryName != null) {
 			return ncFactoryName;
@@ -641,10 +631,10 @@ public class Helper {
 			channelsDAO = cdbAccess.createDAO("MACI/Channels");
 		} catch (Throwable th) {
 			// keep track of when this occurs
-			Long timeLastError = channelConfigProblems.get(channelName);
-			channelConfigProblems.put(channelName, System.currentTimeMillis());
+			Long timeLastError = channelConfigProblemTimestamp;
+			channelConfigProblemTimestamp = System.currentTimeMillis();
 			// don't log this too often (currently only once)
-			if (timeLastError == null) {
+			if (timeLastError == 0l) {
 				m_logger.log(AcsLogLevel.CONFIG, "Config issue for channel '" + channelName + "'. " + 
 						"Failed to get MACI/Channels DAO from CDB. Will use default notification service.");
 			}
@@ -706,9 +696,8 @@ public class Helper {
 	 * @param channelName name of the channel
 	 * @return HashMap described above
 	 */
-	public HashMap<String, Double> getEventHandlerTimeoutMap(String channelName) {
-		enforceSingleNC(channelName);
-
+	public HashMap<String, Double> getEventHandlerTimeoutMap() {
+		
 		// initialize the return value
 		HashMap<String, Double> retVal = new HashMap<String, Double>();
 
@@ -776,10 +765,9 @@ public class Helper {
 	 * identifies an administrative property whose requested setting could not be satisfied, 
 	 * and each associated value the closest setting for that property that could be satisfied.
 	 * @param ex
-	 * @param channelName
 	 * @return a String that contains the information from UnsupportedAdmin
 	 */
-	public String createUnsupportedAdminLogMessage(UnsupportedAdmin ex, String channelName) {
+	public String createUnsupportedAdminLogMessage(UnsupportedAdmin ex) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Caught " + ex.getMessage() + ": The administrative properties specified for the '" + channelName 
 				+ "' channel are not supported: ");
@@ -817,21 +805,4 @@ public class Helper {
 		return clientNameSB.toString();
 	}
 	
-	/**
-	 * Enforces that a Helper instance works for at most one NC.
-	 * This method must be called by all other Helper methods that work for a particular NC.
-	 * @TODO: For a cleaner solution, refactor this Helper class to accept channelName only in the constructor
-	 * and take it out from the other methods.
-	 * 
-	 * @param ncName Name of the NC to use this helper with.
-	 * @throws IllegalArgumentException If this Helper has already been used with another NC.
-	 */
-	protected void enforceSingleNC(String ncName) {
-		if (theChannelName != null && !theChannelName.equals(ncName)) {
-			throw new IllegalArgumentException("Helper for NC '" + theChannelName + "' cannot be used also for '" + ncName + "'.");
-		}
-		else {
-			theChannelName = ncName;
-		}
-	}
 }

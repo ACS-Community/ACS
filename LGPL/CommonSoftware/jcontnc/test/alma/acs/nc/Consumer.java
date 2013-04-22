@@ -252,7 +252,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 		m_clientName = services.getName();
 
 		// naming service, POA, and Any generator
-		m_helper = new Helper(services);
+		m_helper = new Helper(channelName, services, Helper.getNamingServiceInitial(services));
 
 		m_notifyServiceName = getNotificationFactoryName();
 
@@ -273,7 +273,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 
 
 		// get the channel
-		m_channel = getHelper().getNotificationChannel(m_channelName, getChannelKind(), m_notifyServiceName);
+		m_channel = getHelper().getNotificationChannel(m_notifyServiceName);
 
 		// go ahead configured CORBA stuff
 		createConsumer();
@@ -320,21 +320,6 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 	
 
 	/**
-	 * This method returns a constant character pointer to the "kind" of
-	 * notification channel as registered with the naming service (i.e., the kind
-	 * field of a CosNaming::Name) which is normally equivalent to
-	 * acscommon::NC_KIND. The sole reason this method is provided is to
-	 * accomodate subclasses which subscribe/publish non-ICD style events (ACS
-	 * archiving channel for example).In that case, the developer would override
-	 * this method.
-	 * 
-	 * @return string
-	 */
-	protected String getChannelKind() {
-		return alma.acscommon.NC_KIND.value;
-	}
-
-	/**
 	 * This method returns a constant character pointer to the notification
 	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN. The
 	 * sole reason this method is provided is to accomodate subclasses which
@@ -359,7 +344,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return m_helper.getNotificationFactoryNameForChannel(m_channelName, m_channelNotifyServiceDomainName);
+		return m_helper.getNotificationFactoryNameForChannel(m_channelNotifyServiceDomainName);
 	}
 
 	/**
@@ -1082,7 +1067,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
 		} catch (UnsupportedAdmin ex) {
-			m_logger.warning(m_helper.createUnsupportedAdminLogMessage(ex, m_channelName));
+			m_logger.warning(m_helper.createUnsupportedAdminLogMessage(ex));
 		} catch (NullPointerException e) {
 		}
 		

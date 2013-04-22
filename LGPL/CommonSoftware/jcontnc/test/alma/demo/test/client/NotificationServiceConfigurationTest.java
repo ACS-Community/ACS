@@ -21,6 +21,8 @@ package alma.demo.test.client;
 
 import java.util.logging.Logger;
 
+import org.omg.CosNaming.NamingContext;
+
 import alma.acs.component.client.ComponentClient;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Helper;
@@ -31,6 +33,8 @@ import alma.acs.nc.Helper;
 public class NotificationServiceConfigurationTest extends ComponentClient
 {
 	
+	private final NamingContext nctx;
+
 	/**
 	 * @param logger
 	 * @param managerLoc
@@ -40,6 +44,8 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	public NotificationServiceConfigurationTest(Logger logger, String managerLoc, String clientName)
 			throws Exception {
 		super(logger, managerLoc, clientName);
+		
+		nctx = Helper.getNamingServiceInitial(getContainerServices());
 	}
 
 	/**
@@ -47,19 +53,19 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	 */
 	public void doSomeStuff() throws AcsJException {
 		// default expected
-		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("any")));
+		System.out.println((new Helper("any", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
 		// channel mapping 
-		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("PARTICULAR")));
+		System.out.println((new Helper("PARTICULAR", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
 		// wildchars channel mapping 
-		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("CONTROL_CHANNEL")));
+		System.out.println((new Helper("CONTROL_CHANNEL", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
 		// domain mapping
-		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("anyOnLaser", "ALARMSYSTEM")));
+		System.out.println((new Helper("anyOnLaser", getContainerServices(), nctx).getNotificationFactoryNameForChannel("ALARMSYSTEM")));
 		
 		// fallback to default
-		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("anyOnNonExistingDomain", "NONEXISTING_DOMAIN")));
+		System.out.println((new Helper("anyOnNonExistingDomain", getContainerServices(), nctx).getNotificationFactoryNameForChannel("NONEXISTING_DOMAIN")));
 	}
 
 

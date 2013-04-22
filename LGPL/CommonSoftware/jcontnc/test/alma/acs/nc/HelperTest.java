@@ -17,9 +17,9 @@ import junit.framework.AssertionFailedError;
 import org.omg.CORBA.IntHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.CosNotification.Property;
-import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
 
 import Monitor.Data;
@@ -34,7 +34,6 @@ import gov.sandia.NotifyMonitoringExt.EventChannelCreationTime;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactoryNames;
 import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
 
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -42,6 +41,7 @@ import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.IsoDateFormat;
+import alma.acscommon.NAMING_SERVICE_NAME;
 import alma.acscommon.NC_KIND;
 
 
@@ -53,7 +53,7 @@ import alma.acscommon.NC_KIND;
  */
 public class HelperTest extends ComponentClientTestCase
 {
-	private HelperWithChannelCreationSynch helper;
+	private NamingContext nctx;
 	private NotificationServiceMonitorControl nsmc;
 
 	public HelperTest() throws Exception {
@@ -63,12 +63,14 @@ public class HelperTest extends ComponentClientTestCase
 	protected void setUp() throws Exception {
 		System.out.println("------------------------- " + getName() + " -------------------------");
 		super.setUp();
-		helper = new HelperWithChannelCreationSynch(getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
-
+		
+		nctx = NamingContextHelper.narrow(
+				m_acsManagerProxy.get_service(NAMING_SERVICE_NAME.value, false)
+		);
 		String factoryMonitorRegName = "MC_NotifyEventChannelFactory";
 		try {
 			nsmc = NotificationServiceMonitorControlHelper.narrow(
-					helper.getNamingService().resolve(new NameComponent[]{new NameComponent("MC_NotifyEventChannelFactory", "")}));
+					nctx.resolve(new NameComponent[]{new NameComponent("MC_NotifyEventChannelFactory", "")}));
 		} catch (NotFound ex) {
 			fail("Failed to resolve factory's MC extension object in the naming service: " + factoryMonitorRegName 
 					+ ". This is a recurrent problem, probably linked to the missing line 'ReBound ID: MC_NotifyEventChannelFactory' in ./tmp/acsStart.log.");
@@ -115,7 +117,9 @@ public class HelperTest extends ComponentClientTestCase
 	 */
 	public void testCreateChannel() throws Exception {
 		String channelName = "singleChannel";
-		String factoryName = helper.getNotificationFactoryNameForChannel(channelName);
+		Helper helper = new HelperWithChannelCreationSynch(channelName, getContainerServices(), nctx);
+
+		String factoryName = helper.getNotificationFactoryNameForChannel();
 		
 		EventChannel myChannel = null;
 		try {
@@ -123,25 +127,25 @@ public class HelperTest extends ComponentClientTestCase
 			assertChannel(false, channelName);
 			
 			// The call to "getNotificationChannel" should create the channel, because reuse will not be possible.
-			myChannel = helper.getNotificationChannel(channelName, NC_KIND.value, factoryName);
+			myChannel = helper.getNotificationChannel(factoryName);
 			assertChannel(true, channelName);
 			
 			// Now we try to create that channel again, without allowing reuse. Should fail. 
 			try {
-				helper.createNotificationChannel(channelName, NC_KIND.value, factoryName);
+				helper.createNotificationChannel(NC_KIND.value, factoryName);
 				fail("Expected NameAlreadyUsed exception for creating the channel twice.");
 			} catch (Exception ex) {
 				m_logger.info("Got a NameAlreadyUsed exception as expected.");
 			}
 			
 			// But with reuse it should work
-			EventChannel myChannel2 = helper.getNotificationChannel(channelName, NC_KIND.value, factoryName);
+			EventChannel myChannel2 = helper.getNotificationChannel(factoryName);
 			assertTrue(myChannel._is_equivalent(myChannel2));
 			
 		} finally {
 			// Destroy the channel
 			if (myChannel != null) {
-				helper.destroyNotificationChannel(channelName, NC_KIND.value, myChannel);
+				helper.destroyNotificationChannel(NC_KIND.value, myChannel);
 			}
 			assertChannel(false, channelName);
 		}
@@ -158,21 +162,20 @@ public class HelperTest extends ComponentClientTestCase
 	 * This eliminates jitter from thread creation, thread starting, and contact with the naming service, all happening before actual channel creation.
 	 */
 	public void testConcurrentChannelCreation() throws Exception {
-		String channelName = "testChannelForConcurrentCreation"; // one channel tried to be created concurrently
+		final String channelName = "testChannelForConcurrentCreation"; // one channel tried to be created concurrently
+		final HelperWithChannelCreationSynch helper = new HelperWithChannelCreationSynch(channelName, getContainerServices(), nctx);
 		
 		assertChannel(false, channelName);
 
 		// @TODO Refactor the following code to use alma.acs.concurrent.ThreadBurstExecutorService now that we have it
 		class ChannelCreator implements Callable<EventChannel> {
-			private final String channelName;
 			private final CountDownLatch synchStart;
-			ChannelCreator(String channelName, CountDownLatch synchStart) {
-				this.channelName = channelName;
+			ChannelCreator(CountDownLatch synchStart) {
 				this.synchStart = synchStart;
 			}
 			public EventChannel call() throws Exception {
-				String factoryName = helper.getNotificationFactoryNameForChannel(channelName);
-				return helper.createNotificationChannel(channelName, NC_KIND.value, factoryName, synchStart);
+				String factoryName = helper.getNotificationFactoryNameForChannel();
+				return helper.createNotificationChannel(NC_KIND.value, factoryName, synchStart);
 			}
 		}
 		// we need at least two threads, but more threads may improve collision chances
@@ -190,7 +193,7 @@ public class HelperTest extends ComponentClientTestCase
 		try {
 			// Run the threads that create the same channel
 			for (int i = 0; i < numCreators; i++) {
-				results.add(pool.submit(new ChannelCreator(channelName, synchCreationStart)));
+				results.add(pool.submit(new ChannelCreator(synchCreationStart)));
 			}
 			// wait for all threads to finish. Waiting here instead of waiting on the future.get() calls
 			// has the advantage that we can exit this method with a fail() without leaving an ongoing channel creation behind.
@@ -227,7 +230,7 @@ public class HelperTest extends ComponentClientTestCase
 		} 
 		finally {
 			if (uniqueChannel != null) {
-				helper.destroyNotificationChannel(channelName, NC_KIND.value, uniqueChannel);
+				helper.destroyNotificationChannel(NC_KIND.value, uniqueChannel);
 			}
 		}
 	}
@@ -240,18 +243,17 @@ public class HelperTest extends ComponentClientTestCase
 	 */
 	public void testConcurrentChannelRetrieval() throws Throwable {
 		final String channelName = "testChannelForConcurrentRetrieval"; // one channel to be retrieved concurrently
+		final HelperWithChannelCreationSynch helper = new HelperWithChannelCreationSynch(channelName, getContainerServices(), nctx);
 		assertChannel(false, channelName);
 
 		class ChannelRetriever implements Callable<EventChannel> {
-			private final String channelName;
 			private final CountDownLatch synchStart;
-			ChannelRetriever(String channelName, CountDownLatch synchStart) {
-				this.channelName = channelName;
+			ChannelRetriever(CountDownLatch synchStart) {
 				this.synchStart = synchStart;
 			}
 			public EventChannel call() throws Exception {
-				String factoryName = helper.getNotificationFactoryNameForChannel(channelName);
-				return helper.getNotificationChannel(channelName, NC_KIND.value, factoryName, synchStart);
+				String factoryName = helper.getNotificationFactoryNameForChannel();
+				return helper.getNotificationChannel(factoryName, synchStart);
 			}
 		}
 		// we need at least two threads, but more threads may improve collision chances
@@ -268,7 +270,7 @@ public class HelperTest extends ComponentClientTestCase
 		try {
 			// Run the threads that request the same channel
 			for (int i = 0; i < numCreators; i++) {
-				results.add(pool.submit(new ChannelRetriever(channelName, synchCreationStart)));
+				results.add(pool.submit(new ChannelRetriever(synchCreationStart)));
 			}
 			// wait for all threads to finish. Waiting here instead of waiting on the future.get() calls
 			// has the advantage that we can exit this method with a fail() without leaving an ongoing channel creation behind.
@@ -298,7 +300,7 @@ public class HelperTest extends ComponentClientTestCase
 		} 
 		finally {
 			if (uniqueChannel != null) {
-				helper.destroyNotificationChannel(channelName, NC_KIND.value, uniqueChannel);
+				helper.destroyNotificationChannel(NC_KIND.value, uniqueChannel);
 			}
 		}
 		
@@ -319,7 +321,7 @@ public class HelperTest extends ComponentClientTestCase
 		// Check naming service binding
 		NameComponent[] t_NameSequence = { new NameComponent(channelName, NC_KIND.value) };
 		try {
-			helper.getNamingService().resolve(t_NameSequence);
+			nctx.resolve(t_NameSequence);
 			if (existing) {
 				m_logger.info("Verified that channel " + channelName + " is registered with the naming service.");
 			}
@@ -366,17 +368,18 @@ public class HelperTest extends ComponentClientTestCase
 
 		private volatile CountDownLatch synch;
 
-		public HelperWithChannelCreationSynch(ContainerServicesBase services, NamingContext namingService) throws AcsJException {
-			super(services, namingService);
+		public HelperWithChannelCreationSynch(String channelName, ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+			super(channelName, services, namingService);
 		}
 		
 		/**
 		 * Counts down the optional CountDownLatch, then delegates to parent method
 		 * @throws AcsJCORBAProblemEx 
 		 */
-		protected EventChannel createNotifyChannel_internal(EventChannelFactory notifyFactory, Property[] initial_qos,
-				Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
-				throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError, AcsJNarrowFailedEx, AcsJCORBAProblemEx {
+		@Override
+		protected EventChannel createNotifyChannel_internal(Property[] initial_qos,
+				Property[] initial_admin, IntHolder channelIdHolder) 
+				throws NameAlreadyUsed, UnsupportedQoS, AcsJNarrowFailedEx, AcsJCORBAProblemEx {
 			if (synch != null) {
 				// count down and wait for other threads to reach the same state before going on.
 				synch.countDown();
@@ -387,19 +390,19 @@ public class HelperTest extends ComponentClientTestCase
 					ex.printStackTrace();
 				}
 			}
-			return super.createNotifyChannel_internal(initial_qos, initial_admin, channelName, channelIdHolder);
+			return super.createNotifyChannel_internal(initial_qos, initial_admin, channelIdHolder);
 		}
 		
-		protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName, CountDownLatch synch) 
-				throws AcsJException, NameAlreadyUsed, NameMapError {
+		protected EventChannel createNotificationChannel(String channelKind, String notifyFactoryName, CountDownLatch synch) 
+				throws AcsJException, NameAlreadyUsed {
 			this.synch = synch;
-			return super.createNotificationChannel(channelName, channelKind, notifyFactoryName);
+			return super.createNotificationChannel(channelKind, notifyFactoryName);
 		}
 		
-		protected EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName, CountDownLatch synch)
+		protected EventChannel getNotificationChannel(String notifyFactoryName, CountDownLatch synch)
 				throws AcsJException {
 			this.synch = synch;
-			return super.getNotificationChannel(channelName, channelKind, notifyFactoryName);
+			return super.getNotificationChannel(notifyFactoryName);
 		}
 
 	}

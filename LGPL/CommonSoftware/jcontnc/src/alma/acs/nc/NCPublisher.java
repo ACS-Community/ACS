@@ -241,12 +241,12 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		logger = services.getLogger();
 
 		anyAide = new AnyAide(this.services);
-		helper = new Helper(this.services, namingService);
+		helper = new Helper(channelName, this.services, namingService);
 		isTraceEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
 		// get the channel
 		// @TODO: handle Corba TIMEOUT 
-		channel = helper.getNotificationChannel(this.channelName, getChannelKind(), getNotificationFactoryName());
+		channel = helper.getNotificationChannel(getChannelKind(), getNotificationFactoryName());
 		
 		// Corba NC spec about adminId: a unique identifier assigned by the target EventChannel instance that is unique among all 
 		// SupplierAdmin instances currently associated with the channel.
@@ -440,7 +440,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return helper.getNotificationFactoryNameForChannel(channelName, channelNotifyServiceDomainName);
+		return helper.getNotificationFactoryNameForChannel(channelNotifyServiceDomainName);
 	}
 
 	/**
@@ -655,7 +655,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
 		} catch (UnsupportedAdmin ex) {
-			logger.warning(helper.createUnsupportedAdminLogMessage(ex, channelName));
+			logger.warning(helper.createUnsupportedAdminLogMessage(ex));
 		}
 		
 	}

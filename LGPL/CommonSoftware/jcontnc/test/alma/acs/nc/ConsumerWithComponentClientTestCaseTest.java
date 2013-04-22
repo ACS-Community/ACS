@@ -57,8 +57,8 @@ public class ConsumerWithComponentClientTestCaseTest extends ComponentClientTest
 
 	private void channelUp() throws AcsJException, InterruptedException {
 		// this is the problematic code from the Consumer ctor 
-		ncHelper = new Helper(getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
-		channel = ncHelper.getNotificationChannel(channelName, NC_KIND.value, NOTIFICATION_FACTORY_NAME.value);
+		ncHelper = new Helper(channelName, getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
+		channel = ncHelper.getNotificationChannel(NOTIFICATION_FACTORY_NAME.value);
 		m_logger.info("NC consumer installed on channel " + channelName);
 		Thread.sleep(500);
 	}
@@ -78,7 +78,7 @@ public class ConsumerWithComponentClientTestCaseTest extends ComponentClientTest
 
 	private void channelDown() throws AcsJException {
 		assertTrue(namingBindingsContain(channelName));
-		ncHelper.destroyNotificationChannel(channelName, NC_KIND.value, channel);
+		ncHelper.destroyNotificationChannel(NC_KIND.value, channel);
 		assertFalse(namingBindingsContain(channelName));
 		channel = null;
 	}

@@ -38,8 +38,8 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		m_logger.info("------------ setUp " + getName() + " --------------");
-		Helper helper = new Helper(getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
-		channel = helper.getNotificationChannel(CHANNEL_NAME, NC_KIND.value, helper.getNotificationFactoryNameForChannel(CHANNEL_NAME));
+		Helper helper = new Helper(CHANNEL_NAME, getContainerServices(), Helper.getNamingServiceInitial(getContainerServices()));
+		channel = helper.getNotificationChannel(helper.getNotificationFactoryNameForChannel());
 		assertNotNull(channel);
 		assertEquals(0, channel.get_all_consumeradmins().length);
 	}

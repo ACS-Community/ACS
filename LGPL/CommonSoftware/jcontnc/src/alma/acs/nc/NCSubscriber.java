@@ -293,10 +293,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		this.channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 
 		anyAide = new AnyAide(services);
-		helper = new Helper(services, namingService);
+		helper = new Helper(channelName, services, namingService);
 
 		// populate the map with the maxProcessTime an event receiver processing should take
-		handlerTimeoutMap = helper.getEventHandlerTimeoutMap(this.channelName);
+		handlerTimeoutMap = helper.getEventHandlerTimeoutMap();
 
 		isTraceNCEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
@@ -318,7 +318,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		try {
 
 			// get the channel
-			channel = helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
+			channel = helper.getNotificationChannel(getChannelKind(), getNotificationFactoryName());
 
 			// get the admin object
 			
@@ -880,7 +880,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return helper.getNotificationFactoryNameForChannel(channelName, channelNotifyServiceDomainName);
+		return helper.getNotificationFactoryNameForChannel(channelNotifyServiceDomainName);
 	}
 
 	/**
@@ -1046,7 +1046,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
 		} catch (UnsupportedAdmin ex) {
-			logger.warning(helper.createUnsupportedAdminLogMessage(ex, channelName));
+			logger.warning(helper.createUnsupportedAdminLogMessage(ex));
 		}
 		
 	}
