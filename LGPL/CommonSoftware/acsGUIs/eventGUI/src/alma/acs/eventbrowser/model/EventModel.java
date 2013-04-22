@@ -359,8 +359,8 @@ public class EventModel {
 						// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
 						// It fails when the NCs are mapped to a notify service via an "NC domain", as it is done 
 						// by the CERN alarm system, see discussion in COMP-8997
-						Helper notifyHelper = new Helper(cs, nctx);
-						String serviceId = notifyHelper.getNotificationFactoryNameForChannel(channelName);
+						Helper notifyHelper = new Helper(channelName, cs, nctx);
+						String serviceId = notifyHelper.getNotificationFactoryNameForChannel();
 						NotifyServiceData service = notifyServices.get(serviceId);
 						if (service == null) {
 							// If we do not auto-discover services as part of refreshing NCs, then a new NC hosted in a new service
