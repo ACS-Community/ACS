@@ -97,8 +97,8 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
-SCRIPTS_L       =  testPython
+SCRIPTS         =  testacsutilBlock
+SCRIPTS_L       =  testPython 
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -127,6 +127,7 @@ all:	do_all
 
 clean : clean_all 
 	$(RM) ./log_cache.dat*
+	$(RM) testacsutilBlock
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
