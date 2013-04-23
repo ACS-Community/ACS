@@ -145,8 +145,8 @@ fi
 MAX_TIMEOUT=$CL_TIMEOUT
 STD_SLEEP=1
 
-i="0"
-while [ "$i" ]
+i="1"
+while true
 do
   sleep $STD_SLEEP
 
@@ -184,6 +184,13 @@ do
   if [ "X$completed" != "X" ] 
   then
       break
+  
+  elif [ "$something_bad" != "" ]
+  then
+      echo "Detected the process emitted '$CL_CRAP' which implies"
+      echo "some sort of error condition!"
+      echo "Bailing without making any attempt to stop the process."
+      exit 5
  
   #process is gone and it never emitted the correct output
   elif [ "$pidExists" = "" ] && [ "$CL_STRING" != "" ]
@@ -196,13 +203,7 @@ do
   then
       break
 
-  elif [ "$something_bad" != "" ]
-  then
-      echo "Detected the process emitted '$CL_CRAP' which implies"
-      echo "some sort of error condition!"
-      echo "Bailing without making any attempt to stop the process."
-      exit 5
-  fi
+ fi
 
   #check if we've waited too long.
   if [ "$i" = "$MAX_TIMEOUT" ]
