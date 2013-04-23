@@ -241,7 +241,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		logger = services.getLogger();
 
 		anyAide = new AnyAide(this.services);
-		helper = new Helper(channelName, this.services, namingService);
+		helper = new Helper(channelName, channelNotifyServiceDomainName, this.services, namingService);
 		isTraceEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
 		// get the channel
@@ -440,7 +440,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return helper.getNotificationFactoryNameForChannel(channelNotifyServiceDomainName);
+		return helper.getNotificationFactoryNameForChannel();
 	}
 
 	/**

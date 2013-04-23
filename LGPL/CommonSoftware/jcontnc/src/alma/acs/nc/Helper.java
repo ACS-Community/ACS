@@ -60,6 +60,7 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreatedRaw_OK;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_ATTEMPT;
@@ -71,6 +72,8 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.StopWatch;
+import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT;
+import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR;
 import alma.acscommon.NC_KIND;
 
 
@@ -111,6 +114,11 @@ public class Helper {
 	protected final String channelName;
 	
 	/**
+	 * The optional NC domain name, e.g. "ALARMSYSTEM".
+	 */
+	protected final String domainName;
+	
+	/**
 	 * channelId is used to reconnect to channel in case that Notify Server crashes
 	 */
 	private int channelId;
@@ -147,19 +155,84 @@ public class Helper {
 	 * which would defy the purpose of avoiding name clashes on the server.
 	 */
 	protected static final Random random = new Random(System.currentTimeMillis());
-	
 
+	/**
+	 * TODO: Remove this hack once all impl languages are done with http://jira.alma.cl/browse/COMP-9338
+	 */
+	public static final boolean ENFORCE_COMP_9338_IN_TRANSITION_PERIOD = Boolean.getBoolean("ENFORCE_COMP_9338_IN_TRANSITION_PERIOD");
+
+	public static String extractChannelName(String channelWithDomainName) throws AcsJIllegalArgumentEx {
+		try {
+			return splitChannelAndDomainName(channelWithDomainName)[0];
+		} catch (AcsJIllegalArgumentEx ex) {
+			if (ENFORCE_COMP_9338_IN_TRANSITION_PERIOD) {
+				throw ex;
+			}
+			else {
+				return channelWithDomainName;
+			}
+		}
+	}
+	
+	public static String extractDomainName(String channelWithDomainName) throws AcsJIllegalArgumentEx {
+		try {
+			return splitChannelAndDomainName(channelWithDomainName)[1];
+		} catch (AcsJIllegalArgumentEx ex) {
+			if (ENFORCE_COMP_9338_IN_TRANSITION_PERIOD) {
+				throw ex;
+			}
+			else {
+				return NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT.value;
+			}
+		}
+	}
+
+	private static String[] splitChannelAndDomainName(String channelWithDomainName) throws AcsJIllegalArgumentEx {
+		String[] ret = channelWithDomainName.split(NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.value);
+		if (ret.length == 2) {
+			return ret;
+		}
+		else {
+			AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+			ex.setVariable("channelWithDomainName");
+			ex.setValue(channelWithDomainName);
+			ex.setErrorDesc("No unique NC - domain separation found in NC binding.");
+			throw ex;
+		}
+	}
+
+	public static String combineChannelAndDomainName(String channelName, String domainName) {
+		String ret = channelName;
+		if (ENFORCE_COMP_9338_IN_TRANSITION_PERIOD) {
+			ret += NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.value;
+			if (domainName != null) {
+				ret += domainName;
+			}
+			else {
+				ret += NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT.value;
+			}
+		}
+		return ret;
+	}
+
+	
+	public Helper(String channelName, ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+		this(channelName, null, services, namingService);
+	}
+	
 	/**
 	 * Creates a new instance of Helper.
 	 * This constructor is preferred, because it makes dependencies explicit. 
 	 * @param channelName The NC that this Helper is made for.
+	 * @param domainName The optional NC domain, or <code>null</code>.
 	 * @param services A reference to the ContainerServices
 	 * @param namingService Reference to the naming service.
 	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
 	 */
-	public Helper(String channelName, ContainerServicesBase services, NamingContext namingService) throws AcsJException {
+	public Helper(String channelName, String domainName, ContainerServicesBase services, NamingContext namingService) throws AcsJException {
 		
 		this.channelName = channelName;
+		this.domainName = domainName;
 		
 		if (services == null) {
 			AcsJBadParameterEx ex = new AcsJBadParameterEx();
@@ -292,7 +365,7 @@ public class Helper {
 	{
 		// return value
 		EventChannel retValue = null;
-		NameComponent[] t_NameSequence = { new NameComponent(channelName, channelKind) };
+		NameComponent[] t_NameSequence = { new NameComponent(combineChannelAndDomainName(channelName, domainName), channelKind) };
 		// (retryNumberAttempts * retrySleepSec) = the time before we give up to get a reference or create the channel if 
 		// a channel of the given name supposedly gets created already (due to race conditions with other clients).
 		int retryNumberAttempts = 20;
@@ -460,7 +533,8 @@ public class Helper {
 
 			// register our new channel with the naming service
 			try {
-				NameComponent[] t_NameChannel = { new NameComponent(channelName, channelKind) };
+				NameComponent[] t_NameChannel = { new NameComponent(
+						combineChannelAndDomainName(channelName, domainName), channelKind) };
 				getNamingService().rebind(t_NameChannel, retValue);
 			}
 			catch (org.omg.CosNaming.NamingContextPackage.NotFound ex) {
@@ -565,8 +639,9 @@ public class Helper {
 			channelRef.destroy();
 
 			// unregister our channel with the naming service
-			NameComponent[] t_NameChannel = { new NameComponent(channelName, channelKind) };
-			getNamingService().unbind(t_NameChannel);			
+			NameComponent[] t_NameChannel = { new NameComponent(
+					combineChannelAndDomainName(channelName, domainName), channelKind) };
+			getNamingService().unbind(t_NameChannel);
 		} catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
 			// Think there is virtually no chance of this every happening but...
 			String msg = "Cannot unbind the '" + channelName + "' channel from the Naming Service!";
@@ -597,16 +672,6 @@ public class Helper {
 	}
 
 	/**
-	 * Get notification channel factory name for given channel.
-	 * @param channelName	name of the channel.
-	 * @return notification channel factory name.
-	 */
-	public String getNotificationFactoryNameForChannel()
-	{
-		return getNotificationFactoryNameForChannel(null);
-	}
-	
-	/**
 	 * Gets the notification channel factory name for the given channel/domain.
 	 * 
 	 * Check-in-TODO: Fix usage in acsGUIs/eventGUI
@@ -616,7 +681,7 @@ public class Helper {
 	 * @param domainName	name of the domain, <code>null</code> if undefined.
 	 * @return notification channel factory name.
 	 */
-	public String getNotificationFactoryNameForChannel(String domainName) 
+	public String getNotificationFactoryNameForChannel() 
 	{
 		// try local cache
 		if (ncFactoryName != null) {

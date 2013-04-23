@@ -106,7 +106,7 @@ public class ConsumerWithComponentClientTestCaseTest extends ComponentClientTest
 	}
 
 	
-	private boolean namingBindingsContain(String firstBindingName) throws AcsJException {
+	private boolean namingBindingsContain(String firstBindingName) {
 		BindingListHolder blh = new BindingListHolder();
 		ncHelper.getNamingService().list(100, blh, new BindingIteratorHolder());
 		for (Binding binding : blh.value) {

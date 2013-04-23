@@ -293,7 +293,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		this.channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 
 		anyAide = new AnyAide(services);
-		helper = new Helper(channelName, services, namingService);
+		helper = new Helper(channelName, channelNotifyServiceDomainName, services, namingService);
 
 		// populate the map with the maxProcessTime an event receiver processing should take
 		handlerTimeoutMap = helper.getEventHandlerTimeoutMap();
@@ -880,7 +880,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return helper.getNotificationFactoryNameForChannel(channelNotifyServiceDomainName);
+		return helper.getNotificationFactoryNameForChannel();
 	}
 
 	/**

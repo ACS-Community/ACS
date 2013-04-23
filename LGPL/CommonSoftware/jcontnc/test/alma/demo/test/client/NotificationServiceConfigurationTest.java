@@ -62,10 +62,10 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 		System.out.println((new Helper("CONTROL_CHANNEL", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
 		// domain mapping
-		System.out.println((new Helper("anyOnLaser", getContainerServices(), nctx).getNotificationFactoryNameForChannel("ALARMSYSTEM")));
+		System.out.println((new Helper("anyOnLaser", "ALARMSYSTEM", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
 		// fallback to default
-		System.out.println((new Helper("anyOnNonExistingDomain", getContainerServices(), nctx).getNotificationFactoryNameForChannel("NONEXISTING_DOMAIN")));
+		System.out.println((new Helper("anyOnNonExistingDomain", "NONEXISTING_DOMAIN", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 	}
 
 

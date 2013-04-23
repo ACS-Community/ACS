@@ -252,7 +252,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 		m_clientName = services.getName();
 
 		// naming service, POA, and Any generator
-		m_helper = new Helper(channelName, services, Helper.getNamingServiceInitial(services));
+		m_helper = new Helper(channelName, channelNotifyServiceDomainName, services, Helper.getNamingServiceInitial(services));
 
 		m_notifyServiceName = getNotificationFactoryName();
 
@@ -344,7 +344,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableParticip
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return m_helper.getNotificationFactoryNameForChannel(m_channelNotifyServiceDomainName);
+		return m_helper.getNotificationFactoryNameForChannel();
 	}
 
 	/**
