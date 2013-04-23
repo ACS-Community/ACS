@@ -174,7 +174,7 @@ do
   #if they're looking for bad output as well.
   if [ "$CL_CRAP" != "" ]
   then
-      something_bad=`grep $CL_CRAP $CL_FILE 2> /dev/null`
+      something_bad=`grep "$CL_CRAP" $CL_FILE 2> /dev/null`
   else
       something_bad=""
   fi
