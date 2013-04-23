@@ -40,8 +40,8 @@ PROLOGUE acsutilTATPrologue -l
 
 5 testArchiveConsumer "acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 8" "acsutilTATTestRunner archiveeventsSupplier" "@SLEEP 30"
 
-#HSO 2009-05-19 TODO fix this, after having changed ArchiveConsumerTest to be a junit test, which now results in a "NoSuchMethodError: main"
-#6  testArchiveSupplier "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 3" "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveSupplierTest" "@SLEEP 30"
+# Test archive supplier. Verification is done by checking of consumer output, for which we reuse the ArchiveConsumerTest
+6  testArchiveSupplier "acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 3" "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveSupplierTest" "@SLEEP 30"
 
 7 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartJava alma.demo.test.client.NotificationServiceConfigurationTest"
 

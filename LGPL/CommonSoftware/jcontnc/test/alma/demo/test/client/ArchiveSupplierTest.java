@@ -25,83 +25,79 @@ import alma.acs.component.client.ComponentClient;
 import alma.acs.nc.ArchiveSupplier;
 
 /**
- * Client application that accesses the HelloDemo component. It demonstrates
- * how the class {@link ComponentClient}can be used as a base class.
+ * Client application that accesses the HelloDemo component. It demonstrates how the class {@link ComponentClient}can be
+ * used as a base class.
  */
 public class ArchiveSupplierTest extends ComponentClient
 {
-    /**
-     * @param logger
-     * @param managerLoc
-     * @param clientName
-     * @throws Exception
-     */
-    public ArchiveSupplierTest(Logger logger, String managerLoc, String clientName)
-	throws Exception 
-	{
-	    super(logger, managerLoc, clientName);
-	    
-	    m_supplier = new ArchiveSupplier(getContainerServices());
-	    //m_supplier.consumerReady();
-	}
-    
-    public void tearDown() throws Exception
-	{
-	    m_supplier.disconnect();
-	    super.tearDown();
+	/**
+	 * @param logger
+	 * @param managerLoc
+	 * @param clientName
+	 * @throws Exception
+	 */
+	public ArchiveSupplierTest(Logger logger, String managerLoc, String clientName) throws Exception {
+		super(logger, managerLoc, clientName);
+
+		m_supplier = new ArchiveSupplier(getContainerServices());
+		// m_supplier.consumerReady();
 	}
 
-    public void publish() throws Exception
-    {
-	    m_supplier.publishEvent(new Double(3.14));	
-	    m_supplier.publishEvent(new Float(3.1));	
-	    m_supplier.publishEvent(new Long(1));	
-	    m_supplier.publishEvent(new String("2"));	
-	    m_supplier.publishEvent(new Long(3));	
-	    m_supplier.publishEvent(new Long(4));	
-	    m_supplier.publishEvent(new String("a string"));
-	    double [] a = new double[1];
-	    a[0] = (double)3.14;
-	    m_supplier.publishEvent(a);	
-	    float [] b = new float[1];
-	    b[0] = (float)3.1;
-	    m_supplier.publishEvent(b);	
-	    //long sequence
-	    int [] c = new int[1];
-	    c[0] = (int)1;
-	    m_supplier.publishEvent(c);	
-	    String [] d = new String[2];
-	    d[0] = "a";
-            d[1] = "string";
-	    m_supplier.publishEvent(d);	
-    }   
- 
-    private ArchiveSupplier m_supplier = null;
-    
-    /**
-     * Checks whether the Java property 'ACS.manager' is set and calls the
-     * other methods from this class.
-     */
-    public static void main(String[] args) {
-	String managerLoc = System.getProperty("ACS.manager");
-	if (managerLoc == null) 
-	    {
-	    System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-	    System.exit(-1);
-	    }
-	String clientName = "ArchiveSupplierTest";
-	ArchiveSupplierTest hlc = null;
-	
-	try 
-	    {
-	    hlc = new ArchiveSupplierTest(null, managerLoc, clientName);
-	    hlc.publish();
-	    }
-	catch (Exception e) 
-	    {
-	    e.printStackTrace(System.err);
-	    }
-	
+	public void tearDown() throws Exception {
+		m_supplier.disconnect();
+		super.tearDown();
 	}
- }
 
+	public void publish() throws Exception {
+		m_supplier.publishEvent(new Double(3.14));
+		m_supplier.publishEvent(new Float(3.1));
+		m_supplier.publishEvent(new Long(1));
+		m_supplier.publishEvent(new String("2"));
+		m_supplier.publishEvent(new Long(3));
+		m_supplier.publishEvent(new Long(4));
+		m_supplier.publishEvent(new String("a string"));
+		double[] a = new double[1];
+		a[0] = 3.14;
+		m_supplier.publishEvent(a);
+		float[] b = new float[1];
+		b[0] = (float) 3.1;
+		m_supplier.publishEvent(b);
+		// long sequence
+		int[] c = new int[1];
+		c[0] = 1;
+		m_supplier.publishEvent(c);
+		String[] d = new String[2];
+		d[0] = "a";
+		d[1] = "string";
+		m_supplier.publishEvent(d);
+	}
+
+	private ArchiveSupplier m_supplier = null;
+
+	/**
+	 * Checks whether the Java property 'ACS.manager' is set and calls the other methods from this class.
+	 */
+	public static void main(String[] args) {
+		String managerLoc = System.getProperty("ACS.manager");
+		if (managerLoc == null) {
+			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+			System.exit(-1);
+		}
+		String clientName = "ArchiveSupplierTest";
+		ArchiveSupplierTest hlc = null;
+
+		try {
+			hlc = new ArchiveSupplierTest(null, managerLoc, clientName);
+			hlc.publish();
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+		} finally {
+			try {
+				hlc.tearDown();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+	}
+}
