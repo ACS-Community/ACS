@@ -673,9 +673,6 @@ public class Helper {
 
 	/**
 	 * Gets the notification channel factory name for the given channel/domain.
-	 * 
-	 * Check-in-TODO: Fix usage in acsGUIs/eventGUI
-	 * 
 	 * <p>
 	 * Tries to use the optional mapping from the CDB, otherwise uses <code>"NotifyEventChannelFactory"</code>.
 	 * @param domainName	name of the domain, <code>null</code> if undefined.
@@ -705,9 +702,10 @@ public class Helper {
 			}
 		}
 		
+		String ncFactoryNameTmp = "";
+		
 		// query CDB... 
-		if (channelsDAO != null)
-		{
+		if (channelsDAO != null) {
 			// if channel mapping exists take it, wildchars are also supported
 			try {
 				String[] channelNameList = channelsDAO.get_string_seq("NotificationServiceMapping/Channels_");
@@ -715,8 +713,8 @@ public class Helper {
 					String regExpStr = WildcharMatcher.simpleWildcardToRegex(pattern);
 					
 					if (Pattern.matches(regExpStr, channelName)) {
-						ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/Channels_/" + pattern + "/NotificationService");
-						return ncFactoryName;
+						ncFactoryNameTmp = channelsDAO.get_string("NotificationServiceMapping/Channels_/" + pattern + "/NotificationService");
+						break;
 					}
 				}
 			} catch (Throwable th) {
@@ -724,14 +722,13 @@ public class Helper {
 			}
 
 			// try domain mapping, if given
-			if (domainName != null)
+			if (ncFactoryNameTmp.isEmpty() && domainName != null)
 			{
 				try {
-					ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/Domains/" + domainName + "/NotificationService");
+					ncFactoryNameTmp = channelsDAO.get_string("NotificationServiceMapping/Domains/" + domainName + "/NotificationService");
 					if (m_logger.isLoggable(Level.FINEST)) {
-						m_logger.finest("NC '" + channelName + "' of domain '" + domainName + "' mapped to NotificationService '" + ncFactoryName + "'.");
+						m_logger.finest("NC '" + channelName + "' of domain '" + domainName + "' mapped to NotificationService '" + ncFactoryNameTmp + "'.");
 					}
-					return ncFactoryName;
 				} catch (Throwable th) {
 					if (m_logger.isLoggable(Level.FINER)) {
 						m_logger.finer("No Domain to NotificationService mapping found for domain/channel: " + domainName + "/" + channelName);
@@ -739,17 +736,23 @@ public class Helper {
 				}
 			}
 	
-			// return default
-			try {
-				ncFactoryName = channelsDAO.get_string("NotificationServiceMapping/DefaultNotificationService");
-				return ncFactoryName;
-			} catch (Throwable th) {
-				m_logger.finer("No NotificationServiceMapping/DefaultNotificationService attribute found, returning hardcoded default.");
+			// use default from CDB
+			if (ncFactoryNameTmp.isEmpty()) {
+				try {
+					ncFactoryNameTmp = channelsDAO.get_string("NotificationServiceMapping/DefaultNotificationService");
+				} catch (Throwable th) {
+					m_logger.finer("No NotificationServiceMapping/DefaultNotificationService attribute found, returning hardcoded default.");
+				}
 			}
 		}
+
+		if (!ncFactoryNameTmp.endsWith(alma.acscommon.NOTIFICATION_FACTORY_NAME.value)) {
+			// If we found nothing in the CDB, we default to "NotifyEventChannelFactory".
+			// Or if the CDB data did not contain the magical service name suffix, we add it here (see http://jira.alma.cl/browse/COMP-9260)
+			ncFactoryNameTmp += alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+		}
 		
-		// default
-		ncFactoryName = alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+		ncFactoryName = ncFactoryNameTmp;
 		return ncFactoryName;
 	}
 

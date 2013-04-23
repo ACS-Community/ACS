@@ -1,7 +1,8 @@
 1 -  -- alma.demo.test.client.NotificationServiceConfigurationTest
 1 - ----------T--:--:--.--- INFO [alma.demo.test.client.NotificationServiceConfigurationTest] component 'alma.demo.test.client.NotificationServiceConfigurationTest' requested AdvancedContainerServices
 1 - NotifyEventChannelFactory
-1 - ParticularNotifyService
-1 - ControlNotifyService
-1 - AlarmNotifyService
+1 - ParticularNotifyEventChannelFactory
+1 - ParticularNotifyEventChannelFactory
+1 - ControlNotifyEventChannelFactory
+1 - AlarmNotifyEventChannelFactory
 1 - NotifyEventChannelFactory

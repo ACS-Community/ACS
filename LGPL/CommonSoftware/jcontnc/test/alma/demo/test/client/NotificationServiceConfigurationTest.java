@@ -26,6 +26,7 @@ import org.omg.CosNaming.NamingContext;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Helper;
+import alma.acs.util.AcsLocations;
 
 /**
  * Test notification channel configuration (mapping).
@@ -52,19 +53,22 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	 * Gets the supplier component to send out events 
 	 */
 	public void doSomeStuff() throws AcsJException {
-		// default expected
+		// nothing configured in CDB -> encoded default NotifyEventChannelFactory
 		System.out.println((new Helper("any", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
-		// channel mapping 
-		System.out.println((new Helper("PARTICULAR", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
+		// channel mapping in CDB -> ParticularNotifyEventChannelFactory
+		System.out.println((new Helper("PARTICULAR1", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
-		// wildchars channel mapping 
+		// channel mapping in CDB and service name expansion -> ParticularNotifyEventChannelFactory
+		System.out.println((new Helper("PARTICULAR2", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
+		
+		// wildchars channel mapping in CDB -> ControlNotifyService
 		System.out.println((new Helper("CONTROL_CHANNEL", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
-		// domain mapping
+		// domain mapping in CDB and service name expansion -> AlarmNotifyEventChannelFactory
 		System.out.println((new Helper("anyOnLaser", "ALARMSYSTEM", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 		
-		// fallback to default
+		// non-existing domain -> encoded default NotifyEventChannelFactory
 		System.out.println((new Helper("anyOnNonExistingDomain", "NONEXISTING_DOMAIN", getContainerServices(), nctx).getNotificationFactoryNameForChannel()));
 	}
 
@@ -74,11 +78,7 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	 * other methods from this class.
 	 */
 	public static void main(String[] args) {
-		String managerLoc = System.getProperty("ACS.manager");
-		if (managerLoc == null) {
-			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-			System.exit(-1);
-		}
+		String managerLoc = AcsLocations.figureOutManagerLocation();
 		String clientName = NotificationServiceConfigurationTest.class.getName();
 		NotificationServiceConfigurationTest hlc = null;
 		try {
