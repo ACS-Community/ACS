@@ -4,7 +4,7 @@
 # A helpful message describing how this command works
 function printUsage
 {
-	echo "Usage: `basename $0` [OPTIONS] type_of_container name_of_container"
+	echo "Usage: `basename $0` [OPTIONS] type_of_container name_of_container [extra_parameters]"
 	echo "Wait for the named container to start."
 	echo ""
 	echo "Options:"
@@ -23,7 +23,7 @@ elif [ "$1" = "-C" -o "$1" = "--casa" ] ; then
     shift
 fi
 
-if [ "$#" -ne "2" ] ; then
+if [ "$#" -lt "2" ] ; then
     echo "Error: wrong number of parameters provided"
     printUsage;
     exit 1;
@@ -53,5 +53,5 @@ then
     EXTRA_PARAMS="$EXTRA_PARAMS -x"
 fi
 
-#Just delgate to helper script
-acsutilBlock -f $INSTANCE_DIR/$FILE -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS $CONTAINERSTARTCMD $@
+#Just delegate to helper script
+acsutilBlock -f $INSTANCE_DIR/$FILE -c "ERROR \[acsStartContainer\]" -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS $CONTAINERSTARTCMD $@
