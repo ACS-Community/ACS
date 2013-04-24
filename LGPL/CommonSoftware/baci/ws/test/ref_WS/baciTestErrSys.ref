@@ -36,13 +36,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -53,13 +49,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -71,14 +63,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -90,14 +78,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -109,14 +93,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -128,14 +108,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -147,14 +123,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -166,14 +138,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -185,10 +153,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
@@ -204,12 +170,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWpatternImpl::RWpatternImpl] Successfully created.
@@ -224,10 +187,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
@@ -240,12 +201,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -257,7 +215,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -269,18 +226,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -292,16 +245,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -313,7 +261,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -325,18 +272,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -348,16 +291,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -369,7 +307,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -380,14 +317,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -399,16 +332,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::__initialize] 
@@ -429,8 +357,8 @@
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI1
+1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: BACI1 exported
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Exporting "BACI2"
 1 - ----------T--:--:--.--- [BACI2 - maci::ContainerServices::ContainerServices] 
@@ -459,13 +387,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -476,13 +400,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -494,14 +414,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -513,14 +429,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -532,14 +444,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -551,14 +459,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -570,14 +474,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -589,14 +489,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -608,10 +504,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
@@ -627,12 +521,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWpatternImpl::RWpatternImpl] Successfully created.
@@ -647,10 +538,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
@@ -663,12 +552,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -680,7 +566,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -692,18 +577,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -715,16 +596,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -736,7 +612,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -748,18 +623,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -771,16 +642,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -792,7 +658,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -803,14 +668,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -822,16 +683,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::__initialize] 
@@ -852,8 +708,8 @@
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI2
+1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: BACI2 exported
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Writing IORS to file...
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Running ORB.
@@ -883,6 +739,346 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
@@ -911,12 +1107,80 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
 2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
 2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
 2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
 2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
+2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
+2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
+2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
 2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
@@ -1082,142 +1346,6 @@
 2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
 2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -1238,281 +1366,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::setValueAction] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking on()...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Invoking off() - simulated error...
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 666 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] Action couldn't be performed (type=10, code=10)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::invokeAction] Error in invokeAction (type=20, code=6)
-2 - ----------T--:--:--.--- [GlobalLogger - ::BaciTestClassImpl::offAction] Input Output Error (type=10, code=2) Reason="Simulation error"
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBdouble::done) desc.id_tag: 0 Value: 7.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_nonblocking] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
-1 - ----------T--:--:--.--- [GlobalLogger - RWcommonImpl<ACS_RW_TL>::setValueAction] Out of bounds (type=10, code=1) MinValue="0" RequestedValue="-1" MaxValue="1000"
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (async::CBvoid::done) desc.id_tag: 0 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
-2 - <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 2 - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 2 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::set_sync] Problem to set value (type=20, code=4) Property="BACI1:RWdoubleProp"
