@@ -1,6 +1,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Starting
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: monitoring flag: 0 passed from cmd line
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: CharacteristicComponent IDs ready
@@ -37,13 +37,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -54,13 +50,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -72,14 +64,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -91,14 +79,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -110,14 +94,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -129,14 +109,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -148,14 +124,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -167,14 +139,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -186,10 +154,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
@@ -205,12 +171,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWpatternImpl::RWpatternImpl] Successfully created.
@@ -225,10 +188,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
@@ -241,12 +202,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -258,7 +216,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -270,18 +227,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -293,16 +246,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -314,7 +262,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -326,18 +273,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -349,16 +292,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -370,7 +308,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -381,14 +318,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -400,16 +333,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::__initialize] 
@@ -453,13 +381,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -470,13 +394,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -488,14 +408,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -507,14 +423,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -526,14 +438,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -545,14 +453,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -564,14 +468,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -583,14 +483,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -602,10 +498,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
@@ -621,12 +515,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PpatternImpl::PpatternImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWpatternImpl::RWpatternImpl] Successfully created.
@@ -641,10 +532,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROdiscImpl&lt;&gt;::ROdiscImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
@@ -657,12 +546,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] DevIO initial value set to the default value.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWdiscImpl&lt;&gt;::RWdiscImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -674,7 +560,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -686,18 +571,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -709,16 +590,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -730,7 +606,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -742,18 +617,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -765,16 +636,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -786,7 +652,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::MonitorEventDispatcher&lt;&gt;::MonitorEventDispatcher&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
@@ -797,14 +662,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcontImpl&lt;&gt;::ROcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
@@ -816,16 +677,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] DevIO initial value set not implemented yet.
-1 - ----------T--:--:--.--- [GlobalLogger - baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl] Successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::BaciTestClassImpl] 
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::__initialize] 
@@ -884,8 +740,8 @@
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI1
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
@@ -913,11 +769,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startMonitoringThread] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (baciTest1Client main thread) Going to sleep...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---

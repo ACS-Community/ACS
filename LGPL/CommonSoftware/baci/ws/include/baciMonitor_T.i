@@ -50,7 +50,8 @@ baci::Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name_,
   ACE_CString name(cname_p);
   delete[] cname_p;
 
-  ACS_DEBUG_PARAM("baci::Monitor&lt;&gt;::Monitor", "Name is: '%s'", name.c_str());
+  ACS_LOG(LM_RUNTIME_CONTEXT, "baci::Monitor&lt;&gt;::Monitor", (LM_DELOUSE, "Name is: '%s'", name.c_str()));
+
 
   int callbackID = property->getComponent()->registerCallback(TBACIValuetype,
 							callback_p,

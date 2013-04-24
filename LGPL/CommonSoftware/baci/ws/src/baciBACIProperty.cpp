@@ -55,7 +55,8 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   inDestructionState_m(false)
 {
   ACS_TRACE("baci::BACIProperty::BACIProperty");
-  ACS_DEBUG_PARAM("baci::BACIProperty::BACIProperty", "Creating property '%s'", name_m.c_str());
+      ACS_LOG(0, "baci::BACIProperty::BACIProperty", 
+	      (LM_DELOUSE, "Creating property '%s'", name_m.c_str()));
 
   // check
   if (component_mp==0) 
@@ -173,7 +174,7 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   else
     {
       ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIProperty::BACIProperty",
-    		  (LM_DEBUG, "Archiver disabled! (archive_suppress=%s, archive_mechanism=%s, archive_min_int=%d, archive_max_int=%d)",
+    		  (LM_DELOUSE, "Archiver disabled! (archive_suppress=%s, archive_mechanism=%s, archive_min_int=%d, archive_max_int=%d)",
     		  archiveSuppress.c_str(), archiveMechanism.c_str(),
     		  archiveMinInt, archiveMaxInt));
       archiver_mp = 0;
