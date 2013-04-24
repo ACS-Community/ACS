@@ -64,7 +64,7 @@ BACIMonitor::BACIMonitor(const ACE_CString& _name, int _callbackID,
   ACS_TRACE("baci::BACIMonitor::BACIMonitor");
 
   ACS_LOG(0, "baci::BACIMonitor::BACIMonitor",
-	  (LM_DELOUSE, "Creating monitor '%s' (archiving: %d, triggerTime: %d)", 
+	  (static_cast<ACE_Log_Priority>(LM_DELOUSE), "Creating monitor '%s' (archiving: %d, triggerTime: %d)", 
 	   name_m.c_str(), archivingMonitor_m, (unsigned)_triggerTime));
   if (archivingMonitor_m==true)
       {
