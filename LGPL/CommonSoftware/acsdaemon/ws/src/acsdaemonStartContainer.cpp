@@ -32,6 +32,7 @@ static struct option long_options[] = {
         {"daemon",      required_argument, 0, 'd'},
         {"additional",  required_argument, 0, 'a'},
         {"modifier",    optional_argument, 0, 'm'},
+		{"synchronous", no_argument,       0, 's'},
         {0, 0, 0, '\0'}};
 
 void 
@@ -46,6 +47,8 @@ usage(const char *argv)
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
     ACE_OS::printf ("\t   -a, --additional   passthrough options for startContaner. Put option between \"\"\n");
     ACE_OS::printf ("\t   -m, --modifier     type modifier for the container (e.g. casaContainer).  More than one can be specified.\n");
+	ACE_OS::printf ("\t   -s, --synchronous  Send the command to start the container synchronously\n");
+	ACE_OS::printf ("\t                      The script will exit only when the container will have been started or if an error occurred\n");
 }
 
 int
@@ -61,6 +64,7 @@ main (int argc, char *argv[])
     ACS::stringSeq tmp_type_modifiers(100);
     tmp_type_modifiers.length(100);
     int modcount = 0;
+	int sync_flag = 0;
 
     //The modstring is used to collect all the provided modifiers so they can be logged.
     modstring = "[ ";
@@ -68,7 +72,7 @@ main (int argc, char *argv[])
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "ht:c:i:d:H:a:m:",
+        c = getopt_long (argc, argv, "ht:c:i:d:H:a:m:s",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -99,6 +103,9 @@ main (int argc, char *argv[])
 		    ++modcount;
 		    modstring = modstring + optarg + " ";
                     break;
+				case 's':
+					sync_flag = 1;
+					break;
             }
         }
     modstring += "]";
@@ -184,8 +191,15 @@ main (int argc, char *argv[])
 
 // @TODO: implement support for 
       ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s, %s).", containerType.c_str(), containerName.c_str(), instance, modstring.c_str(), additional.c_str()));
-
-      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, type_modifiers, additional.c_str());
+      
+      if (sync_flag)
+	  {
+			daemon->start_container_sync(containerType.c_str(), containerName.c_str(), instance, type_modifiers, additional.c_str());
+	  }
+	  else
+	  {
+			daemon->start_container(containerType.c_str(), containerName.c_str(), instance, type_modifiers, additional.c_str());
+      }
       
       ACS_SHORT_LOG((LM_INFO, "Container start message issued."));
       
