@@ -61,7 +61,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		std::istringstream i1(strCharacteristic);
 		i1 >> val;
 		if ( val == 0 ) {
-			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DELOUSE, "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
+			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (static_cast<ACE_Log_Priority>(LM_DELOUSE), "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
 					property_m->name(),
 					property_m->_repository_id(),
 					strCharacteristic
@@ -309,7 +309,7 @@ ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::ROMonitorP
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
-			ACS_LOG(LM_FULL_INFO ,"ROMonitorPoint<>::ROMonitorPoint", (LM_DELOUSE, "Values from property %s (%s) will NOT be collected when alarms are raised, because alarm_timer_trig is set to '%s'.",
+			ACS_LOG(LM_FULL_INFO ,"ROMonitorPoint<>::ROMonitorPoint", (static_cast<ACE_Log_Priority>(LM_DELOUSE), "Values from property %s (%s) will NOT be collected when alarms are raised, because alarm_timer_trig is set to '%s'.",
 					this->property_m->name(),
 					this->property_m->_repository_id(),
 					strCharacteristic
