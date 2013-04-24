@@ -29,6 +29,7 @@ static struct option long_options[] = {
         {"host",        required_argument, 0, 'H'},
         {"daemon",      required_argument, 0, 'd'},
         {"additional",   required_argument, 0, 'a'},
+		{"synchronous", no_argument,       0, 's'},
         {0, 0, 0, '\0'}};
 
 void 
@@ -41,6 +42,8 @@ usage(const char *argv)
     ACE_OS::printf ("\t   -H, --host         Host where to stop the container\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
     ACE_OS::printf ("\t   -a, --additional    passthrough options for stopContaner. Put options between \"\"\n");
+	ACE_OS::printf ("\t   -s, --synchronous  Send the command to stop the container synchronously\n");
+	ACE_OS::printf ("\t                      The script will exit only when the container will have been fully stopped or if an error occurred\n");
 }
 
 
@@ -52,10 +55,11 @@ main (int argc, char *argv[])
     ACE_CString hostName;
     ACE_CString containerName;
     ACE_CString additional;
+	int sync_flag = 0;
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "hc:i:d:H:a:",
+        c = getopt_long (argc, argv, "hc:i:d:H:a:s",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -77,6 +81,9 @@ main (int argc, char *argv[])
                     break;
                 case 'a':
                     additional = optarg;
+                    break;
+                case 's':
+                    sync_flag = 1;
                     break;
             }
         }
@@ -140,12 +147,16 @@ main (int argc, char *argv[])
 		}
 
 
-                ACS_SHORT_LOG((LM_INFO, "Calling stop_container(%s, %d, %s).", containerName.c_str(), instance, additional.c_str()));
-
-                daemon->stop_container(containerName.c_str(), instance, additional.c_str());
-
-                ACS_SHORT_LOG((LM_INFO, "Container stop message issued."));
-
+		ACS_SHORT_LOG((LM_INFO, "Calling stop_container(%s, %d, %s).", containerName.c_str(), instance, additional.c_str()));
+		if (sync_flag)
+		{
+			daemon->stop_container_sync(containerName.c_str(), instance, additional.c_str());
+		}
+		else
+		{
+			daemon->stop_container(containerName.c_str(), instance, additional.c_str());
+		}		
+		ACS_SHORT_LOG((LM_INFO, "Container stop message issued."));
 
 	}
 	catch (ACSErrTypeCommon::BadParameterEx &ex)
