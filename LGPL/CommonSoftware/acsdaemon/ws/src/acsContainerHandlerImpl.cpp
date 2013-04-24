@@ -239,9 +239,9 @@ ACSContainerHandlerImpl::start_container_sync (
 	char command[1000];
 
 	if (isCasaContainer)
-		snprintf(command, 1000, "acsStartContainerWithCASA -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+		snprintf(command, 1000, "acsutilAwaitContainerStart -C -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
 	else
-		snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+		snprintf(command, 1000, "acsutilAwaitContainerStart -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
 
 	ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
@@ -249,7 +249,7 @@ ACSContainerHandlerImpl::start_container_sync (
 
     ACS_SHORT_LOG ((LM_INFO, "Command: '%s' has been executed (%d).", command, result));
 
-    if (result < 0)
+    if (result != 0)
     {
     	::acsdaemonErrType::FailedToStartContainerExImpl ex(
     			__FILE__, __LINE__,
