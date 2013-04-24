@@ -70,7 +70,7 @@ void MonitorComponent::setDeviceSerialNumber(serialNumberType sn)
 	ACE_Guard<ACE_Thread_Mutex>   prot(m_proMutex);
 	monitorDataBlock_m.deviceSerialNumber = CORBA::string_dup(sn);
 
-	ACS_LOG(LM_FULL_INFO ,"MonitorComponent::setDeviceSerialNumber", (LM_DELOUSE, "set serial number for the device %s to %s.",
+	ACS_LOG(LM_FULL_INFO ,"MonitorComponent::setDeviceSerialNumber", (static_cast<ACE_Log_Priority>(LM_DELOUSE), "set serial number for the device %s to %s.",
 			monitorDataBlock_m.componentName.in(), monitorDataBlock_m.deviceSerialNumber.in()));
 }//setSerialNumber
 
@@ -206,7 +206,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	ACE_CString propType(pType);
 
-	ACS_LOG(LM_FULL_INFO ,"MonitorComponent::addProperty", (LM_DELOUSE, "Going to add property[%d] = %s (%s).",
+	ACS_LOG(LM_FULL_INFO ,"MonitorComponent::addProperty", (static_cast<ACE_Log_Priority>(LM_DELOUSE), "Going to add property[%d] = %s (%s).",
 			seqIndex_m,
 			propName,
 			propType.c_str()
