@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
 	} else if (mode==2) {
 		for (int t=0; t<atol(argv[2]); t++)
 		{
+			ACS_SHORT_LOG ((LM_DELOUSE, "Test message %d",t));
+			usleep(10);
 			ACS_SHORT_LOG ((LM_TRACE, "Test message"));
 			usleep(10);
 			ACS_SHORT_LOG ((LM_DEBUG, "Test message %d",t));
@@ -114,6 +116,8 @@ int main(int argc, char *argv[])
 	} else if (mode==3) {
 		while (true)
 			{
+				ACS_SHORT_LOG ((LM_DELOUSE, "Test message %d",std::rand()));
+				usleep(10);
 				ACS_SHORT_LOG ((LM_TRACE, "Random message"));
 				usleep(10);
 				ACS_SHORT_LOG ((LM_DEBUG, "Random message %d",std::rand()));
