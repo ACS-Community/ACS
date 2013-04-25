@@ -40,7 +40,7 @@
     </xs:all>
     <xs:attribute name="Name" type="xs:string" use="required"/>
     <xs:attribute name="cbReceiveProcessTimeoutSec" type="xs:double" use="optional" default="0.010"/>
-    <xs:attribute name="cbReceiveAvgProcessTimeoutSec" type="xs:double" use="optional" default="0.010"/>
+    <xs:attribute name="cbReceiveAvgProcessTimeoutSec" type="xs:double" use="optional" default="0.050"/>
     <xs:attribute name="enableMulticast" type="xs:boolean" use="optional" default="true"/>
     <xs:attribute name="multicastAddress" type="xs:string" use="optional" default="225.3.2.1"/>
     <xs:attribute name="unicastPort" type="xs:unsignedShort" use="optional" default="0"/>
