@@ -36,6 +36,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
+1 - ----------T--:--:--.--- [GlobalLogger - recovery::RecoveryStore::load] Creating or loading recovery file
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
@@ -741,6 +742,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 5s monitor for ROdoubleProp...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::Monitor&lt;&gt;::Monitor] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::Monitor&lt;&gt;::Monitor] Name is: 'BACI1:ROdoubleProp_monitor0'
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
@@ -770,9 +772,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
@@ -808,7 +807,12 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 10s monitor for ROfloatProp...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::Monitor&lt;&gt;::Monitor] 
@@ -832,16 +836,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to get ROpatterProp...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to narrow CB for ROpatternProp... 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create 1s monitor for ROpatternProp...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::Monitor&lt;&gt;::Monitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::Monitor&lt;&gt;::Monitor] Name is: 'BACI1:ROpatternProp_monitor'
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI1:ROpatternProp_monitor' (archiving: 0, triggerTime: 50000000)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
@@ -874,9 +873,14 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::BACIMonitor] Creating monitor 'BACI1:ROpatternProp_monitor1' (archiving: 0, triggerTime: 50000000)
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerTime] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::setTriggerValue] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
@@ -901,11 +905,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (baciTest1Client main thread) Going to sleep...
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -921,15 +924,41 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] Problem to get value (type=20, code=5)
+2 - ----------T--:--:--.--- [GlobalLogger - BACIProperty::dispatchMonitors] Error retreiving value for the monitor (type=1, code=2)
+2 - ----------T--:--:--.--- [GlobalLogger - PcommonImpl::getValue(...)] Read Error (type=30, code=0)
+2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=17)
+2 - ----------T--:--:--.--- [GlobalLogger - ] (RWdoublePropError::CBdouble::working) desc.id_tag: 1 TimeStamp: ----------T--:--:--.--- containes an error
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -944,18 +973,15 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -969,41 +995,18 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] Problem to get value (type=20, code=5)
-2 - ----------T--:--:--.--- [GlobalLogger - BACIProperty::dispatchMonitors] Error retreiving value for the monitor (type=1, code=2)
-2 - ----------T--:--:--.--- [GlobalLogger - PcommonImpl::getValue(...)] Read Error (type=30, code=0)
-2 - ----------T--:--:--.--- [GlobalLogger - ] (RWdoublePropError::CBdouble::working) desc.id_tag: 1 TimeStamp: ----------T--:--:--.--- containes an error
-2 - ----------T--:--:--.--- [GlobalLogger - TestErrorDevIO::read] An error occurred, see ErrorDesc member (type=10, code=17)
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -1013,9 +1016,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -1030,19 +1030,22 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -1052,9 +1055,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -1069,19 +1069,22 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -1091,9 +1094,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -1108,18 +1108,22 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp10s::CBdouble::working) desc.id_tag: 10 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp10s::CBfloat::working) desc.id_tag: 10 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp5s::CBpattern::working) desc.id_tag: 5 Value: 5 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp10s::CBpattern::working) desc.id_tag: 10 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
@@ -1129,9 +1133,6 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp5s::CBdouble::working) desc.id_tag: 5 Value: 5.000000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp1s::CBfloat::working) desc.id_tag: 1 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROfloatProp5s::CBfloat::working) desc.id_tag: 5 Value: 5.100000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROpatternProp1s::CBpattern::working) desc.id_tag: 1 Value: 5 TimeStamp: ----------T--:--:--.---
@@ -1156,8 +1157,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::done) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::done) desc.id_tag: 1 Value: 5.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'BACI1:ROdoubleProp_monitor' destroyed.
 1 - ----------T--:--:--.--- [GlobalLogger - BACI::Monitor&lt;&gt;::~Monitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - BACI::Monitor&lt;&gt;::destroy] 

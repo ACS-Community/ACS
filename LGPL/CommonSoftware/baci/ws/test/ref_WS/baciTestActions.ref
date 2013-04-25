@@ -36,6 +36,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
+1 - ----------T--:--:--.--- [GlobalLogger - recovery::RecoveryStore::load] Creating or loading recovery file
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
@@ -731,13 +732,40 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] performing off action
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+2 - ----------T--:--:--.--- [GlobalLogger - ] performing off action
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (on::CBvoid::done)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] performing reset action
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::reset] Registering RESET Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (off::CBvoid::done)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::resetAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (reset::CBvoid::done)
+2 - ----------T--:--:--.--- [GlobalLogger - ] performing on action
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] performing off action
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (on::CBvoid::done)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] performing reset action
@@ -761,43 +789,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] performing off action
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (on::CBvoid::done)
 2 - ----------T--:--:--.--- [GlobalLogger - ] performing reset action
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::reset] Registering RESET Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (off::CBvoid::done)
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::resetAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (reset::CBvoid::done)
-2 - ----------T--:--:--.--- [GlobalLogger - ] performing on action
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::on] Registering ON Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] performing off action
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::off] Registering OFF Action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] performing reset action
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::reset] Registering RESET Action
-1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::onAction] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (on::CBvoid::done)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::offAction] BACI1

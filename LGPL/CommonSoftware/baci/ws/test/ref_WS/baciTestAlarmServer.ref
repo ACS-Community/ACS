@@ -36,6 +36,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
+1 - ----------T--:--:--.--- [GlobalLogger - recovery::RecoveryStore::load] Creating or loading recovery file
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROcommonImpl&lt;&gt;::ROcommonImpl] DevIO initial value set to the default value.
@@ -118,8 +119,8 @@
 2 - ----------T--:--:--.--- [actionThreadPattern - WorkerThreadPattern::WorkerThreadPattern] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Created thread
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::resume] 
-2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStart] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestAlarmClient: main thread, entering ORB loop to sleep...
+2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStart] 
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::run] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Started runLoop for thread
@@ -733,6 +734,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Level and value: 0
+2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Property and value: BACIALARM:roPatternProperty
@@ -743,7 +745,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <AnotherUserDefinedFF,AnotherUserDefinedFM,1> ACTIVE
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_raised) Value: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_raised) Value: 0
-2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStop] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Alarm subscriptions deleted
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::~AlarmEventStrategy&lt;&gt;] 
