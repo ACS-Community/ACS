@@ -643,30 +643,28 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		org.omg.CosNotifyChannelAdmin.ConsumerAdmin retBase = null;
 		boolean created = false;
 		int consumerAdminId = -1;
+		AdminReuseCompatibilityHack adminReuseCompatibilityHack = new AdminReuseCompatibilityHack(channelName, logger);
 
 		// @TODO (HSO): Why use a static lock here? This gives a false sense of safety in single-program unit tests,
 		// while in real life we can have concurrent admin creation requests from different processes.
 		synchronized(NCSubscriber.class) {
 
-			// Check if we can reuse an already existing consumer admin
-			int consumerAdminIds[] = channel.get_all_consumeradmins();
-			for(int i=0; i<consumerAdminIds.length && retBase == null; i++) {
 
-				int adminID = consumerAdminIds[i];
+			// Check if we can reuse an already existing consumer admin
+			for (int adminId : channel.get_all_consumeradmins()) {
 				try {
-					org.omg.CosNotifyChannelAdmin.ConsumerAdmin tmpAdmin = channel.get_consumeradmin(adminID);
-					int[] push_suppliers_ids = tmpAdmin.push_suppliers();
-					AdminReuseCompatibilityHack adminReuseCompatibilityHack = new AdminReuseCompatibilityHack(channelName, tmpAdmin, logger);
-					if (adminReuseCompatibilityHack.isSharedAdmin()) {
+					org.omg.CosNotifyChannelAdmin.ConsumerAdmin tmpAdmin = channel.get_consumeradmin(adminId);
+					if (adminReuseCompatibilityHack.isSharedAdmin(tmpAdmin)) {
 						// do some simple load balancing, so we use this shared admin only if it has space for more proxies
 						// (the -1 goes because of the dummy proxy that is attached to the shared admin)
-						if( push_suppliers_ids.length-1 < PROXIES_PER_ADMIN) {
+						if (tmpAdmin.push_suppliers().length - 1 < PROXIES_PER_ADMIN) {
 							retBase = tmpAdmin;
-							consumerAdminId = adminID;
+							consumerAdminId = adminId;
+							break;
 						}
 					}
 				} catch (AdminNotFound e) {
-					logger.log(AcsLogLevel.NOTICE, "Consumer admin with ID='" + adminID + "' not found for channel '" + channelName + "', " +
+					logger.log(AcsLogLevel.NOTICE, "Consumer admin with ID='" + adminId + "' not found for channel '" + channelName + "', " +
 							"will continue anyway to search for shared consumer admins", e);
 				}
 			}
@@ -683,10 +681,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 				InterFilterGroupOperator adminProxyFilterLogic = InterFilterGroupOperator.AND_OP; 
 				retBase = channel.new_for_consumers(adminProxyFilterLogic, consumerAdminIDHolder);
 
-				// @TODO: Remove this workaround once it is no longer needed.
-				AdminReuseCompatibilityHack hack = new AdminReuseCompatibilityHack(channelName, retBase, logger);
-				hack.markAsSharedAdmin();
-				
 				consumerAdminId = consumerAdminIDHolder.value;
 				created = true;
 			}
@@ -694,6 +688,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		} // synchronize(NCSubscriber.class) ...
 
 		try {
+			// cast to TAO extension type
 			ret = ConsumerAdminHelper.narrow(retBase);
 		} catch (BAD_PARAM ex) {
 
@@ -704,6 +699,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
 			ex2.setNarrowType(ConsumerAdminHelper.id());
 			throw ex2;
+		}
+
+		if (created) {
+			// @TODO: Remove this workaround once it is no longer needed.
+			adminReuseCompatibilityHack.markAsSharedAdmin(ret);
 		}
 
 		LOG_NC_ConsumerAdminObtained_OK.log(logger, consumerAdminId, (created ? "created" : "reused"), clientName, channelName, getNotificationFactoryName());
@@ -1065,13 +1065,13 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 */
 	public static class AdminReuseCompatibilityHack {
 	
+		public static final String DUMMY_SUPPLIER_PROXY_NAME_PREFIX = "dummyproxy";
+		
 		private final String channelName;
-		private final org.omg.CosNotifyChannelAdmin.ConsumerAdmin consumerAdmin;
 		private final Logger logger;
 		
-		public AdminReuseCompatibilityHack(String channelName, org.omg.CosNotifyChannelAdmin.ConsumerAdmin consumerAdmin, Logger logger) {
+		public AdminReuseCompatibilityHack(String channelName, Logger logger) {
 			this.channelName = channelName;
-			this.consumerAdmin = consumerAdmin;
 			this.logger = logger;
 		}
 		
@@ -1080,15 +1080,21 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		 * This dummy proxy is not of a StructuredProxyPushSupplier, like the rest of the proxies that are created for the NC in the admin objects. 
 		 * This way we can recognize a shared consumer admin by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
 		 * This hack is only needed while we are in transition between the old and new NC classes, and should get removed once the old classes are not used 
-		 * anymore (also not in C++ etc)
+		 * anymore (also not in C++ etc).
+		 * In addition to using a unique proxy type, we also use a recognizable name, 
+		 * so that we can recognize the dummy proxy even when we only know its name,
+		 * as it happens when working with the TAO MC statistics, see {@link #isDummyProxy(String)}.
+		 * 
 		 * @throws AcsJCORBAProblemEx 
 		 */
-		public void markAsSharedAdmin() throws AcsJCORBAProblemEx {
+		public void markAsSharedAdmin(ConsumerAdmin consumerAdmin) throws AcsJCORBAProblemEx {
 			try {
-				consumerAdmin.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
-			} catch (AdminLimitExceeded e) {
+				String dummySupplierName = Helper.createRandomizedClientName(DUMMY_SUPPLIER_PROXY_NAME_PREFIX);
+				consumerAdmin.obtain_named_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder(), dummySupplierName);
+			} catch (Exception ex) {
+				// This ex could be AdminLimitExceeded, NameAlreadyUsed, NameMapError
 				consumerAdmin.destroy();
-				AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(e);
+				AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(ex);
 				e2.setInfo("Coundn't attach dummy ANY_EVENT proxy to newly created shared admin consumer for channel '" + channelName + "'. Newly created shared admin is now destroyed.");
 				throw e2;
 			}
@@ -1096,6 +1102,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 		
 		/**
+		 * Checks if a given proxy supplier (as obtained through the regular NC API)
+		 * is a dummy produced by this class.
+		 * 
 		 * @return <code>true</code> if the given proxy is of type PUSH_ANY,
 		 *         which is used only to mark a shared consumer admin. 
 		 */
@@ -1104,9 +1113,21 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 
 		/**
+		 * Checks if a given proxy supplier (as obtained by name through the TAO MC extension API) is a dummy produced
+		 * by this class.
+		 * 
+		 * @return <code>true</code> if the given proxy name starts with {@link #DUMMY_SUPPLIER_PROXY_NAME_PREFIX},
+		 *         which is used only to mark a shared consumer admin.
+		 */
+		public static boolean isDummyProxy(String proxyName) {
+			return ( proxyName.startsWith(DUMMY_SUPPLIER_PROXY_NAME_PREFIX) );
+		}
+		
+		
+		/**
 		 * @return <code>true</code> if our consumer admin is shared. In the future when all NC libs are ported, this should always be the case.
 		 */
-		public boolean isSharedAdmin() {
+		public boolean isSharedAdmin(org.omg.CosNotifyChannelAdmin.ConsumerAdmin consumerAdmin) {
 			boolean ret = false;
 			int[] push_suppliers_ids = consumerAdmin.push_suppliers();
 			for(int proxyID: push_suppliers_ids) {
