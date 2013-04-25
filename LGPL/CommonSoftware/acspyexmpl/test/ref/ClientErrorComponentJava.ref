@@ -92,12 +92,12 @@
 2 -             File=xxx
 2 -                     Host=xxxx,
 2 -             Thread=RequestProcessor-xxx,
-1 - ----------T--:--:--.--- WARNING [javaContainer] unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
+1 - ----------T--:--:--.--- WARNING [javaContainer] Unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
 2 -                 Line=xxx
 2 -             Line=xxx
 2 -                     Process=xxxjavaContainer,
 2 -             Type=10,
-1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
+1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.UNKNOWN: org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No  vmcid: 0x0  minor code: 0  completed: No)
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
 2 -             Code=17,
 2 -                 Routine=internalBadMethod,
@@ -278,7 +278,7 @@
 2 -                 Type=10,
 2 -                 Code=17,
 2 -     return _omnipy.invoke(self, "corbaSystemException", _0_acsexmplErrorComponent.ErrorComponent._d_corbaSystemException, args)
-2 - BAD_PARAM: CORBA.BAD_PARAM(0x0, CORBA.COMPLETED_NO)
+2 - UNKNOWN: CORBA.UNKNOWN(0x0, CORBA.COMPLETED_NO)
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 - ; )
 2 -                 Severity=Error,
