@@ -20,6 +20,8 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+import alma.acs.nc.NCSubscriber;
+
 
 /** This class encapsulates the list of all consumers of events in a particular channel returned
  * by the TAO M&C Extensions to the Notify Service.
@@ -31,13 +33,18 @@ public class ChannelConsumers extends MCStatistics {
 	public ChannelConsumers(ChannelData parent) {
 		super(parent, "ConsumerNames");
 	}
-	
+
 	@Override
 	public String getStatistics() {
 		children.clear();
 		String sc[] = getMcData().list();
+		
 		for (int i = 0; i < sc.length; i++) {
-			children.add(new ChannelParticipantName(sc[i], this));
+			String consumerNameSimple = toSimpleName(sc[i], i);
+			// Suppress the dummy proxy that gets temporarily added by NCSubscriber, which should not show up as a client.
+			if (!NCSubscriber.AdminReuseCompatibilityHack.isDummyProxy(consumerNameSimple)) {
+				children.add(new ChannelParticipantName(consumerNameSimple, this));
+			}
 		}
 		return "Consumers: " + getParent().getNumConsumersAndDelta();
 	}

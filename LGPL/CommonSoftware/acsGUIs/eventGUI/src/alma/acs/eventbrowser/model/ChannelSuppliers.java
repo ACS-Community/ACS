@@ -37,7 +37,8 @@ public class ChannelSuppliers extends MCStatistics {
 		children.clear();
 		String sc[] = getMcData().list();
 		for (int i = 0; i < sc.length; i++) {
-			children.add(new ChannelParticipantName(sc[i], this));
+			String supplierNameSimple = toSimpleName(sc[i], i);
+			children.add(new ChannelParticipantName(supplierNameSimple, this));
 		}
 		return "Suppliers: " + getParent().getNumSuppliersAndDelta();
 	}

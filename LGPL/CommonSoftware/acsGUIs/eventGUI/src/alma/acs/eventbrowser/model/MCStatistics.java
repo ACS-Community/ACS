@@ -23,6 +23,8 @@ package alma.acs.eventbrowser.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import Monitor.UData;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
@@ -52,11 +54,13 @@ public abstract class MCStatistics {
 	 * This should be used by implementations of {@link #getStatistics()}.
 	 */
 	protected UData getMcData() {
+		String fullName = channelPrefix + mcStatName;
 		try {
-			 return parent.getParent().getMc().get_statistic(channelPrefix + mcStatName).data_union;
+			 return parent.getParent().getMc().get_statistic(fullName).data_union;
 		} catch (InvalidName ex) {
 			// Todo: deal better with this error. Could be wrong channel name or an unsupported (misspelled etc) statistics name.
-			System.out.println("Invalid name: "+channelPrefix + mcStatName);
+			System.out.println("Invalid name: '" + fullName + 
+					"'; valid names are " + StringUtils.join(parent.getParent().getMc().get_statistic_names(), ' '));
 			throw new RuntimeException(ex);
 		}
 	}
@@ -70,6 +74,18 @@ public abstract class MCStatistics {
 	 */
 	public Object[] getChildren() {
 		return children.toArray();
+	}
+
+	/**
+	 * TODO: unify MC path handling with class MCProxy
+	 * @param sc
+	 * @param i
+	 * @return
+	 */
+	protected String toSimpleName(String fullMcName, int i) {
+		String[] nameParts = fullMcName.split("/");
+		String nameSimple = nameParts[nameParts.length-1];
+		return nameSimple;
 	}
 
 }
