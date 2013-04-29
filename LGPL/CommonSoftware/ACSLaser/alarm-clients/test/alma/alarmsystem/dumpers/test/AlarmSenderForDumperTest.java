@@ -5,9 +5,10 @@ import java.util.logging.Logger;
 import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.adapters.Log4jFactory;
 
 /**
- * The test is composed of 2 sotware that run at the same time.
+ * The test is composed of 2 pieces of software that run at the same time.
  * This one publishes three alarms. 
  * The second one, {@link TestSourceDumper}, runs the source dumps that prints in the stdout
  * the alarms received by the source dumper.
@@ -58,6 +59,7 @@ public class AlarmSenderForDumperTest extends ComponentClient {
 	
 	public static void main(String[] args) {
 		// Connect the component client
+		Log4jFactory.enableAcsLogging();
 		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AlarmSenderForDumperTest",true);
         String managerLoc = System.getProperty("ACS.manager");
         if (managerLoc == null) {
