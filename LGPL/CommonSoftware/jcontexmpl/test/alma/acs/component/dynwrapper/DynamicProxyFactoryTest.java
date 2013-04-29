@@ -191,8 +191,9 @@ public class DynamicProxyFactoryTest extends TestCase
 		// send empty xml
 		entStructObsProp.xmlString = " "; 
 		serverProxy.xmlInOutMethod(entStructObsProp, xesh);
-		// SchedBlock struct must be null
-		assertNull(xesh.value);
+		// ObsProposal in-param and thus SchedBlock out-param are null, 
+		// so that the out-XmlEntityStruct struct must be empty.
+		assertEquals("", xesh.value.xmlString);
 	}
 
 
@@ -226,9 +227,36 @@ public class DynamicProxyFactoryTest extends TestCase
 			Throwable cause2 = cause.getCause();
 			assertTrue(cause2 instanceof MarshalException);
 			assertTrue(((MarshalException)cause2).getCause() instanceof org.xml.sax.SAXException);
-		}		
+		}
 	}
 
+	/**
+	 * When the inner interface returns a <code>null</code> for an XML entity,
+	 * we must still return a non-null XmlEntityStruct, or else 
+	 * we'd get a NullPointerException in XmlEntityStructHelper#write
+	 * See http://jira.alma.cl/browse/COMP-1336
+	 */
+	public void testNullXmlEntityReturned() throws Exception {
+		
+		XmlTestComponent compImplWithNullReturn = new DynamicProxyFactoryTest.XmlTestComponent() {
+			@Override
+			public SchedBlock getBestSchedBlock() {
+				// here we return a null instead of a SchedBlock xml binding object
+				return null;
+			}
+		};
+
+		XmlComponentOperations serverProxy = (XmlComponentOperations) 
+				DynamicProxyFactory.getDynamicProxyFactory(m_logger).
+					createServerProxy(corbaIF, compImplWithNullReturn, compIF);
+		assertNotNull(serverProxy);
+		
+		XmlEntityStruct entStruct = serverProxy.getBestSchedBlock();
+		
+		assertNotNull(entStruct);
+		assertTrue(entStruct.xmlString.isEmpty());
+		System.out.println("A null from getBestSchedBlock() was translated to an empty XmlEntityStruct.");
+	}
 
 
 

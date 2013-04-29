@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import alma.ACS.OffShoot;
+import alma.xmlentity.XmlEntityStruct;
 
 
 /**
@@ -224,10 +225,7 @@ public class ComponentInvocationHandler implements InvocationHandler
 		Object proxyRet = null;
 		try 
 		{
-			if (delegateReturn != null)
-			{
-				proxyRet = translate(delegateReturn, null, proxyMethod.getReturnType());
-			}
+			proxyRet = translate(delegateReturn, null, proxyMethod.getReturnType());
 		} 
 		catch (Exception e) 
 		{
@@ -294,7 +292,15 @@ public class ComponentInvocationHandler implements InvocationHandler
 	{
 		if (oldObject == null)
 		{
-			return null;
+			// Normally a null stays a null, even if that would be illegal for a corba return value.
+			// For xml entities though, as a special service we translate a null to an empty XmlEntityStruct,
+			// see http://jira.alma.cl/browse/COMP-1336
+			if (newObjectClass == XmlEntityStruct.class) {
+				return new XmlEntityStruct();
+			}
+			else {
+				return null;
+			}
 		}
 		
 		// must convert since oldObject is of wrapper type even if the method signature uses the primitive type
