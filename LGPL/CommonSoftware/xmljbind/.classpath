@@ -3,14 +3,14 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test/generator_out"/>
 	<classpathentry excluding="generator_out/|generator_out/" kind="src" path="test"/>
-	<classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jakarta-oro-2.0.5.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jakarta-regexp-1.2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.ant_1.6.5/lib/ant.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.ant_1.8.2.v20120109-1030/lib/ant.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
