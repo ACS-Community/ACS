@@ -48,22 +48,22 @@ import org.openorb.compiler.parser.IdlType;
  */ 
 public class JavaGenerator extends IdlToJava 
 {
-	private Set m_xmlTypedefNodes;
+	private Set<IdlObject> m_xmlTypedefNodes;
 	
-	private Map m_struct2JavaMap;
+	private Map<String, String> m_struct2JavaMap;
 	
 	/** used as a filter to exclude idl nodes from generation, e.g. interfaces without xml entity objects */
-	private Set m_nodesToBeGenerated;
+	private Set<IdlObject> m_nodesToBeGenerated;
 	
 	/**
 	 * Constructor for JavaGenerator.
 	 */
-	public JavaGenerator(Set xmlTypedefNodes, Set nodesToBeGenerated)  
+	public JavaGenerator(Set<IdlObject> xmlTypedefNodes, Set<IdlObject> nodesToBeGenerated)  
 	{
 		super();
 		m_xmlTypedefNodes = xmlTypedefNodes;
 		m_nodesToBeGenerated = nodesToBeGenerated;
-		m_struct2JavaMap = new HashMap();
+		m_struct2JavaMap = new HashMap<String, String>();
 	}
 
 
@@ -160,11 +160,11 @@ public class JavaGenerator extends IdlToJava
 		}
 		current_pkg = old_pkg;
 
-		        
+
 		java.util.Vector list = ((IdlInterface)obj).getInheritance();
-        
+
 		addDescriptiveHeader(output,obj);
-        
+
 		// Interface header
 		output.print("public interface " + iname);
 		
@@ -497,7 +497,7 @@ public class JavaGenerator extends IdlToJava
 	String getXmlBindingClass(String structTypeName) 
 	{		
 		// get it from the map
-		String className = (String) m_struct2JavaMap.get(structTypeName);
+		String className = m_struct2JavaMap.get(structTypeName);
 		
 		if (className == null)
 		{

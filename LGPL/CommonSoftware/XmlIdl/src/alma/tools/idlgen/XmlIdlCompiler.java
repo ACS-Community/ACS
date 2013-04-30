@@ -22,7 +22,6 @@
 package alma.tools.idlgen;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -222,22 +221,20 @@ public class XmlIdlCompiler
 		{
 			System.out.println("\n**** detecting typedef'd xml entity structs ****");
 		}
-		Set xmlTypedefNodes = new LinkedHashSet();
+		Set<IdlObject> xmlTypedefNodes = new LinkedHashSet<IdlObject>();
 		// do this separately from the previous compile_idl() pass, since some structs could be forward-declared
 		treeManipulator.findXmlTypedefNodes(root, xmlTypedefNodes); 
 		// print them 
 		if (IdlCompiler.verbose)
 		{
-			for (Iterator iter = xmlTypedefNodes.iterator(); iter.hasNext();)
-			{
-				IdlObject node = (IdlObject) iter.next();
+			for (IdlObject node : xmlTypedefNodes) {
 				System.out.println(IdlTreeManipulator.getTypeName(node.kind()) + "::" + node.getId());
 			}
-		}		
-				
+		}
+		
 		// --  --
 
-		Set nodesToBeGenerated = new LinkedHashSet();
+		Set<IdlObject> nodesToBeGenerated = new LinkedHashSet<IdlObject>();
 		// unlike in OMG IDL2Java, we must generate code (holder class) for each xmlTypedefNode  
 		nodesToBeGenerated.addAll(xmlTypedefNodes);
 		if (IdlCompiler.verbose)
@@ -250,9 +247,7 @@ public class XmlIdlCompiler
 		if (IdlCompiler.verbose)
 		{
 			System.out.println("\n**** nodes that need code generation ****");
-			for (Iterator iter = nodesToBeGenerated.iterator(); iter.hasNext();)
-			{
-				IdlObject node = (IdlObject) iter.next();
+			for (IdlObject node : nodesToBeGenerated) {
 				if (node.kind() != IdlType.e_ident)
 				{
 					System.out.println(IdlTreeManipulator.getTypeName(node.kind()) + "::" + node.name() + ": " + node.getId());
