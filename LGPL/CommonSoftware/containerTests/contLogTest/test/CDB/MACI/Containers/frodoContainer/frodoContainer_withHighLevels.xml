@@ -16,7 +16,7 @@
     	maxLogQueueSize="50000"
     	immediateDispatchLevel="11"
     	dispatchPacketSize="20"
-    	flushPeriodSeconds="10"
+    	flushPeriodSeconds="2"
     	>
      </LoggingConfig>
     
