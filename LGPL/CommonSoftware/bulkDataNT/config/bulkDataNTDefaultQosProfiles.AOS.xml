@@ -103,6 +103,7 @@ Default QoS Profile for BulkDataNT.
                 <protocol>
                     <push_on_write>true</push_on_write>
                     <rtps_reliable_writer>
+                        <enable_multicast_periodic_heartbeat>true</enable_multicast_periodic_heartbeat>
                         <min_send_window_size>2</min_send_window_size>
                         <max_send_window_size>15</max_send_window_size>
                         
