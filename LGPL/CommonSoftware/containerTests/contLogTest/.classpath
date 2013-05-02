@@ -25,7 +25,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplErrorComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
@@ -43,7 +42,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="lib" path="lib/contLogTest_IF.jar"/>
 	<classpathentry kind="lib" path="lib/typeSafeLogsLTS.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar" sourcepath="WORKSPACE/Abeans/src/java"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

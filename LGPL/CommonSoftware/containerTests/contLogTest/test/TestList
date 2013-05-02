@@ -40,18 +40,21 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 ########################################################
 # CDB CHECK
 ########################################################
+# Run the cdbChecker.
+# We expect an error for the missing "myDefaultJavaTestContainer" CDB config data,
+# because the tests (currently still) work with the fact that this container is not configured at all. 
 0 PROLOGUE "tclsh generateSed.tcl cdbCheck" \
     cdbCheck cdbChecker
 
 ########################################################
 # JAVA-CONTAINER WITHOUT CDB FILE
 ########################################################
+# Start 'myDefaultJavaTestContainer' without log level env vars or CDB config available.
+# Verify "minLogLevel=2" etc using output of maciContainerLogLevel command.
 1 SOURCE prepareHardcodedLevelsNoCdb.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java myDefaultJavaTestContainer" \
     javaHardcodedLevelsNoCdb2 "maciContainerLogLevel myDefaultJavaTestContainer get default"
 # Execute always together with previous test - it assumes proper container is already/still up.
-# Note that if minLogLevel is set to OFF/99, logs at level EMERGENCY/11 still
-# get through (bug).
 2   javaHardcodedLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG1 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer myDefaultJavaTestContainer"
 
@@ -64,6 +67,9 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 #   env var ACS_LOG_STDOUT to a high value, these msgs to stdout are not
 #   produced, so acsutilAwaitContainerStart would time out.
 #   Workaround: use high levels in xml file, lower ones in env vars
+#   Update HSO: Since ACS 7.0.2 we print "ContainerStatusMsg" to stdout, 
+#   so that the start scripts see this output regardless of logging settings.
+#   Therefore the current workaround is not necessary any more.
 # NOTE2: similar for acsStopContainer.
 # NOTE3: the file $ACSROOT/bin/acsstartupConstants.sh sets the "script debugging
 #   var ACS_DEBUG_PRIORITY to 4, and acsStartJava will send extra debug messages

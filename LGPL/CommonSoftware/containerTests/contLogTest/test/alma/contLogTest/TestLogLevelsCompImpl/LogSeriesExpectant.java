@@ -6,9 +6,8 @@ import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import com.cosylab.logging.engine.log.ILogEntry; 
+import com.cosylab.logging.engine.log.ILogEntry;
 
-import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
 import alma.acs.logging.engine.LogReceiver.ReceivedLogRecord;

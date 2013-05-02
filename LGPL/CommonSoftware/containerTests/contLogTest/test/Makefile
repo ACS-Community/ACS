@@ -79,7 +79,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ ../idl/*~ ../*~ *.rep *.out core tmp
+	$(RM) *~ ../idl/*~ ../*~ *.rep *.out core tmp tatlogs sed\.scan
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

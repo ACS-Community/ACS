@@ -23,7 +23,6 @@ package alma.contLogTest.TestLogLevelsCompImpl;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +58,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 	 */
 	public TestLogLevelsCompTest() throws Exception
 	{
-		super(TestLogLevelsCompTest.class.getName());
+		super(TestLogLevelsCompTest.class.getSimpleName());
 	}
 
 	/**
@@ -77,8 +76,8 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			}
 		}
 		
-		components = new ArrayList<TestLogLevelsComp>();		
-		for (String compName : componentNames) {			
+		components = new ArrayList<TestLogLevelsComp>();
+		for (String compName : componentNames) {
 			components.add(alma.contLogTest.TestLogLevelsCompHelper.narrow(getContainerServices().getComponent(compName)));
 		}
 		
@@ -148,9 +147,9 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 				minLevel = levels[4];
 			Assert.assertEquals(levels[2], minLevel);
 		}
-		// Sleep is to work-around a race condition, whereby the tearDown() can get called "too early"
-		// (logging not properly initialised when it is already  stopped after running this short method).
-		Thread.sleep(3000);
+//		// Sleep is to work-around a race condition, whereby the tearDown() can get called "too early"
+//		// (logging not properly initialised when it is already  stopped after running this short method).
+//		Thread.sleep(3000);
 	}
 	
 	
@@ -281,9 +280,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 	
 	public static void main(String[] args)
 	{
-		junit.textui.TestRunner.run(TestLogLevelsCompTest.class);
-		//System.out.println("Finished running TestLogLevelsCompTest main");
-		//System.exit(0);
+		alma.acs.testsupport.tat.NoDotJUnitRunner.run(TestLogLevelsCompTest.class);
 	}
 
 }
