@@ -376,9 +376,9 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	if( ret != DDS::RETCODE_OK)
 	{
+		dumpStatistics();
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
-			dumpStatistics();
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			toEx.setSenderName(senderStream_m->getName().c_str()); 
 			toEx.setFlowName(flowName_m.c_str());
@@ -388,7 +388,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			throw toEx;
 		}else
 		{
-			dumpStatistics();
 			SendFrameGenericErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			sfEx.setSenderName(senderStream_m->getName().c_str()); 
 			sfEx.setFlowName(flowName_m.c_str());
