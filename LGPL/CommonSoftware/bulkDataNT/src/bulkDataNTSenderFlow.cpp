@@ -334,9 +334,9 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	if( ret != DDS::RETCODE_OK)
 	{
+		dumpStatistics();
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
-			dumpStatistics();
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			toEx.setSenderName(senderStream_m->getName().c_str()); 
 			toEx.setFlowName(flowName_m.c_str());
@@ -346,7 +346,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			throw toEx;
 		}else
 		{
-			dumpStatistics();
 			SendFrameGenericErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			sfEx.setSenderName(senderStream_m->getName().c_str()); 
 			sfEx.setFlowName(flowName_m.c_str());
@@ -384,7 +383,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	{
 		if (DDSConfiguration::debugLevel>0)
 		{
-			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			// the message can cause performance penalty for small data sizes
 			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) for flow: %s before waiting for ACKs: %d", dataType2String[dataType], flowName_m.c_str(), status.unacknowledged_sample_count)); //RTI
