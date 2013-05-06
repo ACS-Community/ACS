@@ -27,7 +27,8 @@ public class TestContainer extends TestClient implements Container {
 	protected long activationTime = 0;
 	protected long deactivationTime = 0;
 	protected int[] shutdownOrder = null;
-
+	protected boolean ignoreActivateComponentAsync = false;
+	
 	/**
 	 * Constructor for TestContainer.
 	 * @param name
@@ -118,6 +119,11 @@ public class TestContainer extends TestClient implements Container {
 	@Override
 	public void activate_component_async(final int handle, final long executionId,
 			final String name, final String exe, final String type, final ComponentInfoCompletionCallback callback) {
+		
+		// simulate faulty container
+		if (ignoreActivateComponentAsync)
+			return;
+		
 		// creating a new thread for each request is OK for tests
 		new Thread(new Runnable() {
 			
@@ -328,4 +334,13 @@ public class TestContainer extends TestClient implements Container {
 	public int[] get_component_shutdown_order() {
 		return shutdownOrder;
 	}
+
+	/**
+	 * @param ignoreActivateComponentAsync the ignoreActivateComponentAsync to set
+	 */
+	public void setIgnoreActivateComponentAsync(boolean ignoreActivateComponentAsync) {
+		this.ignoreActivateComponentAsync = ignoreActivateComponentAsync;
+	}
+	
+	
 }

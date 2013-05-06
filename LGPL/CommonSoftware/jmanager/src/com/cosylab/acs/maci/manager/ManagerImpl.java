@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -55,6 +56,7 @@ import org.prevayler.implementation.SnapshotPrevayler;
 import si.ijs.maci.ClientOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.concurrent.DaemonThreadFactory;
@@ -700,6 +702,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private transient Set<String> pendingContainerShutdown = null;
 
 	/**
+	 * List of all pending container async. requests (activations).
+	 */
+	private transient Map<String, Deque<ComponentInfoCompletionCallback>> pendingContainerAsyncRequests = null;
+
+	/**
 	 * New container logged in notification.
 	 */
 	private transient Object containerLoggedInMonitor = null;
@@ -1025,7 +1032,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		pendingActivations = new HashMap<String, ComponentInfo>();
 		pendingContainerShutdown = Collections.synchronizedSet(new HashSet<String>());
-
+		pendingContainerAsyncRequests = new HashMap<String, Deque<ComponentInfoCompletionCallback>>();
+		
 		clientMessageQueue = new HashMap<Client, LinkedList<ClientMessageTask>>();
 		
 		groupedNotifyTaskMap = new HashMap<Object, GroupedNotifyTask>();
@@ -2894,7 +2902,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				h = containers.next(h);
 		    }
-
+			
 			// new container
 			if (h == 0)
 			{
@@ -2954,6 +2962,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//containers.set(handle, containerInfo);
 			}
 		}
+
+		// cancel all "old" container async request
+		AcsJCannotGetComponentEx acgcex = new AcsJCannotGetComponentEx();
+		acgcex.setReason("Request canceled due to container re-login.");
+		cancelPendingContainerAsyncRequestWithException(containerInfo.getName(), acgcex);
 
 		final boolean recoverContainer = reply.isRecover();
 
@@ -4097,6 +4110,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				return;
 
 			containerInfo = (TimerTaskContainerInfo)containers.get(handle);
+
+			// cancel all "old" container async request
+			AcsJCannotGetComponentEx acgcex = new AcsJCannotGetComponentEx();
+			acgcex.setReason("Request canceled due to container logout.");
+			cancelPendingContainerAsyncRequestWithException(containerInfo.getName(), acgcex);
 
 			// !!! ACID - RemoveContainerCommand
 			executeCommand(new ContainerCommandDeallocate(handle, id,
@@ -6628,10 +6646,31 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							isOtherDomainComponent, isDynamicComponent, h, reactivate,
 							container, containerInfo, executionId,
 							activationTime);
-					container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
+					
+					
+					addPendingContainerAsyncRequest(containerName, callback);
+					
+					try {
+						container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
+					}
+					catch (Throwable t) {
+						// failed call, remove async request from the list
+						removePendingContainerAsyncRequest(containerName, callback);
+						throw t;
+					}
+					
 					logger.log(AcsLogLevel.DELOUSE, "Asynchronous activation of component '"+name+"' (" + handleReadable + ") is running on container '" + containerInfo.getName() + "'.");
 					
-					ComponentInfo ret = callback.waitUntilActivated(getLockTimeout());
+					ComponentInfo ret;
+					try {
+						ret = callback.waitUntilActivated(getLockTimeout());
+					}
+					catch (Throwable t) {
+						// failed call (most likely timeout), remove async request from the list
+						removePendingContainerAsyncRequest(containerName, callback);
+						throw t;
+					}
+
 					logger.log(AcsLogLevel.DELOUSE, "Asynchronous activation of component '"+name+"' (" + handleReadable + ") has finished on container '" + containerInfo.getName() + "'.");
 					return ret;
 				}
@@ -6654,6 +6693,56 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 	}
 	
+	private void addPendingContainerAsyncRequest(String containerName, ComponentInfoCompletionCallback callback)
+	{
+		synchronized (pendingContainerAsyncRequests)
+		{
+			Deque<ComponentInfoCompletionCallback> list = pendingContainerAsyncRequests.get(containerName);
+			if (list == null)
+			{
+				list = new ArrayDeque<Container.ComponentInfoCompletionCallback>();
+				pendingContainerAsyncRequests.put(containerName, list);
+			}
+			list.add(callback);
+		}
+	}
+	
+	private boolean removePendingContainerAsyncRequest(String containerName, ComponentInfoCompletionCallback callback)
+	{
+		synchronized (pendingContainerAsyncRequests)
+		{
+			Deque<ComponentInfoCompletionCallback> list = pendingContainerAsyncRequests.get(containerName);
+			if (list == null)
+				return false;
+			boolean removed = list.remove(callback);
+			if (list.size() == 0)
+				pendingContainerAsyncRequests.remove(containerName);
+			return removed;
+		}
+	}
+
+	private void cancelPendingContainerAsyncRequestWithException(String containerName, Throwable cause)
+	{
+		synchronized (pendingContainerAsyncRequests)
+		{
+			Deque<ComponentInfoCompletionCallback> list = pendingContainerAsyncRequests.get(containerName);
+			if (list == null)
+				return;
+			
+			// remove in reverse order
+			while (!list.isEmpty())
+			{
+				try {
+					list.getLast().failed(null, cause);
+				} catch (Throwable th) {
+					// just log
+					new AcsJUnexpectedExceptionEx(th).log(logger);
+				}
+			}
+		}
+		
+	}
+
 	private class ComponentInfoCompletionCallbackImpl implements ComponentInfoCompletionCallback
 	{
 		final int requestor;
@@ -6733,6 +6822,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		public void done(ComponentInfo result) {
 
 			logger.log(AcsLogLevel.DEBUG, "Container responded with 'done' callback to indicate activation of a component '"+name+"'.");
+
+			// remove and check for duplicate call
+			if (!removePendingContainerAsyncRequest(containerName, this))
+			{
+				logger.log(AcsLogLevel.DEBUG, "Duplicate async callback response (with 'done') for a component '"+name+"'.");
+				return;
+			}
 			
 			synchronized (sync) {
 				try
@@ -6756,6 +6852,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		@Override
 		public void failed(ComponentInfo result, Throwable exception) {
+			
+			// remove and check for duplicate call
+			if (!removePendingContainerAsyncRequest(containerName, this))
+			{
+				logger.log(AcsLogLevel.DEBUG, "Duplicate async callback response (with 'failed') for a component '"+name+"'.");
+				return;
+			}
+
 			synchronized (sync) {
 				try
 				{

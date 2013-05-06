@@ -3003,6 +3003,93 @@ public class ManagerImplTest extends TestCase
 			} catch (AcsJComponentSpecIncompatibleWithActiveComponentEx e) {
 				fail("AcsJComponentSpecIncompatibleWithActiveComponentEx");
 			}		
+			
+			// activate_component_async that does not respond test
+			dynContainer.setIgnoreActivateComponentAsync(true);
+			
+			// activate_component_async that does not respond test
+			// timeout test
+			manager.setLockTimeout(3*SLEEP_TIME_MS);
+			try
+			{
+				dynContainer.setIgnoreActivateComponentAsync(true);
+				manager.getDynamicComponent(info.getHandle(),
+						new ComponentSpec("activate_component_async_will_never_respond",
+								"IDL:alma/PS/PowerSupply:1.0",
+								"java.lang.Object",
+						"DynContainer"), false);
+				fail();
+			}
+			catch (AcsJCannotGetComponentEx cgc)
+			{
+				// ok
+			}
+			catch (Exception ex)
+			{
+				fail();
+			}
+
+			final AtomicLong logoutTime = new AtomicLong();
+			
+			// and container logs out
+			// shoud react quicker
+			manager.setLockTimeout(10*SLEEP_TIME_MS);
+			try
+			{
+				final ClientInfo dci = dynContainerInfo;
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						try {
+							Thread.sleep(SLEEP_TIME_MS);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						logoutTime.set(System.currentTimeMillis());
+
+						try {
+							manager.logout(dci.getHandle());
+						} catch (AcsJNoPermissionEx e) {
+							fail();
+						}
+					}
+				}).start();
+				
+				manager.getDynamicComponent(info.getHandle(),
+						new ComponentSpec("activate_component_async_will_never_respond_cont_logout",
+								"IDL:alma/PS/PowerSupply:1.0",
+								"java.lang.Object",
+						"DynContainer"), false);
+				
+				fail();
+				
+			}
+			catch (AcsJCannotGetComponentEx cgc)
+			{
+				long now = System.currentTimeMillis();
+				
+				long diff = now - logoutTime.get();
+
+				// logout did not trigger component failed to activate
+				assertTrue(diff < SLEEP_TIME_MS);
+			}
+			catch (Exception ex)
+			{
+				fail();
+			}
+			
+
+			try {
+				Thread.sleep(SLEEP_TIME_MS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
 			/**
