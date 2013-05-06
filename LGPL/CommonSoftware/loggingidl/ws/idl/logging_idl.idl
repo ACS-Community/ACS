@@ -169,6 +169,117 @@ Header,
 
 module Logging
 {
+
+    /** 
+        Convenience typedef for sequences of strings. 
+    */
+    typedef sequence <string> stringSeq;
+
+    exception LoggerDoesNotExistEx
+    {
+        string LoggerName; /// Name of the non-existing logger.
+    };
+    
+    exception IllegalLogLevelsEx
+    {
+        string ErrorDesc; /// Optional description.
+    };
+    
+    /**
+       Interface through which the logging settings of a process can be configured at runtime. 
+       <p>
+       Note that the logging configuration should always be done
+       persistently in the CDB, from where it is read at process
+       startup, 
+       or re-read later when refresh_logging_config is called.
+       The additional logger configuration that can be done
+       directly using this interface only allows temporary changes
+       of log levels. 
+       These log level changes are not written to the CDB, so that
+       when the process is restarted, the old values
+       from the CDB will be used again. 
+       <p>
+       To keep this interface simple, advanced changes of log queue
+       size, dispatch packet size and so forth are not supported
+       in this interface; they must be done in the CDB instead. 
+     */
+    interface LoggingConfigurable {
+    
+        /*
+         * Struct that represents log level thresholds used for filtering log records.
+         */
+        struct LogLevels {
+            /** 
+             * This flag is only relevant in the context of a named logger configuration. 
+             * If true, then the fields minLogLevel and minLogLevelLocal are undefined, 
+             * and default values apply. 
+             */
+            boolean useDefault;
+            /** min log level for logging to the central log service */
+            AcsLogLevels::logLevelValue minLogLevel;
+            /** min log level for printing logs to stdout */
+            AcsLogLevels::logLevelValue minLogLevelLocal;
+        };
+    
+        /**
+         * Gets the log levels of the default logging configuration.
+         * These levels "belong" to the entire process and are used by all loggers 
+         * that have not been configured individually.
+         */
+        LogLevels get_default_logLevels();
+       
+        /**
+         * Sets the log levels of the default logging configuration.
+         * These levels are used by all loggers that have not been configured individually.
+         */
+        void set_default_logLevels(in LogLevels levels)
+            raises (IllegalLogLevelsEx);
+       
+        /** 
+         * Gets the names of all loggers, to allow configuring their levels individually.
+         * The names are those that appear in the log records in the field "SourceObject".
+         * This includes the container logger, ORB logger, component loggers, 
+         * and (only C++) "GlobalLogger"s which get treated as one named logger. 
+         */
+        stringSeq get_logger_names();
+       
+        /**
+         * Gets log levels for a particular named logger.
+         * If the returned field LogLevels.useDefault is true, then the
+         * logger uses the default levels (see get_default_logLevels())
+         * and the local and remote levels have no meaning;       
+         * otherwise the returned local and remote levels apply.
+         */
+        LogLevels get_logLevels(in string logger_name)
+            raises (LoggerDoesNotExistEx);
+       
+        /**
+         * Sets log levels for a particular named logger.
+         * If levels.useDefault is true, then the logger will be reset to
+         * using default levels;       
+         * otherwise it will use the supplied local and remote levels.
+         * Throws IllegalLogLevelsEx if a provided level is invalid. 
+         * <p>
+         * @TODO: Define if/when LoggerDoesNotExistEx should be thrown. It could make sense to allow 
+         *        setting levels for a component logger even before that component gets loaded in the container.
+         */
+        void set_logLevels(in string logger_name, in LogLevels levels)
+            raises (LoggerDoesNotExistEx, IllegalLogLevelsEx);
+    
+        /**
+         * Commands the container or manager to read in again the logging
+         * configuration from the CDB and to reconfigure the loggers
+         * accordingly. 
+         * This allows for persistent changes in the logging
+         * configuration to become effective, and also for changes of more
+         * advanced parameters. 
+         *
+         * Notice that this is a oneway method and therefore there cannot be return values or user exceptions.
+         * Only CORBA runtime exceptions due to communication issues can be thrown.
+         */
+        oneway void refresh_logging_config();
+    };
+
 	/**
 	  * Struct used to send Log Records through ACS Custom Log Service
 	  */
