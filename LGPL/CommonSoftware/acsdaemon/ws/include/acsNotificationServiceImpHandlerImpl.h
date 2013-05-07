@@ -141,11 +141,11 @@ public:
       CORBA::ULongLong rtt = nsm->getAndResetRTT();
       nsm->issuePingEvent();
       if (rtt < 0) { // no response
-        ACS_SHORT_LOG((LM_DEBUG, "%s is not responsive, reported as defunctional.", desc->getName()));
+        ACS_SHORT_LOG((LM_ERROR, "%s is not responsive, reported as defunctional.", desc->getName()));
         return acsdaemon::DEFUNCT;
       }
       else if (rtt > 200000) { // > 200ms
-        ACS_SHORT_LOG((LM_DEBUG, "%s response time is slow, reported as degraded.", desc->getName()));
+        ACS_SHORT_LOG((LM_WARNING, "%s response time is slow, reported as degraded.", desc->getName()));
         return acsdaemon::DEGRADED;
       }
       else
