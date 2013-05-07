@@ -26,6 +26,7 @@ if {[info exists env(INTROOT)]} {
     puts $fp "s|$env(INTROOT)|<ACS-/INT-ROOT>|g"
 #   When both INTROOT and ACSROOT exist and are the same (e.g. NRI), this directory appears twice for the "endorsed jar files"
     puts $fp "s|-Djava.endorsed.dirs=<ACS-/INT-ROOT>/lib/endorsed:<ACS-/INT-ROOT>/lib/endorsed:|-Djava.endorsed.dirs=<ACS-/INT-ROOT>/lib/endorsed:|g"
+    puts $fp "s|:<ACS-/INT-ROOT>/config/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas|:<ACS-/INT-ROOT>/config/CDB/schemas|g"
 }
 
 puts $fp "s|$env(ACSDATA)|<ACSDATA>|g"
