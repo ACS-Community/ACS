@@ -6,9 +6,13 @@
 1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
 1 - JDAL is ready and waiting
+1 - ReBound ID: MC_NotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+1 - ReBound ID: MC_LoggingNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
+1 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
+1 - ReBound ID: MC_AlarmNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
@@ -31,10 +35,14 @@
 5 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
 5 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
-5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
 5 - JDAL is ready and waiting
+5 - ReBound ID: MC_NotifyEventChannelFactory
+5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+5 - ReBound ID: MC_LoggingNotifyEventChannelFactory
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
+5 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
+5 - ReBound ID: MC_AlarmNotifyEventChannelFactory
 5 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 5 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 5 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
