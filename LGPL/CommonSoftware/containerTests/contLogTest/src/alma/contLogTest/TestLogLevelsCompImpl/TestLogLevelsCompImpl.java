@@ -34,7 +34,6 @@ import alma.acs.logging.StdOutConsoleHandler;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.contLogTest.TestLogLevelsCompOperations;
 import alma.maci.loggingconfig.LoggingConfig;
-import alma.typeSafeLogs.LOG_TEST_DummyMessage;
 /**
  * A very simple component that does not make use of 
  * {@link alma.acs.component.ComponentImplBase}.
@@ -53,6 +52,13 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 
 	private int levels[];
 
+	/**
+	 * The log level that causes the local log record queue to be flushed.
+	 * The needed value depends on the container logging config in the CDB.
+	 */
+	private final AcsLogLevel flushingLevel = AcsLogLevel.EMERGENCY;
+	
+	
 	/////////////////////////////////////////////////////////////
 	// Implementation of ComponentLifecycle
 	/////////////////////////////////////////////////////////////
@@ -170,8 +176,11 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 			}
 			m_logger.log(acsLogLevel, "dummy log message for core level " + coreLevel + "/" + name);
 		}
-		acsLogLevel = AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.EMERGENCY);
-		m_logger.log(acsLogLevel, "===last log message===");
+		
+		if (acsLogLevel.compareTo(flushingLevel) < 0) { 
+			m_logger.log(flushingLevel, "Dummy log to get the local log queue flushed.");
+		}
+		
 		//LOG_TEST_DummyMessage.log(m_logger, "A beautiful name with a cherry on top", "Dr. F. Amous");
 	}
 }

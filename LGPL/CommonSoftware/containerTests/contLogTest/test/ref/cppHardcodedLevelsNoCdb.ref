@@ -1,20 +1,13 @@
 1 -  -D TEST_COMP_NAMES=TESTLOG3 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-1 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - .<timestamp> DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testGetLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] calling orb.resolve_initial_references
-1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] POA activated
-1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testGetLevels] manager narrow successful.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG3' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] component TESTLOG3 retrieved successfully.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
-1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testGetLevels] manager narrow successful.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 2, 2, 2
@@ -24,21 +17,14 @@
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] logged out from manager.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] about to log out from manager...
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] logged out from manager.
-1 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - F.<timestamp> DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] calling orb.resolve_initial_references
-1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POA activated
-1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG3' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG3 retrieved successfully.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
-1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 2 to be used by component TESTLOG3

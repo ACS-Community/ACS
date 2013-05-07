@@ -165,6 +165,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 ########################################################
 # JAVA-CONTAINER WITH CDB FILE AND NAMED LOGGERS
 ########################################################
+# Fails, see http://jira.alma.cl/browse/COMP-1928
 21 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
     javaHardcodedLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
@@ -173,10 +174,12 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
     EPILOGUE "acsStopContainer frodoContainer"
 
 
+# Fails, see http://jira.alma.cl/browse/COMP-1928
 23 SOURCE prepareCdbLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
     javaCdbLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
 # Execute always together with previous test - it assumes proper container is already/still up
+# Fails, see http://jira.alma.cl/browse/COMP-1928
 24  javaCdbLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer frodoContainer"
 
@@ -192,6 +195,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 #   to stdout if ACS_LOG_STDOUT exists and is less than ACS_DEBUG_PRIORITY.
 #   Be aware that this magic level 4 impacts the reference file more than just
 #   that number ...
+# Fails, see http://jira.alma.cl/browse/COMP-1928
 25 SOURCE prepareEnvLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
     javaEnvironmentLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
@@ -200,6 +204,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
     EPILOGUE "acsStopContainer frodoContainer"
 
 
+# Fails, see http://jira.alma.cl/browse/COMP-1928
 27 SOURCE prepareDynLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
     javaDynamicLevelsNamedLogger2 "maciContainerLogLevel frodoContainer set TESTLOG2 8 9" \

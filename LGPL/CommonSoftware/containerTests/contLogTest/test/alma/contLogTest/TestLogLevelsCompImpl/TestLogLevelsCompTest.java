@@ -188,7 +188,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			}
 			centralLogLevels[i++] = lld.value;
 		}
-		int waitTimeSeconds = 5;
+		int waitTimeSeconds = 4;
 		
 		for (TestLogLevelsComp testComp : components) {
 			String componentName = testComp.name();
@@ -273,7 +273,6 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			//System.out.println("Finished testing component " + componentName);
 		}
 		//System.out.println("Finished testing all components - done with testLoggingConfigurableCentralLogLevels()");
-
 	}
 
 	
