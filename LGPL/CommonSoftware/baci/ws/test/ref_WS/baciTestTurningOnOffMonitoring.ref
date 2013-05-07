@@ -1,6 +1,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
-1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Starting
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Starting
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: monitoring flag: 0 passed from cmd line
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: CharacteristicComponent IDs ready
@@ -37,6 +37,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
+1 - ----------T--:--:--.--- [GlobalLogger - recovery::RecoveryStore::load] Creating or loading recovery file
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::PcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::RWcontImpl] 
@@ -740,8 +741,8 @@
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI1
-1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
+1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
@@ -769,11 +770,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::startMonitoringThread] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (baciTest1Client main thread) Going to sleep...
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 3.000000 TimeStamp: ----------T--:--:--.---
