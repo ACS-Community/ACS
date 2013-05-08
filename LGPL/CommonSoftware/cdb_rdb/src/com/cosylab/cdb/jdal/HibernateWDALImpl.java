@@ -88,12 +88,20 @@ import org.w3c.dom.ls.LSParser;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggerDoesNotExistEx;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.TMCDB.baci.BACIPropertyType;
 import alma.TMCDB.baci.ComponentData;
 import alma.TMCDB.baci.EmptyStringHandlerBACIPropertyType;
 import alma.TMCDB.maci.Channels;
 import alma.TMCDB.maci.EventChannelNode;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.tmcdb.AcsService;
 import alma.acs.tmcdb.AcsServiceServiceType;
 import alma.acs.tmcdb.BACIPropArchMech;
@@ -134,6 +142,7 @@ import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJWrongCDBDataTypeEx;
+import alma.maci.loggingconfig.UnnamedLogger;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALChangeListener;
@@ -4468,4 +4477,110 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		
 	}
 
+    // ///////////////////////////////////////////////////////////
+	// LoggingConfigurable interface
+	// ///////////////////////////////////////////////////////////
+
+	// init logging 
+	LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+
+	/**
+	 * Gets the log levels of the default logging configuration. These levels
+	 * are used by all loggers that have not been configured individually.
+	 */
+	public LogLevels get_default_logLevels() {
+		LogLevels logLevels = new LogLevels();
+		logLevels.useDefault = false;
+		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel().value;
+		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal().value;
+		return logLevels;
+	}
+
+	/**
+	 * Sets the log levels of the default logging configuration. These levels
+	 * are used by all loggers that have not been configured individually.
+	 */
+	public void set_default_logLevels(LogLevels levels) throws IllegalLogLevelsEx {
+		try {
+			logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.fromInteger(levels.minLogLevel));
+			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
+		} catch (AcsJIllegalArgumentEx ex) {
+			//throw ex.toIllegalArgumentEx();
+			IllegalLogLevelsEx ille = new IllegalLogLevelsEx(ex.getErrorDesc());
+			throw ille;
+		}
+	}
+
+	/**
+	 * Gets the names of all loggers, to allow configuring their levels
+	 * individually. The names are those that appear in the log records in the
+	 * field "SourceObject". This includes the container logger, ORB logger,
+	 * component loggers, and (only C++) GlobalLogger.
+	 * <p>
+	 * The returned logger names are randomly ordered.
+	 */
+	public String[] get_logger_names() {
+		Set<String> loggerNames = logConfig.getLoggerNames();
+		return loggerNames.toArray(new String[loggerNames.size()]);
+	}
+
+	/**
+	 * Gets log levels for a particular named logger. If the returned field
+	 * LogLevels.useDefault is true, then the logger uses the default levels,
+	 * see get_default_logLevels(); otherwise the returned local and remote
+	 * levels apply.
+	 * <p>
+	 * For possible convenience, the default levels are returned in addition to 
+	 * setting {@link LogLevels#useDefault} to <code>true</code>.
+	 */
+	public LogLevels get_logLevels(String logger_name) throws LoggerDoesNotExistEx {
+		UnnamedLogger xsdLevels = logConfig.getNamedLoggerConfig(logger_name);
+		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
+		LogLevels ret = AcsLogLevelDefinition.createIdlLogLevelsFromXsd(useDefault, xsdLevels);
+		return ret;
+	}
+
+	/**
+	 * Sets log levels for a particular named logger. If levels.useDefault is
+	 * true, then the logger will be reset to using default levels; otherwise it
+	 * will use the supplied local and remote levels.
+	 */
+	public void set_logLevels(String logger_name, LogLevels levels) throws LoggerDoesNotExistEx, IllegalLogLevelsEx {
+		if (levels.useDefault) {
+			logConfig.clearNamedLoggerConfig(logger_name);
+		}
+		else {
+			try {
+				UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
+				logConfig.setNamedLoggerConfig(logger_name, config);
+			} catch (AcsJIllegalArgumentEx ex) {
+				//throw ex.toIllegalArgumentEx();
+				IllegalLogLevelsEx ille = new IllegalLogLevelsEx(ex.getErrorDesc());
+				throw ille;
+			}
+		}
+	}
+
+	/**
+	 * Commands the container or manager to read in again the logging
+	 * configuration from the CDB and to reconfigure the loggers accordingly.
+	 * This allows for persistent changes in the logging configuration to become
+	 * effective, and also for changes of more advanced parameters.
+	 * <p>
+	 * Note that unlike for the logging initialization in {@link #initialize()},
+	 * now we give precedence to the CDB values over any previous settings.
+	 */
+	public void refresh_logging_config() {
+		try {
+			logConfig.initialize(true);
+		} catch (LogConfigException ex) {
+			// if the CDB can't be read, we still want to run the container, thus we only log the problem here
+			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
+		}
+	}
+
+
+		
+	/** ************************ END LoggingConfigurable ************************ */
+	
 }

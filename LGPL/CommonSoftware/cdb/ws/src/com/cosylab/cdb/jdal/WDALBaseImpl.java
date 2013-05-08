@@ -36,6 +36,9 @@ import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DAO;
 import com.cosylab.CDB.WJDALOperations;
 
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggerDoesNotExistEx;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 
@@ -144,6 +147,57 @@ abstract public class WDALBaseImpl implements WJDALOperations, Recoverer {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see alma.Logging.LoggingConfigurableOperations#get_default_logLevels()
+	 */
+	@Override
+	public LogLevels get_default_logLevels() {
+		return dalImpl.get_default_logLevels();
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.Logging.LoggingConfigurableOperations#set_default_logLevels(alma.Logging.LoggingConfigurablePackage.LogLevels)
+	 */
+	@Override
+	public void set_default_logLevels(LogLevels levels)
+			throws IllegalLogLevelsEx {
+		dalImpl.set_default_logLevels(levels);
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.Logging.LoggingConfigurableOperations#get_logger_names()
+	 */
+	@Override
+	public String[] get_logger_names() {
+		return dalImpl.get_logger_names();
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.Logging.LoggingConfigurableOperations#get_logLevels(java.lang.String)
+	 */
+	@Override
+	public LogLevels get_logLevels(String logger_name)
+			throws LoggerDoesNotExistEx {
+		return dalImpl.get_logLevels(logger_name);
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.Logging.LoggingConfigurableOperations#set_logLevels(java.lang.String, alma.Logging.LoggingConfigurablePackage.LogLevels)
+	 */
+	@Override
+	public void set_logLevels(String logger_name, LogLevels levels)
+			throws IllegalLogLevelsEx, LoggerDoesNotExistEx {
+		dalImpl.set_logLevels(logger_name, levels);
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.Logging.LoggingConfigurableOperations#refresh_logging_config()
+	 */
+	@Override
+	public void refresh_logging_config() {
+		dalImpl.refresh_logging_config();
+	}
+
 	/**
 	 * Shuts down this instance, without destroying global resources.
 	 * Use this when you run a WDAL embedded in other code, and only want to shut down the wdal

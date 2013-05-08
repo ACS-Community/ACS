@@ -34,6 +34,7 @@
 
 
 #include <acscommon.idl>
+#include <logging_idl.idl>
 #include "cdbErrType.idl"
 
 #pragma prefix "cosylab.com"
@@ -91,7 +92,7 @@ module CDB {
 	/**
 	 * DAL Interface
 	 */
-	interface DAL {
+	interface DAL : Logging::LoggingConfigurable {
 		/**
 		 * Name of used configuration, such as "XML" for the XML-based implementation.
 		 */
