@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import si.ijs.maci.LoggingConfigurable;
+import alma.Logging.LoggingConfigurable;
 
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.testsupport.TestLogger;

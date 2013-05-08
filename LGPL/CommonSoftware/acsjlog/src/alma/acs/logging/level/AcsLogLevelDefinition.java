@@ -203,14 +203,14 @@ public enum AcsLogLevelDefinition {
 	 * Convenience method that creates the IDL-defined log level struct from 
 	 * the XSD-defined levels and the default flag.
 	 */
-	public static si.ijs.maci.LoggingConfigurablePackage.LogLevels createIdlLogLevelsFromXsd(boolean useDefault, UnnamedLogger xsdLevels) {
-		return new si.ijs.maci.LoggingConfigurablePackage.LogLevels(
+	public static alma.Logging.LoggingConfigurablePackage.LogLevels createIdlLogLevelsFromXsd(boolean useDefault, UnnamedLogger xsdLevels) {
+		return new alma.Logging.LoggingConfigurablePackage.LogLevels(
 				useDefault,
 				Short.parseShort(xsdLevels.getMinLogLevel().toString()),
 				Short.parseShort(xsdLevels.getMinLogLevelLocal().toString()));
 	}
 
-	public static UnnamedLogger createXsdLogLevelsFromIdl(si.ijs.maci.LoggingConfigurablePackage.LogLevels idlLevels) throws AcsJIllegalArgumentEx {
+	public static UnnamedLogger createXsdLogLevelsFromIdl(alma.Logging.LoggingConfigurablePackage.LogLevels idlLevels) throws AcsJIllegalArgumentEx {
 		UnnamedLogger xsdLevels = new UnnamedLogger();
 		xsdLevels.setMinLogLevel(AcsLogLevelDefinition.xsdLevelFromInteger(idlLevels.minLogLevel));
 		xsdLevels.setMinLogLevelLocal(AcsLogLevelDefinition.xsdLevelFromInteger(idlLevels.minLogLevelLocal));

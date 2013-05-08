@@ -27,15 +27,15 @@ import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
 import si.ijs.maci.SynchronousAdministratorHelper;
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBlong;
-import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion;
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
@@ -1984,7 +1984,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * Sets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
-	public void set_default_logLevels(LogLevels levels) throws IllegalArgumentEx {
+	public void set_default_logLevels(LogLevels levels) throws IllegalLogLevelsEx {
 		pendingRequests.incrementAndGet();
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		
@@ -1992,7 +1992,9 @@ public class ManagerProxyImpl extends ManagerPOA
 			logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.fromInteger(levels.minLogLevel));
 			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
 		} catch (AcsJIllegalArgumentEx ex) {
-			throw ex.toIllegalArgumentEx();
+			//throw ex.toIllegalArgumentEx();
+			IllegalLogLevelsEx ille = new IllegalLogLevelsEx(ex.getErrorDesc());
+			throw ille;
 		}
 		finally {
 			pendingRequests.decrementAndGet();
@@ -2044,7 +2046,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * true, then the logger will be reset to using default levels; otherwise it
 	 * will use the supplied local and remote levels.
 	 */
-	public void set_logLevels(String logger_name, LogLevels levels) throws IllegalArgumentEx {
+	public void set_logLevels(String logger_name, LogLevels levels) throws IllegalLogLevelsEx {
 		pendingRequests.incrementAndGet();
 		try {
 			LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
@@ -2057,7 +2059,9 @@ public class ManagerProxyImpl extends ManagerPOA
 					UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
 					logConfig.setNamedLoggerConfig(logger_name, config);
 				} catch (AcsJIllegalArgumentEx ex) {
-					throw ex.toIllegalArgumentEx();
+					//throw ex.toIllegalArgumentEx();
+					IllegalLogLevelsEx ille = new IllegalLogLevelsEx(ex.getErrorDesc());
+					throw ille;
 				}
 			}
 		}

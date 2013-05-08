@@ -44,13 +44,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import si.ijs.maci.LoggingConfigurableOperations;
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+import alma.Logging.LoggingConfigurableOperations;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.level.AcsLogLevelDefinition;
-import alma.maciErrType.LoggerDoesNotExistEx;
+import alma.Logging.LoggerDoesNotExistEx;
 
 import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.LogTypeHelper;

@@ -17,7 +17,7 @@ import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ImplLangType;
 
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 
 /**
  * @author almamgr

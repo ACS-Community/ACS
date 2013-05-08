@@ -36,8 +36,8 @@ import javax.swing.tree.TreePath;
 
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerInfo;
-import si.ijs.maci.LoggingConfigurableHelper;
-import si.ijs.maci.LoggingConfigurableOperations;
+import alma.Logging.LoggingConfigurableHelper;
+import alma.Logging.LoggingConfigurableOperations;
 import si.ijs.maci.Manager;
 import alma.acs.gui.loglevel.LogPaneNotFoundException;
 import alma.acs.gui.loglevel.leveldlg.LogLevelSelectorPanel;

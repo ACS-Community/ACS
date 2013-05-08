@@ -21,7 +21,7 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 

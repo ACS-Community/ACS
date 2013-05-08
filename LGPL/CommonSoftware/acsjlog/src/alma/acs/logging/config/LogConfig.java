@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 
-import si.ijs.maci.LoggingConfigurable;
+import alma.Logging.LoggingConfigurable;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.logging.AcsLogLevel;
