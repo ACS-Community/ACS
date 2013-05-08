@@ -219,15 +219,6 @@
                         description="Description of a reason causing no permission exception."
                 />
         </ErrorCode>
-
-	<ErrorCode name="LoggerDoesNotExist"
-	    shortDescription="Logger does not exist"
-	    description="Logger does not exist">
-		<Member name="LoggerName"
-			type="string"
-			description="Name of the non-existing logger."
-		/>
-	</ErrorCode>
 	
 	
 	<ErrorCode name="ComponentCleanUp"

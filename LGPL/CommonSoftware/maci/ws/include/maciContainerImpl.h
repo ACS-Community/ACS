@@ -460,21 +460,21 @@ public:
      * Logging configurable methods
      */
 
-    virtual maci::LoggingConfigurable::LogLevels get_default_logLevels();
+    virtual Logging::LoggingConfigurable::LogLevels get_default_logLevels();
 
-    virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&);
+    virtual void set_default_logLevels(const Logging::LoggingConfigurable::LogLevels&);
 
-    virtual maci::stringSeq* get_logger_names();
+    virtual Logging::stringSeq* get_logger_names();
 
     /*
     * @throw maciErrType::LoggerDoesNotExistEx
     */
-    virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*);
+    virtual Logging::LoggingConfigurable::LogLevels get_logLevels(const char*);
 
     /* 
     * @throw maciErrType::LoggerDoesNotExistEx
     */
-    virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&);
+    virtual void set_logLevels(const char*, const Logging::LoggingConfigurable::LogLevels&);
 
     virtual void refresh_logging_config();
 
@@ -682,10 +682,10 @@ public:
   Logging::Logger::LoggerSmartPtr m_logger;
 
   // default logging levels
-  maci::LoggingConfigurable::LogLevels m_defaultLogLevels;
+  Logging::LoggingConfigurable::LogLevels m_defaultLogLevels;
   
   // loggers configuration 
-  std::map<std::string, maci::LoggingConfigurable::LogLevels> m_logLevels; 
+  std::map<std::string, Logging::LoggingConfigurable::LogLevels> m_logLevels;
 
   // executionId
   maci::ExecutionId m_executionId;

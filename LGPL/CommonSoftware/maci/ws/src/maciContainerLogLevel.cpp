@@ -141,7 +141,7 @@ main (int argc, char *argv[])
 	    	if (cmd == LIST)
 	    	{
 	    		ACS_SHORT_LOG((LM_INFO, "\tLogger names:"));
-	    		maci::stringSeq_var loggerNames = containers[i].reference->get_logger_names();
+	    		Logging::stringSeq_var loggerNames = containers[i].reference->get_logger_names();
 	    		for (CORBA::ULong j = 0; j < loggerNames->length(); j++)
 	   				ACS_SHORT_LOG((LM_INFO, "\t\t%s", loggerNames[j].in()));
 	    	}
@@ -154,7 +154,7 @@ main (int argc, char *argv[])
 	    	{
 	    		char * loggerName = argv[3];
 
-			    LoggingConfigurable::LogLevels logLevels;
+			    Logging::LoggingConfigurable::LogLevels logLevels;
 			    if (ACE_OS::strcmp(loggerName, "default") == 0)
 			     	logLevels = containers[i].reference->get_default_logLevels();
 			    else
@@ -169,7 +169,7 @@ main (int argc, char *argv[])
 	    	{
 	    		char * loggerName = argv[3];
 
-			    LoggingConfigurable::LogLevels logLevels;
+			    Logging::LoggingConfigurable::LogLevels logLevels;
 
 			    logLevels.useDefault = argc < 6;
 			    if (!logLevels.useDefault)

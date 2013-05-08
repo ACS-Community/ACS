@@ -2905,14 +2905,14 @@ ContainerImpl::instantiateContainerServices(
  * Logging configurable methods
  */
 
-maci::LoggingConfigurable::LogLevels ContainerImpl::get_default_logLevels()
+Logging::LoggingConfigurable::LogLevels ContainerImpl::get_default_logLevels()
 {
 	ACS_TRACE("maci::ContainerImpl::get_default_logLevels");
 
 	return m_defaultLogLevels;
 }
 
-void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLevels& logLevels)
+void ContainerImpl::set_default_logLevels(const Logging::LoggingConfigurable::LogLevels& logLevels)
 {
 	ACS_TRACE("maci::ContainerImpl::set_default_logLevels");
 
@@ -2926,13 +2926,13 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 }//ContainerImpl::set_default_logLevels
 
 
-maci::stringSeq* ContainerImpl::get_logger_names()
+Logging::stringSeq* ContainerImpl::get_logger_names()
 {
 	ACS_TRACE("maci::ContainerImpl::get_logger_names");
 
 	std::list<std::string> names = Logging::Logger::getGlobalLogger()->getLoggerNames();
 
-	maci::stringSeq_var namesSeq = new maci::stringSeq();
+	Logging::stringSeq_var namesSeq = new Logging::stringSeq();
 	namesSeq->length(names.size() + m_logLevels.size());
 
 	CORBA::ULong i = 0;
@@ -2943,7 +2943,7 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 		namesSeq[i++] = CORBA::string_dup(pos->c_str());
 
 	// add logs from configuration, but hide non-existant
-	std::map<std::string, maci::LoggingConfigurable::LogLevels>::iterator iter;
+	std::map<std::string, Logging::LoggingConfigurable::LogLevels>::iterator iter;
 	for (iter = m_logLevels.begin(); iter != m_logLevels.end(); iter++)
 		if (find(names.begin(), names.end(), iter->first) == names.end())
 			if (Logging::Logger::getGlobalLogger()->exists(iter->first))
@@ -2956,17 +2956,13 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 /*
 * @throw maciErrType::LoggerDoesNotExistEx
 */
-maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* loggerName)
+Logging::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* loggerName)
 {
 	ACS_TRACE("maci::ContainerImpl::get_logLevels");
 
     if(! Logging::Logger::getGlobalLogger()->exists(loggerName)){
-		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
-					"maci::ContainerImpl::get_logLevels");
-		ex.setLoggerName(loggerName);
-		ex.log(LM_DEBUG);
-		throw ex.getLoggerDoesNotExistEx();
-
+		Logging::LoggerDoesNotExistEx ex(loggerName);
+		throw ex;
         }
 
 	if (m_logLevels.find(loggerName) != m_logLevels.end())
@@ -2979,18 +2975,14 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 /*
 * @throw maciErrType::LoggerDoesNotExistEx
 */
-void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingConfigurable::LogLevels& logLevels)
+void ContainerImpl::set_logLevels(const char* loggerName, const Logging::LoggingConfigurable::LogLevels& logLevels)
 {
 	ACS_TRACE("maci::ContainerImpl::set_logLevels");
 
 	if (!Logging::Logger::getGlobalLogger()->exists(loggerName))
 	{
-		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
-					"maci::ContainerImpl::set_logLevels");
-		ex.setLoggerName(loggerName);
-		ex.log(LM_DEBUG);
-		throw ex.getLoggerDoesNotExistEx();
-		//return;
+		Logging::LoggerDoesNotExistEx ex(loggerName);
+		throw ex;
  	}
 
 	m_logLevels[loggerName] = logLevels;
@@ -3094,7 +3086,7 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 		LOGGER_FACTORY->getLogger(loggerName);
 #endif
 
-	maci::LoggingConfigurable::LogLevels logLevels;
+	Logging::LoggingConfigurable::LogLevels logLevels;
 	if (getContainer()->m_logLevels.find(loggerName) != getContainer()->m_logLevels.end())
 		logLevels = getContainer()->m_logLevels[loggerName];
 	else
@@ -3133,7 +3125,7 @@ void ContainerImpl::loadLoggerConfiguration(const std::string& loggerName)
 {
 	bool failed = false;
 
-	maci::LoggingConfigurable::LogLevels logLevels;
+	Logging::LoggingConfigurable::LogLevels logLevels;
 	logLevels.useDefault = false;
 
 	Field fld;

@@ -111,107 +111,11 @@ module maci {
 	*/
 	typedef long long ExecutionId;
 
-	/**
-	   Interface through which the logging settings of a container
-	   or manager can be configured at runtime. 
-	   <p>
-	   Note that the logging configuration should always be done
-	   persistently in the CDB, from where it is read at process
-	   startup, 
-	   or re-read later when refresh_logging_config is called.
-	   The additional logger configuration that can be done
-	   directly using this interface only allows temporary changes
-	   of log levels. 
-	   These log level changes are not written to the CDB, so that
-	   when the container or manager is restarted, the old values
-	   from the CDB will be used again. 
-	   <p>
-	   To keep this interface simple, advanced changes of log queue
-	   size, dispatch packet size and so forth are not supported
-	   in this interface; they must be done in the CDB instead. 
-	 */
-	interface LoggingConfigurable {
 
-		/*
-		 * Struct that represents log level thresholds used for filtering log records.
-		 */
-		struct LogLevels {
-			/** 
-			 * This flag is only relevant in the context of a named logger configuration. 
-			 * If true, then the fields minLogLevel and minLogLevelLocal are undefined, 
-			 * and default values apply. 
-			 */
-			boolean useDefault;
-			/** min log level for logging to the central log service */
-			AcsLogLevels::logLevelValue minLogLevel;
-			/** min log level for printing logs to stdout */
-			AcsLogLevels::logLevelValue minLogLevelLocal;
-		};
-
-		/**
-		 * Gets the log levels of the default logging configuration.
-		 * These levels "belong" to the entire process and are used by all loggers 
-		 * that have not been configured individually.
-		 */
-		LogLevels get_default_logLevels();
-       
-		/**
-		 * Sets the log levels of the default logging configuration.
-		 * These levels are used by all loggers that have not been configured individually.
-		 */
-		void set_default_logLevels(in LogLevels levels)
-			raises (ACSErrTypeCommon::IllegalArgumentEx);
-       
-		/** 
-		 * Gets the names of all loggers, to allow configuring their levels individually.
-		 * The names are those that appear in the log records in the field "SourceObject".
-		 * This includes the container logger, ORB logger, component loggers, 
-		 * and (only C++) "GlobalLogger"s which get treated as one named logger. 
-		 */
-		stringSeq get_logger_names();
-       
-		/**
-		 * Gets log levels for a particular named logger.
-		 * If the returned field LogLevels.useDefault is true, then the
-		 * logger uses the default levels (see get_default_logLevels())
-		 * and the local and remote levels have no meaning;       
-		 * otherwise the returned local and remote levels apply.
-		 */
-		LogLevels get_logLevels(in string logger_name)
-			raises (maciErrType::LoggerDoesNotExistEx);
-       
-		/**
-		 * Sets log levels for a particular named logger.
-		 * If levels.useDefault is true, then the logger will be reset to
-		 * using default levels;       
-		 * otherwise it will use the supplied local and remote levels.
-		 * Throws IllegalArgumentEx if a provided level is invalid. 
-		 * <p>
-		 * @TODO: Define if/when LoggerDoesNotExistEx should be thrown. It could make sense to allow 
-		 *        setting levels for a component logger even before that component gets loaded in the container.
-		 */
-		void set_logLevels(in string logger_name, in LogLevels levels)
-			raises (maciErrType::LoggerDoesNotExistEx, ACSErrTypeCommon::IllegalArgumentEx);
-
-		/**
-		 * Commands the container or manager to read in again the logging
-		 * configuration from the CDB and to reconfigure the loggers
-		 * accordingly. 
-		 * This allows for persistent changes in the logging
-		 * configuration to become effective, and also for changes of more
-		 * advanced parameters. 
-		 *
-		 * Notice that this is a oneway method and therefore there cannot be return values or user exceptions.
-		 * Only CORBA runtime exceptions due to communication issues can be thrown.
-		 */
-		oneway void refresh_logging_config();
-	};
-
-
-       	/** 
-       	    Structure in which the Manager stores information about a component. 
-       	*/
-       	struct ComponentInfo {
+    /** 
+        Structure in which the Manager stores information about a component. 
+    */
+    struct ComponentInfo {
 	    /** 
 		The type of the component. Uniquely identifies the code-base which the
 		component's servant is executing. Given the type name and
@@ -610,7 +514,7 @@ module maci {
 	    of the container implicitly if it has not yet done so. 
 
 	*/
-	interface Container : Client, LoggingConfigurable{
+	interface Container : Client, ::Logging::LoggingConfigurable{
 
   	    /** 
 		Activate a component whose type (class) and name (instance) are given.
@@ -1013,7 +917,7 @@ module maci {
 	    <LI>It provides information about the whole domain.</LI>
 	    </UL> 
 	*/
-	interface Manager : LoggingConfigurable {
+	interface Manager : ::Logging::LoggingConfigurable {
 	
 		/** The fully qualified name of the domain, e.g., "antenna1.alma.nrao". */
 		readonly attribute string domain_name;
