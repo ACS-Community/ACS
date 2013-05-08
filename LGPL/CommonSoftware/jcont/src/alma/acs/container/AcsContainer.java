@@ -56,13 +56,12 @@ import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.ComponentStates;
-import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
@@ -93,7 +92,8 @@ import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotRestartComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
 import alma.maciErrType.ComponentDeactivationUncleanEx;
-import alma.maciErrType.LoggerDoesNotExistEx;
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggerDoesNotExistEx;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
@@ -1648,13 +1648,15 @@ public class AcsContainer extends ContainerPOA
 	 * Sets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
-	public void set_default_logLevels(LogLevels levels) throws IllegalArgumentEx {
+	public void set_default_logLevels(LogLevels levels) throws IllegalLogLevelsEx {
 		tryToWaitForContainerStart();
 		try {
 			logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.fromInteger(levels.minLogLevel));
 			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
 		} catch (AcsJIllegalArgumentEx ex) {
-			throw ex.toIllegalArgumentEx();
+			//throw ex.toIllegalArgumentEx();
+			IllegalLogLevelsEx ille = new IllegalLogLevelsEx(ex.getErrorDesc());
+			throw ille;
 		}
 	}
 
@@ -1694,7 +1696,7 @@ public class AcsContainer extends ContainerPOA
 	 * true, then the logger will be reset to using default levels; otherwise it
 	 * will use the supplied local and remote levels.
 	 */
-	public void set_logLevels(String logger_name, LogLevels levels) throws LoggerDoesNotExistEx, IllegalArgumentEx {
+	public void set_logLevels(String logger_name, LogLevels levels) throws LoggerDoesNotExistEx, IllegalLogLevelsEx {
 		tryToWaitForContainerStart();
 		if (levels.useDefault) {
 			logConfig.clearNamedLoggerConfig(logger_name);
@@ -1704,7 +1706,9 @@ public class AcsContainer extends ContainerPOA
 				UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
 				logConfig.setNamedLoggerConfig(logger_name, config);
 			} catch (AcsJIllegalArgumentEx ex) {
-				throw ex.toIllegalArgumentEx();
+				//throw ex.toIllegalArgumentEx();
+				IllegalLogLevelsEx ille = new IllegalLogLevelsEx(ex.getErrorDesc());
+				throw ille;
 			}
 		}
 	}
