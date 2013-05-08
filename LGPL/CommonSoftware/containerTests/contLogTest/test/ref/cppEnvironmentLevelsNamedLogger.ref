@@ -5,16 +5,32 @@
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method and LoggingConfigurable: 2, 2, 5, 5, 6
-1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG4
+1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG4
 1 - .<timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 1
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 11 records from logger TESTLOG4
+1 - (level=1) dummy log message for core level 1/Trace
+1 - (level=2) dummy log message for core level 2/Delouse
+1 - (level=3) dummy log message for core level 3/Debug
+1 - (level=4) dummy log message for core level 4/Info
+1 - (level=5) dummy log message for core level 5/Notice
+1 - (level=6) dummy log message for core level 6/Warning
+1 - (level=8) dummy log message for core level 8/Error
+1 - (level=9) dummy log message for core level 9/Critical
+1 - (level=10) dummy log message for core level 10/Alert
+1 - (level=11) dummy log message for core level 11/Emergency
+1 - (level=11) ===last log message===
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 2
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 10 records from logger TESTLOG4
-1 - (level=2) dummy log message for core level 2/Trace
+1 - (level=2) dummy log message for core level 2/Delouse
 1 - (level=3) dummy log message for core level 3/Debug
 1 - (level=4) dummy log message for core level 4/Info
 1 - (level=5) dummy log message for core level 5/Notice
@@ -114,7 +130,7 @@
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 0 records from logger TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG4
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG4
 1 - 
 1 - Time: <seconds>
 1 - 

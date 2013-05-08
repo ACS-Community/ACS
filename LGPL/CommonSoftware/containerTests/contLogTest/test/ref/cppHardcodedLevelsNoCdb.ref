@@ -27,11 +27,13 @@
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 2 to be used by component TESTLOG3
+1 - <timestamp> FINER [alma.acs.logging] Changed processName='TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' to 'jlogEngine' and updated logger names.
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 1 to be used by component TESTLOG3
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-1 - Got 10 records from logger TESTLOG3
-1 - (level=2) dummy log message for core level 2/Trace
+1 - Got 11 records from logger TESTLOG3
+1 - (level=1) dummy log message for core level 1/Trace
+1 - (level=2) dummy log message for core level 2/Delouse
 1 - (level=3) dummy log message for core level 3/Debug
 1 - (level=4) dummy log message for core level 4/Info
 1 - (level=5) dummy log message for core level 5/Notice
@@ -42,7 +44,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 3 to be used by component TESTLOG3
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 2 to be used by component TESTLOG3
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 9 records from logger TESTLOG3

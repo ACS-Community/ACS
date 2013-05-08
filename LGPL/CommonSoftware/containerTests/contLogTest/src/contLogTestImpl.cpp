@@ -84,8 +84,15 @@ TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 	// Give client time to start waiting for logs
 	usleep(100000);
 	for (t=0; t<levels.length(); t++){
-		p = LogLevelDefinition::getACELogPriority(levels[t]);
 		LogLevelDefinition lld = LogLevelDefinition::fromInteger(levels[t]);
+
+		// This is an ugly workaround for the case level=2 -> p=3, lld=2
+		if (levels[t] == 2) {
+			p = static_cast<ACE_Log_Priority>(LM_DELOUSE);
+		}
+		else {
+			p = LogLevelDefinition::getACELogPriority(levels[t]);
+		}
 		ACS_SHORT_LOG((p, "dummy log message for core level %d/%s", lld.getValue(), lld.getName().c_str()));
 	}
 	// log last message always at highest, non-OFF level (so it should get always through,
@@ -101,7 +108,7 @@ TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 	for (int i = 0; i < 4; i++) {
 		ACS_SHORT_LOG((p, "===packet fill-up message==="));
 	}
-   
+
 	
 }
 
