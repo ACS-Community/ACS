@@ -98,6 +98,10 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	
 	// The node of components (it can be hidden depending on user taste)
 	private DefaultMutableTreeNode componentsNode = new NoLeafNode("Components");
+
+	// The node of services
+	private DefaultMutableTreeNode servicesNode = new NoLeafNode("Services");
+
 	
 	/**
 	 * Constructor
@@ -173,23 +177,27 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		clientsNode.removeAllChildren();
 		componentsNode.removeAllChildren();
 		containersNode.removeAllChildren();
+		servicesNode.removeAllChildren();
 		
 		rootNode.add(managersNode);
 		// rootNode.add(clientsNode);  // yatagai:hide for now. 
 		rootNode.add(containersNode);
 		// rootNode.add(componentsNode);  // yatagai: not used any more
+		rootNode.add(servicesNode);
 		
 		Object[] children = new Object[] {
 				managersNode,
 				clientsNode,
 				containersNode,
-				componentsNode
+				componentsNode,
+				servicesNode
 		};
 		int[] indexes = new int[] {
 				rootNode.getIndex(managersNode),
 				rootNode.getIndex(clientsNode),
 				rootNode.getIndex(containersNode),
-				rootNode.getIndex(componentsNode)
+				rootNode.getIndex(componentsNode),
+				rootNode.getIndex(servicesNode)
 		};
 		
 		fireTreeNodesInserted(rootNode, rootNode.getPath(), indexes, children);
@@ -199,6 +207,7 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		buildClientsNode();
 		buildContainersNode();
 		buildComponentsNode();
+		buildServicesNode();
 	}
 	
 	/**
@@ -276,6 +285,13 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	}
 	
 	/**
+	 * Build the list of services
+	 */
+	private void buildServicesNode() {
+		servicesNode.add(new DefaultMutableTreeNode("CDB"));
+	}
+
+	/**
 	 * Fromat the manager loc in a more readable string
 	 * 
 	 * @param manLoc The managerLoc (like corbaloc::....)
@@ -310,6 +326,16 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		return selNode.getUserObject().equals(formatManagerLoc(admin.getManagerLoc()));
 	}
 	
+	/**
+	 * Returns if the given node is a service
+	 *  
+	 * @param selNode the node to test
+	 * @return true if the node is a service
+	 */
+	protected boolean isServiceNode(DefaultMutableTreeNode selNode) {
+		return !isManagerNode(selNode) && selNode.getUserObject() instanceof String;
+	}
+
 	/**
 	 * Navigate the tree to find a container with the given name or handle.
 	 * The search begins from the passed node and scans all the childs
@@ -667,5 +693,9 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		}
 		return admin.getManagerRef();
 	}
-	
+
+	public AdministratorClient getAdminClient()
+	{
+		return admin;
+	}
 }

@@ -272,6 +272,14 @@ public class AdministratorClient extends AdministratorPOA {
 	}
 	
 	/**
+	 * Get admin client handle.
+	 * @return handle.
+	 */
+	public int getHandle() {
+		return administratorInfo.h;
+	}
+	
+	/**
 	 * The containerHandles argument cannot be specified here. Reason: There's apparently a
 	 * bug in Manager.get_activator_info() in ACS2.x (nothing known about ACS3.x): The
 	 * containerHandles argument is not evaluated properly, instead empty (therefore

@@ -60,6 +60,9 @@ public class TreeMouseListener extends MouseAdapter {
 	// The node of the containers
 	private DefaultMutableTreeNode containersNode;
 	
+	// The node of the services
+	private DefaultMutableTreeNode servicesNode;
+
 	// The model of the tree
 	private LogLvlTreeModel model;
 	
@@ -80,6 +83,7 @@ public class TreeMouseListener extends MouseAdapter {
 		popupMenu= new TreePopupMenu(model);
 		managersNode = model.findNode(null, "Managers", 0);
 		containersNode = model.findNode(null, "Containers", 0);
+		servicesNode = model.findNode(null, "Services", 0);
 		if (containersNode==null) {
 			throw new IllegalStateException("Containers node not found in the tree");
 		}
@@ -148,6 +152,13 @@ public class TreeMouseListener extends MouseAdapter {
 		if (model.isManagerNode(targetNode)) {
 			try {
 				logConf= getLogConfFromManager();
+			} catch (Throwable t) {
+				JOptionPane.showInternalMessageDialog(tree, "Error getting the LoggingConfigurable:\n"+t.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		} else if (model.isServiceNode(targetNode)){
+			try {
+				logConf= getLogConfFromService(targetNode.getUserObject().toString());
 			} catch (Throwable t) {
 				JOptionPane.showInternalMessageDialog(tree, "Error getting the LoggingConfigurable:\n"+t.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -252,6 +263,33 @@ public class TreeMouseListener extends MouseAdapter {
 		return worker.get();
 	}
 	
+	private LoggingConfigurableOperations getLogConfFromService(final String serviceName) throws Exception {
+
+		System.out.println("Getting LoggingConfigurable out of Manager for service " + serviceName);
+
+		// Manager
+		final Manager mgr = model.getManagerRef();
+		if (mgr==null) {
+			throw new Exception("Invalid manager reference");
+		}
+
+		SwingWorker<LoggingConfigurableOperations, Void> worker = new SwingWorker<LoggingConfigurableOperations, Void>() {
+			protected LoggingConfigurableOperations doInBackground()
+					throws Exception {
+				LoggingConfigurableOperations logConf;
+				try {
+					logConf = LoggingConfigurableHelper.narrow(mgr.get_service(model.getAdminClient().getHandle(), serviceName, false));
+				} catch (Throwable t) {
+					throw new Exception("Error getting the LoggingConfigurable out of Manager for service " + serviceName + " :\n"+t.getMessage(),t);
+				}
+				return logConf;
+			}
+		};
+		worker.execute();
+
+		return worker.get();
+	}
+
 	/**
 	 * Get the LoggingConfigurable out of the container
 	 * 
@@ -303,6 +341,7 @@ public class TreeMouseListener extends MouseAdapter {
 			return false;
 		}
 		return containersNode.isNodeChild(node) || 
-			managersNode.isNodeChild(node);
+			managersNode.isNodeChild(node) || 
+			servicesNode.isNodeChild(node);
 	}
 }
