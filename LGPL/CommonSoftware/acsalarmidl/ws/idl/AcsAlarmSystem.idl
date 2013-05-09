@@ -22,6 +22,7 @@
 #ifndef _ACSALARMSERVICE_IDL_
 #define _ACSALARMSERVICE_IDL_
 
+#include <logging_idl.idl>
 #include <CosProperty.idl>
 #include <acscommon.idl>
 #include <ACSErrTypeCommon.idl>
@@ -55,7 +56,7 @@ module alarmsystem
 	 not need to be aware of the implementation currently running.
 	 * 
 	 */ 
-	interface AlarmService 
+	interface AlarmService : Logging::LoggingConfigurable
 	{
 		/**
 		 * shutdown the alarm service

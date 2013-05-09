@@ -51,6 +51,9 @@ import com.cosylab.CDB.DALHelper;
 
 import alma.ACSErrTypeCommon.BadParameterEx;
 import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggerDoesNotExistEx;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem;
 import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem.AcsComponentTerminator;
 import alma.acs.logging.AcsLogLevel;
@@ -766,6 +769,57 @@ public class AlarmSystemCorbaServer implements Runnable {
 				String sourceHostName, String sourceName, long sourceTimestamp,
 				Property[] alarmProperties) throws UnexpectedExceptionEx,
 				BadParameterEx {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		/* (non-Javadoc)
+		 * @see alma.Logging.LoggingConfigurableOperations#get_default_logLevels()
+		 */
+		@Override
+		public LogLevels get_default_logLevels() {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		/* (non-Javadoc)
+		 * @see alma.Logging.LoggingConfigurableOperations#set_default_logLevels(alma.Logging.LoggingConfigurablePackage.LogLevels)
+		 */
+		@Override
+		public void set_default_logLevels(LogLevels levels)
+				throws IllegalLogLevelsEx {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		/* (non-Javadoc)
+		 * @see alma.Logging.LoggingConfigurableOperations#get_logger_names()
+		 */
+		@Override
+		public String[] get_logger_names() {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		/* (non-Javadoc)
+		 * @see alma.Logging.LoggingConfigurableOperations#get_logLevels(java.lang.String)
+		 */
+		@Override
+		public LogLevels get_logLevels(String logger_name)
+				throws LoggerDoesNotExistEx {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		/* (non-Javadoc)
+		 * @see alma.Logging.LoggingConfigurableOperations#set_logLevels(java.lang.String, alma.Logging.LoggingConfigurablePackage.LogLevels)
+		 */
+		@Override
+		public void set_logLevels(String logger_name, LogLevels levels)
+				throws IllegalLogLevelsEx, LoggerDoesNotExistEx {
+			throw new OBJECT_NOT_EXIST();
+		}
+
+		/* (non-Javadoc)
+		 * @see alma.Logging.LoggingConfigurableOperations#refresh_logging_config()
+		 */
+		@Override
+		public void refresh_logging_config() {
 			throw new OBJECT_NOT_EXIST();
 		}
 		

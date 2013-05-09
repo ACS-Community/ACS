@@ -289,6 +289,7 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	 */
 	private void buildServicesNode() {
 		servicesNode.add(new DefaultMutableTreeNode("CDB"));
+		servicesNode.add(new DefaultMutableTreeNode("AcsAlarmService"));
 	}
 
 	/**
