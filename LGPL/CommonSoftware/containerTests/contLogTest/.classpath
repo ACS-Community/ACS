@@ -43,5 +43,7 @@
 	<classpathentry kind="lib" path="lib/contLogTest_IF.jar"/>
 	<classpathentry kind="lib" path="lib/typeSafeLogsLTS.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

@@ -31,17 +31,16 @@ import java.util.StringTokenizer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import si.ijs.maci.LoggingConfigurable;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.Logging.LoggingConfigurable;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.contLogTest.TestLogLevelsComp;
 
 /**
- * Requires Java component "TESTLOG1" of type <code>alma.contLogTest.TestLogLevelsComp</code> to be running.
+ * Requires Java component "TESTLOG1" of type <code>alma.contLogTest.TestLogLevelsComp</code> to be available.
  * 
  * @author eallaert 30 October 2007
  */
@@ -126,7 +125,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			String loggerName = componentName;
 
 			// Get the log level that our test component is subject to 
-			si.ijs.maci.LoggingConfigurablePackage.LogLevels componentLogLevels = containerLogConfig.get_logLevels(loggerName);
+			alma.Logging.LoggingConfigurablePackage.LogLevels componentLogLevels = containerLogConfig.get_logLevels(loggerName);
 			if (componentLogLevels.useDefault) {
 				m_logger.info("levels from component's getLevels method (hardcoded remote, local, effective): "
 						+ levels[0] + ", " + levels[1] + ", " + levels[2] + ", " + levels[3] + ", " + levels[4]);
@@ -201,7 +200,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			String loggerName = componentName;
 
 			// Set the log level that our test component is subject to (either default level or individual level depending on CDB config)
-			si.ijs.maci.LoggingConfigurablePackage.LogLevels componentLogLevels = containerLogConfig.get_logLevels(loggerName);
+			alma.Logging.LoggingConfigurablePackage.LogLevels componentLogLevels = containerLogConfig.get_logLevels(loggerName);
 			for (int level : centralLogLevels) {
 				// The min log level we set for the component and test its log output against.
 				short minLogLevelCentral = (short)level;

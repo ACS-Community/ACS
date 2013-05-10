@@ -10,10 +10,10 @@ import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOATie;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
-import si.ijs.maci.LoggingConfigurable;
-import si.ijs.maci.LoggingConfigurableHelper;
 
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.Logging.LoggingConfigurable;
+import alma.Logging.LoggingConfigurableHelper;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogger;
