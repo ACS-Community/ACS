@@ -23,5 +23,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

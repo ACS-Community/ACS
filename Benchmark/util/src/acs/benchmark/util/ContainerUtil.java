@@ -35,14 +35,15 @@ import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOATie;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
-import si.ijs.maci.LoggingConfigurableHelper;
-import si.ijs.maci.LoggingConfigurableOperations;
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACSErrTypeCommon.BadParameterEx;
-import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggerDoesNotExistEx;
+import alma.Logging.LoggingConfigurableHelper;
+import alma.Logging.LoggingConfigurableOperations;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogger;
@@ -55,7 +56,6 @@ import alma.acsdaemonErrType.FailedToStartContainerEx;
 import alma.acsdaemonErrType.FailedToStopContainerEx;
 import alma.acsdaemonErrType.wrappers.AcsJFailedToStartContainerEx;
 import alma.maci.containerconfig.types.ContainerImplLangType;
-import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.NoPermissionEx;
 
 
@@ -223,7 +223,7 @@ public class ContainerUtil
 			LogLevels defaultLogLevels = new LogLevels(false, (short)defaultMin.value, (short)defaultMinLocal.value);
 			try {
 				target.set_default_logLevels(defaultLogLevels);
-			} catch (IllegalArgumentEx ex) {
+			} catch (IllegalLogLevelsEx ex) {
 				ex.printStackTrace();
 			}
 			
@@ -234,7 +234,7 @@ public class ContainerUtil
 					target.set_logLevels(loggerName, namedLogLevels);
 				} catch (LoggerDoesNotExistEx ex) {
 					ex.printStackTrace();
-				} catch (IllegalArgumentEx ex) {
+				} catch (IllegalLogLevelsEx ex) {
 					ex.printStackTrace();
 				}
 			}
