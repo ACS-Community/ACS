@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/ACS_cdbBrowser/src/com/cosylab/cdb/browser/Browser.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.cosylab.cdb.browser.Browser"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-d corbaloc::alma-head:3012/CDB"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_cdbBrowser"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton &#13;&#10;-Duser.timezone=UTC &#13;&#10;-DACS.manager=corbaloc::192.168.153.141:3000/Manager"/>
+</launchConfiguration>

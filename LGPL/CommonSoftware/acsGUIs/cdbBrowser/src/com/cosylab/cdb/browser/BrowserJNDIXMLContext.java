@@ -21,9 +21,13 @@
 */
 package com.cosylab.cdb.browser;
 
-import com.cosylab.cdb.jdal.*;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -37,10 +41,11 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import alma.cdbErrType.CDBXMLErrorEx;
+
+import com.cosylab.cdb.jdal.XMLHandler;
+import com.cosylab.cdb.jdal.XMLTreeNode;
+
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * @author dvitas

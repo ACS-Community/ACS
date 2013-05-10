@@ -20,9 +20,9 @@
  *******************************************************************************/
 package com.cosylab.cdb.browser;
 
-import javax.swing.table.*;
 import java.util.HashMap;
-import javax.swing.*;
+
+import javax.swing.table.AbstractTableModel;
 
 class CDBTableModel extends AbstractTableModel
 {

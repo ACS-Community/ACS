@@ -122,12 +122,12 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
     /**
      *  HashMap that stores the tables (CDBTable).
      */
-    static HashMap tables = new HashMap();
+    static HashMap<String, CDBTable> tables = new HashMap<String, CDBTable>();
 
     /**
      *  HashMap that stores the table models (CDBTableModel)
      */
-    static HashMap tableModels = new HashMap();
+    static HashMap<String, CDBTableModel> tableModels = new HashMap<String, CDBTableModel>();
 
     /**
      *  HashMap that stores the XML components (JTextArea).
@@ -228,50 +228,51 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 	return hashMapKey;
     }
 
-    /**
-     *  Creates a two dimensional array used to create the tables data.
-     *  @param hashM the data of the table.
-     */
-    public static Object[][]getData(LinkedHashMap attributes){
-	if(!attributes.isEmpty()){// && attributes != null){
-	    int len = attributes.size();
-	    //System.out.println(attributes.toString());
-	    //  Get ATTRIBUTE NAMES (keys of the LinkedHashMap) and store them into an array.
-	    Set names = attributes.keySet();
-	    Object [] attributeNames = names.toArray(new String[len]);
-	    
-	 
-	    //  Get ATTRIBUTE VALUES ()
-	    Collection values = attributes.values();
-	    Object [] attributeValues = values.toArray();
+	/**
+	 * Creates a two dimensional array used to create the tables data.
+	 * 
+	 * @param hashM
+	 *            the data of the table.
+	 */
+	public static Object[][] getData(LinkedHashMap attributes) {
+		if (!attributes.isEmpty()) {// && attributes != null){
+			int len = attributes.size();
+			// System.out.println(attributes.toString());
+			// Get ATTRIBUTE NAMES (keys of the LinkedHashMap) and store them into an array.
+			Set names = attributes.keySet();
+			Object[] attributeNames = names.toArray(new String[len]);
 
-	    //  put names & values into 2 dimensional array
-	    String att [] = new String[len*2];
-	    int j = 0;
- 	    for(int i = 0; i < len*2; i = i+2){
- 		att [i] = (String) attributeNames [j];
-		j ++;
-       	    }
-	    j = 0;
- 	    for(int i = 1; i <= len*2 - 1; i = i+2){
-		att [i] = (String)attributeValues [j];
-		j++;
-	    }
-	    Object data [] [] = new Object [len][2];
+			// Get ATTRIBUTE VALUES ()
+			Collection values = attributes.values();
+			Object[] attributeValues = values.toArray();
 
-	    int index = 0;
-	    for(int i = 0; i < len; i ++){
-		for(int col = 0; col < 2; col ++){
-		    data [i][col] = att[index];
-		    //System.out.println("data " + i + " " + col + " = " + att[index]);
-		    index ++;
+			// put names & values into 2 dimensional array
+			String att[] = new String[len * 2];
+			int j = 0;
+			for (int i = 0; i < len * 2; i = i + 2) {
+				att[i] = (String) attributeNames[j];
+				j++;
+			}
+			j = 0;
+			for (int i = 1; i <= len * 2 - 1; i = i + 2) {
+				att[i] = (String) attributeValues[j];
+				j++;
+			}
+			Object data[][] = new Object[len][2];
+
+			int index = 0;
+			for (int i = 0; i < len; i++) {
+				for (int col = 0; col < 2; col++) {
+					data[i][col] = att[index];
+					// System.out.println("data " + i + " " + col + " = " + att[index]);
+					index++;
+				}
+			}
+			return data;
 		}
-	    }
-	    return data;   
-	}
 
-	return null;
-    }
+		return null;
+	}
 
     /**
      *  Called whenever an item in the tree has been expanded.
@@ -307,8 +308,8 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 	//  check that selected node has a corresponding tabbed pane
 	if(tabbedPanes.containsKey(path)){
 	    //  update selected components
-	    selectedTable = (CDBTable)tables.get(path);
-	    selectedTableModel = (CDBTableModel)tableModels.get(path);
+	    selectedTable = tables.get(path);
+	    selectedTableModel = tableModels.get(path);
 	    selectedXMLArea = (JTextArea)xmls.get(path);
 	    selectedTabbedPane = (JTabbedPane)tabbedPanes.get(path);
 	    //  set selected tabbedPane

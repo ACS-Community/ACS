@@ -21,7 +21,6 @@
 package com.cosylab.cdb.browser;
 
 
-import java.util.LinkedHashMap;
 /**
  * CDBLogicTest tests saving/loading a file, clearing as well as reading a file. Each time a method is 
  * called setUp and tearDown are run.

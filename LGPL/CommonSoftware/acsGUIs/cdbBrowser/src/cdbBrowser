@@ -109,7 +109,7 @@ ACS_CDB_PORT=`getCDBPort`
 
 if [ "X$CL_DAL_REFERENCE" = "X" ] 
 then
-  #if not set then use the MANAGER_REFERENCE to contruct it
+  #if not set then use the MANAGER_REFERENCE to construct it
   #if this one is not set neither, then create it using HOST
     if [ "X$MANAGER_REFERENCE" != "X" ]
     then
@@ -131,6 +131,6 @@ then
 	shift;
 fi
 
-# Hanlding of PORT should be implemented.
+# Handling of PORT should be implemented.
 acsStartJava -endorsed com.cosylab.cdb.browser.Browser -d $CL_DAL_REFERENCE $*
 

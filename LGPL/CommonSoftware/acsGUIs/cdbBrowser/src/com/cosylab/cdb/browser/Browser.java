@@ -171,71 +171,71 @@ public class Browser extends JFrame implements ActionListener
 	
     }
 
-    /**
-     *  Create the tabbed pane with two tabs (Table View and XML View).
-     *  @param nodeHashMap data of the entry (null is possible).
-     *  @param xml XML record of the node (null is possible).
-     */
-    public void createTabbedPane(LinkedHashMap attributes, String XML){
-	JTabbedPane newTabbedPane = new JTabbedPane();
+	/**
+	 * Create the tabbed pane with two tabs (Table View and XML View).
+	 * 
+	 * @param nodeHashMap
+	 *            data of the entry (null is possible).
+	 * @param xml
+	 *            XML record of the node (null is possible).
+	 */
+	public void createTabbedPane(LinkedHashMap attributes, String XML) {
+		JTabbedPane newTabbedPane = new JTabbedPane();
 
-	//  create table tab
-	//if(attributes != null){
-	    String titles [] = {titleCol1, titleCol2};
-	    Object data [][] = CDBLogic.getData(attributes);
-	    if(data != null){
-		JTable newTable = new CDBTable(data,titles);
-		TableModel newTableModel = new CDBTableModel(data,titles);
-		newTable.setModel(newTableModel);
-		newTable.setBackground(Color.LIGHT_GRAY);
-		newTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		CDBLogic.tableModels.put(CDBLogic.getKey(), (CDBTableModel)newTableModel);
-		CDBLogic.tables.put(CDBLogic.getKey(), (CDBTable)newTable);
+		// create table tab
+		// if(attributes != null){
+		String titles[] = { titleCol1, titleCol2 };
+		Object data[][] = CDBLogic.getData(attributes);
+		if (data != null) {
+			JTable newTable = new CDBTable(data, titles);
+			TableModel newTableModel = new CDBTableModel(data, titles);
+			newTable.setModel(newTableModel);
+			newTable.setBackground(Color.LIGHT_GRAY);
+			newTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			CDBLogic.tableModels.put(CDBLogic.getKey(), (CDBTableModel) newTableModel);
+			CDBLogic.tables.put(CDBLogic.getKey(), (CDBTable) newTable);
 
-		newTabbedPane.addTab(" Table View ",new JScrollPane(newTable));
-		CDBLogic.selectedTable = (CDBTable)newTable;
-		CDBLogic.selectedTableModel = (CDBTableModel)newTableModel;
-		//}
+			newTabbedPane.addTab(" Table View ", new JScrollPane(newTable));
+			CDBLogic.selectedTable = (CDBTable) newTable;
+			CDBLogic.selectedTableModel = (CDBTableModel) newTableModel;
+			// }
+		} else {
+			CDBLogic.selectedTable = null;
+			CDBLogic.selectedTableModel = null;
+			CDBLogic.tableModels.put(CDBLogic.getKey(), null);
+			CDBLogic.tables.put(CDBLogic.getKey(), null);
+
+			newTabbedPane.addTab(" Table View ", null);
+			newTabbedPane.setEnabledAt(CDBLogic.tableIndex, false);
+		}
+
+		// create XML tab
+		if (XML != null) {
+			JTextArea XMLArea = new JTextArea(XML);
+			CDBLogic.addListener(XMLArea);
+			XMLArea.setEditable(true);
+			XMLArea.setBackground(Color.LIGHT_GRAY);
+			XMLArea.setLineWrap(true);
+			XMLArea.setWrapStyleWord(true);
+			CDBLogic.xmls.put(CDBLogic.getKey(), (JTextArea) XMLArea);
+
+			newTabbedPane.addTab(" XML View ", (JTextArea) XMLArea);
+			if (!newTabbedPane.isEnabledAt(CDBLogic.tableIndex)) {
+				newTabbedPane.setSelectedIndex(CDBLogic.xmlIndex);
+			}
+			CDBLogic.selectedXMLArea = (JTextArea) XMLArea;
+		} else {
+			CDBLogic.xmls.put(CDBLogic.getKey(), null);
+			newTabbedPane.addTab(" XML View ", null);
+			newTabbedPane.setEnabledAt(CDBLogic.xmlIndex, false);
+			CDBLogic.selectedXMLArea = null;
+		}
+
+		CDBLogic.selectedTabbedPane = (JTabbedPane) newTabbedPane;
+		CDBLogic.tabbedPanes.put(CDBLogic.getKey(), (JTabbedPane) newTabbedPane);
+
+		setRightComp(newTabbedPane, true);
 	}
-	else{
-	    CDBLogic.selectedTable = null;
-	    CDBLogic.selectedTableModel = null;
-	    CDBLogic.tableModels.put(CDBLogic.getKey(),null);
-	    CDBLogic.tables.put(CDBLogic.getKey(), null);
-
-	    newTabbedPane.addTab(" Table View ", null); 
-	    newTabbedPane.setEnabledAt(CDBLogic.tableIndex,false);
-	}
-
-	//  create XML tab
-	if(XML != null){
-	    JTextArea XMLArea = new JTextArea(XML);
-	    CDBLogic.addListener(XMLArea);
-	    XMLArea.setEditable(true);
-	    XMLArea.setBackground(Color.LIGHT_GRAY);
-	    XMLArea.setLineWrap(true);
-	    XMLArea.setWrapStyleWord(true);
-	    CDBLogic.xmls.put(CDBLogic.getKey(), (JTextArea)XMLArea);
-
-	    newTabbedPane.addTab(" XML View ", (JTextArea)XMLArea);
-	    if(!newTabbedPane.isEnabledAt(CDBLogic.tableIndex)){
-		newTabbedPane.setSelectedIndex(CDBLogic.xmlIndex);
-	    }
-	    CDBLogic.selectedXMLArea = (JTextArea)XMLArea;
-	}
-	else{
-	    CDBLogic.xmls.put(CDBLogic.getKey(),null);
-	    newTabbedPane.addTab(" XML View ", null);
-	    newTabbedPane.setEnabledAt(CDBLogic.xmlIndex, false);
-	    CDBLogic.selectedXMLArea = null;
-	}
-	
-	CDBLogic.selectedTabbedPane = (JTabbedPane)newTabbedPane;
-	CDBLogic.tabbedPanes.put(CDBLogic.getKey(),(JTabbedPane)newTabbedPane);
-
-	setRightComp(newTabbedPane,true);
-    }
-    
 
     /**
      *  Sets the right component either a tabbed Pane or an empty text area.
