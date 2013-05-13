@@ -20,15 +20,38 @@
 *    MA 02111-1307  USA
 */
 package com.cosylab.cdb.browser;
-import com.cosylab.CDB.*;
-import java.util.*;
-import java.io.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.naming.*;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.JDAL;
+import com.cosylab.CDB.JDALHelper;
+import com.cosylab.CDB.WDAL;
+import com.cosylab.CDB.WDALHelper;
+
 import alma.acs.util.ACSPorts;
 import alma.cdbErrType.CDBRecordIsReadOnlyEx;
 
@@ -231,42 +254,28 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 	/**
 	 * Creates a two dimensional array used to create the tables data.
 	 * 
-	 * @param hashM
+	 * @param attributes
 	 *            the data of the table.
 	 */
-	public static Object[][] getData(LinkedHashMap attributes) {
+	public static Object[][] getData(LinkedHashMap<String, Object> attributes) {
 		if (!attributes.isEmpty()) {// && attributes != null){
-			int len = attributes.size();
-			// System.out.println(attributes.toString());
-			// Get ATTRIBUTE NAMES (keys of the LinkedHashMap) and store them into an array.
-			Set names = attributes.keySet();
-			Object[] attributeNames = names.toArray(new String[len]);
-
-			// Get ATTRIBUTE VALUES ()
-			Collection values = attributes.values();
-			Object[] attributeValues = values.toArray();
-
-			// put names & values into 2 dimensional array
-			String att[] = new String[len * 2];
-			int j = 0;
-			for (int i = 0; i < len * 2; i = i + 2) {
-				att[i] = (String) attributeNames[j];
-				j++;
-			}
-			j = 0;
-			for (int i = 1; i <= len * 2 - 1; i = i + 2) {
-				att[i] = (String) attributeValues[j];
-				j++;
-			}
-			Object data[][] = new Object[len][2];
-
-			int index = 0;
-			for (int i = 0; i < len; i++) {
-				for (int col = 0; col < 2; col++) {
-					data[i][col] = att[index];
-					// System.out.println("data " + i + " " + col + " = " + att[index]);
-					index++;
+			
+			// Sort attributes into alphabetical order, see http://jira.alma.cl/browse/COMP-4841
+			List<Entry<String, Object>> attributesList = new ArrayList<Entry<String, Object>>(attributes.entrySet());
+			Comparator<Entry<String, Object>> compa = new Comparator<Entry<String, Object>>() {
+				@Override
+				public int compare(Entry<String, Object> e1, Entry<String, Object> e2) {
+					return ( e1.getKey().compareToIgnoreCase(e2.getKey()) );
 				}
+			};
+			Collections.sort(attributesList, compa);
+			
+			Object data[][] = new Object[attributesList.size()][2];
+			int i = 0;
+			for (Entry<String, Object> entry : attributesList) {
+				data[i][0] = entry.getKey();
+				data[i][1] = entry.getValue();
+				i++;
 			}
 			return data;
 		}
