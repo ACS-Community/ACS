@@ -343,13 +343,13 @@ namespace maci
       	{}
 
 
-		virtual maci::LoggingConfigurable::LogLevels get_default_logLevels() { maci::LoggingConfigurable::LogLevels ll; return ll; }
-		virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*) { maci::LoggingConfigurable::LogLevels ll; return ll; }
-		virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&) {}
-		virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&) {}
+		virtual Logging::LoggingConfigurable::LogLevels get_default_logLevels() { Logging::LoggingConfigurable::LogLevels ll; return ll; }
+		virtual Logging::LoggingConfigurable::LogLevels get_logLevels(const char*) { Logging::LoggingConfigurable::LogLevels ll; return ll; }
+		virtual void set_logLevels(const char*, const Logging::LoggingConfigurable::LogLevels&) {}
+		virtual void set_default_logLevels(const Logging::LoggingConfigurable::LogLevels&) {}
 		virtual void refresh_logging_config() {}
+		virtual Logging::stringSeq* get_logger_names() { return NULL; }
 
-		virtual maci::stringSeq* get_logger_names() { return NULL; }
 		virtual char* domain_name() { return NULL; }
   	        virtual CORBA::Boolean ping() { return false; }
 		virtual void set_state_persistence(maci::Handle, CORBA::Boolean){}
