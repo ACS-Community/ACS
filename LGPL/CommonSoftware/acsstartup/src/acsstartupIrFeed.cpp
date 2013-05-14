@@ -127,7 +127,7 @@ void addIdlFiles(std::string dirName,
 int checkIncludeGuards(string idl, string idlPath, multimap<string, string> & includeGuards)
 {
 	string line, temp;
-	int offset;
+	size_t offset;
 	if(idl == "ACSIRSentinel.idl")
 		return 0;
 	ifstream ifs((idlPath+string("/")+idl).c_str());
