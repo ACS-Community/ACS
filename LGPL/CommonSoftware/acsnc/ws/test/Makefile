@@ -41,7 +41,7 @@ testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 SCRIPTS_L       = acsncTATRunTest.sh
 
-PY_SCRIPTS_L =	acsncTestConSup
+PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent
 
 # Includes (.h) files (public and local)
 # ---------------------------------

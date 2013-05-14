@@ -45,4 +45,6 @@ PROLOGUE acsutilTATPrologue
 
 5 ChannelCreator "acsutilTATTestRunner testChannelCreation"
 
+6 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestSimpleComponent CDB_PROPS"
+
 EPILOGUE acsutilTATEpilogue

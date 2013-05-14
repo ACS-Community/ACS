@@ -90,7 +90,7 @@ class CDBPropsCompImpl: public virtual acscomponent::ACSComponentImpl,
     virtual void initialize()
 	{
 
-	    //first try on one that exists in the CDB
+	  /*  //first try on one that exists in the CDB
 	    CosNotification::AdminProperties joe;
 	    {
 	    joe = nc::CDBProperties::getCDBAdminProps("blar");
@@ -149,7 +149,7 @@ class CDBPropsCompImpl: public virtual acscomponent::ACSComponentImpl,
 	    {
 	    nc::CDBProperties::EventHandlerTimeoutMap ncMap = nc::CDBProperties::getEventHandlerTimeoutMap("nah");
 	    std::cout << "getEventHandlerTimeoutMap(nah):" << ncMap.count("EventDescription") << std::endl;
-	    }
+	    }*/
 
 	    //-----------------------------------------------
 		
@@ -159,19 +159,23 @@ class CDBPropsCompImpl: public virtual acscomponent::ACSComponentImpl,
 		CORBA::String_var res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "any");
 		std::cout << "default: " << (res.in() ? res.in() : "(null)") << std::endl;
 		
-		// channel mapping 
-		res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "PARTICULAR");
-		std::cout << "particular: " << (res.in() ? res.in() : "(null)") << std::endl;
+		// channel mapping in CDB -> ParticularNotifyEventChannelFactory
+		res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "PARTICULAR1");
+		std::cout << "particular1: " << (res.in() ? res.in() : "(null)") << std::endl;
 		
-		// wildchars channel mapping 
+		// channel mapping in CDB and service name expansion -> ParticularNotifyEventChannelFactory
+		res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "PARTICULAR2");
+		std::cout << "particular2: " << (res.in() ? res.in() : "(null)") << std::endl;
+		
+		// wildchars channel mapping -> ControlNotifyService
 		res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "CONTROL_CHANNEL");
 		std::cout << "wildcard: " << (res.in() ? res.in() : "(null)") << std::endl;
 		
-		// domain mapping
+		// domain mapping -> AlarmNotifyEventChannelFactory
 		res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "anyOnLaser", "ALARMSYSTEM");
 		std::cout << "domain: " << (res.in() ? res.in() : "(null)") << std::endl;
 		
-		// fallback to default
+		// fallback to default -> encoded default NotifyEventChannelFactory
 		res = BaseHelper::getNotificationFactoryNameForChannel(cdb.in(), "anyOnNonExistingDomain", "NONEXISTING_DOMAIN");
 		std::cout << "non-existing domain: " << (res.in() ? res.in() : "(null)") << std::endl;
 	}
