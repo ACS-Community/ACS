@@ -58,7 +58,7 @@ import sched
 import threading
 import abc
 #--ACS Imports-----------------------------------------------------------------
-import maci
+import Logging
 from Acspy.Common.ACSHandler import ACSHandler
 from Acspy.Common.ACSHandler import ACSFormatter
 from Acspy.Common.ACSHandler import ACSLogRecord
@@ -253,7 +253,7 @@ def getDefaultLevels():
 
     Raises: NameError if no Logger object has been previously instantiated
     '''
-    return maci.LoggingConfigurable.LogLevels(True, RLEVELS[DEFAULTCENTRALHANDLER.level],
+    return Logging.LoggingConfigurable.LogLevels(True, RLEVELS[DEFAULTCENTRALHANDLER.level],
                                               RLEVELS[DEFAULTLOCALHANDLER.level])
 #------------------------------------------------------------------------
 
@@ -793,7 +793,7 @@ class Logger(logging.Logger):
         Adjust the priority level filter for log messages.
 
         Parameter:
-        - maci.LoggingConfigurable.LogLevels object containing new level information
+        - Logging.LoggingConfigurable.LogLevels object containing new level information
 
         Returns: Nothing
 
@@ -825,11 +825,11 @@ class Logger(logging.Logger):
 
         Parameter: None
 
-        Returns: maci.LoggingConfigurable.LogLevels object containing the current level settings
+        Returns: Logging.LoggingConfigurable.LogLevels object containing the current level settings
 
         Raises: Nothing
         '''
-        return maci.LoggingConfigurable.LogLevels(self.usingDefault, RLEVELS[self.acshandler.level],
+        return Logging.LoggingConfigurable.LogLevels(self.usingDefault, RLEVELS[self.acshandler.level],
                                                   RLEVELS[self.stdouthandler.level])
     #------------------------------------------------------------------------
     def findCaller(self):
