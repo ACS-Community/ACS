@@ -27,6 +27,9 @@ import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.DAO;
 
+import alma.Logging.IllegalLogLevelsEx;
+import alma.Logging.LoggerDoesNotExistEx;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 
@@ -106,4 +109,37 @@ public class TestCDB implements DALOperations {
 	public String list_daos(String name) {
 		throw new IllegalStateException("Operation not implemented!");
 	}
+
+	@Override
+	public LogLevels get_default_logLevels() {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	@Override
+	public void set_default_logLevels(LogLevels levels) {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	@Override
+	public String[] get_logger_names() {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	@Override
+	public LogLevels get_logLevels(String logger_name)
+			throws LoggerDoesNotExistEx {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	@Override
+	public void set_logLevels(String logger_name, LogLevels levels)
+			throws IllegalLogLevelsEx, LoggerDoesNotExistEx {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	@Override
+	public void refresh_logging_config() {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+	
 }
