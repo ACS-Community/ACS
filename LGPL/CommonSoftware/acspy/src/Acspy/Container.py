@@ -53,13 +53,14 @@ from threading import Event
 import PortableServer
 import maci
 import maci__POA
+import Logging
+import Logging__POA
 from CORBA import FALSE
 from maci  import ComponentInfo
 from ACS   import OffShoot
 import ACS
 from ACSErrTypeCommonImpl              import CORBAProblemExImpl, CouldntCreateObjectExImpl
 from maciErrTypeImpl                   import CannotActivateComponentExImpl
-from maciErrTypeImpl                   import LoggerDoesNotExistExImpl
 #--ACS Imports-----------------------------------------------------------------
 import Acspy.Common.Log as Log
 import Acsalarmpy
@@ -112,7 +113,7 @@ class ContainerLogThrottleAlarmer(Log.LogThrottleAlarmerBase):
         '''
         self.container.sendAlarm("Logging", self.container.name, 10, active)
 #------------------------------------------------------------------------------
-class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
+class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClient):
     '''
     The Python implementation of a MACI Container.
 
@@ -636,23 +637,23 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                         # No value was supplied so default is used
                         locallevel = defaultlevels.minLogLevelLocal
                     
-                    clogger.setLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
+                    clogger.setLevels(Logging.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
                     clogger.configureLogging(maxLogsPerSec)
                     # There should only be one entry per logger so we are done
                     break
             else:
                 # No matching named logger was found so the default values are used
-                clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
+                clogger.setLevels(Logging.LoggingConfigurable.LogLevels(True, 0, 0))
         except Exception:
             # No named loggers were defined so the default values are used
-            clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
+            clogger.setLevels(Logging.LoggingConfigurable.LogLevels(True, 0, 0))
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def get_default_logLevels(self): # pragma: NO COVER
         '''
         Retrieve the default log levels used in this container.
 
-        Returns: maci.LoggingConfigurable.LogLevels instance containing default log level values
+        Returns: Logging.LoggingConfigurable.LogLevels instance containing default log level values
 
         Raises: Nothing
         '''
@@ -664,7 +665,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Set the default log level for this container.
 
         Parameter:
-        levels - maci.LoggingConfigurable.LogLevels instance containing default log level values
+        levels - Logging.LoggingConfigurable.LogLevels instance containing default log level values
 
         Raises: Nothing
         '''
@@ -687,14 +688,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Parameter:
         logger_name - name of the component's logger
 
-        Returns: maci.LoggingConfigurable.LogLevels instance containing the logger's log level values
+        Returns: Logging.LoggingConfigurable.LogLevels instance containing the logger's log level values
 
-        Raises: LoggerDoesNotExistExImpl if the logger is not active.
+        Raises: Logging.LoggerDoesNotExistEx if the logger is not active.
         """
         if Log.doesLoggerExist(logger_name):
             return Log.getLogger(logger_name).getLevels()
         else:
-            raise LoggerDoesNotExistExImpl()
+            raise Logging.LoggerDoesNotExistEx()
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def set_logLevels(self, logger_name, levels):
@@ -703,14 +704,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         Parameter:
         logger_name - name of the component's logger
-        levels - maci.LoggingConfigurable.LogLevels instance containing default log level values
+        levels - Logging.LoggingConfigurable.LogLevels instance containing default log level values
 
-        Raises: LoggerDoesNotExistExImpl if the logger is not active.
+        Raises: Logging.LoggerDoesNotExistEx if the logger is not active.
         """
         if Log.doesLoggerExist(logger_name):
             Log.getLogger(logger_name).setLevels(levels)
         else:
-            raise LoggerDoesNotExistExImpl()
+            raise Logging.LoggerDoesNotExistEx()
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def refresh_logging_config(self):
@@ -779,7 +780,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         if 'ACS_LOG_STDOUT' in environ:
             locallevel = int(environ['ACS_LOG_STDOUT'])
 
-        Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
+        Log.setDefaultLevels(Logging.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
         Log.setCapacity(cap)
         Log.setBatchSize(batch)
         Log.setImmediateDispatchLevel(displevel)
