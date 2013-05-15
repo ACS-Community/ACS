@@ -77,7 +77,7 @@ void parseFiles(const char *directory, BulkDataConfigurationParser &parser,
 
 		if( ACE_OS::strcmp(dirent->d_name, ".") == 0 ||
 		    ACE_OS::strcmp(dirent->d_name, "..") == 0 ||
-		    ACE_OS::strcmp(dirent->d_name, "CVS") == 0 ) {
+		    ACE_OS::strcmp(dirent->d_name, ".svn") == 0 ) {
 			free(dirent);
 			continue;
 		}
