@@ -695,7 +695,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         if Log.doesLoggerExist(logger_name):
             return Log.getLogger(logger_name).getLevels()
         else:
-            raise Logging.LoggerDoesNotExistEx()
+            raise Logging.LoggerDoesNotExistEx(logger_name)
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def set_logLevels(self, logger_name, levels):
@@ -711,7 +711,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         if Log.doesLoggerExist(logger_name):
             Log.getLogger(logger_name).setLevels(levels)
         else:
-            raise Logging.LoggerDoesNotExistEx()
+            raise Logging.LoggerDoesNotExistEx(logger_name)
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def refresh_logging_config(self):
