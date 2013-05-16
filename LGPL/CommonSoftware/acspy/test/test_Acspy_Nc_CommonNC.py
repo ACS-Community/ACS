@@ -408,7 +408,7 @@ class TestCommonNC(unittest.TestCase):
     def test_getNotificationFactoryNameForChannel_domainFound(self):
         """CommonNC getNotificationFactoryNameForChannel returns expected domain value"""
         Acspy.Nc.CommonNC.get_notification_service_mapping.return_value = [{'Name': 'ALARMSYSTEM', 'NotificationService': 'AlarmNotifyService'}]
-        self.assertEqual('AlarmNotifyService', self.nc.getNotificationFactoryNameForChannel(channel=None, domain='ALARMSYSTEM'))
+        self.assertEqual('AlarmNotifyService'+acscommon.NOTIFICATION_FACTORY_NAME, self.nc.getNotificationFactoryNameForChannel(channel=None, domain='ALARMSYSTEM'))
 
     @mock.patch_object(Acspy.Nc.CommonNC,'get_notification_service_mapping', mock.Mock())
     def test_getNotificationFactoryNameForChannel_domainNotFound(self):
@@ -420,7 +420,7 @@ class TestCommonNC(unittest.TestCase):
     def test_getNotificationFactoryNameForChannel_channelFound(self):
         """CommonNC getNotificationFactoryNameForChannel returns expected channel value"""
         Acspy.Nc.CommonNC.get_notification_service_mapping.return_value = [{'Name': 'CONTROL_*', 'NotificationService': 'ControlNotifyService'}, {'Name': 'HLA_*', 'NotificationService': 'HLANotifyService'}, {'Name': 'PARTICULAR', 'NotificationService': 'ParticularNotifyService'}]
-        self.assertEqual('HLANotifyService', self.nc.getNotificationFactoryNameForChannel('HLA_FOO'))
+        self.assertEqual('HLANotifyService'+acscommon.NOTIFICATION_FACTORY_NAME, self.nc.getNotificationFactoryNameForChannel('HLA_FOO'))
 
     @mock.patch_object(Acspy.Nc.CommonNC,'get_notification_service_mapping', mock.Mock())
     def test_getNotificationFactoryNameForChannel_channelNotFound(self):
