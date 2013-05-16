@@ -166,22 +166,28 @@ class CommonNC:
 
         Raises: Nothing
         '''
-
+        temp=""
         if channel is not None:
             crec = [ chan for chan in get_notification_service_mapping('Channel') if wildcharMatch(chan['Name'], channel)]
             if crec != []:
-                return crec[0]['NotificationService']
+                temp=crec[0]['NotificationService']
 
-        if domain is not None:
+        if len(temp)==0 and (domain is not None):
             crec = [ chan for chan in get_notification_service_mapping('Domain') if wildcharMatch(chan['Name'], domain)]
             if crec != []:
-                return crec[0]['NotificationService']
+                temp=crec[0]['NotificationService']
 
-        crec = get_notification_service_mapping('Default')
-        if crec != []:
-            return crec[0]['DefaultNotificationService']
+        if len(temp)==0:
+            crec = get_notification_service_mapping('Default')
+            if crec != []:
+                temp=crec[0]['DefaultNotificationService']
+            else:
+                return None
+            
+        if not temp.endswith(acscommon.NOTIFICATION_FACTORY_NAME):
+            return temp+acscommon.NOTIFICATION_FACTORY_NAME
         else:
-            return None
+            return temp
             
     #------------------------------------------------------------------------------
     def getNotificationFactoryName(self):
