@@ -2,7 +2,13 @@
 5 - Naming Service: 
 3 - ---------------
 5 - ---------------
+3 - + TESTChannel: Object Reference
+3 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
 3 - + TESTNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+3 - + MC_TESTNotifyEventChannelFactory: Object Reference
 3 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
