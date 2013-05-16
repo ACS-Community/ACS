@@ -32,6 +32,7 @@ from os import environ
 import sys
 import omniORB
 import CDB
+import Logging
 
 
 #--ACS Imports-----------------------------------------------------------------
@@ -826,7 +827,7 @@ class TestLoggingConfigurableInterface(unittest.TestCase):
 
     def test_get_logLevels_undefined(self):
         """Exception is thrown when log levels are requested for undefined logger"""
-        self.assertRaises(Acspy.Container.LoggerDoesNotExistExImpl,
+        self.assertRaises(Logging.LoggerDoesNotExistEx,
                           self.tc.get_logLevels,"Phantom")
 
     def test_get_logLevels_nocdb(self):
@@ -906,7 +907,7 @@ class TestLoggingConfigurableInterface(unittest.TestCase):
 
     def test_set_logLevels_unknown(self):
         """Exception is thrown when attempt to set log levels on an undefined logger"""
-        self.assertRaises(Acspy.Container.LoggerDoesNotExistExImpl,
+        self.assertRaises(Logging.LoggerDoesNotExistEx,
                           self.tc.set_logLevels, 'Phantom', None)
 
 if __name__ == '__main__':
