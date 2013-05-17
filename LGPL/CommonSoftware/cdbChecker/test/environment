@@ -10,5 +10,9 @@
 set ACS_TMP $env(PWD)/tmp
 set env(ACS_TMP) $ACS_TMP
 
+# Tests run CDBChecker directly, circumventing cdbChecker script. 
+# Thus we must add tools.jar to the classpath also here.
+set env(CLASSPATH) $env(JAVA_HOME)/lib/tools.jar:$env(CLASSPATH)
+
 #
 # ___oOo___
