@@ -6,7 +6,7 @@
   xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 
-  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
   <xs:include schemaLocation="acs_rti_dds_qos_profiles.xsd"/>
 
   <xs:complexType name="DDSReceiverStreamQoSType">
