@@ -54,7 +54,6 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] 
-1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - recovery::RecoveryStore::load] Unable to open recovery file (r) '/home/bjeram/workspaceEclipse/bulkDataNT/test/tmp/ACS_INSTANCE.0/baci_recovery_newConfigRecvContainer'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Executing DLLSetupCORBA
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/----/libbaci.so'
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CDBPropertySet::CDBPropertySet] 
