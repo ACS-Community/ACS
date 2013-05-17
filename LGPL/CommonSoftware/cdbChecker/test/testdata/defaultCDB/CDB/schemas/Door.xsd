@@ -17,12 +17,16 @@
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 
   <xs:complexType name="Door">
+    <xs:complexContent>
+    <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
       <xs:element name="ref_position" type="baci:RWdouble"/>
       <xs:element name="position" type="baci:ROdouble"/>
       <xs:element name="substate" type="baci:ROlong"/>
       <xs:element name="version" type="baci:ROstring"/>
     </xs:sequence>
+    </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:element name="Door" type="Door"/>

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Gianluca Chiozzi (E.S.O.) -->
-<!--
-   - Configuration Database Schema for BACI Types
-   -
-   - Author: Klemen Zagar
-   -
-   - History:
-   -   2002-09-06  KZ  Created
-  -->
 <xs:schema xmlns="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
 	<xs:annotation>
 		<xs:documentation>
 This schema describes the Configuration Database types for the Component/Property/Characteristic design patterns (BACI).
-It contains the definitions fo the Characteristic Component types and for all defined Property types.
+It contains the definitions for the Characteristic Component types and for all defined Property types.
 
 To keep the documentation easier to maintain and avoiding replication of documentation, the schemas for the Long Property are fully documented.
 The other Properties only document their differences with respect to the Long Property.
@@ -41,6 +33,16 @@ Note: optionally used, requires write access to the configuration database.</xs:
 						<xs:documentation>Placeholder for the timestamp of last command executed.
 ISO time format.
 Note: optionally used, requires write access to the database.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="actionThreadStackSize" type="xs:unsignedLong" use="optional" default="1024">
+					<xs:annotation>
+						<xs:documentation>Stack size of for the action thread in kBytes. If 0 is specified the default OS stack size value will be taken. (just C++).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="monitoringThreadStackSize" type="xs:unsignedLong" use="optional" default="2048">
+					<xs:annotation>
+						<xs:documentation>Stack size of for the monitoring thread in kBytes. If 0 is specified the default OS stack size value will be taken. (just C++).</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -97,6 +99,29 @@ This attribute is useful for example for returning the resolution of analog-digi
 The specific usage must be documented case by case.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				
+				<xs:attribute name="archive_suppress" type="xs:boolean" use="optional" default="false">
+				   <xs:annotation>
+						<xs:documentation>
+						The attribute archive_suppress can be used to enable, disable archiving of the property w/o changing the 
+						other values of archiving like archive_max_int, and archive_min_int.
+					    </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				
+				<xs:attribute name="archive_mechanism" type="xs:string" use="optional" default="monitor_collector">
+				   <xs:annotation>
+						<xs:documentation>
+						The attribute archive_mechanism can be used to specify which mechanism should be taken for 
+						archiving the property. In this way a system that uses ACS can define its own archiving mechanism. 
+						ACS provides support for archiving properties through notification channel (notification_channel). ALMA SW provides in ARCHIVE subsytem additional
+						 mechanism: monitor collector (monitor_collector). From ACS 9.0 monitor collector is also default mechanism for archiving properties.
+						 Depend on the implementation of the archiving mechanism all or just some of archive_XYZ attributes can be used for its configuration.
+						 Notification channel uses all (three), meanwhile the monitor collector uses only archive_max_int.
+					    </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+					
 				<xs:attribute name="archive_priority" type="xs:int" use="optional" default="3">
 					<xs:annotation>
 						<xs:documentation>
@@ -226,6 +251,14 @@ If the value changes for less than the amount specified here, no log entry is ge
                                        </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+A percentage value of double type. Defines what a percentual change in parameter value is.
+If the value changes percentually less than the amount specified here, no log entry is generated.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -286,6 +319,29 @@ See the documentation of the specific implementation for details on the implicat
 For example in the ACS CPP baci implementation, the value of a property is checked for its status with respect to the alarm configuration by an internal monitor defined with this time interval. This means that, depending on the underlying DevIO implementation, changes in the alarm status accurring during this time interval might get un-noticed.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							Here user can specify fault family for the alarm. for details of the fault family see the alarm documentation. 
+							If the fault family attribute is not specified (=is empty), than default value which is BACIproperty is taken.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							Here user can specify fault member for the alarm. for details of the fault member see the alarm documentation. 
+							If the fault member attribute is not specified (=is empty), than default value which is property name is taken.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							Defines the level (priority) of the alarm.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -311,6 +367,144 @@ This characteristic represents the maximum value that can be used to SET a writa
 It should not be confused with the graph_max characteristic. The max_value represents the maximum value that can be SET, but the actual value reached by the property can in many case be higher (and defined by graph_max).
 For example while a device moves to the maximum allowerd set position, there can be an overshoot. Typically devices of this kind have a soft and an hard upper limit.
  </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PuLong_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Unsigned Long Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%u"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PuLong">
+		<xs:annotation>
+			<xs:documentation>Base schema for Unsigned Long Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLong_">
+				<xs:attribute name="min_delta_trig" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:unsignedInt" use="optional" default="4294967295">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROuLong">
+		<xs:annotation>
+			<xs:documentation>Read Only Unsigned Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLong">
+				<xs:attribute name="alarm_high_on" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWuLong">
+		<xs:annotation>
+			<xs:documentation>Read Write Unsigned Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLong">
+				<xs:attribute name="min_value" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:unsignedInt" use="optional" default="4294967295">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -359,6 +553,14 @@ of the Plong propery.
 NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="bitDescription" type="xs:string" use="optional" default="">
 					<xs:annotation>
 						<xs:documentation>This characteristic is a comma separated list of strings, each describing one of the bits in the pattern (in that order).</xs:documentation>
@@ -397,6 +599,27 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.			</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -464,6 +687,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -501,6 +731,27 @@ of the ROlong propery.							</xs:documentation>
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -579,6 +830,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -616,6 +874,27 @@ of the ROlong propery.							</xs:documentation>
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -671,6 +950,14 @@ of the Plong propery.
 NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.                       </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -683,6 +970,27 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -750,6 +1058,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                      </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -782,6 +1097,27 @@ of the Plong propery.                                      </xs:documentation>
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -860,6 +1196,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                     </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -894,6 +1237,27 @@ of the Plong propery.                     </xs:documentation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -909,6 +1273,144 @@ of the Plong propery.                     </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="max_value" type="xs:long" use="optional" default="9223372036854775807">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pboolean_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Unsigned Long Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%d"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pboolean">
+		<xs:annotation>
+			<xs:documentation>Base schema for Boolean Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pboolean_">
+				<xs:attribute name="min_delta_trig" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:boolean" use="optional" default="1">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROboolean">
+		<xs:annotation>
+			<xs:documentation>Read Only Boolean Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pboolean">
+				<xs:attribute name="alarm_high_on" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWboolean">
+		<xs:annotation>
+			<xs:documentation>Read Write Boolean Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pboolean">
+				<xs:attribute name="min_value" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:boolean" use="optional" default="true">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
 					</xs:annotation>
@@ -958,6 +1460,13 @@ If the value changes for less than the amount specified here, no log entry is ge
                                        </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="graph_min" type="xs:int" use="optional" default="0"/>
 				<xs:attribute name="graph_max" type="xs:int" use="optional" default="0"/>
 			</xs:extension>
@@ -1000,6 +1509,27 @@ properties. Check with the implementation specific documentation.</xs:documentat
 				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -1071,6 +1601,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                     </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1104,6 +1641,27 @@ The values defined for the Characteristics apply to each single element of the s
 				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -1184,39 +1742,100 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                     </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ROfloatSeq">
 		<xs:annotation>
-			<xs:documentation>Read Only sequence of Float values.
-The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+			<xs:documentation>
+				Read Only sequence of Float values. The values defined
+				for the Characteristics apply to each single element of
+				the sequence.
+			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="PfloatSeq">
-				<xs:attribute name="alarm_high_on" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_high_on" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_low_on" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_low_on" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_high_off" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_high_off" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_low_off" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_low_off" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -1298,6 +1917,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                  </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1333,6 +1959,27 @@ The values defined for the Characteristics apply to each single element of the s
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1349,6 +1996,148 @@ The values defined for the Characteristics apply to each single element of the s
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PuLongSeq_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Unsigned Long Sequence Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PuLongSeq">
+		<xs:annotation>
+			<xs:documentation>Base schema for a property representing a sequence of Unsigned Long values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLongSeq_">
+				<xs:attribute name="min_delta_trig" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:unsignedInt" use="optional" default="4294967295">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                  </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROuLongSeq">
+		<xs:annotation>
+			<xs:documentation>Read Only sequence of Unsigned Long values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLongSeq">
+				<xs:attribute name="alarm_high_on" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWuLongSeq">
+		<xs:annotation>
+			<xs:documentation>Read Write sequence of Unsigned Long values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLongSeq">
+				<xs:attribute name="min_value" type="xs:unsignedInt" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:unsignedInt" use="optional" default="4294967295">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
 					</xs:annotation>
@@ -1389,6 +2178,14 @@ of the Plong propery.
 NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.                                        </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1399,6 +2196,148 @@ The values defined for the Characteristics apply to each single element of the s
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:restriction base="PstringSeq"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PbooleanSeq_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of boolean Sequence Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PbooleanSeq">
+		<xs:annotation>
+			<xs:documentation>Base schema for a property representing a sequence of boolean values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PbooleanSeq_">
+				<xs:attribute name="min_delta_trig" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:boolean" use="optional" default="1">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                  </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RObooleanSeq">
+		<xs:annotation>
+			<xs:documentation>Read Only sequence of boolean values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PbooleanSeq">
+				<xs:attribute name="alarm_high_on" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWbooleanSeq">
+		<xs:annotation>
+			<xs:documentation>Read Write sequence of boolean values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PbooleanSeq">
+				<xs:attribute name="min_value" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:boolean" use="optional" default="true">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 </xs:schema>

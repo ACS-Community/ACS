@@ -17,6 +17,8 @@
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 
   <xs:complexType name="Calendar">
+    <xs:complexContent>
+  <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
 
       <xs:element name="yearAttributes">
@@ -77,6 +79,8 @@
 
 
     </xs:sequence>
+    </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:element name="Calendar" type="Calendar"/>

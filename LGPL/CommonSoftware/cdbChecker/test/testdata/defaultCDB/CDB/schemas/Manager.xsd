@@ -30,7 +30,12 @@ configuration parameters.</xs:documentation>
 			</xs:element>
 			<xs:element name="ServiceComponents" type="cdb:Array">
 				<xs:annotation>
-					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the meneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the maneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ServiceDaemons" type="cdb:Array" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This is a list of host addresses (names) where service daemons are running. Manager will provide its reference to all daemons in the list; this will give daemons access to all other services in the system (e.g. CDB).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
             <xs:element name="LoggingConfig" type="log:LoggingConfig" minOccurs="1" />
@@ -52,17 +57,12 @@ configuration parameters.</xs:documentation>
 		</xs:attribute>
 		<xs:attribute name="ContainerPingInterval" type="xs:double" use="optional" default="30.0">
 			<xs:annotation>
-				<xs:documentation>The Manager pings periodically containers to check they are healthy. This is an heartbeat checking. The time interval for the heartbeat check is specified here in seconds.</xs:documentation>
+				<xs:documentation>The Manager pings periodically all containers to check if they are healthy. The time interval for this heartbeat check is specified here in seconds, as a default for all containers. It can be overridden for a specific container using the optional attribute Container.PingInterval</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="ServerThreads" type="xs:int" use="optional" default="10">
 			<xs:annotation>
 				<xs:documentation>This is the number of threads allocate to the CORBA infrastructure for the handling of concurrent invocations.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="DeadlockTimeout" type="xs:double" use="optional" default="180.0">
-			<xs:annotation>
-				<xs:documentation>The Manager internally monitors all component synchronization locks. If a lock is not released after specified amount of time and exception is thrown and lock released. The time for the deadlock timeout check is specified here in seconds.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
