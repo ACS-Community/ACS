@@ -3,5 +3,5 @@
 1 - <timestamp> [GlobalLogger] ... failed!
 1 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
 1 - <timestamp> [GlobalLogger] Done all.
-1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
+1 - user exception, ID 'IDL:alma/Logging/LoggerDoesNotExistEx:1.0'
 1 - 
