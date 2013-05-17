@@ -27,9 +27,6 @@
 
 package cl.utfsm.cdbChecker;
 
-import gnu.getopt.Getopt;
-import gnu.getopt.LongOpt;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,15 +37,19 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.parsers.SAXParser;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Repository;
@@ -59,9 +60,22 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
+import alma.acs.cdbChecker.BaciSchemaChecker;
+import alma.acs.cdbChecker.BaciSchemaChecker.BaciPropertyLocator;
+import alma.acs.logging.ClientLogManager;
+
 
 
 public class CDBChecker {
+	
+	/**
+	 * This logger was introduced very late. 
+	 * It should be used in favor of stdout printing whenever we touch some cdbChecker code. 
+	 */
+	public final Logger logger;
 	
 	public  String XMLPath = null;
 	public  String XSDPath = null;
@@ -87,6 +101,7 @@ public class CDBChecker {
 	 */
 	private boolean errorFlag = false;
 
+	
 	public boolean isErrorFlag() {
 		return errorFlag;
 	}
@@ -103,12 +118,15 @@ public class CDBChecker {
 	 * error code.
 	 */
     private boolean globalErrorFlag = false;
+    
 	public boolean isGlobalErrorFlag() {
 		return globalErrorFlag;
 	}
 
 	public void setGlobalErrorFlag(boolean globalErrorFlag) {
-		this.globalErrorFlag = globalErrorFlag;
+		if (globalErrorFlag == true) {
+			this.globalErrorFlag = true;
+		}
 	}
 
 	private Repository rep= null;
@@ -130,6 +148,12 @@ public class CDBChecker {
 	public boolean isCheckIdl() {
 		return checkidl;
 	}
+
+	
+	public CDBChecker(Logger logger) {
+		this.logger = logger;
+	}
+	
 
 	/* Filename filters used when recursively collecting files from the paths */
 	private FilenameFilter xmlFileFilter = new FilenameFilter() {
@@ -257,51 +281,79 @@ public class CDBChecker {
 	/**
 	 * This method validates the XSD files.
 	 * 
-	 * @param filename name with absolute path of the XSD file to validate.
+	 * @param xsdFilenames names with absolute path of the XSD file to validate.
 	 */
-	protected void XSDValidate(Vector<String> filename){
+	protected void validateSchemas(Vector<String> xsdFilenames){
 
-		System.out.println("*** Will verify XSD files in directory: " + this.XSDPath);
+		System.out.println("*** Will verify XSD files in: " + this.XSDPath);
 
-		for(int i=0;i<filename.size();i++){
-			File file = new File(filename.get(i));
-			if(file.length()!=0){
-				if(verbose){
-					System.out.print("    " + filename.get(i));
-					/*for(int j=0;j<(91-(int)((String)filename.get(i)).length())/8;j++)
-                                          System.out.print("\t");
-					 */}
-				try{
-					validateFileEncoding(filename.get(i));
+		// We share the resolver, to benefit more from its cache.
+		CDBSchemasResolver resolver = new CDBSchemasResolver(this, schemaFolder + File.pathSeparator + XSDPath);
+		
+		for (String xsdFilename : xsdFilenames) {
+			final File xsdFile = new File(xsdFilename);
+			if (xsdFile.length() != 0) {
+				if (verbose) {
+					System.out.print("    " + xsdFilename);
+				}
+				try {
+					validateFileEncoding(xsdFilename);
 					SP.reset();
-					SP.setEntityResolver(new CDBSchemasResolver(this, schemaFolder+File.pathSeparator+XSDPath));
-					SP.setFeature("http://xml.org/sax/features/validation",true);
-					SP.setFeature("http://apache.org/xml/features/validation/schema",true);
-					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-					SP.setFeature("http://xml.org/sax/features/namespaces",true);
-					SP.setErrorHandler(new CDBErrorHandler(this));	
-					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
+					resolver.setResolveOnlyHttp(true); // not sure why, but this is the legacy behavior
+					SP.setEntityResolver(resolver);
+					SP.setFeature("http://xml.org/sax/features/validation", true);
+					SP.setFeature("http://apache.org/xml/features/validation/schema", true);
+					SP.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+					SP.setFeature("http://xml.org/sax/features/namespaces", true);
+					SP.setErrorHandler(new CDBErrorHandler(this));
+					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+							"http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
 
-					FileInputStream fis = new FileInputStream(file);
+					FileInputStream fis = new FileInputStream(xsdFile);
 					InputSource inputSource = new InputSource(fis);
-					inputSource.setSystemId("file:///" + file.getAbsolutePath());
+					inputSource.setSystemId("file:///" + xsdFile.getAbsolutePath());
 					SP.parse(inputSource);
 					fis.close();
-					if(verbose && !errorFlag)
+					// Now we know that the schema is technically valid (well, it does not seem to check xsd imports...)
+					// Still we have to check special requirements for CharacteristicComponent XSDs.
+					// This second check probably includes the first check's functionality, so that the
+					// first check could be removed once we have verified XSOM's xsd error reporting
+					// and hooked up the shared error handler in BaciSchemaChecker.
+					resolver.setResolveOnlyHttp(false); // here we want to resolve all schemas
+					BaciSchemaChecker baciChecker = new BaciSchemaChecker(xsdFile, resolver, logger);
+					List<BaciPropertyLocator> badProps = baciChecker.findBaciPropsOutsideCharacteristicComp();
+					if (!badProps.isEmpty()) {
+						// Reduce the available error output to show only xsd element(s), not the individual baci properties
+						Set<String> badXsdElementNames = new HashSet<String>();
+						for (BaciPropertyLocator badProp : badProps) {
+							badXsdElementNames.add(badProp.elementName);
+						}
+						System.out.println("Schema file '" + xsdFilename + 
+								"' uses baci properties in xsd elements that are not derived from baci:CharacteristicComponent. " +
+								"Offending element(s): " + StringUtils.join(badXsdElementNames, ' ')
+								);
+						errorFlag=true;
+						globalErrorFlag = true;
+					}
+					if (verbose && !errorFlag) {
 						System.out.println("[OK]");
-				}catch (SAXException e){e.printStackTrace();}
-				catch (IOException e){System.out.println("[IOException] Probably "+ filename.get(i)+" doesn't exists.");}
-			}else{
-				System.out.print( filename.get(i)+": [Warning] file is empty.\n");
+					}
+				} catch (SAXException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					System.out.println("[IOException] Probably " + xsdFilename + " doesn't exists.");
+				}
+			} else {
+				System.out.print(xsdFilename + ": [Warning] file is empty.\n");
 			}
-		}	
+		}
+		resolver.setResolveOnlyHttp(true); // back to legacy mode again... yuck, our resolver still sticks to the "SP" field and will be used elsewhere!
 	}
 
 	/**
 	 * This method check if the idl types on CDB are available
 	 * 
 	 */
-
 	protected void checkIdlTypes(){
 		//first check if IR is available
 		org.omg.CORBA.Object repRef = null;
@@ -338,8 +390,7 @@ public class CDBChecker {
 					/*for(int j=0;j<(90-(int)((String)filename.get(i)).length())/8;j++)
                                           System.out.print("\t");
 					 */}
-				String targetNamespace;
-				targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
+				String targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
 				errorFlag=false;
 				try{
 					validateFileEncoding(filenames.get(i));
@@ -360,7 +411,7 @@ public class CDBChecker {
 					if(verbose && !errorFlag)
 						System.out.println("[OK]");
 				}catch(SAXException e){System.out.println("[SAXException] " + e.getMessage());}
-				catch(IOException e){System.out.println("[IOException] Probably "+ filenames.get(i) + " doesn't exists.");}
+				catch(IOException e){System.out.println("[IOException] Probably "+ filenames.get(i) + " doesn't exist.");}
 			}else{
 				System.out.print( filenames.get(i) + ": [Warning] file is empty.\n");
 			}
@@ -372,16 +423,16 @@ public class CDBChecker {
 	/**
 	 * This method checks for the targetNamespace defined by the schema files and fills the CDBChecker.xsd_targetns with pairs {targetNamespace, XSD filename}
 	 * 
-	 * @param XSDFilenames Vector with all the XSD filenames with absolute path.
+	 * @param xsdFilenames Vector with all the XSD filenames with absolute path.
 	 */	
-	protected void getTargetNamespace(Vector<String> XSDFilenames){
+	protected void getTargetNamespace(Vector<String> xsdFilenames){
 
 		String filename;
 
-		for(int i=0;i<XSDFilenames.size();i++){
+		for(int i=0;i<xsdFilenames.size();i++){
 
-			filename= XSDFilenames.get(i);
-			File file = new File(XSDFilenames.get(i));
+			filename= xsdFilenames.get(i);
+			File file = new File(xsdFilenames.get(i));
 			if(file.length()!=0){
 				SP.setContentHandler(new CDBContentHandler(this));
 				SP.reset();
@@ -423,25 +474,27 @@ public class CDBChecker {
 						String[] oldArr = ((String)xsd_targetns.get(targetNamespace)).split("/");
 						if(newArr[newArr.length-1].compareTo(oldArr[oldArr.length-1])!=0)
 						{
-							System.out.println("[Warning] The XSD files \""+ XSDFilenames.get(i) + "\" and \""+xsd_targetns.get(targetNamespace)+"\" have same targetNamespace: \""+targetNamespace+"\". Skipping this one.");
+							System.out.println("[Warning] The XSD files \""+ xsdFilenames.get(i) + "\" and \""+xsd_targetns.get(targetNamespace)+"\" have same targetNamespace: \""+targetNamespace+"\". Skipping this one.");
 						}
 					}
 					else
 					{
-						xsd_targetns.put(targetNamespace, "file:///" + XSDFilenames.get(i));
+						xsd_targetns.put(targetNamespace, "file:///" + xsdFilenames.get(i));
 					}
 				}
 			}else{
-				System.out.print( XSDFilenames.get(i) + ": [Warning] file is empty.\n");
+				System.out.print( xsdFilenames.get(i) + ": [Warning] file is empty.\n");
 			}
 		}
 	}
 	
 	/**
-	 * Sets the static variable CDBChecker.targetNamespace
+	 * Sets the static variable CDBChecker.targetNamespace.
+	 * Called by CDBContentHandler whenever it encounters a schema#targetNamespace attribute.
 	 * @param targetNamespace 
 	 */
 	public void setTargetNamespaceString(String targetNamespace){
+//		System.out.println("targetNamespace = " + targetNamespace);
 		this.targetNamespace = targetNamespace;
 	}
 	
@@ -630,59 +683,60 @@ public class CDBChecker {
 		return retVal;
 	}
 	
-   private boolean configLoader(){
-      String config_path;
-      String tmp_path;
+	/**
+	 * @return <code>true</code> if all configuration data was set up OK.
+	 */
+	private boolean configLoader() {
+		String config_path;
+		String tmp_path;
 
-      List<String> reqSchemas = new ArrayList<String>();
-      
-      if((config_path = props.getProperty("ACS.config_path"))==null){
-	 System.out.println("config_path not defined");
-	 return false;
-      }
-      
-      //Use the default ACS_TMP directory to download the schemas from the network
-      tmp_path = System.getProperty("ACS.tmp");
-      // else use the systems default
-      if (tmp_path == null)
-		{
-			tmp_path = File.separator+"tmp";
+		List<String> reqSchemas = new ArrayList<String>();
+
+		if ((config_path = props.getProperty("ACS.config_path")) == null) {
+			System.out.println("config_path not defined");
+			return false;
 		}
-      
-      
-      SP.setContentHandler(new ConfigurationCH(reqSchemas));
-      SP.reset();
-      try{
-	 SP.setFeature("http://xml.org/sax/features/validation",false);
-	 SP.setFeature("http://apache.org/xml/features/validation/schema",false);
-	 SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-	 SP.setFeature("http://xml.org/sax/features/namespaces",true);
-	 SP.parse(config_path+File.separator+"config"+File.separator+"reqSchemas.xml");
-      }catch(SAXException e){e.getMessage();}
-      catch (IOException e){
-	 System.out.println("[IOException] Probably the configuration file doesn't exist.");return false;
-      }
-      if(this.network){
-	 tmpDir=new File(tmp_path, "cdbchecker." + System.currentTimeMillis () +
-			 ".tmp");
-	 tmpDir.mkdirs();
-	 if (!tmpDir.exists ()) {
-	    System.out.println("[Error] No permission to create temporary directory " + tmpDir.getAbsolutePath());
-	    return false;
-	 } 
-	 schemaFolder=tmpDir.getAbsolutePath()+File.separator;
-	 downloadSchemas(reqSchemas);
-      }
-      else{
-	 schemaFolder=config_path+File.separator+"config"+File.separator+"CDB"+File.separator+"schemas"+File.separator;
-	 if(!(new File(schemaFolder)).exists()){
-	    System.out.println("[Error] The required schema files are missing, please run the tool with the '-n' option.");
-	    return false;
-	 }
-      }
-      return true;
-   }
-	
+
+		// Use the default ACS_TMP directory to download the schemas from the network
+		tmp_path = System.getProperty("ACS.tmp");
+		// else use the systems default
+		if (tmp_path == null) {
+			tmp_path = File.separator + "tmp";
+		}
+
+		SP.setContentHandler(new ConfigurationCH(reqSchemas));
+		SP.reset();
+		try {
+			SP.setFeature("http://xml.org/sax/features/validation", false);
+			SP.setFeature("http://apache.org/xml/features/validation/schema", false);
+			SP.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+			SP.setFeature("http://xml.org/sax/features/namespaces", true);
+			SP.parse(config_path + File.separator + "config" + File.separator + "reqSchemas.xml");
+		} catch (SAXException e) {
+			e.getMessage(); // HSO: is this intended no-op behavior?
+		} catch (IOException e) {
+			System.out.println("[IOException] Probably the configuration file doesn't exist.");
+			return false;
+		}
+		if (this.network) {
+			tmpDir = new File(tmp_path, "cdbchecker." + System.currentTimeMillis() + ".tmp");
+			tmpDir.mkdirs();
+			if (!tmpDir.exists()) {
+				System.out.println("[Error] No permission to create temporary directory " + tmpDir.getAbsolutePath());
+				return false;
+			}
+			schemaFolder = tmpDir.getAbsolutePath() + File.separator;
+			downloadSchemas(reqSchemas);
+		} else {
+			schemaFolder = config_path + File.separator + "config" + File.separator + "CDB" + File.separator
+					+ "schemas" + File.separator;
+			if (!(new File(schemaFolder)).exists()) {
+				System.out.println("[Error] The required schema files are missing, please run the tool with the '-n' option.");
+				return false;
+			}
+		}
+		return true;
+	}	
 	
 	protected void deleteTmp(){
 		String list[] = tmpDir.list();
@@ -691,15 +745,15 @@ public class CDBChecker {
 		tmpDir.delete();
 	}
 	
-    /**
-     * Main function to run the cdbChecker tool
-     * System.exit(0/1) is used to return success if everything if fine
-     * or failure int case errors were encountered
-     */
-
+	/**
+	 * Main function to run the cdbChecker tool.
+	 * System.exit(0/1) is used to return success if everything if fine or
+	 * failure in case errors were encountered.
+	 */
 	public static void main(String[] args) {
 		
-		CDBChecker cdbchecker=new CDBChecker();
+		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(CDBChecker.class.getSimpleName(), false);
+		CDBChecker cdbchecker = new CDBChecker(logger);
 		cdbchecker.props = System.getProperties();
 		
 		
@@ -707,7 +761,7 @@ public class CDBChecker {
 		System.out.println("\n\n");
 
 		/*
-		 * Retrieves the CDB path from the propery, is given
+		 * Retrieves the CDB path from the property, if given
 		 */
 		String ACS_cdbpath = cdbchecker.props.getProperty("ACS.cdbpath");
 
@@ -734,94 +788,93 @@ public class CDBChecker {
 
 			//Creating the parser
 //			System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration", "org.apache.xerces.parsers.XIncludeAwareParserConfiguration");
-			cdbchecker.SP=new SAXParser();
-			cdbchecker.xsd_targetns=new Hashtable<String,String>();
+			cdbchecker.SP = new SAXParser();
+			cdbchecker.xsd_targetns = new Hashtable<String,String>();
 			
 			//Download the required Schemas
-			if(cdbchecker.verbose)System.out.println("*** Reading required schema files");			
-			if(cdbchecker.configLoader()){
 			
-			        /*
-				 * Retrieves all schema files with absolute paths
-			         */
- 			        if(cdbchecker.verbose)System.out.println("*** Reading given schema files");
-		                // Appends command line schema files, if any
-				if(ACS_cdbpath != null)
-				    {
-				    // We assume that cdbchecker.XSDPath is at least
-                                    // initialised to the empty string and never null
-				    	//Modify panta@naoj 2009/10/15
-				    	if(cdbchecker.XSDPath == null){
-				    		cdbchecker.XSDPath = ACS_cdbpath;
-				    	}
-				    	else{
-				    		cdbchecker.XSDPath = cdbchecker.XSDPath + ":" + ACS_cdbpath;
-				    	}
-				    }
-				if(cdbchecker.verbose && cdbchecker.checkidl){
-					System.out.println("*** Checking Idl Types");
+			if(cdbchecker.verbose) {
+				System.out.println("*** Reading required schema files");
+			}
+			
+			if (cdbchecker.configLoader()) {
+				if (cdbchecker.verbose) {
+					System.out.println("*** Reading given schema files");
 				}
-				if (cdbchecker.checkidl)
+				// Appends command line schema files, if any
+				if (ACS_cdbpath != null) {
+					// We assume that cdbchecker.XSDPath is at least initialised to the empty string and never null
+					// Modify panta@naoj 2009/10/15
+					if (cdbchecker.XSDPath == null) {
+						cdbchecker.XSDPath = ACS_cdbpath;
+					} else {
+						cdbchecker.XSDPath = cdbchecker.XSDPath + ":" + ACS_cdbpath;
+					}
+				}
+				if (cdbchecker.checkidl) {
+					if (cdbchecker.verbose) {
+						System.out.println("*** Checking Idl Types");
+					}
 					cdbchecker.checkIdlTypes();
+				}
+				String paths[] = cdbchecker.XSDPath.split(File.pathSeparator);
+				Vector<String> xsdFilenames = cdbchecker.getFilenames(paths, "xsd");
 
-				String paths[]=cdbchecker.XSDPath.split(File.pathSeparator);
-				Vector<String> XSDFilenames=new Vector<String>();
-				XSDFilenames=cdbchecker.getFilenames(paths,"xsd");
-			
-				if(cdbchecker.verbose)System.out.println("*** Reading given XML files");			
+				if (cdbchecker.verbose)
+					System.out.println("*** Reading given XML files");
 				// We assume that cdbchecker.XMLPath is at least
 				// initialised to the empty string and never null
-		
-				paths=cdbchecker.XMLPath.split(File.pathSeparator);
-				Vector<String> XMLFilenames=new Vector<String>();
-				XMLFilenames=cdbchecker.getFilenames(paths,"xml");
-				
-				//Fill the map with the targetNamespace and the filenames
-				if(cdbchecker.verbose)System.out.println("*** Getting TargetNamespaces from schema files");			
-				cdbchecker.getTargetNamespace(XSDFilenames);
-			
-				//Validating Schemas
-				if(cdbchecker.verbose)System.out.println("*** Validating Schemas");			
-				cdbchecker.XSDValidate(XSDFilenames);
-				
-				//Validating XML files
-				if(cdbchecker.verbose)System.out.println("*** Validating XML files");						
+
+				paths = cdbchecker.XMLPath.split(File.pathSeparator);
+				Vector<String> XMLFilenames = cdbchecker.getFilenames(paths, "xml");
+
+				// Fill the map with the targetNamespace and the filenames
+				if (cdbchecker.verbose)
+					System.out.println("*** Getting TargetNamespaces from schema files");
+				cdbchecker.getTargetNamespace(xsdFilenames);
+
+				// Validating Schemas
+				if (cdbchecker.verbose)
+					System.out.println("*** Validating Schemas");
+				cdbchecker.validateSchemas(xsdFilenames);
+
+				// Validating XML files
+				if (cdbchecker.verbose)
+					System.out.println("*** Validating XML files");
 				cdbchecker.XMLValidate(XMLFilenames);
-				
-				//add panta@naoj 2009/10/05
-				//checks if implLang matches, those written in XXComponents.xml and XXContainers.xml
-				
-				for(int i = 0; i < pathsMulti.length; i++){
-					cdbchecker.componentsFolder= pathsMulti[i] + File.separator+"MACI"+File.separator+"Components";
-					cdbchecker.containersFolder= pathsMulti[i] + File.separator+"MACI"+File.separator+"Containers";
-				
+
+				// add panta@naoj 2009/10/05
+				// checks if implLang matches, those written in XXComponents.xml and XXContainers.xml
+				for (int i = 0; i < pathsMulti.length; i++) {
+					cdbchecker.componentsFolder = pathsMulti[i] + File.separator + "MACI" + File.separator + "Components";
+					cdbchecker.containersFolder = pathsMulti[i] + File.separator + "MACI" + File.separator + "Containers";
+
 					File compFolder = new File(cdbchecker.componentsFolder);
 					File contFolder = new File(cdbchecker.containersFolder);
-					//System.out.println("compFolder: " + compFolder);
-					//System.out.println("contFolder: " + contFolder);
-					
-					if(compFolder.exists() && contFolder.exists()){
+					// System.out.println("compFolder: " + compFolder);
+					// System.out.println("contFolder: " + contFolder);
+
+					if (compFolder.exists() && contFolder.exists()) {
 						cdbchecker.setGlobalErrorFlag(cdbchecker.checkImplLangMatch(compFolder, contFolder));
 
-						//exit if error
-						if( cdbchecker.isGlobalErrorFlag() ) {
-						    break;
+						// exit if error
+						if (cdbchecker.isGlobalErrorFlag()) {
+							break;
 						}
 					}
 				}
-				//add panta@naoj 2009/10/05 end
-				
+				// add panta@naoj 2009/10/05 end
+
 			}
-		} 
-      else {
+		} else {
 			printUsage();
 		}
 
 		cdbchecker.cleanUp();
 		
 		cdbchecker.showEndResult();
-		
 	}
+
 	
 	private void showEndResult(){
 		if(globalErrorFlag==true) {

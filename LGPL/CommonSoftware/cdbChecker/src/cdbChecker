@@ -175,6 +175,7 @@ fi
 if [ "$config_path" != "#error#" ]
 then
    export ACS_LOG_STDOUT=99
+   export CLASSPATH="$JAVA_HOME/lib/tools.jar${PATH_SEP}$CLASSPATH"
    acsStartJava --noDirectory -endorsed -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2 $3 $4 $5 $6 $7 $8 $9 
    returnCode=$?
 else

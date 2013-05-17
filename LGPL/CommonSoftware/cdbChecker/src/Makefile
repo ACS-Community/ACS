@@ -37,45 +37,15 @@
 # Jarfiles and their directories
 #
 JARFILES=cdbChecker 
-cdbChecker_DIRS = cl
+cdbChecker_DIRS = cl alma
 
-#
-## This will have to be replaced by:
-# JAVA_ENDORSED=1
-# # when implemented
-# #
-XERCES_JAR = $(shell if [ -f $(INTROOT)/lib/endorsed/xercesImpl.jar ]; then \
-echo $(INTROOT)/lib/endorsed/xercesImpl.jar; \
-else \
-echo $(ACSROOT)/lib/endorsed/xercesImpl.jar; \
-fi;)
-XMLPARSER_JAR = $(shell if [ -f $(INTROOT)/lib/endorsed/xmlParserAPIs.jar ]; then \
-echo $(INTROOT)/lib/endorsed/xmlParserAPIs.jar; \
-else \
-echo $(ACSROOT)/lib/endorsed/xmlParserAPIs.jar; \
-fi;)
-CLASSPATH := $(XERCES_JAR)$(PATH_SEP)$(CLASSPATH)
+# Add tools.jar so that javac will find the XSOM classes
+CLASSPATH := $(JAVA_HOME)/lib/tools.jar$(PATH_SEP)$(CLASSPATH)
 
 #
 # java sources in Jarfile on/off
 DEBUG = on 
 
-#
-# ACS XmlIdl generation on/off
-#
-XML_IDL= 
-#
-# Java Component Helper Classes generation on/off
-#
-COMPONENT_HELPERS=
-#
-# Java Entity Classes generation on/off
-#
-XSDBIND=
-#
-# Schema Config files for the above
-#
-XSDBIND_INCLUDE=
 
 INSTALL_FILES= 	../lib/java-getopt-1.0.12.jar ../config/reqSchemas.xml \
 		../config/reqSchemas.xsd
