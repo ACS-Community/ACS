@@ -16,10 +16,13 @@
   <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
   <xs:complexType name="ErrorExplorer">
-    <xs:sequence>
-      <xs:element name="explorerDoubleProperty" type="baci:RWdouble"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="baci:CharacteristicComponent">
+        <xs:sequence>
+          <xs:element name="explorerDoubleProperty" type="baci:RWdouble"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="ErrorExplorer" type="ErrorExplorer"/>
 </xs:schema>
-
