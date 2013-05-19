@@ -38,6 +38,7 @@
 #
 JARFILES=cdbChecker 
 cdbChecker_DIRS = cl alma
+cdbChecker_ENDORSED = on
 
 # Add tools.jar so that javac will find the XSOM classes
 CLASSPATH := $(JAVA_HOME)/lib/tools.jar$(PATH_SEP)$(CLASSPATH)
