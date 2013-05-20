@@ -619,19 +619,6 @@ ACSServicesHandlerImpl::start_acs (
 {
     bool recovery = additional_command_line && ACE_OS::strstr(additional_command_line, "-r");
     this->start_services(getServices(instance_number, false).c_str(), recovery, callback);
-
-    // set local manager reference
-    std::string host = ACSPorts::getIP();
-    std::string managerPort = ACSPorts::getManagerPort(instance_number);
-    std::string managerLocalCorbaloc = "corbaloc::" + host + ":" + managerPort + "/Manager";
-    ::acsdaemon::ServiceInfoSeq infos;
-    infos.length(1);
-    ::acsdaemon::ServiceInfo info;
-    info.service_type = CORBA::string_dup("manager");
-    info.service_name = CORBA::string_dup("");
-    info.service_reference = CORBA::string_dup(managerLocalCorbaloc.c_str());
-    infos[0] = info;
-    this->set_configuration_reference(instance_number, infos);
 }
 
 

@@ -141,6 +141,7 @@ class ACSServiceController : public ServiceController {
     ACSServiceRequestDescription *desc;
     ACE_CString corbaloc;
     bool alarmSystemInitialized;
+    bool loggingSystemInitialized;
     ::alarmsystem::AlarmService_var alarmService;
  protected:
     ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL);
