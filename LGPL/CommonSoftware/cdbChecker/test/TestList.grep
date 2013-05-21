@@ -8,7 +8,7 @@ Downloaded file:
 Storing schemas in: 
 Searching for schema files in
 Will verify XML files in directory:
-Will verify XSD files in directory:
+Will verify XSD files in:
 ACS.log.minlevel.namedloggers not defined
 processing /tmp/acsIrfeedDyn
 ^1 - [0-9]*$

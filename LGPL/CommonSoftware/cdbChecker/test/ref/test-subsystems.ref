@@ -29,7 +29,6 @@
 1 -     /PATH/defaultCDB/CDB/schemas/SimulatedComponent.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/Building.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/Fridge.xsd[OK]
-1 -     /PATH/defaultCDB/CDB/schemas/BulkData.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/CDB.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/BACI.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/Tower.xsd[OK]
@@ -90,13 +89,13 @@
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'DCtoDCPowerSupply'.
 1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ARTM/ARTM.xml:14:55 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
-1 - :15:3 [Fatal Error]
+1 - /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ARTM/ARTM.xml:15:3 [Fatal Error]
 1 - 	 The content of elements must consist of well-formed character data or markup.
 1 - ************Unrecoverable error, please don't trust any messages after this one.***********
 1 - [SAXException] The content of elements must consist of well-formed character data or markup.
 1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM002/ABM002.xml:14:55 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
-1 - :15:3 [Fatal Error]
+1 - /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM002/ABM002.xml:15:3 [Fatal Error]
 1 - 	 The content of elements must consist of well-formed character data or markup.
 1 - ************Unrecoverable error, please don't trust any messages after this one.***********
 1 - [SAXException] The content of elements must consist of well-formed character data or markup.
@@ -104,7 +103,7 @@
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
 1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM001/ABM001.xml:14:55 [Error]
 1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
-1 - :15:3 [Fatal Error]
+1 - /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM001/ABM001.xml:15:3 [Fatal Error]
 1 - 	 The content of elements must consist of well-formed character data or markup.
 1 - ************Unrecoverable error, please don't trust any messages after this one.***********
 1 - [SAXException] The content of elements must consist of well-formed character data or markup.

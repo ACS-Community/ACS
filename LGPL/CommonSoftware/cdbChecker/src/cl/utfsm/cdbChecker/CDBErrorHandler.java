@@ -65,21 +65,18 @@ class CDBErrorHandler extends DefaultHandler implements ErrorHandler {
 		_checker.setGlobalErrorFlag(true);
 	}
 	
-	public void fatalError(SAXParseException e)
-	throws SAXException{
-		String filename=e.getSystemId();
-                if(filename != null){
-                        if(filename.startsWith("file:///"))
-                                filename=filename.substring(8);
-                        if( _checker.isVerbose() )
-                                System.out.print(":"+e.getLineNumber()+":"+e.getColumnNumber()+" [Fatal Error]\n\t "+e.getMessage()+"\n");
-                        else
-                                System.out.print(filename+":"+e.getLineNumber()+":"+e.getColumnNumber()+" [Fatal Error]\n\t "+e.getMessage()+"\n");
-                }else{
-                        System.out.print("\n[Fatal Error] There is something terribly wrong, we should never get here :(\n\t "+e.getMessage()+"\n");
-                }
-        		_checker.setErrorFlag(true);
-        		_checker.setGlobalErrorFlag(true);
-                System.out.print("\n************Unrecoverable error, please don't trust any messages after this one.***********\n\n");
+	public void fatalError(SAXParseException e) {
+		String filename = e.getSystemId();
+		if (filename != null) {
+			if (filename.startsWith("file:///")) {
+				filename = filename.substring(8);
+			}
+			System.out.println(filename + ":" + e.getLineNumber() + ":" + e.getColumnNumber() + " [Fatal Error]\n\t " + e.getMessage());
+		} else {
+			System.out.println("[Fatal Error] There is something terribly wrong, we should never get here :(\n\t " + e.getMessage() + "\n");
+		}
+		_checker.setErrorFlag(true);
+		_checker.setGlobalErrorFlag(true);
+		System.out.println("************Unrecoverable error, please don't trust any messages after this one.***********\n");
 	}
 }

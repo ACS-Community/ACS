@@ -68,7 +68,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	rm -f sed.scan
+	rm -rf sed.scan tatlogs tmp
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

@@ -57,6 +57,7 @@ import org.omg.CORBA.RepositoryHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -73,7 +74,8 @@ public class CDBChecker {
 	
 	/**
 	 * This logger was introduced very late. 
-	 * It should be used in favor of stdout printing whenever we touch some cdbChecker code. 
+	 * It should be used for debug messages in favor of stdout printing, 
+	 * whenever we touch some cdbChecker code. 
 	 */
 	public final Logger logger;
 	
@@ -289,6 +291,7 @@ public class CDBChecker {
 
 		// We share the resolver, to benefit more from its cache.
 		CDBSchemasResolver resolver = new CDBSchemasResolver(this, schemaFolder + File.pathSeparator + XSDPath);
+		ErrorHandler errorHandler = new CDBErrorHandler(this);
 		
 		for (String xsdFilename : xsdFilenames) {
 			final File xsdFile = new File(xsdFilename);
@@ -305,7 +308,7 @@ public class CDBChecker {
 					SP.setFeature("http://apache.org/xml/features/validation/schema", true);
 					SP.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
 					SP.setFeature("http://xml.org/sax/features/namespaces", true);
-					SP.setErrorHandler(new CDBErrorHandler(this));
+					SP.setErrorHandler(errorHandler);
 					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
 							"http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
 
@@ -314,32 +317,40 @@ public class CDBChecker {
 					inputSource.setSystemId("file:///" + xsdFile.getAbsolutePath());
 					SP.parse(inputSource);
 					fis.close();
-					// Now we know that the schema is technically valid (well, it does not seem to check xsd imports...)
-					// Still we have to check special requirements for CharacteristicComponent XSDs.
-					// This second check probably includes the first check's functionality, so that the
-					// first check could be removed once we have verified XSOM's xsd error reporting
-					// and hooked up the shared error handler in BaciSchemaChecker.
-					resolver.setResolveOnlyHttp(false); // here we want to resolve all schemas
-					BaciSchemaChecker baciChecker = new BaciSchemaChecker(xsdFile, resolver, logger);
-					List<BaciPropertyLocator> badProps = baciChecker.findBaciPropsOutsideCharacteristicComp();
-					if (!badProps.isEmpty()) {
-						// Reduce the available error output to show only xsd element(s), not the individual baci properties
-						Set<String> badXsdElementNames = new HashSet<String>();
-						for (BaciPropertyLocator badProp : badProps) {
-							badXsdElementNames.add(badProp.elementName);
+					try {
+						// Now we know that the schema is technically valid (well, it does not seem to check xsd imports...)
+						// Still we have to check special requirements for CharacteristicComponent XSDs.
+						// This second check probably includes the first check's functionality, so that the
+						// first check could be removed once we have verified XSOM's xsd error reporting
+						// and hooked up the shared error handler in BaciSchemaChecker.
+						resolver.setResolveOnlyHttp(false); // here we want to resolve all schemas
+						BaciSchemaChecker baciChecker = new BaciSchemaChecker(xsdFile, resolver, errorHandler, logger);
+						List<BaciPropertyLocator> badProps = baciChecker.findBaciPropsOutsideCharacteristicComp();
+						if (!badProps.isEmpty()) {
+							// Reduce the available error output to show only xsd element(s), not the individual baci properties
+							Set<String> badXsdElementNames = new HashSet<String>();
+							for (BaciPropertyLocator badProp : badProps) {
+								badXsdElementNames.add(badProp.elementName);
+							}
+							System.out.println(xsdFilename + 
+									": illegal use of baci properties in xsd elements that are not derived from baci:CharacteristicComponent. " +
+									"Offending element(s): " + StringUtils.join(badXsdElementNames, ' ')
+									);
+							errorFlag=true;
+							globalErrorFlag = true;
 						}
-						System.out.println("Schema file '" + xsdFilename + 
-								"' uses baci properties in xsd elements that are not derived from baci:CharacteristicComponent. " +
-								"Offending element(s): " + StringUtils.join(badXsdElementNames, ' ')
-								);
-						errorFlag=true;
-						globalErrorFlag = true;
+					}
+					catch (SAXException ex) {
+						// ignore SAXException coming from BaciSchemaChecker, because we don't want to report errors
+						// twice when the xsd file is really messed up. 
+						// There are cases where xerces reports a normal error but XSOM reports a fatal error and throws this exception.
 					}
 					if (verbose && !errorFlag) {
 						System.out.println("[OK]");
 					}
 				} catch (SAXException e) {
-					e.printStackTrace();
+					System.out.println("Caught a SAXException in validateSchemas: ");
+					e.printStackTrace(System.out);
 				} catch (IOException e) {
 					System.out.println("[IOException] Probably " + xsdFilename + " doesn't exists.");
 				}

@@ -25,13 +25,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import com.sun.xml.internal.xsom.XSComplexType;
 import com.sun.xml.internal.xsom.XSContentType;
@@ -70,11 +68,11 @@ public class BaciSchemaChecker
 	private XSComplexType baciPropertyBaseType;
 	private XSComplexType baciCharacteristicComponentType;
 	
-	public BaciSchemaChecker(File xsdFile, EntityResolver resolver, Logger logger) throws SAXException, MalformedURLException {
+	public BaciSchemaChecker(File xsdFile, EntityResolver resolver, ErrorHandler errorHandler, Logger logger) throws SAXException, MalformedURLException {
 		this.xsdFile = xsdFile;
 		this.logger = logger;
 		XSOMParser parser = new XSOMParser();
-		parser.setErrorHandler(new ParserErrorHandler());
+		parser.setErrorHandler(errorHandler);
 		parser.setEntityResolver(resolver);
 
 		// we use the URL format just so that in debug logs it is the same format
@@ -229,22 +227,4 @@ public class BaciSchemaChecker
 		}
 	}
 
-	
-	private class ParserErrorHandler implements ErrorHandler {
-
-		@Override
-		public void warning(SAXParseException exception) {
-			logger.log(Level.WARNING, "XSOM parse warning", exception);
-		}
-
-		@Override
-		public void error(SAXParseException exception) {
-			logger.log(Level.WARNING, "recoverable XSOM parse error: " + exception.toString());
-		}
-
-		@Override
-		public void fatalError(SAXParseException exception) {
-			logger.log(Level.SEVERE, "fatal XSOM parse error", exception);
-		}
-	}
 }
