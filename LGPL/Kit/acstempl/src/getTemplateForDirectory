@@ -158,12 +158,16 @@ then
     	     msql/msqldb       \
     	     msql/msqldb/.tmp  \
     	     tmp               \
+             logs		\
+             dumps		\
     	     "
 else      
     ACSDATA_LIST="
              ENVIRONMENTS      \
              config            \
              tmp               \
+             logs		\
+             dumps		\
              "
 fi
 
