@@ -423,6 +423,12 @@ public:
 		conf_threads = threads;
 	}
 
+    static ACE_CString getProcessName()
+    {
+		ACE_Guard<ACE_Thread_Mutex> guard(mutex_);
+    	return process_name;
+    }
+
 	// not thread-safe
 	static AsyncRequestThreadPool* getInstance()
 	{

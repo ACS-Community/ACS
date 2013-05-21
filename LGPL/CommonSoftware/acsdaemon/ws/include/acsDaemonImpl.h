@@ -447,7 +447,8 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     LoggingProxy::ProcessName(argv[0]);
     LoggingProxy::ThreadName("main");
     ACE_Log_Msg::instance()->local_host(hostName);
-    m_logger = new LoggingProxy (0, 0, 31, 0);
+    // for daemons/imp we set some cache by default
+    m_logger = new LoggingProxy (1024, 0, 31, 0);
     
     LoggingProxy::init (m_logger);  
 

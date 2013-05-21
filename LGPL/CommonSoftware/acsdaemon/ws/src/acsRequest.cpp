@@ -65,6 +65,7 @@ RequestProcessorThread::~RequestProcessorThread() {
 }
 
 void RequestProcessorThread::onStart() {
+	LoggingProxy::ProcessName(AsyncRequestThreadPool::getProcessName().c_str());
     running = true;
 }
 

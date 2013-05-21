@@ -141,7 +141,6 @@ class ACSServiceController : public ServiceController {
     ACSServiceRequestDescription *desc;
     ACE_CString corbaloc;
     bool alarmSystemInitialized;
-    bool loggingSystemInitialized;
     ::alarmsystem::AlarmService_var alarmService;
  protected:
     ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL);
@@ -182,7 +181,7 @@ class ACSDaemonContext {
     acsdaemon::ServiceState getACSServiceState(int instance_number, const char *name = NULL);
     acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) const {
 	return detailedServiceStateProvider ? detailedServiceStateProvider->getDetailedServiceState(desc, obj) : acsdaemon::RUNNING; };
-    void setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info) { ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex); configurationReferences[instance_number] = services_info; setImpControllersConfigurationReference(instance_number, services_info); };
+    void setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info);
     ::acsdaemon::ServiceInfoSeq getConfigurationReference(const short instance_number);
     std::string getConfigurationReference(const short instance_number, const char* service_type);
     bool hasConfigurationReference(const short instance_number);

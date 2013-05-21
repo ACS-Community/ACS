@@ -35,6 +35,69 @@
 
 #include "acsdaemonErrType.h"
 
+static bool loggingSystemInitialized = false;
+
+static void invalidateLogging()
+{
+	loggingSystemInitialized = false;
+}
+
+static void checkLogging(ACSDaemonContext * context, short instance)
+{
+	if (!loggingSystemInitialized)
+	{
+		// we need msg_callback to get LoggingProxy
+		if (ACE_LOG_MSG->msg_callback () != 0 &&
+				context->hasConfigurationReference(instance, acsServices[NAMING_SERVICE].xmltag))
+		{
+			try
+			{
+				// we get via NS and not a manager (to support logging when manager is not running)
+				std::string nsReference = context->getConfigurationReference(instance, acsServices[NAMING_SERVICE].xmltag);
+				CORBA::Object_var nc_obj = context->getORB()->string_to_object(nsReference.c_str());
+				if (nc_obj.ptr() != CORBA::Object::_nil())
+				{
+					CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(nc_obj.in());
+					if (nc.ptr() != CosNaming::NamingContext::_nil())
+					{
+						CosNaming::Name name;
+						name.length(1);
+						name[0].id = CORBA::string_dup("Log");
+
+						CORBA::Object_var obj = nc->resolve(name);
+						if (!CORBA::is_nil(obj.in()))
+                    	{
+							Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(obj.in());
+
+							LoggingProxy* lp = static_cast<LoggingProxy*>(ACE_LOG_MSG->msg_callback());
+							lp->setCentralizedLogger(logger.in());
+							lp->setNamingContext(nc.in());
+                            loggingSystemInitialized = true;
+                            ACS_SHORT_LOG((LM_DEBUG, "Remote logging system initialized."));
+                        }
+						else
+						{
+							ACS_SHORT_LOG((LM_DEBUG, "Unable to resolve Log from the naming service."));
+						}
+					}
+					else
+					{
+						ACS_SHORT_LOG((LM_DEBUG, "Unable to narrow NamingContext."));
+					}
+				}
+				else
+				{
+					ACS_SHORT_LOG((LM_ERROR, "Unable to resolve naming service, invalid corbaloc reference: '%s'.", nsReference.c_str()));
+				}
+			}
+			catch (...)
+			{
+				ACS_SHORT_LOG((LM_DEBUG, "Unable to initialize logging sytem, unexpected exception caught."));
+			}
+		}
+	}
+}
+
 /***************************** ControllerThread *******************************/
 
 ControllerThread::ControllerThread(const ACE_CString &name, const ACS::TimeInterval& responseTime,  const ACS::TimeInterval& sleepTime) :
@@ -49,7 +112,8 @@ ControllerThread::~ControllerThread() {
 }
 
 void ControllerThread::onStart() {
-    running = true;
+	LoggingProxy::ProcessName(AsyncRequestThreadPool::getProcessName().c_str());
+	running = true;
     m_mutex = new ACE_Thread_Mutex();
     m_wait = new ACE_Condition<ACE_Thread_Mutex>(*m_mutex);
 }
@@ -70,6 +134,10 @@ void ControllerThread::runLoop() ACE_THROW_SPEC ((CORBA::SystemException, ::ACSE
         ACE_Time_Value waittime(ACE_OS::gettimeofday() + TIME_PERIOD);
         m_wait->wait(&waittime);
         if (!running) { m_mutex->release(); break; }
+
+        // we always log to instance 0 only
+        checkLogging(context, 0);
+
         context->checkControllers();
         m_mutex->release();
     }
@@ -277,7 +345,7 @@ void ImpController::setConfigurationReference(const short instance_number, const
 /*************************** ACSServiceController *****************************/
 
 ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc),
-		alarmSystemInitialized(false), loggingSystemInitialized(false), alarmService(::alarmsystem::AlarmService::_nil()) {
+		alarmSystemInitialized(false), alarmService(::alarmsystem::AlarmService::_nil()) {
     char str[256];
     const ACSService *service = &acsServices[idesc->getACSService()];
     std::string port = service->svcport == NULL ? service->namedsvcport(idesc->getInstanceNumber(), idesc->getName()) : service->svcport(idesc->getInstanceNumber());
@@ -361,49 +429,12 @@ bool ACSServiceController::setState(acsdaemon::ServiceState istate) {
 }
 
 void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
-	if (!loggingSystemInitialized)
-	{
-    	// initialize Logging
-        // set namingContext to the logger (to enable CL reconnections).
-        if (ACE_LOG_MSG->msg_callback () != 0 &&
-        	getContext()->hasConfigurationReference(desc->getInstanceNumber(), acsServices[NAMING_SERVICE].xmltag))
-        {
-			try
-			{
-				std::string nsReference = getContext()->getConfigurationReference(desc->getInstanceNumber(), acsServices[NAMING_SERVICE].xmltag);
-				CORBA::Object_var nc_obj = getContext()->getORB()->string_to_object(nsReference.c_str());
-				if (nc_obj.ptr() != CORBA::Object::_nil())
-				{
-					CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(nc_obj.in());
-
-					if (nc.ptr() != CosNaming::NamingContext::_nil())
-					{
-						static_cast<LoggingProxy*>(ACE_LOG_MSG->msg_callback())->setNamingContext(nc.in());
-						loggingSystemInitialized = true;
-						ACS_SHORT_LOG((LM_DEBUG, "Set Naming Context to Logger."));
-					}
-					else
-					{
-						ACS_SHORT_LOG((LM_DEBUG, "Unable to set Naming Context to Logger, narrow failed."));
-					}
-				}
-				else
-				{
-					ACS_SHORT_LOG((LM_ERROR, "Unable to set Naming Context to Logger, invalid corbaloc reference: '%s'.", nsReference.c_str()));
-				}
-			}
-			catch (...)
-			{
-				ACS_SHORT_LOG((LM_DEBUG, "Unable to set Naming Context to Logger."));
-			}
-        }
-	}
-
     if (!alarmSystemInitialized)
     {
+
         // no reference yet, noop
         if (!getContext()->hasConfigurationReference(desc->getInstanceNumber(), acsServices[MANAGER].xmltag))
-	   return;
+        	return;
 
         try {
            std::string managerReference = getContext()->getConfigurationReference(desc->getInstanceNumber(), acsServices[MANAGER].xmltag);
@@ -540,6 +571,19 @@ void ACSDaemonContext::setImpControllersConfigurationReference(const short insta
            ((ImpController*)impcontrollers[i])->setConfigurationReference(instance_number, services_info);
 
     //m_mutex->release();
+}
+
+void ACSDaemonContext::setConfigurationReference(const short instance_number, const ::acsdaemon::ServiceInfoSeq & services_info)
+{
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_configMutex);
+	configurationReferences[instance_number] = services_info;
+
+	// invalidate logging
+	if (instance_number == 0)
+		invalidateLogging();
+
+	// pass configuration to all the imps
+	setImpControllersConfigurationReference(instance_number, services_info);
 }
 
 ::acsdaemon::ServiceInfoSeq ACSDaemonContext::getConfigurationReference(const short instance_number)
