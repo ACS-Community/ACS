@@ -9,3 +9,4 @@ PROLOGUE prologue.sh
 6 test-defaultCDB-withcheckerscript "test-defaultCDB-withcheckerscript.sh"
 7 test-interfaceRepository "test-interfaceRepository.sh"
 8 test-fileEncoding "test-fileEncoding.sh"
+9 test-characteristicComponent "test-characteristicComponent.sh"

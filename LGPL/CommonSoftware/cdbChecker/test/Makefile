@@ -45,7 +45,8 @@ SCRIPTS         =
 SCRIPTS_L       = test-acsexmpl.sh test-basic.sh \
                   test-defaultCDB.sh  test-ITS.sh test-subsystems.sh \
                   test-defaultCDB-withcheckerscript.sh test-interfaceRepository.sh \
-                  test-fileEncoding.sh prologue.sh epilogue.sh
+                  test-fileEncoding.sh test-characteristicComponent.sh \
+                  prologue.sh epilogue.sh
 
 #
 #>>>>> END OF standard rules
