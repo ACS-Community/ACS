@@ -80,11 +80,6 @@ BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 
 void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 {
-  DDS::ReturnCode_t retCode;
-  DDS::SampleInfo si ;
-  ACSBulkData::BulkDataNTFrame message;
-  unsigned char tmpArray[ACSBulkData::FRAME_MAX_LEN];
-
   initalizeLogging(); //force initialization of logging sys TBD changed
   if (DDSConfiguration::debugLevel>3)
   {
@@ -293,7 +288,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                 		  callback_mp->onError(cbReceiveAvgTO);
                 		  //TBD should we increase error counter here or not ?
                 	  }//if (cbReceiveAvgSec_m > cbReceiveTimeoutSec_m)
-                	  if (DDSConfiguration::debugLevel>0)
+                	  if (DDSConfiguration::debugLevel>1)
                 	  {
                 		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
                 				  (LM_INFO, "Average processing time for: %s for %d call(s) of cbReceive(): %fs. What corresponds to throughput of: %fMB/sec",

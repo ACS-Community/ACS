@@ -110,7 +110,13 @@ private:
   unsigned int cbReceiveNumCalls_m; /// how many times cbReceive was called  between cbStart and cbStop
   double cbReceiveAvgSec_m; /// average process time for all cbReceive calls between cbStart and cbStop
   double cbReceiveAvgTimeoutSec_m; /// cbReceiver avergae process timeout read from CDB (or default value)
+
+  // we assumed that on_data_available is called just once, so we can have these members in class not in the method.
+  DDS::ReturnCode_t retCode;
+  DDS::SampleInfo si ;
+  ACSBulkData::BulkDataNTFrame message;
+  unsigned char tmpArray[ACSBulkData::FRAME_MAX_LEN];
 };
 
-};//namepsace AcsBulkdata
+};//namespace AcsBulkdata
 #endif
