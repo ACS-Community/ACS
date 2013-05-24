@@ -32,7 +32,6 @@ AcsDaemonUtils::AcsDaemonUtils():
 	m_logDirectory("~/.acs/commandcenter/")
 {
 	int ret=initLogDirectory();
-	std::cout<<m_logDirectory<<" "<<ret<<std::endl;
 }
 
 bool AcsDaemonUtils::makeFolder(std::string path)
