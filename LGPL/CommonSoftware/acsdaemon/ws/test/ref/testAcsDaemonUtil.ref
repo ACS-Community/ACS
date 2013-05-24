@@ -1,0 +1,5 @@
+1 - TestAcsDaemonUtils::testLogDirectory : OK
+1 - TestAcsDaemonUtils::testLogDirectoryForPlainContainer : OK
+1 - TestAcsDaemonUtils::testLogDirectoryForHierarchicalContainer : OK
+1 - TestAcsDaemonUtils::testTimestampOK (4)
+1 -  : OK
