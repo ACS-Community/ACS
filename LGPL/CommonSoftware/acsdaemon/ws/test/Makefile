@@ -52,11 +52,14 @@
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acsServices80Test
-EXECUTABLES_L   = 
+EXECUTABLES     = acsServices80Test 
+EXECUTABLES_L   = testAcsDaemonUtil
 
 acsServices80Test_OBJECTS   =   acsServices80Test
 acsServices80Test_LIBS      =   acscomponentStubs acsdaemonErrType acsdaemonStubs acserr maciErrType ACSErrTypeCommon
+
+testAcsDaemonUtil_OBJECTS   =  testAcsDaemonUtil ../src/acsDaemonUtils
+testAcsDaemonUtil_LIBS      =  acsutil cppunit ACE
 
 #
 # <brief description of xxxxx program>
