@@ -49,7 +49,7 @@ EXECUTABLES_L   =
 
 #
 # <brief description of xxxxx program>
-acscontainerdaemon_OBJECTS   =  acscontainerdaemon acsContainerHandlerImpl acsdaemonORBTask acsRequest acsServiceController
+acscontainerdaemon_OBJECTS   =  acscontainerdaemon acsContainerHandlerImpl acsdaemonORBTask acsRequest acsServiceController acsDaemonUtils
 acscontainerdaemon_LIBS      =  acscomponentStubs acsdaemonErrType acsdaemonStubs ACSErrTypeCommon acsThread acsQoS ACSErrTypeCommon ACSErrTypeCORBA maciErrType maciStubs AcsAlarmSystemStubs
 
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
