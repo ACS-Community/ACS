@@ -33,9 +33,9 @@ clean :
 	rm -rf ../PRODUCTS/lxml-2.2.6
 	rm -rf ../PRODUCTS/pythoscope-0.4.3
 	rm -rf ../PRODUCTS/nose-0.11.3
-	rm -rf ../PRODUCTS/logilab-common-0.50.1
-	rm -rf ../PRODUCTS/logilab-astng-0.20.0
-	rm -rf ../PRODUCTS/pylint-0.20.0
+	rm -rf ../PRODUCTS/logilab-common-0.59.1
+	rm -rf ../PRODUCTS/logilab-astng-0.24.3
+	rm -rf ../PRODUCTS/pylint-0.28.0
 	rm -rf ../PRODUCTS/Pygments-1.3.1
 	rm -rf ../PRODUCTS/Jinja2-2.4.1
 	rm -rf ../PRODUCTS/docutils-0.6
