@@ -282,24 +282,24 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/pylint-0.20.0.tar.gz \
-     -o ! -e ../PRODUCTS/logilab-astng-0.20.0.tar.gz \
-     -o ! -e ../PRODUCTS/logilab-common-0.50.1.tar.gz \
+if [ ! -e ../PRODUCTS/pylint-0.28.0.tar.gz \
+     -o ! -e ../PRODUCTS/logilab-astng-0.24.3.tar.gz \
+     -o ! -e ../PRODUCTS/logilab-common-0.59.1.tar.gz \
    ]
 then
   echo Error: pylint sources are missing
 else
   echo "== Building pylint"
-  tar -xzf logilab-common-0.50.1.tar.gz
-  pushd logilab-common-0.50.1
+  tar -xzf logilab-common-0.59.1.tar.gz
+  pushd logilab-common-0.59.1
   $PYTHON_INTR setup.py install
   popd
-  tar -xzf logilab-astng-0.20.0.tar.gz
-  pushd logilab-astng-0.20.0
+  tar -xzf logilab-astng-0.24.3.tar.gz
+  pushd logilab-astng-0.24.3
   $PYTHON_INTR setup.py install
   popd
-  tar -zxf pylint-0.20.0.tar.gz
-  pushd pylint-0.20.0
+  tar -zxf pylint-0.28.0.tar.gz
+  pushd pylint-0.28.0
   $PYTHON_INTR setup.py install 
   popd
 fi
