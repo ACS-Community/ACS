@@ -1,4 +1,4 @@
-FILES=$1
+FILES=$@
 COMMA=""
 
 for f in $FILES
