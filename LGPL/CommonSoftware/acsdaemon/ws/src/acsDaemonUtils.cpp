@@ -32,6 +32,40 @@ AcsDaemonUtils::AcsDaemonUtils():
 	m_logDirectory("~/.acs/commandcenter/")
 {
 	int ret=initLogDirectory();
+	// In case of error ret is not 0
+	if (ret!=0) {
+		std::cout<<"ERROR initializing the folder to write logs: ";
+		switch (ret) {
+		case 1: {
+			std::cout<<"ACSDATA does not exist or can't write in ACSDATA"<<std::endl;
+			break;
+		}
+		case 2: {
+			std::cout<<"error creating ACSDATA/logs"<<std::endl;
+			break;
+			}
+		case 3: {
+			std::cout<<"Can't write ACSDATA/logs"<<std::endl;
+			break;
+			}
+		case 4: {
+			std::cout<<"error getting the host name for HOST environment variable"<<std::endl;
+			break;
+			}
+		case 5: {
+			std::cout<<"Error creating ACSDATA/logs/<HOST>"<<std::endl;
+			break;
+			}
+		case 6: {
+			std::cout<<"Can't write ACSDATA/logs/<HOST>"<<std::endl;
+			break;
+			}
+		default: {
+			std::cout<<"Unknown error code "<<ret<<std::endl;
+			break;
+		}
+		}
+	}
 }
 
 bool AcsDaemonUtils::makeFolder(std::string path)
