@@ -782,7 +782,7 @@ MessageWidgetListener
 	/**
 	 * Update the label of the filtering of the table
 	 */
-	private void setTableFilterLbl() {
+	protected void setTableFilterLbl() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (logEntryTable.getFilters().hasActiveFilters()) {
