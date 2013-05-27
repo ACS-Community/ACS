@@ -64,9 +64,19 @@ public class RegExpFilter extends Filter {
 			throw new IllegalArgumentException("The regular expression can't be null nor empty");
 		}
 		this.regularExpression = regularExpression;
-		this.pattern = Pattern.compile(regularExpression);
+		this.pattern = Pattern.compile(regularExpression, getPatternFlags());
 	}
 	
+	/**
+	 * Special-hack subclasses may overwrite this method to return values
+	 * such as <code>Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE</code>.
+	 * If this functionality should be needed more generally, then we should 
+	 * allow setting the flags in the constructor. 
+	 */
+	protected int getPatternFlags() {
+		return 0;
+	}
+
 	protected boolean applyTo(Object obj) {
 		if (obj == null) {
 			return false;
@@ -79,10 +89,11 @@ public class RegExpFilter extends Filter {
 		try {
 			Matcher m = pattern.matcher((String)obj);
 			res = m.matches();
-		} catch (PatternSyntaxException exception) {
+		} 
+		catch (PatternSyntaxException exception) {
 			// This is a problem! Ignore the filter returning true
 			return true;
-			}
+		}
 		if (notFilter)
 			return !res;
 		else
