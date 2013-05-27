@@ -313,8 +313,7 @@ BaseHelper::getNotificationFactoryNameForChannel(CDB::DAL_ptr cdbRef, const char
 if(CORBA::is_nil(cdbRef))
     {
     ACS_STATIC_SHORT_LOG((LM_DEBUG,
-			  "BaseHelper::getNotificationFactoryNameForChannel",
-			  "CDB ref null."));
+			  "BaseHelper::getNotificationFactoryNameForChannel: CDB ref null."));
     return 0;
     }
 
@@ -333,11 +332,12 @@ try
 catch(...)
     {
     ACS_STATIC_SHORT_LOG((LM_DEBUG,
-			  "BaseHelper::getNotificationFactoryNameForChannel",
-			  "No CDB entry found for '%s' channel. OK.",
+			  "BaseHelper::getNotificationFactoryNameForChannel: No CDB entry found for '%s' channel. OK.",
 			  cdbChannelsName.c_str()));
     return 0;
     }
+
+char * ncFactoryNameTmp = 0;
 
 // if channel mapping exists take it, wildchars are also supported
 try
@@ -345,45 +345,79 @@ try
     CDB::stringSeq_var channelNameList = tempDAO->get_string_seq("NotificationServiceMapping/Channels_");
     for (CORBA::ULong n = 0; n < channelNameList->length(); n++)
         if (Wildcard::wildcardfit(channelNameList[n], channelName))
-            return CORBA::string_dup(tempDAO->get_string((std::string("NotificationServiceMapping/Channels_/") + channelNameList[n].in() + "/NotificationService").c_str())); 
+		{
+			ncFactoryNameTmp = CORBA::string_dup(tempDAO->get_string((std::string("NotificationServiceMapping/Channels_/") + channelNameList[n].in() + "/NotificationService").c_str()));
+			break;
+		}
     }
 catch(...)
     {
     ACS_STATIC_SHORT_LOG((LM_DEBUG,
-			  "BaseHelper::getNotificationFactoryNameForChannel",
-			  "No Channel to NotificationService mapping found for channel'%s' channel.",
+			  "BaseHelper::getNotificationFactoryNameForChannel: No Channel to NotificationService mapping found for channel'%s' channel.",
 			  channelName));
     }
     
 // if domain mapping, if given
-if (domainName)
+if (!ncFactoryNameTmp && domainName)
+{
 	try
     {
-    return CORBA::string_dup(tempDAO->get_string((std::string("NotificationServiceMapping/Domains/") + domainName + "/NotificationService").c_str())); 
-    }
-catch(...)
+		ncFactoryNameTmp = CORBA::string_dup(tempDAO->get_string((std::string("NotificationServiceMapping/Domains/") + domainName + "/NotificationService").c_str()));
+   }
+	catch(...)
     {
     ACS_STATIC_SHORT_LOG((LM_DEBUG,
-			  "BaseHelper::getNotificationFactoryNameForChannel",
-			  "No Domain to NotificationService mapping found for domain/channel'%s/%s' channel. OK.",
+			  "BaseHelper::getNotificationFactoryNameForChannel: No Domain to NotificationService mapping found for domain/channel'%s/%s' channel. OK.",
 			  domainName, channelName));
     }
+}
     
 // if default
+if (!ncFactoryNameTmp)
+{
 	try
     {
-    return CORBA::string_dup(tempDAO->get_string("NotificationServiceMapping/DefaultNotificationService")); 
+	ncFactoryNameTmp = CORBA::string_dup(tempDAO->get_string("NotificationServiceMapping/DefaultNotificationService"));
     }
 catch(...)
     {
     ACS_STATIC_SHORT_LOG((LM_DEBUG,
-			  "BaseHelper::getNotificationFactoryNameForChannel",
-			  "No NotificationServiceMapping/DefaultNotificationService attribute found. OK.",
-			  domainName, channelName));
+			  "BaseHelper::getNotificationFactoryNameForChannel: No NotificationServiceMapping/DefaultNotificationService attribute found. OK."));
     }
+}
 
-	// not found
-    return 0;
+// If we found nothing in the CDB, we default to the default notify event channel factory name
+if (!ncFactoryNameTmp)
+{
+	ncFactoryNameTmp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
+	return ncFactoryNameTmp;
+}
+
+
+// Or if the CDB data did not contain the magical service name suffix, we add it here (see http://jira.alma.cl/browse/COMP-9260)
+int ncFactorySuffixLen = strlen(acscommon::NOTIFICATION_FACTORY_NAME);
+int ncFactoryNameTmpLen = strlen(ncFactoryNameTmp);
+char * ncFactoryName = 0;
+if (ncFactoryNameTmpLen >= ncFactorySuffixLen)
+{
+	if(strcmp(ncFactoryNameTmp + (ncFactoryNameTmpLen - ncFactorySuffixLen), acscommon::NOTIFICATION_FACTORY_NAME) != 0)
+	{
+		// the CDB data did not contain the magical service name suffix, we add it here
+		ncFactoryName = CORBA::string_dup((std::string(ncFactoryNameTmp) + acscommon::NOTIFICATION_FACTORY_NAME).c_str());
+	}
+	else
+	{
+		ncFactoryName = CORBA::string_dup(ncFactoryNameTmp);
+	}
+}
+else
+{
+	// the CDB data did not contain the magical service name suffix, we add it here
+	ncFactoryName = CORBA::string_dup((std::string(ncFactoryNameTmp) + acscommon::NOTIFICATION_FACTORY_NAME).c_str());
+	
+}
+	CORBA::string_free(ncFactoryNameTmp);
+    return ncFactoryName;
 }
 //------------------------------------------------------
 
