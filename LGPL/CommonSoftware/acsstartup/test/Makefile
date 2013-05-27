@@ -74,7 +74,7 @@ SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer \
 	testContainerPort.sh acsstartupTestLoadIFR.sh heapDumpOnOutOfMemoryErrorTest \
-	testVmOption.sh 
+	testVmOption.sh acsstartupTest_nslist
 #
 # TCL scripts (public and local)
 # ------------------------------
