@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Helper;
+import alma.acs.util.AcsLocations;
 
 /**
  * Test notification channel configuration (mapping).
@@ -46,19 +47,24 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	 * Gets the supplier component to send out events 
 	 */
 	public void doSomeStuff() throws AcsJException {
-		// default expected
+		// nothing configured in CDB -> encoded default NotifyEventChannelFactory
 		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("any")));
 		
 		// channel mapping 
 		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("PARTICULAR")));
+		// channel mapping in CDB -> ParticularNotifyEventChannelFactory
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("PARTICULAR1")));
 		
-		// wildchars channel mapping 
+		// channel mapping in CDB and service name expansion -> ParticularNotifyEventChannelFactory
+		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("PARTICULAR2")));
+		
+		// wildchars channel mapping in CDB -> ControlNotifyService
 		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("CONTROL_CHANNEL")));
 		
-		// domain mapping
+		// domain mapping in CDB and service name expansion -> AlarmNotifyEventChannelFactory
 		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("anyOnLaser", "ALARMSYSTEM")));
 		
-		// fallback to default
+		// non-existing domain -> encoded default NotifyEventChannelFactory
 		System.out.println((new Helper(getContainerServices()).getNotificationFactoryNameForChannel("anyOnNonExistingDomain", "NONEXISTING_DOMAIN")));
 	}
 
@@ -68,11 +74,7 @@ public class NotificationServiceConfigurationTest extends ComponentClient
 	 * other methods from this class.
 	 */
 	public static void main(String[] args) {
-		String managerLoc = System.getProperty("ACS.manager");
-		if (managerLoc == null) {
-			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-			System.exit(-1);
-		}
+		String managerLoc = AcsLocations.figureOutManagerLocation();
 		String clientName = NotificationServiceConfigurationTest.class.getName();
 		NotificationServiceConfigurationTest hlc = null;
 		try {

@@ -4,12 +4,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <NotificationServiceMapping DefaultNotificationService="NotifyEventChannelFactory">
           <Domains>
-              <_ Name="ALARMSYSTEM" NotificationService="AlarmNotifyService"/>
+              <_ Name="ALARMSYSTEM" NotificationService="Alarm"/>
           </Domains>
           <Channels_>
-              <_ Name="CONTROL_*" NotificationService="ControlNotifyService"/>
+              <_ Name="CONTROL_*" NotificationService="ControlNotifyEventChannelFactory"/>
               <_ Name="HLA_*" NotificationService="HLANotifyService"/>	
-              <_ Name="PARTICULAR" NotificationService="ParticularNotifyService"/>
+              <_ Name="PARTICULAR1" NotificationService="ParticularNotifyEventChannelFactory"/>
+              <_ Name="PARTICULAR2" NotificationService="Particular"/>
           </Channels_>
       </NotificationServiceMapping>
 </Channels>
