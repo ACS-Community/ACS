@@ -3,7 +3,7 @@
 1 - 
 1 - 
 1 - *** XML path not specified; defaulting to $ACS_CDB/CDB: <pwd>/CDB
-1 - *** Will verify XSD files in directory: <pwd>/../config/CDB/schemas:<pwd>/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas
+1 - *** Will verify XSD files in: <pwd>/../config/CDB/schemas:<pwd>/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas
 1 - *** Will verify XML files in directory: <pwd>/CDB
 1 - 
 1 - Component File being checked: <pwd>/CDB/MACI/Components/Components.xml
