@@ -321,7 +321,7 @@ Supplier::destroyNotificationChannel()
 	// Unbind notification channel from Naming service
 	CosNaming::Name name(1);
 	name.length(1);
-	name[0].id = CORBA::string_dup(channelName_mp);
+	name[0].id = CORBA::string_dup(getCombinedChannelAndDomainName().c_str());
 	name[0].kind = acscommon::NC_KIND;
 	ACE_ASSERT(CORBA::is_nil(namingContext_m.in()) == false);
 	namingContext_m->unbind(name);

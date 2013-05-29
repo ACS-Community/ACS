@@ -41,6 +41,7 @@ class HelperTest: public Helper{
     //bool resolveInternalNotificationChannel();
 
     HelperTest(const char*, int, char**);
+    HelperTest(const char* channelName, const char * notifyServiceDomainName, int argc, char *argv[]);
     virtual void createNotificationChannel();
    // void useMutex(bool useMutex);
 

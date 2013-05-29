@@ -123,7 +123,7 @@ class Helper
     resolveNotifyChannel();
 
     /**
-     * This is used by Comsumers and Suppliers to get the notification channel.
+     * This is used by Consumers and Suppliers to get the notification channel.
      * It first tries to resolved and if it fails, it tries to create it.
      * If it fails to create it, it waits 2 seconds and tries again, 20 times.
      * If it still fails, returns false
@@ -154,7 +154,15 @@ class Helper
       */
     virtual void reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf);
 
-   
+	/**
+	 * Returns Combined channel and domain name which looks
+	 * like channel_name@domain_name and which is used in the
+	 * naming service to identify the channel
+	 */
+	inline virtual std::string getCombinedChannelAndDomainName() const
+	{
+		return channelAndDomainName_m;
+	}
     
   protected:
     /**
@@ -269,7 +277,7 @@ class Helper
     /** 
      *  The notification channel used to send/receive events. This is 
      *  created by the notification channel factory. This channel is bound to 
-     *  the naming service using channelName_mp.
+     *  the naming service using channelAndDomainName_m.
      */
     CosNotifyChannelAdmin::EventChannel_var notifyChannel_m;
 
@@ -285,15 +293,19 @@ class Helper
      *  Name of the notification channel.
      */
     char *channelName_mp;
-
     
     /**
-     *  Name of the nofitication service domain.
+     *  Name of the notification service domain.
      */
     char *notifyServiceDomainName_mp;
     
     /**
-     * Name of "resovled" notification service.
+     * Channel and domain name (like channel_name@domain_name)
+     */
+    std::string channelAndDomainName_m;
+
+    /**
+     * Name of "resolved" notification service.
      */
     char *notificationServiceName_mp;
 

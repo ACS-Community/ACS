@@ -56,7 +56,15 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     channelName_mp = CORBA::string_dup(channelName);
     // make a copy of the NS domain name (if given)
     if (notifyServiceDomainName)
+    {
         notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
+        channelAndDomainName_m = BaseHelper::combineChannelAndDomainName(channelName_mp,notifyServiceDomainName_mp);
+    }
+    else
+    {
+    	channelAndDomainName_m = BaseHelper::combineChannelAndDomainName(channelName_mp,"");
+    }
+
     //this is common to both suppliers and consumers, but what does it really
     //do?
     ifgop_m = CosNotifyChannelAdmin::AND_OP;
@@ -64,8 +72,8 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     //if this doesn't work
     if((BACI_CORBA::getInstance()==0) && (BACI_CORBA::InitCORBA(0, 0) == false))
 	{
-	ACS_SHORT_LOG((LM_ERROR,"Helper::Helper unable to gain access to BACI_CORBA!",
-		       channelName_mp));
+	ACS_SHORT_LOG((LM_ERROR,"Helper::Helper(%s,%s) unable to gain access to BACI_CORBA!",
+		       channelName_mp,notifyServiceDomainName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::Helper");
 	throw err.getCORBAProblemEx();
 	}
@@ -234,7 +242,7 @@ Helper::resolveNotificationFactory()
 }
 //-----------------------------------------------------------------------------
 void Helper::createNotificationChannel() {
-    ACS_TRACE("Helper::resolveNotificationChannel");
+    ACS_TRACE("Helper::createNotificationChannel");
     ACE_Time_Value start_time = ACE_OS::gettimeofday();
     ACE_Time_Value end_time;
     unsigned long msec = 0;
@@ -280,7 +288,7 @@ void Helper::createNotificationChannel() {
         // Bind notification channel to Naming service
         CosNaming::Name name(1);
         name.length(1);
-        name[0].id = CORBA::string_dup(channelName_mp);
+        name[0].id = CORBA::string_dup(channelAndDomainName_m.c_str());
         name[0].kind = acscommon::NC_KIND;
         //sanity check to make sure the naming service is really there
         if (CORBA::is_nil(namingContext_m.in()) == true) {
@@ -373,7 +381,7 @@ bool Helper::resolveInternalNotificationChannel(){
         }catch(NotifyMonitoringExt::NameMapError){
             ACS_SHORT_LOG((LM_WARNING,"*** TODO check what this NameMapError means!!!"));
         }catch(...){
-            ACS_SHORT_LOG((LM_WARNING,""));
+            ACS_SHORT_LOG((LM_WARNING,"Unexpected exception received while trying to create the notification channel %s",channelName_mp));
         }
         retryNumberAttempts--;
         sleep(retrySleepSec);
@@ -392,7 +400,7 @@ Helper::resolveNotifyChannel()
 
     CosNaming::Name name(1);
     name.length(1);
-    name[0].id = CORBA::string_dup(channelName_mp);
+    name[0].id = CORBA::string_dup(channelAndDomainName_m.c_str());
     name[0].kind = getChannelKind();
 
     try

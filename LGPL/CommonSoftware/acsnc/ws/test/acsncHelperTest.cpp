@@ -14,6 +14,18 @@ HelperTest::HelperTest(const char* channelName, int argc, char *argv[]):
     //namingContext_m = maci::MACIHelper::resolveNameService(orbHelper_mp->getORB(), "corbaloc::192.168.36.128:3001/NameService");
 }
 
+HelperTest::HelperTest(const char* channelName, const char * notifyServiceDomainName, int argc, char *argv[]):
+    Helper(channelName,notifyServiceDomainName)
+{
+
+    ACS_TRACE("HelperTest::HelperTest");
+
+	orbHelper_mp = new ORBHelper(argc, argv);
+    orbHelper_mp->runOrb();
+    namingContext_m = maci::MACIHelper::resolveNameService(orbHelper_mp->getORB());
+    //namingContext_m = maci::MACIHelper::resolveNameService(orbHelper_mp->getORB(), "corbaloc::192.168.36.128:3001/NameService");
+}
+
 ACE_Thread_Mutex HelperTest::m_tester_mutex;
 ACE_Condition_Thread_Mutex HelperTest::m_tester_condition (HelperTest::m_tester_mutex);
 bool HelperTest::m_useMutex = false;
