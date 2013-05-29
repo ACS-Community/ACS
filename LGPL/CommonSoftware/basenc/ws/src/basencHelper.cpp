@@ -96,7 +96,14 @@ BaseHelper::BaseHelper(const char* channelName, const char* notifyServiceDomainN
     
     // make a copy of the NS domain name (if given)
     if (notifyServiceDomainName)
+    {
         notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
+	    channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,notifyServiceDomainName_mp);
+	}
+	else
+	{
+		channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,"");
+	}
 }
 //-----------------------------------------------------------------------------
 BaseHelper::~BaseHelper()
@@ -165,7 +172,7 @@ BaseHelper::init(CosNaming::NamingContext_ptr nc_p)
 	name.length(1);
 
 	//name of the channel
-	name[0].id   = CORBA::string_dup(channelName_mp);
+	name[0].id   = CORBA::string_dup(channelAndDomainName_m.c_str());
 	//channel kind
 	name[0].kind = CORBA::string_dup(getChannelKind());
 
@@ -281,7 +288,7 @@ BaseHelper::attachChannelToNS()
 	//name for our channel
 	CosNaming::Name name(1);
 	name.length(1);
-	name[0].id = CORBA::string_dup(channelName_mp);
+	name[0].id = CORBA::string_dup(channelAndDomainName_m.c_str());
 	name[0].kind = CORBA::string_dup(getChannelKind());
 
 	//really bind the reference here
@@ -418,6 +425,20 @@ else
 }
 	CORBA::string_free(ncFactoryNameTmp);
     return ncFactoryName;
+}
+//------------------------------------------------------
+std::string
+BaseHelper::combineChannelAndDomainName(const std::string & channelName,
+										const std::string & domainName)
+{
+	if(domainName.empty())
+	{
+		return std::string(channelName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
+	}
+	else
+	{
+		return std::string(channelName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + domainName);
+	}
 }
 //------------------------------------------------------
 

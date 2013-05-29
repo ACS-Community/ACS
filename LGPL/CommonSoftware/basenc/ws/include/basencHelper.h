@@ -49,6 +49,24 @@ class BaseHelper
 	 * @return notification channel factory name.
 	 */
 	static char*  getNotificationFactoryNameForChannel(CDB::DAL_ptr dal, const char* channelName, const char* domainName = 0);
+
+	/**
+	 * This method will combine the channel and domain name and return a string
+	 * similar to the following one: channel_name@domain_name
+	 * This is used to build the name of the channel as it should be registered
+	 * in the Naming Service.
+	 */
+	static std::string combineChannelAndDomainName(const std::string &channelName, const std::string &domainName);
+
+	/**
+	 * Returns Combined channel and domain name which looks
+	 * like channel_name@domain_name and which is used in the
+	 * naming service to identify the channel
+	 */
+	inline std::string getCombinedChannelAndDomainName() const
+	{
+		return channelAndDomainName_m;
+	}
   
   protected:
     
@@ -258,6 +276,11 @@ class BaseHelper
      * Name of "resovled" notification service.
      */
     char *notificationServiceName_mp;
+
+    /**
+     * Channel and domain name like channel_name@domain_name
+     */
+    std::string channelAndDomainName_m;
 
     /**
      * Shows whether the init method has been called yet.
