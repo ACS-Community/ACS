@@ -71,6 +71,8 @@ import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator;
+import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator.AlarmSelectionListener;
 import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 
@@ -128,7 +130,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		 */
 		private void alarmSelected(MouseEvent e) {
 			int row=rowAtPoint(new Point(e.getX(),+e.getY()));
-			AlarmTable.this.model.alarmSelected(getRowSorter().convertRowIndexToModel(row));	
+			AlarmTable.this.model.alarmSelected(getRowSorter().convertRowIndexToModel(row));
 		}
 		
 		/**
@@ -437,6 +439,8 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * The undocumented table model
 	 */
 	private final UndocAlarmTableModel undocModel;
+
+	private volatile AlarmSelectionListener listener;
 	
 	/**
 	 * Constructor 
@@ -777,8 +781,29 @@ public class AlarmTable extends JTable implements ActionListener {
 	public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
 		super.changeSelection(rowIndex, columnIndex, toggle, extend);
 		int idx = sorter.convertRowIndexToModel(rowIndex);
-		panel.showAlarmDetails(model.getAlarmAt(idx));
-		selectedAlarmId=model.getAlarmAt(idx).getAlarmId();
+		AlarmTableEntry alarmEntry = model.getAlarmAt(idx);
+		panel.showAlarmDetails(alarmEntry);
+		selectedAlarmId = alarmEntry.getAlarmId();
+		
+		// TODO 1: Is this the right place to intercept the selection, or should we get it from AlarmTableMouseAdapter#alarmSelected ?
+		// TODO 2: Check if this gets called also for alarm de-selection (if that exists...)
+		AlarmSelectionListener listenerCopy = listener; // to avoid concurrency issues
+		if (listenerCopy != null) {
+			Alarm alarm = alarmEntry.getEncapsulatedAlarm();
+			if (alarm != null) {
+				listenerCopy.notifyAlarmSelected(alarm);
+			}
+			else {
+				listenerCopy.notifyAlarmDeselected();
+			}
+		}
+	}
+	
+	/**
+	 * TODO: This is used only by {@link ViewCoordinator}. Check if we can use a standard listener type.
+	 */
+	public void setAlarmSelectionListener(AlarmSelectionListener listener) {
+		this.listener = listener;
 	}
 	
 	/**

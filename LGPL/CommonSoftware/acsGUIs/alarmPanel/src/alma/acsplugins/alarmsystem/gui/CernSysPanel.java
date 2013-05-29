@@ -249,6 +249,10 @@ public class CernSysPanel extends JPanel {
 		toolbar.setAutoAckLevel(getInitialAutoAckLevel());
 	}
 	
+	AlarmTable getAlarmTable() {
+		return alarmTable;
+	}
+	
 	/**
 	 * Closes the panel
 	 */

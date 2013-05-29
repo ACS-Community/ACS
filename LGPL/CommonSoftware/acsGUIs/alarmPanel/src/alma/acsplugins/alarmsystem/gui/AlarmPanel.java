@@ -41,6 +41,8 @@ import alma.acs.alarmsystem.corbaservice.AlarmServiceUtils;
 import alma.acs.logging.AcsLogger;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
+import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator;
 
 import alma.acs.gui.util.threadsupport.EDTExecutor;
 
@@ -97,7 +99,7 @@ public class AlarmPanel extends JPanel {
      * The panel shown when the CERN alarm system is in use
      * and the client is connected to the AS
      */
-    private final CernAlSysTabbedPane cernPnl=new CernAlSysTabbedPane(this,alSysNotAvailPnl);
+    private final CernAlSysTabbedPane cernPnlTabbedPane = new CernAlSysTabbedPane(this,alSysNotAvailPnl);
     
     /**
      * The panel shown after initializing the GUI and before {@link #setServices(ORB, AcsLogger)}
@@ -142,8 +144,7 @@ public class AlarmPanel extends JPanel {
     private boolean isAcsAs;
 	
 	/**
-	 * Constructor 
-	 *
+	 * Constructor, called when running inside the OMC.
 	 */
 	public AlarmPanel() {
 		super(true);
@@ -151,7 +152,7 @@ public class AlarmPanel extends JPanel {
 	}
 	
 	/**
-	 * Constructor 
+	 * Constructor, called when running stand-alone.
 	 * 
 	 * @param frame The window that owns this panel
 	 */
@@ -172,7 +173,7 @@ public class AlarmPanel extends JPanel {
 	private void initialize() {
 		panel.setLayout(layout);
 		panel.add(alSysNotAvailPnl, alSysNotAvailName);
-		panel.add(cernPnl, cernSysName);
+		panel.add(cernPnlTabbedPane, cernSysName);
 		panel.add(acsASPnl, acsASName);
 		panel.add(noACSPnl,notInitedYetName);
 
@@ -202,8 +203,8 @@ public class AlarmPanel extends JPanel {
 		if (orb==null || logger==null) {
 			throw new Exception("Services not set!");
 		}
-		cernPnl.setServices(orb, logger);
-		cernPnl.start();
+		cernPnlTabbedPane.setServices(orb, logger);
+		cernPnlTabbedPane.start();
 	}
 	
 	/**
@@ -211,7 +212,7 @@ public class AlarmPanel extends JPanel {
 	 */
 	public void stop() throws Exception {
 		System.out.println("AlarmPanel.stop");
-		cernPnl.stop();
+		cernPnlTabbedPane.stop();
 	}
 	/**
 	 * Set the services
@@ -249,7 +250,7 @@ public class AlarmPanel extends JPanel {
 	 * @return <code>true</code> if an attempt to connect is running
 	 */
 	public boolean isConnecting() {
-		return cernPnl.isConnecting();
+		return cernPnlTabbedPane.isConnecting();
 	}
 
 	/**
@@ -258,7 +259,7 @@ public class AlarmPanel extends JPanel {
 	 * @see StatusLine
 	 */
 	public void showMessage(String mesg, boolean red) {
-		cernPnl.showMessage(mesg, red);
+		cernPnlTabbedPane.showMessage(mesg, red);
 	}
 	
 	/**
@@ -268,7 +269,7 @@ public class AlarmPanel extends JPanel {
 	 * 				if <code>null</code> the details table is cleared.
 	 */
 	public void showAlarmDetails(Alarm alarm) {
-		cernPnl.showAlarmDetails(alarm);
+		cernPnlTabbedPane.showAlarmDetails(alarm);
 	}
 	
 	/**
@@ -322,5 +323,22 @@ public class AlarmPanel extends JPanel {
 			}
 		});
 	}
+	
+	/**
+	 * Single ViewCoordinator instance, created on demand. 
+	 */
+	private ViewCoordinator viewCoord;
+
+	public ViewCoordinator getViewCoordinator() {
+		if (viewCoord == null) {
+			if (cernPnlTabbedPane != null) {
+				CernSysPanel cernPnl = cernPnlTabbedPane.getCernSysPanel();
+				AlarmTable alarmTable = cernPnl.getAlarmTable();
+				viewCoord = new ViewCoordinator(alarmTable);
+			}
+		}
+		return viewCoord;
+	}
+
 }
 

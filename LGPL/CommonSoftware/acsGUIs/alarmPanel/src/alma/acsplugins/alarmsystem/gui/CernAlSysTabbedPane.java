@@ -73,6 +73,10 @@ public class CernAlSysTabbedPane extends JTabbedPane {
 		addTab("Alarms", cernPnl);
 	}
 	
+	public CernSysPanel getCernSysPanel() {
+		return cernPnl;
+	}
+	
 	/**
 	 * @see CernSysPanel
 	 */
