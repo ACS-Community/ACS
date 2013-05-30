@@ -102,7 +102,9 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 	
 	@Override
 	public void cleanUp() {
+                m_logger.info("cleanUp");
 		for (String blobberName : blobberList.getBlobberNames(true)) {
+                        m_logger.info("blobberName=" + blobberName);
 			// async release of blobber components
 			m_containerServices.releaseComponent(blobberName, null);
 		}
@@ -122,19 +124,22 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 	 */
 	@Override
 	public void registerCollector(String collectorCompName) throws CollectorRegistrationFailedEx {
-		m_logger.fine("Attempting to register collector " + collectorCompName);
+		m_logger.info("Attempting to register collector " + collectorCompName);
 		String errorMsg = null;
 		String blobberName = null;
 		int numBlobbers = blobberList.size();
-		
+		m_logger.info("First evaluation. numBlobbers=" + numBlobbers);
+
 		if (numBlobbers == 0) {
 			errorMsg = "No blobbers available.";
 		}
 		else {
 			try {
 				blobberName = findBlobberAssignedToCollector(collectorCompName, false);
+                                m_logger.info("After of findBlobberAssignedToCollector. blobberName=" + blobberName);
 				
 				if (blobberName == null) {
+                                        m_logger.info("blobberName is null");
 					// Assign the collector to the first available blobber.
 					// attemptCount is used to eventually exit the loop even if all blobbers are full;
 					//   in this case we generously iterate more than once over the blobbers, to benefit from new blobbers
@@ -142,20 +147,30 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 					// In the good case we exit the loop as soon as the collector has been registered.
 					for (int attemptCount = 0; attemptCount < 2 * numBlobbers; attemptCount++) {
 						BlobberInfo nextBlobberInfo = blobberList.getNextBlobberInfo();
+                                                m_logger.info("nextBlobberInfo.blobberName=" + nextBlobberInfo.blobberName);
 						getBlobberRef(nextBlobberInfo, true);
 						if (nextBlobberInfo.blobberRef != null) {
+                                                        m_logger.info("nextBlobberInfo.blobberRef is not null");
 							CollectorListStatus status = nextBlobberInfo.blobberRef.addCollector(collectorCompName);
+                                                        m_logger.info("status=" + status);
 							if (status == CollectorListStatus.ADDED) {
 								collector2BlobberName.put(collectorCompName, nextBlobberInfo.blobberName);
 								blobberName = nextBlobberInfo.blobberName;
 								break;
 							}
 						}
-					}
+                                                else {
+                                                        m_logger.info("nextBlobberInfo.blobberRef is null");
+                                                }
+					 }
 				}
+                                else {
+                                       m_logger.info("blobberName is not null");
+                                }
 				if (blobberName == null) {
 					// Bad... let's update the number of blobbers for the exception, in case it has changed from the earlier number
 					numBlobbers = blobberList.size();
+                                        m_logger.info("Second evaluation. numBlobbers=" + numBlobbers);
 					errorMsg = "Collector was not accepted by any of the " + numBlobbers + " blobber(s).";
 				} 
 				else {
@@ -177,45 +192,64 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 
 	@Override
 	public void deregisterCollector(String collectorCompName) {
-		m_logger.fine("Attempting to de-register collector " + collectorCompName);
-		
+		m_logger.info("Attempting to de-register collector " + collectorCompName);
+		m_logger.info("collectorCompName=" + collectorCompName);
+
 		boolean removed = false;
 		String blobberName = null;
 		
 		try {
 			// cheap cache-based attempt at first
 			blobberName = findBlobberAssignedToCollector(collectorCompName, true);
+                        m_logger.info("After of findBlobberAssignedToCollector. blobberName=" + blobberName);
+
 			if (blobberName != null) {
+                                m_logger.info("blobberName is not null");
 				BlobberInfo blobberInfo = blobberList.getBlobberInfo(blobberName);
+                                m_logger.info("blobberInfo.blobberName=" + blobberInfo.blobberName);
 				getBlobberRef(blobberInfo, true); // just in case, should not be needed though.
 				CollectorListStatus status = blobberInfo.blobberRef.removeCollector(collectorCompName);
+                                m_logger.info("status=" + status);
 				if (status == CollectorListStatus.REMOVED) {
 					removed = true;
+                                        m_logger.info("status is removed");
+                                        m_logger.info("removed is true");
 				}
 				else {
 					// TODO log unexpected status CollectorListStatus.UNKNOWN (e.g. cache error, blobber error)
+                                        m_logger.info("status is not removed");
 				}
 				collector2BlobberName.remove(collectorCompName);
 			}
 			else {
+                                m_logger.info("blobberName is null");
 				// log unexpected missing blobber mapping.
 			}
 			
 			if (!removed) {
+                                m_logger.info("removed is false");
 				// Now we call all blobbers to be sure our collector isn't assigned there by mistake
 				blobberName = findBlobberAssignedToCollector(collectorCompName, false);
+                                m_logger.info("blobberName = " + blobberName);
 				if (blobberName != null) {
+                                        m_logger.info("blobberName is not null");
 					// cache was wrong in saying collector isn't assignied. We must deregister it from the surprise blobber.
 					BlobberInfo blobberInfo = blobberList.getBlobberInfo(blobberName);
+                                        m_logger.info("blobberInfo.blobberName=" + blobberInfo.blobberName);
 					CollectorListStatus status = blobberInfo.blobberRef.removeCollector(collectorCompName);
+                                        m_logger.info("status=" + status);
 					if (status == CollectorListStatus.REMOVED) {
-						removed = true;
+					    removed = true;
+                                            m_logger.info("status is removed");
+                                            m_logger.info("removed is true");
 					}
 					else {
 						// TODO log unexpected status CollectorListStatus.UNKNOWN (blobber error)
+                                            m_logger.info("status is not removed");
 					}
 				}
 				else {
+                                        m_logger.info("blobberName is null");
 					// none of the blobbers knows our collector. 
 					// TODO log the error, e.g. that this collector was never assigned.
 				}
@@ -230,6 +264,7 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 		}
 		else {
 			// the error case we've already treated through log messages in the code above.
+                        m_logger.info("Second evaluation. removed is false");
 		}
 	}
 
@@ -241,6 +276,7 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 	 */
 	@Override
 	public void registerKnownCollectors(final String blobberCompName) {
+                m_logger.info("Attempting to register known collectors " + blobberCompName);
 		if (!collector2BlobberName.containsValue(blobberCompName)) {
 			m_logger.fine("Blobber '" + blobberCompName
 					+ "' seems to start cleanly, thus cannot register previously served collectors.");
@@ -251,8 +287,10 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 			public void run() {
 				for (Map.Entry<String, String> m : collector2BlobberName.entrySet()) {
 					if (blobberCompName.equals(m.getValue())) {
+                                                m_logger.info("blobberCompName is equals to " + m.getValue());
 						// Re-register known Collector
 						try {
+                                                        m_logger.info("Registering collector " + m.getKey());
 							registerCollector(m.getKey());
 						} catch (CollectorRegistrationFailedEx ex) {
 							// registerCollector already has a SEVERE log, so here just the additional info about re-registration.
@@ -260,6 +298,9 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 									+ "' previously served by blobber '" + blobberCompName + "'.", ex); 
 						}
 					}
+                                        else {
+                                                m_logger.info("blobberCompName is not equals to " + m.getValue());
+                                        }
 				}
 			}
 		}).start();
@@ -277,21 +318,31 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 	 * 
 	 * @param blobberInfo
 	 * @param skipKnownProblematicBlobber If <code>true</code> then we skip the blobber reference retrieval 
-	 *                                    if the last failure occurred less than 30 s ago.
+	 *                                    if the last failure occurred less than 3 s ago.
 	 */
 	protected void getBlobberRef(BlobberInfo blobberInfo, boolean skipKnownProblematicBlobber) {
 		synchronized (blobberInfo) {
 			if (blobberInfo.blobberRef == null) {
-				if (!skipKnownProblematicBlobber || !blobberInfo.hadRefRequestFailureWithinLastSec(30)) {
+                                m_logger.info("blobberInfo.blobberName=" + blobberInfo.blobberName + " , blobberInfo.blobberRef=null , skipKnownProblematicBlobber=" + skipKnownProblematicBlobber);
+				if (!skipKnownProblematicBlobber || !blobberInfo.hadRefRequestFailureWithinLastSec(3)) {
+                                        m_logger.info("Traying to get the ref from container services");
 					try {
 						blobberInfo.blobberRef = getBlobberRefFromContainerServices(blobberInfo.blobberName);
 						blobberInfo.lastRefRequestFailedTimeMillis = -1;
 					} catch (Exception ex) {
 						blobberInfo.lastRefRequestFailedTimeMillis = System.currentTimeMillis();
+                                                m_logger.info("blobberInfo.blobberName=" + blobberInfo.blobberName + " , failed to acquire refrence, save the error timestamp " + blobberInfo.lastRefRequestFailedTimeMillis);
+                                                ex.printStackTrace();
 						// todo log
 					}
 				}
+                                else {
+                                        m_logger.info("Was not possible tray to get the ref from container services");
+                                }
 			}
+                        else {
+                                m_logger.info("blobberInfo.blobberName=" + blobberInfo.blobberName + " , blobberInfo.blobberRef has been already acquired, just return");
+                        }
 		}
 	}
 
@@ -310,16 +361,23 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 	 * @return Name of blobber that is assigned to the give collector, or null if no blobber was found.
 	 */
 	protected String findBlobberAssignedToCollector(String collectorCompName, boolean trustLocalCache) {
+                m_logger.info("Start findBlobberAssignedToCollector");
+ 
 		String ret = null;
 		
 		// check the cache
+                m_logger.info("collectorCompName=" + collectorCompName);
+                m_logger.info("trustLocalCache=" + trustLocalCache);
 		String assignedBlobberName = collector2BlobberName.get(collectorCompName);
 		
 		if (trustLocalCache) {
+                        m_logger.info("trustLocalCache is true");
 			ret = assignedBlobberName;
 		}
 		else {
+                        m_logger.info("trustLocalCache is false");
 			if (assignedBlobberName != null) {
+                          m_logger.info("assignedBlobberName is not null");
 				// validate that that the cache hit blobber is really assigned
 				BlobberInfo assignedBlobberInfo = blobberList.getBlobberInfo(assignedBlobberName);
 				if (assignedBlobberInfo != null && assignedBlobberInfo.blobberRef != null // should always be true
@@ -327,6 +385,7 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 					// confirmed 
 					m_logger.fine("Collector '" + collectorCompName + "' assigned to blobber '" + assignedBlobberName + "' as expected.");
 					ret = assignedBlobberName;
+                                        m_logger.info("Into the if. ret=" + ret);
 				}
 				else {
 					collector2BlobberName.remove(assignedBlobberName);
@@ -336,14 +395,19 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 					// fallthrough: check other blobbers
 				}
 			}
+                        else {
+                          m_logger.info("assignedBlobberName is null");
+                        }
 			if (ret == null) {
 				// Getting here means the collector was not found in the cache, 
 				// or the cache did not reflect the actual assignment (only possible by very strange error).
 				//
 				// TODO: Iterate over all blobbers and check if the collector is assigned to one of them.
 				// This is unlikely, but a mistake would be really bad for the collector and the monitor data flow in general.
+                                m_logger.info("ret is null. It is dangerous");
 			}
 		}
+                m_logger.info("Before of the output. ret=" + ret);
 		return ret;
 	}
 	
