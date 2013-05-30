@@ -58,7 +58,13 @@ class BlobberList {
 		 * @return True if the last failed request for the blobber reference was less than 30 seconds ago. 
 		 */
 		boolean hadRefRequestFailureWithinLastSec(int seconds) {
-			return ( System.currentTimeMillis() - lastRefRequestFailedTimeMillis < seconds * 1000 );
+                        long now = System.currentTimeMillis();
+                        long diff = System.currentTimeMillis() - lastRefRequestFailedTimeMillis;
+                        boolean inError = diff < seconds * 1000;
+                        //boolean inError2 = diff < (seconds * 1000);
+                        System.out.println("now=" + now + " lastError=" + lastRefRequestFailedTimeMillis + " diff=" + diff + " inError=" + inError);
+                        return inError;
+			//return ( System.currentTimeMillis() - lastRefRequestFailedTimeMillis < seconds * 1000 );
 		}
 	}
 	
