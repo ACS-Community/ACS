@@ -319,7 +319,9 @@ public class HelperTest extends ComponentClientTestCase
 		// Check notify service factory
 		
 		// Check naming service binding
-		NameComponent[] t_NameSequence = { new NameComponent(channelName, NC_KIND.value) };
+		NameComponent[] t_NameSequence = { new NameComponent(
+				Helper.combineChannelAndDomainName(channelName, null), 
+				NC_KIND.value) };
 		try {
 			nctx.resolve(t_NameSequence);
 			if (existing) {

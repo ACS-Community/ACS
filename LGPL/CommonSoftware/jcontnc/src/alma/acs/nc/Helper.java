@@ -156,35 +156,12 @@ public class Helper {
 	 */
 	protected static final Random random = new Random(System.currentTimeMillis());
 
-	/**
-	 * TODO: Remove this hack once all impl languages are done with http://jira.alma.cl/browse/COMP-9338
-	 */
-	public static final boolean ENFORCE_COMP_9338_IN_TRANSITION_PERIOD = Boolean.getBoolean("ENFORCE_COMP_9338_IN_TRANSITION_PERIOD");
-
 	public static String extractChannelName(String channelWithDomainName) throws AcsJIllegalArgumentEx {
-		try {
-			return splitChannelAndDomainName(channelWithDomainName)[0];
-		} catch (AcsJIllegalArgumentEx ex) {
-			if (ENFORCE_COMP_9338_IN_TRANSITION_PERIOD) {
-				throw ex;
-			}
-			else {
-				return channelWithDomainName;
-			}
-		}
+		return splitChannelAndDomainName(channelWithDomainName)[0];
 	}
 	
 	public static String extractDomainName(String channelWithDomainName) throws AcsJIllegalArgumentEx {
-		try {
-			return splitChannelAndDomainName(channelWithDomainName)[1];
-		} catch (AcsJIllegalArgumentEx ex) {
-			if (ENFORCE_COMP_9338_IN_TRANSITION_PERIOD) {
-				throw ex;
-			}
-			else {
-				return NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT.value;
-			}
-		}
+		return splitChannelAndDomainName(channelWithDomainName)[1];
 	}
 
 	private static String[] splitChannelAndDomainName(String channelWithDomainName) throws AcsJIllegalArgumentEx {
@@ -203,14 +180,12 @@ public class Helper {
 
 	public static String combineChannelAndDomainName(String channelName, String domainName) {
 		String ret = channelName;
-		if (ENFORCE_COMP_9338_IN_TRANSITION_PERIOD) {
-			ret += NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.value;
-			if (domainName != null) {
-				ret += domainName;
-			}
-			else {
-				ret += NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT.value;
-			}
+		ret += NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.value;
+		if (domainName != null) {
+			ret += domainName;
+		}
+		else {
+			ret += NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT.value;
 		}
 		return ret;
 	}
