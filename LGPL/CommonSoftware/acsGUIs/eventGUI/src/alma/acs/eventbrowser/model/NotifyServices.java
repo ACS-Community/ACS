@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+
 /**
  * Encapsulates a <code>List&lt;NotifyServiceData&gt;</code>.
  * It gets created by {@link EventModel} to pass around its list of Notify Services to GUI elements.
@@ -56,14 +58,40 @@ public class NotifyServices {
 		return null;
 	}
 	
-	public ChannelData findChannel(String channelName) {
+	/**
+	 * Searches the local data structures for an NC of the given name.
+	 * 
+	 * @param channelName
+	 *            The name of the NC to search for.
+	 * @return The matching ChannelData, or <code>null</code> if no match was found.
+	 * @throws AcsJCouldntPerformActionEx
+	 *             If more than one channel was found with this name. Such a misconfiguration could happen for channels
+	 *             not registered in the naming service, or if two NCs have the same name but different NC domains. In
+	 *             any case it is considered an error.
+	 */
+	public ChannelData findChannel(String channelName) throws AcsJCouldntPerformActionEx {
+		List<ChannelData> matches = new ArrayList<ChannelData>();
 		for (NotifyServiceData service : services.values()) {
 			ChannelData channelData = service.getChannelByName(channelName);
 			if (channelData != null) {
-				return channelData;
+				matches.add(channelData);
 			}
 		}
-		return null;
+		if (matches.isEmpty()) {
+			return null;
+		}
+		else if (matches.size() == 1) {
+			return matches.get(0);
+		}
+		else {
+			String msg = "Found more than one NC matching the name '" + channelName + "': ";
+			for (ChannelData channelData : matches) {
+				msg += channelData.getQualifiedName() + " ";
+			}
+			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx(msg);
+			// todo: set details, or use a better fitting exception type
+			throw ex;
+		}
 	}
 
 	public List<ChannelData> getAllChannels() {

@@ -343,11 +343,11 @@ public class EventModel {
 		for (String bindingName : bindingMap.keySet()) {
 			String bindingKind = bindingMap.get(bindingName);
 			if (bindingKind.equals(alma.acscommon.NC_KIND.value)) {
-				String channelName = bindingName;
 				try {
+					String channelName = Helper.extractChannelName(bindingName);
+					String domainName = Helper.extractDomainName(bindingName);
+
 					// Check if we already know this NC. 
-					// The channelName must be unique across notify services (required for naming service registration), 
-					// so that we can simply search our maps.
 					ChannelData channelData = getNotifyServicesRoot().findChannel(channelName);
 					if (channelData != null) {
 						oldNcNames.remove(channelData.getQualifiedName());
@@ -357,9 +357,7 @@ public class EventModel {
 						m_logger.fine("New NC " + channelName);
 						// A new NC. This will happen at startup, and later as NCs get added.
 						// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
-						// It fails when the NCs are mapped to a notify service via an "NC domain", as it is done 
-						// by the CERN alarm system, see discussion in COMP-8997
-						Helper notifyHelper = new Helper(channelName, cs, nctx);
+						Helper notifyHelper = new Helper(channelName, domainName, cs, nctx);
 						String serviceId = notifyHelper.getNotificationFactoryNameForChannel();
 						NotifyServiceData service = notifyServices.get(serviceId);
 						if (service == null) {
@@ -376,7 +374,7 @@ public class EventModel {
 							}
 						}
 						if (service != null) {
-							EventChannel nc = resolveNotificationChannel(channelName);
+							EventChannel nc = resolveNotificationChannel(bindingName);
 							ChannelData cdata = new ChannelData(nc, channelName, service);
 							cdata.setIsNewNc(true);
 							service.addChannel(channelName, cdata);
@@ -384,7 +382,7 @@ public class EventModel {
 					}
 				}
 				catch (Exception ex) {
-					m_logger.log(Level.WARNING, "Failed to map NC '" + channelName + "' to its notify service.", ex);
+					m_logger.log(Level.WARNING, "Failed to map NC '" + bindingName + "' to its notify service.", ex);
 				}
 			}
 		}
@@ -622,23 +620,22 @@ public class EventModel {
 	 * Resolves a notification channel in the naming service.
 	 * 
 	 * @return Reference to the event channel specified by channelName.
-	 * @param channelName
-	 *           Name of the event channel registered with the CORBA Naming Service
+	 * @param bindingName
+	 *           Name of the event channel and trailing domain name, as the NC is registered with the CORBA Naming Service
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
 	 */
-	protected EventChannel resolveNotificationChannel(String channelName) throws AcsJException {
+	protected EventChannel resolveNotificationChannel(String bindingName) throws AcsJException {
 
 		EventChannel retValue = null;
 
 		try {
-//			m_logger.fine("Will create notification channel " + channelName);
-			NameComponent[] t_NameSequence = { new NameComponent(channelName, alma.acscommon.NC_KIND.value) };
+			NameComponent[] t_NameSequence = { new NameComponent(bindingName, alma.acscommon.NC_KIND.value) };
 			retValue = EventChannelHelper.narrow(nctx.resolve(t_NameSequence));
 		} 
 		catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
-			// No other suppliers have created the channel yet...create it
-			m_logger.info("The " + channelName + " channel has not been created yet.");
+			// No other suppliers have created the channel yet
+			m_logger.info("The '" + bindingName + "' channel has not been created yet.");
 			throw new AcsJUnexpectedExceptionEx(e);
 		} 
 		catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
