@@ -633,6 +633,11 @@ ACSServicesHandlerImpl::stop_acs (
     ::ACSErrTypeCommon::BadParameterEx
   ))
 {
+	// stop the containers first
+	char buf[64];
+	sprintf(buf, "maciContainerShutdown \"*\" -i %d -r 0", instance_number);
+	ACE_OS::system(buf);
+
     this->stop_services(getServices(instance_number, false).c_str(), callback);
 }
 
