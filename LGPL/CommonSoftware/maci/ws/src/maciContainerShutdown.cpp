@@ -46,9 +46,25 @@ main (int argc, char *argv[])
 
     if (argc < 2)
     {
-	ACE_OS::printf("\n\tusage: %s <container name wildcard> [<ORB options>]\n\n", argv[0]);
+	ACE_OS::printf("\n\tusage: %s <container name wildcard> [-i instance_number][-r retries][<ORB options>]\n\n", argv[0]);
 	return -1;
     }
+
+    // Command line option -i and -r
+    int retries = 0;
+    for (int pos = 1; pos < argc-1; pos++)
+      if (ACE_OS::strcmp(argv[pos], "-i")==0)
+      {
+    	  pos++;
+    	  ACE_CString str = "ACS_INSTANCE=";
+    	  str += argv[pos];
+    	  putenv(str.rep());
+      }
+      else if (ACE_OS::strcmp(argv[pos], "-r")==0)
+      {
+    	  pos++;
+          retries = atol(argv[pos]);
+      }
 
     LoggingProxy * logger = new LoggingProxy(0, 0, 31);
     if (logger)
@@ -70,7 +86,7 @@ main (int argc, char *argv[])
 					      );
 
 
-	maci::Manager_var mgr = MACIHelper::resolveManager(orb.ptr(), argc, argv, 0, 0);
+	maci::Manager_var mgr = MACIHelper::resolveManager(orb.ptr(), argc, argv, retries, 0);
     if (CORBA::is_nil(mgr.ptr()))
 	{
 	    ACS_SHORT_LOG((LM_ERROR, "Failed to resolve Manager reference."));
