@@ -288,7 +288,8 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 						blobberInfo.lastRefRequestFailedTimeMillis = -1;
 					} catch (Exception ex) {
 						blobberInfo.lastRefRequestFailedTimeMillis = System.currentTimeMillis();
-						// todo log
+						String msg = "Failed to get reference to blobber '" + blobberInfo.blobberName + "'; will check with the next blobber.";
+						m_logger.log(Level.INFO, msg, ex);
 					}
 				}
 			}
@@ -320,7 +321,7 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 		}
 		else {
 			if (assignedBlobberName != null) {
-				// validate that that the cache hit blobber is really assigned
+				// validate that the cache hit blobber is really assigned
 				BlobberInfo assignedBlobberInfo = blobberList.getBlobberInfo(assignedBlobberName);
 				if (assignedBlobberInfo != null && assignedBlobberInfo.blobberRef != null // should always be true
 						&& assignedBlobberInfo.blobberRef.containsCollector(collectorCompName) == CollectorListStatus.KNOWN) {
@@ -333,14 +334,14 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 					m_logger.info("Cache error: collector '" + collectorCompName
 							+ "' was expected to be assigned to blobber '" + assignedBlobberName
 							+ "' but this blobber denies it. Will re-assign this collector.");
-					// fallthrough: check other blobbers
+					// fallthrough: check other blobbers and assign there
 				}
 			}
 			if (ret == null) {
-				// Getting here means the collector was not found in the cache, 
-				// or the cache did not reflect the actual assignment (only possible by very strange error).
-				//
-				// TODO: Iterate over all blobbers and check if the collector is assigned to one of them.
+				// Getting here means the collector was not found in the cache.
+				// This is OK in the beginning, but later could in theory also be an error of the cache itself.
+				// TODO: To discover cache errors, iterate over all blobbers and check if (against expectation) 
+				// the collector is assigned to one of them.
 				// This is unlikely, but a mistake would be really bad for the collector and the monitor data flow in general.
 			}
 		}
