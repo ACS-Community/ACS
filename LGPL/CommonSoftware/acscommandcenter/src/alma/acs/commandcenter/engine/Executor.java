@@ -344,7 +344,7 @@ public class Executor {
 				t = (NativeCommand) en.nextElement();
 				t.process.destroy();
 			} catch (Exception e) {
-	      	log.finest("Failed to destroy native-ssh task " + t);
+	      	log.finer("Failed to destroy native-ssh task " + t);
 			}
 		}
    }

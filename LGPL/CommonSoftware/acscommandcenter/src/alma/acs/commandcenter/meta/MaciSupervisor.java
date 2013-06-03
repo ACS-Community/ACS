@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.OBJECT_NOT_EXIST;
@@ -66,6 +67,11 @@ public class MaciSupervisor implements IMaciSupervisor {
 		maciInfo = new MaciInfo();
 	}
 
+	private final String connect = "MaciSupervisor/connect: ";
+	private final String disconnect = "MaciSupervisor/disconnect: ";
+	private final String trigger = "MaciSupervisor/triggered: ";
+	private final String read = "MaciSupervisor/read: ";
+	private final String write = "MaciSupervisor/write: ";
 
 
 	// ==================================================================
@@ -133,7 +139,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 					synchronized (connector) {
 						try {
 							connector.wait();
-							log.finer("auto-connector triggered");
+							log.fine("auto-connector triggered");
 						} catch (InterruptedException exc) {
 							break ALIVE; // quit
 						}
@@ -145,7 +151,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 							break RECONNECT; // managed to reconnect
 							
 						} catch (Exception exc) {
-							log.finest("auto-connector attempt failed with "+exc);
+							log.fine("auto-connector attempt failed with "+exc);
 							try {
 								sleep(5000); // take a break
 							} catch (InterruptedException exc2) {
@@ -153,7 +159,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 							}
 						}
 					}
-					log.finer("auto-connector suspended");
+					log.fine("auto-connector suspended");
 				}
 			}
 		};
@@ -296,6 +302,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * 
 	 */
 	protected void connectToManager () throws CannotRetrieveManagerException, NoPermissionEx, SystemException {
+		log.fine(connect+"connecting to manager");
 
 		try {
 
@@ -303,17 +310,19 @@ public class MaciSupervisor implements IMaciSupervisor {
 			managerRef = ManagerHelper.narrow(object);
 
 		} catch (Exception exc) {
+			log.fine(connect+"failed to connect to manager: "+exc);
 			throw new CannotRetrieveManagerException("could not retrieve manager reference", exc);
 		}
 
 		if (managerRef == null) {
+			log.fine(connect+"failed to connect to manager: got null manager reference");
 			throw new CannotRetrieveManagerException("orb delivered null-reference for manager-location " + managerLoc);
 		}
 
 		Administrator admin = acImpl.asCorbaObject(orb); // <-- may throw "port occupied"
 		administratorClientInfo = managerRef.login(admin);
 
-		log.info("connected to manager (" + getManagerLocation() + ") as "+administratorClientInfo.h +" (= 0x"+Integer.toHexString(administratorClientInfo.h) +")");
+		log.info(connect+"connected to manager (" + getManagerLocation() + ") as "+administratorClientInfo.h +" (= 0x"+Integer.toHexString(administratorClientInfo.h) +")");
 	}
 
 	/**
@@ -326,10 +335,10 @@ public class MaciSupervisor implements IMaciSupervisor {
 			myManagerReference().logout(hhhh);
 
 		} catch (NotConnectedToManagerException exc) {
-			log.finer("couldn't log out from manager: " + exc);
+			log.fine(disconnect+"couldn't log out from manager: " + exc);
 
 		} catch (NoPermissionEx exc) {
-			log.finer("couldn't log out from manager: " + exc);
+			log.fine(disconnect+"couldn't log out from manager: " + exc);
 		}
 
 		dismissManager();
@@ -561,7 +570,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * @throws UnknownErrorException 
 	 */
 	public synchronized void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
-		log.finer("refresh maci info: retrieving acs deployment info from acs manager");
+		log.fine(read+"retrieving acs deployment info from acs manager");
 
 		List<ComponentInfo> newComponents = Collections.EMPTY_LIST;
 		List<ContainerInfo> newContainers = Collections.EMPTY_LIST;
@@ -585,39 +594,63 @@ public class MaciSupervisor implements IMaciSupervisor {
 			 * one exception handler for all retrievals is enough */
 	
 			} catch (NotConnectedToManagerException exc) {
-				log.fine("refresh maci info: problem: " + exc);
+				log.fine(read+"problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw exc;
 	
 			} catch (NoPermissionEx exc) {
-				log.fine("refresh maci info: problem: " + exc);
+				log.fine(read+"problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw exc;
 	
 			} catch (org.omg.CORBA.TRANSIENT exc) {
-				log.fine("refresh maci info: problem: " + exc);
+				log.fine(read+"problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw new CorbaTransientException(exc);
 	
 			} catch (org.omg.CORBA.OBJECT_NOT_EXIST exc) {
-				log.fine("refresh maci info: problem: " + exc);
+				log.fine(read+"problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw new CorbaNotExistException(exc);
 	
 			} catch (RuntimeException exc) {
-				log.fine("refresh maci info: problem: " + exc);
+				log.fine(read+"problem: " + exc);
 				mcehandler.handleExceptionTalkingToManager(exc);
 				throw new UnknownErrorException(exc);
 			}
+
+			// 2013-05 Marcus OSF Mission -----------------------------------------
+			if (log.isLoggable(Level.FINER)) {
+				StringBuilder sb = new StringBuilder();
+
+				sb.append("\nretrieved containers (").append(newContainers.size()).append(") = ¦ ");
+				for (ContainerInfo ci : newContainers)
+					sb.append("n=").append(ci.name).append(",h=").append(ci.h).append(" ¦ ");
+				
+				sb.append("\nknown containers (").append(maciInfo.containers.size()).append(") = ¦ ");
+				for (ContainerInfo ci : maciInfo.containers)
+					sb.append("n=").append(ci.name).append(",h=").append(ci.h).append(" ¦ ");
+
+				log.finer(read+"diffing container info"+sb);
+			} // ------------------------------------------------------------------
 
 			diffComponents.diff (maciInfo.components, newComponents);
 			diffContainers.diff (maciInfo.containers, newContainers);
 			diffClientApps.diff (maciInfo.clientApps, newClientApps);
 
+			
+			// 2013-05 Marcus OSF Mission -----------------------------------------
+			if (log.isLoggable(Level.FINER))
+				log.finer(write+"diff results: containers="+!diffContainers.areEqual()
+						+", components="+!diffComponents.areEqual()
+						+", clients="+!diffClientApps.areEqual());
+			// --------------------------------------------------------------------
+
+			
 			if (diffComponents.areEqual() 
 				&& diffContainers.areEqual() 
 				&& diffClientApps.areEqual()) {
-				log.finer("refresh maci info: retrieval done, no change found");
+				log.finer(write+"no change found");
 				nothingChanged = true;
 
 			} else {
@@ -638,8 +671,10 @@ public class MaciSupervisor implements IMaciSupervisor {
 			}
 
 		} finally {
-			if (nothingChanged == false)
+			if (nothingChanged == false) {
+				log.fine(write+"writing changes to maci-info structure");
 				maciInfo.setContents (newComponents, newContainers, newClientApps, newAuxiliary);
+			}
 		}
 
 	}
@@ -770,17 +805,17 @@ public class MaciSupervisor implements IMaciSupervisor {
 
 
 		public void client_logged_in (ClientInfo info, long timestamp, long execution_id) {
-			log.finer("client_logged_in() received");
+			log.finer(trigger+"client_logged_in() received");
 			infoShouldBeRefreshed = true;
 		}
 
 		public void client_logged_out (int h, long timestamp) {
-			log.finer("client_logged_out() received");
+			log.finer(trigger+"client_logged_out() received");
 			infoShouldBeRefreshed = true;
 		}
 
 		public void container_logged_in (ContainerInfo info, long timestamp, long execution_id) {
-			log.finer("container_logged_in() received");
+			log.finer(trigger+"container_logged_in() received");
 			infoShouldBeRefreshed = true;
 		}
 
@@ -790,7 +825,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * shortly after this, but not for all. 
 		 */
 		public void container_logged_out (int h, long timestamp) {
-			log.finer("container_logged_out() received");
+			log.finer(trigger+"container_logged_out() received");
 			infoShouldBeRefreshed = true;
 		}
 
@@ -798,7 +833,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * Will be called for autostart-components, too.
 		 */
 		public void components_requested (int[] clients, int[] components, long timestamp) {
-			log.finer("components_requested() received");
+			log.finer(trigger+"components_requested() received");
 			infoShouldBeRefreshed = true;
 		}
 
@@ -807,7 +842,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * components) has terminated in any way.
 		 */
 		public void components_released (int[] clients, int[] components, long timestamp) {
-			log.finer("components_released() received");
+			log.finer(trigger+"components_released() received");
 			infoShouldBeRefreshed = true;
 		}
 
@@ -816,7 +851,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * requested and not yet released)
 		 */
 		public void components_available (ComponentInfo[] arg0) {
-			log.finest("components_available() received");
+			log.finer("fyi: components_available() received");
 		}
 
 		/**
@@ -824,15 +859,15 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * requested and not yet released)
 		 */
 		public void components_unavailable (String[] arg0) {
-			log.finest("components_unavailable() received");
+			log.finer("fyi: components_unavailable() received");
 		}
 
 		public void component_activated(ComponentInfo info, long timestamp, long execution_id) {
-			log.finest("component_activated() received");
+			log.finer("fyi: component_activated() received");
 		}
 
 		public void component_deactivated(int h, long timestamp) {
-			log.finest("component_deactivated() received");
+			log.finer("fyi: component_deactivated() received");
 		}
 		
 
@@ -840,7 +875,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 
 
 		public String name () {
-			log.finer("name() received");
+			log.finer("fyi: name() received");
 			return name;
 		}
 
@@ -848,7 +883,7 @@ public class MaciSupervisor implements IMaciSupervisor {
       private long executionId = -1; 
 
 		public AuthenticationData authenticate (long execution_id, String question) {
-			log.finer("authenticate() received");
+			log.finer("fyi: authenticate() received");
 			
 	        // keep old executionId if it exists
 	        if (executionId < 0) {
@@ -866,22 +901,22 @@ public class MaciSupervisor implements IMaciSupervisor {
 		}
 
 		public void message (short arg0, String arg1) {
-			log.finer("message() received");
+			log.finer("fyi: message() received");
 			log.info("Incoming Maci Network Message: '" + arg1 + "'");
 		}
 
 		public void taggedmessage(short type, short messageID, String message) {
-			log.finer("taggedmessage() received");
+			log.finer("fyi: taggedmessage() received");
 			log.info("Incoming Maci Network Message: '" + message + "' (messageId="+messageID+")");
 		}
 
 		public boolean ping () {
-			log.finest("ping() received");
+			log.finer("fyi: ping() received");
 			return true;
 		}
 
 		public void disconnect () {
-			log.finer("disconnect() received");
+			log.finer(trigger+"disconnect() received");
 			disconnectFromManager();
 		}
 	}

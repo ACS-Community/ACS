@@ -283,7 +283,7 @@ public class CommandCenterLogic {
 		if (ret == null) {
 			log.fine("couldn't find resource '" + name + "' at " + where);
 		} else {
-			log.finest("found resource " + ret);
+			log.finer("found resource " + ret);
 		}
 		return ret;
 	}
