@@ -69,6 +69,8 @@ import alma.acs.nc.NCSubscriber;
 import alma.acs.util.AcsLocations;
 import alma.acscommon.ALARM_NOTIFICATION_FACTORY_NAME;
 import alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.ARCHIVING_CHANNEL_NAME;
+import alma.acscommon.LOGGING_CHANNEL_XML_NAME;
 import alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME;
 import alma.acscommon.NOTIFICATION_FACTORY_NAME;
 
@@ -93,6 +95,13 @@ public class EventModel {
 	 * This is the root of our data model. From here we can go to NCs and their attributes.
 	 */
 	private final Map<String, NotifyServiceData> notifyServices;
+	
+	/**
+	 * This map is needed as long as ACS does not use the "channels" kind 
+	 * in the naming service mapping of system NCs such as ArchivingChannel.
+	 * We could move it to jcontnc::Helper
+	 */
+	private final Map<String, String> systemNcToServiceIdMap;
 	
 	private AdvancedComponentClient acc;
 	private final ORB orb;
@@ -143,6 +152,14 @@ public class EventModel {
 		
 		try {
 			notifyServices = new HashMap<String, NotifyServiceData>(); 
+			
+			systemNcToServiceIdMap = new HashMap<String, String>();
+			// The system NCs and factories must be in sync with acsstartup :: acsNotifyService
+//			Currently disabled, see COMP-8997
+//			systemNcToServiceIdMap.put("AlarmChannel", "AlarmNotifyEventChannelFactory");
+//			systemNcToServiceIdMap.put(ARCHIVING_CHANNEL_NAME.value, ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
+//			systemNcToServiceIdMap.put(LOGGING_CHANNEL_XML_NAME.value, LOGGING_NOTIFICATION_FACTORY_NAME.value);
+			
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
 			consumerMap = new HashMap<String, AdminConsumer>();
 	
@@ -342,11 +359,19 @@ public class EventModel {
 		// with the NC ref coming either from the naming service or perhaps from the notify service directly if we can match ncIDs with the MC data.
 		for (String bindingName : bindingMap.keySet()) {
 			String bindingKind = bindingMap.get(bindingName);
-			if (bindingKind.equals(alma.acscommon.NC_KIND.value)) {
+			if (bindingKind.equals(alma.acscommon.NC_KIND.value) || isSystemNc(bindingName)) {
 				try {
-					String channelName = Helper.extractChannelName(bindingName);
-					String domainName = Helper.extractDomainName(bindingName);
-
+					String channelName = null;
+					String domainName = null;
+					// This is a hack, needed as long as the system NCs don't get registered incl. domain name (see COMP-9338)
+					if (isSystemNc(bindingName)) {
+						channelName = bindingName;
+					}
+					else {
+						channelName = Helper.extractChannelName(bindingName);
+						domainName = Helper.extractDomainName(bindingName);
+					}
+					
 					// Check if we already know this NC. 
 					ChannelData channelData = getNotifyServicesRoot().findChannel(channelName);
 					if (channelData != null) {
@@ -357,8 +382,14 @@ public class EventModel {
 						m_logger.fine("New NC " + channelName);
 						// A new NC. This will happen at startup, and later as NCs get added.
 						// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
-						Helper notifyHelper = new Helper(channelName, domainName, cs, nctx);
-						String serviceId = notifyHelper.getNotificationFactoryNameForChannel();
+						String serviceId = null;
+						if (isSystemNc(bindingName)) {
+							serviceId = systemNcToServiceIdMap.get(bindingName);
+						}
+						else {
+							Helper notifyHelper = new Helper(channelName, domainName, cs, nctx);
+							serviceId = notifyHelper.getNotificationFactoryNameForChannel();
+						}
 						NotifyServiceData service = notifyServices.get(serviceId);
 						if (service == null) {
 							// If we do not auto-discover services as part of refreshing NCs, then a new NC hosted in a new service
@@ -374,6 +405,17 @@ public class EventModel {
 							}
 						}
 						if (service != null) {
+							// TODO: COMP-9338 problem now that we add the system NCs by name
+//							2013-05-31T15:26:39.369 FINE [eventGUI] New NC AlarmChannel
+//							2013-05-31T15:26:39.369 FINE [eventGUI] isSystemNc: 'AlarmChannel', ret=true
+//							2013-05-31T15:26:39.371 INFO [eventGUI] The 'AlarmChannel' channel has not been created yet.
+//							2013-05-31T15:26:39.377 WARNING [eventGUI] Failed to map NC 'AlarmChannel' to its notify service.
+//							alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx
+//							        at alma.acs.eventbrowser.model.EventModel.resolveNotificationChannel(Unknown Source)
+//							        at alma.acs.eventbrowser.model.EventModel.discoverChannels(Unknown Source)
+							// Probably just need to fix the KIND param in the name service call.
+							//
+//							ArchivingChannel@DEFAULTDOMAIN gets created since we subscribe to it.
 							EventChannel nc = resolveNotificationChannel(bindingName);
 							ChannelData cdata = new ChannelData(nc, channelName, service);
 							cdata.setIsNewNc(true);
@@ -495,6 +537,22 @@ public class EventModel {
 		}
 	}
 	
+
+	
+	/**
+	 * The NCs "ArchivingChannel", "LoggingChannel", and "AlarmChannel"
+	 * are internal to ACS and do not get flagged as "channels" kind in the naming service.
+	 * We must recognize them by their names.
+	 * 
+	 * @param bindingName The NC name, currently without domain name as discussed in COMP-9338.
+	 * @return
+	 */
+	private boolean isSystemNc(String bindingName) {
+		boolean ret = systemNcToServiceIdMap.containsKey(bindingName);
+//		m_logger.fine("isSystemNc: '" + bindingName + "', ret=" + ret);
+		return ret;
+	}
+
 
 	/**
 	 * Resolves the TAO monitor-control object that corresponds to the given notify service name.
@@ -629,8 +687,13 @@ public class EventModel {
 
 		EventChannel retValue = null;
 
+		String nameServiceKind = (
+				isSystemNc(bindingName) 
+					? "" // this is true for LOGGING_CHANNEL_KIND.value, ARCHIVING_CHANNEL_KIND.value. Cleaner would be explicit use of IDL constants though...
+					: alma.acscommon.NC_KIND.value );
+		//m_logger.info("Will call 'nctx.resolve' for binding='" + bindingName + "', kind='" + nameServiceKind + "'.");
 		try {
-			NameComponent[] t_NameSequence = { new NameComponent(bindingName, alma.acscommon.NC_KIND.value) };
+			NameComponent[] t_NameSequence = { new NameComponent(bindingName, nameServiceKind) };
 			retValue = EventChannelHelper.narrow(nctx.resolve(t_NameSequence));
 		} 
 		catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
