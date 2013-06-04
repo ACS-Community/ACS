@@ -202,9 +202,7 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     }
     catch(CosEventComm::Disconnected &ex)
     {
-    	ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__,
-    			__LINE__,
-    			"nc::SimpleSupplier::publishEvent");
+    	ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__, __LINE__, "nc::SimpleSupplier::publishEvent");
     	cex.setInfo(ex._info().c_str());
 
     	acsncErrType::PublishEventFailureExImpl ex(cex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
@@ -214,9 +212,7 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     }
     catch(CORBA::SystemException &ex)
     {
-    	ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__,
-    			__LINE__,
-    			"nc::SimpleSupplier::publishEvent");
+    	ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__, __LINE__, "nc::SimpleSupplier::publishEvent");
     	cex.setMinor(ex.minor());
     	cex.setCompletionStatus(ex.completed());
     	cex.setInfo(ex._info().c_str());
@@ -226,6 +222,16 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     	ex.log(LM_DEBUG);
     	throw ex;
     }
+    catch(std::exception &ex)
+        {
+        	ACSErrTypeCommon::StdExceptionExImpl stdex(__FILE__, __LINE__, "nc::SimpleSupplier::publishEvent");
+        	stdex.setWhat(ex.what());
+
+        	acsncErrType::PublishEventFailureExImpl ex(stdex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
+        	ex.setChannelName(channelName_mp);
+        	ex.log(LM_DEBUG);
+        	throw ex;
+        }
     catch(...)
     {
     	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, "nc::Supplier::publishEvent");
