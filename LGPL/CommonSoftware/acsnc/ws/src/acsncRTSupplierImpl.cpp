@@ -138,7 +138,7 @@ RTSupplier::worker(void* param_p)
                 {
                     char strlog[1024];
                     Logging::Logger::LoggerSmartPtr logger = getLogger();
-                    sprintf(strlog, " %s channel - problem publishing a saved event!",
+                    sprintf(strlog, " %s channel - problem (ACSErrTypeCommon::CORBAProblemEx) publishing a saved event!",
                             supplier_p->channelName_mp);
                     supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
                             strlog, __FILE__, __LINE__, "RTSupplier::worker()");
@@ -161,7 +161,7 @@ RTSupplier::worker(void* param_p)
                     //tbd: we have to improve here the erro handling. Now we print out more that is necessary
                     char strlog[1024];
                     Logging::Logger::LoggerSmartPtr logger = getLogger();
-                    sprintf(strlog, " %s channel - problem publishing a saved event!",
+                    sprintf(strlog, " %s channel - problem (CORBA::SystemException) publishing a saved event!",
                             supplier_p->channelName_mp);
                     supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
                             strlog, __FILE__, __LINE__, "RTSupplier::worker()");
@@ -183,14 +183,69 @@ RTSupplier::worker(void* param_p)
                         }
                     }
                 }
+                catch(CORBA::Exception &ex)
+                {
+                	//tbd: we have to improve here the erro handling. Now we print out more that is necessary
+                	char strlog[1024];
+                	Logging::Logger::LoggerSmartPtr logger = getLogger();
+                	sprintf(strlog, " %s channel - problem (CORBA::Exception) publishing a saved event!",
+                			supplier_p->channelName_mp);
+                	supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+                			strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+                	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+                			"RTSupplier::worker()");
+                	corbaProblemEx.addData("Name", ex._name());
+                	corbaProblemEx.addData("RepId", ex._rep_id());
+                	supplier_p->rtSupGuardex->log(corbaProblemEx);
+                	supplier_p->unpublishedEvents_m.front().tries++;
+                	//Use the callback to to notify the user that the message is dropped
+                	if(supplier_p->unpublishedEvents_m.front().tries > 5){
+                		struct unpublishedEventData data =
+                				supplier_p->unpublishedEvents_m.front();
+                		supplier_p->unpublishedEvents_m.pop();
+                		if(data.callback != NULL){
+                			::CORBA::Any event = data.event.filterable_data[0].value;
+                			data.callback->eventDropped(&event);
+                		}
+                	}
+                }
+                catch(std::exception &ex)
+                {
+                	//tbd: we have to improve here the erro handling. Now we print out more that is necessary
+                	char strlog[1024];
+                	Logging::Logger::LoggerSmartPtr logger = getLogger();
+                	sprintf(strlog, " %s channel - problem (std::exception) publishing a saved event!",
+                			supplier_p->channelName_mp);
+                	supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+                			strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+
+                	ACSErrTypeCommon::StdExceptionExImpl stdEx(__FILE__, __LINE__, "RTSupplier::worker()");
+                	stdEx.setWhat(ex.what());
+                	supplier_p->rtSupGuardex->log(stdEx);
+
+                	supplier_p->unpublishedEvents_m.front().tries++;
+                	//Use the callback to to notify the user that the message is dropped
+                	if(supplier_p->unpublishedEvents_m.front().tries > 5){
+                		struct unpublishedEventData data =
+                				supplier_p->unpublishedEvents_m.front();
+                		supplier_p->unpublishedEvents_m.pop();
+                		if(data.callback != NULL){
+                			::CORBA::Any event = data.event.filterable_data[0].value;
+                			data.callback->eventDropped(&event);
+                		}
+                	}
+                }
                 catch(...)
                 {
                     char strlog[1024];
                     Logging::Logger::LoggerSmartPtr logger = getLogger();
-                    sprintf(strlog, " %s channel - problem publishing a saved event!",
+                    sprintf(strlog, " %s channel - problem (unknown exception) publishing a saved event!",
                             supplier_p->channelName_mp);
                     supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
                             strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+                    ACSErrTypeCommon::UnknownExImpl unEx(__FILE__, __LINE__, "RTSupplier::worker()");
+                    supplier_p->rtSupGuardex->log(unEx);
+
                     supplier_p->unpublishedEvents_m.front().tries++;
                     //Use the callback to to notify the user that the message is dropped
                     if(supplier_p->unpublishedEvents_m.front().tries > 5){
