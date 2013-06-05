@@ -35,14 +35,11 @@ public abstract class MCStatistics {
 	protected final String mcStatName;
 	protected final List<ChannelParticipantName> children = new ArrayList<ChannelParticipantName>();
 
-	private final String channelPrefix;
+	private String mcStatFullName;
 	
 	public MCStatistics(ChannelData parent, String mcStatName) {
 		this.parent = parent;
 		this.mcStatName = mcStatName;
-		String factoryName = getParent().getParent().getFactoryName();
-		String channelName = getParent().getName();
-		channelPrefix = factoryName + "/" + channelName + "/";
 	}
 	
 	/**
@@ -54,13 +51,26 @@ public abstract class MCStatistics {
 	 * This should be used by implementations of {@link #getStatistics()}.
 	 */
 	protected UData getMcData() {
-		String fullName = channelPrefix + mcStatName;
+		if (mcStatFullName == null) {
+			mcStatFullName = getChannelPrefix(true) + mcStatName;
+		}
 		try {
-			 return parent.getParent().getMc().get_statistic(fullName).data_union;
+			 return parent.getParent().getMc().get_statistic(mcStatFullName).data_union;
 		} catch (InvalidName ex) {
+			// Try again with channel Id instead of channel name (no TAO extensions used when creating this NC)
+			String mcStatFullNameTmp = getChannelPrefix(false) + mcStatName;
+			try {
+				 UData ret = parent.getParent().getMc().get_statistic(mcStatFullNameTmp).data_union;
+				 // next time use this ID-based stat name right awawy 
+				 mcStatFullName = mcStatFullNameTmp;
+				 return ret;
+			} catch (InvalidName ex2) {
+				// nothing else. It is enough to report on the first ex
+			}
 			// Todo: deal better with this error. Could be wrong channel name or an unsupported (misspelled etc) statistics name.
-			System.out.println("Invalid name: '" + fullName + 
+			System.out.println("Invalid name: '" + mcStatFullName + 
 					"'; valid names are " + StringUtils.join(parent.getParent().getMc().get_statistic_names(), ' '));
+			mcStatFullName = null; // not sure if trying again next time will help, but let's try
 			throw new RuntimeException(ex);
 		}
 	}
@@ -69,6 +79,25 @@ public abstract class MCStatistics {
 		return parent;
 	}
 
+	/**
+	 * The NC prefix must be computed "on the fly", because at least in case of the NC ID 
+	 * not all data is available when this MCStatistics is created.
+	 * @param useNcName <code>true</code> means to use the NC name if available, <code>false</code> means to use the NC ID.
+	 */
+	private String getChannelPrefix(boolean useNcName) {
+		String channelPrefix = null;
+		String factoryName = getParent().getParent().getFactoryName();
+		if (useNcName) {
+			String channelName = getParent().getName();
+			channelPrefix = factoryName + "/" + channelName + "/";
+		}
+		else {
+			int channelId = getParent().getNcId();
+			channelPrefix = factoryName + "/" + channelId + "/";
+		}
+		return channelPrefix;
+	}
+	
 	/**
 	 * Gets the (possibly empty) {@link #children} list an Object[], which becomes tree node children.
 	 */

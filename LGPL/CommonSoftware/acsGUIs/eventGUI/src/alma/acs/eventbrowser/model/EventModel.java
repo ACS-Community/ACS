@@ -115,9 +115,6 @@ public class EventModel {
 
 	/**
 	 * key = name of NotifyService or NC; value=int[] {consumerCount, supplierCount}
-	 * <p>
-	 * TODO: The handling for consumers seems to be based on the number of admin objects, 
-	 *       which is not always the same as the number of Consumers (new NCSubscriber differs!) 
 	 */
 	private final HashMap<String, int[]> lastConsumerAndSupplierCount;
 	
@@ -155,10 +152,9 @@ public class EventModel {
 			
 			systemNcToServiceIdMap = new HashMap<String, String>();
 			// The system NCs and factories must be in sync with acsstartup :: acsNotifyService
-//			Currently disabled, see COMP-8997
-//			systemNcToServiceIdMap.put("AlarmChannel", "AlarmNotifyEventChannelFactory");
-//			systemNcToServiceIdMap.put(ARCHIVING_CHANNEL_NAME.value, ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
-//			systemNcToServiceIdMap.put(LOGGING_CHANNEL_XML_NAME.value, LOGGING_NOTIFICATION_FACTORY_NAME.value);
+			systemNcToServiceIdMap.put("AlarmChannel", "AlarmNotifyEventChannelFactory");
+			systemNcToServiceIdMap.put(ARCHIVING_CHANNEL_NAME.value, ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
+			systemNcToServiceIdMap.put(LOGGING_CHANNEL_XML_NAME.value, LOGGING_NOTIFICATION_FACTORY_NAME.value);
 			
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
 			consumerMap = new HashMap<String, AdminConsumer>();
@@ -351,7 +347,7 @@ public class EventModel {
 			}
 		}
 
-		// Note that it is useless to retrieve the NC from the notify service (get_event_channel(ncId) etc), 
+		// Note that it is useless to retrieve the NC only from the notify service (get_event_channel(ncId) etc), 
 		// because the limited notification service API will not tell us the channel name
 		// even if we used the TAO extensions (where the NC names show up in the statistics but are not accessible through the API).
 		// However, we can get the NC names from the MC object, to be integrated with the other MCStatistics retrieval.
@@ -364,7 +360,8 @@ public class EventModel {
 					String channelName = null;
 					String domainName = null;
 					// This is a hack, needed as long as the system NCs don't get registered incl. domain name (see COMP-9338)
-					if (isSystemNc(bindingName)) {
+					boolean isSystemNc = isSystemNc(bindingName);
+					if (isSystemNc) {
 						channelName = bindingName;
 					}
 					else {
@@ -381,12 +378,12 @@ public class EventModel {
 					else {
 						m_logger.fine("New NC " + channelName);
 						// A new NC. This will happen at startup, and later as NCs get added.
-						// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
 						String serviceId = null;
-						if (isSystemNc(bindingName)) {
+						if (isSystemNc) {
 							serviceId = systemNcToServiceIdMap.get(bindingName);
 						}
 						else {
+							// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
 							Helper notifyHelper = new Helper(channelName, domainName, cs, nctx);
 							serviceId = notifyHelper.getNotificationFactoryNameForChannel();
 						}
@@ -405,20 +402,14 @@ public class EventModel {
 							}
 						}
 						if (service != null) {
-							// TODO: COMP-9338 problem now that we add the system NCs by name
-//							2013-05-31T15:26:39.369 FINE [eventGUI] New NC AlarmChannel
-//							2013-05-31T15:26:39.369 FINE [eventGUI] isSystemNc: 'AlarmChannel', ret=true
-//							2013-05-31T15:26:39.371 INFO [eventGUI] The 'AlarmChannel' channel has not been created yet.
-//							2013-05-31T15:26:39.377 WARNING [eventGUI] Failed to map NC 'AlarmChannel' to its notify service.
-//							alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx
-//							        at alma.acs.eventbrowser.model.EventModel.resolveNotificationChannel(Unknown Source)
-//							        at alma.acs.eventbrowser.model.EventModel.discoverChannels(Unknown Source)
-							// Probably just need to fix the KIND param in the name service call.
-							//
-//							ArchivingChannel@DEFAULTDOMAIN gets created since we subscribe to it.
 							EventChannel nc = resolveNotificationChannel(bindingName);
 							ChannelData cdata = new ChannelData(nc, channelName, service);
 							cdata.setIsNewNc(true);
+							if (isSystemNc) {
+								// TODO-: Change NCSubscriber to deal with empty/different NC kind in the NS binding
+								//        and then allow subscription to those system NCs that use standard event format.
+								cdata.markUnsubscribable(); 
+							}
 							service.addChannel(channelName, cdata);
 						}
 					}
@@ -516,7 +507,7 @@ public class EventModel {
 				}
 			}
 
-			//			for (String statName : nsData.getMc().get_statistic_names()) {
+//			for (String statName : nsData.getMc().get_statistic_names()) {
 //				System.out.println(statName);
 //			}
 			
