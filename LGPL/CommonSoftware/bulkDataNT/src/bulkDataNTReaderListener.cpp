@@ -291,7 +291,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                 	  if (DDSConfiguration::debugLevel>1)
                 	  {
                 		  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-                				  (LM_INFO, "Average processing time for: %s for %d call(s) of cbReceive(): %fs. What corresponds to throughput of: %fMB/sec",
+                				  (LM_DEBUG, "Average processing time for: %s for %d call(s) of cbReceive(): %fs. What corresponds to throughput of: %fMB/sec",
                 						  topicName_m.c_str(), cbReceiveNumCalls_m , cbReceiveAvgSec_m, (ACSBulkData::FRAME_MAX_LEN/(1024.0*1024.0)/cbReceiveAvgSec_m)));
 
                 		  DDS::DataReaderProtocolStatus drps;
