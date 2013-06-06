@@ -103,7 +103,7 @@ TCL_SCRIPTS_L   =
 PY_SCRIPTS         =
 PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
 						mcTestComponent mcTestPropertiesComponent mcTestDynEnable mcTestDynSuppress mcTestDynInterval \
-                  mcTestDynSupEn mcTestAlarmsComponent #mcTestManualPublish mcTestManualPublishOnSuppressed mcTestArchiveDelta mcTestArchiveDeltaPercent
+                  mcTestDynSupEn mcTestAlarmsComponent mcTestArchiveDelta mcTestArchiveDeltaPercent #mcTestManualPublish mcTestManualPublishOnSuppressed
 PY_MODULES         =
 PY_MODULES_L       =
 

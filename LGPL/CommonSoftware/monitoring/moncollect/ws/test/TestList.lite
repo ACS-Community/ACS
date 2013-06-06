@@ -2,19 +2,19 @@
 SOURCE MCTestEnv.tcl
 PROLOGUE MCTestPrologue
 
-1 "registerDevice" "acsutilTATTestRunner mcTestRegisterDevice MONITOR_COLLECTOR_TEST"
-2 "registerDeviceWithMultipleSerial" "acsutilTATTestRunner mcTestRegisterDeviceWithMultipleSerial MONITOR_COLLECTOR_TEST"
-3 "DeviceWithSeqAndMultipleSerial" "acsutilTATTestRunner mcTestDeviceWithSeqAndMultipleSerial MONITOR_COLLECTOR_TEST"
-4 "MCtestComponent"  "acsutilTATTestRunner  mcTestComponent MONITOR_COLLECTOR_TEST"
-5 "MCtestPropertiesComponent"  "acsutilTATTestRunner  mcTestPropertiesComponent MONITOR_COLLECTOR_TEST"
-6 "MCtestDynamicEnable"  "acsutilTATTestRunner  mcTestDynEnable MONITOR_COLLECTOR_TEST"
-7 "MCtestDynamicSuppress"  "acsutilTATTestRunner  mcTestDynSuppress MONITOR_COLLECTOR_TEST"
-8 "MCtestDynamicInterval"  "acsutilTATTestRunner  mcTestDynInterval MONITOR_COLLECTOR_TEST"
-9 "MCtestDynamicSuppressAndEnable"  "acsutilTATTestRunner  mcTestDynSupEn MONITOR_COLLECTOR_TEST"
+#1 "registerDevice" "acsutilTATTestRunner mcTestRegisterDevice MONITOR_COLLECTOR_TEST"
+#2 "registerDeviceWithMultipleSerial" "acsutilTATTestRunner mcTestRegisterDeviceWithMultipleSerial MONITOR_COLLECTOR_TEST"
+#3 "DeviceWithSeqAndMultipleSerial" "acsutilTATTestRunner mcTestDeviceWithSeqAndMultipleSerial MONITOR_COLLECTOR_TEST"
+#4 "MCtestComponent"  "acsutilTATTestRunner  mcTestComponent MONITOR_COLLECTOR_TEST"
+#5 "MCtestPropertiesComponent"  "acsutilTATTestRunner  mcTestPropertiesComponent MONITOR_COLLECTOR_TEST"
+#6 "MCtestDynamicEnable"  "acsutilTATTestRunner  mcTestDynEnable MONITOR_COLLECTOR_TEST"
+#7 "MCtestDynamicSuppress"  "acsutilTATTestRunner  mcTestDynSuppress MONITOR_COLLECTOR_TEST"
+#8 "MCtestDynamicInterval"  "acsutilTATTestRunner  mcTestDynInterval MONITOR_COLLECTOR_TEST"
+#9 "MCtestDynamicSuppressAndEnable"  "acsutilTATTestRunner  mcTestDynSupEn MONITOR_COLLECTOR_TEST"
 #10 "MCtestManualPublish"  "acsutilTATTestRunner  mcTestManualPublish MONITOR_COLLECTOR_TEST"
 #11 "MCtestManualPublishOnSuppressed"  "acsutilTATTestRunner mcTestManualPublishOnSuppressed MONITOR_COLLECTOR_TEST"
-#12 "MCtestArchiveDelta"         "acsutilTATTestRunner mcTestArchiveDelta MONITOR_COLLECTOR_TEST"
-#13 "MCtestArchiveDeltaPercent"  "acsutilTATTestRunner mcTestArchiveDeltaPercent MONITOR_COLLECTOR_TEST"
-14 "MCtestAlarmsComponent"  "acsutilTATTestRunner  mcTestAlarmsComponent MONITOR_COLLECTOR_TEST"
+12 "MCtestArchiveDelta"         "acsutilTATTestRunner mcTestArchiveDelta MONITOR_COLLECTOR_TEST"
+13 "MCtestArchiveDeltaPercent"  "acsutilTATTestRunner mcTestArchiveDeltaPercent MONITOR_COLLECTOR_TEST"
+#14 "MCtestAlarmsComponent"  "acsutilTATTestRunner  mcTestAlarmsComponent MONITOR_COLLECTOR_TEST"
 
 EPILOGUE acsutilTATEpilogue
