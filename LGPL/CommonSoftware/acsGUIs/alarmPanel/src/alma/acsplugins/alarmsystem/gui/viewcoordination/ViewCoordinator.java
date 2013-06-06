@@ -57,17 +57,17 @@ public class ViewCoordinator
 	
 	/**
 	 * The selection callback interface, to be provided by external code.
+	 * Note that there is no deselection possible once an alarm row is selected.
 	 * <p>
-	 * TODO: Or should we reuse {@link cern.laser.client.services.selection.AlarmSelectionListener}?
+	 * We transmit an Alarm class and not just the Alarm ID that would be sufficient
+	 * for extracting antenna names. This is to allow extraction of other information 
+	 * in the future, e.g. timestamps. 
+	 * The Alarm class comes from the CERN AS. Ideally we'd hide it inside some
+	 * ACS class, but that would have to be done in the future, along with the rest of the alarm code.
 	 */
 	public static interface AlarmSelectionListener {
 		
 		public void notifyAlarmSelected(Alarm alarm);
-		
-		/**
-		 * TODO: Is there such a thing as de-selection in the table?
-		 */
-		public void notifyAlarmDeselected();
 	}
 	
 	/**

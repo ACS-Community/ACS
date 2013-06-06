@@ -125,6 +125,8 @@ public class AlarmTable extends JTable implements ActionListener {
 		/**
 		 * The user selected a row, i.e. an alarm.
 		 * alarmSected notifies the model that the icon must be removed
+		 * <p>
+		 * TODO: Check if this can be merged with AlarmTable#changeSelection
 		 * 
 		 * @param e The event to get the selected row from
 		 */
@@ -785,22 +787,17 @@ public class AlarmTable extends JTable implements ActionListener {
 		panel.showAlarmDetails(alarmEntry);
 		selectedAlarmId = alarmEntry.getAlarmId();
 		
-		// TODO 1: Is this the right place to intercept the selection, or should we get it from AlarmTableMouseAdapter#alarmSelected ?
-		// TODO 2: Check if this gets called also for alarm de-selection (if that exists...)
 		AlarmSelectionListener listenerCopy = listener; // to avoid concurrency issues
 		if (listenerCopy != null) {
 			Alarm alarm = alarmEntry.getEncapsulatedAlarm();
 			if (alarm != null) {
 				listenerCopy.notifyAlarmSelected(alarm);
 			}
-			else {
-				listenerCopy.notifyAlarmDeselected();
-			}
 		}
 	}
 	
 	/**
-	 * TODO: This is used only by {@link ViewCoordinator}. Check if we can use a standard listener type.
+	 * This is used only by {@link ViewCoordinator}. 
 	 */
 	public void setAlarmSelectionListener(AlarmSelectionListener listener) {
 		this.listener = listener;
