@@ -45,12 +45,20 @@ from Acspy.Nc.CDBProperties   import get_channel_admin_props
 from Acspy.Nc.CDBProperties   import get_notification_service_mapping
 from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
 
+from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
+from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR
+
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
 class CommonNC:
     '''
     Serves as a baseclass for notification channel objects.
+    
+    The notification channel is registered in the NamingService
+    with the name: channelName+ NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+domainName (see COMP-9338 for 
+    further details).
+    If the domain name is not provided then the fault is used: NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
     '''
     #--------------------------------------------------------------------------
     def __init__ (self, channelname, component, domainname=None):
@@ -71,7 +79,10 @@ class CommonNC:
         #name of the channel we'll be working with
         self.channelName = str(channelname) 
         #domainname of the channel we'll be working with
-        self.domainName = str(domainname) 
+        if domainname is None:
+            self.domainName = NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
+        else:
+            self.domainName = str(domainname) 
         #CORBA ref to the channel
         self.evtChan = None
         #Python Naming Service helper class
@@ -81,6 +92,9 @@ class CommonNC:
         #create the reconnection callback
         self.channel_factory = None
         self.callback = ReconnectionCallback(self)
+    #------------------------------------------------------------------------------
+    def combineChannelAndDomainName(self):
+        return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
     #------------------------------------------------------------------------------
     def configQofS(self):
         '''
@@ -237,7 +251,7 @@ class CommonNC:
         try:
             self.channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
             self.channel_factory = self.channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
-            obj = self.nt.getObject(self.channelName, self.getChannelKind())
+            obj = self.nt.getObject(self.combineChannelAndDomainName(), self.getChannelKind())
             self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
         except:
             try:
@@ -247,7 +261,7 @@ class CommonNC:
                 if e.getData('exception') == ['NotifyMonitoringExt.NameAlreadyUsed()']:
                     while True:
                         try:
-                            obj = self.nt.getObject(self.channelName, self.getChannelKind())
+                            obj = self.nt.getObject(self.combineChannelAndDomainName(), self.getChannelKind())
                             self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
                         except:
                             pass
@@ -275,7 +289,7 @@ class CommonNC:
         '''
         try:
             #Unregister our channel with the naming service
-            self.nt.delObject(self.channelName, self.getChannelKind())
+            self.nt.delObject(self.combineChannelAndDomainName(), self.getChannelKind())
 
             #Destroy the remote object
             self.evtChan.destroy()
@@ -340,7 +354,7 @@ class CommonNC:
         # Register the new channel w/ the naming service under the names &
         # type. The event channel is now ready for action.
         try:
-            self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
+            self.nt.putObject(self.combineChannelAndDomainName(), self.getChannelKind(), self.evtChan)
         except Exception, e:
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
