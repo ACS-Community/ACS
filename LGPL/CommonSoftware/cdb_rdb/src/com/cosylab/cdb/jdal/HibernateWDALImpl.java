@@ -3499,10 +3499,10 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			m_logger.info("clear_cache(curl): MACI4a");
 			loadContainers("Containers", false);
 			m_logger.info("clear_cache(curl): MACI5a");
-			loadManagers("Managers", false);
-			m_logger.info("clear_cache(curl): MACI6a");
 			loadChannels("Channels", false);
 			m_logger.info("clear_cache(curl): MACI7a");
+			loadManagers("Managers", false);
+			m_logger.info("clear_cache(curl): MACI6a");
 			//loadAcsServices("AcsServices", false);
 		} else {
 			String c = curl.replaceFirst("MACI/","");

@@ -25,5 +25,10 @@ PROLOGUE cdbrdbTATPrologue
 1 containerOptionTest "acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.tmcdb.logic.ContainerStartupOptionHelperTest"
 2 pojosTest           "acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.tmcdb.AllPojoTests"
 3 dumpDemoCDB         "cdbRead / -raw"
+4 cdbjDALClearCache   "cdbjDALClearCache"
+5 dumpDemoCDB2        "cdbRead / -raw"
+6 cdbjDALClearCache2  "cdbjDALClearCache MACI"
+6 cdbjDALClearCache3  "cdbjDALClearCache alma"
+7 dumpDemoCDB3        "cdbRead / -raw"
 
 EPILOGUE cdbrdbTATEpilogue
