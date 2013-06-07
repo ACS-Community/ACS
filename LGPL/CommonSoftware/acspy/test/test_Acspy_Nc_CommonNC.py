@@ -39,6 +39,8 @@ from ACSErr import NameValue
 import Acspy.Common.Log
 import Acspy.Util.ACSCorba
 
+from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
+
 # The ACS Logger requires a connection to the Manager.
 # In order to run the tests offline, the Logger has
 # to be replace with a mock object
@@ -504,7 +506,7 @@ class TestCommonNC(unittest.TestCase):
         self.assertEqual(0, nc.connected)
         self.assertEqual('None', nc.channelName)
         self.assertEqual(True, nc.component is None)
-        self.assertEqual('None', nc.domainName)
+        self.assertEqual(NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT, nc.domainName)
         self.assertEqual(True, nc.evtChan is None)
         self.assertEqual(True, nc.nt is None)
 
@@ -514,7 +516,7 @@ class TestCommonNC(unittest.TestCase):
         self.assertEqual(0, nc.connected)
         self.assertEqual('Channel', nc.channelName)
         self.assertEqual(True, isinstance(nc.component,mock.Mock))
-        self.assertEqual('None', nc.domainName)
+        self.assertEqual(NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT, nc.domainName)
         self.assertEqual(True, nc.evtChan is None)
         self.assertEqual(True, nc.nt is None)
 
