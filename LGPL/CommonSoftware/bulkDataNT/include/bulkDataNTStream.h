@@ -72,6 +72,9 @@ public:
 	/// adding and applying DDS QoS profile. Setting qoS from XML for a  stream or a flow
 	void addDDSQoSProfile(const DDSConfiguration &cfg);
 
+	/// removing DDS QoS profile (from XML for a  stream or a flow)
+	void removeDDSQoSProfile(const DDSConfiguration &cfg);
+
 	//void destroyFlow(const  char* flowName);
 
 	static unsigned int factoryRefCount_m; /// how many time / streams need the factory
