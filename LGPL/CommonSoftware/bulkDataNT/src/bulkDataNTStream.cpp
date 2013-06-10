@@ -53,7 +53,7 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 		  factoryRefCount_m++;
 	  }//end of critical section
 
-	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
+	  addDDSQoSProfile(configuration_m);  //add QoS profile for stream (and flows)
 
 	  if (configuration_m.isParticipantPerStream())
 	  {
@@ -109,6 +109,8 @@ BulkDataNTStream::~BulkDataNTStream()
 	  }
   }//if-else
 
+  removeDDSQoSProfile(configuration_m);  //remove QoS profile for stream
+
   participant_m=0;
   {//critical section
 	  // Maybe we should wait with timeout here
@@ -139,6 +141,8 @@ void BulkDataNTStream::createDDSFactory()
 		ex.setQoS("factory_m->get_qos");
 		throw ex;
 	}//if
+
+
 	factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
 
 	// if both values are true (default) we prevent that default values are taken from default places
@@ -160,6 +164,11 @@ void BulkDataNTStream::createDDSFactory()
 		ex.setQoS("factory_m->set_qos");
 		throw ex;
 	}//if
+
+/*	DDS_StringSeq profile_names;
+	ret = factory_m->get_qos_profiles(profile_names, "BulkDataQoSLibrary");
+	printf("profile length: %d\n", profile_names.length());
+*/
 
 }//createDDSFactory
 
@@ -288,11 +297,12 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
     }//if
 
   profLen=factory_qos.profile.string_profile.length(); //how many profiles do we have already ?
+
   std::string qoSlibTag("<qos_library name=\""); // we crate qos_libarary TAG
   qoSlibTag+=cfg.libraryQos;
   qoSlibTag+="\">";
 
-  if (profLen>0) // is is the first profile
+  if (profLen>0) // is it the first profile?
     {
 	  bool newLib=true;
 	  // lets check if the library is already there
@@ -331,10 +341,17 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
   factory_qos.profile.string_profile[profLen-2] = DDS_String_dup("</qos_library>");
   factory_qos.profile.string_profile[profLen-1] = DDS_String_dup("</dds>");
 
-  /*int u=factory_qos.profile.string_profile.length();
-  for (int j=0;j<u;j++)
-	  printf("=> %d: %s \n", j, factory_qos.profile.string_profile[j] );
-*/
+  if (DDSConfiguration::debugLevel>0)
+  			ACS_SHORT_LOG((LM_DEBUG, "We are about to add QoS profile: %s.", cfg.stringProfileQoS.c_str()));
+
+  if (DDSConfiguration::debugLevel>=2)
+  {
+	  printf("QoS profiles just before setting to DDS factory (addDDSQoSProfile):\n");
+	  int u=factory_qos.profile.string_profile.length();
+	  for (int j=0;j<u;j++)
+		  printf("=>\t %d: %s \n", j, factory_qos.profile.string_profile[j] );
+  }
+
   ret = factory_m->set_qos(factory_qos);
   if (ret!=DDS::RETCODE_OK)
     {
@@ -348,3 +365,72 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
       throw ex;
     }//if
 }//addDDSQoSProfile
+
+void BulkDataNTStream::removeDDSQoSProfile(const DDSConfiguration &cfg)
+{
+	DDS::ReturnCode_t ret;
+	DDS::DomainParticipantFactoryQos factory_qos;
+	DDS::StringSeq newQoSprofiles;
+	unsigned int profLen;
+
+	if (cfg.stringProfileQoS.length()<=0) return; // if QoSprofile is empty we do not need to do anything
+
+	// needed by RTI only
+	ret = factory_m->get_qos(factory_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("factory_m->get_qos");
+		throw ex;
+	}//if
+
+	profLen = factory_qos.profile.string_profile.length(); //how many profiles do we have already ?
+
+	if (profLen>0) // we should have more than 0 profiles
+	{
+		newQoSprofiles.ensure_length(profLen-1, profLen-1); // one profile one line
+		// lets check if the library is already there
+		unsigned int i=0;
+		for (unsigned int j=0;j<profLen;j++) //loop over all profiles
+		{
+			//what we add to the new profile
+			if (strcmp(cfg.stringProfileQoS.c_str(), factory_qos.profile.string_profile[j]) != 0 )
+			{
+				newQoSprofiles[i] = DDS::String_dup(factory_qos.profile.string_profile[j]);
+				i++;
+			}else
+			{
+				if (DDSConfiguration::debugLevel>0)
+					ACS_SHORT_LOG((LM_DEBUG, "We are about to remove QoS profile: %s.", cfg.stringProfileQoS.c_str()));
+			}//if-else
+		}//for
+
+		factory_qos.profile.string_profile =  newQoSprofiles;
+
+		if (DDSConfiguration::debugLevel>=2)
+		{
+			printf("QoS profiles just before setting to DDS factory (removeDDSQoSProfile):\n");
+			int u=factory_qos.profile.string_profile.length();
+			for (int j=0;j<u;j++)
+				printf("=>\t %d: %s \n", j, factory_qos.profile.string_profile[j] );
+		}
+
+		ret = factory_m->set_qos(factory_qos);
+		if (ret!=DDS::RETCODE_OK)
+		{
+			DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			ex.setDDSTypeCode(ret);
+			std::string com("factory_m->set_qos: ");
+			com+=cfg.libraryQos;
+			com+=" : ";
+			com+=cfg.profileQos;
+			ex.setQoS(com.c_str());
+			throw ex;
+		}//if
+	}
+	else
+	{
+		// it should be at least one profile ???
+	}
+}//removeDDSQoSProfile
