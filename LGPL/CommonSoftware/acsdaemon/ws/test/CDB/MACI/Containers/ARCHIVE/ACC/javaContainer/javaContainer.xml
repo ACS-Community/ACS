@@ -10,10 +10,8 @@
            Recovery="0"
            ImplLang="java">
   <Autoload>
-    <cdb:_ string="baci" />
   </Autoload>
   <DeployInfo Type="java" 
-              Host="gas01"
               Instance="0"
               Flags="" 
               KeepAliveTime="-1"/>

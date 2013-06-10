@@ -1,6 +1,6 @@
 #!/bin/bash
 FLAG=0
-acsservicesdaemon &> services.log &
+acsservicesdaemon &> syncServices.log &
 sleep 1
 if [ $? -ne 0 ]; then
     echo "FAILED - starting services daemon"
@@ -9,7 +9,7 @@ else
     SPID=$(ps aux|grep acsservicesdaemon| grep -v grep|awk '{ print $2 }')
     sleep 5
 fi
-acscontainerdaemon &> containers.log &
+acscontainerdaemon &> syncContainers.log &
 sleep 1
 if [ $? -ne 0 ]; then
     echo "FAILED - starting container daemon"
@@ -18,80 +18,73 @@ else
     CPID=$(ps aux|grep acscontainerdaemon| grep -v grep|awk '{ print $2 }')
     sleep 5
 fi
-acsdaemonStartAcs -i 0 &> startACS.log
+acsdaemonStartAcs -i 0 &> syncStartACS.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting ACS"
     FLAG=1
 fi
-acsdaemonStartContainer -t cpp -c bilboContainer -i 0 &> startbilboContainer.log
+acsdaemonStartContainer -t cpp -c bilboContainer -i 0 -s &> syncStartbilboContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting bilboContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStartContainer -t cpp -c ARCHIVE/ACC/cppContainer -i 0 &> startcppContainer.log
+
+acsdaemonStartContainer -t cpp -c ARCHIVE/ACC/cppContainer -i 0 --synchronous &> syncStartcppContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting ARCHIVE/ACC/cppContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStartContainer -t java -c ARCHIVE/ACC/javaContainer -i 0 &> startjavaContainer.log
+
+acsdaemonStartContainer -s -t java -c ARCHIVE/ACC/javaContainer -i 0 &> syncStartjavaContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting ARCHIVE/ACC/javaContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStartContainer -t py -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 &> startpyContainer.log
+
+acsdaemonStartContainer -t py -s -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 &> syncStartpyContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStartContainer -t py -m casaContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 &> startpyCasaContainer.log
+
+acsdaemonStartContainer --synchronous -t py -m casaContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 &> syncStartpyCasaContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyCasaContainer"
     FLAG=1
 fi
-sleep 30
 
+sleep 1
 
-acsdaemonStatusAcs -i 0 &> acsStatus.log
+acsdaemonStatusAcs -i 0 &> syncAcsStatus.log
 if [ $? -ne 0 ]; then
     echo "FAILED - getting ACS status"
     FLAG=1
 fi
-sleep 5
 
-acsdaemonStopContainer -c bilboContainer -i 0 &> stopbilboContainer.log
+acsdaemonStopContainer -s -c bilboContainer -i 0 &> syncStopbilboContainer.log
 if [ $? -ne 0 ]; then
-    echo "FAILED - stoping bilboContainer"
+    echo "FAILED - stopping bilboContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStopContainer -c ARCHIVE/ACC/cppContainer -i 0 >> stopcppContainer.log
+
+acsdaemonStopContainer -c ARCHIVE/ACC/cppContainer --synchronous -i 0 >> syncStopcppContainer.log
 if [ $? -ne 0 ]; then
-    echo "FAILED - stoping ARCHIVE/ACC/cppContainer"
+    echo "FAILED - stopping ARCHIVE/ACC/cppContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStopContainer -c ARCHIVE/ACC/javaContainer -i 0 >> stopjavaContainer.log
+
+acsdaemonStopContainer -c ARCHIVE/ACC/javaContainer -i 0 -s >> syncStopjavaContainer.log
 if [ $? -ne 0 ]; then
-    echo "FAILED - stoping ARCHIVE/ACC/javaContainer"
+    echo "FAILED - stopping ARCHIVE/ACC/javaContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStopContainer -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 >> stoppyContainer.log
+
+acsdaemonStopContainer -c CONTROL/AMBSOCKETSERVER/pyContainer -s -i 0 >> syncStoppyContainer.log
 if [ $? -ne 0 ]; then
-    echo "FAILED - stoping CONTROL/AMBSOCKETSERVER/pyContainer"
+    echo "FAILED - stopping CONTROL/AMBSOCKETSERVER/pyContainer"
     FLAG=1
 fi
-sleep 10
-acsdaemonStopContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 >> stoppyCasaContainer.log
-if [ $? -ne 0 ]; then
-    echo "FAILED - stoping CONTROL/AMBSOCKETSERVER/pyCasaContainer"
-    FLAG=1
-fi
-sleep 10
+
 CASA_DUMMY_CONTAINER_PID=$(ps aux|grep "CONTROL/AMBSOCKETSERVER/pyCasaContainer" | grep acsStartContainerWithCASA | grep -v grep|awk '{ print $2 }')
 kill $CASA_DUMMY_CONTAINER_PID
 sleep 1
@@ -100,9 +93,10 @@ if [ $? -ne 1 ]; then
     echo "FAILED - stopping CONTROL/AMBSOCKETSERVER/pyCasaContainer dummy process"
     FLAG=1
 fi
-acsdaemonStopAcs -i 0 >> stopACS.log
+
+acsdaemonStopAcs -i 0 >> syncStopACS.log
 if [ $? -ne 0 ]; then
-    echo "FAILED - stoping ACS"
+    echo "FAILED - stopping ACS"
     FLAG=1
 fi
 sleep 10 

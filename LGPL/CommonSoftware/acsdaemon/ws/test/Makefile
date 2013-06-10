@@ -90,7 +90,8 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = acsdaemonTATPrologue acsdaemonTATEpilogue test.sh loglevel.sh
+SCRIPTS_L       = 	acsdaemonTATPrologue acsdaemonTATEpilogue test.sh loglevel.sh testSync.sh \
+			acsStartContainerWithCASA
 
 #
 # TCL scripts (public and local)
