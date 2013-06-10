@@ -68,6 +68,7 @@ import alma.acs.util.IsoDateFormat;
 import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
+import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
@@ -443,13 +444,18 @@ public class AlarmTable extends JTable implements ActionListener {
 	private final UndocAlarmTableModel undocModel;
 
 	private volatile AlarmSelectionListener listener;
+
+	private final StatusLine statusLine;
 	
 	/**
 	 * Constructor 
 	 * @param model The model for this table
 	 * @param panel The panel showing this table
+	 * @param statusLine Status line ref, needed to update filter status.
+	 *                   If this direct ref seems too dirty, we could perhaps let CernSysPanel
+	 *                   register for filter changes and propagate that info to the status line.
 	 */
-	public AlarmTable(AlarmTableModel model, CernSysPanel panel, UndocAlarmTableModel undocModel) {
+	public AlarmTable(AlarmTableModel model, CernSysPanel panel, UndocAlarmTableModel undocModel, StatusLine statusLine) {
 		super(model);
 		if (model==null) {
 			throw new IllegalArgumentException("Invalid null model in constructor");
@@ -468,6 +474,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				initGUI();
 			}
 		});
+		this.statusLine = statusLine;
 		searchEngine=new SearchEngine(this,model);
 	}
 	
@@ -821,6 +828,9 @@ public class AlarmTable extends JTable implements ActionListener {
 			// add the filter
 			filter.setFilter(filterString, not);
 			sorter.setRowFilter(filter);
+		}
+		if (statusLine != null) {
+			statusLine.setTableFilterLbl(filterString);
 		}
 	}
 

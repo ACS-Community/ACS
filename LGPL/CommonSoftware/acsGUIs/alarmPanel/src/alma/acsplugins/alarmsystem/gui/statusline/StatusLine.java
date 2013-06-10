@@ -18,13 +18,19 @@
  */
 package alma.acsplugins.alarmsystem.gui.statusline;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
@@ -65,6 +71,8 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 */
 	private static final int TIMER_INTERVAL=2000;
 	
+	private JLabel tableFiltersLbl;
+
 	/**
 	 * The widget showing the icon and the tooltip for the status of the connection
 	 */
@@ -124,6 +132,20 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 		statusMsgPnl.add(statusMessageLbl);
 		add(statusMsgPnl);
 		
+		// filtered status display (copied from jlog :: LoggingClient#getStatusLinePnl())
+		GridBagConstraints constraintsTableFlt = new GridBagConstraints();
+		constraintsTableFlt.gridx = 3;
+		constraintsTableFlt.gridy = 0;
+		constraintsTableFlt.insets = new Insets(1, 1, 1, 1);
+		tableFiltersLbl = new JLabel();
+		tableFiltersLbl.setVisible(true);
+		tableFiltersLbl.setBorder(BorderFactory.createLoweredBevelBorder());
+		Font fntTableFlt = tableFiltersLbl.getFont();
+		Font newFontTableFlt = fntTableFlt.deriveFont(fntTableFlt.getSize() - 2);
+		tableFiltersLbl.setFont(newFontTableFlt);
+		add(tableFiltersLbl, constraintsTableFlt);
+		setTableFilterLbl(null); // set initial text
+		
 		// Add the label with the connection status to the right
 		JPanel connectionPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		connectionPnl.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -172,6 +194,26 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 			}
 		}
 	}
+
+	/**
+	 * Update the label of the filtering of the table
+	 */
+	public void setTableFilterLbl(final String filterString) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (filterString != null) {
+					tableFiltersLbl.setForeground(Color.RED);
+					tableFiltersLbl.setText("Table filtered");
+					tableFiltersLbl.setToolTipText(filterString);
+				} else {
+					tableFiltersLbl.setForeground(Color.BLACK);
+					tableFiltersLbl.setText("Table not filtered");
+					tableFiltersLbl.setToolTipText(null);
+				}
+			}
+		});
+	}
+	
 
 	/**
 	 * Set the icon and tooltip for the connected state

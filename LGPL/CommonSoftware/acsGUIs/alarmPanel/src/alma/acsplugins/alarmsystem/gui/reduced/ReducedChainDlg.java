@@ -119,7 +119,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		this.panel=panel;
 		model = new AlarmTableModel(rootPane,false,true,undocModel);
 		model.start();
-		table = new AlarmTable(model,panel,undocModel);
+		table = new AlarmTable(model,panel,undocModel, null);
 		EDTExecutor.instance().execute(new Runnable() {
 			@Override
 			public void run() {

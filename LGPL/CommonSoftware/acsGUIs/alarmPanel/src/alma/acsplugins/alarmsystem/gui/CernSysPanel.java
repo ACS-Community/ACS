@@ -204,8 +204,8 @@ public class CernSysPanel extends JPanel {
 		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES,false,undocModel);
 		model.start();
 		alarmSound= new AlarmSound(model);
-		alarmTable = new AlarmTable(model,this,undocModel);
 		statusLine = new StatusLine(model,this);
+		alarmTable = new AlarmTable(model, this, undocModel, statusLine);
 		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
 		detailTable = new AlarmDetailTable();
