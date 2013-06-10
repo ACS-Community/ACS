@@ -63,21 +63,23 @@ int main(int argc, char *argv[])
 	//Must log into manager before we can really do anything
 	client.login();
 	}
-	
+
+
     try
 	{
+
 	// Get the specific component we have requested on the command-line
 	bulkdata::BulkDataReceiver_var receiver1 = client.get_object<bulkdata::BulkDataReceiver>(argv[2], 0, true);
 	if (CORBA::is_nil (receiver1.in ()))
 	{
-		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataReceiverTEST_1 Component."));
+		ACS_SHORT_LOG((LM_ERROR,"Could not retrieve BulkDataReceiverTEST_1 Component."));
 		return -1;
 	}
 
 	bulkdata::BulkDataReceiver_var receiver2 = client.get_object<bulkdata::BulkDataReceiver>(argv[3], 0, true);
 	if (CORBA::is_nil (receiver2.in ()))
 	{
-		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataReceiverTEST_2 Component."));
+		ACS_SHORT_LOG((LM_ERROR,"Could not retrieve BulkDataReceiverTEST_2 Component."));
 		return -1;
 	}
 
@@ -85,7 +87,7 @@ int main(int argc, char *argv[])
 	bulkdata::BulkDataSender_var sender = client.get_object<bulkdata::BulkDataSender>(argv[1], 0, true);
 	if (CORBA::is_nil (sender.in ()))
 	{
-		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataSenderTEST Component."));
+		ACS_SHORT_LOG((LM_ERROR,"Could not retrieve BulkDataSenderTEST Component."));
 		return -1;
 	}
 
@@ -98,7 +100,21 @@ int main(int argc, char *argv[])
 
 	sleep(4);
 //getchar();
+	ACS_SHORT_LOG((LM_INFO,"Let's first disconnect sender and close all receivers  (so we destroy all streams/flows)...."));
+	sender->disconnect();
+	receiver1->closeReceiver();
+	receiver2->closeReceiver();
 
+
+	sleep(4);
+	ACS_SHORT_LOG((LM_INFO,".... and after open all receivers and connect sender (we create again all streams/flows"));
+
+	receiver1->openReceiver();
+	receiver2->openReceiver();
+	sender->connect(receiver1.in()); //!! the receiver does not matter
+
+	sleep(4);
+	ACS_SHORT_LOG((LM_INFO,".... and and the end let's send data"));
 	//start_time = ACE_OS::gettimeofday(); // for performances test
 	sender->startSend();
 
@@ -128,7 +144,7 @@ int main(int argc, char *argv[])
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"UNKNOWN exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"UNKNOWN exception catched!"));
 	}
 
     //We release our component and logout from manager
