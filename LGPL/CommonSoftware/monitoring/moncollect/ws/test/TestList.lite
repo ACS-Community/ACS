@@ -13,8 +13,8 @@ PROLOGUE MCTestPrologue
 9 "MCtestDynamicSuppressAndEnable"  "acsutilTATTestRunner  mcTestDynSupEn MONITOR_COLLECTOR_TEST"
 #10 "MCtestManualPublish"  "acsutilTATTestRunner  mcTestManualPublish MONITOR_COLLECTOR_TEST"
 #11 "MCtestManualPublishOnSuppressed"  "acsutilTATTestRunner mcTestManualPublishOnSuppressed MONITOR_COLLECTOR_TEST"
-#12 "MCtestArchiveDelta"         "acsutilTATTestRunner mcTestArchiveDelta MONITOR_COLLECTOR_TEST"
-#13 "MCtestArchiveDeltaPercent"  "acsutilTATTestRunner mcTestArchiveDeltaPercent MONITOR_COLLECTOR_TEST"
+12 "MCtestArchiveDelta"         "acsutilTATTestRunner mcTestArchiveDelta MONITOR_COLLECTOR_TEST"
+13 "MCtestArchiveDeltaPercent"  "acsutilTATTestRunner mcTestArchiveDeltaPercent MONITOR_COLLECTOR_TEST"
 14 "MCtestAlarmsComponent"  "acsutilTATTestRunner  mcTestAlarmsComponent MONITOR_COLLECTOR_TEST"
 
 EPILOGUE acsutilTATEpilogue
