@@ -277,12 +277,12 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 	 * 
 	 * @param blobberInfo
 	 * @param skipKnownProblematicBlobber If <code>true</code> then we skip the blobber reference retrieval 
-	 *                                    if the last failure occurred less than 30 s ago.
+	 *                                    if the last failure occurred less than 3 s ago.
 	 */
 	protected void getBlobberRef(BlobberInfo blobberInfo, boolean skipKnownProblematicBlobber) {
 		synchronized (blobberInfo) {
 			if (blobberInfo.blobberRef == null) {
-				if (!skipKnownProblematicBlobber || !blobberInfo.hadRefRequestFailureWithinLastSec(30)) {
+				if (!skipKnownProblematicBlobber || !blobberInfo.hadRefRequestFailureWithinLastSec(3)) {
 					try {
 						blobberInfo.blobberRef = getBlobberRefFromContainerServices(blobberInfo.blobberName);
 						blobberInfo.lastRefRequestFailedTimeMillis = -1;
