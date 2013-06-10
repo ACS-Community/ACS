@@ -82,6 +82,9 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 
 	receiverStream_m->removeFlowFromMap(flowName_m.c_str());
 
+	// remove QoS from DDS factory if any
+	receiverStream_m->removeDDSQoSProfile(rcvCfg_m);
+
 	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
 	DDS::DomainParticipant *participant = receiverStream_m->getDDSParticipant();
 	if (participant!=0)

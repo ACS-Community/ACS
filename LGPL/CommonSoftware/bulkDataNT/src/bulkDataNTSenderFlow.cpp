@@ -99,7 +99,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
   callback_m->setStreamName(streamName.c_str());
   callback_m->setFlowName(flowName);
 
-  senderStream->addDDSQoSProfile(sndCfg);
+  senderStream_m->addDDSQoSProfile(senderFlowCfg_m);
 
   // should be reactor to have just one object for communication !! DDSDataWriter or similar
   ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
@@ -135,6 +135,9 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 	std::string streamName = senderStream_m->getName();
 	// no matter what happen we remove flow from the map
 	senderStream_m->removeFlowFromMap(flowName_m.c_str());
+
+	// remove QoS from DDS factory if any
+	senderStream_m->removeDDSQoSProfile(senderFlowCfg_m);
 
 	ret = ACSBulkData::BulkDataNTFrameTypeSupport::delete_data(frame_m);
 	if (ret != DDS::RETCODE_OK) {
