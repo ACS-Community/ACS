@@ -59,8 +59,10 @@ public class ViewCoordinator
 		// but here we simply overwrite any previously applied filters
 		// including another AntennaNameFilter
 		FiltersVector filters = new FiltersVector();
-		filters.add(filter);
-		filters.activateFilter(filter, true);
+		if (filter != null) {
+			filters.add(filter);
+			filters.activateFilter(filter, true);
+		}
 
 		boolean shouldAppend = false;
 		// The following call would need to be sync'd if we had not disabled the user filter menu / button.
