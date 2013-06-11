@@ -88,6 +88,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
 import com.cosylab.logging.settings.FilterChooserDialog;
 import com.cosylab.logging.stats.StatsDlg;
+import com.cosylab.logging.viewcoordination.ViewCoordinator;
 
 /**
  * Defines a JRootPane Application LoggingClient for displaying event logs 
@@ -782,7 +783,7 @@ MessageWidgetListener
 	/**
 	 * Update the label of the filtering of the table
 	 */
-	protected void setTableFilterLbl() {
+	public void setTableFilterLbl() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (logEntryTable.getFilters().hasActiveFilters()) {
@@ -2023,5 +2024,18 @@ MessageWidgetListener
 		navigationToolbar.setEnabled(true);
 		menuBar.setEnabled(true);
 	}
+	
+	/**
+	 * Single ViewCoordinator instance, created on demand. 
+	 */
+	private ViewCoordinator viewCoord;
+
+	public ViewCoordinator getViewCoordinator() {
+		if (viewCoord == null) {
+			viewCoord = new ViewCoordinator(this, logEntryTable);
+		}
+		return viewCoord;
+	}
+
 }
 

@@ -30,11 +30,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.ProgressMonitor;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
@@ -42,16 +44,16 @@ import javax.swing.event.RowSorterEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.ListSelectionModel;
-import javax.swing. DefaultListSelectionModel;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.FieldChooserDialog;
+import com.cosylab.logging.viewcoordination.ViewCoordinator;
+import com.cosylab.logging.viewcoordination.ViewCoordinator.SingleLogSelectionListener;
 
 import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.archive.zoom.ZoomProgressListener;
@@ -120,6 +122,8 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 * The total number of files to read while zooming
 	 */
 	private int zoomTotFiles;
+	
+	private volatile SingleLogSelectionListener listener;
 
 	/**
 	 * Popup menu used to display the column options for the table.
@@ -717,6 +721,8 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
 			boolean extend) {
 		super.changeSelection(rowIndex, columnIndex, toggle, extend);
+
+		SingleLogSelectionListener listenerCopy = listener; // to avoid concurrency issues
 		if (rowIndex!=-1 && !toggle && !extend) {
 			LogTableDataModel model =(LogTableDataModel)getModel();
 			ILogEntry log = model.getVisibleLogEntry(convertRowIndexToModel(rowIndex));
@@ -724,9 +730,27 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 			selecteViewdRow=rowIndex;
 			selecteModelRow=convertRowIndexToModel(rowIndex);
 			selecteLogKey=((LogTableDataModel)getModel()).getLogKey(selecteModelRow);
+			
+			if (listenerCopy != null && log != null) {
+				listenerCopy.notifyLogSelected(log);
+			}
+		}
+		else {
+			// Multiple line selection etc all mean 'deselection' for our SingleLogSelectionListener
+			if (listenerCopy != null) {
+				listenerCopy.notifyLogSelected(null);
+			}
 		}
 	}
 	
+	/**
+	 * This is used only by {@link ViewCoordinator}. 
+	 */
+	public void setLogSelectionListener(SingleLogSelectionListener listener) {
+		this.listener = listener;
+	}
+	
+
 	/**
 	 * Scroll the table to the next selected row and select it.
 	 * <P> 
