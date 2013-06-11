@@ -22,7 +22,10 @@
  */
 package alma.acs.monitoring.blobber;
 import java.lang.reflect.Constructor;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -65,6 +68,19 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 
 	protected AlarmSource alarmSource;
 	
+	/**
+	 * There have been problems with slow blobber activation (http://ictjira.alma.cl/browse/ICT-462).
+	 * Note that also non-ACS code gets run (plugin, DAOs, JMX setup and possibly invocations).
+	 * During startup we feed this map with "activity" - "time elapsed in ns" pairs and log a single profiling message
+	 * in the end of {@link #execute()}.
+	 * @see #logComponentActivationTimes()
+	 */
+	protected Map<String, Long> componentActivationTimesNanosMap = new LinkedHashMap<String, Long>();
+	
+	/**
+	 * Similar to {@link #componentActivationTimesNanosMap}, but used to compute the total component activation.
+	 */
+	protected long componentActivationStartNanos;
 	
     //////////////////////////////////////
     ///////// ComponentLifecycle /////////
@@ -82,21 +98,31 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 */
 	@Override
 	public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
+		long now = System.nanoTime();
+		componentActivationStartNanos = now;
 		super.initialize(inContainerServices);
+		componentActivationTimesNanosMap.put("super init", System.nanoTime() - now);
 
+		now = System.nanoTime();
 		alarmSource = inContainerServices.getAlarmSource();
-		
 		// clear alarm that might have been left active from a previous run
 		alarmSource.clearAlarm("Monitoring", "MonitorArchiver", 2); // @TODO use component-specific alarm triplet
+		componentActivationTimesNanosMap.put("alarm init", System.nanoTime() - now);
 
 		try {
+			now = System.nanoTime();
 			blobberPlugin = createBlobberPlugin();
+			componentActivationTimesNanosMap.put("plugin creation", System.nanoTime() - now);
+			now = System.nanoTime();
 			blobberPlugin.init();
+			componentActivationTimesNanosMap.put("plugin init", System.nanoTime() - now);
 
 			collectorIntervalSec = blobberPlugin.getCollectorIntervalSec();
 			m_logger.finer("Instantiated blobber plugin object.");
 			// Create the blobber runnable (worker)
+			now = System.nanoTime();
 			this.myWorker = createWorker(blobberPlugin);
+			componentActivationTimesNanosMap.put("worker creation", System.nanoTime() - now);
 			m_logger.finer("Instantiated blobber worker object.");
 		} catch (AcsJCouldntCreateObjectEx ex) {
 			alarmSource.raiseAlarm("Monitoring", "MonitorArchiver", 2);
@@ -106,6 +132,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 		// In case this blobber is restarting after a shutdown while collectors were still assigned, 
 		// we ask the controller to add these otherwise lost collectors.
 		ControllerOperations controller = null;
+		now = System.nanoTime();
 		try {
 			controller = ControllerHelper.narrow(m_containerServices
 				.getDefaultComponent("IDL:alma/MonitorArchiver/Controller:1.0"));
@@ -119,6 +146,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 				m_containerServices.releaseComponent(controller.name(), null);
 			}
 		}
+		componentActivationTimesNanosMap.put("controller handshake", System.nanoTime() - now);
 	}
 
 	/**
@@ -154,13 +182,36 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 */
 	@Override
 	public void execute() {
+		long now = System.nanoTime();
 		blobberLoopRunner = new ThreadLoopRunner(this.myWorker, collectorIntervalSec, TimeUnit.SECONDS, 
 				m_containerServices.getThreadFactory(), m_logger, name());
 		blobberLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_RATE);
 		blobberLoopRunner.runLoop();
+		componentActivationTimesNanosMap.put("start worker", System.nanoTime() - now);
 		m_logger.info("BlobberWorker thread loop is running.");
+		logComponentActivationTimes();
 	}
 
+	/**
+	 * Creates an INFO log from the times collected in {@link #componentActivationTimesNanosMap}
+	 * and then nulls that map.
+	 */
+	protected void logComponentActivationTimes() {
+		if (componentActivationTimesNanosMap != null && m_logger.isLoggable(Level.INFO)) {
+			String msg = "Elapsed times in ms to activate blobber '" + name() + "': ";
+			for (String activityName : componentActivationTimesNanosMap.keySet()) {
+				long timeElapsedMillis = TimeUnit.NANOSECONDS.toMillis(
+						componentActivationTimesNanosMap.get(activityName) );
+				msg += activityName + " = " + timeElapsedMillis + ", ";
+			}
+			long totalMillis = TimeUnit.NANOSECONDS.toMillis(
+					System.nanoTime() - componentActivationStartNanos );
+			msg += "Total = " + totalMillis;
+			m_logger.info(msg);
+		}
+		componentActivationTimesNanosMap = null;
+		componentActivationStartNanos = -1;
+	}
 	
 	/**
 	 * Stops the blobber loop, but does not forcibly stop the running blobber.
