@@ -4,6 +4,8 @@ import org.omg.CORBA.Any;
 
 import alma.TMCDB.MonitorBlob;
 import alma.TMCDB.MonitorDataBlock;
+import alma.TMCDB.booleanSeqBlobData;
+import alma.TMCDB.booleanSeqBlobDataSeqHelper;
 import alma.TMCDB.doubleBlobData;
 import alma.TMCDB.doubleBlobDataSeqHelper;
 import alma.TMCDB.doubleSeqBlobData;
@@ -39,6 +41,10 @@ import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.monitoring.DAO.ComponentData;
 
+import alma.acs.monitoring.blobber.BlobberWorker.AnyDataContainer;
+
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Tests the BlobberImpl and BlobberWorker classes, using local instances instead of running these
@@ -1176,9 +1182,639 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
                 + (startTime3 + 4) + "|25|" + (startTime3 + 5) + "|26|"
                 + (startTime3 + 6) + "|27|" + (startTime3 + 7) + "|28|"
                 + (startTime3 + 8) + "|29|" + (startTime3 + 9) + "|20\n";
-        checkData(data, clob, 10, componentName, propertyName, serialNumber,
-                startTime3, stopTime3);
+        checkData(data, clob, 10, componentName, propertyName, serialNumber, startTime3, stopTime3);
         checkStatistics(data);
+    }
+
+    /**
+     * Test of loadMonitorPointName and getMpResolver methods
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testLoadMonitorPointName() {
+        TestBlobberWorker worker = getTestWorker();
+        assertNotNull(worker);
+        worker.loadMonitorPointName();
+        assertNotNull(worker.getMpResolver());
+    }
+    
+    /**
+     * Test of extractData method
+     * doubleBlobDataSeq
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testExtractData_doubleBlobDataSeq() throws Exception {
+        String componentName = "CONTROL/DV01/PSA";
+        String serialNumber = "3456328928847";
+        String propertyName = "MODULE_MODE_STATUS";
+
+	Any any = create_any();
+        any.type(doubleBlobDataSeqHelper.type());
+        double[] doubleDataArray = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
+        doubleBlobData[] doubleBlobDataArray = createDoubleBlobData(doubleDataArray);
+        doubleBlobDataSeqHelper.insert(any, doubleBlobDataArray);
+        MonitorBlob blob = new MonitorBlob(false, (short) 0, null, "wrong:" + propertyName, any);
+
+        MonitorBlob[] blobs = new MonitorBlob[1];
+        blobs[0] = blob;
+
+        long startTime = BASE_TIME + 100;
+        long stopTime = BASE_TIME + 101;
+        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+        MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
+
+        // Feeds the above test data to the mock monitor collector
+        getTestWorker().getCollector().setMonitorData(blocks);
+
+        // Reads data for the 4 properties from the test blobber worker.
+        // Fetching the data blocks until data arrives from the mock collector in the next blobber cycle.
+        m_logger.info("Will wait for blobber worker to read data from collector.");
+        ComponentData componentData = getTestWorker().fetchData();
+        String clob =
+          BASE_TIME + "|1.0|" +
+          (BASE_TIME + 1) + "|2.0|" +
+          (BASE_TIME + 2) + "|3.0|" +
+          (BASE_TIME + 3) + "|4.0|" +
+          (BASE_TIME + 4) + "|5.0|" +
+          (BASE_TIME + 5) + "|6.0|" +
+          (BASE_TIME + 6) + "|7.0|" +
+          (BASE_TIME + 7) + "|8.0|" +
+          (BASE_TIME + 8) + "|9.0|" +
+          (BASE_TIME + 9) + "|10.0\n";
+        checkData(componentData, clob, 10, componentName, propertyName, serialNumber, startTime, stopTime);
+        m_logger.info("Validated collector data retrieved from blobber worker.");
+
+	// Create the expected result
+        doubleBlobData[] blobDataMatrix = new doubleBlobData[10];
+        blobDataMatrix[0] = new doubleBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new Double(1.0);
+        blobDataMatrix[1] = new doubleBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new Double(2.0);
+        blobDataMatrix[2] = new doubleBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new Double(3.0);
+        blobDataMatrix[3] = new doubleBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new Double(4.0);
+        blobDataMatrix[4] = new doubleBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new Double(5.0);
+        blobDataMatrix[5] = new doubleBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new Double(6.0);
+        blobDataMatrix[6] = new doubleBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new Double(7.0);
+        blobDataMatrix[7] = new doubleBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new Double(8.0);
+        blobDataMatrix[8] = new doubleBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new Double(9.0);
+        blobDataMatrix[9] = new doubleBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new Double(10.0);
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (doubleBlobData blobData : blobDataMatrix)
+            getTestWorker().populateContainerNumeric(container, blobData.time, (Number) blobData.value, index);
+        outList.add(container);
+
+	// Gets the real result
+        List<AnyDataContainer> resultList = getTestWorker().extractData(any, propertyName);
+
+        assertNotNull(resultList);
+        assertEquals(outList, resultList);
+    }
+
+    /**
+     * Test of extractData method
+     * doubleSeqBlobDataSeq
+     * monitorPointUnique
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testExtractData_doubleSeqBlobData_monitorPointUnique() throws Exception {
+        String componentName = "CONTROL/DV01/PSA";
+        String serialNumber = "3456328928847";
+        String propertyName = "MODULE_MODE_STATUS";
+
+        Any any = create_any();
+        double[] doubleData1Array = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
+        double[] doubleData2Array = { 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0 };
+        double[] doubleData3Array = { 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0 };
+        double[][] doubleDataMatrix = { doubleData1Array, doubleData2Array, doubleData3Array };
+        String[] serialNumbers = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        doubleSeqBlobData[] doubleSeqBlobDataArray = createDoubleSeqBlobData(doubleDataMatrix);
+        doubleSeqBlobDataSeqHelper.insert(any, doubleSeqBlobDataArray);
+        MonitorBlob blob = new MonitorBlob(false, (short) 0, serialNumbers, "wrong:" + propertyName, any);
+
+        MonitorBlob[] blobs = new MonitorBlob[1];
+        blobs[0] = blob;
+
+        long startTime = BASE_TIME + 100;
+        long stopTime = BASE_TIME + 101;
+        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+        MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
+
+        // Feeds the above test data to the mock monitor collector
+        getTestWorker().getCollector().setMonitorData(blocks);
+
+        // Reads data for the 4 properties from the test blobber worker.
+        // Fetching the data blocks until data arrives from the mock collector in the next blobber cycle.
+        m_logger.info("Will wait for blobber worker to read data from collector.");
+        ComponentData componentData = getTestWorker().fetchData();
+        String clob =
+          BASE_TIME + "|1.0 11.0 21.0|" +
+          (BASE_TIME + 1) + "|2.0 12.0 22.0|" +
+          (BASE_TIME + 2) + "|3.0 13.0 23.0|" +
+          (BASE_TIME + 3) + "|4.0 14.0 24.0|" +
+          (BASE_TIME + 4) + "|5.0 15.0 25.0|" +
+          (BASE_TIME + 5) + "|6.0 16.0 26.0|" +
+          (BASE_TIME + 6) + "|7.0 17.0 27.0|" +
+          (BASE_TIME + 7) + "|8.0 18.0 28.0|" +
+          (BASE_TIME + 8) + "|9.0 19.0 29.0|" +
+          (BASE_TIME + 9) + "|10.0 20.0 30.0\n";
+        checkData(componentData, clob, 10, componentName, propertyName, serialNumber, startTime, stopTime);
+        m_logger.info("Validated collector data retrieved from blobber worker.");
+
+        // Create the expected result
+        doubleSeqBlobData[] blobDataMatrix = new doubleSeqBlobData[10];
+        blobDataMatrix[0] = new doubleSeqBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new double[3];
+        blobDataMatrix[0].value[0] = 1.0;
+        blobDataMatrix[0].value[1] = 11.0;
+        blobDataMatrix[0].value[2] = 21.0;
+        blobDataMatrix[1] = new doubleSeqBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new double[3];
+        blobDataMatrix[1].value[0] = 2.0;
+        blobDataMatrix[1].value[1] = 12.0;
+        blobDataMatrix[1].value[2] = 22.0;
+        blobDataMatrix[2] = new doubleSeqBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new double[3];
+        blobDataMatrix[2].value[0] = 3.0;
+        blobDataMatrix[2].value[1] = 13.0;
+        blobDataMatrix[2].value[2] = 23.0;
+        blobDataMatrix[3] = new doubleSeqBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new double[3];
+        blobDataMatrix[3].value[0] = 4.0;
+        blobDataMatrix[3].value[1] = 14.0;
+        blobDataMatrix[3].value[2] = 24.0;
+        blobDataMatrix[4] = new doubleSeqBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new double[3];
+        blobDataMatrix[4].value[0] = 5.0;
+        blobDataMatrix[4].value[1] = 15.0;
+        blobDataMatrix[4].value[2] = 25.0;
+        blobDataMatrix[5] = new doubleSeqBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new double[3];
+        blobDataMatrix[5].value[0] = 6.0;
+        blobDataMatrix[5].value[1] = 16.0;
+        blobDataMatrix[5].value[2] = 26.0;
+        blobDataMatrix[6] = new doubleSeqBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new double[3];
+        blobDataMatrix[6].value[0] = 7.0;
+        blobDataMatrix[6].value[1] = 17.0;
+        blobDataMatrix[6].value[2] = 27.0;
+        blobDataMatrix[7] = new doubleSeqBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new double[3];
+        blobDataMatrix[7].value[0] = 8.0;
+        blobDataMatrix[7].value[1] = 18.0;
+        blobDataMatrix[7].value[2] = 28.0;
+        blobDataMatrix[8] = new doubleSeqBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new double[3];
+        blobDataMatrix[8].value[0] = 9.0;
+        blobDataMatrix[8].value[1] = 19.0;
+        blobDataMatrix[8].value[2] = 29.0;
+        blobDataMatrix[9] = new doubleSeqBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new double[3];
+        blobDataMatrix[9].value[0] = 10.0;
+        blobDataMatrix[9].value[1] = 20.0;
+        blobDataMatrix[9].value[2] = 30.0;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (doubleSeqBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+        List<AnyDataContainer> resultList = getTestWorker().extractData(any, propertyName);
+
+        assertNotNull(resultList);
+        assertEquals(outList, resultList);
+    }
+
+    /**
+     * Test of extractData method
+     * floatBlobDataSeq
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testExtractData_floatBlobDataSeq() throws Exception {
+        String componentName = "CONTROL/DV01/PSA";
+        String serialNumber = "3456328928847";
+        String propertyName = "MODULE_MODE_STATUS";
+
+        Any any = create_any();
+        any.type(floatBlobDataSeqHelper.type());
+        float[] floatDataArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        floatBlobData[] floatBlobDataArray = createFloatBlobData(floatDataArray);
+        floatBlobDataSeqHelper.insert(any, floatBlobDataArray);
+        MonitorBlob blob = new MonitorBlob(false, (short) 0, null, "wrong:" + propertyName, any);
+
+        MonitorBlob[] blobs = new MonitorBlob[1];
+        blobs[0] = blob;
+
+        long startTime = BASE_TIME + 100;
+        long stopTime = BASE_TIME + 101;
+        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+        MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
+
+        // Feeds the above test data to the mock monitor collector
+        getTestWorker().getCollector().setMonitorData(blocks);
+
+        // Reads data for the 4 properties from the test blobber worker.
+        // Fetching the data blocks until data arrives from the mock collector in the next blobber cycle.
+        m_logger.info("Will wait for blobber worker to read data from collector.");
+        ComponentData componentData = getTestWorker().fetchData();
+        String clob =
+          BASE_TIME + "|1.0|" +
+          (BASE_TIME + 1) + "|2.0|" +
+          (BASE_TIME + 2) + "|3.0|" +
+          (BASE_TIME + 3) + "|4.0|" +
+          (BASE_TIME + 4) + "|5.0|" +
+          (BASE_TIME + 5) + "|6.0|" +
+          (BASE_TIME + 6) + "|7.0|" +
+          (BASE_TIME + 7) + "|8.0|" +
+          (BASE_TIME + 8) + "|9.0|" +
+          (BASE_TIME + 9) + "|10.0\n";
+        checkData(componentData, clob, 10, componentName, propertyName, serialNumber, startTime, stopTime);
+        m_logger.info("Validated collector data retrieved from blobber worker.");
+
+        // Create the expected result
+        floatBlobData[] blobDataMatrix = new floatBlobData[10];
+        blobDataMatrix[0] = new floatBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new Float(1.0);
+        blobDataMatrix[1] = new floatBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new Float(2.0);
+        blobDataMatrix[2] = new floatBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new Float(3.0);
+        blobDataMatrix[3] = new floatBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new Float(4.0);
+        blobDataMatrix[4] = new floatBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new Float(5.0);
+        blobDataMatrix[5] = new floatBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new Float(6.0);
+        blobDataMatrix[6] = new floatBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new Float(7.0);
+        blobDataMatrix[7] = new floatBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new Float(8.0);
+        blobDataMatrix[8] = new floatBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new Float(9.0);
+        blobDataMatrix[9] = new floatBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new Float(10.0);
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (floatBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumeric(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+        List<AnyDataContainer> resultList = getTestWorker().extractData(any, propertyName);
+
+        assertNotNull(resultList);
+        assertEquals(outList, resultList);
+    }
+
+    /**
+     * Test of extractData method
+     * floatSeqBlobDataSeq
+     * monitorPointUnique
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testExtractData_floatSeqBlobDataSeq_monitorPointUnique() throws Exception {
+        String componentName = "CONTROL/DV01/PSA";
+        String serialNumber = "3456328928847";
+        String propertyName = "MODULE_MODE_STATUS";
+
+        Any any = create_any();
+        float[] floatData1Array = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        float[] floatData2Array = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+        float[] floatData3Array = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+        float[][] floatDataMatrix = { floatData1Array, floatData2Array, floatData3Array };
+        String[] serialNumbers = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        floatSeqBlobData[] floatSeqBlobDataArray = createFloatSeqBlobData(floatDataMatrix);
+        floatSeqBlobDataSeqHelper.insert(any, floatSeqBlobDataArray);
+        MonitorBlob blob = new MonitorBlob(false, (short) 0, serialNumbers, "wrong:" + propertyName, any);
+
+        MonitorBlob[] blobs = new MonitorBlob[1];
+        blobs[0] = blob;
+
+        long startTime = BASE_TIME + 100;
+        long stopTime = BASE_TIME + 101;
+        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+        MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
+
+        // Feeds the above test data to the mock monitor collector
+        getTestWorker().getCollector().setMonitorData(blocks);
+
+        // Reads data for the 4 properties from the test blobber worker.
+        // Fetching the data blocks until data arrives from the mock collector in the next blobber cycle.
+        m_logger.info("Will wait for blobber worker to read data from collector.");
+        ComponentData componentData = getTestWorker().fetchData();
+        String clob =
+          BASE_TIME + "|1.0 11.0 21.0|" +
+          (BASE_TIME + 1) + "|2.0 12.0 22.0|" +
+          (BASE_TIME + 2) + "|3.0 13.0 23.0|" +
+          (BASE_TIME + 3) + "|4.0 14.0 24.0|" +
+          (BASE_TIME + 4) + "|5.0 15.0 25.0|" +
+          (BASE_TIME + 5) + "|6.0 16.0 26.0|" +
+          (BASE_TIME + 6) + "|7.0 17.0 27.0|" +
+          (BASE_TIME + 7) + "|8.0 18.0 28.0|" +
+          (BASE_TIME + 8) + "|9.0 19.0 29.0|" +
+          (BASE_TIME + 9) + "|10.0 20.0 30.0\n";
+        checkData(componentData, clob, 10, componentName, propertyName, serialNumber, startTime, stopTime);
+        m_logger.info("Validated collector data retrieved from blobber worker.");
+
+        // Create the expected result
+        floatSeqBlobData[] blobDataMatrix = new floatSeqBlobData[10];
+        blobDataMatrix[0] = new floatSeqBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new float[3];
+        blobDataMatrix[0].value[0] = 1;
+        blobDataMatrix[0].value[1] = 11;
+        blobDataMatrix[0].value[2] = 21;
+        blobDataMatrix[1] = new floatSeqBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new float[3];
+        blobDataMatrix[1].value[0] = 2;
+        blobDataMatrix[1].value[1] = 12;
+        blobDataMatrix[1].value[2] = 22;
+        blobDataMatrix[2] = new floatSeqBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new float[3];
+        blobDataMatrix[2].value[0] = 3;
+        blobDataMatrix[2].value[1] = 13;
+        blobDataMatrix[2].value[2] = 23;
+        blobDataMatrix[3] = new floatSeqBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new float[3];
+        blobDataMatrix[3].value[0] = 4;
+        blobDataMatrix[3].value[1] = 14;
+        blobDataMatrix[3].value[2] = 24;
+        blobDataMatrix[4] = new floatSeqBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new float[3];
+        blobDataMatrix[4].value[0] = 5;
+        blobDataMatrix[4].value[1] = 15;
+        blobDataMatrix[4].value[2] = 25;
+        blobDataMatrix[5] = new floatSeqBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new float[3];
+        blobDataMatrix[5].value[0] = 6;
+        blobDataMatrix[5].value[1] = 16;
+        blobDataMatrix[5].value[2] = 26;
+        blobDataMatrix[6] = new floatSeqBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new float[3];
+        blobDataMatrix[6].value[0] = 7;
+        blobDataMatrix[6].value[1] = 17;
+        blobDataMatrix[6].value[2] = 27;
+        blobDataMatrix[7] = new floatSeqBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new float[3];
+        blobDataMatrix[7].value[0] = 8;
+        blobDataMatrix[7].value[1] = 18;
+        blobDataMatrix[7].value[2] = 28;
+        blobDataMatrix[8] = new floatSeqBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new float[3];
+        blobDataMatrix[8].value[0] = 9;
+        blobDataMatrix[8].value[1] = 19;
+        blobDataMatrix[8].value[2] = 29;
+        blobDataMatrix[9] = new floatSeqBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new float[3];
+        blobDataMatrix[9].value[0] = 10;
+        blobDataMatrix[9].value[1] = 20;
+        blobDataMatrix[9].value[2] = 30;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (floatSeqBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+        List<AnyDataContainer> resultList = getTestWorker().extractData(any, propertyName);
+
+        assertNotNull(resultList);
+        assertEquals(outList, resultList);
+    }
+
+    /**
+     * Test of extractData method
+     * doubleSeqBlobDataSeq
+     * monitorPointNotUnique
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testExtractData_doubleSeqBlobData_monitorPointNotUnique() throws Exception {
+        String componentName = "CONTROL/DV01/PSA";
+        String serialNumber = "3456328928847";
+        String propertyName = "SYSTEM_STATUS";
+
+        Any any = create_any();
+        any.type(doubleBlobDataSeqHelper.type());
+        double[] doubleDataArray = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
+        doubleBlobData[] doubleBlobDataArray = createDoubleBlobData(doubleDataArray);
+        doubleBlobDataSeqHelper.insert(any, doubleBlobDataArray);
+        MonitorBlob blob = new MonitorBlob(false, (short) 0, null, "wrong:" + propertyName, any);
+
+        MonitorBlob[] blobs = new MonitorBlob[1];
+        blobs[0] = blob;
+
+        long startTime = BASE_TIME + 100;
+        long stopTime = BASE_TIME + 101;
+        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+        MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
+
+        // Feeds the above test data to the mock monitor collector
+        getTestWorker().getCollector().setMonitorData(blocks);
+
+        // Reads data for the 4 properties from the test blobber worker.
+        // Fetching the data blocks until data arrives from the mock collector in the next blobber cycle.
+        m_logger.info("Will wait for blobber worker to read data from collector.");
+        ComponentData componentData = getTestWorker().fetchData();
+        String clob =
+          BASE_TIME + "|1.0|" +
+          (BASE_TIME + 1) + "|2.0|" +
+          (BASE_TIME + 2) + "|3.0|" +
+          (BASE_TIME + 3) + "|4.0|" +
+          (BASE_TIME + 4) + "|5.0|" +
+          (BASE_TIME + 5) + "|6.0|" +
+          (BASE_TIME + 6) + "|7.0|" +
+          (BASE_TIME + 7) + "|8.0|" +
+          (BASE_TIME + 8) + "|9.0|" +
+          (BASE_TIME + 9) + "|10.0\n";
+        checkData(componentData, clob, 10, componentName, propertyName, serialNumber, startTime, stopTime);
+        m_logger.info("Validated collector data retrieved from blobber worker.");
+
+        // Create the expected result
+        doubleBlobData[] blobDataMatrix = new doubleBlobData[10];
+        blobDataMatrix[0] = new doubleBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new Double(1.0);
+        blobDataMatrix[1] = new doubleBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new Double(2.0);
+        blobDataMatrix[2] = new doubleBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new Double(3.0);
+        blobDataMatrix[3] = new doubleBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new Double(4.0);
+        blobDataMatrix[4] = new doubleBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new Double(5.0);
+        blobDataMatrix[5] = new doubleBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new Double(6.0);
+        blobDataMatrix[6] = new doubleBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new Double(7.0);
+        blobDataMatrix[7] = new doubleBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new Double(8.0);
+        blobDataMatrix[8] = new doubleBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new Double(9.0);
+        blobDataMatrix[9] = new doubleBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new Double(10.0);
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (doubleBlobData blobData : blobDataMatrix)
+            getTestWorker().populateContainerNumeric(container, blobData.time, (Number) blobData.value, index);
+        outList.add(container);
+
+        // Gets the real result
+        List<AnyDataContainer> resultList = getTestWorker().extractData(any, propertyName);
+
+        assertNotNull(resultList);
+        assertEquals(outList, resultList);
+    }
+
+    /**
+     * Test of extractData method
+     * longBlobDataSeq
+     *
+     * @author pmerino@alma.cl
+     */
+    public void testExtractData_longBlobDataSeq() throws Exception {
+        String componentName = "CONTROL/DV01/PSA";
+        String serialNumber = "3456328928847";
+        String propertyName = "VOLTAGE_MID_1";
+
+        Any any = create_any();
+        any.type(longBlobDataSeqHelper.type());
+        long[] longDataArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        longBlobData[] longBlobDataArray = createLongBlobData(longDataArray);
+        longBlobDataSeqHelper.insert(any, longBlobDataArray);
+        MonitorBlob blob = new MonitorBlob(false, (short) 0, null, "wrong:" + propertyName, any);
+
+        MonitorBlob[] blobs = new MonitorBlob[1];
+        blobs[0] = blob;
+
+        long startTime = BASE_TIME + 100;
+        long stopTime = BASE_TIME + 101;
+        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+        MonitorDataBlock[] blocks = new MonitorDataBlock[] {block};
+
+        // Feeds the above test data to the mock monitor collector
+        getTestWorker().getCollector().setMonitorData(blocks);
+
+        // Reads data for the 4 properties from the test blobber worker.
+        // Fetching the data blocks until data arrives from the mock collector in the next blobber cycle.
+        m_logger.info("Will wait for blobber worker to read data from collector.");
+        ComponentData componentData = getTestWorker().fetchData();
+        String clob =
+          BASE_TIME + "|1.0|" +
+          (BASE_TIME + 1) + "|2.0|" +
+          (BASE_TIME + 2) + "|3.0|" +
+          (BASE_TIME + 3) + "|4.0|" +
+          (BASE_TIME + 4) + "|5.0|" +
+          (BASE_TIME + 5) + "|6.0|" +
+          (BASE_TIME + 6) + "|7.0|" +
+          (BASE_TIME + 7) + "|8.0|" +
+          (BASE_TIME + 8) + "|9.0|" +
+          (BASE_TIME + 9) + "|10.0\n";
+        checkData(componentData, clob, 10, componentName, propertyName, serialNumber, startTime, stopTime);
+        m_logger.info("Validated collector data retrieved from blobber worker.");
+
+        // Create the expected result
+        longBlobData[] blobDataMatrix = new longBlobData[10];
+        blobDataMatrix[0] = new longBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = 1;
+        blobDataMatrix[1] = new longBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = 2;
+        blobDataMatrix[2] = new longBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = 3;
+        blobDataMatrix[3] = new longBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = 4;
+        blobDataMatrix[4] = new longBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = 5;
+        blobDataMatrix[5] = new longBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = 6;
+        blobDataMatrix[6] = new longBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = 7;
+        blobDataMatrix[7] = new longBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = 8;
+        blobDataMatrix[8] = new longBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = 9;
+        blobDataMatrix[9] = new longBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = 10;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (longBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumeric(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+        List<AnyDataContainer> resultList = getTestWorker().extractData(any, propertyName);
+
+        assertNotNull(resultList);
+        assertEquals(outList, resultList);
     }
 
     private void checkStatistics(ComponentData inData) {
@@ -1233,12 +1869,403 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
                 + inData.stopTime + "]\nExpected [" + stopTime
                 + "] (excluding [] in both statements.)";
     }
+    
+    /**
+     * Test the populateContainerNumericArray method
+     */
+    public void testPopulateContainerNumericArrayFloat() {
+        // Create the expected result
+        floatSeqBlobData[] blobDataMatrix = new floatSeqBlobData[10];
+        blobDataMatrix[0] = new floatSeqBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new float[3];
+        blobDataMatrix[0].value[0] = 1;
+        blobDataMatrix[0].value[1] = 11;
+        blobDataMatrix[0].value[2] = 21;
+        blobDataMatrix[1] = new floatSeqBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new float[3];
+        blobDataMatrix[1].value[0] = 2;
+        blobDataMatrix[1].value[1] = 12;
+        blobDataMatrix[1].value[2] = 22;
+        blobDataMatrix[2] = new floatSeqBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new float[3];
+        blobDataMatrix[2].value[0] = 3;
+        blobDataMatrix[2].value[1] = 13;
+        blobDataMatrix[2].value[2] = 23;
+        blobDataMatrix[3] = new floatSeqBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new float[3];
+        blobDataMatrix[3].value[0] = 4;
+        blobDataMatrix[3].value[1] = 14;
+        blobDataMatrix[3].value[2] = 24;
+        blobDataMatrix[4] = new floatSeqBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new float[3];
+        blobDataMatrix[4].value[0] = 5;
+        blobDataMatrix[4].value[1] = 15;
+        blobDataMatrix[4].value[2] = 25;
+        blobDataMatrix[5] = new floatSeqBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new float[3];
+        blobDataMatrix[5].value[0] = 6;
+        blobDataMatrix[5].value[1] = 16;
+        blobDataMatrix[5].value[2] = 26;
+        blobDataMatrix[6] = new floatSeqBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new float[3];
+        blobDataMatrix[6].value[0] = 7;
+        blobDataMatrix[6].value[1] = 17;
+        blobDataMatrix[6].value[2] = 27;
+        blobDataMatrix[7] = new floatSeqBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new float[3];
+        blobDataMatrix[7].value[0] = 8;
+        blobDataMatrix[7].value[1] = 18;
+        blobDataMatrix[7].value[2] = 28;
+        blobDataMatrix[8] = new floatSeqBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new float[3];
+        blobDataMatrix[8].value[0] = 9;
+        blobDataMatrix[8].value[1] = 19;
+        blobDataMatrix[8].value[2] = 29;
+        blobDataMatrix[9] = new floatSeqBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new float[3];
+        blobDataMatrix[9].value[0] = 10;
+        blobDataMatrix[9].value[1] = 20;
+        blobDataMatrix[9].value[2] = 30;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (floatSeqBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+        
+        assertEquals("1 11 21", container.dataList.get(0));
+        assertEquals("2 12 22", container.dataList.get(1));
+        assertEquals("3 13 23", container.dataList.get(2));
+        assertEquals("4 14 24", container.dataList.get(3));
+        assertEquals("5 15 25", container.dataList.get(4));
+        assertEquals("6 16 26", container.dataList.get(5));
+        assertEquals("7 17 27", container.dataList.get(6));
+        assertEquals("8 18 28", container.dataList.get(7));
+        assertEquals("9 19 29", container.dataList.get(8));
+        assertEquals("10 20 30", container.dataList.get(9));
+        assertEquals(BASE_TIME + "|1 11 21|" +
+            (BASE_TIME + 1) + "|2 12 22|" +
+            (BASE_TIME + 2) + "|3 13 23|" +
+            (BASE_TIME + 3) + "|4 14 24|" +
+            (BASE_TIME + 4) + "|5 15 25|" +
+            (BASE_TIME + 5) + "|6 16 26|" +
+            (BASE_TIME + 6) + "|7 17 27|" +
+            (BASE_TIME + 7) + "|8 18 28|" +
+            (BASE_TIME + 8) + "|9 19 29|" +
+            (BASE_TIME + 9) + "|10 20 30|", container.clobBuilder);
+    }
+
+    public void testPopulateContainerNumericArrayDouble() {
+        // Create the expected result
+        doubleSeqBlobData[] blobDataMatrix = new doubleSeqBlobData[10];
+        blobDataMatrix[0] = new doubleSeqBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new double[3];
+        blobDataMatrix[0].value[0] = 1.0;
+        blobDataMatrix[0].value[1] = 11.0;
+        blobDataMatrix[0].value[2] = 21.0;
+        blobDataMatrix[1] = new doubleSeqBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new double[3];
+        blobDataMatrix[1].value[0] = 2.0;
+        blobDataMatrix[1].value[1] = 12.0;
+        blobDataMatrix[1].value[2] = 22.0;
+        blobDataMatrix[2] = new doubleSeqBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new double[3];
+        blobDataMatrix[2].value[0] = 3.0;
+        blobDataMatrix[2].value[1] = 13.0;
+        blobDataMatrix[2].value[2] = 23.0;
+        blobDataMatrix[3] = new doubleSeqBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new double[3];
+        blobDataMatrix[3].value[0] = 4.0;
+        blobDataMatrix[3].value[1] = 14.0;
+        blobDataMatrix[3].value[2] = 24.0;
+        blobDataMatrix[4] = new doubleSeqBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new double[3];
+        blobDataMatrix[4].value[0] = 5.0;
+        blobDataMatrix[4].value[1] = 15.0;
+        blobDataMatrix[4].value[2] = 25.0;
+        blobDataMatrix[5] = new doubleSeqBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new double[3];
+        blobDataMatrix[5].value[0] = 6.0;
+        blobDataMatrix[5].value[1] = 16.0;
+        blobDataMatrix[5].value[2] = 26.0;
+        blobDataMatrix[6] = new doubleSeqBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new double[3];
+        blobDataMatrix[6].value[0] = 7.0;
+        blobDataMatrix[6].value[1] = 17.0;
+        blobDataMatrix[6].value[2] = 27.0;
+        blobDataMatrix[7] = new doubleSeqBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new double[3];
+        blobDataMatrix[7].value[0] = 8.0;
+        blobDataMatrix[7].value[1] = 18.0;
+        blobDataMatrix[7].value[2] = 28.0;
+        blobDataMatrix[8] = new doubleSeqBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new double[3];
+        blobDataMatrix[8].value[0] = 9.0;
+        blobDataMatrix[8].value[1] = 19.0;
+        blobDataMatrix[8].value[2] = 29.0;
+        blobDataMatrix[9] = new doubleSeqBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new double[3];
+        blobDataMatrix[9].value[0] = 10.0;
+        blobDataMatrix[9].value[1] = 20.0;
+        blobDataMatrix[9].value[2] = 30.0;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (doubleSeqBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+
+        assertEquals("1.0 11.0 21.0", container.dataList.get(0));
+        assertEquals("2.0 12.0 22.0", container.dataList.get(1));
+        assertEquals("3.0 13.0 23.0", container.dataList.get(2));
+        assertEquals("4.0 14.0 24.0", container.dataList.get(3));
+        assertEquals("5.0 15.0 25.0", container.dataList.get(4));
+        assertEquals("6.0 16.0 26.0", container.dataList.get(5));
+        assertEquals("7.0 17.0 27.0", container.dataList.get(6));
+        assertEquals("8.0 18.0 28.0", container.dataList.get(7));
+        assertEquals("9.0 19.0 29.0", container.dataList.get(8));
+        assertEquals("10.0 20.0 30.0", container.dataList.get(9));
+        assertEquals(BASE_TIME + "|1.0 11.0 21.0|" +
+            (BASE_TIME + 1) + "|2.0 12.0 22.0|" +
+            (BASE_TIME + 2) + "|3.0 13.0 23.0|" +
+            (BASE_TIME + 3) + "|4.0 14.0 24.0|" +
+            (BASE_TIME + 4) + "|5.0 15.0 25.0|" +
+            (BASE_TIME + 5) + "|6.0 16.0 26.0|" +
+            (BASE_TIME + 6) + "|7.0 17.0 27.0|" +
+            (BASE_TIME + 7) + "|8.0 18.0 28.0|" +
+            (BASE_TIME + 8) + "|9.0 19.0 29.0|" +
+            (BASE_TIME + 9) + "|10.0 20.0 30.0|", container.clobBuilder);
+    }
+    
+    public void testPopulateContainerNumericArrayLong() {
+        // Create the expected result
+        longSeqBlobData[] blobDataMatrix = new longSeqBlobData[10];
+        blobDataMatrix[0] = new longSeqBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new int[3];
+        blobDataMatrix[0].value[0] = 1;
+        blobDataMatrix[0].value[1] = 11;
+        blobDataMatrix[0].value[2] = 21;
+        blobDataMatrix[1] = new longSeqBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new int[3];
+        blobDataMatrix[1].value[0] = 2;
+        blobDataMatrix[1].value[1] = 12;
+        blobDataMatrix[1].value[2] = 22;
+        blobDataMatrix[2] = new longSeqBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new int[3];
+        blobDataMatrix[2].value[0] = 3;
+        blobDataMatrix[2].value[1] = 13;
+        blobDataMatrix[2].value[2] = 23;
+        blobDataMatrix[3] = new longSeqBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new int[3];
+        blobDataMatrix[3].value[0] = 4;
+        blobDataMatrix[3].value[1] = 14;
+        blobDataMatrix[3].value[2] = 24;
+        blobDataMatrix[4] = new longSeqBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new int[3];
+        blobDataMatrix[4].value[0] = 5;
+        blobDataMatrix[4].value[1] = 15;
+        blobDataMatrix[4].value[2] = 25;
+        blobDataMatrix[5] = new longSeqBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new int[3];
+        blobDataMatrix[5].value[0] = 6;
+        blobDataMatrix[5].value[1] = 16;
+        blobDataMatrix[5].value[2] = 26;
+        blobDataMatrix[6] = new longSeqBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new int[3];
+        blobDataMatrix[6].value[0] = 7;
+        blobDataMatrix[6].value[1] = 17;
+        blobDataMatrix[6].value[2] = 27;
+        blobDataMatrix[7] = new longSeqBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new int[3];
+        blobDataMatrix[7].value[0] = 8;
+        blobDataMatrix[7].value[1] = 18;
+        blobDataMatrix[7].value[2] = 28;
+        blobDataMatrix[8] = new longSeqBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new int[3];
+        blobDataMatrix[8].value[0] = 9;
+        blobDataMatrix[8].value[1] = 19;
+        blobDataMatrix[8].value[2] = 29;
+        blobDataMatrix[9] = new longSeqBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new int[3];
+        blobDataMatrix[9].value[0] = 10;
+        blobDataMatrix[9].value[1] = 20;
+        blobDataMatrix[9].value[2] = 30;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (longSeqBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+
+        assertEquals("1 11 21", container.dataList.get(0));
+        assertEquals("2 12 22", container.dataList.get(1));
+        assertEquals("3 13 23", container.dataList.get(2));
+        assertEquals("4 14 24", container.dataList.get(3));
+        assertEquals("5 15 25", container.dataList.get(4));
+        assertEquals("6 16 26", container.dataList.get(5));
+        assertEquals("7 17 27", container.dataList.get(6));
+        assertEquals("8 18 28", container.dataList.get(7));
+        assertEquals("9 19 29", container.dataList.get(8));
+        assertEquals("10 20 30", container.dataList.get(9));
+        assertEquals(BASE_TIME + "|1 11 21|" +
+            (BASE_TIME + 1) + "|2 12 22|" +
+            (BASE_TIME + 2) + "|3 13 23|" +
+            (BASE_TIME + 3) + "|4 14 24|" +
+            (BASE_TIME + 4) + "|5 15 25|" +
+            (BASE_TIME + 5) + "|6 16 26|" +
+            (BASE_TIME + 6) + "|7 17 27|" +
+            (BASE_TIME + 7) + "|8 18 28|" +
+            (BASE_TIME + 8) + "|9 19 29|" +
+            (BASE_TIME + 9) + "|10 20 30|", container.clobBuilder);
+    }
+
+    public void testPopulateContainerNumericArrayBoolean() {
+        // Create the expected result
+        booleanSeqBlobData[] blobDataMatrix = new booleanSeqBlobData[10];
+        blobDataMatrix[0] = new booleanSeqBlobData();
+        blobDataMatrix[0].time = BASE_TIME;
+        blobDataMatrix[0].value = new boolean[3];
+        blobDataMatrix[0].value[0] = true;
+        blobDataMatrix[0].value[1] = false;
+        blobDataMatrix[0].value[2] = false;
+        blobDataMatrix[1] = new booleanSeqBlobData();
+        blobDataMatrix[1].time = BASE_TIME + 1;
+        blobDataMatrix[1].value = new boolean[3];
+        blobDataMatrix[1].value[0] = true;
+        blobDataMatrix[1].value[1] = true;
+        blobDataMatrix[1].value[2] = false;
+        blobDataMatrix[2] = new booleanSeqBlobData();
+        blobDataMatrix[2].time = BASE_TIME + 2;
+        blobDataMatrix[2].value = new boolean[3];
+        blobDataMatrix[2].value[0] = true;
+        blobDataMatrix[2].value[1] = true;
+        blobDataMatrix[2].value[2] = true;
+        blobDataMatrix[3] = new booleanSeqBlobData();
+        blobDataMatrix[3].time = BASE_TIME + 3;
+        blobDataMatrix[3].value = new boolean[3];
+        blobDataMatrix[3].value[0] = false;
+        blobDataMatrix[3].value[1] = true;
+        blobDataMatrix[3].value[2] = false;
+        blobDataMatrix[4] = new booleanSeqBlobData();
+        blobDataMatrix[4].time = BASE_TIME + 4;
+        blobDataMatrix[4].value = new boolean[3];
+        blobDataMatrix[4].value[0] = false;
+        blobDataMatrix[4].value[1] = true;
+        blobDataMatrix[4].value[2] = true;
+        blobDataMatrix[5] = new booleanSeqBlobData();
+        blobDataMatrix[5].time = BASE_TIME + 5;
+        blobDataMatrix[5].value = new boolean[3];
+        blobDataMatrix[5].value[0] = false;
+        blobDataMatrix[5].value[1] = false;
+        blobDataMatrix[5].value[2] = true;
+        blobDataMatrix[6] = new booleanSeqBlobData();
+        blobDataMatrix[6].time = BASE_TIME + 6;
+        blobDataMatrix[6].value = new boolean[3];
+        blobDataMatrix[6].value[0] = false;
+        blobDataMatrix[6].value[1] = false;
+        blobDataMatrix[6].value[2] = false;
+        blobDataMatrix[7] = new booleanSeqBlobData();
+        blobDataMatrix[7].time = BASE_TIME + 7;
+        blobDataMatrix[7].value = new boolean[3];
+        blobDataMatrix[7].value[0] = false;
+        blobDataMatrix[7].value[1] = false;
+        blobDataMatrix[7].value[2] = true;
+        blobDataMatrix[8] = new booleanSeqBlobData();
+        blobDataMatrix[8].time = BASE_TIME + 8;
+        blobDataMatrix[8].value = new boolean[3];
+        blobDataMatrix[8].value[0] = true;
+        blobDataMatrix[8].value[1] = false;
+        blobDataMatrix[8].value[2] = true;
+        blobDataMatrix[9] = new booleanSeqBlobData();
+        blobDataMatrix[9].time = BASE_TIME + 9;
+        blobDataMatrix[9].value = new boolean[3];
+        blobDataMatrix[9].value[0] = true;
+        blobDataMatrix[9].value[1] = true;
+        blobDataMatrix[9].value[2] = true;
+        List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        AnyDataContainer container = new AnyDataContainer();
+        int index = 0;
+        for (booleanSeqBlobData blobDataArray : blobDataMatrix)
+            getTestWorker().populateContainerBooleanArray(container, blobDataArray.time, blobDataArray.value, index);
+        outList.add(container);
+
+        assertEquals("1 0 0", container.dataList.get(0));
+        assertEquals("1 1 0", container.dataList.get(1));
+        assertEquals("1 1 1", container.dataList.get(2));
+        assertEquals("0 1 0", container.dataList.get(3));
+        assertEquals("0 1 1", container.dataList.get(4));
+        assertEquals("0 0 1", container.dataList.get(5));
+        assertEquals("0 0 1", container.dataList.get(6));
+        assertEquals("0 0 1", container.dataList.get(7));
+        assertEquals("1 0 1", container.dataList.get(8));
+        assertEquals("1 1 1", container.dataList.get(9));
+        assertEquals(BASE_TIME + "|1 0 0|" +
+            (BASE_TIME + 1) + "|1 1 0|" +
+            (BASE_TIME + 2) + "|1 1 1|" +
+            (BASE_TIME + 3) + "|0 1 0|" +
+            (BASE_TIME + 4) + "|0 1 1|" +
+            (BASE_TIME + 5) + "|0 0 1|" +
+            (BASE_TIME + 6) + "|0 0 0|" +
+            (BASE_TIME + 7) + "|0 0 1|" +
+            (BASE_TIME + 8) + "|1 0 1|" +
+            (BASE_TIME + 9) + "|1 1 1|", container.clobBuilder);
+    }
 
     private doubleBlobData[] createDoubleBlobData(double[] inValue) {
         doubleBlobData[] outArray = new doubleBlobData[inValue.length];
         int index = 0;
         for (double value : inValue) {
             outArray[index] = new doubleBlobData(BASE_TIME + index, value);
+            index++;
+        }
+        return outArray;
+    }
+
+    private floatBlobData[] createFloatBlobData(float[] inValue) {
+        floatBlobData[] outArray = new floatBlobData[inValue.length];
+        int index = 0;
+        for (float value : inValue) {
+            outArray[index] = new floatBlobData(BASE_TIME + index, value);
+            index++;
+        }
+        return outArray;
+    }
+
+    private longBlobData[] createLongBlobData(long[] inValue) {
+        longBlobData[] outArray = new longBlobData[inValue.length];
+        int index = 0;
+        for (long value : inValue) {
+            outArray[index] = new longBlobData(BASE_TIME + index, (new Long(value)).intValue());
             index++;
         }
         return outArray;
@@ -1254,8 +2281,21 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         return array;
     }
 
+    private floatSeqBlobData[] createFloatSeqBlobData(float[][] inValue) {
+        floatSeqBlobData[] array = new floatSeqBlobData[inValue.length];
+        int index = 0;
+        for (float[] value : inValue) {
+            array[index] = new floatSeqBlobData(BASE_TIME + index, value);
+            index++;
+        }
+        return array;
+    }
+
     private Any create_any() {
     	return getContainerServices().getAdvancedContainerServices().getAny();
 	}
-
+    
+    public static void main(String[] args) {
+       junit.textui.TestRunner.run(BlobberWorkerUnitTest.class);
+    }
 }
