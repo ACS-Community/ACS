@@ -439,6 +439,20 @@ public:
 		* Gets the Container Services reference
 		*/
 	 ContainerServices* getContainerServices();
+	 
+	 	
+	/** Get SimpleClient instance pointer
+	 * Please note that the SimpleClient is not yet implemented as 
+	 * a singleton. You'll still get troubles if you instantiate
+	 * several SimpleClient instances in the same process and you shall not do that.
+	 * In that case, the getInstance function will return the first 
+	 * created instance, unless it was destroyed in the mean time.
+	 * @return SimpleClient instance pointer or 0 if there is no SimpleClient instance
+	 */
+	static SimpleClient * getInstance()
+	{
+		return m_simpleClientInstance;
+	}
 
   /* ----------------------------------------------------------------*/
   /* ------------------ [ CORBA Client interface ] ------------------*/
@@ -557,6 +571,10 @@ private:
 
   /// The name of the process
   static ACE_CString m_processName;
+  
+  /// The Simple Client pointer
+  /// This is the pointer to the first simple client instance created by the process
+  static maci::SimpleClient * m_simpleClientInstance;
 
   /// threads' standard start-up hook
   maci::SimpleClientThreadHook m_simpleClientThreadHook;

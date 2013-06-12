@@ -69,6 +69,8 @@ using namespace baci;
 // Init the static logger
 LoggingProxy* SimpleClient::m_logger=0;
 ACE_CString SimpleClient::m_processName("");
+// Init the SimpleClient instance;
+SimpleClient * SimpleClient::m_simpleClientInstance = 0;
 
 SimpleClient::SimpleClient ():
     m_handle(0),
@@ -87,6 +89,14 @@ SimpleClient::SimpleClient ():
   m_poaRoot = m_poaPersistent = PortableServer::POA::_nil();
 
   BACIThread::setInitializers(SimpleClient::initThread, SimpleClient::doneThread);
+  if(m_simpleClientInstance == 0) 
+  {
+  	m_simpleClientInstance = this;
+  } 
+  //else
+  //{
+  	// TODO (?) Throw an exception??
+  //}
 }
 
 SimpleClient::~SimpleClient ()
@@ -94,7 +104,10 @@ SimpleClient::~SimpleClient ()
   if (m_loggedin)
   	logout();
   destroy();
-
+  if(m_simpleClientInstance == this) 
+  {
+    m_simpleClientInstance = 0;
+  }
 }
 
 int
