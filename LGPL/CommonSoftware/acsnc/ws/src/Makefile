@@ -64,7 +64,7 @@ acsnc_OBJECTS  = acsncCDBProperties \
                  acsncServiceChecker acsncReconnectionCallback \
                  acsncCircularQueue
 
-acsnc_LIBS     = pthread rt ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS logging RepeatGuard acstime maci basenc TAO_CosNotification_MC_Ext
+acsnc_LIBS     = pthread rt ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS logging RepeatGuard acstime maci maciClient basenc TAO_CosNotification_MC_Ext
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
 acsncServiceChecker_LIBS = acsnc maciClient

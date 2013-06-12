@@ -38,6 +38,8 @@ class HelperTest: public Helper{
     static ACE_Thread_Mutex m_tester_mutex;
     static bool m_useMutex;
 
+    virtual const char* getNotificationFactoryName() { return Helper::getNotificationFactoryName(); }
+
     //bool resolveInternalNotificationChannel();
 
     HelperTest(const char*, int, char**);

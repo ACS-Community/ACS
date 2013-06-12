@@ -25,6 +25,7 @@
 
 #include "acsncCDBProperties.h"
 #include <maciContainerImpl.h>
+#include <maciSimpleClient.h>
 
 static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.12 2008/07/27 15:09:30 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
@@ -37,6 +38,8 @@ namespace nc {
 	//initialize return value to 0
 	CDB::DAL_var retVal = 0;
 	
+	// TODO (?): Store the CDB reference in a static field to optimize
+	
 	//use a nice little trick to get at the CDB reference
 	if ((maci::ContainerImpl::getContainer() != 0) && 
 	    (maci::ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
@@ -47,10 +50,17 @@ namespace nc {
 	    }
 	else
 	    {
-	    ACS_STATIC_SHORT_LOG((LM_ERROR,
-				 "CDBProperties::getCDB",
-				 "Container ref null."));
-	    }
+			if (maci::SimpleClient::getInstance() != 0)
+			{
+				retVal = maci::SimpleClient::getInstance()->getContainerServices()->getCDB();
+			}
+			else
+			{		
+		    	ACS_STATIC_SHORT_LOG((LM_ERROR,
+						 "CDBProperties::getCDB",
+						 "Container and SimpleClient refs null."));
+			}
+		}
 	return retVal._retn();
     }
     //------------------------------------------------------

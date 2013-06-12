@@ -89,6 +89,7 @@ static void creation_worker_with_domain (void* param)
     helper = new nc::HelperTest(channelName3.c_str(), domainName1.c_str(), 3, myCache );
     try{
         helper->createNotificationChannel();
+		// ACS_SHORT_LOG((LM_ERROR,"NC factory name for '%s@%s' = '%s' as created for thread '%s'",channelName3.c_str(), domainName1.c_str(), helper->getNotificationFactoryName(), myself->getName().c_str()));
         if(helper->resolveNotifyChannel()){
             //log with error level to show on ref file (default level is 5)
             ACS_SHORT_LOG((LM_ERROR,"NC '%s@%s' was created for thread '%s'",channelName3.c_str(), domainName1.c_str(), myself->getName().c_str()));
@@ -142,7 +143,7 @@ static void get_or_creation_worker (void* param)
     		ACS_SHORT_LOG((LM_ERROR,"NC '%s' was created/resolved for thread %s",channelName2.c_str(), myself->getName().c_str()));
     	}
     }catch(NotifyMonitoringExt::NameAlreadyUsed e){
-    	ACS_SHORT_LOG((LM_ERROR,"NC '%s@%s' couldn't be created for thread '%s'",channelName2.c_str(), domainName1.c_str(), myself->getName().c_str()));
+    	ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created for thread '%s'",channelName2.c_str(), myself->getName().c_str()));
     } catch (NotifyMonitoringExt::NameMapError e){
     	ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created for thread '%s': Name Map Error!",channelName2.c_str(), myself->getName().c_str()));
     } catch (CORBAProblemEx){
@@ -187,6 +188,7 @@ static void get_or_creation_worker_with_domain (void* param)
     snprintf(myCache[2],1000,"NameService=corbaloc::%s:3001",hostname);
     helper = new nc::HelperTest(channelName4.c_str(), alarmDomain.c_str(), 3, myCache );
     try {
+    	ACS_SHORT_LOG((LM_ERROR,"NC factory name for '%s@%s' = '%s' as created for thread '%s'",channelName4.c_str(), alarmDomain.c_str(), helper->getNotificationFactoryName(), myself->getName().c_str()));
     	if(!helper->resolveInternalNotificationChannel()){
     		ACS_SHORT_LOG((LM_ERROR,"NC '%s@%s' couldn't be created nor resolved for thread '%s'", channelName4.c_str(), alarmDomain.c_str(), myself->getName().c_str()));
     	}else{
