@@ -311,7 +311,7 @@
 1 - ----------T--:--:--.--- [MACI_EXCEPTION_CLEAN - ] Throwing an exception in cleanUp
 1 - ----------T--:--:--.--- [Container01-GL - ACSComponentImpl::__cleanUp] Life cycle error (type=28, code=0)
 1 - ----------T--:--:--.--- [Container01-GL - DynamicTestClassImpl::cleanUp() test exception] Life cycle error (type=28, code=0)
-1 - ----------T--:--:--.--- [Container01-GL - virtual void maci::ContainerImpl::deactivate_component(maci::Handle)] May be thrown by the component lifecycle method 'cleanUp'. (type=25, code=18)
+1 - ----------T--:--:--.--- [Container01-GL - virtual void maci::ContainerImpl::deactivate_component(maci::Handle)] May be thrown by the component lifecycle method 'cleanUp'. (type=25, code=17)
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_EXCEPTION_CLEAN: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
