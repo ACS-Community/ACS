@@ -468,6 +468,15 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSDaemonCont
             return failed.returnCompletion(false);
         }
         ACS_SHORT_LOG((LM_INFO, "Requesting to remotely %s '%s'.", request_type == START_SERVICE ? "start" : "stop", acsServices[service].xmltag));
+
+        // propagate configuration to other deamons
+        acsdaemon::ServicesDaemon_var daemon = acsdaemon::ServicesDaemon::_narrow(obj.in());
+        if (!CORBA::is_nil(daemon.in())) {
+        	daemon = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, daemon.in());
+            ACS_SHORT_LOG((LM_DEBUG, "Propagating configuration for instance %d to '%s'.", instance_number, corbaloc));
+            daemon->set_configuration_reference(instance_number, context->getConfigurationReference(instance_number));
+        }
+
         switch (service) {
         case NAMING_SERVICE: {
             acsdaemon::NamingServiceSpell_var spell = acsdaemon::NamingServiceSpell::_narrow(obj.in());
