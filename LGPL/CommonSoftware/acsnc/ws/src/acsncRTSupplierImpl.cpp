@@ -156,6 +156,27 @@ RTSupplier::worker(void* param_p)
                         }
                     }
                 }
+                catch(ACSErr::ACSbaseExImpl &_ex) //ACS exception ?
+                {
+                	char strlog[1024];
+                	Logging::Logger::LoggerSmartPtr logger = getLogger();
+                	sprintf(strlog, " %s channel - problem (ACSErr::ACSbaseEXImpl) publishing a saved event!",
+                			supplier_p->channelName_mp);
+                	supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+                			strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+                	supplier_p->rtSupGuardex->log(_ex);
+                	supplier_p->unpublishedEvents_m.front().tries++;
+                	//Use the callback to to notify the user that the message is dropped
+                	if(supplier_p->unpublishedEvents_m.front().tries > 5){
+                		struct unpublishedEventData data =
+                				supplier_p->unpublishedEvents_m.front();
+                		supplier_p->unpublishedEvents_m.pop();
+                		if(data.callback != NULL){
+                			::CORBA::Any event = data.event.filterable_data[0].value;
+                			data.callback->eventDropped(&event);
+                		}
+                	}
+                }
                 catch(CORBA::SystemException &ex)
                 {
                     //tbd: we have to improve here the erro handling. Now we print out more that is necessary
