@@ -312,7 +312,12 @@ int main(int argc, char* argv[])
 		ACS_SHORT_LOG((LM_INFO, "Broadcasting to all threads"));
 		nc::HelperTest::m_tester_condition.broadcast();
 	}
-    ACE_OS::sleep(30);
+
+	// here we wait that threads do smth + that manager can conntact the simple client
+	ACE_Time_Value tv;
+	tv.sec(30);
+    c.run(tv);
+
 
     ACS_SHORT_LOG((LM_INFO, "Stopping."));
 
@@ -321,14 +326,15 @@ int main(int argc, char* argv[])
 
     ACS_SHORT_LOG((LM_INFO, "Stopped."));
 
-    ACE_OS::sleep(5);
+    tv.sec(5);
+    c.run(tv);
 
     /********************/
 
     ACS_SHORT_LOG((LM_INFO, "Deleting Thread manager."));
 
     delete threadManager_p;
-
+    c.logout();
     ACS_SHORT_LOG((LM_INFO, "Done."));
     g_logger = 0;
     LoggingProxy::done();
