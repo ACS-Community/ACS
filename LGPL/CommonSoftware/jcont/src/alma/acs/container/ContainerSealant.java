@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.DATA_CONVERSION;
+import org.omg.CORBA.SystemException;
 import org.omg.CORBA.UserException;
 
 import alma.ACS.ACSComponentOperations;
@@ -200,9 +201,14 @@ public class ContainerSealant
 				else {
 					logger.log(Level.WARNING, "Unexpected exception was thrown in functional method '" + qualMethodName
 							+ "': ", realThr);
-					// Wrapping our ex with CORBA.UNKNOWN changes the subsequent log from jacorb from Emergency to Info level.
-					// The client would in any case see an UNKNOWN ex. See http://jira.alma.cl/browse/COMP-1846.
-					throw new org.omg.CORBA.UNKNOWN(realThr.toString());
+					if (realThr instanceof SystemException) {
+						throw realThr;
+					}
+					else {
+						// Wrapping our ex with CORBA.UNKNOWN changes the subsequent log from jacorb from Emergency to Info level.
+						// The client would in any case see an UNKNOWN ex. See http://jira.alma.cl/browse/COMP-1846.
+						throw new org.omg.CORBA.UNKNOWN(realThr.toString());
+					}
 				}
 			}
 			
