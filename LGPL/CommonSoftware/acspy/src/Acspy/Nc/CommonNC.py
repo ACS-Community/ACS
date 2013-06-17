@@ -47,6 +47,9 @@ from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
 
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR
+from acscommon import ARCHIVING_CHANNEL_NAME
+from acscommon import LOGGING_CHANNEL_NAME
+from acscommon import LOGGING_CHANNEL_XML_NAME
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -79,6 +82,11 @@ class CommonNC:
         #name of the channel we'll be working with
         self.channelName = str(channelname) 
         #domainname of the channel we'll be working with
+        #
+        # If the domain name is None then we assign a default here.
+        # however for ACS NCs we do not have to register with a domain 
+        # so we override this default while building the channel name in
+        # combineChannelAndDomainName
         if domainname is None:
             self.domainName = NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
         else:
@@ -92,9 +100,21 @@ class CommonNC:
         #create the reconnection callback
         self.channel_factory = None
         self.callback = ReconnectionCallback(self)
+        print "CommonNC",self.channelName,self.component,self.domainName
     #------------------------------------------------------------------------------
     def combineChannelAndDomainName(self):
-        return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
+        # From ACS 12.0 the system NCs have no domain so for those only we 
+        # we do not append "NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT"
+        #
+        # the system NCs i refer to are those whose name is defined in acscommon.idl
+        if self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==ARCHIVING_CHANNEL_NAME:
+            return self.channelName
+        elif self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_NAME:
+            return self.channelName
+        elif self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_XML_NAME:
+            return self.channelName
+        else:
+            return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
     #------------------------------------------------------------------------------
     def configQofS(self):
         '''
