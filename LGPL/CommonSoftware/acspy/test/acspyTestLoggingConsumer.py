@@ -25,8 +25,15 @@
 ###############################################################################
 '''
 Tests logging consumer
+
+The tests waits until a number of logs (passed in the command line) has been
+received.
+Note that these logs are produced by already running processes like the containers 
+so it can take and arbitrary time to complete...
 '''
 from Acspy.Nc.LoggingConsumer import LoggingConsumer
+from Acspy.Common.Log         import getLogger
+import Acspy.Clients
 from sys  import argv
 from time import sleep
 ###############################################################################
@@ -45,6 +52,13 @@ def myHandler(xml):
 #create the consumer
 myConsumer = LoggingConsumer(myHandler)
 myConsumer.consumerReady()
+
+# A SimpleClient is instantiated to produce logs and
+# limit the execution time and the dependency from non identified 
+# external processes that are supposed to produce logs
+logger = getLogger("acspyTestLoggingConsumerLogger")
+for i in range(magicNumber+1):
+    logger.logInfo('Log #'+str(i))
 
 while (count!=magicNumber):
     sleep(1)
