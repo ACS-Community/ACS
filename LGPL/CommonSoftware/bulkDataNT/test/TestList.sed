@@ -23,3 +23,5 @@ s/\/[a-z,A-Z,0-9,.,/,_,-]*\/config\/bulkDataNTDefaultQosProfiles.xml/----\/confi
 s/cbReceive(): [0-9,.]*s. What corresponds to throughput of: [0-9,.]*MB\/sec/cbReceive(): X.Ys. What corresponds to throughput of: Z.XXXMB\/sec/g
 s/sample rcv: [0-9]* ([0-9]*) HB: [0-9]* ([0-9]*) ACKs: [0-9]* ([0-9]*) NACKs: [0-9]* ([0-9]*) Rejected: 0/sample rcv: XX (YYYYY) HB: XX (YYYYY) ACKs: XX (YYYYY) NACKs: X (YY) Rejected: 0 /g
 s/HB: [0-9]* ([0-9]*) ACKs: [0-9]* ([0-9]*) NACKs: [0-9]* ([0-9]*)/HB: XX (YY) ACKs: XX (YY) NACKs: XX (YY)/g
+s/AvgProcessTimeoutSec="[0-9,.]*"/AvgProcessTimeoutSec="X.YZ"/g
+s/Throughput="[0-9,.]*"/Throughput="X.YZ"/g
