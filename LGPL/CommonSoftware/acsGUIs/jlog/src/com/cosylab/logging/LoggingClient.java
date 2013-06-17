@@ -1758,12 +1758,18 @@ MessageWidgetListener
 	
 	/**
 	 * Enable/disable the filter menu item and the filter button
-	 * in the tool bar
+	 * in the tool bar.
+	 * <p>
+	 * Calling this method overwrites the setting of the tool bar's "filtersBtn"
+	 * via {@link LogToolBar#setEnabled(boolean)}.
+	 * This feature is needed to disable this button when jlog runs inside the OMC,
+	 * because there we get calls to LogToolBar#setEnabled(true)
+	 * for every table update, menu opening etc.
 	 * 
 	 * @param enable true enables the widgets
 	 */
 	public void enableFiltersWidgets(boolean enable) {
-		toolBar.getFiltersBtn().setEnabled(enable);
+		toolBar.enableFiltersButtonOverwrite(enable);
 		menuBar.getFiltersMenuItem().setEnabled(enable);
 		menuBar.getEngineFiltersMenuItem().setEnabled(enable);
 	}

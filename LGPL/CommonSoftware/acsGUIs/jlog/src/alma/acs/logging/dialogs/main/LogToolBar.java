@@ -76,7 +76,8 @@ public class LogToolBar extends JToolBar {
      * The button to manage filters
      */
     private JButton filtersBtn;
-    
+	private Boolean filtersBtnEnabledOverwrite = null;
+
     /**
      * The button for zooming
      */
@@ -91,6 +92,8 @@ public class LogToolBar extends JToolBar {
      * The initial log level
      */
     private LogTypeHelper initialLogLevel;
+
+
     
 	/**
 	 * Constructor
@@ -331,9 +334,21 @@ public class LogToolBar extends JToolBar {
 		getLogLevelCB().setEnabled(enabled);
 		pauseBtn.setEnabled(enabled);
 		clearLogsBtn.setEnabled(enabled);
-		filtersBtn.setEnabled(enabled);
+		boolean filtersBtnEnabled = ( filtersBtnEnabledOverwrite != null ? filtersBtnEnabledOverwrite.booleanValue() : enabled );
+		filtersBtn.setEnabled(filtersBtnEnabled);
 		getDiscardLevelCB().setEnabled(enabled);
 		super.setEnabled(enabled);
+	}
+	
+	/**
+	 * This method allows to enable or disable the filters button, 
+	 * in a way that overwrites the setting from {@link #setEnabled(boolean)}.
+	 * @param enable <code>true</code>: filtersBtn is always enabled.
+	 *               <code>false</code>: filtersBtn is always disabled.
+	 *               <code>null</code>: No overwrites for filtersBtn.
+	 */
+	public void enableFiltersButtonOverwrite(Boolean enable) {
+		this.filtersBtnEnabledOverwrite = enable;
 	}
 	
 	/**
@@ -352,5 +367,5 @@ public class LogToolBar extends JToolBar {
 	public void setZoomable(boolean zoomable) {
 		zoomBtn.setEnabled(zoomable);
 	}
-	
+
 }

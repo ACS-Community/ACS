@@ -92,12 +92,13 @@ public class ViewCoordinator
 		logEntryTable.setLogSelectionListener(listener);
 	}
 
-	// this is currently handled in the OMC plugin code under EXEC, not here in jlog
-//	public void disableFiltersWidgets() {
-//		// We disable filters when running inside the OMC, because since http://ictjira.alma.cl/browse/ICT-113
-//		// the OMC can set filters to ensure "coordinated views" and there is currently no need
-//		// to implement complicated synchronization and filter merging between possibly concurrent
-//		// filter changes originating from the OMC and from the user filter dialogs.
-//		client.enableFiltersWidgets(false);
-//	}
+	/**
+	 * We disable filters when running inside the OMC, because since http://ictjira.alma.cl/browse/ICT-113
+	 * the OMC can set filters to ensure "coordinated views" and there is currently no need
+	 * to implement complicated synchronization and filter merging between possibly concurrent
+	 * filter changes originating from the OMC and from the user filter dialogs.
+	 */
+	public void disableFiltersWidgets() {
+		client.enableFiltersWidgets(false);
+	}
 }
