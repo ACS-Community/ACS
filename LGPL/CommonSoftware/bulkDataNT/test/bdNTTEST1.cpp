@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
     sleep(1);
     
     client.logout();
-    sleep(1);
+    sleep(5);
 
     //   ACS_SHORT_LOG((LM_INFO,"Sleeping 3 sec to allow everything to cleanup and stabilize"));
     //   ACE_OS::sleep(3);
