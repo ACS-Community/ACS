@@ -26,6 +26,7 @@
 
 import ACSJMSMessageEntity_idl
 from Acspy.Nc.Supplier import Supplier
+from acsnc import ALARMSYSTEM_DOMAIN_NAME
 
 class AlarmPublisher(object):
     """
@@ -46,7 +47,10 @@ class AlarmPublisher(object):
 
         Raises:  Nothing
         """
-        self.supplier = Supplier(topicName, component, domain)
+        if domain is None:
+            self.supplier = Supplier(topicName, component, ALARMSYSTEM_DOMAIN_NAME)
+        else:
+            self.supplier = Supplier(topicName, component, domain)
 
 
     def __del__(self):
