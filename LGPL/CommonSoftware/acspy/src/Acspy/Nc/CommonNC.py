@@ -100,7 +100,6 @@ class CommonNC:
         #create the reconnection callback
         self.channel_factory = None
         self.callback = ReconnectionCallback(self)
-        print "CommonNC",self.channelName,self.component,self.domainName
     #------------------------------------------------------------------------------
     def combineChannelAndDomainName(self):
         # From ACS 12.0 the system NCs have no domain so for those only we 
