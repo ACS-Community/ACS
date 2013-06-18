@@ -1,4 +1,4 @@
 1 - ORBHelper::runORB the ORB is now running!
-1 - BaseHelper::getNotificationFactoryNameForChannel
+1 - BaseHelper::getNotificationFactoryNameForChannel: No CDB entry found for 'MACI/Channels' channel. OK.
 1 - Thread runOrbThread
 1 - Thread stopped:runOrbThread
