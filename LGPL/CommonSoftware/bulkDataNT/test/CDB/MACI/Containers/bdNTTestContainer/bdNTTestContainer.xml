@@ -7,5 +7,5 @@
 	<Autoload>
 		<cdb:_ string="baci" />
 	</Autoload>
-	<LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="10" immediateDispatchLevel="99" />
+	<LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99" />
 </Container>
