@@ -15,3 +15,4 @@ ACSAlarmSystemInterfaceFactory::createFaultState
 ACSAlarmSystemInterfaceFactory::createSource
 ACSAlarmSystemInterfaceFactory::initImplementationType
 ACSAlarmSystemInterfaceFactory::init
+recovery::RecoveryStore::load
