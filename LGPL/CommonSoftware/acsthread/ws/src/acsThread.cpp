@@ -133,9 +133,17 @@ void Thread::commonStart()
     	ex.setThreadName(getName());
     	throw ex;
     }
+    catch(std::exception &_ex)
+    {
+        ACSErrTypeCommon::StdExceptionExImpl stdEx(__FILE__, __LINE__, "ACS::Thread::commonStart");
+	stdEx.setWhat(_ex.what());
+	ExceptionInOnStartExImpl ex(stdEx, __FILE__, __LINE__, "ACS::Thread::commonStart");
+    	ex.setThreadName(getName());
+    	throw ex;
+    }
     catch(CORBA::SystemException &_ex)
     {
-		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+        ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
     								    "ACS::Thread::commonStart");
     	corbaProblemEx.setMinor(_ex.minor());
     	corbaProblemEx.setCompletionStatus(_ex.completed());
@@ -166,9 +174,17 @@ void Thread::commonStop()
     	ex.setThreadName(getName());
     	throw ex;
     }
+    catch(std::exception &_ex)
+    {
+        ACSErrTypeCommon::StdExceptionExImpl stdEx(__FILE__, __LINE__, "ACS::Thread::commonStop");
+	stdEx.setWhat(_ex.what());
+	ExceptionInOnStopExImpl ex(stdEx, __FILE__, __LINE__, "ACS::Thread::commonStop");
+    	ex.setThreadName(getName());
+    	throw ex;
+    }
     catch(CORBA::SystemException &_ex)
     {
-		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
     								    "ACS::Thread::commonStop");
     	corbaProblemEx.setMinor(_ex.minor());
     	corbaProblemEx.setCompletionStatus(_ex.completed());
@@ -242,6 +258,14 @@ void Thread::run()
 		ex.setThreadName(getName());
 		throw ex;
 	}
+        catch(std::exception &_ex)
+        {
+           ACSErrTypeCommon::StdExceptionExImpl stdEx(__FILE__, __LINE__, "ACS::Thread::runLoop");
+	   stdEx.setWhat(_ex.what());
+	   ExceptionInRunLoopExImpl ex(stdEx, __FILE__, __LINE__, "ACS::Thread::runLoop");
+	   ex.setThreadName(getName());
+	   throw ex;
+        }
 	catch(CORBA::SystemException &_ex)
 	{
 		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, "ACS::Thread::runLoop");
@@ -307,6 +331,13 @@ void Thread::threadSvc(void *param)
     {
     	ThreadExecutionProblemExImpl ex(_ex, __FILE__, __LINE__, "ACS::Thread::threadSvc");
     	ex.log();
+    }
+    catch(std::exception &_ex)
+    {
+        ACSErrTypeCommon::StdExceptionExImpl stdEx(__FILE__, __LINE__, "ACS::Thread::threadSvc");
+	stdEx.setWhat(_ex.what());
+        ThreadExecutionProblemExImpl ex(stdEx, __FILE__, __LINE__, "ACS::Thread::threadSvc");
+	ex.log();
     }
     catch(CORBA::SystemException &_ex)
     	{
