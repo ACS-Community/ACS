@@ -25,3 +25,4 @@ s/sample rcv: [0-9]* ([0-9]*) HB: [0-9]* ([0-9]*) ACKs: [0-9]* ([0-9]*) NACKs: [
 s/HB: [0-9]* ([0-9]*) ACKs: [0-9]* ([0-9]*) NACKs: [0-9]* ([0-9]*)/HB: XX (YY) ACKs: XX (YY) NACKs: XX (YY)/g
 s/AvgProcessTimeoutSec="[0-9,.]*"/AvgProcessTimeoutSec="X.YZ"/g
 s/Throughput="[0-9,.]*"/Throughput="X.YZ"/g
+s/waiting for ACKs: [0-9]*/waiting for ACKs: XY/g
