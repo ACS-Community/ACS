@@ -1510,10 +1510,10 @@ public class AcsContainer extends ContainerPOA
 		try {
 			stdoutLevel = AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(m_containerName).getMinLogLevelLocal());
 		} catch (AcsJIllegalArgumentEx ex) {
-			stdoutLevel = AcsLogLevelDefinition.INFO;
+			stdoutLevel = AcsLogLevelDefinition.DEBUG;
 			ex.printStackTrace();
 		}
-		if (stdoutLevel.compareTo(AcsLogLevelDefinition.INFO) <= 0) {
+		if (stdoutLevel.compareTo(AcsLogLevelDefinition.DEBUG) <= 0) {
 			Runtime rt = Runtime.getRuntime();
 			long totalMemKB = rt.totalMemory() / 1024;
 			long usedMemKB = totalMemKB - rt.freeMemory() / 1024;
