@@ -3737,9 +3737,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			m_logger.info("clear_cache(curl): ComponentsTable4");
 
 			String els[] = curl.split("/");
-			String rpath = "/*";
-			String rsubpath = "/*";
-			String rcpath = "/*";
+			String rpath = "^/*";
+			String rsubpath = "^/*";
+			String rcpath = "^/*";
 			String rcname = els[els.length - 1];
 			for (int i = 0; i < els.length; i++) {
 				rpath    += els[i];
@@ -3752,9 +3752,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						rcpath += "/+";
 				}
 			}
-			rpath    += "/*";
+			rpath    += "/*$";
 			rsubpath += "/+.*";
-			rcpath   += "/*";
+			rcpath   += "/*$";
 			
 			System.out.println(rpath);
 			System.out.println(rsubpath);
@@ -3919,9 +3919,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			m_logger.info("clear_cache(curl): ContainersTable3");
 			
 			String els[] = curl.split("/");
-			String rpath = "/*";
-			String rsubpath = "/*";
-			String rcpath = "/*";
+			String rpath = "^/*";
+			String rsubpath = "^/*";
+			String rcpath = "^/*";
 			String rcname = els[els.length - 1];
 			for (int i = 0; i < els.length; i++) {
 				rpath    += els[i];
@@ -3934,9 +3934,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						rcpath += "/+";
 				}
 			}
-			rpath    += "/*";
+			rpath    += "/*$";
 			rsubpath += "/+.*";
-			rcpath   += "/*";
+			rcpath   += "/*$";
 			
 			System.out.println(rpath);
 			System.out.println(rsubpath);
@@ -4155,9 +4155,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			m_logger.info("clear_cache(curl): ChannelsTable5");
 
 			String els[] = curl.split("/");
-			String rpath = "/*";
-			String rsubpath = "/*";
-			String rcpath = "/*";
+			String rpath = "^/*";
+			String rsubpath = "^/*";
+			String rcpath = "^/*";
 			String rcname = els[els.length - 1];
 			for (int i = 0; i < els.length; i++) {
 				rpath    += els[i];
@@ -4170,9 +4170,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						rcpath += "/+";
 				}
 			}
-			rpath    += "/*";
+			rpath    += "/*$";
 			rsubpath += "/+.*";
-			rcpath   += "/*";
+			rcpath   += "/*$";
 			
 			System.out.println(rpath);
 			System.out.println(rsubpath);
@@ -4295,9 +4295,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			schemaResourceResolverLoader.setSession(session);
 
 			String els[] = curl.split("/");
-			String rpath = "/*";
-			String rsubpath = "/*";
-			String rcpath = "/*";
+			String rpath = "^/*";
+			String rsubpath = "^/*";
+			String rcpath = "^/*";
 			String rcname = els[els.length - 1];
 			for (int i = 0; i < els.length; i++) {
 				rpath    += els[i];
@@ -4310,9 +4310,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						rcpath += "/+";
 				}
 			}
-			rpath    += "/*";
+			rpath    += "/*$";
 			rsubpath += "/+.*";
-			rcpath   += "/*";
+			rcpath   += "/*$";
 			
 			System.out.println(rpath);
 			System.out.println(rsubpath);
