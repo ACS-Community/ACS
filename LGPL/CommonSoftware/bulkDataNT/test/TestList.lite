@@ -13,11 +13,11 @@ PROLOGUE acsutilTATPrologue -noloadifr
 
 1 SenderReceiverTest "bdNTReceiverTest -f 00 -f 01 -w 10 -d 20000" "@SLEEP 10" "bdNTSenderTest -w 4"
 2 ConfigurationParser "bdNTConfigurationParserTest"
-3 ReceiverCompOpenCloseStream "acsutilTATTestRunner acsStartContainer -cpp newConfigRecvContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTReceiverImplClient" EPILOGUE "acsStopContainer newConfigRecvContainer"
-4 SendRecevCompTest "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataSenderTEST BulkDataReceiverTEST_1 BulkDataReceiverTEST_2" EPILOGUE "acsStopContainer bdNTTestContainer"
+3 ReceiverCompOpenCloseStream "acsutilTATTestRunner acsStartContainer -cpp newConfigRecvContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTReceiverImplClient" EPILOGUE "acsutilTATTestRunner acsStopContainer newConfigRecvContainer"
+4 SendRecevCompTest "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataSenderTEST BulkDataReceiverTEST_1 BulkDataReceiverTEST_2" EPILOGUE "acsutilTATTestRunner acsStopContainer bdNTTestContainer"
 5 MultipleReceiverStreams "bdNTMultiReceiversTest 35"
 
-# 6 SendRecevCompTestNew "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataNTSenderTEST BulkDataNTReceiverTEST_1 BulkDataNTReceiverTEST_2" EPILOGUE "acsStopContainer bdNTTestContainer"
+# 6 SendRecevCompTestNew "acsutilTATTestRunner acsStartContainer -cpp bdNTTestContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTTEST1 BulkDataNTSenderTEST BulkDataNTReceiverTEST_1 BulkDataNTReceiverTEST_2" EPILOGUE "acsutilTATTestRunner acsStopContainer bdNTTestContainer"
 
 # 7 GenReceiverSender-1 "bulkDataNTGenReceiver -n -s TS -f 00" "@SLEEP 3" "bulkDataNTGenSender -l 3 -b 640000 -s TS -f 00"
 
