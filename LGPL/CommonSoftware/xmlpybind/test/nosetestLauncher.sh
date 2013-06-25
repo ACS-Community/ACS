@@ -1,6 +1,7 @@
+#! /bin/sh
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) Associated Universities Inc., 2009 
+# Copyright (c) European Southern Observatory, 2013 
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,24 +17,22 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.4 2011/12/19 12:47:17 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# agrimstrup  2009-12-18  created
+# acaproni  2013-06-25  created
 #
 
-SOURCE xmlpybindTATEnvironment
+# This scripts avoids a dependency with ACS version in TestList.lite
+# where  nosetests was called with full path 
+# like "/alma/ACS-12.0/Python/bin/nosetests"
+#
+# This script instead gets the path of nosetests from $PYTHON_ROOT.
+# In other modules like acspy this is not needed because there is a ACS session 
+# already running and nosetests starts with a command like 
+# "acsutilTATTestRunner nosetests"
 
-#-------------------------------------------------------------------
-1	UnitTests	"nosetestLauncher.sh" 
+$PYTHON_ROOT/bin/nosetests
 
-2	EmptyConfig	"generateXsdPythonBinding EmptyConfig"
-
-3	BadFile		"generateXsdPythonBinding BadFileConfig"
-
-4	BadDir		"generateXsdPythonBinding BadDirConfig"
-
-5	NoSchema	"generateXsdPythonBinding NoSchema"
-
-6	GoodExample	"generateXsdPythonBinding TestBindingConfig"
+#
+# ___oOo___

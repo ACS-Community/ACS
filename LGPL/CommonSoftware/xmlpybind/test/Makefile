@@ -39,6 +39,8 @@
 PY_MODULES         =
 PY_MODULES_L       = test_generateXsdPythonBinding
 
+SCRIPTS_L = nosetestLauncher.sh
+
 #>>>>> END OF standard rules
 
 #
