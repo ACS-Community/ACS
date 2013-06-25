@@ -98,12 +98,12 @@ BaseHelper::BaseHelper(const char* channelName, const char* notifyServiceDomainN
     if (notifyServiceDomainName)
     {
         notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
-	    channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,notifyServiceDomainName_mp);
-	}
-	else
-	{
-		channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,"");
-	}
+        channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,notifyServiceDomainName_mp);
+    }
+    else
+    {
+        channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,"");
+    }
 }
 //-----------------------------------------------------------------------------
 BaseHelper::~BaseHelper()
@@ -431,9 +431,18 @@ std::string
 BaseHelper::combineChannelAndDomainName(const std::string & channelName,
 										const std::string & domainName)
 {
-	if(domainName.empty())
+	if(domainName.empty() || (domainName == acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT))
 	{
-		return std::string(channelName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
+		if ((channelName == acscommon::ARCHIVING_CHANNEL_NAME) ||
+		    (channelName==acscommon::LOGGING_CHANNEL_NAME) ||
+		    (channelName==acscommon::LOGGING_CHANNEL_XML_NAME))
+		{
+			return channelName;
+		}
+		else
+		{
+			return std::string(channelName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
+		}
 	}
 	else
 	{
