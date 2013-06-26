@@ -115,6 +115,13 @@ SimpleClient::destroy ()
 {
   int result = 0;
 
+  delete m_ContServ;
+  if (m_logger)
+  {
+    m_logger->flush();
+    m_logger->setCentralizedLogger(Logging::AcsLogService::_nil());
+  }
+
   //if (m_initialized)
   {
     /**
@@ -132,8 +139,6 @@ SimpleClient::destroy ()
   ACS_SHORT_LOG ((LM_DEBUG, "Client destroyed."));
 
   LoggingProxy::done();
-
-  delete m_ContServ;
   delete m_logger;
   m_logger =0;
   return result;
