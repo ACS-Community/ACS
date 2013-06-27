@@ -101,6 +101,7 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 		
 		model = new LogEntryTableModelBase(client);
 		table.setModel(model);
+		model.start();
 		initialize();
 		
 		// Instantiate the engine that push logs into the table

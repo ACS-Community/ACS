@@ -291,6 +291,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		// Set the table model
 		LogTableDataModel model= new LogTableDataModel(client);
 		setModel(model);
+		model.start();
 		
 		// Initialize the sorter (unsorted/unfiltered
 		rowSorter = new LogTableRowSorter(model);

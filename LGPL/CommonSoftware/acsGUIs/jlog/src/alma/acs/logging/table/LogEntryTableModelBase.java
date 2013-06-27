@@ -74,17 +74,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		
 		/**
 		 * Terminate the thread and frees the resources
-		 * 
-		 * @param sync If it is true wait the termination of the threads before returning
 		 */
 		public void close(boolean sync) {
 			terminateThread=true;
-			interrupt();
-			while (sync && isAlive()) {
-				try {
-					Thread.sleep(125);
-				} catch (InterruptedException e) {}
-			}
 		}
 		
 		/**
@@ -180,13 +172,19 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			lce.printStackTrace(System.err);
 			throw new Exception("Exception instantiating the cache: ",lce);
 		} 
-		
+	}
+	
+	/**
+	 * Start the thread to update the table model.
+	 * 
+	 * @see {@link LogEntryTableModelBase#tableUpdater}
+	 */
+	public void start() {
 		tableUpdater = new TableUpdater();
 		tableUpdater.setName("LogEntryTableModelBase.TableUpdater");
 		tableUpdater.setDaemon(true);
 		tableUpdater.start();
 	}
-	
 
 	/**
 	 * Return number of columns in table
@@ -516,6 +514,16 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		closed=true;
 		if (tableUpdater!=null) {
 			tableUpdater.close(sync);
+			tableUpdater.interrupt();
+			if (sync) {
+				try {
+					// We do not want to wait forever..
+					tableUpdater.join(10000);
+					if (tableUpdater.isAlive()) {
+						System.err.println("LogEntryTableModelBase.TableUpdater thread still alive!");
+					}
+				} catch (InterruptedException ie) {}
+			}
 			tableUpdater=null;
 		}
 		clearAll();
