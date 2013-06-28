@@ -93,7 +93,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = svnToChangeLog
+PY_SCRIPTS         = svnToChangeLog createExtProdTar
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
