@@ -20,10 +20,6 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.126 2013/02/25 11:39:03 hsommer Exp $"
-#
-#
-#
 # User specific environment and startup programs
 #
 # The following settings must be done before beginning the build 
@@ -161,7 +157,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=ACS-12.0
+   ALMASW_RELEASE=ACS-12.1
 fi
 
 # Combined absolute path where ACS software and tools are installed.
