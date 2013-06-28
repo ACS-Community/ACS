@@ -190,9 +190,9 @@ case $CL_NS_TYPE in
     NOTIFY_SERVICE_PORT=`getLoggingNotifyServicePort`
     if [ "$ACS_LOG_BIN" = "true" ]
     then 
-      export LOGGING_CHANNEL=LoggingChannelBin
+      export LOGGING_CHANNEL=LoggingChannelBin   # must match LOGGING_CHANNEL_NAME from acscommon.idl
     else
-      export LOGGING_CHANNEL=LoggingChannel
+      export LOGGING_CHANNEL=LoggingChannel      # must match LOGGING_CHANNEL_XML_NAME from acscommon.idl
     fi
     NOTIFY_EVENT_CHANNEL=$LOGGING_CHANNEL
     NOTIFY_EVENT_CHANNEL_FACTORY=LoggingNotifyEventChannelFactory
@@ -202,7 +202,7 @@ case $CL_NS_TYPE in
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
     NOTIFY_SERVICE_PORT=`getArchiveNotifyServicePort`
-    NOTIFY_EVENT_CHANNEL=ArchivingChannel
+    NOTIFY_EVENT_CHANNEL=ArchivingChannel   # must match ARCHIVING_CHANNEL_NAME from acscommon.idl
     NOTIFY_EVENT_CHANNEL_FACTORY=ArchiveNotifyEventChannelFactory
   ;; "Alarm"|"AlarmNotifyEventChannelFactory")
     CL_NS_TYPE="Alarm"
@@ -210,7 +210,7 @@ case $CL_NS_TYPE in
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_IORFILE
     NOTIFY_SERVICE_PORT=`getAlarmNotifyServicePort`
-    NOTIFY_EVENT_CHANNEL=AlarmChannel
+    NOTIFY_EVENT_CHANNEL=
     NOTIFY_EVENT_CHANNEL_FACTORY=AlarmNotifyEventChannelFactory
   ;; *)
     CL_NS_TYPE=`echo $CL_NS_TYPE | sed s/NotifyEventChannelFactory$//g`
@@ -218,7 +218,7 @@ case $CL_NS_TYPE in
     NOTIFY_OUT="$INSTANCE_DIR/$ACS_OUT_DIR/${CL_NS_TYPE}_NotifyService.out"
     NOTIFY_IOR="$INSTANCE_DIR/$ACS_IOR_DIR/${CL_NS_TYPE}_NotifyServiceIOR"
     NOTIFY_SERVICE_PORT=`acsstartupNotifyPort $CL_NS_TYPE`
-    NOTIFY_EVENT_CHANNEL="${CL_NS_TYPE}Channel"
+    NOTIFY_EVENT_CHANNEL=
     NOTIFY_EVENT_CHANNEL_FACTORY="${CL_NS_TYPE}NotifyEventChannelFactory"
   ;;
 esac
@@ -329,7 +329,7 @@ then
   ORBOPTS="$ORBOPTS -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf"
 
   # Start notification as another script including Naming Service registration
-  # "export" first (to avoid passing lots of parameters) and the call the script
+  # "export" first (to avoid passing lots of parameters) and then call the script
   export HOST
   export ORBOPTS
   export INSTANCE_DIR

@@ -346,12 +346,14 @@ NOTIFY_SERVICE = NOTIFY_SERVICE._narrow(CosNotifyChannelAdmin.EventChannelFactor
 
 #------------------------------------------------------------------------------
 #--Create the channel
+# TODO Use TAO extension API and "channel_name", see http://ictjira.alma.cl/browse/ICT-494
 CHANNEL_REF, CHANNEL_ID = NOTIFY_SERVICE.create_channel(CHANNEL_QOS_PROPS,
                                                         CHANNEL_ADMIN_PROPS)
 
 #------------------------------------------------------------------------------
 #--Register the channel with the naming service
 #from the command-line
+# TODO Append NC domain name, see http://ictjira.alma.cl/browse/ICT-494, ICT-577
 channel_name = CosNaming.NameComponent(cl_channel_id,
                                        cl_channel_kind)
 NAME_SERVICE.rebind([channel_name], CHANNEL_REF)

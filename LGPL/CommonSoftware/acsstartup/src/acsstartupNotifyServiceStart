@@ -50,8 +50,8 @@ fi
 
 if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
 then
-  # Create the archiving channel now
-  acsstartupCreateChannel --name_service $ACS_NAME_SERVICE --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
+  # Create the logging or archiving system channel now
+  acsstartupCreateChannel --name_service $ACS_NAME_SERVICE --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL # --channel_kind "todo..." # --max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
 fi
 # Register Monitor and Control Notify Service extension to the naming service
 $ACE_ROOT/bin/tao_nsadd --ns $ACS_NAME_SERVICE --rebind --name MC_${CL_NS_TYPE}NotifyEventChannelFactory --ior `cat $INSTANCE_DIR/iors/${CL_NS_TYPE}NotifyMCIOR` 2>&1 | tee $NOTIFY_OUT
