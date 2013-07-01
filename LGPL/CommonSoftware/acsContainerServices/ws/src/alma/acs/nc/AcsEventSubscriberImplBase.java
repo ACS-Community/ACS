@@ -141,7 +141,7 @@ public abstract class AcsEventSubscriberImplBase<T>
 	 * Contains a list of receiver functions to be invoked when an event 
 	 * of a particular type is received.
 	 * <p>
-	 * key = the event type name (IDL-defined struct). <br>
+	 * key = the event type (Java class derived from IDL struct). <br>
 	 * value = the matching event handler.
 	 */
 	protected final Map<Class<? extends T>, Callback<? extends T>> receivers = 
@@ -512,9 +512,9 @@ public abstract class AcsEventSubscriberImplBase<T>
 				logEventProcessingTimeExceeded(eventName, processTimeLogRepeatGuard.counterAtLastExecution(eventName));
 			}
 		} 
-		// no receiver found.
+		// No receiver found.
 		// This may be OK or not, depending on whether the subclass sets up filtering in the underlying notification framework
-		// that ensures that only subscribed event types reach the subscriber.
+		// that ensures that only subscribed event types reach the subscriber. Subclass should decide if and how to report this.
 		else {
 			logNoEventReceiver(eventName);
 		}

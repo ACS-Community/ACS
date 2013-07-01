@@ -217,7 +217,7 @@ public interface ContainerServicesBase
 	 * 
 	 * @param channelName The Notification Channel name to listen to
 	 * @param eventType The type of event that can be sent using the AcsEventSubscriber, e.g. "MySchedulingEvent.class". 
-	 *                  The specific event type should be used unless more than one event type must be received by this publisher,
+	 *                  The specific event type should be used unless more than one event types must be received by this subscriber,
 	 *                  in which case you can specify a common base type (e.g. "IDLEntity.class" in case of different IDL-generated structs),
 	 *                  or just "Object" for total type freedom (though the underlying pub-sub framework may later throw runtime exceptions
 	 *                  if unsupported event types are received).

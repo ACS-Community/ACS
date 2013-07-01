@@ -27,6 +27,7 @@ import alma.acs.exceptions.AcsJException;
  * It can be used both for Corba NC events and in the future also for DDS events.
  * 
  * @author rtobar
+ * @param <T>
  */
 public interface AcsEventPublisher<T> {
 
