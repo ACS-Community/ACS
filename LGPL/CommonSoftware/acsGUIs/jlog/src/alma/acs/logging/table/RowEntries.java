@@ -21,6 +21,8 @@
 package alma.acs.logging.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The data structure containing all the rows of the table
@@ -29,20 +31,19 @@ import java.util.ArrayList;
  * The entry in position <i>i</i> contains the key of the
  * log to show in the row <i>i</i> of the table.
  * 
+ * TODO: add at the beginning of the list results in very poor performance:
+ *       we should always append new items and convert the indexes properly!
+ *         
  * @author acaproni
  *
  */
-public class RowEntries extends ArrayList<Integer> {
-
-	/**
-	 * Constructor
-	 * 
-	 * @param initialCapacity the initial capacity of the list 
-	 */
-	public RowEntries(int initialCapacity) {
-		super(initialCapacity);
-	}
+public class RowEntries {
 	
+	/**
+	 * The entries i.e. the keys.
+	 */
+	private final List<Integer> entries = Collections.synchronizedList(new ArrayList<Integer>(20000));
+
 	/**
 	 * Remove the first <code>numOfEntries</code> entries from the 
 	 * array.
@@ -53,11 +54,15 @@ public class RowEntries extends ArrayList<Integer> {
 		if (numOfEntries<=0) {
 			throw new IllegalArgumentException("Invalid number of entries to remove: "+numOfEntries);
 		}
-		removeRange(0, numOfEntries);
+		synchronized (entries) {
+			for (int t=0; t<numOfEntries; t++) {
+				entries.remove(0);
+			}
+		}
 	}
 	
 	/**
-	 * Remove the first <code>numOfEntries</code> entries from the 
+	 * Remove the last <code>numOfEntries</code> entries from the 
 	 * array.
 	 * 
 	 * @param numOfEntries
@@ -66,6 +71,54 @@ public class RowEntries extends ArrayList<Integer> {
 		if (numOfEntries<=0) {
 			throw new IllegalArgumentException("Invalid number of entries to remove: "+numOfEntries);
 		}
-		removeRange(size()-numOfEntries,size());
+		synchronized (entries) {
+			for (int t=0; t<numOfEntries && !entries.isEmpty(); t++) {
+				entries.remove(entries.size()-1);
+			}
+		}
+	}
+
+	/**
+	 * @return
+	 * @see java.util.List#size()
+	 */
+	public int size() {
+		return entries.size();
+	}
+
+	/**
+	 * TODO: for better performance we should always add new elements at the end
+	 * @param index
+	 * @param element
+	 * @see java.util.List#add(int, java.lang.Object)
+	 */
+	public void add(int index, Integer element) {
+		entries.add(index, element);
+	}
+
+	/**
+	 * @param index
+	 * @return
+	 * @see java.util.List#get(int)
+	 */
+	public Integer get(int index) {
+		return entries.get(index);
+	}
+
+	/**
+	 * 
+	 * @see java.util.List#clear()
+	 */
+	public void clear() {
+		entries.clear();
+	}
+
+	/**
+	 * @param o
+	 * @return
+	 * @see java.util.List#indexOf(java.lang.Object)
+	 */
+	public int indexOf(Object o) {
+		return entries.indexOf(o);
 	}
 }
