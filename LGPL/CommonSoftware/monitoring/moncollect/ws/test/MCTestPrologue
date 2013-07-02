@@ -9,3 +9,4 @@ acsutilTATPrologue  -noloadifr
 
 #start  container
 acsutilAwaitContainerStart -cpp monColTestCont
+acsutilAwaitContainerStart -cpp separateTestCont

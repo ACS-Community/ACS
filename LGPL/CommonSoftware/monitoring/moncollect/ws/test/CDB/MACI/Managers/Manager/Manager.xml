@@ -9,6 +9,7 @@
       AdministratorPingInterval="10.0">
   <Startup>
         <cdb:_ string="TEST_PS_1"/>
+        <cdb:_ string="TEST_NONCOLLOCATED_PS_1"/>
         <cdb:_ string="FRIDGE1"/>
 	<cdb:_ string="MOUNT1"/>
 	<cdb:_ string="AMSSEQ1"/>

@@ -16,5 +16,6 @@ PROLOGUE MCTestPrologue
 12 "MCtestArchiveDelta"         "acsutilTATTestRunner mcTestArchiveDelta MONITOR_COLLECTOR_TEST"
 13 "MCtestArchiveDeltaPercent"  "acsutilTATTestRunner mcTestArchiveDeltaPercent MONITOR_COLLECTOR_TEST"
 14 "MCtestAlarmsComponent"  "acsutilTATTestRunner  mcTestAlarmsComponent MONITOR_COLLECTOR_TEST"
+15 "registerNonCollocatedDevice" "acsutilTATTestRunner mcTestRegisterNonCollocatedDevice MONITOR_COLLECTOR_TEST"
 
 EPILOGUE acsutilTATEpilogue

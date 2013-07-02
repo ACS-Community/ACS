@@ -12,6 +12,7 @@
 	<_ Name="PBUMP_B_01" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="PBUMP_B_02" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="TEST_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="monColTestCont" ImplLang="cpp" />
+	<_ Name="TEST_NONCOLLOCATED_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="separateTestCont" ImplLang="cpp" />
 	<_ Name="TEST_PS_2" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="MOUNT1" Code="acsexmplMountImpl" Type="IDL:alma/MOUNT_ACS/Mount:1.0" Container="monColTestCont" ImplLang="cpp" />
 	<_ Name="MOUNT2" Code="acsexmplMountImpl" Type="IDL:alma/MOUNT_ACS/Mount:1.0" Container="monColTestCont" ImplLang="cpp" />
