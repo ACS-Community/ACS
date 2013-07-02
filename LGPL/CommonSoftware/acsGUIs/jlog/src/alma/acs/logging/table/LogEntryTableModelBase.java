@@ -21,13 +21,18 @@
 package alma.acs.logging.table;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acs.logging.table.reduction.LogProcessor;
 
 import com.cosylab.logging.LoggingClient;
@@ -38,80 +43,46 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 
 /**
- * The table model with basic functionalities.
+ * The table model with basic functionalities like add logs and remove all the logs.
+ * The model can be bounded to a max number of logs (by default unlimited).
  * <P>
- * This model can be reused by log tables with reduced functionalities like the error
- * browsers. 
- * 
+ * Each log in the model is identified by a integer key; the association
+ * between keys and logs is done by the {@link #allLogs}.
+ * {@link #rows} represents a entry in the table i.e. a log identified by its key.
+ * So to get a log in a row, we must first get its key and then get the log from the cache. 
+ * <BR> This indirection allows to avoid keeping all the logs in memory
+ * The list of keys ({@link #rows}) and the map ({@link #allLogs}) must be consistent
+ * in the sense that the map must always contain the keys of all the logs in the table 
+ * but it can have more keys. For example if a log is removed from the table
+ * its key can be removed from the map at a latter time.
+ * <P>
+ * The model is modified inside the EDT. The consistency between
+ * ({@link #rows}) and the map ({@link #allLogs}) is also obtained by
+ * modifying their contents inside the EDT.
+ * {@link EDTExecutor} is used to ensure to access the model from inside the EDT.
+ * <P>
+ * To reduce the overload refreshing the content of the table when a lot of logs
+ * have been added or removed, the refresh is triggered only after a certain amount
+ * of time by a dedicated thread (see {@link #run()}).
+ * <P>
+ * <CODE>LogEntryTableModelBase</CODE> can be reused by log tables with basic functionalities 
+ * like the error browsers. 
  * 
  * @author acaproni
  *
  */
-public class LogEntryTableModelBase extends AbstractTableModel {
+public class LogEntryTableModelBase extends AbstractTableModel implements Runnable {
 	
 	/**
-	 * To reduce the overload refreshing the content of the table when a lot of logs
-	 * have been added or removed, the refresh is triggered only after a certain amount
-	 * of time.
-	 * <P>
-	 * Objects from this class check if there have been changes and fire the event
-	 * 
-	 * @author acaproni
-	 *
+	 * Signal the thread to terminate
 	 */
-	private class TableUpdater extends Thread {
-		
-		/**
-		 * Signal the thread to terminate
-		 */
-		private volatile boolean terminateThread=false;
-		
-		/**
-		 * The interval (msec) between two refreshes of the content
-		 * of the table
-		 */
-		private static final int UPDATE_INTERVAL=2000; 
-		
-		/**
-		 * Terminate the thread and frees the resources
-		 */
-		public void close(boolean sync) {
-			terminateThread=true;
-		}
-		
-		/**
-		 * The thread updating the content of the table
-		 */
-		public void run() {
-			while (!terminateThread) {
-				try {
-					Thread.sleep(UPDATE_INTERVAL);
-				} catch (InterruptedException ie) {
-					continue;
-				}
-				// Refresh the content of the table before refreshing
-				try {
-					updateTableEntries();
-				} catch (Throwable t) {
-					// This thread never fails!
-					System.err.println("Error in thread "+getName()+": "+t.getMessage());
-					t.printStackTrace(System.err);
-				}
-			}
-		}
-	}
-	
-	/** 
-	 * The cache of all the logs received.
-	 */
-	protected LogCache allLogs = null ;
+	private volatile boolean terminateThread=false;
 	
 	/**
-	 * Each row shows a log identified by a key returned by the cache.
-	 * <P>
-	 * This vector stores the key of each log shown in the table.
+	 * The interval (msec) between two refreshes of the content
+	 * of the table
 	 */
-	protected RowEntries rows = new RowEntries(10000);
+	private static final int UPDATE_INTERVAL=2000;
 	
 	/**
 	 * The vector of logs to add in the rows.
@@ -119,12 +90,30 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * Newly arrived logs are added to this vector and flushed into 
 	 * <code>rows</code> by the <code>TableUpdater</code> thread.
 	 */
-	protected final Vector<ILogEntry> rowsToAdd = new Vector<ILogEntry>();
+	private final List<ILogEntry> rowsToAdd = Collections.synchronizedList(new Vector<ILogEntry>());
+		
+	/**
+	 * The processor to reduce the logs
+	 */
+	private final LogProcessor logProcessor = new LogProcessor();
+	
+	/** 
+	 * The cache of all the logs received.
+	 */
+	protected LogCache allLogs;
+	
+	/**
+	 * Each row of the table shows a log identified by a key returned by the cache.
+	 * <P>
+	 * This vector stores the key of each log in the table.
+	 * 
+	 */
+	protected final RowEntries rows = new RowEntries();
 	
 	/**
 	 * The thread to refresh the content of the table
 	 */
-	protected TableUpdater tableUpdater;
+	protected Thread tableUpdater;
 	
 	/** 
      * The LoggingClient that owns this table model
@@ -135,12 +124,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	/**
 	 * <code>true</code> if the model has been closed
 	 */
-	private boolean closed=false;
-	
-	/**
-	 * The processor to reduce the logs
-	 */
-	private final LogProcessor logProcessor = new LogProcessor();
+	private volatile boolean closed=false;
 	
 	/**
 	 * HTML open TAG for the string in the table
@@ -156,6 +140,13 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * The empty string is returned when a object is <code>null</code>
 	 */
 	private static final String emptyString="";
+	
+	/**
+	 * The max number of logs in the table.
+	 * <P>
+	 * A value of 0 means unlimited.
+	 */
+	private volatile int maxLog=0;
 	
 	/**
 	 * Constructor
@@ -180,8 +171,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @see {@link LogEntryTableModelBase#tableUpdater}
 	 */
 	public void start() {
-		tableUpdater = new TableUpdater();
-		tableUpdater.setName("LogEntryTableModelBase.TableUpdater");
+		tableUpdater=new Thread(this,"LogEntryTableModelBase.TableUpdaterThread");
 		tableUpdater.setDaemon(true);
 		tableUpdater.start();
 	}
@@ -215,26 +205,23 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @see javax.swing.table.TableModel#getRowCount()
 	 */
 	@Override
-	public synchronized int getRowCount() {
-		synchronized (rows) {
-			return rows.size();	
-		}
+	public int getRowCount() {
+		return rows.size();	
 	}
 
 	/**
 	 * Returns an item according to the row and the column of its position.
+	 * 
 	 * @return java.lang.Object
 	 * @param row int
 	 * @param column int
 	 */
 	@Override
-	public synchronized Object getValueAt(int row, int column) {
+	public Object getValueAt(int row, int column) {
 		switch (column) {
 		case 1: {// TIMESTAMP
 				try {
-					synchronized(rows) {
-						return new Date(allLogs.getLogTimestamp(rows.get(row)));
-					}
+					return new Date(allLogs.getLogTimestamp(rows.get(row)));
 				} catch (Exception e) {
 					// This can happen because deletion of logs is done asynchronously
 					return null;
@@ -242,9 +229,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		}
 		case 2: { // ENTRYTYPE
 			try {
-				synchronized(rows) {
-					return allLogs.getLogType(rows.get(row));
-				}
+				return allLogs.getLogType(rows.get(row));
 			} catch (Exception e) {
 				// This can happen because deletion of logs is done asynchronously
 				return null;
@@ -274,19 +259,19 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	
 	/**
 	 * Return the log shown in the passed row.
+	 * <P>
+	 * This must be called inside the EDT.
 	 * 
 	 * @param row The row of the table containing the log
 	 * @return The log in the passed row
 	 */
-	public synchronized ILogEntry getVisibleLogEntry(int row) {
+	public ILogEntry getVisibleLogEntry(int row) {
 		 if (closed) {
 			 return null;
 		 }
 		 try {
 			 ILogEntry ret;
-			 synchronized (rows) {
-				 ret=allLogs.getLog(rows.get(row));
-			 }
+			 ret=allLogs.getLog(rows.get(row));
 			 return ret;
 		 } catch (LogCacheException e) {
 			 e.printStackTrace();
@@ -295,36 +280,34 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 }
 	
 	/**
-	 * Remove all the logs	
+	 * Remove all the logs.
 	 */
-	public synchronized void clearAll() {
-	    if (allLogs != null) {
-	    	try {
-	    		synchronized (rowsToAdd) {
-		    		synchronized(rows) {
-		    			if (!rows.isEmpty()) {
-		    				int sz =rows.size();
-		    				rows.clear();
-		    				fireTableRowsDeleted(0, sz-1);
-		    			}
-		    		}
-		    		rowsToAdd.removeAllElements();
-	    		}
-	    		allLogs.clear();
-	    	} catch (LogCacheException e) {
-	    		System.err.println("Error clearing the cache: "+e.getMessage());
-	    		e.printStackTrace(System.err);
-	    		JOptionPane.showMessageDialog(null, "Exception clearing the cache: "+e.getMessage(),"Error clearing the cache",JOptionPane.ERROR_MESSAGE);
-	    	}
-	    }
+	public void clearAll() {
+		// Remove the logs waiting to be inserted
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				rowsToAdd.clear();
+				rows.clear();
+				try {
+					allLogs.clear();		
+				} catch (Throwable t) {
+					System.err.println("Exception caught clearing the cache: "+t.getMessage());
+					t.printStackTrace(System.err);
+					JOptionPane.showInternalMessageDialog(loggingClient, "Error clearing the cache.", "Error clearing the cache", JOptionPane.ERROR_MESSAGE);
+				}
+				fireTableDataChanged();
+			}
+		});
 	}
 	
 	/**
+	 * Return the number of logs in cache 
+	 * without those waiting to be added in {@link TableUpdater#rowsToAdd}.
 	 * 
 	 * @return The number of logs in cache
 	 */
 	public long totalLogNumber() {
-		return allLogs.getSize();
+		return rows.size();
 	}
 	
 	/**
@@ -349,12 +332,8 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	  *         
 	  *         @see findKeyPos(Integer key)
 	  */
-	 public synchronized Integer getLogKey(int index) {
-		try {
-			return rows.get(index);
-		} catch (Throwable t) {
-			return null;
-		}
+	 public Integer getLogKey(int index) {
+		return rows.get(index);
 	 }
 	 
 	 /**
@@ -368,7 +347,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	  * @return The position of the key in the vector of logs or 
 	  * 	    <code>-1</code> if the key is not in the vector
 	  */
-	 public synchronized int findKeyPos(Integer key) {
+	 public int findKeyPos(Integer key) {
 		 if (key==null) {
 			 throw new IllegalArgumentException("The key can't be null");
 		 }
@@ -414,7 +393,52 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	}
 	
 	/**
-	 * Adds the log to the table.
+	 * Replace a log entry with another.
+	 * 
+	 * @param pos The position in the cache of the log to replace 
+	 * @param newEntry The new LogEntryXML
+	 */
+	public void replaceLog(final int pos, final ILogEntry newEntry) {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				// Replace the entry in the list of all the logs (allLogs)
+				try {
+					allLogs.replaceLog(pos,newEntry);
+				} catch (LogCacheException e) {
+					System.err.println("Error replacing log "+pos);
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Closes all the threads and frees the resources
+	 * This is the last method to call before closing the application
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		terminateThread=true;
+		closed=true;
+		if (tableUpdater!=null) {
+			tableUpdater.interrupt();
+			if (sync) {
+				try {
+					// We do not want to wait forever..
+					tableUpdater.join(10000);
+					if (tableUpdater.isAlive()) {
+						System.err.println("LogEntryTableModelBase.TableUpdater thread still alive!");
+					}
+				} catch (InterruptedException ie) {}
+			}
+		}
+		clearAll();
+	}
+	
+	/**
+	 * Adds a log to {@link TableUpdater#rowsToAdd} ready to be flushed
+	 * in the table at the next iteration.
 	 * <P>
 	 * To avoid updating the table very frequently, the logs to add are immediately 
 	 * inserted in the <code>LogCache</code> but their insertion in the table is delayed 
@@ -423,25 +447,17 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * For this reason each log is inserted in the temporary vector <code>rowsToAdd</code> 
 	 * that will be flushed into <code>rows</code> by the thread.
 	 * 
+	 * TODO: to increase performance we should append the logs at the end of 
+	 *       the Vector rowsToAdd
 	 * @param log The log to add
 	 */
-	public synchronized void appendLog(ILogEntry log) {
-		if (closed) {
-			return;
+	public void appendLog(ILogEntry log) {
+		if (log==null) {
+			throw new IllegalArgumentException("Can't append a null log to the table model");
 		}
-		//checkLogNumber();
-		synchronized (rowsToAdd) {
-			rowsToAdd.insertElementAt(log,0);
+		if (!closed) {
+			rowsToAdd.add(0,log);
 		}
-	}
-	
-	/**
-	 * Update the table entries before refreshing the table
-	 * 
-	 * @return <code>true</code> If the model has been changed and the table needs to be refreshed
-	 */
-	protected synchronized void updateTableEntries() {
-		flushLogs();
 	}
 	
 	/**
@@ -455,19 +471,34 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @return <code>true</code> if at least one log has been added to the model
 	 */
 	private void flushLogs() {
+		
+		// rowsToAdd is reduced then copied into temp:
+		// it is possible to append logs again without waiting for the flush
+		// i.e. modification of the model inside EDT do not block rowsToAdd
+		final List<ILogEntry> temp;
 		synchronized (rowsToAdd) {
-			if (!rowsToAdd.isEmpty()) {
-				// try to apply reduction rules only in OPERATOR mode
-				try {
-					if (loggingClient.getEngine().getAudience().getInfo()==AudienceInfo.OPERATOR) {
-						logProcessor.reduce(rowsToAdd);
-					}
-				} catch (Throwable t) {
-					System.out.println("Exception caught ("+t.getMessage()+")while reducing logs: reduction disabled this time");
-					t.printStackTrace();
+			if (rowsToAdd.isEmpty()) {
+				return;
+			}
+			// try to apply reduction rules only in OPERATOR mode
+			try {
+				if (loggingClient.getEngine().getAudience().getInfo()==AudienceInfo.OPERATOR) {
+					logProcessor.reduce(rowsToAdd);
 				}
-				synchronized (rows) {
-					for (ILogEntry log: rowsToAdd) {
+			} catch (Throwable t) {
+				System.err.println("Exception caught ("+t.getMessage()+")while reducing logs: reduction disabled this time");
+				t.printStackTrace(System.err);
+			}
+			temp=new Vector<ILogEntry>(rowsToAdd);
+			rowsToAdd.clear();
+		}
+			
+		// Add the reduced logs into the model (from inside the EDT)
+		try {
+			EDTExecutor.instance().executeSync(new Runnable() {
+				@Override
+				public void run() {
+					for (ILogEntry log: temp) {
 						Integer key;
 						try {
 							key=Integer.valueOf(allLogs.add(log));
@@ -477,55 +508,88 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 							lce.printStackTrace(System.err);
 							continue;
 						}
+						// TODO: to increase performances append the key instead of inserting
 						rows.add(0,key);
 					}
+					// Finally notify the change
+					fireTableRowsInserted(0, temp.size()-1);
 				}
-				rowsToAdd.clear();
-			} else {
-				return;
-			}
-		}
-		fireTableDataChanged();
-	}
-	
-	/**
-	 * Replace a log entry with another
-	 * 
-	 * @param pos The position in the cache of the log to replace 
-	 * @param newEntry The new LogEntryXML
-	 */
-	public synchronized void replaceLog(int pos, ILogEntry newEntry) {
-		// Replace the entry in the list of all the logs (allLogs)
-		try {
-			allLogs.replaceLog(pos,newEntry);
-		} catch (LogCacheException e) {
-			System.err.println("Error replacing log "+pos);
+			});
+		} catch (InvocationTargetException e) {
+			System.out.println("!!! Exception: "+e.getMessage()+"; model size="+rows.size());
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return;
 	}
 	
 	/**
-	 * Closes all the threads and frees the resources
-	 * This is the last method to call before closing the application
-	 * @param sync If it is true wait the termination of the threads before returning
+	 * Set the max number of logs to keep in cache
+	 * This is the max number of logs stored in cache
+	 * (the visible logs can be less)
+	 * 
+	 * @param max The max number of logs
+	 *            0 means unlimited
 	 */
-	public void close(boolean sync) {
-		closed=true;
-		if (tableUpdater!=null) {
-			tableUpdater.close(sync);
-			tableUpdater.interrupt();
-			if (sync) {
-				try {
-					// We do not want to wait forever..
-					tableUpdater.join(10000);
-					if (tableUpdater.isAlive()) {
-						System.err.println("LogEntryTableModelBase.TableUpdater thread still alive!");
-					}
-				} catch (InterruptedException ie) {}
-			}
-			tableUpdater=null;
+	public void setMaxLog(int max) {
+		if (max<0) {
+			throw new IllegalArgumentException("Impossible to set the max log to "+max);
 		}
-		clearAll();
+		maxLog=max;
+	}
+	
+	/**
+	 * Check if there are too many logs in the table and if it is the case
+	 * then remove the oldest.
+	 * <P>
+	 * This method must be executed inside the EDT.
+	 * 
+	 * @see #maxLog
+	 */
+	private void removeExceedingLogs() {
+		try {
+			EDTExecutor.instance().executeSync(new Runnable() {
+				@Override
+				public void run() {
+					int sz=rows.size();
+					if (maxLog<=0 || sz<=maxLog) {
+						// The model is unbounded or there is still enough room in the model
+						return;
+					}
+					rows.removeLastEntries(rows.size()-maxLog);
+					fireTableDataChanged();
+				}
+			});
+		} catch (InvocationTargetException e) {
+			System.out.println("!!! Exception: "+e.getMessage()+"; model size="+rows.size());
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		while (!terminateThread) {
+			try {
+				Thread.sleep(UPDATE_INTERVAL);
+			} catch (InterruptedException ie) {
+				continue;
+			}
+			// Flush the logs waiting to be added in the model
+			try {
+				flushLogs();
+			} catch (Throwable t) {
+				// This thread never fails!
+				System.err.println("Error in thread "+Thread.currentThread().getName()+": "+t.getMessage());
+				t.printStackTrace(System.err);
+			}
+			// Too many logs? Remove the oldest!
+			removeExceedingLogs();
+		}
+		
 	}
 }
