@@ -57,8 +57,16 @@ public:
 
 
 	// implementations of IDL's methods
+
+	//version where it is not checked if monitored device is collocated
+	void registerNonCollocatedMonitoredDevice (const char * componentName, const char* serialNumber);
+	void registerCollocatedMonitoredDevice (const char * componentName, const char* serialNumber);
+	///@deprecated:
 	void registerMonitoredDevice (const char * componentName, const char* serialNumber);
 
+	void registerNonCollocatedMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers);
+	void registerCollocatedMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers);
+	///@deprecated:
 	void registerMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers);
 
 	void deregisterMonitoredDevice (const char * componentName);
@@ -77,7 +85,14 @@ public:
 
 private:
 
-	MonitorComponent* registerMonitoredComponent (const char * componentName);
+	/// common method for: implementation of IDL #registerNonCollocatedMonitoredDevice and #registerCollocatedMonitoredDevice
+	void registerMonitoredComponentWithSerial(const char * componentName, const char* serialNumber, bool checkCollocation);
+	/// common method for: implementation of IDL #registerNonCollocatedMonitoredDeviceWithMultipleSerial and #registerCollocatedMonitoredDeviceWithMultipleSerial
+	void registerMonitoredComponentWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers, bool checkCollocation);
+
+	/// registers a device for single and multiple serial devices/components
+	/// The mrthod is called by: #registerMonitoredComponentWithSerial and #registerMonitoredComponentWithMultipleSerial
+	MonitorComponent* registerMonitoredComponent (const char * componentName, bool checkCollocation=true);
 
 	ACE_Hash_Map_Manager <ACE_CString, MonitorComponent*, ACE_Recursive_Thread_Mutex> monitorComponents_m;
 

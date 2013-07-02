@@ -101,16 +101,16 @@ void MonitorCollectorImpl::cleanUp()
 
 }//cleanUp
 
-void MonitorCollectorImpl::registerMonitoredDevice (const char * componentName, const char* serialNumber)
+void MonitorCollectorImpl::registerMonitoredComponentWithSerial (const char * componentName, const char* serialNumber, bool checkCollocation)
 {
-	AUTO_TRACE("MonitorCollectorImpl::registerMonitoredDevice");
+	AUTO_TRACE("MonitorCollectorImpl::registerMonitoredComponentWithSerial");
 
 	MonitorComponent*mc = 0;
 	try{
-		mc = registerMonitoredComponent(componentName);
+		mc = registerMonitoredComponent(componentName, checkCollocation);
 		if (!mc)
 		{
-			ACSErrTypeCommon::NullPointerExImpl nex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDevice");
+			ACSErrTypeCommon::NullPointerExImpl nex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredComponentWithSerial");
 			nex.setVariable("mc");
 			throw nex;
 		}
@@ -125,23 +125,63 @@ void MonitorCollectorImpl::registerMonitoredDevice (const char * componentName, 
 			delete mc;
 		}//if
 
-		RegisteringDeviceProblemExImpl ex(_ex, __FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDevice");
+		RegisteringDeviceProblemExImpl ex(_ex, __FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredComponentWithSerial");
 		ex.setDevice(componentName);
 
 		throw ex.getRegisteringDeviceProblemEx();
 	}
+}//MonitorCollectorImpl::registerMonitoredComponentWithSerial
+
+
+void MonitorCollectorImpl::registerMonitoredDevice (const char * componentName, const char* serialNumber)
+{
+	AUTO_TRACE("MonitorCollectorImpl::registerMonitoredDevice");
+	//it is depreciated, so we just delegate
+	registerCollocatedMonitoredDevice(componentName, serialNumber);
 }//MonitorCollectorImpl::registerMonitoredDevice
 
+void MonitorCollectorImpl::registerCollocatedMonitoredDevice (const char * componentName, const char* serialNumber)
+{
+	AUTO_TRACE("MonitorCollectorImpl::registerCollocatedMonitoredDevice");
+	registerMonitoredComponentWithSerial(componentName, serialNumber, true);
+}//MonitorCollectorImpl::registerCollocatedMonitoredDevice
+
+void MonitorCollectorImpl::registerNonCollocatedMonitoredDevice (const char * componentName, const char* serialNumber)
+{
+	AUTO_TRACE("MonitorCollectorImpl::registerNonCollocatedMonitoredDevice");
+	registerMonitoredComponentWithSerial(componentName, serialNumber, false);
+}//MonitorCollectorImpl::registerNonCollocatedMonitoredDevice
+
+/*****************************/
 void MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers)
 {
 	AUTO_TRACE("MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial");
+	registerCollocatedMonitoredDeviceWithMultipleSerial(componentName, serialNumbers);
+}
+
+void MonitorCollectorImpl::registerNonCollocatedMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers)
+{
+	AUTO_TRACE("MonitorCollectorImpl::registerNonCollocatedMonitoredDeviceWithMultipleSerial");
+	registerMonitoredComponentWithMultipleSerial(componentName, serialNumbers, false);
+}
+
+void MonitorCollectorImpl::registerCollocatedMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers)
+{
+	AUTO_TRACE("MonitorCollectorImpl::registerCollocatedMonitoredDeviceWithMultipleSerial");
+	registerMonitoredComponentWithMultipleSerial(componentName, serialNumbers, true);
+}
+
+
+void MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers, bool checkCollocation)
+{
+	AUTO_TRACE("MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial");
 	MonitorComponent*mc=0;
 
 	try{
-		mc = registerMonitoredComponent(componentName);
+		mc = registerMonitoredComponent(componentName, checkCollocation);
 		if (!mc)
 		{
-			ACSErrTypeCommon::NullPointerExImpl nex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial");
+			ACSErrTypeCommon::NullPointerExImpl nex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial");
 			nex.setVariable("mc");
 			throw nex;
 		}
@@ -160,14 +200,14 @@ void MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial(const char*
 			delete mc;
 		}//if
 
-		RegisteringDeviceProblemExImpl ex(_ex, __FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial");
+		RegisteringDeviceProblemExImpl ex(_ex, __FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial");
 		ex.setDevice(componentName);
 
 		throw ex.getRegisteringDeviceProblemEx();
 	}
 }//registerMonitoredDeviceWithMultipleSerial
 
-MonitorComponent* MonitorCollectorImpl::registerMonitoredComponent (const char * componentName)
+MonitorComponent* MonitorCollectorImpl::registerMonitoredComponent (const char * componentName, bool checkCollocation)
 {
     AUTO_TRACE("MonitorCollectorImpl::registerMonitoredComponent");
     MonitorComponent* mc = 0;
@@ -185,14 +225,14 @@ MonitorComponent* MonitorCollectorImpl::registerMonitoredComponent (const char *
     try
 	{
 	ACS::CharacteristicComponent * comp = contServ_m->getComponentNonSticky<ACS::CharacteristicComponent>(componentName);
-	//TBD: here we should check if it is also collocated
-	if (!comp->_is_collocated())
-	{
-		NotCollocatedComponentExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDevice");
-		ex.setComponent(componentName);
-		throw ex;
-	}//if
 
+
+	if ( checkCollocation && (!comp->_is_collocated()) )
+		{
+			NotCollocatedComponentExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::registerMonitoredDevice");
+			ex.setComponent(componentName);
+			throw ex;
+		}//if
 
 	mc = new MonitorComponent(comp, contServ_m);
 	mc->addAllProperties();
