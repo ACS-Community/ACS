@@ -359,32 +359,25 @@ LoggingService::shutdown ()
 	  ACS_SHORT_LOG((LM_ERROR, "Failed to unbind DsLogAdmin::BasicLogFactory."));
 	}
 
-      try
-	{
-	  name[0].id = CORBA::string_dup (this->m_basic_log_name);
-	  this->m_naming_context->unbind (name);
-	}
-      catch(...)
-	{
-	ACS_SHORT_LOG((LM_ERROR, "Failed to unbind DsLogAdmin::BasicLog."));
-	}
+		try {
+			name[0].id = CORBA::string_dup(this->m_basic_log_name);
+			this->m_naming_context->unbind(name);
+		} catch (...) {
+			ACS_SHORT_LOG((LM_ERROR, "Failed to unbind DsLogAdmin::BasicLog."));
+		}
 
-      try
-	{
-        if(!m_logBin)
-	        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_XML_NAME);
-	    else
-	        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
+		try {
+			if (!m_logBin)
+				name[0].id = CORBA::string_dup(acscommon::LOGGING_CHANNEL_XML_NAME);
+			else
+				name[0].id = CORBA::string_dup(acscommon::LOGGING_CHANNEL_NAME);
 
-
-      name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
-	  this->m_naming_context->unbind (name);
+			name[0].kind = CORBA::string_dup(acscommon::NC_KIND);
+			this->m_naming_context->unbind(name);
+		} catch (...) {
+			ACS_SHORT_LOG((LM_ERROR, "Failed to unbind Logging EventChannel."));
+		}
 	}
-      catch(...)
-	{
-	  ACS_SHORT_LOG((LM_ERROR, "Failed to unbind Logging EventChannel."));
-	}
-    }
 
   // shutdown the ORB.
   if (!CORBA::is_nil (this->m_orb.in ()))
@@ -490,7 +483,7 @@ LoggingService::create_EC ()
     else
         name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
 
-    name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
+    name[0].kind = CORBA::string_dup (acscommon::NC_KIND);
 
     try
 	{

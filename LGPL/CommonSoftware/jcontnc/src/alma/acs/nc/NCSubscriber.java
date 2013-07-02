@@ -649,7 +649,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		// while in real life we can have concurrent admin creation requests from different processes.
 		synchronized(NCSubscriber.class) {
 
-
 			// Check if we can reuse an already existing consumer admin
 			for (int adminId : channel.get_all_consumeradmins()) {
 				try {
@@ -789,7 +788,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			// Note that TAO will internally convert the event type name 
 			// to the expression "$type_name=='<our_eventTypeName>'", 
 			// see orbsvcs/Notify/Notify_Constraint_Interpreter.cpp
-			EventType[] t_info = { new EventType("*", eventTypeName) };
+			EventType[] t_info = { new EventType("*", eventTypeName) }; // The old Consumer class used 'getChannelDomain()' instead of "*"..?
 
 			// Add constraint expression object to the filter
 			String constraint_expr = ""; // no constraints other than the eventTypeName already given above
@@ -853,25 +852,26 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 * kind field of a CosNaming::Name) which is normally equivalent to
 	 * acscommon::NC_KIND. The sole reason this method is provided is to
 	 * accommodate subclasses which subscribe/publish non-ICD style events (ACS
-	 * archiving channel for example).In that case, the developer would override
+	 * archiving channel for example). In that case, the developer would override
 	 * this method.
-	 * 
 	 * @return string
+	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
 	 */
 	protected String getChannelKind() {
 		return alma.acscommon.NC_KIND.value;
 	}
 
-	/**
-	 * This method returns a constant character pointer to the notification
-	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN.
-	 * 
-	 * @return string
-	 */
-	protected String getChannelDomain() {
-		return alma.acscommon.ALMADOMAIN.value;
-	}
-
+//	/**
+//	 * This method returns a constant character pointer to the notification
+//	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN.
+//	 * 
+//	 * @return string
+//	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
+//	 */
+//	protected String getChannelDomain() {
+//		return alma.acscommon.ALMADOMAIN.value;
+//	}
+//
 	/**
 	 * This method returns the notify service name as registered with the CORBA
 	 * Naming Service. This is normally equivalent to
@@ -1089,7 +1089,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		 */
 		public void markAsSharedAdmin(ConsumerAdmin consumerAdmin) throws AcsJCORBAProblemEx {
 			try {
+				// There should be only one dummy proxy per shared admin, but any two concurrent subscribers
+				// should rather create a dummy proxy too many than getting an exception. Thus we make the name unique.
 				String dummySupplierName = Helper.createRandomizedClientName(DUMMY_SUPPLIER_PROXY_NAME_PREFIX);
+				
 				consumerAdmin.obtain_named_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder(), dummySupplierName);
 			} catch (Exception ex) {
 				// This ex could be AdminLimitExceeded, NameAlreadyUsed, NameMapError

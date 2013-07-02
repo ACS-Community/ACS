@@ -182,7 +182,7 @@ class Helper
     /**
      * This method returns a constant character pointer to the domain of notification channel
      * which is normally equivalent to acscommon::ALMADOMAIN. The sole reason this method is provided is to 
-     * accomodate subclasses which subscribe/publish non-ICD style events (ACS archiving channel 
+     * accommodate subclasses which subscribe/publish non-ICD style events (ACS archiving channel
      * for example).In that case, the developer would override this method.
      * @return pointer to a constant string.
      *  @htmlonly

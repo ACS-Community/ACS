@@ -403,11 +403,12 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * notification channel as registered with the naming service (i.e., the
 	 * kind field of a CosNaming::Name) which is normally equivalent to
 	 * acscommon::NC_KIND. The sole reason this method is provided is to
-	 * accomodate subclasses which subscribe/publish non-ICD style events (ACS
+	 * accommodate subclasses which subscribe/publish non-ICD style events (ACS
 	 * archiving channel for example). In that case, the developer would
 	 * override this method.
 	 * 
 	 * @return string
+	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
 	 */
 	protected String getChannelKind() {
 		return alma.acscommon.NC_KIND.value;
@@ -424,6 +425,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	 * example) may override this method. 
 	 * 
 	 * @return string
+	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
 	 */
 	protected String getChannelDomain() {
 		return alma.acscommon.ALMADOMAIN.value;

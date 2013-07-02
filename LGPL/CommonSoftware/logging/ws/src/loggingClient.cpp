@@ -175,30 +175,13 @@ Subscribe::resolve_notify_channel (const char * channel_name)
   CosNaming::Name name (1);
   name.length (1);
   name[0].id = CORBA::string_dup (channel_name);
-
-  if(ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_NAME)==0 ||
-        ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_XML_NAME)==0 )
-      {
-      name[0].kind = acscommon::LOGGING_CHANNEL_KIND;
-      }
-  else if(ACE_OS::strcmp(channel_name, acscommon::ARCHIVING_CHANNEL_NAME)==0)
-      {
-      name[0].kind = acscommon::ARCHIVING_CHANNEL_KIND;
-      }
-  else
-      {
-      //just pass
-      }
-
+  name[0].kind = acscommon::NC_KIND;
 
   CORBA::Object_var obj =
-    this->naming_context_->resolve (name
-                                   );
-
+    this->naming_context_->resolve (name);
 
   this->ec_ =
-    CosNotifyChannelAdmin::EventChannel::_narrow (obj.in ()
-						  );
+    CosNotifyChannelAdmin::EventChannel::_narrow (obj.in ());
 
 }
 

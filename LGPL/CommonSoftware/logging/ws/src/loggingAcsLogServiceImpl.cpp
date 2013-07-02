@@ -37,7 +37,7 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
 {
    CosNotification::StructuredEvent logging_event;
    logging_event.header.fixed_header.event_type.domain_name = 
-      CORBA::string_dup(acscommon::LOGGING_DOMAIN);
+      CORBA::string_dup(acscommon::ALMADOMAIN);
    logging_event.header.fixed_header.event_type.type_name =  
       CORBA::string_dup(acscommon::LOGGING_TYPE);
    logging_event.header.fixed_header.event_name = CORBA::string_dup("");

@@ -108,13 +108,6 @@ public class ArchiveConsumer {
 		}
 
 		@Override
-		protected String getChannelKind() {
-			// because archive channels are registered differently
-			// in the CORBA naming service than ICD-style channels
-			return alma.acscommon.ARCHIVING_CHANNEL_KIND.value;
-		}
-	
-		@Override
 		protected String getNotificationFactoryName() {
 			return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
 		}

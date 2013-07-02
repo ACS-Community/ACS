@@ -1058,6 +1058,7 @@ module acscommon
     const string NAMING_SERVICE_NAME = "NameService";
 
     //Event Channel stuff////////////////////////////////////////////////////////////
+
     /**
      * Domain for notification channels.
      * This domain is used for ICD-style events shared between ALMA subsystems. 
@@ -1067,28 +1068,10 @@ module acscommon
     const string ALMADOMAIN = "ALMA";
 
     /**
-     * Domain for notification channels.
-     * This domain is used for events sent to the ALMA Archive.
-     */
-    const string ARCHIVING_DOMAIN = "Archiving";
-
-    /**
-     * Domain for notification channels.
-     * This domain is used for logging events sent.
-     */
-    const string LOGGING_DOMAIN = "Logging";
-
-    /**
      * Name of the notification channel (as registered with the Naming Service) 
      * that contains events from BACI properties to be stored in the ALMA Archive.
      */
     const string ARCHIVING_CHANNEL_NAME = "ArchivingChannel";
-
-    /**
-     * Kind of the notification channel (as registered with the Naming Service) 
-     * that contains events from BACI properties to be stored in the ALMA Archive.
-     */
-    const string ARCHIVING_CHANNEL_KIND = "";
 
     /**
      * Name of the notification channel (as registered with the Naming Service) 
@@ -1100,11 +1083,6 @@ module acscommon
      * Name of the notification channer that contains the logs in xml
      */
     const string LOGGING_CHANNEL_XML_NAME = "LoggingChannel";	
-    /**
-     * Kind of the notification channel (as registered with the Naming Service) 
-     * that contains events from BACI properties to be stored in the ALMA Archive.
-     */
-    const string LOGGING_CHANNEL_KIND = "";
 
     /**
      *  DEFAULTDATANAME is just something that needs to be packed into Structured

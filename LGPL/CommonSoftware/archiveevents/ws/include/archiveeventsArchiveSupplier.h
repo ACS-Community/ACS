@@ -160,14 +160,14 @@ class ArchiveSupplier : public BaseSupplier
      */
     virtual const char*
     getChannelDomain() 
-	{return acscommon::ARCHIVING_DOMAIN;}
+	{return acscommon::ALMADOMAIN;}
 
     /**
      * Overridden.
      */
     virtual const char* 
     getChannelKind() 
-	{ return acscommon::ARCHIVING_CHANNEL_KIND; }
+	{ return acscommon::NC_KIND; } // see http://ictjira.alma.cl/browse/ICT-494
 
     /**
      * Overridden.

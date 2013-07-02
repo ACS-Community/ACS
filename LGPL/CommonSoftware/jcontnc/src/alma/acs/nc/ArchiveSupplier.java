@@ -64,28 +64,8 @@ public class ArchiveSupplier extends NCPublisher<Object> {
 	 * @return string
 	 */
 	@Override
-	protected String getChannelKind() {
-		return alma.acscommon.ARCHIVING_CHANNEL_KIND.value;
-	}
-
-	/**
-	 * Overridden.
-	 * 
-	 * @return string
-	 */
-	@Override
 	protected String getNotificationFactoryName() {
 		return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
-	}
-
-	/**
-	 * Overridden.
-	 * 
-	 * @return string
-	 */
-	@Override
-	protected String getChannelDomain() {
-		return alma.acscommon.ARCHIVING_DOMAIN.value;
 	}
 
 	/**
