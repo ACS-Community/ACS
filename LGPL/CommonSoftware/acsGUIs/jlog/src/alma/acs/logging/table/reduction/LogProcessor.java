@@ -24,11 +24,8 @@ package alma.acs.logging.table.reduction;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
-import com.cosylab.logging.engine.log.LogEntry;
-import com.cosylab.logging.engine.log.LogField;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * An object to reduce the number of logs in an array by applying
@@ -47,7 +44,7 @@ public class LogProcessor {
 	 * 
 	 * @param logs The logs to reduce
 	 */
-	public void reduce(Vector<ILogEntry> logs) {
+	public void reduce(List<ILogEntry> logs) {
 		for (int t=0; t<logs.size(); t++) {
 			// This is the log that "could" reduce other logs
 			ILogEntry log = logs.get(t);
