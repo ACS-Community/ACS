@@ -8,7 +8,6 @@
      ContainerPingInterval="10.0"
      AdministratorPingInterval="10.0">
 	
-	<!--  TODO: Does it really make sense to configure these specific test components as autostart components? -->
 	<Startup>
 	</Startup>
 
@@ -25,7 +24,6 @@
 		<cdb:_ string="MC_AlarmNotifyEventChannelFactory" />
 		<cdb:_ string="ArchivingChannel" />
 		<cdb:_ string="LoggingChannel" />
-		<cdb:_ string="AlarmChannel" />
 		<cdb:_ string="InterfaceRepository" />
 		<cdb:_ string="CDB" />
 	</ServiceComponents>

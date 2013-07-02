@@ -152,7 +152,7 @@ public class EventModel {
 			
 			systemNcToServiceIdMap = new HashMap<String, String>();
 			// The system NCs and factories must be in sync with acsstartup :: acsNotifyService
-			systemNcToServiceIdMap.put("AlarmChannel", "AlarmNotifyEventChannelFactory");
+			// The NC 'AlarmChannel' has been removed... systemNcToServiceIdMap.put("AlarmChannel", "AlarmNotifyEventChannelFactory");
 			systemNcToServiceIdMap.put(ARCHIVING_CHANNEL_NAME.value, ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
 			systemNcToServiceIdMap.put(LOGGING_CHANNEL_XML_NAME.value, LOGGING_NOTIFICATION_FACTORY_NAME.value);
 			
@@ -531,7 +531,7 @@ public class EventModel {
 
 	
 	/**
-	 * The NCs "ArchivingChannel", "LoggingChannel", and "AlarmChannel"
+	 * The NCs "ArchivingChannel" and "LoggingChannel"
 	 * are internal to ACS and do not get flagged as "channels" kind in the naming service.
 	 * We must recognize them by their names.
 	 * 
