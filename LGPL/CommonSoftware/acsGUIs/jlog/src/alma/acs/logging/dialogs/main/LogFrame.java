@@ -32,6 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.logging.LoggingClient;
@@ -380,7 +381,13 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
 	 * Close the application
 	 */
 	public void closeApplication() {
-		setVisible(false);
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				setVisible(false);
+			}
+		});
+		
 		closing=true;
 		try {
 			if (loggingClient!=null) {
@@ -392,7 +399,13 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
 			t.printStackTrace(System.err);
 		}
 		
-		dispose();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				dispose();
+			}
+		});
+		
 	}
 	
 	/**
