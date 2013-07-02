@@ -22,14 +22,15 @@ package alma.acs.logging.table;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.gui.util.threadsupport.EDTExecutor;
@@ -65,13 +66,133 @@ import com.cosylab.logging.engine.log.LogField;
  * have been added or removed, the refresh is triggered only after a certain amount
  * of time by a dedicated thread (see {@link #run()}).
  * <P>
+ * When a log is deleted, it key is immediately removed from the List of logs ({@link #rows} 
+ * but the key is still in the cache ({@link #allLogs}). A dedicated thread, {@link KeysDeleter}, 
+ * is in charge of removing unused keys. This operation can be safely done in a non-EDT
+ * thread.
+ * <P>
  * <CODE>LogEntryTableModelBase</CODE> can be reused by log tables with basic functionalities 
- * like the error browsers. 
+ * like the error browsers.
+ * <P> 
+ * TODO: manage threads with a {@link ScheduledThreadPoolExecutor} 
  * 
  * @author acaproni
  *
  */
 public class LogEntryTableModelBase extends AbstractTableModel implements Runnable {
+	
+	/**
+	 * The class to delete the keys in a dedicated thread.
+	 * <P>
+	 * Keys to remove are added only by {@link LogEntryTableModelBase#removeExceedingLogs()} inside the EDT.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class KeysDeleter  implements Runnable {
+		
+		/**
+		 * If closed then new keys are rejected and the thread terminates
+		 */
+		private volatile boolean closed=false;
+		
+		/**
+		 * The cache of keys to be deleted by the thread.
+		 * <P>
+		 * {@link ArrayList} seems the best choice considering that we need only 3
+		 * operations: add, get and clear.
+		 */
+		private final List<Integer> keysToDelete = Collections.synchronizedList(new ArrayList<Integer>());
+		
+		/**
+		 * Invalidate the list that will be cleared.
+		 * <P>
+		 * This method is needed when the cache is cleared to avoid removing the
+		 * same keys more then once
+		 * 
+		 * @see LogEntryTableModelBase#clearAll()
+		 */
+		public void invalidate() {
+			keysToDelete.clear();
+		}
+		
+		/**
+		 * Add a key to the collection of keys to delete.
+		 * 
+		 * @param key The not <code>null</code> key to delete
+		 */
+		public void scheduleForDeletion(Integer key) {
+			if (key==null) {
+				throw new IllegalArgumentException("Adding a null key is not allowed");
+			}
+			if (closed) {
+				return;
+			}
+			keysToDelete.add(key);
+		}
+		
+		/**
+		 * Add the keys of the passed List 
+		 * to the collection of keys to delete.
+		 * 
+		 * @param keys The not <code>null</code> keys to delete
+		 */
+		public void scheduleForDeletion(List<Integer> keys) {
+			if (keys==null) {
+				throw new IllegalArgumentException("Adding a null key is not allowed");
+			}
+			if (closed) {
+				return;
+			}
+			keysToDelete.addAll(keys);
+			System.out.println("Added "+keys.size()+" keys; actual size="+keysToDelete.size());
+		}
+
+		/**
+		 * The thread to remove the keys
+		 */
+		@Override
+		public void run() {
+			while (!closed) {
+				try {
+					Thread.sleep(KEY_DELETION_INTERVAL);
+				} catch (InterruptedException ie) {
+					continue;
+				}
+				if (keysToDelete.isEmpty()) {
+					continue;
+				}
+				// Make a local copy to avoid blocking the EDT
+				List<Integer> temp;
+				synchronized(keysToDelete) {
+					temp= new ArrayList<Integer>(keysToDelete);
+					keysToDelete.clear();
+				}
+				System.out.println("Removing "+temp.size()+" keys form the cache");
+				for (Integer keyToRemove: temp) {
+					try {
+						allLogs.deleteLog(keyToRemove);
+					} catch (Throwable t) {
+						// An exception removing the key:
+						// there is nothing to do so we print out a message and continue
+						System.err.println("Error deleting a key from the cache of logs "+keyToRemove);
+						t.printStackTrace(System.err);
+					}
+				}
+				temp.clear();
+				System.out.println("Keys removed");
+			}
+			keysToDelete.clear();
+		}
+		
+		/**
+		 * Terminates the computation
+		 */
+		public void close() {
+			closed=true;
+			
+		}
+	}
 	
 	/**
 	 * Signal the thread to terminate
@@ -83,6 +204,12 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 	 * of the table
 	 */
 	private static final int UPDATE_INTERVAL=2000;
+	
+	/**
+	 * The interval of time to remove the keys
+	 * from the cache (msec)
+	 */
+	private static final int KEY_DELETION_INTERVAL = 60000; 
 	
 	/**
 	 * The vector of logs to add in the rows.
@@ -114,6 +241,19 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 	 * The thread to refresh the content of the table
 	 */
 	protected Thread tableUpdater;
+	
+	/**
+	 * It deletes unused key from the cache 
+	 */
+	private final KeysDeleter keysDeleter = new KeysDeleter();
+	
+	/**
+	 * The thread to delete unused keys from the cache
+	 * every {@link #KEY_DELETION_INTERVAL} time interval
+	 * 
+	 * @see KeysDeleter
+	 */
+	private Thread keysDeleterThread=null;
 	
 	/** 
      * The LoggingClient that owns this table model
@@ -174,6 +314,10 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 		tableUpdater=new Thread(this,"LogEntryTableModelBase.TableUpdaterThread");
 		tableUpdater.setDaemon(true);
 		tableUpdater.start();
+		
+		keysDeleterThread = new Thread(keysDeleter,"LogEntryTableModelBase.KeysDeleter");
+		keysDeleterThread.setDaemon(true);
+		keysDeleterThread.start();
 	}
 
 	/**
@@ -288,6 +432,7 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 			public void run() {
 				rowsToAdd.clear();
 				rows.clear();
+				keysDeleter.invalidate();
 				try {
 					allLogs.clear();		
 				} catch (Throwable t) {
@@ -420,6 +565,8 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 	 */
 	public void close(boolean sync) {
 		terminateThread=true;
+		keysDeleter.close();
+		
 		closed=true;
 		if (tableUpdater!=null) {
 			tableUpdater.interrupt();
@@ -434,6 +581,18 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 			}
 		}
 		clearAll();
+		if (keysDeleterThread!=null) {
+			keysDeleterThread.interrupt();
+			if (sync) {
+				try {
+					// We do not want to wait forever..
+					keysDeleterThread.join(10000);
+					if (keysDeleterThread.isAlive()) {
+						System.err.println("LogEntryTableModelBase.KeysDeleter thread still alive!");
+					}
+				} catch (InterruptedException ie) {}
+			}
+		}
 	}
 	
 	/**
@@ -556,7 +715,7 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 						// The model is unbounded or there is still enough room in the model
 						return;
 					}
-					rows.removeLastEntries(rows.size()-maxLog);
+					keysDeleter.scheduleForDeletion(rows.removeLastEntries(rows.size()-maxLog));
 					fireTableDataChanged();
 				}
 			});
