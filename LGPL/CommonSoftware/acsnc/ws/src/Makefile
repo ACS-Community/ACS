@@ -34,7 +34,7 @@ DEBUG=on
 
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acsncServiceChecker
+EXECUTABLES     = 
 EXECUTABLES_L   = 
 
 # Includes (.h) files (public only)
@@ -45,7 +45,7 @@ INCLUDES = 	acsncHelper.h acsncSupplier.h acsncConsumer.h \
             acsncSimpleConsumer.i acsncSimpleConsumer.h \
             acsncRTSupplier.i acsncRTSupplier.h \
             acsncArchiveConsumer.h \
-            acsncCDBProperties.h acsncServiceChecker.h \
+            acsncCDBProperties.h \
             acsncReconnectionCallback.h \
             acsncCircularQueue.h acsncBlockingQueue.h acsncBlockingQueue.i
 
@@ -61,13 +61,9 @@ acsnc_OBJECTS  = acsncCDBProperties \
                  acsncORBHelperImpl acsncHelperImpl \
                  acsncConsumerImpl acsncSimpleConsumerImpl \
                  acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl \
-                 acsncServiceChecker acsncReconnectionCallback \
-                 acsncCircularQueue
+                 acsncReconnectionCallback acsncCircularQueue
 
 acsnc_LIBS     = pthread rt ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS logging RepeatGuard acstime maci maciClient basenc TAO_CosNotification_MC_Ext
-
-acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
-acsncServiceChecker_LIBS = acsnc maciClient
 
 
 # list of all possible C-sources (used to create automatic dependencies)
