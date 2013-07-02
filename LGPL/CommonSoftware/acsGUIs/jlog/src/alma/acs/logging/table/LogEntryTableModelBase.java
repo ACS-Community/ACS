@@ -145,7 +145,6 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 				return;
 			}
 			keysToDelete.addAll(keys);
-			System.out.println("Added "+keys.size()+" keys; actual size="+keysToDelete.size());
 		}
 
 		/**
@@ -168,7 +167,6 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 					temp= new ArrayList<Integer>(keysToDelete);
 					keysToDelete.clear();
 				}
-				System.out.println("Removing "+temp.size()+" keys form the cache");
 				for (Integer keyToRemove: temp) {
 					try {
 						allLogs.deleteLog(keyToRemove);
@@ -180,7 +178,6 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 					}
 				}
 				temp.clear();
-				System.out.println("Keys removed");
 			}
 			keysToDelete.clear();
 		}
