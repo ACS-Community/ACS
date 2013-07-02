@@ -24,6 +24,8 @@ package alma.acs.logging.table;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableRowSorter;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
+
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
@@ -41,7 +43,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * @author acaproni
  *
  */
-public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> implements Filterable, Runnable {
+public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> implements Filterable {
 	
 	/** 
 	 * The filters
@@ -62,13 +64,20 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 */
 	private int col;
 	
+	LogTableDataModel model;
+	
 	public LogTableRowSorter(LogTableDataModel model) {
 		super(model);
+		this.model=model;
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				setMaxSortKeys(2);
+				setSortKeys(null);
+				
+			}
+		});
 		
-		setMaxSortKeys(2);
-		
-		// Unsorted / unfiltered
-		setSortKeys(null);
 		applyChanges();
 	}
 	
@@ -129,38 +138,12 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 * Set a new filter forcing a reordering of the table
 	 */
 	private void applyChanges() {
-		Thread t = new Thread(new Runnable() {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
 			public void run() {
 				setRowFilter(new LogTableRowFilter(filters,logLevel));
+		
 			}
-		},"LogTableRowSorter.applyChanges");
-		t.setDaemon(true);
-		t. start();
-	}
-	
-	/**
-	 * Change the ordering when the user presses over a column header.
-	 * We need to execute this method on a separate thread otherwise the 
-	 * GUI freezes until the ordering completes.
-	 * 
-	 * 
-	 */
-	public void toggleSortOrder(int column) {
-		Thread t = new Thread(this,"LogTableRowSorter.toggleSortOrder");
-		col=column;
-		t.setDaemon(true);
-		t.start();
-	}
-	
-	/**
-	 * The thread to execute the <code>super.toggleSortOrder</code> without
-	 * freezing the GUI.
-	 */
-	public void run() {
-		try {
-			super.toggleSortOrder(col);
-		} catch (Throwable t) {
-			System.out.println("Recovered error while setting sort order: "+t.getMessage());
-		}
+		});
 	}
 }
