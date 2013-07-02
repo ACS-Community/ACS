@@ -20,18 +20,18 @@
  */
 package alma.acs.logging.table;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import java.io.BufferedReader;
-import java.io.File;
 import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
-import alma.acs.logging.io.LoadFileChooser;
 import alma.acs.logging.io.IOLogsHelper;
+import alma.acs.logging.io.LoadFileChooser;
 import alma.acs.logging.io.SaveFileChooser;
 
 import com.cosylab.logging.LoggingClient;
@@ -39,13 +39,12 @@ import com.cosylab.logging.client.cache.LogCacheException;
 
 /**
  * Extends the <code>LogEntryTableModelBase</code> adding I/O, deletion of logs
- * and so on.
+ * by time frame.
  * 
+ * @see LogEntryTableModelBase
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
 public class LogTableDataModel extends LogEntryTableModelBase {
-    
-    
     
 	/**
 	 * Contains references to the filters that are currently applied to logs.
@@ -64,41 +63,11 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	private IOLogsHelper ioHelper=null;
 	
 	/**
-	 * The max number of logs in cache 
-	 * This limit is not for the buffer but for the size of the whole cache
-	 * A value of 0 means unlimited 
-	 */
-	private int maxLog=0;
-	
-	/**
 	 * The time frame of the logs to keep in cache
 	 * This limit is not for the buffer but for the timeframe of the whole cache
 	 * A value of 0 means unlimited
 	 */
-	private long timeFrame=0;
-	
-	/**
-	 * The time interval between 2 removal of logs from the table
-	 */
-	private static final int DELETION_INTERVAL_TIME=30*1000;
-	
-	/**
-	 * The thread removing logs from the cache.
-	 * <P>
-	 * During a deletion of logs, logs are immediately removed by the table 
-	 * (i.e. from the <code>rows</code> vector) but they are removed from the cache
-	 * by this thread. 
-	 */
-	private Thread deleterThread=null;
-	
-	/**
-	 * The time to check for deletion.
-	 * <P>
-	 * The deletion is triggered by the calling of <code>updateTableEntries()</code>
-	 * by {@link LogEntryTableModelBase.TableUpdater}.
-	 * 
-	 */
-	private long nextDeletionCheckTime=System.currentTimeMillis()+DELETION_INTERVAL_TIME;
+	private volatile long timeFrame=0;
 	
 	/**
 	 * Returns whether the saving/loading of the file has been cancelled or not that reflects on the
@@ -109,25 +78,10 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	}
 	
 	/**
-	 * LCLogTableDataModel constructor comment. Gets updated logs.
+	 * LogTableDataModel constructor.
 	 */
 	public LogTableDataModel(LoggingClient client) throws Exception {
 		super(client);
-	}
-	
-	/**
-	 * Set the max number of logs to keep in cache
-	 * This is the max number of logs stored in cache
-	 * (the visible logs can be less)
-	 * 
-	 * @param max The max number of logs
-	 *            0 means unlimited
-	 */
-	public void setMaxLog(int max) {
-		if (max<0) {
-			throw new IllegalArgumentException("Impossible to set the max log to "+max);
-		}
-		maxLog=max;
 	}
 	
 	/**
@@ -160,18 +114,27 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		java.io.BufferedReader in = null;
 		try {
 			in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()), 16384);
+		} catch (Throwable t) {
+				t.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Exception opening "
+						+ t.getMessage(), "Error opening " + url.toString(),
+						JOptionPane.ERROR_MESSAGE);
+				return;
+		}
 
+		try {
 			isSuspended = true;
 			clearAll();
 
 			getIOHelper().loadLogs(in, loggingClient, loggingClient, 0);
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (Throwable t) {
+			t.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Exception reading "
-					+ ex.getMessage(), "Error reading " + url.toString(),
+					+ t.getMessage(), "Error reading " + url.toString(),
 					JOptionPane.ERROR_MESSAGE);
+		} finally {
+			isSuspended = false;
 		}
-		isSuspended = false;
 	}
 	
 	
@@ -191,21 +154,14 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			LoadFileChooser fc = new LoadFileChooser(currentDir,"Load",filter,loggingClient);
 			File f = fc.getSelectedFile();
 			if (f!=null) {
-				try {
-					 // Assigns to filename the name of the selected file			
-					fileName = f.getAbsolutePath();
-					
-					// Assigns the current directory which 
-					// the file chooser has accessed for getting the file
-					currentDir = fc.getCurrentDirectory(); // if curDir is declared as File
-					isSuspended	= true;
-				} catch (Exception e) {
-					System.err.println("Exception while loading: "+e.getMessage());
-					e.printStackTrace(System.err);
-				}
+				 // Assigns to filename the name of the selected file			
+				fileName = f.getAbsolutePath();
+				
+				// Assigns the current directory which 
+				// the file chooser has accessed for getting the file
+				currentDir = fc.getCurrentDirectory(); // if curDir is declared as File
 			} else {
 				// Load aborted
-				isSuspended = false;
 				return;
 			}
 			// Disconnect the engine and clear the table
@@ -222,11 +178,12 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			} else {
 				len=(int)f.length();
 			}
+			isSuspended = true;
 			getIOHelper().loadLogs(br,loggingClient,loggingClient,len);
 		} catch (Throwable fnfe) {
 			JOptionPane.showInternalMessageDialog(loggingClient.getLogEntryTable(), fnfe.getMessage(), "Error opening "+fileName, JOptionPane.ERROR_MESSAGE);
 			fnfe.printStackTrace();
-		}
+		} 
 	}
 
 	/**
@@ -346,9 +303,15 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		}
 		super.close(sync);
 	}
-
-	 
-	 public int getFieldSortNumber() {
+	
+	/**
+	 * Start the thread to remove oldest logs 
+	 */
+	public void start() {
+		super.start();
+	}
+	
+	public int getFieldSortNumber() {
 		 return 0;
 	 }
 
@@ -358,96 +321,5 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 
 	 public void setSortComparator(int index, boolean ascending) {
 	 }
-	 
-	 /**
-	 * Delete the first <code>logsToDelete</code> logs from the data structures
-	 * of the model.
-	 * 
-	 * @param The keys to remove from the cache
-	 */
-	private void deleteLogs(Integer[] keys) {
-		if (keys==null || keys.length==0) {
-			throw new IllegalArgumentException("Nothing to delete!");
-		}
-		for (Integer key: keys) {
-			if (key!=null) {
-				try {
-					allLogs.deleteLog(key);
-				} catch (LogCacheException e) {
-					System.err.println("Exception deleting key="+key+": "+e.getMessage());
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Update the table entries before refreshing the table
-	 * 
-	 * @return <code>true</code> If the model has been changed and the table needs to be refreshed
-	 */
-	@Override
-	protected synchronized void updateTableEntries() {
-		super.updateTableEntries();
-		if (System.currentTimeMillis()>nextDeletionCheckTime) {
-			deleteLogsFromTable();
-		}
-	}
-	
-	
-	private void deleteLogsFromTable() {
-		// Do not delete logs if the application is paused 
-		if (loggingClient.isPaused() || maxLog<=0) {
-			nextDeletionCheckTime=System.currentTimeMillis()+DELETION_INTERVAL_TIME;
-			return;
-		}	
-		
-		// Is there another delete in progress?
-		// If yes then skip this iteration
-		if (deleterThread!=null && deleterThread.isAlive()) {
-			nextDeletionCheckTime=System.currentTimeMillis()+1000;
-			return;
-		}
-		
-		Integer[] keys=null;
-		int removed=0;
-		synchronized (rowsToAdd) {
-			synchronized (rows) {
-				removed= rows.size()-maxLog;
-				if (removed>0) {
-					keys = new Integer[removed];
-					for (int t=0; t<removed; t++) {
-						keys[t]=rows.get(rows.size()-t-1);
-					}
-					rows.removeLastEntries(removed);
-					
-				} 
-			}
-		}
-		
-		class DeleteFromCache implements Runnable {
-			private final Integer[] keys;
-			public DeleteFromCache(Integer[] k) {
-				keys=k;
-			}
-			public void run() {
-				deleteLogs(keys);
-			}
-		}
-		
-		
-		nextDeletionCheckTime=System.currentTimeMillis()+DELETION_INTERVAL_TIME;
-		if (removed<=0) {
-			return;
-		}
-		System.out.println("deleteLogsFromTable.fire");
-		fireTableDataChanged();
-		
-		deleterThread = new Thread(new DeleteFromCache(keys),"DeleteFromCache");
-		deleterThread.setDaemon(true);
-		deleterThread.start();
-		keys=null;	
-		
-	}
 
 }
