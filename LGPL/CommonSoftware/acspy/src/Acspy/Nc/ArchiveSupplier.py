@@ -79,7 +79,7 @@ class ArchiveSupplier (Supplier):
         
         Raises: Nothing
         '''
-        return acscommon.ARCHIVING_CHANNEL_KIND
+        return acscommon.NC_KIND
     #--------------------------------------------------------------------------
     def getChannelDomain(self):
         '''

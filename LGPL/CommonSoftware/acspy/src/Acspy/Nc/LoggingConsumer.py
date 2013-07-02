@@ -76,7 +76,7 @@ class LoggingConsumer (Consumer):
         
         Raises: Nothing
         '''
-        return acscommon.LOGGING_CHANNEL_KIND
+        return acscommon.NC_KIND
     #--------------------------------------------------------------------------
     def getChannelDomain(self):
         '''
