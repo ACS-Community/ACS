@@ -50,15 +50,18 @@ public class RowEntries {
 	 * 
 	 * @param numOfEntries
 	 */
-	public void removeFirstEntries(int numOfEntries) {
+	public List<Integer> removeFirstEntries(int numOfEntries) {
 		if (numOfEntries<=0) {
 			throw new IllegalArgumentException("Invalid number of entries to remove: "+numOfEntries);
 		}
+		List<Integer> temp = new ArrayList<Integer>();
 		synchronized (entries) {
 			for (int t=0; t<numOfEntries; t++) {
+				temp.add(entries.get(0));
 				entries.remove(0);
 			}
 		}
+		return temp;
 	}
 	
 	/**
@@ -66,16 +69,21 @@ public class RowEntries {
 	 * array.
 	 * 
 	 * @param numOfEntries
+	 * @return the keys removed
 	 */
-	public void removeLastEntries(int numOfEntries) {
+	public List<Integer> removeLastEntries(int numOfEntries) {
 		if (numOfEntries<=0) {
 			throw new IllegalArgumentException("Invalid number of entries to remove: "+numOfEntries);
 		}
+		List<Integer> temp = new ArrayList<Integer>();
 		synchronized (entries) {
 			for (int t=0; t<numOfEntries && !entries.isEmpty(); t++) {
+				temp.add(entries.get(entries.size()-1));
 				entries.remove(entries.size()-1);
+				
 			}
 		}
+		return temp;
 	}
 
 	/**
