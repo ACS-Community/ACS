@@ -40,6 +40,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ProgressMonitor;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -55,6 +56,7 @@ import com.cosylab.logging.settings.FieldChooserDialog;
 import com.cosylab.logging.viewcoordination.ViewCoordinator;
 import com.cosylab.logging.viewcoordination.ViewCoordinator.SingleLogSelectionListener;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.archive.zoom.ZoomProgressListener;
 import alma.acs.logging.table.renderer.DateRenderer;
@@ -295,11 +297,21 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		
 		// Initialize the sorter (unsorted/unfiltered
 		rowSorter = new LogTableRowSorter(model);
-		setRowSorter(rowSorter);
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				setRowSorter(rowSorter);
+			}
+		});
 		// Initially sort by timestamp
-		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		final List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
 		sortKeys.add(new RowSorter.SortKey(LogField.TIMESTAMP.ordinal()+1, SortOrder.DESCENDING));
-		rowSorter.setSortKeys(sortKeys); 
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				rowSorter.setSortKeys(sortKeys);
+			}
+		});
 		
 		initialize(initialDateFormat,initalLogTypeFormat);
 		
@@ -323,7 +335,6 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 */
 	public org.w3c.dom.Node getExtraInfo()
 	{
-		System.out.println("getExtraInfo");
 		//	String noInfoString = ;
 
 		//	org.w3c.dom.Node nn = new org.w3c.dom.Node.;
@@ -553,10 +564,15 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 * 
 	 * @param index int
 	 */
-	public void setSortIndex(int index)
+	public void setSortIndex(final int index)
 	{
-		LogTableDataModel ltdm = getLCModel();
-		ltdm.setSortComparator(index,ltdm.sortedAscending());
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				LogTableDataModel ltdm = getLCModel();
+				ltdm.setSortComparator(index,ltdm.sortedAscending());
+			}
+		});		
 	}
 
 	/**
@@ -568,10 +584,15 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 * 
 	 * @param ascending The order for the table
 	 */
-	public void setSortOrder(boolean ascending)
+	public void setSortOrder(final boolean ascending)
 	{
-		LogTableDataModel ltdm = getLCModel();
-		ltdm.setSortComparator(ltdm.getFieldSortNumber(),ascending);
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				LogTableDataModel ltdm = getLCModel();
+				ltdm.setSortComparator(ltdm.getFieldSortNumber(),ascending);
+			}
+		});
 	}
 	
 	/** 
@@ -584,8 +605,13 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 * @param ascending The order ascending(true)/descending (false)
 	 * 
 	 */
-	public void setOrdering(int field, boolean ascending) {
-		getLCModel().setSortComparator(field,ascending);
+	public void setOrdering(final int field, final boolean ascending) {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				getLCModel().setSortComparator(field,ascending);
+			}
+		});
 	}
 
 	/**
@@ -804,10 +830,16 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		if (selecteViewdRow==-1) {
 			return;
 		}
-		int modelRow=((LogTableDataModel)getModel()).findKeyPos(selecteLogKey);
-		if (modelRow!=-1) {
-			changeSelection(convertRowIndexToView(modelRow),1,false,false);
-		}
+		EDTExecutor.instance().execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				int modelRow=((LogTableDataModel)getModel()).findKeyPos(selecteLogKey);
+				if (modelRow!=-1) {
+					changeSelection(convertRowIndexToView(modelRow),1,false,false);
+				}
+			}
+		});
 	}
 	
 	/** 
@@ -824,8 +856,13 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 * @param newFilters
 	 * @param append
 	 */
-	public void setFilters(FiltersVector newFilters, boolean append) {
-		rowSorter.setFilters(newFilters, append);
+	public void setFilters(final FiltersVector newFilters, final boolean append) {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				rowSorter.setFilters(newFilters, append);
+			}
+		});		
 	}
 	
 	/**
@@ -842,7 +879,13 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 * 
 	 * @param newLevel
 	 */
-	public void setLogLevel(LogTypeHelper newLevel) {
+	public void setLogLevel(final LogTypeHelper newLevel) {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				rowSorter.setLogLevel(newLevel);
+			}
+		});	
 		rowSorter.setLogLevel(newLevel);
 	}
 	
