@@ -211,8 +211,9 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 	/**
 	 * The vector of logs to add in the rows.
 	 * <P>
-	 * Newly arrived logs are added to this vector and flushed into 
+	 * Newly arrived logs are appended to this vector and flushed into 
 	 * <code>rows</code> by the <code>TableUpdater</code> thread.
+	 * <P>Newest logs are in the tail; oldest logs in the head.
 	 */
 	private final List<ILogEntry> rowsToAdd = Collections.synchronizedList(new Vector<ILogEntry>());
 		
@@ -603,8 +604,6 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 	 * For this reason each log is inserted in the temporary vector <code>rowsToAdd</code> 
 	 * that will be flushed into <code>rows</code> by the thread.
 	 * 
-	 * TODO: to increase performance we should append the logs at the end of 
-	 *       the Vector rowsToAdd
 	 * @param log The log to add
 	 */
 	public void appendLog(ILogEntry log) {
@@ -612,7 +611,7 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 			throw new IllegalArgumentException("Can't append a null log to the table model");
 		}
 		if (!closed) {
-			rowsToAdd.add(0,log);
+			rowsToAdd.add(log);
 		}
 	}
 	
@@ -654,7 +653,8 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 			EDTExecutor.instance().executeSync(new Runnable() {
 				@Override
 				public void run() {
-					for (ILogEntry log: temp) {
+					for (int t=temp.size()-1; t>=0; t--) {
+						ILogEntry log=temp.get(t);
 						Integer key;
 						try {
 							key=Integer.valueOf(allLogs.add(log));
