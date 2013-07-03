@@ -329,10 +329,6 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 						  )
 {
 
- // "Logging" or "Archiving"
-  const char * domain_name =
-    notification.header.fixed_header.event_type.domain_name;
-
   // if "Logging" -> ""
   // if "Archiving" -> "string" | "long" | "double"
   const char * type_name =
@@ -340,7 +336,12 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 
   //ACE_OS::printf("\nReceived event, domain = %s, type = %s\n", domain_name, type_name);
 
-  if (ACE_OS::strcmp(domain_name, "Logging")==0)
+  // TODO: We should have a boolean flag or an enum that tells us what events to expect
+  //       (Logging, Archiving, or others in the future).
+  //       This silly repeated NC name comparison is a quick fix to replace the
+  //       silly checking of the event's domain field that we had before ICT-494.
+  if (channelName.compare(acscommon::LOGGING_CHANNEL_XML_NAME)==0 ||
+      channelName.compare(acscommon::LOGGING_CHANNEL_NAME)==0 )
   {
     if(!m_logBin){
         // for logging
@@ -411,7 +412,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 
     }
   }
-  else if (ACE_OS::strcmp(domain_name, "Archiving")==0)
+  else if (channelName.compare(acscommon::ARCHIVING_CHANNEL_NAME)==0)
       {
       std::string eventName = (const char *)notification.header.fixed_header.event_name;
       std::string containerName = "";
@@ -467,8 +468,8 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
       }
   else
       {
-      ACE_OS::printf("Structured Subscribe Consumer %d received unknown event, domain = %s, type = %s\n",
-		     this->proxy_supplier_id_, domain_name, type_name);
+      ACE_OS::printf("Structured Subscribe Consumer %d received unknown event, type = %s\n",
+		     this->proxy_supplier_id_, type_name);
       }
 }
 
