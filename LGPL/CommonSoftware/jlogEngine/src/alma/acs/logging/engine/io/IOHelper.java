@@ -324,7 +324,11 @@ public class IOHelper extends LogMatcher {
 		int bytesInBuffer=0;
 		
 		StopWatch stopWatch = new StopWatch();
-	
+		
+		// This thread is very CPU demanding so we want to give other
+		// threads a chance to run too...
+		int yelder=0;
+		
 		while (true && !stopped) {
 			// Read a block from the file if the buffer is empty
 			if (bytesInBuffer==0) {
@@ -348,6 +352,10 @@ public class IOHelper extends LogMatcher {
 				if (logRecordsRead%25==0) {
 					progressListener.logsRead(logRecordsRead);
 				}
+			}
+			yelder=(yelder++)%5000;
+			if (yelder==0) {
+				Thread.yield();
 			}
 		}
 		System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
