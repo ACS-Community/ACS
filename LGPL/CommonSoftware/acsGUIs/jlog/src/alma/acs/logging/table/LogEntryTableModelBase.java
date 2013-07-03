@@ -664,8 +664,7 @@ public class LogEntryTableModelBase extends AbstractTableModel implements Runnab
 							lce.printStackTrace(System.err);
 							continue;
 						}
-						// TODO: to increase performances append the key instead of inserting
-						rows.add(0,key);
+						rows.add(key);
 					}
 					// Finally notify the change
 					fireTableRowsInserted(0, temp.size()-1);
