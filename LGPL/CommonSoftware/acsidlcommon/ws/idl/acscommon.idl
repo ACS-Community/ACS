@@ -1057,13 +1057,24 @@ module acscommon
      */
     const string NAMING_SERVICE_NAME = "NameService";
 
-    //Event Channel stuff////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////
+    /////////////////////// Event Channel stuff ///////////////////////
+    ///////////////////////////////////////////////////////////////////
+
+    // Some or all of these constants are used in modules that build before acsncidl,
+    // which is why we keep them here. TODO: change the build order and move code to acsnc.idl.
 
     /**
-     * Domain for notification channels.
-     * This domain is used for ICD-style events shared between ALMA subsystems. 
-     * @todo Should this be renamed ALMA_DOMAIN?
-     * (Do not confuse this concept with the NC domains as used in Channels.xsd whose domains are all within this ALMADOMAIN here.)
+     * Corba-level domain for all ACS notification channels.
+     * The Corba spec (notification service, chapter 2.2) describes the event's domain field as the
+     * "vertical industry domain in which the event type is defined (e.g., telecommunications, finance, health care)."
+     * Thus using "ALMA" is already quite specific, as it could be also "Observatories".
+     * 
+     * Note that this concept of domain is totally unrelated to the NC domains
+     * that can be used within ACS, to map a group of NCs to a notify service factory.
+     * Some of those domains also have IDL-defined names, such as "ACS_NC_DOMAIN_ALARMSYSTEM".
+     * Corba-wise they all use the ALMADOMAIN.
      */
     const string ALMADOMAIN = "ALMA";
 
@@ -1075,14 +1086,14 @@ module acscommon
 
     /**
      * Name of the notification channel (as registered with the Naming Service) 
-     * that contains logs in "binary" idl way.
+     * that contains logs in "binary" idl way. It is currently not used.
      */
     const string LOGGING_CHANNEL_NAME = "LoggingChannelBin";
 
     /**
      * Name of the notification channer that contains the logs in xml
      */
-    const string LOGGING_CHANNEL_XML_NAME = "LoggingChannel";	
+    const string LOGGING_CHANNEL_XML_NAME = "LoggingChannel";
 
     /**
      *  DEFAULTDATANAME is just something that needs to be packed into Structured
@@ -1103,6 +1114,38 @@ module acscommon
      */
     const string LOGGING_TYPE = "";
     
+    
+    /**
+     * ACS domain for alarm system NCs. 
+     * (This constant supersedes ALARMSYSTEM_DOMAIN_NAME from acsnc.idl)
+     * 
+     * Note that this applies to the concept of ACS NC domains as used in Channels.xsd,
+     * not to the Corba-level domain defined as ALMADOMAIN above that is fixed for all Acs NCs.
+     */
+    const string ACS_NC_DOMAIN_ALARMSYSTEM = "ALARMSYSTEM";
+    
+    /**
+     * ACS domain for logging NC(s). 
+     * 
+     * Note that this applies to the concept of ACS NC domains as used in Channels.xsd,
+     * not to the Corba-level domain defined as ALMADOMAIN above that is fixed for all Acs NCs.
+     */
+    const string ACS_NC_DOMAIN_LOGGING = "LOGGING";
+
+    /**
+     * ACS domain for monitor data archiving NC(s), 
+     * which can be used as an alternative to transporting monitoring data 
+     * through the collector and blobber components.
+     * The name "ARCHIVING" is misleading, since other sorts of data could also 
+     * be archived, not just monitoring data from baci properties. 
+     * For historical reasons we leave it as that.
+     * 
+     * Note that this applies to the concept of ACS NC domains as used in Channels.xsd,
+     * not to the Corba-level domain defined as ALMADOMAIN above that is fixed for all Acs NCs.
+     */
+    const string ACS_NC_DOMAIN_ARCHIVING = "ARCHIVING";
+
+    
     /**
      *  Separates the NC name from the NC domain name, to form a single entry
      *  in the naming service. See http://jira.alma.cl/browse/COMP-9338.
@@ -1112,9 +1155,12 @@ module acscommon
     const string NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR = "@";
     
     /**
-     *  Default domain name to be used in the naming service bindings 
-     *  for NCs that were created without a domain such as ALARMSYSTEM.
-     *  See http://jira.alma.cl/browse/COMP-9338 and NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.
+     * Default domain name to be used in the naming service bindings 
+     * for NCs that were created without a domain such as ALARMSYSTEM.
+     * See http://jira.alma.cl/browse/COMP-9338 and NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.
+     * 
+     * Note that this applies to the concept of ACS NC domains as used in Channels.xsd,
+     * not to the Corba-level domain defined as ALMADOMAIN above that is fixed for all Acs NCs.
      */
     const string NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT = "DEFAULTDOMAIN";
 
