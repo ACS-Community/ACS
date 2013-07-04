@@ -34,12 +34,12 @@
 #    None
 #------------------------------------------------------------------------
 
-PY_SCRIPTS  = ACSPyConsole ACSStartContainerPy ACSEventAdmin
-PY_PACKAGES = Acspy acsncImpl 
+PY_SCRIPTS  = ACSPyConsole ACSStartContainerPy
+PY_PACKAGES = Acspy
 
 SCRIPTS_L = 
 
-SCRIPTS   = acseventbrowser acspyInteractiveContainer acsLoggingMonitor
+SCRIPTS   = acspyInteractiveContainer acsLoggingMonitor
 
 # 
 # IDL Files and flags
@@ -75,9 +75,9 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ ../*~ Acspy/*~ acsncImpl/*~ ACSImpl/*~
+	$(RM) *~ ../*~ Acspy/*~ ACSImpl/*~
 	$(RM) Acspy/Util/*~ Acspy/Common/*~ Acspy/Nc/*~ Acspy/Time/*~ Acspy/Clients/*~ Acspy/Servants/*~
-	$(RM) *.pyc Acspy/*.pyc acsncImpl/*.pyc ACSImpl/*.pyc
+	$(RM) *.pyc Acspy/*.pyc ACSImpl/*.pyc
 	$(RM) Acspy/Util/*.pyc Acspy/Common/*.pyc Acspy/Nc/*.pyc Acspy/Time/*.pyc Acspy/Clients/*.pyc Acspy/Servants/*.pyc
 	$(RM) ../doc/*.html ../doc/pychecker
 	@echo " . . . clean done"
