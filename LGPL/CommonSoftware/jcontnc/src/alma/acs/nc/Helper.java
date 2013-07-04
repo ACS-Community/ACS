@@ -191,13 +191,21 @@ public class Helper {
 	}
 
 	
+	/**
+	 * Same as {@link #Helper(String, String, ContainerServicesBase, NamingContext)} but without the NC domain;
+	 * the default NC domain ({@link NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT.value}) will be used.
+	 * 
+	 * @param channelName
+	 * @param services
+	 * @param namingService
+	 * @throws AcsJException
+	 */
 	public Helper(String channelName, ContainerServicesBase services, NamingContext namingService) throws AcsJException {
 		this(channelName, null, services, namingService);
 	}
 	
 	/**
 	 * Creates a new instance of Helper.
-	 * This constructor is preferred, because it makes dependencies explicit. 
 	 * @param channelName The NC that this Helper is made for.
 	 * @param domainName The optional NC domain, or <code>null</code>.
 	 * @param services A reference to the ContainerServices
@@ -683,6 +691,8 @@ public class Helper {
 		if (channelsDAO != null) {
 			// if channel mapping exists take it, wildchars are also supported
 			try {
+				// Note that in spite of the NC domain name being appended in the name service mappings,
+				// we still configure simple NC names in the CDB.
 				String[] channelNameList = channelsDAO.get_string_seq("NotificationServiceMapping/Channels_");
 				for (String pattern : channelNameList) {
 					String regExpStr = WildcharMatcher.simpleWildcardToRegex(pattern);

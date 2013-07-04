@@ -295,6 +295,8 @@ public class ChannelProperties {
 		connectRelAny.insert_short(Persistent.value);
 		Property connectRel = new Property(ConnectionReliability.value, connectRelAny);
 		//@TODO do something with this connectRel, e.g. check why it's commented out at the end of this method!
+		// Also enforce that EventReliability=Persistent && ConnectionRelability=BestEffort is undefined (spec 2.5.5.1).
+		// ConnectionRelability=Persistent requires TAO topology persistence to be enabled.
 		
 		// Priority - ///////////////////////////////////////////////
 		Any priorityAny = m_services.getAdvancedContainerServices().getAny();
