@@ -86,9 +86,34 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 			String serialNumber) throws RegisteringDeviceProblemEx,
 			DeviceAlreadyRegisteredEx {
 	}
+	
+	
+	@Override
+	public void registerNonCollocatedMonitoredDevice(String componentName,
+			String serialNumber) throws RegisteringDeviceProblemEx,
+			DeviceAlreadyRegisteredEx {
+	}
+	
+	@Override
+	public void registerCollocatedMonitoredDevice(String componentName,
+			String serialNumber) throws RegisteringDeviceProblemEx,
+			DeviceAlreadyRegisteredEx {
+	}
 
 	@Override
 	public void registerMonitoredDeviceWithMultipleSerial(String componentName,
+			propertySerailNumber[] serialNumbers)
+			throws RegisteringDeviceProblemEx, DeviceAlreadyRegisteredEx {
+	}
+	
+	@Override
+	public void registerNonCollocatedMonitoredDeviceWithMultipleSerial(String componentName,
+			propertySerailNumber[] serialNumbers)
+			throws RegisteringDeviceProblemEx, DeviceAlreadyRegisteredEx {
+	}
+	
+	@Override
+	public void registerCollocatedMonitoredDeviceWithMultipleSerial(String componentName,
 			propertySerailNumber[] serialNumbers)
 			throws RegisteringDeviceProblemEx, DeviceAlreadyRegisteredEx {
 	}
