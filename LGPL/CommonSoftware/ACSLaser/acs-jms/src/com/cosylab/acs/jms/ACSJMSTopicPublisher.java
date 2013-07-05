@@ -40,6 +40,7 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.nc.AcsEventPublisher;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 
 /**
  * To avoid creating an <code>AcsEventPublisher</code> for each message to publish,
@@ -98,7 +99,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 		 */
 		public PublisherPoolItem(String name, ContainerServicesBase contSvcs) throws AcsJException {
 			ncName = name;
-			publisher = contSvcs.createNotificationChannelPublisher(ncName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+			publisher = contSvcs.createNotificationChannelPublisher(ncName, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 			lastAccessTime=System.currentTimeMillis();
 		}
 		

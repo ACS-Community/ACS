@@ -1,0 +1,6 @@
+2013-07-05T08:44:24.217 Local file logger: Cache saved to '/diska/home/almadev/MODULES_SVN_1_7/ACS/LGPL/CommonSoftware/ACSLaser/laser-source-python/test/tmp/log_cache.dat_maciManagerShutdown_4749'.
+2013-07-05T08:44:24.234 [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::192.168.153.141:3000/Manager'
+2013-07-05T08:44:24.273 [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::192.168.153.141:3000/Manager'
+2013-07-05T08:44:24.298 [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+2013-07-05T08:44:24.313 [GlobalLogger - ] Calling maci::Manager::shutdown()...
+2013-07-05T08:44:24.342 [GlobalLogger - ] Done.

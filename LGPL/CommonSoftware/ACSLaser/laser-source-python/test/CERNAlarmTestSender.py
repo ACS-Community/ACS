@@ -32,7 +32,7 @@ import Acsalarmpy.FaultState as FaultState
 import Acsalarmpy.Timestamp as Timestamp
 import ACSJMSMessageEntity_idl
 from Acspy.Nc.Consumer import Consumer
-from acsnc import ALARMSYSTEM_DOMAIN_NAME
+from acscommon import ACS_NC_DOMAIN_ALARMSYSTEM
 
 msgCount = 0
 
@@ -54,7 +54,7 @@ if len(sys.argv) < 2:
 else:
     numAlarmsToSend = int(sys.argv[1])
     
-    c = Consumer("CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES",None,ALARMSYSTEM_DOMAIN_NAME)
+    c = Consumer("CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES",None,ACS_NC_DOMAIN_ALARMSYSTEM)
     c.addSubscription(ACSJMSMessageEntity_idl._0_com.cosylab.acs.jms.ACSJMSMessageEntity, alarmDataHandler)
     c.consumerReady()
 

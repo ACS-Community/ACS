@@ -29,5 +29,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

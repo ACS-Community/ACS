@@ -35,9 +35,9 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
-import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.acsnc.EventDescription;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
@@ -114,7 +114,7 @@ public class DemoTest {
 		// Connect to the NC used by the sources
         try {
         	subscriber = m_contSvcs.createNotificationChannelSubscriber(
-        							srcChName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+        							srcChName, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
         } catch (Exception e) {
         	logger.severe("Error instantiating the consumer: "+e.getMessage());
         	e.printStackTrace();
@@ -318,7 +318,7 @@ public class DemoTest {
 //	private void setupSourceListener() {
 //		// Connect to the NC used by the sources
 //	    try {
-//	    	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
+//	    	m_consumer = new Consumer(srcChName,ACS_NC_DOMAIN_ALARMSYSTEM.value,m_contSvcs);
 //	    } catch (AcsJException e) {
 //	    	logger.severe("Error instantiating the consumer: "+e.getMessage());
 //	    	e.printStackTrace();

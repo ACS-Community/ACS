@@ -28,6 +28,7 @@
 #include "ACSJMSMessageEntityC.h"
 #include "acsutilTimeStamp.h"
 #include <string>
+#include <acscommonC.h>
 #include <acsncC.h>
 #include <acsncErrType.h>
 #include <ACSErrTypeCORBA.h>
@@ -41,7 +42,7 @@ using std::string;
  * @param channelName the name of the channel to use for publishing events
  */
 AlarmSupplier::AlarmSupplier(const char* channelName) :
-    BaseSupplier(channelName, acsnc::ALARMSYSTEM_DOMAIN_NAME)
+    BaseSupplier(channelName, acscommon::ACS_NC_DOMAIN_ALARMSYSTEM)
 {
 	ACS_TRACE("AlarmSupplier::AlarmSupplier()");
 }

@@ -41,6 +41,7 @@ import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.acsnc.EventDescription;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
@@ -98,7 +99,7 @@ public class SourcesListener implements AcsEventSubscriber.Callback<ACSJMSMessag
 		// Connect to the NC used by the sources
 		try {
 			m_consumer = m_contSvcs.createNotificationChannelSubscriber(srcChName,
-					alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+					ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 		} catch (Exception e) {
 			logger.severe("Error instantiating the consumer: " + e.getMessage());
 			e.printStackTrace();

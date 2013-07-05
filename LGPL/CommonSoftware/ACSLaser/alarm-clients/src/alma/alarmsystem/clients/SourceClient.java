@@ -32,6 +32,7 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.acsnc.EventDescription;
 import alma.alarmsystem.clients.source.SourceListener;
 
@@ -72,7 +73,7 @@ public class SourceClient implements AcsEventSubscriber.Callback<ACSJMSMessageEn
 			throw new IllegalStateException("SourceClient is closed!");
 		}
 		logger.log(AcsLogLevel.DEBUG,"Connecting to source channel "+m_channelName);
-		m_consumer = contSvcs.createNotificationChannelSubscriber(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		m_consumer = contSvcs.createNotificationChannelSubscriber(m_channelName, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 		m_consumer.addSubscription(this);
 		m_consumer.startReceivingEvents();
 		logger.log(AcsLogLevel.DEBUG,"Source channel "+m_channelName+" connected");

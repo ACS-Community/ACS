@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import com.cosylab.acs.jms.ACSJMSMessageEntity;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -30,10 +32,8 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acsErrTypeLifeCycle.wrappers.AcsJEventSubscriptionEx;
-import alma.acsnc.ALARMSYSTEM_DOMAIN_NAME;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.acsnc.EventDescription;
-
-import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
 /**
  * Connects to all the alarm source NC and listen for alarms.
@@ -192,7 +192,7 @@ public class AlarmSourcesListener implements AcsEventSubscriber.Callback<ACSJMSM
 		String name=channelGroupName+ncName;
 		logger.log(AcsLogLevel.DEBUG,"Connecting to source NC: "+name);
 		AcsEventSubscriber<ACSJMSMessageEntity> consumer;
-		consumer = contSvcs.createNotificationChannelSubscriber(name, ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		consumer = contSvcs.createNotificationChannelSubscriber(name, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 		consumer.addSubscription(this);
 		logger.log(AcsLogLevel.DEBUG,"Start receiving alarms from source NC: "+name);
 		consumer.startReceivingEvents();

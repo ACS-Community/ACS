@@ -33,7 +33,7 @@ import javax.jms.TopicSubscriber;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventSubscriber;
-import alma.acsnc.ALARMSYSTEM_DOMAIN_NAME;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.acsnc.EventDescription;
 
 /**
@@ -55,7 +55,7 @@ public class ACSJMSTopicSubscriber
 		super(topic, containerServices,selector);
 		try {
 			consumer = containerServices.createNotificationChannelSubscriber(
-					topic.getTopicName(), ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+					topic.getTopicName(), ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 			consumer.addSubscription(this);
 			consumer.startReceivingEvents();
 		} catch (AcsJException e) {

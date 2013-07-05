@@ -100,26 +100,6 @@ module acsnc
     const string SEQUENCE_EVENT_TYPE_PREFIX = "_SequenceOf_";
 
 
-    /**
-     * Typedef for "enum" values of known event channel domains that allow a hardcoded or CDB-based mapping from a channel to a notification service.  
-     * 
-     * TODO: Remove this typedef and its only use below for 'ALARMSYSTEM_DOMAIN_VAL'. 
-     *       We only use the string forms, e.g. ALARMSYSTEM_DOMAIN_NAME
-     */
-    typedef short domainNameValue;
-
-    /**
-     * Alarm System NC CDB mapping domain "enum" value.
-     */
-    const domainNameValue ALARMSYSTEM_DOMAIN_VAL = 0;
-
-    /**
-     * Alarm System NC CDB mapping domain name.
-     */
-    const string ALARMSYSTEM_DOMAIN_NAME = "ALARMSYSTEM";
-    
-    
-
     ////////////////////////////////////////////////////////////////////////
 
     /**
