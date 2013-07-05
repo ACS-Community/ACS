@@ -25,6 +25,7 @@ import org.omg.CosNotification.StructuredEvent;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.UTCUtility;
+import alma.acscommon.ACS_NC_DOMAIN_ARCHIVING;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 
@@ -54,7 +55,7 @@ public class ArchiveSupplier extends NCPublisher<Object> {
 	 *            developer's convenience.
 	 */	
 	public ArchiveSupplier(ContainerServicesBase services) throws AcsJException {
-		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services, Helper.getNamingServiceInitial(services));
+		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, ACS_NC_DOMAIN_ARCHIVING.value, services, Helper.getNamingServiceInitial(services));
 //		pub = services.createNotificationChannelPublisher(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, IDLEntity.class);
 	}
 
@@ -62,6 +63,7 @@ public class ArchiveSupplier extends NCPublisher<Object> {
 	 * Overridden.
 	 * 
 	 * @return string
+	 * @see ArchiveConsumer.ArchiveTweakedNCSubscriber#getNotificationFactoryName()
 	 */
 	@Override
 	protected String getNotificationFactoryName() {

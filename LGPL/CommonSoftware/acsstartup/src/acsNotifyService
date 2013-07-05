@@ -195,6 +195,7 @@ case $CL_NS_TYPE in
       export LOGGING_CHANNEL=LoggingChannel      # must match LOGGING_CHANNEL_XML_NAME from acscommon.idl
     fi
     NOTIFY_EVENT_CHANNEL=$LOGGING_CHANNEL
+    NOTIFY_EVENT_CHANNEL_DOMAIN=""   # TODO "LOGGING"     # must match ACS_NC_DOMAIN_LOGGING from acscommon.idl
     NOTIFY_EVENT_CHANNEL_FACTORY=LoggingNotifyEventChannelFactory
   ;; "Archive"|"ArchiveNotifyEventChannelFactory")
     CL_NS_TYPE="Archive"
@@ -203,6 +204,7 @@ case $CL_NS_TYPE in
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
     NOTIFY_SERVICE_PORT=`getArchiveNotifyServicePort`
     NOTIFY_EVENT_CHANNEL=ArchivingChannel   # must match ARCHIVING_CHANNEL_NAME from acscommon.idl
+    NOTIFY_EVENT_CHANNEL_DOMAIN=ARCHIVING   # must match ACS_NC_DOMAIN_ARCHIVING from acscommon.idl
     NOTIFY_EVENT_CHANNEL_FACTORY=ArchiveNotifyEventChannelFactory
   ;; "Alarm"|"AlarmNotifyEventChannelFactory")
     CL_NS_TYPE="Alarm"
@@ -211,6 +213,7 @@ case $CL_NS_TYPE in
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_IORFILE
     NOTIFY_SERVICE_PORT=`getAlarmNotifyServicePort`
     NOTIFY_EVENT_CHANNEL=
+    NOTIFY_EVENT_CHANNEL_DOMAIN=
     NOTIFY_EVENT_CHANNEL_FACTORY=AlarmNotifyEventChannelFactory
   ;; *)
     CL_NS_TYPE=`echo $CL_NS_TYPE | sed s/NotifyEventChannelFactory$//g`
@@ -219,6 +222,7 @@ case $CL_NS_TYPE in
     NOTIFY_IOR="$INSTANCE_DIR/$ACS_IOR_DIR/${CL_NS_TYPE}_NotifyServiceIOR"
     NOTIFY_SERVICE_PORT=`acsstartupNotifyPort $CL_NS_TYPE`
     NOTIFY_EVENT_CHANNEL=
+    NOTIFY_EVENT_CHANNEL_DOMAIN=
     NOTIFY_EVENT_CHANNEL_FACTORY="${CL_NS_TYPE}NotifyEventChannelFactory"
   ;;
 esac
@@ -336,6 +340,7 @@ then
   export ACS_NAME_SERVICE
   export CL_NS_TYPE
   export NOTIFY_EVENT_CHANNEL_FACTORY
+  export NOTIFY_EVENT_CHANNEL_DOMAIN
   export NOTIFY_EVENT_CHANNEL
   export NOTIFY_SERVICE_PORT
   export NOTIFY_SERVICE_PIDFILE

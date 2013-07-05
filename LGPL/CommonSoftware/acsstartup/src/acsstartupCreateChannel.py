@@ -97,12 +97,18 @@ parser.add_option("--notify_service_kind",
 #channel id
 parser.add_option("--channel_id",
                   dest="channel_id",
-                  help="ID of the Notification Channel to be created as registered with the CORBA Naming Service. Required.")
+                  help="ID (name) of the Notification Channel to be created. Used for the Naming Service registration. Required.")
+
+#channel domain
+parser.add_option("--channel_domain",
+                  dest="channel_domain",
+                  default="",
+                  help="NC domain. Used for the Naming Service registration. Currently still optional.")
 
 #channel kind
 parser.add_option("--channel_kind",
                   dest="channel_kind",
-                  default="",
+                  default="channels",
                   help="Kind of the Notification Channel to be created as registered with the CORBA Naming Service. Optional.")
 
 #-----------------------------
@@ -185,7 +191,7 @@ import sys
 
 ORB = CORBA.ORB_init(sys.argv)
 POA_ROOT = ORB.resolve_initial_references("RootPOA")
-POA_MANAGER = POA_ROOT._get_the_POAManager()            
+POA_MANAGER = POA_ROOT._get_the_POAManager()
 POA_MANAGER.activate()
 CHANNEL_ADMIN_PROPS=[]
 CHANNEL_QOS_PROPS=[]
@@ -198,14 +204,14 @@ from omniORB import any
 
 #name_service
 if options.name_service==None:
-    print "name_service is a required paramter!"
+    print "name_service is a required parameter!"
     sys.exit(1)
 else:
     cl_name_service = options.name_service
 
 #notify_service_id
 if options.notify_service_id==None:
-    print "notify_service_id is a required paramter!"
+    print "notify_service_id is a required parameter!"
     sys.exit(1)
 else:
     cl_notify_service_id = options.notify_service_id
@@ -218,16 +224,19 @@ else:
 
 #channel_id
 if options.channel_id==None:
-    print "channel_id is a required paramter!"
+    print "channel_id is a required parameter!"
     sys.exit(1)
 else:
     cl_channel_id = options.channel_id
 
+#channel_domain
+# TODO: Enable handling as required param
+#    print "channel_domain is a required parameter!"
+#    sys.exit(1)
+cl_channel_domain = options.channel_domain
+
 #channel_kind
-if options.channel_kind==None:
-    cl_channel_kind=""
-else:
-    cl_channel_kind = options.channel_kind
+cl_channel_kind = options.channel_kind
 
 
 #-----------------------------
@@ -346,15 +355,20 @@ NOTIFY_SERVICE = NOTIFY_SERVICE._narrow(CosNotifyChannelAdmin.EventChannelFactor
 
 #------------------------------------------------------------------------------
 #--Create the channel
-# TODO Use TAO extension API and "channel_name", see http://ictjira.alma.cl/browse/ICT-494
+# TODO Use TAO extension API and "cl_channel_id", see http://ictjira.alma.cl/browse/ICT-494
 CHANNEL_REF, CHANNEL_ID = NOTIFY_SERVICE.create_channel(CHANNEL_QOS_PROPS,
                                                         CHANNEL_ADMIN_PROPS)
 
 #------------------------------------------------------------------------------
-#--Register the channel with the naming service
-#from the command-line
-# TODO Append NC domain name, see http://ictjira.alma.cl/browse/ICT-494, ICT-577
-channel_name = CosNaming.NameComponent(cl_channel_id,
+#--Register the channel with the naming service from the command-line
+# See also acscommon.idl about the "@" (NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR)
+if cl_channel_domain:
+    channel_id_with_domain = cl_channel_id + "@" + cl_channel_domain
+else:
+    # TODO: At least for a transition time we allow the empty domain (see http://ictjira.alma.cl/browse/ICT-494)
+    channel_id_with_domain = cl_channel_id
+
+channel_name = CosNaming.NameComponent(channel_id_with_domain,
                                        cl_channel_kind)
 NAME_SERVICE.rebind([channel_name], CHANNEL_REF)
 

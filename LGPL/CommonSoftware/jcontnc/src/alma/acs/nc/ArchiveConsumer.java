@@ -25,6 +25,8 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acscommon.ACS_NC_DOMAIN_ARCHIVING;
+import alma.acscommon.ARCHIVING_CHANNEL_NAME;
 import alma.acsnc.EventDescription;
 
 /**
@@ -95,7 +97,7 @@ public class ArchiveConsumer {
 
 		public ArchiveTweakedNCSubscriber(ArchiveReceiver userReceiver, ContainerServicesBase services, NamingContext namingService, String clientName)
 				throws AcsJException {
-			super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, null, services, namingService, clientName, IDLEntity.class);
+			super(ARCHIVING_CHANNEL_NAME.value, ACS_NC_DOMAIN_ARCHIVING.value, services, namingService, clientName, IDLEntity.class);
 			this.userReceiver = userReceiver;
 
 			GenericCallback internalDummyReceiver = new GenericCallback() {
@@ -107,6 +109,17 @@ public class ArchiveConsumer {
 			addGenericSubscription(internalDummyReceiver);
 		}
 
+		/**
+		 * Returns "ArchiveNotifyEventChannelFactory", using an IDL constant.
+		 * <p>
+		 * Even with a proper NC domain used toward the naming service
+		 * (see http://ictjira.alma.cl/browse/ICT-494),
+		 * we do not yet support domain-to-service mapping in the CDB.
+		 * <p>
+		 * TODO: Support optional CDB mapping for the "ARCHIVING" domain,
+		 * but for backward compatibility do not require the user to configure
+		 * this in the CDB (rather fall back to the hardcoded notify service).
+		 */
 		@Override
 		protected String getNotificationFactoryName() {
 			return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
