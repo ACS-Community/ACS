@@ -106,18 +106,6 @@ namespace nc {
 	    }
     }
     //---------------------------------------------------------- 
-    const char* 
-    ArchiveConsumer::getChannelKind()
-    {
-	return acscommon::NC_KIND;
-    }
-    //---------------------------------------------------------- 
-    const char* 
-    ArchiveConsumer::getChannelDomain()
-    {
-	return acscommon::ALMADOMAIN; // no more domain distinctions since http://ictjira.alma.cl/browse/ICT-494
-    }
-    //---------------------------------------------------------- 
     void
     ArchiveConsumer::subscribeAllEvents()
     {
