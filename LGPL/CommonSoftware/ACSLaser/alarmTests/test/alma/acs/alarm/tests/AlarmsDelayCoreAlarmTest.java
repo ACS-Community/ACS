@@ -36,17 +36,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import alma.acs.component.client.ComponentClient;
-import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.nc.AcsEventPublisher;
-import alma.acs.util.AcsLocations;
-import alma.acsnc.ALARMSYSTEM_DOMAIN_NAME;
-import alma.alarmsystem.clients.CategoryClient;
-import alma.alarmsystem.core.alarms.LaserCoreFaultState;
-import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import cern.laser.business.pojo.AlarmMessageProcessorImpl;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -59,6 +48,18 @@ import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
 import com.cosylab.acs.jms.ACSJMSTextMessage;
+
+import alma.acs.component.client.ComponentClient;
+import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.nc.AcsEventPublisher;
+import alma.acs.util.AcsLocations;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
+import alma.alarmsystem.clients.CategoryClient;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
  * Test if the alarm server send/clear an alarm when the difference between the actual
@@ -179,7 +180,7 @@ public class AlarmsDelayCoreAlarmTest  extends ComponentClient implements AlarmS
 		assertThat("THE source NC is  null!",alarmSource,notNullValue());
 		
 		// Connect to the source NC
-		sourceNC=contSvcs.createNotificationChannelPublisher(sourceChannelName, ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		sourceNC=contSvcs.createNotificationChannelPublisher(sourceChannelName, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 		assertThat("THE source NC is  null!",sourceNC,notNullValue());
 		
 	}

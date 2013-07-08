@@ -35,6 +35,7 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.acsnc.EventDescription;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -185,7 +186,7 @@ public class MultiSourceStressTest extends ComponentClientTestCase implements Ac
 		super.setUp();
 		assertNotNull(getContainerServices());
 		
-		m_consumer = getContainerServices().createNotificationChannelSubscriber(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, ACSJMSMessageEntity.class);
+		m_consumer = getContainerServices().createNotificationChannelSubscriber(m_channelName, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
 		assertNotNull("Error instantiating the consumer", m_consumer);
 		
 		m_consumer.addSubscription(this);
