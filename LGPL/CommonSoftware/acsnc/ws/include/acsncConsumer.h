@@ -43,7 +43,7 @@ namespace nc {
  *  the pure virtual function: push_structured_event(). Derived classes must
  *  implement this function plus any others which facilitate the consuming of
  *  data, for example, a callback function.
- *  The contructor of derived classes must also call the init() method
+ *  The constructor of derived classes must also call the init() method
  *  (see the SimpleConsumer class for an example).
  *
  *  TODO:

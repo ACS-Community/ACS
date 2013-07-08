@@ -67,7 +67,7 @@ class ArchiveSupplier (Supplier):
         Raises: ACSErrTypeCommonImpl.CORBAProblemExImpl on critical failures
         '''
 
-        Supplier.__init__(self, acscommon.ARCHIVING_CHANNEL_NAME)
+        Supplier.__init__(self, acscommon.ARCHIVING_CHANNEL_NAME, None, acscommon.ACS_NC_DOMAIN_ARCHIVING)
     #--------------------------------------------------------------------------
     def getChannelKind(self):
         '''

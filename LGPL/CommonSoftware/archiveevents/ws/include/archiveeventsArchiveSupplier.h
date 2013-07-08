@@ -159,20 +159,6 @@ class ArchiveSupplier : public BaseSupplier
      * Overridden.
      */
     virtual const char*
-    getChannelDomain() 
-	{return acscommon::ALMADOMAIN;}
-
-    /**
-     * Overridden.
-     */
-    virtual const char* 
-    getChannelKind() 
-	{ return acscommon::NC_KIND; } // see http://ictjira.alma.cl/browse/ICT-494
-
-    /**
-     * Overridden.
-     */
-    virtual const char*
     getEventType()
 	{ return ""; }
     

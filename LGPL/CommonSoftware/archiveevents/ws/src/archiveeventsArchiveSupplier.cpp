@@ -30,7 +30,7 @@
 #include "archiveeventsArchiveSupplier.h"
 //-----------------------------------------------------------------------------
 ArchiveSupplier::ArchiveSupplier() :
-    BaseSupplier(acscommon::ARCHIVING_CHANNEL_NAME)
+    BaseSupplier(acscommon::ARCHIVING_CHANNEL_NAME, acscommon::ACS_NC_DOMAIN_ARCHIVING)
 {
     //no-op
 }

@@ -433,8 +433,7 @@ BaseHelper::combineChannelAndDomainName(const std::string & channelName,
 {
 	if(domainName.empty() || (domainName == acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT))
 	{
-		if ((channelName == acscommon::ARCHIVING_CHANNEL_NAME) ||
-		    (channelName==acscommon::LOGGING_CHANNEL_NAME) ||
+		if ((channelName==acscommon::LOGGING_CHANNEL_NAME) ||
 		    (channelName==acscommon::LOGGING_CHANNEL_XML_NAME))
 		{
 			return channelName;

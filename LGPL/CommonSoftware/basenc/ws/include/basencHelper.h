@@ -105,20 +105,21 @@ class BaseHelper
     /**
      * This method returns a constant character pointer to the "kind" of notification channel
      * as registered with the naming service (i.e., the kind field of a CosNaming::Name) which
-     * is normally equivalent to acscommon::NC_KIND. The sole reason this method is provided is to 
-     * accomodate subclasses which subscribe/publish non-ICD style events (ACS archiving channel 
-     * for example).In that case, the developer would override this method.
-     * @return pointer to a constant string.
+     * is normally equivalent to acscommon::NC_KIND.
+     * Before ACS 12.1 (ICT-494), there were special cases (Archiving and Logging NCs) for which the 'kind'
+     * could be overridden. We leave this method for the time being, although it is no longer
+     * expected to be overloaded.
      */
     virtual const char* 
-    getChannelKind() = 0;
+    getChannelKind()
+	{return acscommon::NC_KIND;}
 
     /**
      * This method returns a constant character pointer to the domain of notification channel
-     * which is normally equivalent to acscommon::ALMADOMAIN. The sole reason this method is provided is to 
-     * accomodate subclasses which subscribe/publish non-ICD style events (ACS archiving channel 
-     * for example).In that case, the developer would override this method.
-     * @return pointer to a constant string.
+     * which is normally equivalent to acscommon::ALMADOMAIN.
+     * Before ACS 12.1 (ICT-494), there were special cases (Archiving and Logging NCs) for which the event's Corba-level 'domain'
+     * could be overridden. We leave this method for the time being, although it is no longer
+     * expected to be overloaded.
      */
     virtual const char*
     getChannelDomain() 
@@ -142,9 +143,9 @@ class BaseHelper
 		    CosNaming::Name name(1);
 		    name.length(1);
 		    
-		    //name of the channel
+		    //name of the CDB mapping in the naming service
 		    name[0].id   = CORBA::string_dup("CDB");
-		    //channel kind
+		    //kind of the CDB mapping in the naming service
 		    name[0].kind = CORBA::string_dup("");
 		
 		    try 

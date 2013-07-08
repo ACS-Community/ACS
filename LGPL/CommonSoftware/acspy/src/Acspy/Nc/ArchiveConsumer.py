@@ -34,7 +34,8 @@ from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 import acscommon
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Nc.Consumer   import Consumer
+from Acspy.Nc.Consumer import Consumer
+
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -64,7 +65,8 @@ class ArchiveConsumer (Consumer):
         '''
         self.handler = handler
 
-        Consumer.__init__(self, acscommon.ARCHIVING_CHANNEL_NAME)
+        Consumer.__init__(self, acscommon.ARCHIVING_CHANNEL_NAME, None, acscommon.ACS_NC_DOMAIN_ARCHIVING)
+
     #--------------------------------------------------------------------------
     def getChannelKind(self):
         '''

@@ -135,26 +135,6 @@ namespace nc {
 	
       protected:
 	//--------------------------------------------------------------
-	/**
-	 * Overridden
-	 * @return 
-	 *  @htmlonly
-	 <br><hr>
-	 @endhtmlonly
-	*/
-	const char* 
-	getChannelKind();
-	
-	/**
-	 * Overridden
-	 * @return 
-	 *  @htmlonly
-	 <br><hr>
-	 @endhtmlonly
-	*/
-	const char*
-	getChannelDomain();
-
 
 	/**
 	 * This method returns a constant character pointer to the name of 

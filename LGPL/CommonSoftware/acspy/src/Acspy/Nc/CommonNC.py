@@ -47,7 +47,6 @@ from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
 
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR
-from acscommon import ARCHIVING_CHANNEL_NAME
 from acscommon import LOGGING_CHANNEL_NAME
 from acscommon import LOGGING_CHANNEL_XML_NAME
 
@@ -106,9 +105,7 @@ class CommonNC:
         # we do not append "NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT"
         #
         # the system NCs i refer to are those whose name is defined in acscommon.idl
-        if self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==ARCHIVING_CHANNEL_NAME:
-            return self.channelName
-        elif self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_NAME:
+        if self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_NAME:
             return self.channelName
         elif self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_XML_NAME:
             return self.channelName
