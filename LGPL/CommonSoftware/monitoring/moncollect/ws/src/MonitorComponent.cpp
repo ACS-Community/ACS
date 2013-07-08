@@ -56,10 +56,10 @@ MonitorComponent::~MonitorComponent()
 	AUTO_TRACE("MonitorComponent::~MonitorComponent");
 	unsigned int numOfProp = monitorPoints_m.size();
 
-	for( unsigned int i=0; i<numOfProp; i++ )
+	for( unsigned int i=0; i<numOfProp && monitorPoints_m[i]!=0; i++ ) //we exit immediately if we find monitor point == 0
 	{
-		monitorPoints_m[i]->stopMonitoring();
-		monitorPoints_m[i]->deactivate(containerServices_m);
+			monitorPoints_m[i]->stopMonitoring();
+			monitorPoints_m[i]->deactivate(containerServices_m);
 	}
 }//~MonitorComponent
 
@@ -724,6 +724,7 @@ void MonitorComponent::addAllProperties()
 	//let's loop over the properties
 	for(unsigned int i=0; i<numOfProp_m; i++)
 	{
+		monitorPoints_m[i] = 0; //set it first to 0 in case of an error
 		propType = compDesc_m->properties[i].property_ref->_repository_id();
 
 		monitoringInterval = propertyArchivingInterval(&compDesc_m->properties[i]);
