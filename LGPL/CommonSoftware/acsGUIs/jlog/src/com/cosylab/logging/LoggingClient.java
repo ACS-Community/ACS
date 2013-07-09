@@ -1770,6 +1770,7 @@ MessageWidgetListener
 	 */
 	public void enableFiltersWidgets(boolean enable) {
 		toolBar.enableFiltersButtonOverwrite(enable);
+		toolBar.setEnabled(enable);
 		menuBar.getFiltersMenuItem().setEnabled(enable);
 		menuBar.getEngineFiltersMenuItem().setEnabled(enable);
 	}
