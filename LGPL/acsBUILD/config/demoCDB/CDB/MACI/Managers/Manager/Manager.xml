@@ -15,18 +15,17 @@
 	<cdb:_ string="Log"/>
 	<cdb:_ string="LogFactory"/>
 	<cdb:_ string="NotifyEventChannelFactory"/>
-	<cdb:_ string="ArchivingChannel"/>
-	<cdb:_ string="LoggingChannel"/>
+	<cdb:_ string="ArchivingChannel@ARCHIVING.channels"/>
+	<cdb:_ string="LoggingChannel.channels"/>
 	<cdb:_ string="InterfaceRepository"/>
 	<cdb:_ string="CDB"/>
 	<cdb:_ string="ACSLogSvc"/>
-	<cdb:_ string="PDB"/>
 	<cdb:_ string="AcsAlarmService"/>
   </ServiceComponents>
   
   <LoggingConfig
    >
-  <log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="4"/>
+    <log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="4"/>
   </LoggingConfig>
   
 </Manager>
