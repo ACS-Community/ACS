@@ -438,7 +438,7 @@ def archivingChannel(): # pragma: NO COVER
     
     Raises: ???
     '''
-    return getClient().getService('ArchivingChannel')
+    return getClient().getService('ArchivingChannel@ARCHIVING.channels')
 #----------------------------------------------------------------------------
 def loggingChannel(): # pragma: NO COVER
     '''
@@ -452,9 +452,9 @@ def loggingChannel(): # pragma: NO COVER
     '''
 
     if os.environ.has_key('ACS_LOG_BIN') and os.environ['ACS_LOG_BIN'] == "true":
-        loggingChannelName = "LoggingChannelBin"
+        loggingChannelName = "LoggingChannelBin.channels"
     else:
-        loggingChannelName = "LoggingChannel"
+        loggingChannelName = "LoggingChannel.channels"
 
     return getClient().getService(loggingChannelName)
 #----------------------------------------------------------------------------
