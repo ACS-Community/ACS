@@ -143,9 +143,6 @@ public class ChannelTreePart {
 		
 		// TODO: this could be used by handlers etc, currently it's not
 		context.set(ChannelTreePart.class, this);
-
-		// initial data fill
-		viewer.refresh();
 	}
 	
 	
@@ -174,7 +171,6 @@ public class ChannelTreePart {
 	private void refreshNotify(@UIEventTopic(NotifyServiceUpdateJob.REFRESH_UI_SIGNAL_NAME) String s) {
 //		System.out.println("ChannelTreePart#refreshNotify() called via IEventBroker");
 		viewer.refresh();
-//		viewer.expandAll();
 	}
 
 }

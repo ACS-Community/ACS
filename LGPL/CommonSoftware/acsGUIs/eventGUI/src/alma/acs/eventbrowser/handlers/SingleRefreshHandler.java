@@ -59,7 +59,7 @@ public class SingleRefreshHandler {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println("PeriodicRefreshHandler#init called.");
+//		System.out.println("SingleRefreshHandler#init called.");
 		
 		try {
 			eventModel = EventModel.getInstance();
