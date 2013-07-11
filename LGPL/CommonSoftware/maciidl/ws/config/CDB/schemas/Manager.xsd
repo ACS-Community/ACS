@@ -30,7 +30,7 @@ configuration parameters.</xs:documentation>
 			</xs:element>
 			<xs:element name="ServiceComponents" type="cdb:Array">
 				<xs:annotation>
-					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the maneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+					<xs:documentation>This is a list of names that must be handled by the Manager as services. When a request for a Component with this name is given, the maneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component. If NCs should be accessed as service components, the full name including NC domain and '.channels' suffix (naming service kind) must be given, e.g. 'LoggingChannel@LOGGING.channels', or 'MyChannel@DEFAULTDOMAIN.channels'.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="ServiceDaemons" type="cdb:Array" minOccurs="0">
@@ -67,4 +67,3 @@ configuration parameters.</xs:documentation>
 		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
-

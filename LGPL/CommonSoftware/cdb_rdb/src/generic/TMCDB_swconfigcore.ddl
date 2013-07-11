@@ -174,7 +174,13 @@ ENDTABLE
 // The entries in this table are the managers that belong to the configuration.
 // LoggingConfigId  Link to the logging configuration for a container.
 // ServerThreads    The number of threads allocated to the CORBA infrastructure for the handling of concurrent invocations.
-// TODO attribute description
+//
+// ServiceComponents          Comma-separated list of ACS services, system or user-defined NCs, components etc that should be accessible
+//                            via the manager's get_service method, which is available even without client authentication.
+//                            If NCs should be accessed as service components, the full name including NC domain and ".channels" suffix (naming service 'kind') must be given, 
+//                            e.g. "LoggingChannel@LOGGING.channels", or "MyChannel@DEFAULTDOMAIN.channels".
+// 
+// TODO missing attribute descriptions
 TABLE Manager
     ManagerId                 INTEGER                     NOT NULL
     ConfigurationId           INTEGER                     NOT NULL
@@ -584,6 +590,24 @@ ENDTABLE
 // Quality of Service and Administrative properties that are applicable to the type of notification channels ACS utilizes.
 // All of the inline schema documentation found here is also available in the ACS notification channel tutorial or
 // directly from OMG - http://www.omg.org/technology/documents/formal/notification_service.htm
+//
+// IntegrationLogs                   Blabla
+// MaxQueueLength
+// MaxConsumers
+// MaxSuppliers
+// RejectNewEvents
+// DiscardPolicy
+// EventReliability                  'BestEffort' means event can be lost upon failure of the channel or consumer; 
+//                                   'Persistent' means that NC should make event persistent and attempt retransmission after failure,
+//                                   and requires to also set ConnectionReliability='Persistent'
+// ConnectionReliability
+// Priority
+// Timeout
+// OrderPolicy
+// StartTimeSupported
+// StopTimeSupported
+// MaxEventsPerConsumer
+
 TABLE EventChannel
 	EventChannelId          INTEGER         NOT NULL
 	ConfigurationId         INTEGER         NOT NULL
