@@ -4,7 +4,7 @@
 	<xs:complexType name="DomainsMappingElement">
 		<xs:annotation>
 			<xs:documentation>
-			Schema describing an individual domain mapping to a particular event service.
+			Schema describing an individual domain mapping to a particular event service. When creating subscribers or suppliers for an NC, the API allows the optional specification of an NC domain, which will then allocate the NC to a notify service based on this mapping. Specifying the NC domain through the API as opposed to doing it in the NC's CDB description allows mapping of "dynamic" NCs to notify services, whose names are not known at deployment time. This may be the case for NCs created by 3rd party software such as the alarm system.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="Name" type="xs:string" use="required">
@@ -86,7 +86,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="NotificationServiceMapping" type="NotificationServiceMapping" />
+                <xs:element name="NotificationServiceMapping" type="NotificationServiceMapping"/>
                 <!--xs:element name="EventChannel" type="EventChannel" minOccurs="0" maxOccurs="unbounded"/-->
             </xs:sequence>
         </xs:complexType>

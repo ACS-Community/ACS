@@ -198,16 +198,22 @@ public interface ContainerServicesBase
 
 	/**
 	 * Similar to {@link #createNotificationChannelPublisher(String, Class)},
-	 * but with additional NC domain specification which may influence the choice of NotifyService 
-	 * that this NC gets hosted in.
+	 * but with additional NC domain specification.
+	 * <p>
+	 * Details of this NC domain concept:
+	 * <ul>
+	 *   <li> All publishers and subscribers that access an NC must consistently use the same NC domain name. 
+	 *   <li> The CDB may specify a mapping of NC domain to a notify service, which then decides where the NC is hosted.
+	 *   <li> Specifying the NC domain through the API as opposed to doing it in the NC's CDB description
+	 *        allows mapping of "dynamic" NCs to notify services, whose names are not known at deployment time. 
+	 *        This may be the case for NCs created by 3rd party software such as the alarm system.
+	 * </ul>
 	 * 
-	 * @param channelNotifyServiceDomainName The Notification Channel Service Domain name, 
-	 *        used to group notification channels in different domains and assign to them a NotifyService 
-	 *        in the configuration, based on the domain.
+	 * @param ncDomain The Notification Channel Service Domain name. 
 	 * @param eventType
 	 * @see #createNotificationChannelSubscriber(String, String)
 	 */
-	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx;
+	public <T> AcsEventPublisher<T> createNotificationChannelPublisher(String channelName, String ncDomain, Class<T> eventType) throws AcsJContainerServicesEx;
 
 	/**
 	 * Creates a new {@link AcsEventSubscriber} object, which is the abstraction of a Notification Channel subscriber (consumer),
@@ -232,15 +238,23 @@ public interface ContainerServicesBase
 	 * for the given channel name and notify service domain name.
 	 * The created subscriber will be automatically disconnected when the component or client that created it through this method
 	 * is finished, in case the user doesn't explicitly do it before.
+	 * <p>
+	 * Details of the NC domain concept:
+	 * <ul>
+	 *   <li> All publishers and subscribers that access an NC must consistently use the same NC domain name. 
+	 *   <li> The CDB may specify a mapping of NC domain to a notify service, which then decides where the NC is hosted.
+	 *   <li> Specifying the NC domain through the API as opposed to doing it in the NC's CDB description
+	 *        allows mapping of "dynamic" NCs to notify services, whose names are not known at deployment time. 
+	 *        This may be the case for NCs created by 3rd party software such as the alarm system.
+	 * </ul>
 	 * 
 	 * @param channelName The Notification Channel name to listen to
-	 * @param channelNotifyServiceDomainName The Notification Channel Service Domain name, used to group notification channels
-	 *   in different domains.
+	 * @param ncDomain The Notification Channel Service Domain name. 
 	 * @param eventType See {@link #createNotificationChannelPublisher(String, Class)}.
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
 	 */
-	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName, Class<T> eventType) throws AcsJContainerServicesEx;
+	public <T> AcsEventSubscriber<T> createNotificationChannelSubscriber(String channelName, String ncDomain, Class<T> eventType) throws AcsJContainerServicesEx;
 
 }
