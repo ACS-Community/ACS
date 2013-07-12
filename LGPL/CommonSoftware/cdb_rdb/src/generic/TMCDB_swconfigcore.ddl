@@ -297,23 +297,23 @@ ENDTABLE
 
 // Entries in the Component table are the software components for the given configuration that run in containers.
 // Attribute description:
-// ContainerId Statically defined component instances link to the container they must be run in (Container.ContainerId). 
-//             Otherwise -1 to indicate that the container will be assigned only at runtime. 
-//             We do not use NULL because with JDBC it would be awkward to distinguish NULL from 0.
-// ImplLang    the PL this component is written in (see constraint ComponentImplLang below).
-//             This attribute be redundant with Container.Type for all static components and some dynamic components.
-//             Other dynamic components only get a container assigned at runtime, in which case it is useful to keep the component PL language separately.
-// IDL         The IDL type, such as "IDL:alma/MOUNT_ACS/Mount:1.0"
-// Path        The optional hierarchical path, not including the component name itself. Empty string if the component name does not have a qualifying path.
-//             This path was used in the old CDB for nesting component configurations, and it is not clear yet how much of it will be exposed in the TMCDB.
-// IsAutostart If true, then the ACS manager is supposed to trigger the starting of this component, before another client may ask for it later.
-// IsDefault   If true, this static component instance will be considered the default instance of its IDL type.
-//             The value is ignored for partially configured dynamic components, for which it must be provided at runtime (@Todo: check if there are cases where it still makes sense for dyn comps)
+// ContainerId      Statically defined component instances link to the container they must be run in (Container.ContainerId). 
+//                  Otherwise -1 to indicate that the container will be assigned only at runtime. 
+//                  We do not use NULL because with JDBC it would be awkward to distinguish NULL from 0.
+// ImplLang         the PL this component is written in (see constraint ComponentImplLang below).
+//                  This attribute be redundant with Container.Type for all static components and some dynamic components.
+//                  Other dynamic components only get a container assigned at runtime, in which case it is useful to keep the component PL language separately.
+// ComponentTypeId  References the IDL type, such as "IDL:alma/MOUNT_ACS/Mount:1.0"
+// Path             The optional hierarchical path, not including the component name itself. Empty string if the component name does not have a qualifying path.
+//                  This path was used in the old CDB for nesting component configurations, and it is not clear yet how much of it will be exposed in the TMCDB.
+// IsAutostart      If true, then the ACS manager is supposed to trigger the starting of this component, before another client may ask for it later.
+// IsDefault        If true, this static component instance will be considered the default instance of its IDL type.
+//                  The value is ignored for partially configured dynamic components, for which it must be provided at runtime (@Todo: check if there are cases where it still makes sense for dyn comps)
 // IsStandaloneDefined This attribute is only needed for the roundtrip from the old CDB to the TMCDB and back. If true, the component config info comes from a single xml file.
-//             @Todo: perhaps use one attribute "classicCdbMapping" which could contain many such data items, e.g. in Java properties format.
-// IsControl Is it a control device?
-// KeepAliveTime The inertia for unloading components whose clients no longer need them. If negative, the component will never be unloaded automatically.
-// MinLogLevel Optional log level for this component. Value -1 denotes NULL, since 0 is a valid setting.
+//                  @Todo: perhaps use one attribute "classicCdbMapping" which could contain many such data items, e.g. in Java properties format.
+// IsControl        Is it a control device?
+// KeepAliveTime    The inertia for unloading components whose clients no longer need them. If negative, the component will never be unloaded automatically.
+// MinLogLevel      Optional log level for this component. Value -1 denotes NULL, since 0 is a valid setting.
 // MinLogLevelLocal Optional stdout log level for for this component. Value -1 denotes NULL, since 0 is a valid setting.
 TABLE Component
      ComponentId             INTEGER                 NOT NULL
