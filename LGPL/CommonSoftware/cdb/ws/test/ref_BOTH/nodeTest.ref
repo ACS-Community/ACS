@@ -21,15 +21,12 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] 0> Log
-1 - ----------T--:--:--.--- [GlobalLogger - ] Found 9 strings: 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Found 5 strings: 
 1 - ----------T--:--:--.--- [GlobalLogger - ] 1> LogFactory
 1 - ----------T--:--:--.--- [GlobalLogger - ] 2> NotifyEventChannelFactory
-1 - ----------T--:--:--.--- [GlobalLogger - ] 3> ArchivingChannel
-1 - ----------T--:--:--.--- [GlobalLogger - ] 4> LoggingChannel
-1 - ----------T--:--:--.--- [GlobalLogger - ] 5> InterfaceRepository
-1 - ----------T--:--:--.--- [GlobalLogger - ] 6> CDB
-1 - ----------T--:--:--.--- [GlobalLogger - ] 7> ACSLogSvc
-1 - ----------T--:--:--.--- [GlobalLogger - ] 8> PDB
+1 - ----------T--:--:--.--- [GlobalLogger - ] 3> InterfaceRepository
+1 - ----------T--:--:--.--- [GlobalLogger - ] 4> CDB
+1 - ----------T--:--:--.--- [GlobalLogger - ] 5> ACSLogSvc
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::readConfiguration] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 

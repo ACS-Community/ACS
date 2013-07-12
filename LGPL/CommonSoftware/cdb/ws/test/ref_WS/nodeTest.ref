@@ -8,21 +8,18 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] current/graph_max = 1000
 1 - ----------T--:--:--.--- [GlobalLogger - ] readback/alarm_low_off = 20.000000
 1 - ----------T--:--:--.--- [GlobalLogger - ] status/description = status
+1 - ----------T--:--:--.--- [GlobalLogger - ] Found 6 strings: 
 1 - ----------T--:--:--.--- [GlobalLogger - ] 0> Log
 1 - ----------T--:--:--.--- [GlobalLogger - ] 1> LogFactory
 1 - ----------T--:--:--.--- [GlobalLogger - ] 2> NotifyEventChannelFactory
-1 - ----------T--:--:--.--- [GlobalLogger - ] 3> ArchivingChannel
-1 - ----------T--:--:--.--- [GlobalLogger - ] 4> LoggingChannel
-1 - ----------T--:--:--.--- [GlobalLogger - ] 5> InterfaceRepository
-1 - ----------T--:--:--.--- [GlobalLogger - ] 6> CDB
-1 - ----------T--:--:--.--- [GlobalLogger - ] 7> ACSLogSvc
-1 - ----------T--:--:--.--- [GlobalLogger - ] 8> PDB
-1 - ----------T--:--:--.--- [GlobalLogger - ] Found 9 strings: 
+1 - ----------T--:--:--.--- [GlobalLogger - ] 3> InterfaceRepository
+1 - ----------T--:--:--.--- [GlobalLogger - ] 4> CDB
+1 - ----------T--:--:--.--- [GlobalLogger - ] 5> ACSLogSvc
+1 - ----------T--:--:--.--- [GlobalLogger - ] Found 5 long: 
 1 - ----------T--:--:--.--- [GlobalLogger - ] 0> 8123
 1 - ----------T--:--:--.--- [GlobalLogger - ] 1> 15432
 1 - ----------T--:--:--.--- [GlobalLogger - ] 2> 23698
 1 - ----------T--:--:--.--- [GlobalLogger - ] 3> 53140
 1 - ----------T--:--:--.--- [GlobalLogger - ] 4> 44325
 1 - ----------T--:--:--.--- [GlobalLogger - ] Attributes of position: alarm_high_off,alarm_high_on,alarm_low_off,alarm_low_on,alarm_timer_trig,archive_delta,archive_max_int,archive_min_int,archive_priority,default_timer_trig,default_value,description,format,graph_max,graph_min,initialize_devio,min_delta_trig,min_step,min_timer_trig,resolution,units
-1 - ----------T--:--:--.--- [GlobalLogger - ] Found 5 long: 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Ok, exception received while building a non existent node
