@@ -55,7 +55,7 @@ public class StatusLineWriter {
 	/**
 	 * Flashes a message for the given time, 
 	 * or until another message gets set.
-	 * Then sets the status line back to the previous content.
+	 * Then sets the status line back to the previous non-flashed content.
 	 * 
 	 * Must only be called from the UI thread.
 	 * @param s The message to appear in the status bar.

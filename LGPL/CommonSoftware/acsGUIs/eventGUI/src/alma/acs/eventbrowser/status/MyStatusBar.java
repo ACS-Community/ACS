@@ -74,9 +74,11 @@ public class MyStatusBar {
 	 */
 	private StatusLineManager slm;
 	
-	private String currentMessage = "";
+	/**
+	 * 
+	 */
+	private String permanentMessage = "";
 
-//	private boolean isTimedMessage;
 	/**
 	 * Is null whenever we do not display a flash message.
 	 */
@@ -90,7 +92,7 @@ public class MyStatusBar {
 		}
 		slm = new StatusLineManager();
 		slm.createControl(parent);
-		slm.setMessage("Welcome to the eventGUI. This is your status bar.");
+		slm.setMessage("Refresh service data to get correct supplier/consumer info.");
 	}
 
 	/**
@@ -105,11 +107,8 @@ public class MyStatusBar {
 	private void getNotified(@UIEventTopic(STATUS_BAR_TOPIC_ID) String s) {
 		if (slm != null) {
 			slm.setMessage(s);
-			currentMessage = s;
-			if (msgRestoreJob != null) {
-				msgRestoreJob.cancel();
-				msgRestoreJob = null;
-			}
+			permanentMessage = s;
+			clearFlashJob();
 		}
 	}
 
@@ -120,10 +119,7 @@ public class MyStatusBar {
 			String flashMsg = msgWithTime.msg;
 			int timeSeconds = msgWithTime.timeSeconds;
 			slm.setMessage(flashMsg);
-			currentMessage = flashMsg;
-			if (msgRestoreJob != null) {
-				msgRestoreJob.cancel();
-			}
+			clearFlashJob();
 			msgRestoreJob = new Job(MyStatusBar.class.getSimpleName() + "RemoveFlashMessage") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
@@ -131,7 +127,7 @@ public class MyStatusBar {
 					uiSync.syncExec(new Runnable() {
 						@Override
 						public void run() {
-							slm.setMessage(currentMessage);
+							slm.setMessage(permanentMessage);
 						}
 					});
 					return Status.OK_STATUS;
@@ -141,6 +137,14 @@ public class MyStatusBar {
 		}
 	}
 
+	private synchronized void clearFlashJob() {
+		if (msgRestoreJob != null) {
+			msgRestoreJob.cancel();
+			msgRestoreJob = null;
+		}
+	}
+	
+	
 	@PreDestroy
 	public void preDestroy() {
 		slm.removeAll();
