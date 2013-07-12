@@ -42,16 +42,14 @@
 1 -         <cdb:_ string="TESTCOMPONENT4"></cdb:_>
 1 -         <cdb:_ string="TESTCOMPONENT5"></cdb:_>
 1 -   </Startup>
+1 -   
 1 -   <ServiceComponents>
 1 - 	<cdb:_ string="Log"></cdb:_>
 1 - 	<cdb:_ string="LogFactory"></cdb:_>
 1 - 	<cdb:_ string="NotifyEventChannelFactory"></cdb:_>
-1 - 	<cdb:_ string="ArchivingChannel"></cdb:_>
-1 - 	<cdb:_ string="LoggingChannel"></cdb:_>
 1 - 	<cdb:_ string="InterfaceRepository"></cdb:_>
 1 - 	<cdb:_ string="CDB"></cdb:_>
 1 - 	<cdb:_ string="ACSLogSvc"></cdb:_>
-1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
 1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" maxLogsPerSecond="-1" minLogLevelLocal="2"></LoggingConfig>
@@ -84,6 +82,7 @@
 1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 -         <cdb:_ string="TESTCOMPONENT5"></cdb:_>
 1 -   </Startup>
+1 -   
 1 -   <ServiceComponents>
 1 - 	<cdb:_ string="Log"></cdb:_>
 1 - 	<cdb:_ string="LogFactory"></cdb:_>
@@ -91,14 +90,11 @@
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - 	<cdb:_ string="ArchivingChannel"></cdb:_>
-1 - 	<cdb:_ string="LoggingChannel"></cdb:_>
 1 - 	<cdb:_ string="InterfaceRepository"></cdb:_>
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - 	<cdb:_ string="CDB"></cdb:_>
 1 - 	<cdb:_ string="ACSLogSvc"></cdb:_>
 1 - HelloWorld
-1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
