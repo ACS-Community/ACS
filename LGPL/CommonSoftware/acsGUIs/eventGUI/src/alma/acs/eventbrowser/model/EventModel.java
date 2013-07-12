@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.omg.CORBA.ORB;
-import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.BindingIteratorHolder;
 import org.omg.CosNaming.BindingListHolder;
@@ -45,6 +44,7 @@ import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
+import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
@@ -67,6 +67,7 @@ import alma.acs.nc.ArchiveConsumer;
 import alma.acs.nc.Helper;
 import alma.acs.nc.NCSubscriber;
 import alma.acs.util.AcsLocations;
+import alma.acscommon.ACS_NC_DOMAIN_ARCHIVING;
 import alma.acscommon.ALARM_NOTIFICATION_FACTORY_NAME;
 import alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME;
 import alma.acscommon.ARCHIVING_CHANNEL_NAME;
@@ -97,9 +98,11 @@ public class EventModel {
 	private final Map<String, NotifyServiceData> notifyServices;
 	
 	/**
-	 * This map is needed as long as ACS does not use the "channels" kind 
-	 * in the naming service mapping of system NCs such as ArchivingChannel.
-	 * We could move it to jcontnc::Helper
+	 * This map is needed as long as ACS does not fully support the NC-domain based
+	 * mapping of NCs to services for the case of system NCs.
+	 * For the time being we only want to register the NC domain in the naming service,
+	 * but do not require the NC mapping information in the CDB. 
+	 * Thus we have to keep this hardcoded mapping information here.
 	 */
 	private final Map<String, String> systemNcToServiceIdMap;
 	
@@ -152,8 +155,7 @@ public class EventModel {
 			
 			systemNcToServiceIdMap = new HashMap<String, String>();
 			// The system NCs and factories must be in sync with acsstartup :: acsNotifyService
-			// The NC 'AlarmChannel' has been removed... systemNcToServiceIdMap.put("AlarmChannel", "AlarmNotifyEventChannelFactory");
-			systemNcToServiceIdMap.put(ARCHIVING_CHANNEL_NAME.value, ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
+			systemNcToServiceIdMap.put(Helper.combineChannelAndDomainName(ARCHIVING_CHANNEL_NAME.value, ACS_NC_DOMAIN_ARCHIVING.value), ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
 			systemNcToServiceIdMap.put(LOGGING_CHANNEL_XML_NAME.value, LOGGING_NOTIFICATION_FACTORY_NAME.value);
 			
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
@@ -336,6 +338,8 @@ public class EventModel {
 	 * <p>
 	 * This method is broken out from {@link #discoverNotifyServicesAndChannels(boolean)} to make it more readable. 
 	 * It should be called only from there, to keep services and NCs aligned.
+	 * 
+	 * @param bindingMap Name service bindings in the form key = bindingName, value = bindingKind
 	 */
 	private synchronized void discoverChannels(Map<String, String> bindingMap) {
 		
@@ -359,9 +363,8 @@ public class EventModel {
 				try {
 					String channelName = null;
 					String domainName = null;
-					// This is a hack, needed as long as the system NCs don't get registered incl. domain name (see COMP-9338)
-					boolean isSystemNc = isSystemNc(bindingName);
-					if (isSystemNc) {
+					// This is a hack, needed as long as the LoggingChannel doesn't get registered incl. domain name (see ICT-494)
+					if (bindingName.equals(LOGGING_CHANNEL_XML_NAME.value)) {
 						channelName = bindingName;
 					}
 					else {
@@ -379,7 +382,7 @@ public class EventModel {
 						m_logger.fine("New NC " + channelName);
 						// A new NC. This will happen at startup, and later as NCs get added.
 						String serviceId = null;
-						if (isSystemNc) {
+						if (isSystemNc(bindingName)) {
 							serviceId = systemNcToServiceIdMap.get(bindingName);
 						}
 						else {
@@ -405,8 +408,7 @@ public class EventModel {
 							EventChannel nc = resolveNotificationChannel(bindingName);
 							ChannelData cdata = new ChannelData(nc, channelName, service);
 							cdata.setIsNewNc(true);
-							if (isSystemNc) {
-								// TODO-: allow subscription to those system NCs that use standard event format, e.g. alarm NCs
+							if (isSystemNc(bindingName)) {
 								cdata.markUnsubscribable(); 
 							}
 							service.addChannel(channelName, cdata);
