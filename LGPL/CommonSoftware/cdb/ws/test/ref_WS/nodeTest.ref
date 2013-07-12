@@ -2,8 +2,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Init CORBA
 1 - ----------T--:--:--.--- [GlobalLogger - ] Getting RootPOA
 1 - ----------T--:--:--.--- [GlobalLogger - ] CORBA and POA initialized
-1 - ----------T--:--:--.--- [GlobalLogger - ] DALReference obtained via environment: 'corbaloc::xxxxxxx:yyyy/CDB'
 1 - ----------T--:--:--.--- [GlobalLogger - ] Getting the DAL
+1 - ----------T--:--:--.--- [GlobalLogger - ] DALReference obtained via environment: 'corbaloc::xxxxxxx:yyyy/CDB'
 1 - ----------T--:--:--.--- [GlobalLogger - ] The DAL is here
 1 - ----------T--:--:--.--- [GlobalLogger - ] current/graph_max = 1000
 1 - ----------T--:--:--.--- [GlobalLogger - ] readback/alarm_low_off = 20.000000
