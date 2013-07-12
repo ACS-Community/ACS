@@ -355,7 +355,7 @@ public class EventModel {
 		// with the NC ref coming either from the naming service or perhaps from the notify service directly if we can match ncIDs with the MC data.
 		for (String bindingName : bindingMap.keySet()) {
 			String bindingKind = bindingMap.get(bindingName);
-			if (bindingKind.equals(alma.acscommon.NC_KIND.value) || isSystemNc(bindingName)) {
+			if (bindingKind.equals(alma.acscommon.NC_KIND.value)) {
 				try {
 					String channelName = null;
 					String domainName = null;
@@ -406,8 +406,7 @@ public class EventModel {
 							ChannelData cdata = new ChannelData(nc, channelName, service);
 							cdata.setIsNewNc(true);
 							if (isSystemNc) {
-								// TODO-: Change NCSubscriber to deal with empty/different NC kind in the NS binding
-								//        and then allow subscription to those system NCs that use standard event format.
+								// TODO-: allow subscription to those system NCs that use standard event format, e.g. alarm NCs
 								cdata.markUnsubscribable(); 
 							}
 							service.addChannel(channelName, cdata);
@@ -678,10 +677,7 @@ public class EventModel {
 
 		EventChannel retValue = null;
 
-		String nameServiceKind = (
-				isSystemNc(bindingName) 
-					? "" // this is true for LOGGING_CHANNEL_KIND.value, ARCHIVING_CHANNEL_KIND.value. Cleaner would be explicit use of IDL constants though...
-					: alma.acscommon.NC_KIND.value );
+		String nameServiceKind = alma.acscommon.NC_KIND.value;
 		//m_logger.info("Will call 'nctx.resolve' for binding='" + bindingName + "', kind='" + nameServiceKind + "'.");
 		try {
 			NameComponent[] t_NameSequence = { new NameComponent(bindingName, nameServiceKind) };
