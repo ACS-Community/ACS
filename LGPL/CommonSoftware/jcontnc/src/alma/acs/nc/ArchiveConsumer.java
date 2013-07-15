@@ -110,22 +110,6 @@ public class ArchiveConsumer {
 		}
 
 		/**
-		 * Returns "ArchiveNotifyEventChannelFactory", using an IDL constant.
-		 * <p>
-		 * Even with a proper NC domain used toward the naming service
-		 * (see http://ictjira.alma.cl/browse/ICT-494),
-		 * we do not yet support domain-to-service mapping in the CDB.
-		 * <p>
-		 * TODO: Support optional CDB mapping for the "ARCHIVING" domain,
-		 * but for backward compatibility do not require the user to configure
-		 * this in the CDB (rather fall back to the hardcoded notify service).
-		 */
-		@Override
-		protected String getNotificationFactoryName() {
-			return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
-		}
-	
-		/**
 		 * @param structuredEvent CORBA NC StructuredEvent with special format.
 		 */
 		@Override

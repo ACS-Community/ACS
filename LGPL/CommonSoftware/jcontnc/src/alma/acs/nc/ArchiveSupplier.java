@@ -60,17 +60,6 @@ public class ArchiveSupplier extends NCPublisher<Object> {
 	}
 
 	/**
-	 * Overridden.
-	 * 
-	 * @return string
-	 * @see ArchiveConsumer.ArchiveTweakedNCSubscriber#getNotificationFactoryName()
-	 */
-	@Override
-	protected String getNotificationFactoryName() {
-		return alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
-	}
-
-	/**
 	 * Takes an object and tries to pack it into a CORBA Any and
 	 * publish it to the event channel. 
 	 * <p>

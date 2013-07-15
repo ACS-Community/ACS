@@ -72,6 +72,10 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.StopWatch;
+import alma.acscommon.ACS_NC_DOMAIN_ARCHIVING;
+import alma.acscommon.ACS_NC_DOMAIN_LOGGING;
+import alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME;
 import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT;
 import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR;
 import alma.acscommon.NC_KIND;
@@ -655,10 +659,19 @@ public class Helper {
 	}
 
 	/**
-	 * Gets the notification channel factory name for the given channel/domain.
+	 * Gets the notification channel factory name for the given channel/domain of this Helper class.
 	 * <p>
-	 * Tries to use the optional mapping from the CDB, otherwise uses <code>"NotifyEventChannelFactory"</code>.
-	 * @param domainName	name of the domain, <code>null</code> if undefined.
+	 * Details:
+	 * <ul>
+	 *   <li>First tries to use the factory name cached from a previous call.
+	 *   <li>NC domain ARCHIVING (ArchivingChannel) is mapped to ArchiveNotifyEventChannelFactory.
+	 *   <li>NC domain LOGGING (LoggingChannel) is mapped to LoggingNotifyEventChannelFactory.
+	 *   <li>If the CDB contains MACI/Channels/NotificationServiceMapping data, we try to find 
+	 *       a matching notify service first based on NC name, then on NC domain, then default.
+	 *   <li>If no factory has been found, we use NotifyEventChannelFactory.
+	 *   <li>Otherwise if the factory name found does not end in NotifyEventChannelFactory, 
+	 *       we append NotifyEventChannelFactory. 
+	 * </ul>
 	 * @return notification channel factory name.
 	 */
 	public String getNotificationFactoryNameForChannel() 
@@ -668,24 +681,43 @@ public class Helper {
 			return ncFactoryName;
 		}
 		
-		// lazy initialization of CDB access
-		DAOProxy channelsDAO = null;
-		try {
-			CDBAccess cdbAccess = new CDBAccess(m_services.getAdvancedContainerServices().getORB(), m_logger);
-			cdbAccess.setDAL(m_services.getCDB());
-			channelsDAO = cdbAccess.createDAO("MACI/Channels");
-		} catch (Throwable th) {
-			// keep track of when this occurs
-			Long timeLastError = channelConfigProblemTimestamp;
-			channelConfigProblemTimestamp = System.currentTimeMillis();
-			// don't log this too often (currently only once)
-			if (timeLastError == 0l) {
-				m_logger.log(AcsLogLevel.CONFIG, "Config issue for channel '" + channelName + "'. " + 
-						"Failed to get MACI/Channels DAO from CDB. Will use default notification service.");
+		// factory name, with or without the "NotifyEventChannelFactory" suffix
+		String ncFactoryNameTmp = "";
+		
+		// We use hard-coded mappings for logging and archiving system NCs.
+		// As described in ICT-494, these mappings can at the moment not be overridden by CDB mappings.
+		// If we want to allow that, we'd have to also read the CDB mappings from the acsstartup scripts 
+		// that create these system NCs, or alternatively have these NCs created on demand instead of during 
+		// notify service startup. Then we could move the following code after the CDB access, 
+		// to be executed only as a fallback if no CDB mapping was found for the system NCs.
+		if (domainName != null) {
+			if (domainName.equals(ACS_NC_DOMAIN_ARCHIVING.value)) {
+				ncFactoryNameTmp = ARCHIVE_NOTIFICATION_FACTORY_NAME.value;
+			}
+			else if (domainName.equals(ACS_NC_DOMAIN_LOGGING.value)) {
+				ncFactoryNameTmp = LOGGING_NOTIFICATION_FACTORY_NAME.value;
 			}
 		}
 		
-		String ncFactoryNameTmp = "";
+		// lazy initialization of CDB access
+		DAOProxy channelsDAO = null;
+		
+		if (ncFactoryNameTmp.isEmpty()) {
+			try {
+				CDBAccess cdbAccess = new CDBAccess(m_services.getAdvancedContainerServices().getORB(), m_logger);
+				cdbAccess.setDAL(m_services.getCDB());
+				channelsDAO = cdbAccess.createDAO("MACI/Channels");
+			} catch (Throwable th) {
+				// keep track of when this occurs
+				Long timeLastError = channelConfigProblemTimestamp;
+				channelConfigProblemTimestamp = System.currentTimeMillis();
+				// don't log this too often (currently only once)
+				if (timeLastError == 0l) {
+					m_logger.log(AcsLogLevel.CONFIG, "Config issue for channel '" + channelName + "'. " + 
+							"Failed to get MACI/Channels DAO from CDB. Will use default notification service.");
+				}
+			}
+		}
 		
 		// query CDB... 
 		if (channelsDAO != null) {
