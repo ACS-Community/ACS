@@ -32,8 +32,8 @@
 namespace nc {
 //---------------------------------------------------------------
 template<class T>
-SimpleConsumer<T>::SimpleConsumer(const char* channelName) :
-        Consumer(channelName), templateFunction_mp(0), stop_thread(false), receiverTooSlowLogRepeatGuard(
+SimpleConsumer<T>::SimpleConsumer(const char* channelName, const char* acsNCDomainName) :
+        Consumer(channelName,acsNCDomainName), templateFunction_mp(0), stop_thread(false), receiverTooSlowLogRepeatGuard(
                 300000000, 100), numEventsDiscarded(0) {
     // Always call init() in the constructors 
     // of concrete Consumer() classes.

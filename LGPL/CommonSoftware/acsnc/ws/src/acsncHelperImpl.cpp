@@ -43,7 +43,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     namingContext_m(CosNaming::NamingContext::_nil()),
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
     channelName_mp(0),
-    notifyServiceDomainName_mp(0),
+    acsNCDomainName_mp(0),
     notificationServiceName_mp(0),
     orbHelper_mp(0),
     notifyFactory_m(0),
@@ -57,13 +57,13 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     // make a copy of the NS domain name (if given)
     if (notifyServiceDomainName)
     {
-        notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
-        channelAndDomainName_m = BaseHelper::combineChannelAndDomainName(channelName_mp,notifyServiceDomainName_mp);
+        acsNCDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
     }
     else
     {
-    	channelAndDomainName_m = BaseHelper::combineChannelAndDomainName(channelName_mp,"");
+        acsNCDomainName_mp = CORBA::string_dup(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
     }
+    channelAndDomainName_m = BaseHelper::combineChannelAndDomainName(channelName_mp,acsNCDomainName_mp);
 
     //this is common to both suppliers and consumers, but what does it really
     //do?
@@ -73,7 +73,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     if((BACI_CORBA::getInstance()==0) && (BACI_CORBA::InitCORBA(0, 0) == false))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"Helper::Helper(%s,%s) unable to gain access to BACI_CORBA!",
-		       channelName_mp,notifyServiceDomainName_mp));
+		       channelName_mp,acsNCDomainName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::Helper");
 	throw err.getCORBAProblemEx();
 	}
@@ -109,8 +109,8 @@ Helper::~Helper()
 	// set them free...
 	if (channelName_mp != 0)
 		CORBA::string_free(channelName_mp);
-	if (notifyServiceDomainName_mp != 0)
-		CORBA::string_free(notifyServiceDomainName_mp);
+	if (acsNCDomainName_mp != 0)
+		CORBA::string_free(acsNCDomainName_mp);
 	if (notificationServiceName_mp != 0)
 		CORBA::string_free(notificationServiceName_mp);
 }

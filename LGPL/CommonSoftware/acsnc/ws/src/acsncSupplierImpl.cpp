@@ -32,8 +32,10 @@ using namespace ACSErrTypeCommon;
 
 namespace nc {
 //-----------------------------------------------------------------------------
-Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* component) :
-    Helper(channelName),
+Supplier::Supplier(const char* channelName, 
+	            acscomponent::ACSComponentImpl* component,
+	            const char* acsNCDomainName) :
+    Helper(channelName, acsNCDomainName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),
@@ -47,8 +49,11 @@ Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* comp
     init(static_cast<CORBA::ORB_ptr>(0));
 }
 //-----------------------------------------------------------------------------
-Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent::ACSComponentImpl* component) :
-    Helper(channelName),
+Supplier::Supplier(const char* channelName, 
+	            CORBA::ORB_ptr orb_mp,
+	            acscomponent::ACSComponentImpl* component,
+	            const char* acsNCDomainName) :
+    Helper(channelName, acsNCDomainName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),
@@ -61,8 +66,12 @@ Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent:
     init(orb_mp);
 }
 //-----------------------------------------------------------------------------
-Supplier::Supplier(const char* channelName, int argc, char *argv[], acscomponent::ACSComponentImpl* component) :
-    Helper(channelName),
+Supplier::Supplier(const char* channelName, 
+	            int argc,
+	            char *argv[],
+	            acscomponent::ACSComponentImpl* component,
+	            const char* acsNCDomainName) :
+    Helper(channelName, acsNCDomainName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),

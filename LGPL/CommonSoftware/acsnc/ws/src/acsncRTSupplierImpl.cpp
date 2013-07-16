@@ -31,8 +31,9 @@ using namespace baci;
 namespace nc {
 //-----------------------------------------------------------------------------
 RTSupplier::RTSupplier(const char* channelName, 
-		       acscomponent::ACSComponentImpl* component) : 
-    Supplier(channelName, component),
+		       acscomponent::ACSComponentImpl* component,
+			   const char* acsNCDomainName) : 
+    Supplier(channelName, component, acsNCDomainName),
     threadManager_mp(0)
 {
     ACS_TRACE("RTSupplier::RTSupplier");

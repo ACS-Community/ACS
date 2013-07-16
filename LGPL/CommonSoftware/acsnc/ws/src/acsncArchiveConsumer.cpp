@@ -36,7 +36,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 namespace nc {
     //----------------------------------------------------------
     ArchiveConsumer::ArchiveConsumer(ArchiveHandlerSmartPtr handler) :
-	Consumer(acscommon::ARCHIVING_CHANNEL_NAME),
+	Consumer(acscommon::ARCHIVING_CHANNEL_NAME,acscommon::ACS_NC_DOMAIN_ARCHIVING),
 	handler_m(handler)
     {
 	subscribeAllEvents();
@@ -44,7 +44,7 @@ namespace nc {
     //---------------------------------------------------------- 
     ArchiveConsumer::ArchiveConsumer(CORBA::ORB_ptr orb_p,
 				     ArchiveHandlerSmartPtr handler) :
-	Consumer(acscommon::ARCHIVING_CHANNEL_NAME, orb_p),
+	Consumer(acscommon::ARCHIVING_CHANNEL_NAME, orb_p,acscommon::ACS_NC_DOMAIN_ARCHIVING),
 	handler_m(handler)
     {
 	subscribeAllEvents();
@@ -53,7 +53,7 @@ namespace nc {
     ArchiveConsumer::ArchiveConsumer(int argc, 
 				     char *argv[],
 				     ArchiveHandlerSmartPtr handler) :
-	Consumer(acscommon::ARCHIVING_CHANNEL_NAME, argc, argv),
+	Consumer(acscommon::ARCHIVING_CHANNEL_NAME, argc, argv,acscommon::ACS_NC_DOMAIN_ARCHIVING),
 	handler_m(handler)
     {
 	subscribeAllEvents();

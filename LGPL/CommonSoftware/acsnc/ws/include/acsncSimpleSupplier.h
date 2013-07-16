@@ -57,11 +57,15 @@ class SimpleSupplier : public Supplier
     ///////////////////////////////////////////////////////////////
     /**
      * Constructor. All the work is done in the superclass's constructor.
-     * @param channlName The name of the channel events will be published to.
+     * @param channelName The name of the channel events will be published to.
      * @param component A reference to a component is needed for the Event 
      * Description (which is normally hidden from Consumers).
+	 * @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+	 *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      */
-    SimpleSupplier(const char* channelName, acscomponent::ACSComponentImpl* component);
+    SimpleSupplier(const char* channelName, 
+	           acscomponent::ACSComponentImpl* component,
+	           const char* acsNCDomainName = 0);
     ///////////////////////////////////////////////////////////////
     /**
      * publishData is the templated method that actually sends the event

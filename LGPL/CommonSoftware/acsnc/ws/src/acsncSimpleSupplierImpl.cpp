@@ -31,8 +31,9 @@
 namespace nc {
 //----------------------------------------------------------------------
 SimpleSupplier::SimpleSupplier(const char* channelName, 
-			       acscomponent::ACSComponentImpl* component) :
-    Supplier(channelName, component)
+			       acscomponent::ACSComponentImpl* component,
+				   const char* acsNCDomainName) :
+    Supplier(channelName, component, acsNCDomainName)
 {
 }
 //----------------------------------------------------------------------

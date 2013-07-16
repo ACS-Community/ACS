@@ -63,8 +63,10 @@ class Consumer :
      *  will default to creating it's own ORB (assuming Consumer is run on the same
      *  host as the Naming Service).
      *  @param channelName name of the channel to connect to.
+     *  @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      */
-    Consumer(const char* channelName);
+    Consumer(const char* channelName, const char* acsNCDomainName = 0);
 
     /** 
      *  Constructor to be used within SimpleClient's.
@@ -72,9 +74,12 @@ class Consumer :
      *  a reference to the Naming Service.
      *  @param channelName name of the channel to connect too.
      *  @param orb_mp ORB that <b>has</b> a valid reference to the Naming Service.
+     *  @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      */
     Consumer(const char* channelName, 
-	     CORBA::ORB_ptr orb_mp);
+	     CORBA::ORB_ptr orb_mp,
+		 const char* acsNCDomainName = 0);
     
     /** 
      *  Optional constructor - used outside of ACS.
@@ -89,6 +94,8 @@ class Consumer :
      *	orbArg[0] = ""<br>.
      *  orbArg[1] = "-ORBInitRef NameService=corbaloc::host:xxxx/NameService"<br>
      *  orbArg[2] = "-ORBDottedDecimalAddresses=1"<br>
+     *  @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      *  @htmlonly
         Sample Usage:<br>
         <ul>
@@ -99,7 +106,8 @@ class Consumer :
      */
     Consumer(const char* channelName, 
 	     int argc, 
-	     char *argv[]);
+	     char *argv[],
+		 const char* acsNCDomainName = 0);
 
     /**
      *  Disconnect from the channel. Call this instead of deleting the object.

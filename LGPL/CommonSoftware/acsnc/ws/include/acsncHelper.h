@@ -85,12 +85,12 @@ class Helper
     /**
      *  Constructor
      *  @param channelName Name of the channel
-     *  @param notifyServiceDomainName Name of the notification service domain name used to determine notification service.
+     *  @param acsNCDomainName Name of the ACS NC domain name
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
-    Helper(const char* channelName, const char* notifyServiceDomainName = 0);
+    Helper(const char* channelName, const char* acsNCDomainName = 0);
     
     /**
      *  Resolve the TAO naming service.
@@ -203,7 +203,7 @@ class Helper
 		if (!notificationServiceName_mp)
 		{
 			CDB::DAL_var dal = CDBProperties::getCDB();
-			notificationServiceName_mp = BaseHelper::getNotificationFactoryNameForChannel(dal.in(), channelName_mp, notifyServiceDomainName_mp);
+			notificationServiceName_mp = BaseHelper::getNotificationFactoryNameForChannel(dal.in(), channelName_mp, acsNCDomainName_mp);
 			if (!notificationServiceName_mp)
 				notificationServiceName_mp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
 		}
@@ -295,9 +295,9 @@ class Helper
     char *channelName_mp;
     
     /**
-     *  Name of the notification service domain.
+     *  Name of the ACS NC domain.
      */
-    char *notifyServiceDomainName_mp;
+    char *acsNCDomainName_mp;
     
     /**
      * Channel and domain name (like channel_name@domain_name)

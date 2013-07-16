@@ -32,8 +32,8 @@ namespace nc {
 //-----------------------------------------------------------------------------
 double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
 //-----------------------------------------------------------------------------
-Consumer::Consumer(const char* channelName) :
-    Helper(channelName),
+Consumer::Consumer(const char* channelName, const char* acsNCDomainName) :
+    Helper(channelName,acsNCDomainName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
@@ -46,8 +46,8 @@ Consumer::Consumer(const char* channelName) :
     orb_mp = static_cast<CORBA::ORB_ptr>(0);
 }
 //-----------------------------------------------------------------------------
-Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb) : 
-    Helper(channelName),
+Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb, const char* acsNCDomainName) : 
+    Helper(channelName,acsNCDomainName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
@@ -59,8 +59,8 @@ Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb) :
     orb_mp = orb;
 }
 //-----------------------------------------------------------------------------
-Consumer::Consumer(const char* channelName, int argc, char *argv[]) : 
-    Helper(channelName),
+Consumer::Consumer(const char* channelName, int argc, char *argv[], const char* acsNCDomainName) : 
+    Helper(channelName,acsNCDomainName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),

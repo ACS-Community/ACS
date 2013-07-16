@@ -66,8 +66,10 @@ template <class T> class SimpleConsumer : public Consumer
     /**
      * Constructor to be used within components.
      * @param channelName The channel's name
+     * @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      */
-    SimpleConsumer(const char* channelName);
+    SimpleConsumer(const char* channelName, const char* acsNCDomainName = 0);
     ///////////////////////////////////////////////////////////////
     /**
      * A special version of the addSubscription method. Not only

@@ -62,23 +62,29 @@ class Supplier :
      * Standard constructor - used within a component.
      * If this constructor is used, we use container's ORB to access Manager and then
      * retrieve a reference to the Naming Service.
-     * @param channlName The name of the channel events will be published to.
+     * @param channelName The name of the channel events will be published to.
      * @param component A reference to a component is needed for the Event 
+     * @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      */
     Supplier(const char* channelName, 
-	     acscomponent::ACSComponentImpl* component);
+	     acscomponent::ACSComponentImpl* component,
+		 const char* acsNCDomainName = 0);
 
     /** 
      * Generic constructor.
      * This constructor is provided for API users who create their own ORB that has 
      * a reference to the Naming Service. SimpleClient provides such access to an ORB.
-     * @param channlName The name of the channel events will be published to.
+     * @param channelName The name of the channel events will be published to.
      * @param orb_mp ORB that <b>has</b> a valid reference to the Naming Service.
      * @param component A reference to a component is needed for the Event 
+     * @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      */
     Supplier(const char* channelName, 
 	     CORBA::ORB_ptr orb_mp, 
-	     acscomponent::ACSComponentImpl* component);
+	     acscomponent::ACSComponentImpl* component,
+		 const char* acsNCDomainName = 0);
     
     /** 
      * Optional constructor - used outside of ACS.
@@ -86,12 +92,14 @@ class Supplier :
      * only to be utilized when there is a reason not to use Manager to get at the 
      * Naming Service.  If argc==0, default parameters (i.e., environment variables) 
      * specify how to get to the Naming Service.
-     * @param channlName The name of the channel events will be published to.
+     * @param channelName The name of the channel events will be published to.
      * @param argc Number of ORB parameters in argv or 0
      * @param argv ORB params.  Typically something like:<br>
      *	orbArg[0] = ""<br>
      *  orbArg[1] = "-ORBDottedDecimalAddresses=1"<br>
      *  orbArg[2] = "-ORBInitRef NameService=corbaloc::host:xxxx/NameService"<br>
+     * @param acsNCDomain name of the ACS NC domain name. This is an optional parameter.
+     *  It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT if it is not specified.
      *  @htmlonly
        Sample Usage:<br>
        <ul>
@@ -104,7 +112,8 @@ class Supplier :
     Supplier(const char* channelName, 
 	     int argc, 
 	     char *argv[],
-	     acscomponent::ACSComponentImpl* component);
+	     acscomponent::ACSComponentImpl* component,
+		 const char* acsNCDomainName = 0);
 
     /**
      * Called to disconnect the Supplier from the channel. Must be used instead of
