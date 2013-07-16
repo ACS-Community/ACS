@@ -73,9 +73,9 @@ class BaseHelper
     /**
      * Standard constructor.
      * @param channelName Name of the channel
-     * @param notifyServiceDomainName Name of the notification service domain name used to determine notification service.
+     * @param acsNCDomainName Name of the ACS NC domain name
      */
-    BaseHelper(const char* channelName, const char* notifyServiceDomainName = 0);
+    BaseHelper(const char* channelName, const char* acsNCDomainName = 0);
     
     /**
      * Initialization method. In short, no method of this class can be
@@ -161,7 +161,7 @@ class BaseHelper
 			// noop
 			}
 
-			notificationServiceName_mp = getNotificationFactoryNameForChannel(cdb.in(), channelName_mp, notifyServiceDomainName_mp);
+			notificationServiceName_mp = getNotificationFactoryNameForChannel(cdb.in(), channelName_mp, acsNCDomainName_mp);
 			if (!notificationServiceName_mp)
 				notificationServiceName_mp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
 		}
@@ -269,12 +269,12 @@ class BaseHelper
     char* channelName_mp;
 
     /**
-     *  Name of the nofitication service domain.
+     *  Name of the ACS NC domain.
      */
-    char *notifyServiceDomainName_mp;
+    char *acsNCDomainName_mp;
     
     /**
-     * Name of "resovled" notification service.
+     * Name of "resolved" notification service.
      */
     char *notificationServiceName_mp;
 

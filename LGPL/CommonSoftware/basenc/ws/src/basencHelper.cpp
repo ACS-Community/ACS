@@ -82,28 +82,28 @@
 static const char *rcsId="@(#) $Id: basencHelper.cpp,v 1.8 2012/10/15 12:35:34 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 //-----------------------------------------------------------------------------
-BaseHelper::BaseHelper(const char* channelName, const char* notifyServiceDomainName) :
+BaseHelper::BaseHelper(const char* channelName, const char* domainName) :
     namingContext_m(CosNaming::NamingContext::_nil()),
     notifyFactory_m(CosNotifyChannelAdmin::EventChannelFactory::_nil()),
     channelID_m(0),
     ifgop_m(CosNotifyChannelAdmin::AND_OP),
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
-    notifyServiceDomainName_mp(0),
+    acsNCDomainName_mp(0),
     notificationServiceName_mp(0),
     initCalled_m(false)
 {
     channelName_mp = CORBA::string_dup(channelName);
     
     // make a copy of the NS domain name (if given)
-    if (notifyServiceDomainName)
+    if (domainName)
     {
-        notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
-        channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,notifyServiceDomainName_mp);
+        acsNCDomainName_mp = CORBA::string_dup(domainName);
     }
     else
     {
-        channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,"");
+		acsNCDomainName_mp = CORBA::string_dup(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
     }
+	channelAndDomainName_m = combineChannelAndDomainName(channelName_mp,acsNCDomainName_mp);
 }
 //-----------------------------------------------------------------------------
 BaseHelper::~BaseHelper()
@@ -114,8 +114,8 @@ BaseHelper::~BaseHelper()
 
 	if (channelName_mp != 0)
 		CORBA::string_free(channelName_mp);
-	if (notifyServiceDomainName_mp != 0)
-		CORBA::string_free(notifyServiceDomainName_mp);
+	if (acsNCDomainName_mp != 0)
+		CORBA::string_free(acsNCDomainName_mp);
 	if (notificationServiceName_mp != 0)
 		CORBA::string_free(notificationServiceName_mp);
 }

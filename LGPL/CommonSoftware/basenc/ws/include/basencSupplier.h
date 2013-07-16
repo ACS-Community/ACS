@@ -54,9 +54,11 @@ class BaseSupplier : public POA_acsnc::OSPushSupplier,
     /**
      * Standard constructor.
      * @param channelName Name of the channel to use.
-     * @param notifyServiceDomainName Name of the notification service domain name used to determine notification service.
+     * @param acsNCDomainName Name of the ACS NC domain name.
+     * It will default to acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT 
+     * if it is not specified.
      */
-    BaseSupplier(const char* channelName, const char* notifyServiceDomainName = 0);
+    BaseSupplier(const char* channelName, const char* acsNCDomainName = 0);
     
     /**
      * Overridden.
