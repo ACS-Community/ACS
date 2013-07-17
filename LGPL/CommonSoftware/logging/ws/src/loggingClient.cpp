@@ -73,17 +73,22 @@ Subscribe::init (int argc, char *argv [], std::string channel)
   resolve_naming_service ();
 
 
-  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channel.c_str()));
+  std::string channelAndDomainName;
+  // cannot use BaseHelper::combineChannelAndDomainName because of module order
+  if (channelName.compare(acscommon::ARCHIVING_CHANNEL_NAME)==0) {
+    channelAndDomainName = std::string(channel + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::ACS_NC_DOMAIN_ARCHIVING);
+  }
+  else {
+	  channelAndDomainName = channel; // TODO for ICT-494: add acscommon::ACS_NC_DOMAIN_LOGGING;
+  }
 
-  	resolve_notify_channel (channel.c_str());
+  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channelAndDomainName.c_str()));
 
-
+  resolve_notify_channel (channelAndDomainName.c_str());
 
   create_consumeradmin ();
 
-
   create_consumers ();
-
 
   setup_events();
 
@@ -168,13 +173,13 @@ Subscribe::resolve_naming_service ()
 }
 
 void
-Subscribe::resolve_notify_channel (const char * channel_name)
+Subscribe::resolve_notify_channel (const char * channel_binding_name)
 {
-  ACE_DEBUG((LM_DEBUG, "Notify Channel: %s\n", channel_name));
+  ACE_DEBUG((LM_DEBUG, "Notify Channel: %s\n", channel_binding_name));
 
   CosNaming::Name name (1);
   name.length (1);
-  name[0].id = CORBA::string_dup (channel_name);
+  name[0].id = CORBA::string_dup (channel_binding_name);
   name[0].kind = acscommon::NC_KIND;
 
   CORBA::Object_var obj =
@@ -627,8 +632,9 @@ void getParams(int argc, char *argv []) {
 	}
 	else
 	{
-        if(strcmp("Archiving",argv[argc-1]) == 0)
+        if(strcmp("Archiving",argv[argc-1]) == 0) {
             channelName = acscommon::ARCHIVING_CHANNEL_NAME;
+        }
         else if(strcmp("Logging",argv[argc-1]) == 0){
             channelName = acscommon::LOGGING_CHANNEL_XML_NAME;
             char *acsLogType = getenv("ACS_LOG_BIN");
@@ -636,7 +642,8 @@ void getParams(int argc, char *argv []) {
               if(strcmp("true", acsLogType) == 0)
                 channelName = acscommon::LOGGING_CHANNEL_NAME;
              }
-        }else{
+        }
+        else {
             printUsage(argv[0]);
             exit(-1);
         }

@@ -72,9 +72,18 @@ Subscribe::init (int argc, char *argv [], std::string channel)
   resolve_naming_service ();
 
 
-  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channel.c_str()));
+  std::string channelAndDomainName;
+  // cannot use BaseHelper::combineChannelAndDomainName because of module order
+  if (channelName.compare(acscommon::ARCHIVING_CHANNEL_NAME)==0) {
+    channelAndDomainName = std::string(channel + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::ACS_NC_DOMAIN_ARCHIVING);
+  }
+  else {
+	  channelAndDomainName = channel; // TODO for ICT-494: add acscommon::ACS_NC_DOMAIN_LOGGING;
+  }
 
-  	resolve_notify_channel (channel.c_str());
+  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channelAndDomainName.c_str()));
+
+  resolve_notify_channel (channelAndDomainName.c_str());
 
 
 
@@ -167,22 +176,20 @@ Subscribe::resolve_naming_service ()
 }
 
 void
-Subscribe::resolve_notify_channel (const char * channel_name)
+Subscribe::resolve_notify_channel (const char * channel_binding_name)
 {
-  ACE_DEBUG((LM_DEBUG, "Notify Channel: %s\n", channel_name));
+  ACE_DEBUG((LM_DEBUG, "Notify Channel: %s\n", channel_binding_name));
 
   CosNaming::Name name (1);
   name.length (1);
-  name[0].id = CORBA::string_dup (channel_name);
+  name[0].id = CORBA::string_dup (channel_binding_name);
   name[0].kind = acscommon::NC_KIND;
 
   CORBA::Object_var obj =
-    this->naming_context_->resolve (name
-                                   );
+    this->naming_context_->resolve (name);
 
   this->ec_ =
-    CosNotifyChannelAdmin::EventChannel::_narrow (obj.in ()
-						  );
+    CosNotifyChannelAdmin::EventChannel::_narrow (obj.in ());
 
 }
 
@@ -330,10 +337,6 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 						  )
 {
 
- // "Logging" or "Archiving"
-  const char * domain_name =
-    notification.header.fixed_header.event_type.domain_name;
-
   // if "Logging" -> ""
   // if "Archiving" -> "string" | "long" | "double"
   const char * type_name =
@@ -341,7 +344,12 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 
   //ACE_OS::printf("\nReceived event, domain = %s, type = %s\n", domain_name, type_name);
 
-  if (ACE_OS::strcmp(domain_name, "Logging")==0)
+  // TODO: We should have a boolean flag or an enum that tells us what events to expect
+  //       (Logging, Archiving, or others in the future).
+  //       This silly repeated NC name comparison is a quick fix to replace the
+  //       silly checking of the event's domain field that we had before ICT-494.
+  if (channelName.compare(acscommon::LOGGING_CHANNEL_XML_NAME)==0 ||
+      channelName.compare(acscommon::LOGGING_CHANNEL_NAME)==0 )
   {
     if(!m_logBin){
         // for logging
@@ -388,7 +396,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 
     }
   }
-  else if (ACE_OS::strcmp(domain_name, "Archiving")==0)
+  else if (channelName.compare(acscommon::ARCHIVING_CHANNEL_NAME)==0)
       {
       std::string eventName = (const char *)notification.header.fixed_header.event_name;
       std::string containerName = "";
@@ -444,8 +452,8 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
       }
   else
       {
-      ACE_OS::printf("Structured Subscribe Consumer %d received unknown event, domain = %s, type = %s\n",
-		     this->proxy_supplier_id_, domain_name, type_name);
+      ACE_OS::printf("Structured Subscribe Consumer %d received unknown event, type = %s\n",
+		     this->proxy_supplier_id_, type_name);
       }
 
     sleep(3);
@@ -606,16 +614,18 @@ void getParams(int argc, char *argv []) {
 	}
 	else
 	{
-        if(strcmp("Archiving",argv[argc-1]) == 0)
+        if(strcmp("Archiving",argv[argc-1]) == 0) {
             channelName = acscommon::ARCHIVING_CHANNEL_NAME;
+        }
         else if(strcmp("Logging",argv[argc-1]) == 0){
             channelName = acscommon::LOGGING_CHANNEL_XML_NAME;
             char *acsLogType = getenv("ACS_LOG_BIN");
-            if (acsLogType && *acsLogType){
+            if (acsLogType && *acsLogType) {
               if(strcmp("true", acsLogType) == 0)
                 channelName = acscommon::LOGGING_CHANNEL_NAME;
-             }
-        }else{
+            }
+        }
+        else {
             printUsage(argv[0]);
             exit(-1);
         }
