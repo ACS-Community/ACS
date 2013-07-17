@@ -94,8 +94,8 @@ public interface ContainerServices extends ContainerServicesBase
 	 * 
 	 * <li> the more general method <code>get_service</code> offered by the manager
 	 * 		is deliberately not represented here. It would currently (Oct.03) offer
-	 * 		access to "LogFactory", "NotifyEventChannelFactory", "ArchivingChannel",
-	 * 		"LoggingChannel", "InterfaceRepository", "CDB", "ACSLogSvc", "PDB";
+	 * 		access to "LogFactory", "NotifyEventChannelFactory", "ArchivingChannel@ARCHIVING.channels",
+	 * 		"LoggingChannel", "InterfaceRepository", "CDB", "ACSLogSvc";
 	 * 		It seems that if such access is needed, specialized methods should be added
 	 * 		to this interface, like {@link #getCDB()}.
 	 * 		

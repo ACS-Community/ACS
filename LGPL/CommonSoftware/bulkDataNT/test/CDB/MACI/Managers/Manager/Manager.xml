@@ -26,7 +26,6 @@
 		<cdb:_ string="MC_LoggingNotifyEventChannelFactory" />
 		<cdb:_ string="AlarmNotifyEventChannelFactory" />
 		<cdb:_ string="MC_AlarmNotifyEventChannelFactory" />
-		<cdb:_ string="LoggingChannel" />
 		<cdb:_ string="InterfaceRepository" />
 		<cdb:_ string="CDB" />
 	</ServiceComponents>

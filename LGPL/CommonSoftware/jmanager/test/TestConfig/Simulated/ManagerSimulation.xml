@@ -33,7 +33,7 @@
 		<!-- ServiceComponents -->
 		<entity type="abeans.pluggable.simulator.Property" name="ServiceComponents" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
 			<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
-			<property name="value" type="[Ljava.lang.String;" value="{Log,LogFactory,NotifyEventChannelFactory,ArchivingChannel,LoggingChannel,InterfaceRepository,CDB,ACSLogSvc,PDB}"/>
+			<property name="value" type="[Ljava.lang.String;" value="{Log,LogFactory,NotifyEventChannelFactory,InterfaceRepository,CDB,ACSLogSvc,PDB}"/>
 		</entity>
 		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/ServiceComponents" descriptor="abeans.datatypes.GetDescriptor"/>
 

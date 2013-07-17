@@ -37,7 +37,6 @@ Correspondence concerning ALMA should be addressed as follows:
     <cdb:_ string="Log"/>
     <cdb:_ string="LogFactory"/>
     <cdb:_ string="NotifyEventChannelFactory"/>
-    <cdb:_ string="LoggingChannel"/>
     <cdb:_ string="InterfaceRepository"/>
     <cdb:_ string="CDB"/>
     <cdb:_ string="ACSLogSvc"/>
