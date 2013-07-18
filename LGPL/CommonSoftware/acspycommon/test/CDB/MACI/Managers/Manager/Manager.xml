@@ -19,7 +19,7 @@
 	<cdb:_ string="LogFactory"/>
 	<cdb:_ string="NotifyEventChannelFactory"/>
 	<cdb:_ string="ArchivingChannel@ARCHIVING.channels"/>
-	<cdb:_ string="LoggingChannel.channels"/>
+	<cdb:_ string="LoggingChannel@LOGGING.channels"/>
 	<cdb:_ string="InterfaceRepository"/>
 	<cdb:_ string="CDB"/>
 	<cdb:_ string="ACSLogSvc"/>

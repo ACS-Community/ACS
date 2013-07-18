@@ -78,8 +78,9 @@ Subscribe::init (int argc, char *argv [], std::string channel)
   if (channelName.compare(acscommon::ARCHIVING_CHANNEL_NAME)==0) {
     channelAndDomainName = std::string(channel + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::ACS_NC_DOMAIN_ARCHIVING);
   }
-  else {
-	  channelAndDomainName = channel; // TODO for ICT-494: add acscommon::ACS_NC_DOMAIN_LOGGING;
+  else if (channelName.compare(acscommon::LOGGING_CHANNEL_XML_NAME)==0 ||
+           channelName.compare(acscommon::LOGGING_CHANNEL_NAME)==0) {
+	  channelAndDomainName = std::string(channel + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::ACS_NC_DOMAIN_LOGGING);
   }
 
   ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channelAndDomainName.c_str()));

@@ -431,17 +431,9 @@ std::string
 BaseHelper::combineChannelAndDomainName(const std::string & channelName,
 										const std::string & domainName)
 {
-	if(domainName.empty() || (domainName == acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT))
+	if(domainName.empty())
 	{
-		if ((channelName==acscommon::LOGGING_CHANNEL_NAME) ||
-		    (channelName==acscommon::LOGGING_CHANNEL_XML_NAME))
-		{
-			return channelName;
-		}
-		else
-		{
-			return std::string(channelName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
-		}
+		return std::string(channelName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT);
 	}
 	else
 	{

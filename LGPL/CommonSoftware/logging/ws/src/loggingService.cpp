@@ -367,11 +367,13 @@ LoggingService::shutdown ()
 		}
 
 		try {
-			if (!m_logBin)
-				name[0].id = CORBA::string_dup(acscommon::LOGGING_CHANNEL_XML_NAME);
+			std::string channelAndDomainName;
+			if(!m_logBin)
+				channelAndDomainName = std::string(acscommon::LOGGING_CHANNEL_XML_NAME);
 			else
-				name[0].id = CORBA::string_dup(acscommon::LOGGING_CHANNEL_NAME);
-
+				channelAndDomainName = std::string(acscommon::LOGGING_CHANNEL_NAME);
+			channelAndDomainName = channelAndDomainName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::ACS_NC_DOMAIN_LOGGING;
+			name[0].id = CORBA::string_dup (channelAndDomainName.c_str());
 			name[0].kind = CORBA::string_dup(acscommon::NC_KIND);
 			this->m_naming_context->unbind(name);
 		} catch (...) {
@@ -478,11 +480,14 @@ LoggingService::create_EC ()
 {
     CosNaming::Name name (1);
     name.length (1);
+    std::string channelAndDomainName;
+    // cannot use BaseHelper::combineChannelAndDomainName because of module order
     if(!m_logBin)
-        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_XML_NAME);
+      channelAndDomainName = std::string(acscommon::LOGGING_CHANNEL_XML_NAME);
     else
-        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
-
+      channelAndDomainName = std::string(acscommon::LOGGING_CHANNEL_NAME);
+    channelAndDomainName = channelAndDomainName + acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + acscommon::ACS_NC_DOMAIN_LOGGING;
+    name[0].id = CORBA::string_dup (channelAndDomainName.c_str());
     name[0].kind = CORBA::string_dup (acscommon::NC_KIND);
 
     try
@@ -513,17 +518,10 @@ LoggingService::create_EC ()
 					m_logging_ec.in());
 
 
-    if(m_logBin){
+	ACS_SHORT_LOG ((LM_DEBUG,
+		"Logging EC registered with the naming service as: %s", channelAndDomainName.c_str()));
 
-        ACS_SHORT_LOG ((LM_DEBUG,
-			"Logging EC registered with the naming service as: %s",
-			acscommon::LOGGING_CHANNEL_XML_NAME));
-    }else{
-	    ACS_SHORT_LOG ((LM_DEBUG,
-			"Logging EC registered with the naming service as: %s",
-			acscommon::LOGGING_CHANNEL_NAME));
-	}
-	//ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
+        //ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
 
 	//CosNaming::Name name (1);
 	//name.length (1);

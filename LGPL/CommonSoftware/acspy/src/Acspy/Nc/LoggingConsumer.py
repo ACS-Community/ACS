@@ -64,7 +64,7 @@ class LoggingConsumer (Consumer):
         '''
         self.handler = handler
 
-        Consumer.__init__(self, acscommon.LOGGING_CHANNEL_XML_NAME)
+        Consumer.__init__(self, acscommon.LOGGING_CHANNEL_XML_NAME, None, acscommon.ACS_NC_DOMAIN_LOGGING)
     #--------------------------------------------------------------------------
     def getChannelKind(self):
         '''

@@ -452,9 +452,9 @@ def loggingChannel(): # pragma: NO COVER
     '''
 
     if os.environ.has_key('ACS_LOG_BIN') and os.environ['ACS_LOG_BIN'] == "true":
-        loggingChannelName = "LoggingChannelBin.channels"
+        loggingChannelName = "LoggingChannelBin@LOGGING.channels"
     else:
-        loggingChannelName = "LoggingChannel.channels"
+        loggingChannelName = "LoggingChannel@LOGGING.channels"
 
     return getClient().getService(loggingChannelName)
 #----------------------------------------------------------------------------

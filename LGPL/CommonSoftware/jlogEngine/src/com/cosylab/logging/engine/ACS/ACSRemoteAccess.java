@@ -48,8 +48,10 @@ import si.ijs.maci.Manager;
 
 import alma.acs.logging.AcsLogger;
 import alma.acs.profiling.orb.AcsORBProfilerImplBase;
+import alma.acscommon.ACS_NC_DOMAIN_LOGGING;
 import alma.acscommon.LOGGING_CHANNEL_NAME;
 import alma.acscommon.LOGGING_CHANNEL_XML_NAME;
+import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR;
 import alma.acscommon.NAMING_SERVICE_NAME;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
@@ -302,7 +304,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	
 	/**
 	 * 
-	 * @return true if the consumer is supended
+	 * @return true if the consumer is suspended
 	 */
 	public boolean isSupended() {
 		return acsSPS.isSuspended();
@@ -366,21 +368,24 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private boolean resolveNotifyChannel(String channelName, NamingContext namingContext) {
-		listenersDispatcher.publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
+		// Cannot use jcontnc Helper for this, due to module order...
+		String channelWithDomain = channelName + NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR.value + ACS_NC_DOMAIN_LOGGING.value;
+		
+		listenersDispatcher.publishReport("Resolving channel \"" + channelWithDomain + "\" from Notify Service...");
 		try {
 			NameComponent[] nc = new NameComponent[1];
-			nc[0] = new NameComponent(channelName, alma.acscommon.NC_KIND.value);
+			nc[0] = new NameComponent(channelWithDomain, alma.acscommon.NC_KIND.value);
 			
 			org.omg.CORBA.Object obj = namingContext.resolve(nc);
 	
 			eventChannel = org.omg.CosNotifyChannelAdmin.EventChannelHelper.narrow(obj);
 			
 		} catch (Exception e) {
-			listenersDispatcher.publishReport("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
+			listenersDispatcher.publishReport("Exception occurred when obtaining channel \"" + channelWithDomain + "\" from the Notify Service.");
 			System.out.println("ACSRemoteAccess::Exception in resolveNotifyChannel(): " + e);
 			return false;
 		}
-		listenersDispatcher.publishReport("Channel \"" + channelName + "\" resolved.");
+		listenersDispatcher.publishReport("Channel \"" + channelWithDomain + "\" resolved.");
 		return true;
 	}
 

@@ -47,8 +47,6 @@ from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
 
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR
-from acscommon import LOGGING_CHANNEL_NAME
-from acscommon import LOGGING_CHANNEL_XML_NAME
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -101,16 +99,7 @@ class CommonNC:
         self.callback = ReconnectionCallback(self)
     #------------------------------------------------------------------------------
     def combineChannelAndDomainName(self):
-        # From ACS 12.0 the system NCs have no domain so for those only we 
-        # we do not append "NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT"
-        #
-        # the system NCs i refer to are those whose name is defined in acscommon.idl
-        if self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_NAME:
-            return self.channelName
-        elif self.domainName==NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT and self.channelName==LOGGING_CHANNEL_XML_NAME:
-            return self.channelName
-        else:
-            return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
+        return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
     #------------------------------------------------------------------------------
     def configQofS(self):
         '''

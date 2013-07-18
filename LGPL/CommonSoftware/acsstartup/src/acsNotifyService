@@ -80,7 +80,7 @@ Options:
    -b | --baseport INSTANCE          the acs instance (0-9) you want to use
    -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
    -n | --nstype TYPE                type of notify service (i.e. Logging, Archive, Alarm)
-   -x | --nameService REF           set name service reference via command-line
+   -x | --nameService REF            set name service reference via command-line
    -h | --help                       prints this help and exits
 EOF
 }
@@ -195,7 +195,7 @@ case $CL_NS_TYPE in
       export LOGGING_CHANNEL=LoggingChannel      # must match LOGGING_CHANNEL_XML_NAME from acscommon.idl
     fi
     NOTIFY_EVENT_CHANNEL=$LOGGING_CHANNEL
-    NOTIFY_EVENT_CHANNEL_DOMAIN=""   # TODO "LOGGING"     # must match ACS_NC_DOMAIN_LOGGING from acscommon.idl
+    NOTIFY_EVENT_CHANNEL_DOMAIN=LOGGING          # must match ACS_NC_DOMAIN_LOGGING from acscommon.idl
     NOTIFY_EVENT_CHANNEL_FACTORY=LoggingNotifyEventChannelFactory
   ;; "Archive"|"ArchiveNotifyEventChannelFactory")
     CL_NS_TYPE="Archive"

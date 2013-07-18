@@ -174,7 +174,7 @@ public:
   /**
    * Get a component, activating it if necessary.
    * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory,
-   * NotifyEventChannelFactory, ArchivingChannel@ARCHIVING.channels, LoggingChannel, InterfaceRepository, CDB and PDB.
+   * NotifyEventChannelFactory, ArchivingChannel@ARCHIVING.channels, LoggingChannel@LOGGING.channels, InterfaceRepository, CDB.
    * @param name name of the component (e.g. MOUTN1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state
@@ -199,7 +199,7 @@ public:
    * Get a component, activating it if necessary and directly narrows it to the type
    * declared in the template definition.
    * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory,
-   * NotifyEventChannelFactory, ArchivingChannel@ARCHIVING.channels, LoggingChannel, InterfaceRepository, CDB and PDB.
+   * NotifyEventChannelFactory, ArchivingChannel@ARCHIVING.channels, LoggingChannel@LOGGING.channels, InterfaceRepository, CDB.
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state
@@ -236,7 +236,7 @@ public:
    * Get a SmartPointer to a component, activating it if necessary and directly narrows it to the type
    * declared in the template definition.
    * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory,
-   * NotifyEventChannelFactory, ArchivingChannel@ARCHIVING.channels, LoggingChannel, InterfaceRepository, CDB and PDB.
+   * NotifyEventChannelFactory, ArchivingChannel@ARCHIVING.channels, LoggingChannel@LOGGING.channels, InterfaceRepository, CDB.
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state

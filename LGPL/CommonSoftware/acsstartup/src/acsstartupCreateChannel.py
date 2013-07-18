@@ -230,10 +230,11 @@ else:
     cl_channel_id = options.channel_id
 
 #channel_domain
-# TODO: Enable handling as required param
-#    print "channel_domain is a required parameter!"
-#    sys.exit(1)
-cl_channel_domain = options.channel_domain
+if options.channel_domain==None:
+    print "channel_domain is a required parameter!"
+    sys.exit(1)
+else:
+    cl_channel_domain = options.channel_domain
 
 #channel_kind
 cl_channel_kind = options.channel_kind
@@ -362,11 +363,7 @@ CHANNEL_REF, CHANNEL_ID = NOTIFY_SERVICE.create_channel(CHANNEL_QOS_PROPS,
 #------------------------------------------------------------------------------
 #--Register the channel with the naming service from the command-line
 # See also acscommon.idl about the "@" (NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR)
-if cl_channel_domain:
-    channel_id_with_domain = cl_channel_id + "@" + cl_channel_domain
-else:
-    # TODO: At least for a transition time we allow the empty domain (see http://ictjira.alma.cl/browse/ICT-494)
-    channel_id_with_domain = cl_channel_id
+channel_id_with_domain = cl_channel_id + "@" + cl_channel_domain
 
 channel_name = CosNaming.NameComponent(channel_id_with_domain,
                                        cl_channel_kind)
