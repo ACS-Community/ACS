@@ -4488,8 +4488,7 @@ public class ManagerImplTest extends TestCase
 	{
 		assertTrue(manager.isServiceComponent("Log"));
 		assertTrue(manager.isServiceComponent("NotifyEventChannelFactory"));
-		assertTrue(manager.isServiceComponent("LoggingChannel"));
-		assertTrue(manager.isServiceComponent("PDB"));
+		assertTrue(manager.isServiceComponent("LoggingChannel")); // TODO: LoggingChannel@LOGGING.channels
 		assertTrue(!manager.isServiceComponent("invalid"));
 	}
 	
