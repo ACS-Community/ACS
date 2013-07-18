@@ -13,7 +13,7 @@
 1 - 
 1 -     ErrorTrace (TimeStamp=XXXX,
 1 -                 Line=XXXX,
-1 -                 Routine=MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial,
+1 -                 Routine=MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial,
 1 -                 Host=xxxxxxxxx
 1 -                 Process=monColTestCont,
 1 -                 Thread=ORBTask,
@@ -74,7 +74,7 @@
 1 - 
 1 -     ErrorTrace (TimeStamp=XXXX,
 1 -                 Line=XXXX,
-1 -                 Routine=MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial,
+1 -                 Routine=MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial,
 1 -                 Host=xxxxxxxxx
 1 -                 Process=monColTestCont,
 1 -                 Thread=ORBTask,
@@ -111,7 +111,7 @@
 1 - 
 1 -     ErrorTrace (TimeStamp=XXXX,
 1 -                 Line=XXXX,
-1 -                 Routine=MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial,
+1 -                 Routine=MonitorCollectorImpl::registerMonitoredComponentWithMultipleSerial,
 1 -                 Host=xxxxxxxxx
 1 -                 Process=monColTestCont,
 1 -                 Thread=ORBTask,
@@ -133,4 +133,3 @@
 1 -                     Severity=Error,
 1 -                     Data: Name=Device, Value=TEST_PS_1; )
 1 - 
-1 - ----------T--:--:--.--- Python Client: initialized by nnn@hhh - Shutdown called for client

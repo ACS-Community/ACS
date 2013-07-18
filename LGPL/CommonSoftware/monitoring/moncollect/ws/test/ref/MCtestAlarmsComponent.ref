@@ -189,6 +189,7 @@
 1 - 		{'value': [True, True], 'time': ------------------L}
 1 - 		{'value': [True, True], 'time': ------------------L}
 1 - 		{'value': [True, True], 'time': ------------------L}
+1 - 		{'value': [True, True], 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:EnumTestROProp ['13']
 1 - 		{'value': 1L, 'time': ------------------L}
 1 - 		{'value': 2L, 'time': ------------------L}
@@ -200,4 +201,4 @@
 1 - 		{'value': 8L, 'time': ------------------L}
 1 - 		{'value': 9L, 'time': ------------------L}
 1 - 		{'value': 10L, 'time': ------------------L}
-1 - ----------T--:--:--.--- Python Client: initialized by nnn@hhh - Shutdown called for client
+1 - 		{'value': 11L, 'time': ------------------L}
