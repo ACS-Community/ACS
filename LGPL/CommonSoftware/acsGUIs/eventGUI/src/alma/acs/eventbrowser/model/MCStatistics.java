@@ -55,13 +55,20 @@ public abstract class MCStatistics {
 			mcStatFullName = getChannelPrefix(true) + mcStatName;
 		}
 		try {
-			 return parent.getParent().getMc().get_statistic(mcStatFullName).data_union;
+			NotifyServiceData notifyServiceData = parent.getParent();
+			if (notifyServiceData.isReachable()) {
+				return notifyServiceData.getMc().get_statistic(mcStatFullName).data_union;
+			}
+			else {
+				// This is a shortcut to not wait for a TRANSIENT or TIMEOUT
+				throw new RuntimeException("Failed to get statistics from unreachable notify service " + notifyServiceData.getName());
+			}
 		} catch (InvalidName ex) {
 			// Try again with channel Id instead of channel name (no TAO extensions used when creating this NC)
 			String mcStatFullNameTmp = getChannelPrefix(false) + mcStatName;
 			try {
 				 UData ret = parent.getParent().getMc().get_statistic(mcStatFullNameTmp).data_union;
-				 // next time use this ID-based stat name right awawy 
+				 // next time use this ID-based stat name right away 
 				 mcStatFullName = mcStatFullNameTmp;
 				 return ret;
 			} catch (InvalidName ex2) {

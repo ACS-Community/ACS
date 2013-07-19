@@ -41,14 +41,11 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import alma.acs.eventbrowser.model.EventModel;
-import alma.acs.eventbrowser.model.MCStatistics;
 import alma.acs.eventbrowser.handlers.NotifyServiceUpdateJob;
+import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.parts.ChannelTreeProviders.ChannelTreeContentProvider;
 import alma.acs.eventbrowser.parts.ChannelTreeProviders.ChannelTreeLabelProvider;
 import alma.acs.eventbrowser.status.StatusLineWriter;
@@ -70,15 +67,6 @@ public class ChannelTreePart {
 	private StatusLineWriter statusLineWriter;
 	
 	private EventModel eventModel;
-
-	private class NameComparator extends ViewerComparator {
-		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
-			if (e1 instanceof MCStatistics && e2 instanceof MCStatistics)
-				return 0; // leave the statistics in the order I added them in ChannelData!!
-			return super.compare(viewer, e1, e2);
-		}
-	}
 
 
 	/**
@@ -105,14 +93,14 @@ public class ChannelTreePart {
 		statusLineWriter = new StatusLineWriter(eventBroker);
 		
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new ChannelTreeContentProvider(eventModel));
+		viewer.setContentProvider(new ChannelTreeContentProvider());
 		viewer.setLabelProvider(new ChannelTreeLabelProvider());
 		// Expand the tree. '2' means to show only the visible top-level nodes.
 		viewer.setAutoExpandLevel(2);
 
-		viewer.setComparator(new NameComparator());
+		viewer.setComparator(new ServiceViewerComparator());
 
-		// Provide the input to the ContentProvider
+		// Provide the root node to the ContentProvider
 		viewer.setInput(eventModel.getNotifyServicesRoot());
 
 		// Expand with doubleclick

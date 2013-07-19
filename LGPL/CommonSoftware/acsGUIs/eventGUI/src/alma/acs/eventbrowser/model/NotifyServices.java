@@ -28,7 +28,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 
 /**
  * Encapsulates a <code>List&lt;NotifyServiceData&gt;</code>.
- * It gets created by {@link EventModel} to pass around its list of Notify Services to GUI elements.
+ * It gets created by {@link EventModel} to pass around its (alive) list of Notify Services to GUI elements.
  * <p>
  * TODO: Replace with EMF generated class.
  */
@@ -40,14 +40,13 @@ public class NotifyServices {
 		this.services = services;
 	}
 	
+	/**
+	 * Gets the live, unordered list of notify services.
+	 */
 	public List<NotifyServiceData> getServices() {
 		return new ArrayList<NotifyServiceData>(services.values());
 	}
 	
-//	public void addService(NotifyServiceData data) {
-//		services.add(data);
-//	}
-
 	public NotifyServiceData findHostingService(String channelName) {
 		for (NotifyServiceData service : services.values()) {
 			ChannelData channelData = service.getChannelByName(channelName);

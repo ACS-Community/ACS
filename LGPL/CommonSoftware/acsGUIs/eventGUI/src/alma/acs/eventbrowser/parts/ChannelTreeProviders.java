@@ -26,20 +26,24 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
 import alma.acs.eventbrowser.model.ChannelConsumers;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.ChannelParticipantName;
 import alma.acs.eventbrowser.model.ChannelSuppliers;
-import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.model.MCStatistics;
 import alma.acs.eventbrowser.model.NotifyServiceData;
 import alma.acs.eventbrowser.model.NotifyServices;
@@ -59,12 +63,6 @@ public class ChannelTreeProviders {
 	
 	static class ChannelTreeContentProvider implements ITreeContentProvider {
 		
-		private final EventModel eventModel;
-
-		ChannelTreeContentProvider(EventModel eventModel) {
-			this.eventModel = eventModel;
-		}
-		
 		@Override
 		public void dispose() {
 		}
@@ -76,17 +74,17 @@ public class ChannelTreeProviders {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			NotifyServices allServices = eventModel.getNotifyServicesRoot();
-			return allServices.getServices().toArray();
+			if (inputElement instanceof NotifyServices) {
+				NotifyServices allServices = (NotifyServices) inputElement;
+				return allServices.getServices().toArray();
+			}
+			System.out.println("*** ChannelTreeContentProvider#getElements(Object) called with unexpected arg=" + inputElement.getClass().getName());
+			return null;
 		}
 
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof NotifyServices) {
-				// the invisible root node. Not sure if this gets called ever.
-				return ((NotifyServices)parentElement).getServices().toArray();
-			}
-			else if (parentElement instanceof NotifyServiceData) {
+			if (parentElement instanceof NotifyServiceData) {
 				// a notify service node
 				return ((NotifyServiceData)parentElement).getChannels().toArray();
 			}
@@ -132,66 +130,71 @@ public class ChannelTreeProviders {
 	
 	
 	/**
-	 * TODO: Inherit from StyledLabelProvider, see http://www.vogella.com/articles/EclipseJFaceTree/article.html 
+	 * See http://www.vogella.com/articles/EclipseJFaceTree/article.html 
 	 */
-	static class ChannelTreeLabelProvider extends LabelProvider /*implements IFontProvider*/ {
+	static class ChannelTreeLabelProvider extends StyledCellLabelProvider /* implements IFontProvider*/ {
 //		private FontRegistry registry = new FontRegistry();
 //		private final String systemFontSymbolicName = Display.getCurrent().getSystemFont().getFontData()[0].getName();
 		private final Map<String, Image> iconMap = new HashMap<String, Image>();
 		
+		private final Styler ERROR_HIGHLIGHT_STYLER;
+		
+		ChannelTreeLabelProvider() {
+			super();
+			ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+			String ERROR_HIGHLIGHT_STYLER_NAME = "custom_foreground_color";
+			colorRegistry.put(ERROR_HIGHLIGHT_STYLER_NAME, new RGB(255, 0, 0));
+			ERROR_HIGHLIGHT_STYLER = StyledString.createColorRegistryStyler(ERROR_HIGHLIGHT_STYLER_NAME, null);
+		}
+		
 		@Override
-		public String getText(Object element) {
-			if (element instanceof NotifyServices) {
-				// the invisible root node. Not sure if this gets called ever.
-				System.out.println("*** Root node NotifyServices requested in ChannelTreeProviders#getText");
-				return "Notify Services";
-			}
-			else if (element instanceof NotifyServiceData) {
+		public void update(ViewerCell cell) {
+			Object element = cell.getElement();
+			Image image = null;
+			StyledString text = new StyledString();
+
+			if (element instanceof NotifyServiceData) {
 				// a notify service node
-				return ((AbstractNotifyServiceElement)element).getName();
-			}
+				image = getImageFromFile("fldr_obj.gif");
+				NotifyServiceData notifyServiceData = (NotifyServiceData) element;
+				text.append(notifyServiceData.getName());
+				if (!notifyServiceData.isReachable()) {
+					text.append("  Unreachable!", ERROR_HIGHLIGHT_STYLER);
+				}
+			} 
 			else if (element instanceof ChannelData) {
 				// NC node
-				return ((AbstractNotifyServiceElement)element).getName();
-			}
-			else if (element instanceof MCStatistics) {
-				return ((MCStatistics)element).getStatistics();
-			}
-			else if (element instanceof ChannelParticipantName) {
-				return ((ChannelParticipantName)element).getName();
-			}
-			else {
-				return "unexpected tree node " + element.getClass();
-			}
-		}
-
-		@Override
-		public Image getImage(Object element) {
-			if (element instanceof NotifyServiceData) {
-				return getImageFromFile("fldr_obj.gif");
-			}
-			else if (element instanceof ChannelData) {
-				ChannelData channelData = (ChannelData)element;
+				ChannelData channelData = (ChannelData) element;
 				// both 'Channel' and 'Class' start with a 'C'...
 				if (channelData.isNewNc()) {
-					return getImageFromFile("newclass_wiz.gif");
+					image = getImageFromFile("newclass_wiz.gif");
 				}
 				else {
-					return getImageFromFile("class_obj.gif");
+					image = getImageFromFile("class_obj.gif");
+				}
+				text.append(channelData.getName());
+			}
+			else if (element instanceof MCStatistics) {
+				text.append(((MCStatistics)element).getStatistics());
+				if (element instanceof ChannelConsumers) {
+					// TODO find better icon
+					image = getImageFromFile("import_brkpts.gif");
+				}
+				else if (element instanceof ChannelSuppliers) {
+					// TODO find better icon
+					image = getImageFromFile("export_brkpts.gif");
 				}
 			}
-			else if (element instanceof ChannelConsumers) {
-				// TODO find better icon
-				return getImageFromFile("import_brkpts.gif");
+			else if (element instanceof ChannelParticipantName) {
+				text.append(((ChannelParticipantName)element).getName());
 			}
-			else if (element instanceof ChannelSuppliers) {
-				// TODO find better icon
-				return getImageFromFile("export_brkpts.gif");
-			}
-			
 			else {
-				return null;
+				text.append("unexpected tree node " + element.getClass(), ERROR_HIGHLIGHT_STYLER);
 			}
+			cell.setImage(image);
+			cell.setText(text.toString());
+			cell.setStyleRanges(text.getStyleRanges());
+			super.update(cell);
 		}
 
 		/**
@@ -208,7 +211,7 @@ public class ChannelTreeProviders {
 			}
 			return ret;
 		}
-		
+
 // Uncomment this to show new NCs in bold font. Probably the Class / new Class icons we have are better though.
 //		@Override
 //		public Font getFont(Object element) {
@@ -221,6 +224,5 @@ public class ChannelTreeProviders {
 //			return null;
 //		}
 	}
-
 
 }

@@ -29,6 +29,11 @@ import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 
+import alma.acscommon.ALARM_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.NOTIFICATION_FACTORY_NAME;
+
 
 /**
  * Encapsulates a Corba notify service for use in the model and in GUI elements.
@@ -40,24 +45,45 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	private final HashMap<String, ChannelData> channels;
 	private final EventChannelFactory efact;
 	private final String factoryName;
-	private final NotificationServiceMonitorControl mc;
-	
-	private final boolean isSystemNotifyService;
-	
 	
 	/**
+	 * The MC object does not provide a persistent reference and must therefore be udpated after service restart.
+	 * @see #updateMC(NotificationServiceMonitorControl)
+	 */
+	private volatile NotificationServiceMonitorControl mc;
+	
+
+	/**
+	 * Flag that tells us if the corba notify service referenced by this class is reachable or not.
+	 * In case of being unreachable, it may or may not exist.
+	 * This flag is independent of {@link #isRegistered}.
+	 */
+	private volatile boolean isReachable;
+	
+//	/**
+//	 * Flag that tells us if the corba notify service referenced by this class is registered in the naming service.
+//	 * This flag is independent of {@link #isReachable}.
+//	 * Note that a service that has died will typically still be registered in the naming service.
+//	 */
+//	private boolean isRegistered;
+	
+	/**
+	 * TODO: Get MC object in the ctor instead of passing it. 
+	 * Also get it again somehow after a service restart.
+	 * 
 	 * @param name The simplified display name
 	 * @param factoryName The full name (ID)
 	 * @param ecf Corba reference to the notify service
 	 * @param mc Corba reference to the monitor-control object (TAO extension)
 	 */
-	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc, boolean isSystemNotifyService) {
+	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc) {
 		super(name);
 		channels = new HashMap<String, ChannelData>(10);
 		efact = ecf;
 		this.factoryName = factoryName;
 		this.mc = mc;
-		this.isSystemNotifyService = isSystemNotifyService;
+//		this.isRegistered = true;
+		this.isReachable = true;
 	}
 	
 	public EventChannelFactory getEventChannelFactory() {
@@ -69,12 +95,39 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	}
 
 	/**
+	 * The MC object ref must be updated when a notify service was restarted.
+	 */
+	public void updateMC(NotificationServiceMonitorControl monitorControl) {
+		mc = monitorControl;
+	}
+
+
+	/**
 	 * TODO: Possibly use this information to graphically distinguish between the notify service instances
 	 * always started by ACS, and any additional service instances. 
 	 */
-	public boolean isSystemNotifyService() {
-		return isSystemNotifyService;
+	public boolean isStandardNotifyService() {
+		return (factoryName.equals(NOTIFICATION_FACTORY_NAME.value) ||
+				factoryName.equals(ALARM_NOTIFICATION_FACTORY_NAME.value) ||
+				factoryName.equals(ARCHIVE_NOTIFICATION_FACTORY_NAME.value) || 
+				factoryName.equals(LOGGING_NOTIFICATION_FACTORY_NAME.value) );
 	}
+
+	public boolean isReachable() {
+		return isReachable;
+	}
+
+	public void setReachable(boolean isReachable) {
+		this.isReachable = isReachable;
+	}
+
+//	public boolean isRegistered() {
+//		return isRegistered;
+//	}
+//
+//	public void setRegistered(boolean isRegistered) {
+//		this.isRegistered = isRegistered;
+//	}
 
 
 	public ArrayList<ChannelData> getChannels() {

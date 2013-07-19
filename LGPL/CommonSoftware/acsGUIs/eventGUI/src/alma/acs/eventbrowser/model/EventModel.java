@@ -29,10 +29,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.BindingIteratorHolder;
@@ -59,6 +61,9 @@ import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
+import alma.acs.concurrent.ThreadLoopRunner;
+import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
+import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
@@ -68,11 +73,7 @@ import alma.acs.nc.Helper;
 import alma.acs.nc.NCSubscriber;
 import alma.acs.util.AcsLocations;
 import alma.acscommon.ACS_NC_DOMAIN_ARCHIVING;
-import alma.acscommon.ALARM_NOTIFICATION_FACTORY_NAME;
-import alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME;
-import alma.acscommon.ARCHIVING_CHANNEL_NAME;
-import alma.acscommon.LOGGING_CHANNEL_XML_NAME;
-import alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME;
+import alma.acscommon.ACS_NC_DOMAIN_LOGGING;
 import alma.acscommon.NOTIFICATION_FACTORY_NAME;
 
 /**
@@ -97,15 +98,6 @@ public class EventModel {
 	 */
 	private final Map<String, NotifyServiceData> notifyServices;
 	
-	/**
-	 * This map is needed as long as ACS does not fully support the NC-domain based
-	 * mapping of NCs to services for the case of system NCs.
-	 * For the time being we only want to register the NC domain in the naming service,
-	 * but do not require the NC mapping information in the CDB. 
-	 * Thus we have to keep this hardcoded mapping information here.
-	 */
-	private final Map<String, String> systemNcToServiceIdMap;
-	
 	private AdvancedComponentClient acc;
 	private final ORB orb;
 	private final Logger m_logger;
@@ -116,6 +108,14 @@ public class EventModel {
 	private final ArrayBlockingQueue<EventData> equeue = new ArrayBlockingQueue<EventData>(50000);
 	private final ArrayBlockingQueue<ArchiveEventData> archQueue = new ArrayBlockingQueue<ArchiveEventData>(100000);
 
+	/**
+	 * Once a notify service was found to be unreachable, we skip it when updating the lists of services, channels etc, 
+	 * but we still have to check regularly if it has come alive again. 
+	 * This is done in a separate thread, using this class.
+	 */
+	private final ThreadLoopRunner unreachableServiceChecker;
+	
+	
 	/**
 	 * key = name of NotifyService or NC; value=int[] {consumerCount, supplierCount}
 	 */
@@ -153,11 +153,6 @@ public class EventModel {
 		try {
 			notifyServices = new HashMap<String, NotifyServiceData>(); 
 			
-			systemNcToServiceIdMap = new HashMap<String, String>();
-			// The system NCs and factories must be in sync with acsstartup :: acsNotifyService
-			systemNcToServiceIdMap.put(Helper.combineChannelAndDomainName(ARCHIVING_CHANNEL_NAME.value, ACS_NC_DOMAIN_ARCHIVING.value), ARCHIVE_NOTIFICATION_FACTORY_NAME.value);
-			systemNcToServiceIdMap.put(LOGGING_CHANNEL_XML_NAME.value, LOGGING_NOTIFICATION_FACTORY_NAME.value);
-			
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
 			consumerMap = new HashMap<String, AdminConsumer>();
 	
@@ -187,6 +182,36 @@ public class EventModel {
 			);
 			
 			discoverNotifyServicesAndChannels(true);
+			
+			
+			// Set up periodic asynchronous status checks for services that become unreachable
+			
+			CancelableRunnable unreachableServiceCheckerRunnable = new CancelableRunnable() {
+				@Override
+				public void run() {
+					for (NotifyServiceData service : new ArrayList<NotifyServiceData>(notifyServices.values())) {
+						if (shouldTerminate) {
+							break;
+						}
+						if (!service.isReachable()) {
+							boolean isReachableNow = false;
+							try {
+								isReachableNow = !service.getEventChannelFactory()._non_existent();
+							}
+							catch (Exception ex) {
+//								ex.printStackTrace();
+							}
+							finally {
+//								m_logger.info("Service " + service.getName() + " isReachableNow? " + isReachableNow);
+								service.setReachable(isReachableNow);
+							}
+						}
+					}
+				}
+			};
+			unreachableServiceChecker = new ThreadLoopRunner(unreachableServiceCheckerRunnable, 5, TimeUnit.SECONDS, cs.getThreadFactory(), m_logger, "UnreachableServiceChecker");
+			unreachableServiceChecker.setDelayMode(ScheduleDelayMode.FIXED_DELAY);
+			unreachableServiceChecker.runLoop();
 			
 			// todo: make this on-demand
 			getArchiveConsumer();
@@ -272,27 +297,52 @@ public class EventModel {
 	 */
 	private synchronized void discoverNotifyServices(Map<String, String> bindingMap) {
 		
-		ArrayList<String> newNotifyServiceNames = new ArrayList<String>(10); // used for local logging only
+		ArrayList<String> newNotifyServiceNames = new ArrayList<String>(); // used for local logging only
 		Set<String> oldServiceIds = new HashSet<String>(notifyServices.keySet()); // used to detect services that have disappeared
 		
 		for (String bindingName : bindingMap.keySet()) {
 			String bindingKind = bindingMap.get(bindingName);
 			try {
-				// Currently ACS does not use a unique 'kind' value when binding NotifyService instances (see email HSO to ACA 20121126).
-				// Adding this would save us unnecessary "_is_a" calls when discovering notify service instances.
-				// The fact that NotifyServices have an empty kind field we can use to skip those objects from the NS that are surely not NotifyServices.
-				if (bindingKind.isEmpty()) {
-					NameComponent nc_array[] = { new NameComponent(bindingName, "") };
+				// Currently ACS does not use a unique 'kind' value when binding NotifyService instances.
+				// However, since COMP-9260 (ICT-575) the notify service names are guaranteed to end in "NotifyEventChannelFactory".
+				// There are matching monitor & control objects that start with "MC_". 
+				// We use these naming conventions, but nonetheless call "_is_a" to double check and to catch the exception if the service is broken.
+				// The fact that NotifyServices have an empty kind field we use as an additional check 
+				// to skip NCs and other objects that have a non-empty kind field and by accident use the name ending of a notify service.
+				if (bindingName.endsWith(NOTIFICATION_FACTORY_NAME.value) && !bindingName.startsWith("MC_") && bindingKind.isEmpty()) {
+					NameComponent nc_array[] = { new NameComponent(bindingName, bindingKind) };
 
 					// Get the object reference from the naming service.
 					// We skip the manager for access to services, because since ACS 10.2 only specially registered services
 					// would be available in the get_service call and we want more flexibility for this special tool.
 					org.omg.CORBA.Object obj = nctx.resolve(nc_array);
+					
+					// Check if the object referenced from the naming service exists and is really a notify service
+					boolean isAliveNotifyService = false;
+					try {
+						isAliveNotifyService = ( obj != null && obj._is_a(org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper.id()) );
+					}
+					catch (Exception ex) {
+						// If the service has died, this will be a org.omg.CORBA.TRANSIENT
+						// TODO: Use retry/timeout config etc to not wait 10 seconds for this exception
+						m_logger.log(Level.SEVERE, "Notify service '" + bindingName + "' is not reachable.");
+					}
+					
+					oldServiceIds.remove(bindingName);
+					
+					NotifyServiceData notifyService = notifyServices.get(bindingName);
+					if (notifyService != null) {
+						boolean wasReachableBefore = notifyService.isReachable();
+						notifyService.setReachable(isAliveNotifyService);
+						if (notifyService.isReachable() && !wasReachableBefore) {
+							notifyService.updateMC(getMonitorControl(bindingName));
+						}
+					}
 
-					if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
+					if (isAliveNotifyService) {
 						// our current naming service entry maps indeed to a notify service
-						oldServiceIds.remove(bindingName);
 						if (!notifyServices.containsKey(bindingName)) {
+							// this service is new for us
 							EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
 							String displayName = simplifyNotifyServiceName(bindingName);
 							newNotifyServiceNames.add(displayName);
@@ -300,14 +350,10 @@ public class EventModel {
 							try {
 								nsmc = getMonitorControl(bindingName);
 							} catch (Exception ex) {
-								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + bindingName + "'.", ex);
+								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + bindingName + "'.");
+								throw ex;
 							}
-							boolean isSystemNotifyService = (
-									bindingName.equals(NOTIFICATION_FACTORY_NAME.value) ||
-									bindingName.equals(ALARM_NOTIFICATION_FACTORY_NAME.value) ||
-									bindingName.equals(ARCHIVE_NOTIFICATION_FACTORY_NAME.value) || 
-									bindingName.equals(LOGGING_NOTIFICATION_FACTORY_NAME.value) );
-							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc, isSystemNotifyService);
+							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc);
 							notifyServices.put(bindingName, notifyServiceData);
 						}
 						else {
@@ -316,7 +362,7 @@ public class EventModel {
 					}
 				}
 			} catch (Exception ex) {
-				m_logger.log(Level.WARNING, "Failed to check whether service '" + bindingName + "' is a NotifyService.", ex);
+				m_logger.log(Level.WARNING, "Failed to check / process service '" + bindingName + "'.", ex);
 			}
 		}
 		if (!newNotifyServiceNames.isEmpty()) {
@@ -324,10 +370,13 @@ public class EventModel {
 			m_logger.info("Found " + newNotifyServiceNames.size() + " notify service instances: " + StringUtils.join(newNotifyServiceNames, ' '));
 		}
 		if (!oldServiceIds.isEmpty()) {
+			// These notify services were no longer listed in the naming service. This means they were properly shut down, as opposed to messed up.
+			String msg = "Removed " + oldServiceIds.size() + " notify service instances: ";
 			for (String oldServiceId : oldServiceIds) {
 				notifyServices.remove(oldServiceId);
+				msg += simplifyNotifyServiceName(oldServiceId) + ' ';
 			}
-			m_logger.info("Removed " + oldServiceIds.size() + " notify service instances: " + StringUtils.join(oldServiceIds, ' '));
+			m_logger.info(msg);
 		}
 	}
 	
@@ -361,16 +410,8 @@ public class EventModel {
 			String bindingKind = bindingMap.get(bindingName);
 			if (bindingKind.equals(alma.acscommon.NC_KIND.value)) {
 				try {
-					String channelName = null;
-					String domainName = null;
-					// This is a hack, needed as long as the LoggingChannel doesn't get registered incl. domain name (see ICT-494)
-					if (bindingName.equals(LOGGING_CHANNEL_XML_NAME.value)) {
-						channelName = bindingName;
-					}
-					else {
-						channelName = Helper.extractChannelName(bindingName);
-						domainName = Helper.extractDomainName(bindingName);
-					}
+					String channelName = Helper.extractChannelName(bindingName);
+					String domainName = Helper.extractDomainName(bindingName);
 					
 					// Check if we already know this NC. 
 					ChannelData channelData = getNotifyServicesRoot().findChannel(channelName);
@@ -379,17 +420,11 @@ public class EventModel {
 						channelData.setIsNewNc(false);
 					}
 					else {
-						m_logger.fine("New NC " + channelName);
+						m_logger.fine("New NC '" + channelName + "'.");
 						// A new NC. This will happen at startup, and later as NCs get added.
-						String serviceId = null;
-						if (isSystemNc(bindingName)) {
-							serviceId = systemNcToServiceIdMap.get(bindingName);
-						}
-						else {
-							// Currently the NC-to-service mapping is based on conventions and CDB data, using the Helper class from jcontnc.
-							Helper notifyHelper = new Helper(channelName, domainName, cs, nctx);
-							serviceId = notifyHelper.getNotificationFactoryNameForChannel();
-						}
+						// The NC-to-service mapping is based on conventions and CDB data, implemented in the Helper class from jcontnc.
+						Helper notifyHelper = new Helper(channelName, domainName, cs, nctx);
+						String serviceId = notifyHelper.getNotificationFactoryNameForChannel();
 						NotifyServiceData service = notifyServices.get(serviceId);
 						if (service == null) {
 							// If we do not auto-discover services as part of refreshing NCs, then a new NC hosted in a new service
@@ -408,7 +443,8 @@ public class EventModel {
 							EventChannel nc = resolveNotificationChannel(bindingName);
 							ChannelData cdata = new ChannelData(nc, channelName, service);
 							cdata.setIsNewNc(true);
-							if (isSystemNc(bindingName)) {
+							// The system NCs for logging and monitor point archiving use custom event formats and cannot be subscribed to using the normal NCSubscriber.
+							if (domainName.equals(ACS_NC_DOMAIN_LOGGING.value) || domainName.equals(ACS_NC_DOMAIN_ARCHIVING.value) ) {
 								cdata.markUnsubscribable(); 
 							}
 							service.addChannel(channelName, cdata);
@@ -422,10 +458,15 @@ public class EventModel {
 		}
 		
 		
-		// In addition to querying the name service for NCs, we also query the notify services and their MC objects. 
-		// Some system NCs are currently not getting registered in the naming service, and we want to discover them too.
-		for (NotifyServiceData service : notifyServices.values()) {
+		// In addition to querying the name service for NCs, we also query the notify services and their MC objects directly,
+		// just in case there are non-standard NCs created by someone without proper naming service bindings. 
+		for (NotifyServiceData service : notifyServices.values()) { 
 
+			if (!service.isReachable()) {
+				// we skip services that were unreachable already before
+				continue;
+			}
+			
 			// First set the missing ncId on new ChannelData objects
 			if (!service.getNewChannels().isEmpty()) { // check first if we can avoid the get_all_channels() remote call
 				int[] ncIds = service.getEventChannelFactory().get_all_channels();
@@ -530,22 +571,6 @@ public class EventModel {
 	}
 	
 
-	
-	/**
-	 * The NCs "ArchivingChannel" and "LoggingChannel"
-	 * are internal to ACS and do not get flagged as "channels" kind in the naming service.
-	 * We must recognize them by their names.
-	 * 
-	 * @param bindingName The NC name, currently without domain name as discussed in COMP-9338.
-	 * @return
-	 */
-	private boolean isSystemNc(String bindingName) {
-		boolean ret = systemNcToServiceIdMap.containsKey(bindingName);
-//		m_logger.fine("isSystemNc: '" + bindingName + "', ret=" + ret);
-		return ret;
-	}
-
-
 	/**
 	 * Resolves the TAO monitor-control object that corresponds to the given notify service name.
 	 */
@@ -590,11 +615,16 @@ public class EventModel {
 	 */
 	public synchronized void getChannelStatistics() {
 		
-		// TODO:  Make service-discovery-independently-of-channels configurable (preferences etc),
+		// TODO:  Make 'service-discovery-independently-of-channels' configurable (preferences etc),
 		// to not ignore user-defined services that start late until they host NCs.
-		discoverNotifyServicesAndChannels(false);
+		discoverNotifyServicesAndChannels(true); // TODO perhaps restore to false, but at least implement handling of lost services and NCs also for the false case.
 		
 		for (NotifyServiceData nsData : notifyServices.values()) {
+			
+			if (!nsData.isReachable()) {
+				// we skip services that were unreachable already in the above discoverNotifyServicesAndChannels call
+				continue;
+			}
 			
 			// iterate over NCs
 			// TODO: Try to rely only on MC data and skip these 'get_all_consumeradmins' etc calls,
@@ -685,6 +715,10 @@ public class EventModel {
 			NameComponent[] t_NameSequence = { new NameComponent(bindingName, nameServiceKind) };
 			retValue = EventChannelHelper.narrow(nctx.resolve(t_NameSequence));
 		} 
+		catch (OBJECT_NOT_EXIST ex) {
+			m_logger.severe("The NC '" + bindingName + "' no longer exists, probably because its notify service was restarted. The naming service still lists this NC.");
+			throw new AcsJUnexpectedExceptionEx(ex);
+		}
 		catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
 			// No other suppliers have created the channel yet
 			m_logger.info("The '" + bindingName + "' channel has not been created yet.");
@@ -815,6 +849,7 @@ public class EventModel {
 		try {
 			closeAllConsumers();
 			closeArchiveConsumer();
+			unreachableServiceChecker.shutdown(10, TimeUnit.SECONDS);
 			acc.tearDown();
 		} catch (Exception ex) {
 			m_logger.log(Level.WARNING, "Error in EventModel#tearDown: ", ex);

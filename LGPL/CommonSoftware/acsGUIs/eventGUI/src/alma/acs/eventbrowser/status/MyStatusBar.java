@@ -119,6 +119,8 @@ public class MyStatusBar {
 			String flashMsg = msgWithTime.msg;
 			int timeSeconds = msgWithTime.timeSeconds;
 			slm.setMessage(flashMsg);
+			// TODO fix truncation of larger strings, e.g.
+//			slm.getControl().pack(true); ??
 			clearFlashJob();
 			msgRestoreJob = new Job(MyStatusBar.class.getSimpleName() + "RemoveFlashMessage") {
 				@Override

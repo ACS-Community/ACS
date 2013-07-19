@@ -50,7 +50,7 @@ public class E4LifecycleHandler {
 	@PostContextCreate
 	void postContextCreate(final IEventBroker eventBroker) {
 		// @TODO: Do something better than just logging the call, or remove the handler if it turns out we have nothing to do here...
-		System.out.println("@PostContextCreate called...");
+//		System.out.println("@PostContextCreate called...");
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class E4LifecycleHandler {
 	void preSave() {
 		try {
 			EventModel.getInstance().tearDown();
-			System.out.println("EventModel#tearDown called from E4LifecycleHandler#preSave()");
+//			System.out.println("EventModel#tearDown called from E4LifecycleHandler#preSave()");
 		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}

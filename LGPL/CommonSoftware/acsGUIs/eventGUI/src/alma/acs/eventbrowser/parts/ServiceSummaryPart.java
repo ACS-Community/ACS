@@ -40,7 +40,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -150,17 +149,7 @@ public class ServiceSummaryPart {
 		}
 	}
 	
-	private static class ServiceViewerComparator extends ViewerComparator {
 
-		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
-			String s1 = ((NotifyServiceData)e1).getName();
-			String s2 = ((NotifyServiceData)e2).getName();
-			return s1.compareTo(s2);
-		}
-	}
-
-	
 	@PostConstruct
 	public void createComposite(Composite parent, EMenuService menuService) {
 		try {

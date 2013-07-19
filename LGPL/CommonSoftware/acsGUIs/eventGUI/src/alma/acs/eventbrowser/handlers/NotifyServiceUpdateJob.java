@@ -21,6 +21,9 @@
 
 package alma.acs.eventbrowser.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -82,16 +85,29 @@ public class NotifyServiceUpdateJob extends Job {
 		iterationCount++;
 		
 		// the server call
+		final List<Exception> serverExHolder = new ArrayList<Exception>();
 		monitor.beginTask("serverupdate" + iterationCount, 100);
 		// TODO: break up server call into fine-grained calls, check "monitor.isCanceled()" in between calls.
-		eventModel.getChannelStatistics();
+		try {
+			eventModel.getChannelStatistics();
+		} catch (Exception ex) {
+			// could be CORBA.TRANSIENT etc
+			serverExHolder.add(ex);
+		}
 		monitor.worked(100);
 		
 		// success message and refresh for UI
 		sync.asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				statusLineWriter.flashMessage("Updated notify service data from the server(s)", 1); // todo: add elapsed time
+				if (serverExHolder.isEmpty()) {
+					statusLineWriter.flashMessage("Updated notify service data from the server(s)", 1); // todo: add elapsed time
+				}
+				else {
+					String msg = "Exception updating notify service data from the server(s): " + serverExHolder.get(0).getMessage();
+					System.out.println(msg); // todo use logger
+					statusLineWriter.flashMessage(msg, 20);
+				}
 				
 				// clients that use the UIEventTopic annotation are anyway called in the UI thread,
 				// but to be safe we publish the UI refresh event also from the UI thread...

@@ -38,7 +38,15 @@ public abstract class AbstractNotifyServiceElement {
 		return name;
 	}
 	
-	
+	/**
+	 * This method will be called by org.eclipse.jface.viewers.ViewerComparator.getLabel(Viewer, Object)
+	 * to sort services and channels in UI parts.
+	 */
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 	public abstract int getNumberConsumers();
 	
 	public abstract int getNumberSuppliers();
