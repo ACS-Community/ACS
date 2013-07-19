@@ -35,7 +35,7 @@ public class Manager implements java.io.Serializable {
     
     // comma separated array
     private String Startup = "";
-    private String ServiceComponents = "Log,LogFactory,NotifyEventChannelFactory,ArchivingChannel,LoggingChannel,InterfaceRepository,CDB,ACSLogSvc,PDB";
+    private String ServiceComponents = "Log,LogFactory,NotifyEventChannelFactory,InterfaceRepository,CDB,ACSLogSvc";
     private String ServiceDaemons = "";
     
     private LoggingConfig LoggingConfig;
@@ -47,7 +47,7 @@ public class Manager implements java.io.Serializable {
 
     private int ServerThreads = 10;
     
-    // deperecated
+    // deprecated
     private String Execute = "";
     private String CommandLine = "";
     private double HeartbeatTimeout = 2.0;
