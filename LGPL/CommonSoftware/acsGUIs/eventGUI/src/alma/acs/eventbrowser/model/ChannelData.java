@@ -153,15 +153,17 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 
 
 	/**
-	 * The returned nodes will show up children of the NC in the channel tree view.
+	 * The returned nodes will show up as children of the NC in the channel tree view.
 	 */
 	public ArrayList<MCStatistics> getStatistics() {
 		ArrayList<MCStatistics> statistics= new ArrayList<MCStatistics>(4);
-		statistics.add(ccon);
-		statistics.add(csup);
-		statistics.add(cqs);
-		if (cqs.getQueueSize() != 0) {// Only display "slowest consumers" for a non-zero queue 
-			statistics.add(slcon);
+		if (parent.isReachable()) {
+			statistics.add(ccon);
+			statistics.add(csup);
+			statistics.add(cqs);
+			if (cqs.getQueueSize() != 0) {// Only display "slowest consumers" for a non-zero queue 
+				statistics.add(slcon);
+			}
 		}
 		return statistics;
 	}

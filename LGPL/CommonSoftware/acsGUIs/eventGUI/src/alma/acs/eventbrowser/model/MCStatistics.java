@@ -60,7 +60,8 @@ public abstract class MCStatistics {
 				return notifyServiceData.getMc().get_statistic(mcStatFullName).data_union;
 			}
 			else {
-				// This is a shortcut to not wait for a TRANSIENT or TIMEOUT
+				// This is a shortcut to not wait for a TRANSIENT or TIMEOUT in case of an unreachable notify service.
+				// It produces an ugly log, and should never happen if we have enough "if (notifyService.isReachable())" checks higher up in the call stack.
 				throw new RuntimeException("Failed to get statistics from unreachable notify service " + notifyServiceData.getName());
 			}
 		} catch (InvalidName ex) {
@@ -74,7 +75,8 @@ public abstract class MCStatistics {
 			} catch (InvalidName ex2) {
 				// nothing else. It is enough to report on the first ex
 			}
-			// Todo: deal better with this error. Could be wrong channel name or an unsupported (misspelled etc) statistics name.
+			// Todo: deal better with this error. Could be wrong channel name (including NC missing after notify service restart)
+			// or an unsupported (misspelled etc) statistics name.
 			System.out.println("Invalid name: '" + mcStatFullName + 
 					"'; valid names are " + StringUtils.join(parent.getParent().getMc().get_statistic_names(), ' '));
 			mcStatFullName = null; // not sure if trying again next time will help, but let's try

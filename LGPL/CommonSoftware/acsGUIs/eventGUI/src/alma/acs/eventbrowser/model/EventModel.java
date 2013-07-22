@@ -184,8 +184,8 @@ public class EventModel {
 			discoverNotifyServicesAndChannels(true);
 			
 			
-			// Set up periodic asynchronous status checks for services that become unreachable
-			
+			// Set up periodic asynchronous status checks for services that become unreachable.
+			// TODO: Or should we check all services here, independently of the eventGUI refreshes selected by the user?
 			CancelableRunnable unreachableServiceCheckerRunnable = new CancelableRunnable() {
 				@Override
 				public void run() {
@@ -194,17 +194,7 @@ public class EventModel {
 							break;
 						}
 						if (!service.isReachable()) {
-							boolean isReachableNow = false;
-							try {
-								isReachableNow = !service.getEventChannelFactory()._non_existent();
-							}
-							catch (Exception ex) {
-//								ex.printStackTrace();
-							}
-							finally {
-//								m_logger.info("Service " + service.getName() + " isReachableNow? " + isReachableNow);
-								service.setReachable(isReachableNow);
-							}
+							updateReachability(service);
 						}
 					}
 				}
@@ -310,39 +300,35 @@ public class EventModel {
 				// The fact that NotifyServices have an empty kind field we use as an additional check 
 				// to skip NCs and other objects that have a non-empty kind field and by accident use the name ending of a notify service.
 				if (bindingName.endsWith(NOTIFICATION_FACTORY_NAME.value) && !bindingName.startsWith("MC_") && bindingKind.isEmpty()) {
-					NameComponent nc_array[] = { new NameComponent(bindingName, bindingKind) };
-
-					// Get the object reference from the naming service.
-					// We skip the manager for access to services, because since ACS 10.2 only specially registered services
-					// would be available in the get_service call and we want more flexibility for this special tool.
-					org.omg.CORBA.Object obj = nctx.resolve(nc_array);
-					
-					// Check if the object referenced from the naming service exists and is really a notify service
-					boolean isAliveNotifyService = false;
-					try {
-						isAliveNotifyService = ( obj != null && obj._is_a(org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper.id()) );
-					}
-					catch (Exception ex) {
-						// If the service has died, this will be a org.omg.CORBA.TRANSIENT
-						// TODO: Use retry/timeout config etc to not wait 10 seconds for this exception
-						m_logger.log(Level.SEVERE, "Notify service '" + bindingName + "' is not reachable.");
-					}
-					
-					oldServiceIds.remove(bindingName);
 					
 					NotifyServiceData notifyService = notifyServices.get(bindingName);
-					if (notifyService != null) {
-						boolean wasReachableBefore = notifyService.isReachable();
-						notifyService.setReachable(isAliveNotifyService);
-						if (notifyService.isReachable() && !wasReachableBefore) {
-							notifyService.updateMC(getMonitorControl(bindingName));
-						}
-					}
 
-					if (isAliveNotifyService) {
-						// our current naming service entry maps indeed to a notify service
-						if (!notifyServices.containsKey(bindingName)) {
-							// this service is new for us
+					if (notifyService != null) {
+						// We know this notify service already. Just check if it's still reachable (otherwise set flag).
+						// Note that we do not check here if previously unreachable services have become reachable in the meantime,
+						// because that would slow down a GUI refresh too much. (For that we have 'unreachableServiceChecker' running.)
+						if (notifyService.isReachable()) {
+							updateReachability(notifyService);
+						}
+						
+						// Reachable or not, we got this notify service again from the naming service, which means it was not properly removed.
+						oldServiceIds.remove(bindingName);
+						
+						// Todo: Should we update the notify service reference, just in case it was relocated to another machine?
+					}
+					else {
+						// Found a new notify service in the naming service
+						NameComponent nc_array[] = { new NameComponent(bindingName, bindingKind) };
+	
+						// Get the object reference from the naming service.
+						// We skip the manager for access to services, because since ACS 10.2 only specially registered services
+						// would be available in the get_service call and we want more flexibility for this special tool.
+						org.omg.CORBA.Object obj = nctx.resolve(nc_array);
+	
+						// Check if the object referenced from the naming service exists and is really a notify service
+						if (isNotifyServiceReachable(obj, bindingName)) {
+							// Our current naming service entry maps indeed to a notify service, which is even reachable.
+							// We must add it to the 'notifyServices' map
 							EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
 							String displayName = simplifyNotifyServiceName(bindingName);
 							newNotifyServiceNames.add(displayName);
@@ -356,15 +342,14 @@ public class EventModel {
 							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc);
 							notifyServices.put(bindingName, notifyServiceData);
 						}
-						else {
-							// Todo: Should we always update the map, in case the corba objects have been relocated with a change of reference?
-						}
 					}
 				}
 			} catch (Exception ex) {
 				m_logger.log(Level.WARNING, "Failed to check / process service '" + bindingName + "'.", ex);
 			}
 		}
+		
+		// Log changes for this round of service discovery
 		if (!newNotifyServiceNames.isEmpty()) {
 			Collections.sort(newNotifyServiceNames);
 			m_logger.info("Found " + newNotifyServiceNames.size() + " notify service instances: " + StringUtils.join(newNotifyServiceNames, ' '));
@@ -380,6 +365,51 @@ public class EventModel {
 		}
 	}
 	
+	
+	/**
+	 * Checks if the given corba object exists and is really a notify service
+	 * @param notifyServiceObj
+	 * @param notifyServiceBindingName  The naming service's binding name for our notify service 
+	 */
+	private boolean isNotifyServiceReachable(org.omg.CORBA.Object notifyServiceObj, String notifyServiceBindingName) {
+		
+		boolean ret = false;
+		try {
+			ret = ( notifyServiceObj != null && notifyServiceObj._is_a(EventChannelFactoryHelper.id()) );
+		}
+		catch (Exception ex) {
+			// If the service has died, this will be a org.omg.CORBA.TRANSIENT
+			// TODO: Use retry/timeout config etc to not wait 10 seconds for this exception
+			m_logger.log(Level.SEVERE, "Notify service '" + notifyServiceBindingName + "' is not reachable.");
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Checks if the given NotifyServiceData references a reachable notify service,
+	 * updates the MC reference if the service is reachable now but was not reachable last time,
+	 * and updates the "isReachable" flag.
+	 * @param notifyService The notify service "proxy" to check. 
+	 */
+	private void updateReachability(NotifyServiceData notifyService) {
+		
+		boolean wasReachableBefore = notifyService.isReachable();
+		boolean isReachableNow = isNotifyServiceReachable(notifyService.getEventChannelFactory(), notifyService.getFactoryName());
+		
+		if (isReachableNow && !wasReachableBefore) {
+			try {
+				notifyService.updateMC(getMonitorControl(notifyService.getFactoryName()));
+			} catch (Exception ex) {
+				// This is unexpected, because if the notify service itself is reachable, then we expect also the associated MC object to be reachable.
+				// We count this as "not reachable" in total. 
+				isReachableNow = false;
+			}
+		}
+		
+		notifyService.setReachable(isReachableNow);
+	}
+
 	
 	/**
 	 * Checks the naming service for NC instances and stores / updates them under the matching service from {@link #notifyServices}.
