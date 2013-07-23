@@ -21,6 +21,8 @@
  */
 package com.cosylab.logging.engine.ACS;
 
+import java.util.Random;
+
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
@@ -39,7 +41,7 @@ import alma.Logging.XmlLogRecordSeqHelper;
  */
 public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
-//	protected static final Random random = new Random(System.currentTimeMillis());
+	protected static final Random random = new Random(System.currentTimeMillis());
 
 	protected StructuredProxyPushSupplier structuredProxyPushSupplier = null;
 	protected boolean isConnected = false;
@@ -131,10 +133,8 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		ProxySupplier proxySupplier = null;
 		try
 		{
-//			String randomizedClientName = createRandomizedClientName("jlog");
-
 			proxySupplier =
-				acsra.getConsumerAdmin().obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyId, "jlog");
+				acsra.getConsumerAdmin().obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyId, createUniqueClientName());
 		}
 		catch (Exception e)
 		{
@@ -282,15 +282,21 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	}
 	
 
-//	/**
-//	 * Copied from jcontnc :: Helper, which we cannot use here because of build order issues.
-//	 */
-//	public static synchronized String createRandomizedClientName(String clientName) {
-//		StringBuffer clientNameSB = new StringBuffer(clientName);
-//		clientNameSB.append('-');
-//		clientNameSB.append(String.format("%05d", random.nextInt(Integer.MAX_VALUE)));
-//		return clientNameSB.toString();
-//	}
-//
+	/**
+	 * Copied from jcontnc :: Helper, which we cannot use here because of build order issues.
+	 * <p>
+	 * We need to have a unique client name, even though every jlog instance uses its own consumer admin object. 
+	 * This is different from jcontnc's NCSubscriber class who started with this unique name business.
+	 * The reason is the TAO MC API "ConsumerNames" statistics used by the eventGUI. It returns 
+	 * "factoryName/channelName/supplierProxyName", which leaves out the admin object, 
+	 * and returns this string only once even if this same path applies to several proxies. 
+	 */
+	public static synchronized String createUniqueClientName() {
+		StringBuffer clientNameSB = new StringBuffer("jlog");
+		clientNameSB.append('-');
+		clientNameSB.append(String.format("%05d", random.nextInt(Integer.MAX_VALUE)));
+		return clientNameSB.toString();
+	}
+
 }
 
