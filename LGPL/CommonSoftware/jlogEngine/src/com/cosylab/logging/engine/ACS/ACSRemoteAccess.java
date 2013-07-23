@@ -28,8 +28,6 @@ import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
-import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
-import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
 import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.ConstraintInfo;
@@ -43,6 +41,11 @@ import org.omg.PortableServer.POAManager;
 
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
+
+import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
+import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelHelper;
 
 import si.ijs.maci.Manager;
 
@@ -125,16 +128,19 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		return null;
 	}
 	
+	/**
+	 * Creates a consumer admin on the server, that is used only by this jlog instance.
+	 * @see #consumerAdmin
+	 */
 	private boolean createConsumerAdmin() {
 		listenersDispatcher.publishReport("Creating Consumer Admin...");
 		try {
-			//consumerAdmin = eventChannel.default_consumer_admin();
-	
-			// msekoran
 			InterFilterGroupOperator ifgo = org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator.OR_OP;
 			org.omg.CORBA.IntHolder adminID = new org.omg.CORBA.IntHolder();
 			
-			consumerAdmin = eventChannel.new_for_consumers(ifgo, adminID);
+			consumerAdmin = ConsumerAdminHelper.narrow(
+					eventChannel.new_for_consumers(ifgo, adminID)
+				);
 		} catch (Exception e) {
 			listenersDispatcher.publishReport("Exception occurred when creating Consumer Admin.");
 			System.out.println("Exception in ACSRemoteAccess::createConsumerAdmin(): " + e);
@@ -378,7 +384,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			
 			org.omg.CORBA.Object obj = namingContext.resolve(nc);
 	
-			eventChannel = org.omg.CosNotifyChannelAdmin.EventChannelHelper.narrow(obj);
+			eventChannel = EventChannelHelper.narrow(obj);
 			
 		} catch (Exception e) {
 			listenersDispatcher.publishReport("Exception occurred when obtaining channel \"" + channelWithDomain + "\" from the Notify Service.");

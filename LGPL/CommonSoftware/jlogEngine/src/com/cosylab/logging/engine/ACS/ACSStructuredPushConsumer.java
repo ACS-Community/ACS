@@ -21,7 +21,6 @@
  */
 package com.cosylab.logging.engine.ACS;
 
-import org.omg.CORBA.Any;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
@@ -29,13 +28,8 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
-import alma.ACSLoggingLog.LogBinaryRecord;
-import alma.ACSLoggingLog.LogBinaryRecordHelper;
 import alma.Logging.XmlLogRecord;
 import alma.Logging.XmlLogRecordSeqHelper;
-import alma.Logging.XmlLogRecordSeqHolder;
-
-import com.cosylab.logging.engine.FiltersVector;
 
 /**
  * ACSStructuredPushConsumer gets logs from the NC 
@@ -45,8 +39,8 @@ import com.cosylab.logging.engine.FiltersVector;
  */
 public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
+//	protected static final Random random = new Random(System.currentTimeMillis());
 
-	
 	protected StructuredProxyPushSupplier structuredProxyPushSupplier = null;
 	protected boolean isConnected = false;
 	protected boolean isEventSetup = false;
@@ -137,8 +131,10 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		ProxySupplier proxySupplier = null;
 		try
 		{
+//			String randomizedClientName = createRandomizedClientName("jlog");
+
 			proxySupplier =
-				acsra.getConsumerAdmin().obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyId);
+				acsra.getConsumerAdmin().obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyId, "jlog");
 		}
 		catch (Exception e)
 		{
@@ -286,5 +282,15 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	}
 	
 
+//	/**
+//	 * Copied from jcontnc :: Helper, which we cannot use here because of build order issues.
+//	 */
+//	public static synchronized String createRandomizedClientName(String clientName) {
+//		StringBuffer clientNameSB = new StringBuffer(clientName);
+//		clientNameSB.append('-');
+//		clientNameSB.append(String.format("%05d", random.nextInt(Integer.MAX_VALUE)));
+//		return clientNameSB.toString();
+//	}
+//
 }
 
