@@ -23,6 +23,7 @@ package alma.acs.eventbrowser.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
@@ -43,8 +44,12 @@ import alma.acscommon.NOTIFICATION_FACTORY_NAME;
 public class NotifyServiceData extends AbstractNotifyServiceElement implements Comparable<NotifyServiceData> {
 
 	private final HashMap<String, ChannelData> channels;
-	private final EventChannelFactory efact;
 	private final String factoryName;
+	
+	/**
+	 * The notify service reference. May be null for a while if the service is unreachable when the eventGUI is started.
+	 */
+	private EventChannelFactory efact;
 	
 	/**
 	 * The MC object does not provide a persistent reference and must therefore be udpated after service restart.
@@ -67,6 +72,10 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 //	 */
 //	private boolean isRegistered;
 	
+	private final Logger logger;
+	
+	
+	
 	/**
 	 * TODO: Get MC object in the ctor instead of passing it. 
 	 * Also get it again somehow after a service restart.
@@ -76,7 +85,7 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	 * @param ecf Corba reference to the notify service
 	 * @param mc Corba reference to the monitor-control object (TAO extension)
 	 */
-	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc) {
+	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc, Logger logger) {
 		super(name);
 		channels = new HashMap<String, ChannelData>(10);
 		efact = ecf;
@@ -84,14 +93,31 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 		this.mc = mc;
 //		this.isRegistered = true;
 		this.isReachable = true;
+		this.logger = logger;
 	}
 	
+	/**
+	 * @return The corba ref to the notify service, or <code>null</code> if the eventGUI has never found
+	 * 			this service to be reachable and thus has not obtained a correctly narrowed reference yet. 
+	 */
 	public EventChannelFactory getEventChannelFactory() {
 		return efact;
 	}
 	
 	public NotificationServiceMonitorControl getMc() {
 		return mc;
+	}
+
+	/**
+	 * The notify service ref must be updated once after the notify service becomes available, after initial unreachability.
+	 */
+	public void updateEventChannelFactory(EventChannelFactory efact) {
+		if (this.efact == null) {
+			this.efact = efact;
+		}
+		else {
+			logger.warning("Ignoring call to 'updateEventChannelFactory' for notify service '" + getFactoryName() + "' because we already have that corba ref!");
+		}
 	}
 
 	/**

@@ -59,6 +59,7 @@ import org.omg.DynamicAny.DynAnyFactoryHelper;
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.concurrent.ThreadLoopRunner;
@@ -111,7 +112,7 @@ public class EventModel {
 	/**
 	 * Once a notify service was found to be unreachable, we skip it when updating the lists of services, channels etc, 
 	 * but we still have to check regularly if it has come alive again. 
-	 * This is done in a separate thread, using this class.
+	 * It is done in a separate thread, using this ThreadLoopRunner.
 	 */
 	private final ThreadLoopRunner unreachableServiceChecker;
 	
@@ -181,7 +182,7 @@ public class EventModel {
 					acc.getAcsManagerProxy().get_service("NameService", false)
 			);
 			
-			discoverNotifyServicesAndChannels(true);
+			discoverNotifyServicesAndChannels();
 			
 			
 			// Set up periodic asynchronous status checks for services that become unreachable.
@@ -242,15 +243,8 @@ public class EventModel {
 	/**
 	 * Discovers services and bindings, retrieving only once the list of all
 	 * bindings from the naming service.
-	 * 
-	 * @param discoverServicesIndependentlyOfChannels
-	 *            If <code>true</code>, notify services will be searched for as
-	 *            an extra step, which will discover them early even when they
-	 *            don't host NCs.
-	 *            If <code>false</code>, notify services will only be discovered on demand 
-	 *            when we find one of their channels.
 	 */
-	private synchronized void discoverNotifyServicesAndChannels(boolean discoverServicesIndependentlyOfChannels) {
+	private synchronized void discoverNotifyServicesAndChannels() {
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
 		
@@ -264,9 +258,7 @@ public class EventModel {
 		}
 		
 		// notify services
-		if (discoverServicesIndependentlyOfChannels) {
-			discoverNotifyServices(bindingMap);
-		}
+		discoverNotifyServices(bindingMap);
 		
 		// channels (NCs)
 		discoverChannels(bindingMap);
@@ -277,10 +269,7 @@ public class EventModel {
 	 * This update does not include the NCs owned by the notify services, so that {@link #discoverChannels(Binding[])} 
 	 * should be called after this. 
 	 * <p>
-	 * Currently this discovery is "expensive" because a lot of other corba objects found in the naming service must be queried 
-	 * to check if they are notify service instances. See code comment about dedicated 'kind' marker.
-	 * <p>
-	 * This method is broken out from {@link #discoverNotifyServicesAndChannels(boolean)} to make it more readable. 
+	 * This method is broken out from {@link #discoverNotifyServicesAndChannels()} to make it more readable. 
 	 * It should be called only from there, to keep services and NCs aligned.
 	 * 
 	 * @param bindingMap Name service bindings in the form key = bindingName, value = bindingKind
@@ -318,30 +307,29 @@ public class EventModel {
 					}
 					else {
 						// Found a new notify service in the naming service
-						NameComponent nc_array[] = { new NameComponent(bindingName, bindingKind) };
-	
-						// Get the object reference from the naming service.
 						// We skip the manager for access to services, because since ACS 10.2 only specially registered services
 						// would be available in the get_service call and we want more flexibility for this special tool.
-						org.omg.CORBA.Object obj = nctx.resolve(nc_array);
+						org.omg.CORBA.Object obj = resolveNotifyService(bindingName);
 	
-						// Check if the object referenced from the naming service exists and is really a notify service
-						if (isNotifyServiceReachable(obj, bindingName)) {
-							// Our current naming service entry maps indeed to a notify service, which is even reachable.
-							// We must add it to the 'notifyServices' map
-							EventChannelFactory efact = EventChannelFactoryHelper.narrow(obj);
-							String displayName = simplifyNotifyServiceName(bindingName);
-							newNotifyServiceNames.add(displayName);
-							NotificationServiceMonitorControl nsmc = null;
+						// We create a new NotifyServiceData object even if the service is currently unreachable,
+						// so that this problem becomes visible.
+						boolean isNewServiceReachable = isNotifyServiceReachable(obj, bindingName);
+						String displayName = simplifyNotifyServiceName(bindingName);
+						newNotifyServiceNames.add(displayName);
+						EventChannelFactory efact = null;
+						NotificationServiceMonitorControl nsmc = null;
+						if (isNewServiceReachable) {
+							efact = EventChannelFactoryHelper.narrow(obj);
 							try {
-								nsmc = getMonitorControl(bindingName);
+								nsmc = resolveMonitorControl(bindingName);
 							} catch (Exception ex) {
 								m_logger.log(Level.WARNING, "Failed to obtain the MonitorControl object for service '" + bindingName + "'.");
 								throw ex;
 							}
-							NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc);
-							notifyServices.put(bindingName, notifyServiceData);
 						}
+						NotifyServiceData notifyServiceData = new NotifyServiceData(displayName, bindingName, efact, nsmc, m_logger);
+						notifyServiceData.setReachable(isNewServiceReachable);
+						notifyServices.put(bindingName, notifyServiceData);
 					}
 				}
 			} catch (Exception ex) {
@@ -367,22 +355,34 @@ public class EventModel {
 	
 	
 	/**
-	 * Checks if the given corba object exists and is really a notify service
+	 * Checks if the given corba object exists and is really a notify service.
 	 * @param notifyServiceObj
-	 * @param notifyServiceBindingName  The naming service's binding name for our notify service 
+	 * @param notifyServiceBindingName  The naming service's binding name for our notify service (used only for a log message).
+	 * @return <code>true</code> if the notify service exists.
+	 * @throws AcsJIllegalArgumentEx if notifyServiceObj is reachable but not a <code>CosNotifyChannelAdmin/EventChannelFactory</code>,
+	 *                               which should never happen because of the filtering we do on the name service bindings.
 	 */
-	private boolean isNotifyServiceReachable(org.omg.CORBA.Object notifyServiceObj, String notifyServiceBindingName) {
+	private boolean isNotifyServiceReachable(org.omg.CORBA.Object notifyServiceObj, String notifyServiceBindingName) throws AcsJIllegalArgumentEx {
 		
 		boolean ret = false;
-		try {
-			ret = ( notifyServiceObj != null && notifyServiceObj._is_a(EventChannelFactoryHelper.id()) );
+		if (notifyServiceObj != null) {
+			try {
+				if (notifyServiceObj._is_a(EventChannelFactoryHelper.id())) {
+					ret = true;
+				}
+				else {
+					AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+					ex.setVariable("notifyServiceObj");
+					ex.setValue("Type=" + notifyServiceObj.getClass().getName());
+					throw ex;
+				}
+			}
+			catch (Exception ex) {
+				// If the service has died, this will be a org.omg.CORBA.TRANSIENT
+				// TODO: Use retry/timeout config etc to not wait 10 seconds for this exception
+				m_logger.log(Level.SEVERE, "Notify service '" + notifyServiceBindingName + "' is not reachable.");
+			}
 		}
-		catch (Exception ex) {
-			// If the service has died, this will be a org.omg.CORBA.TRANSIENT
-			// TODO: Use retry/timeout config etc to not wait 10 seconds for this exception
-			m_logger.log(Level.SEVERE, "Notify service '" + notifyServiceBindingName + "' is not reachable.");
-		}
-		
 		return ret;
 	}
 	
@@ -395,11 +395,26 @@ public class EventModel {
 	private void updateReachability(NotifyServiceData notifyService) {
 		
 		boolean wasReachableBefore = notifyService.isReachable();
-		boolean isReachableNow = isNotifyServiceReachable(notifyService.getEventChannelFactory(), notifyService.getFactoryName());
+		boolean isReachableNow = false;
+		try {
+			org.omg.CORBA.Object serviceRef = notifyService.getEventChannelFactory();
+			if (serviceRef == null) {
+				// This happens if the notify service was unreachable when the eventGUI was started
+				serviceRef = resolveNotifyService(notifyService.getFactoryName());
+			}
+			isReachableNow = isNotifyServiceReachable(serviceRef, notifyService.getFactoryName());
+			if (isReachableNow && notifyService.getEventChannelFactory() == null) {
+				notifyService.updateEventChannelFactory(EventChannelFactoryHelper.narrow(serviceRef));
+			}
+		} catch (AcsJIllegalArgumentEx ex) {
+			// This ex cannot happen... the corba object wrapped by NotifyServiceData surely is a notify service. 
+		} catch (Exception ex) {
+			
+		}
 		
 		if (isReachableNow && !wasReachableBefore) {
 			try {
-				notifyService.updateMC(getMonitorControl(notifyService.getFactoryName()));
+				notifyService.updateMC(resolveMonitorControl(notifyService.getFactoryName()));
 			} catch (Exception ex) {
 				// This is unexpected, because if the notify service itself is reachable, then we expect also the associated MC object to be reachable.
 				// We count this as "not reachable" in total. 
@@ -457,13 +472,15 @@ public class EventModel {
 						String serviceId = notifyHelper.getNotificationFactoryNameForChannel();
 						NotifyServiceData service = notifyServices.get(serviceId);
 						if (service == null) {
-							// If we do not auto-discover services as part of refreshing NCs, then a new NC hosted in a new service
-							// brings us here. We try to find the new service.
+							// This should never happen because since ACS 12.1 we always auto-discover services as part of refreshing NCs.
+							// We read the service and NC bindings only once from the naming service, which avoids timing issues with NCs visible now
+							// even though their notify service would not have been registered before. 
+							// Just in case we leave this code here, but log it as a warning.
 							discoverNotifyServices(bindingMap);
 							service = notifyServices.get(serviceId);
 							String msg = "Unknown notify service '" + simplifyNotifyServiceName(serviceId) + "' required for NC '" + channelName + "'. ";
 							if (service != null) {
-								m_logger.info(msg + "Added the new service.");
+								m_logger.warning(msg + "Added the new service.");
 							}
 							else {
 								m_logger.warning(msg + "Failed to add the new service.");
@@ -602,9 +619,25 @@ public class EventModel {
 	
 
 	/**
-	 * Resolves the TAO monitor-control object that corresponds to the given notify service name.
+	 * Resolves the notify service that is bound in the naming service with the given name.
+	 * <p>
+	 * This method may get called when the notify service is not reachable. 
+	 * Therefore we do not return the narrowed object, since the narrow operation makes a remote "is_a" call
+	 * that in this case would take very long.
 	 */
-	private NotificationServiceMonitorControl getMonitorControl(String notifyBindingName) 
+	private org.omg.CORBA.Object resolveNotifyService(String notifyBindingName) 
+			throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, NotFound {
+
+		NameComponent[] ncomp = new NameComponent[1];
+		ncomp[0] = new NameComponent(notifyBindingName, "");
+
+		return nctx.resolve(ncomp);
+	}
+
+	/**
+	 * Resolves the TAO monitor-control object that is bound in the naming service with the given name.
+	 */
+	private NotificationServiceMonitorControl resolveMonitorControl(String notifyBindingName) 
 			throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, NotFound {
 
 		String name = "MC_" + notifyBindingName;
@@ -645,9 +678,7 @@ public class EventModel {
 	 */
 	public synchronized void getChannelStatistics() {
 		
-		// TODO:  Make 'service-discovery-independently-of-channels' configurable (preferences etc),
-		// to not ignore user-defined services that start late until they host NCs.
-		discoverNotifyServicesAndChannels(true); // TODO perhaps restore to false, but at least implement handling of lost services and NCs also for the false case.
+		discoverNotifyServicesAndChannels();
 		
 		for (NotifyServiceData nsData : notifyServices.values()) {
 			
