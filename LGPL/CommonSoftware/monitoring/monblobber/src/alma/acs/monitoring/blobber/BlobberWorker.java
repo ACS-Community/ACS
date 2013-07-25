@@ -18,26 +18,22 @@
  */
 package alma.acs.monitoring.blobber;
 
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Hashtable;
-
-import java.io.IOException;
-
-import java.text.DecimalFormat;
 
 import org.exolab.castor.xml.XMLException;
-
 import org.omg.CORBA.Any;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
@@ -89,9 +85,7 @@ import alma.TMCDB.uLongSeqBlobDataSeqHelper;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.acs.monitoring.blobber.CollectorList.BlobData;
 import alma.acs.monitoring.blobber.CollectorList.CollectorData;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
@@ -317,6 +311,8 @@ public class BlobberWorker extends CancelableRunnable {
      */
     public List<AnyDataContainer> extractData(Any inSequence, String propertyName) {
         List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
+        
+        
         // doubleBlobDataSeq
         // Data coming from simple property
         // For this case, the index, i.e., the position inside the sequence is 0
@@ -327,6 +323,8 @@ public class BlobberWorker extends CancelableRunnable {
                 populateContainerNumeric(container, blobData.time, blobData.value, 0);
             outList.add(container);
         }
+        
+        
         // doubleSeqBlobDataSeq
         // Data coming from composite property
         // For this case, the index, i.e., the position inside the sequence varies
@@ -355,6 +353,8 @@ public class BlobberWorker extends CancelableRunnable {
                 }
             }
         }
+        
+        
         // floatBlobDataSeq
         // Data coming from simple property
         // For this case, the index, i.e., the position inside the sequence is 0
@@ -366,6 +366,8 @@ public class BlobberWorker extends CancelableRunnable {
 	        populateContainerNumeric(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
         // floatSeqBlobDataSeq
         // Data coming from composite property
         // For this case, the index, i.e., the position inside the sequence varies
@@ -394,6 +396,8 @@ public class BlobberWorker extends CancelableRunnable {
 	        }
             }
         }
+        
+        
 	// longBlobDataSeq
         else if (inSequence.type().equal(longBlobDataSeqHelper.type())) {
 	    longBlobData[] blobDataArray = longBlobDataSeqHelper.extract(inSequence);
@@ -403,6 +407,8 @@ public class BlobberWorker extends CancelableRunnable {
 	        populateContainerNumeric(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
 	// longSeqBlobDataSeq
         else if (inSequence.type().equal(longSeqBlobDataSeqHelper.type())) {
 	    longSeqBlobData[] blobDataMatrix = longSeqBlobDataSeqHelper.extract(inSequence);
@@ -429,6 +435,8 @@ public class BlobberWorker extends CancelableRunnable {
 		}
             }
 	}
+        
+        
 	// uLongBlobDataSeq
 	else if (inSequence.type().equal(uLongBlobDataSeqHelper.type())) {
 	    uLongBlobData[] blobDataArray = uLongBlobDataSeqHelper.extract(inSequence);
@@ -438,6 +446,8 @@ public class BlobberWorker extends CancelableRunnable {
 		populateContainerNumeric(container, blobData.time, blobData.value, index);
 	    outList.add(container);
 	} 
+        
+        
 	// uLongSeqBlobDataSeq
 	else if (inSequence.type().equal(uLongSeqBlobDataSeqHelper.type())) {
 	    uLongSeqBlobData[] blobDataMatrix = uLongSeqBlobDataSeqHelper.extract(inSequence);
@@ -464,6 +474,8 @@ public class BlobberWorker extends CancelableRunnable {
                 }
 	    }
 	} 
+        
+        
         // longLongBlobDataSeq
 	else if (inSequence.type().equal(longLongBlobDataSeqHelper.type())) {
 	    longLongBlobData[] blobDataArray = longLongBlobDataSeqHelper.extract(inSequence);
@@ -473,6 +485,8 @@ public class BlobberWorker extends CancelableRunnable {
 		populateContainerNumeric(container, blobData.time, blobData.value, index);
             outList.add(container);
         } 
+        
+        
         // longLongSeqBlobDataSeq
 	else if (inSequence.type().equal(longLongSeqBlobDataSeqHelper.type())) {
 	    longLongSeqBlobData[] blobDataMatrix = longLongSeqBlobDataSeqHelper.extract(inSequence);
@@ -499,6 +513,8 @@ public class BlobberWorker extends CancelableRunnable {
                 }
             }
         }
+        
+        
 	// uLongLongBlobDataSeq
         else if (inSequence.type().equal(uLongLongBlobDataSeqHelper.type())) {
 	    uLongLongBlobData[] blobDataArray = uLongLongBlobDataSeqHelper.extract(inSequence);
@@ -508,6 +524,8 @@ public class BlobberWorker extends CancelableRunnable {
 		populateContainerNumeric(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
 	// uLongLongSeqBlobDataSeq
 	else if (inSequence.type().equal(uLongLongSeqBlobDataSeqHelper.type())) {
 	    uLongLongSeqBlobData[] blobDataMatrix = uLongLongSeqBlobDataSeqHelper.extract(inSequence);
@@ -533,6 +551,8 @@ public class BlobberWorker extends CancelableRunnable {
                 }
             }
         }
+        
+        
 	// booleanBlobDataSeq
 	else if (inSequence.type().equal(booleanBlobDataSeqHelper.type())) {
 	    booleanBlobData[] blobDataArray = booleanBlobDataSeqHelper.extract(inSequence);
@@ -542,6 +562,8 @@ public class BlobberWorker extends CancelableRunnable {
 	        populateContainerBoolean(container, blobData.time, blobData.value, index);
 	    outList.add(container);
 	}
+        
+        
 	// booleanSeqBlobDataSeq
 	else if (inSequence.type().equal(booleanSeqBlobDataSeqHelper.type())) {
 	    booleanSeqBlobData[] blobDataMatrix = booleanSeqBlobDataSeqHelper.extract(inSequence);
@@ -567,6 +589,8 @@ public class BlobberWorker extends CancelableRunnable {
                 }
 	    }
 	}
+        
+        
         // patternBlobDataSeq
 	else if (inSequence.type().equal(patternBlobDataSeqHelper.type())) {
 	    patternBlobData[] blobDataArray = patternBlobDataSeqHelper.extract(inSequence);
@@ -576,6 +600,8 @@ public class BlobberWorker extends CancelableRunnable {
 	        populateContainerObject(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
 	// stringBlobDataSeq
         else if (inSequence.type().equal(stringBlobDataSeqHelper.type())) {
 	    stringBlobData[] blobDataArray = stringBlobDataSeqHelper.extract(inSequence);
@@ -585,6 +611,8 @@ public class BlobberWorker extends CancelableRunnable {
 	        populateContainerObject(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
 	// stringSeqBlobDataSeq
         else if (inSequence.type().equal(stringSeqBlobDataSeqHelper.type())) {
 	    stringSeqBlobData[] blobDataMatrix = stringSeqBlobDataSeqHelper.extract(inSequence);
@@ -610,6 +638,8 @@ public class BlobberWorker extends CancelableRunnable {
                 }
             }
         }
+        
+        
 	// enumBlobDataSeq
         else if (inSequence.type().equal(enumBlobDataSeqHelper.type())) {
 	    enumBlobData[] blobDataArray = enumBlobDataSeqHelper.extract(inSequence);
@@ -619,6 +649,8 @@ public class BlobberWorker extends CancelableRunnable {
 		populateContainerObject(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
 	// anyBlobDataSeq
         else if (inSequence.type().equal(anyBlobDataSeqHelper.type())) {
 	    anyBlobData[] blobDataArray = anyBlobDataSeqHelper.extract(inSequence);
@@ -628,10 +660,14 @@ public class BlobberWorker extends CancelableRunnable {
 		populateContainerObject(container, blobData.time, blobData.value, index);
             outList.add(container);
         }
+        
+        
         else {
 	    myLogger.warning("Unknown CORBA data type received by blobber");
             throw new IllegalStateException("Unknown CORBA data type received, " + inSequence.type());
         }
+        
+        
         // As the final step we remove the last vertical bar and add end of line
         // to the clob.
         for (java.util.Iterator<AnyDataContainer> i = outList.iterator(); i.hasNext();) {
@@ -900,6 +936,7 @@ public class BlobberWorker extends CancelableRunnable {
 				// Get the corba ref for the current collector
 				MonitorCollectorOperations collector = getMonitorCollector(collectorData.getCollectorId());
 
+				// The data retrieval, processing, and storage happens here
 				insertCount += harvestCollector(collectorData, collector);
 
 				stopWatchCurrentCollector.logLapTime("process monitoring data from collector " + collectorData.getCollectorId());
@@ -951,8 +988,8 @@ public class BlobberWorker extends CancelableRunnable {
      *   <li> Uses {@link MonitorDAO} to control DB transactions and store the data.
      *   <li> Uses a total of one DB transaction (for the data from all properties of all devices, which comes in many {@link MonitorDataBlock}s).
      * </ul>
-     * @param collectorData
-     * @param collector
+     * @param collectorData The collector ID / name, used for logging and stats.
+     * @param collector Reference to the collector component
      * @return Number of attempted or successful DB inserts, 
      *         i.e., calls to {@link alma.archive.tmcdb.DAO.MonitorDAO#store(alma.archive.tmcdb.DAO.ComponentData)}.
      * @throws Exception
@@ -1023,16 +1060,14 @@ public class BlobberWorker extends CancelableRunnable {
 
 							if (blobData.startTime == 0) {
 								/*
-								 * This construction is left from the time when several accesses to the collector was
+								 * This construction is left from the time when several accesses to the collector were 
 								 * made before storing. The construction is left in case this is activated again.
 								 */
 								blobData.startTime = block.startTime;
 							}
 
 							if (blobData.dataList.size() > 0) {
-								if (blobData.dataList.get(0) instanceof BigDecimal) {
-									blobData.statistics = calculateStatistics(blobData.dataList);
-								}
+								blobData.calculateStatistics();
 
 								insertCount++;
 								storeData(blobData);
@@ -1116,41 +1151,6 @@ public class BlobberWorker extends CancelableRunnable {
 			throw firstExInDAOStore;
 		}
 	}
-
-    private ComponentStatistics calculateStatistics(List<Object> inDataList) {
-        ComponentStatistics outStatistics = new ComponentStatistics();
-        outStatistics.min = (BigDecimal) inDataList.get(0);
-        outStatistics.max = (BigDecimal) inDataList.get(0);
-        outStatistics.mean = new BigDecimal(0);
-        for (Object blobData : inDataList) {
-
-            BigDecimal value = (BigDecimal) blobData;
-            if (value.compareTo(outStatistics.min) == -1) {
-                outStatistics.min = value;
-            } else if (value.compareTo(outStatistics.max) == 1) {
-                outStatistics.max = value;
-            }
-            outStatistics.mean = outStatistics.mean.add(value);
-        }
-
-        outStatistics.mean = outStatistics.mean.divide(new BigDecimal(
-                inDataList.size()), MathContext.DECIMAL32);
-        outStatistics.stdDev = new BigDecimal(-1);
-        if (inDataList.size() > 1) {
-            outStatistics.stdDev = new BigDecimal(0);
-            for (Object blobData : inDataList) {
-                BigDecimal value = (BigDecimal) blobData;
-                outStatistics.stdDev = outStatistics.stdDev.add(value.subtract(
-                        outStatistics.mean).pow(2));
-            }
-            outStatistics.stdDev = new BigDecimal(
-                    Math.sqrt(outStatistics.stdDev.divide(
-                            new BigDecimal(inDataList.size() - 1),
-                            MathContext.DECIMAL32).doubleValue()));
-        }
-
-        return outStatistics;
-    }
 
     
     

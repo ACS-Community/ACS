@@ -18,15 +18,12 @@
  */
 package alma.acs.monitoring.blobber;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.collections.list.CursorableLinkedList;
 
 import alma.MonitorArchiver.CollectorListStatus;
-import alma.acs.monitoring.DAO.ComponentData;
 
 /**
  * This class encapsulates a <code>{@link CursorableLinkedList}&lt;{@link CollectorData}&gt;</code>,
@@ -67,7 +64,7 @@ public class CollectorList {
     }
 
     /**
-     * @param inData  The object that identifies a collector and holds its data.
+     * @param inData  The object that identifies a collector.
      * @return ADDED if the CollectorData object was added to this list, or KNOWN if it was already in the list.
      */
     public CollectorListStatus add(CollectorData inData) {
@@ -165,49 +162,36 @@ public class CollectorList {
         }
     }
     
-    /**
-     * This class associates a Collector-ID with data:
-     * <ul>
-     *   <li>The {@link BlobData} for all properties watched by the collector.
-     *   <li>The last successful update time.
-     * </ul>.
-     * The collector-ID is the name of the collector component deployed in the container
-     * from whose components we want to collect monitoring data.
-     */
-    protected static class CollectorData {
+	/**
+	 * This class encapsulates meta data for a monitor collector: the Collector-ID, and the last successful access time
+	 * for that collector.
+	 * <p>
+	 * The collector-ID is the name of the collector component deployed in the container from whose components we want
+	 * to collect monitoring data.
+	 */
+	protected static class CollectorData
+	{
 
-        private final String collectorId;
+		private final String collectorId;
 
-        public CollectorData(String inCollectorId) {
-            if (inCollectorId == null) {
-                throw new IllegalArgumentException("inCollectorId cannot be null.");
-            }
-            this.collectorId = inCollectorId;
-        }
+		public CollectorData(String inCollectorId) {
+			if (inCollectorId == null) {
+				throw new IllegalArgumentException("inCollectorId cannot be null.");
+			}
+			this.collectorId = inCollectorId;
+		}
 
-        /**
-         * @return The collector ID for a given container, which is the name of the collector component deployed in that container.
-         */
-        public String getCollectorId() {
-        	return this.collectorId;
-        }
-        
+		/**
+		 * @return The collector ID for a given container, which is the name of the collector component deployed in that
+		 *         container.
+		 */
+		public String getCollectorId() {
+			return this.collectorId;
+		}
 
 		@Override
 		public boolean equals(Object inObject) {
-			if (this == inObject)
-				return true;
-			if (inObject == null)
-				return false;
-			boolean outResult = false;
-			try {
-				CollectorData data = (CollectorData) inObject;
-				if (collectorId.equals(data.collectorId)) {
-					outResult = true;
-				}
-			} catch (Exception e) {
-			}
-			return outResult;
+			return (collectorId.equals(((CollectorData) inObject).collectorId));
 		}
 
 		/**
@@ -225,16 +209,6 @@ public class CollectorList {
 		 */
 		void setLastSuccessfulAccessTime(long currentTimeMillis) {
 		}
-
 	}
-
-    protected static class BlobData extends ComponentData {
-        public List<Object> dataList = new ArrayList<Object>();
-
-        public void reset() {
-            super.reset();
-            dataList.clear();
-        }
-    }
 
 }

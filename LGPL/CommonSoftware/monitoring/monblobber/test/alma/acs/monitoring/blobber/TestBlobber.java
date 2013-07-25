@@ -12,7 +12,6 @@ import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.acs.monitoring.blobber.CollectorList.BlobData;
 import alma.acs.monitoring.blobber.TestBlobberWorker.TestBlobberPlugin;
 
 

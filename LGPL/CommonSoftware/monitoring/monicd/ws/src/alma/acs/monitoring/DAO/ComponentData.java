@@ -18,6 +18,10 @@
  */
 package alma.acs.monitoring.DAO;
 
+/**
+ * Holds the "clobbed" monitor data of one baci property (monitor point)
+ * along with meta data, collected over a time interval. 
+ */
 public class ComponentData {
     public String componentName;
 

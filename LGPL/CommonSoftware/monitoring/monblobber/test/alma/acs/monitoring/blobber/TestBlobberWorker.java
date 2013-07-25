@@ -8,7 +8,6 @@ import alma.TMCDB.MonitorCollectorOperations;
 import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.acs.monitoring.blobber.CollectorList.BlobData;
 
 /**
  * BlobberWorker mock.
