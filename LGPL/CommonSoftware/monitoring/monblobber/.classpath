@@ -35,5 +35,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-math-2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

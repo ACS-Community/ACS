@@ -1,50 +1,48 @@
 package alma.acs.monitoring.blobber;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.omg.CORBA.Any;
 
+import alma.MonitorArchiver.CollectorListStatus;
 import alma.TMCDB.MonitorBlob;
 import alma.TMCDB.MonitorDataBlock;
+import alma.TMCDB.anyBlobData;
+import alma.TMCDB.anyBlobDataSeqHelper;
 import alma.TMCDB.booleanSeqBlobData;
-import alma.TMCDB.booleanSeqBlobDataSeqHelper;
 import alma.TMCDB.doubleBlobData;
 import alma.TMCDB.doubleBlobDataSeqHelper;
 import alma.TMCDB.doubleSeqBlobData;
 import alma.TMCDB.doubleSeqBlobDataSeqHelper;
+import alma.TMCDB.enumBlobData;
+import alma.TMCDB.enumBlobDataSeqHelper;
 import alma.TMCDB.floatBlobData;
 import alma.TMCDB.floatBlobDataSeqHelper;
 import alma.TMCDB.floatSeqBlobData;
 import alma.TMCDB.floatSeqBlobDataSeqHelper;
 import alma.TMCDB.longBlobData;
 import alma.TMCDB.longBlobDataSeqHelper;
-import alma.TMCDB.longSeqBlobData;
-import alma.TMCDB.longSeqBlobDataSeqHelper;
 import alma.TMCDB.longLongBlobData;
 import alma.TMCDB.longLongBlobDataSeqHelper;
 import alma.TMCDB.longLongSeqBlobData;
 import alma.TMCDB.longLongSeqBlobDataSeqHelper;
-import alma.TMCDB.uLongLongBlobData;
-import alma.TMCDB.uLongLongBlobDataSeqHelper;
-import alma.TMCDB.uLongLongSeqBlobData;
-import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
+import alma.TMCDB.longSeqBlobData;
+import alma.TMCDB.longSeqBlobDataSeqHelper;
 import alma.TMCDB.patternBlobData;
 import alma.TMCDB.patternBlobDataSeqHelper;
 import alma.TMCDB.stringBlobData;
 import alma.TMCDB.stringBlobDataSeqHelper;
 import alma.TMCDB.stringSeqBlobData;
 import alma.TMCDB.stringSeqBlobDataSeqHelper;
-import alma.TMCDB.enumBlobData;
-import alma.TMCDB.enumBlobDataSeqHelper;
-import alma.TMCDB.anyBlobData;
-import alma.TMCDB.anyBlobDataSeqHelper;
-import alma.MonitorArchiver.CollectorListStatus;
+import alma.TMCDB.uLongLongBlobData;
+import alma.TMCDB.uLongLongBlobDataSeqHelper;
+import alma.TMCDB.uLongLongSeqBlobData;
+import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.monitoring.DAO.ComponentData;
-
 import alma.acs.monitoring.blobber.BlobberWorker.AnyDataContainer;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Tests the BlobberImpl and BlobberWorker classes, using local instances instead of running these
@@ -1186,18 +1184,6 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
         checkStatistics(data);
     }
 
-    /**
-     * Test of loadMonitorPointName and getMpResolver methods
-     *
-     * @author pmerino@alma.cl
-     */
-    public void testLoadMonitorPointName() {
-        TestBlobberWorker worker = getTestWorker();
-        assertNotNull(worker);
-        worker.loadMonitorPointName();
-        assertNotNull(worker.getMpResolver());
-    }
-    
     /**
      * Test of extractData method
      * doubleBlobDataSeq

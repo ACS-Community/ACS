@@ -23,6 +23,8 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math.stat.descriptive.SummaryStatistics;
+
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 
@@ -53,34 +55,19 @@ class BlobData extends ComponentData
 	 */
 	void calculateStatistics() {
 		if (dataList.size() > 0 && dataList.get(0) instanceof BigDecimal) {
-			ComponentStatistics outStatistics = new ComponentStatistics();
-			outStatistics.min = (BigDecimal) dataList.get(0);
-			outStatistics.max = (BigDecimal) dataList.get(0);
-			outStatistics.mean = new BigDecimal(0);
+			
+			SummaryStatistics stat = new SummaryStatistics();
+			
 			for (Object blobData : dataList) {
-	
 				BigDecimal value = (BigDecimal) blobData;
-				if (value.compareTo(outStatistics.min) == -1) {
-					outStatistics.min = value;
-				} else if (value.compareTo(outStatistics.max) == 1) {
-					outStatistics.max = value;
-				}
-				outStatistics.mean = outStatistics.mean.add(value);
+				stat.addValue(value.doubleValue());
 			}
-	
-			outStatistics.mean = outStatistics.mean.divide(new BigDecimal(dataList.size()), MathContext.DECIMAL32);
-			outStatistics.stdDev = new BigDecimal(-1);
-			if (dataList.size() > 1) {
-				outStatistics.stdDev = new BigDecimal(0);
-				for (Object blobData : dataList) {
-					BigDecimal value = (BigDecimal) blobData;
-					outStatistics.stdDev = outStatistics.stdDev.add(value.subtract(outStatistics.mean).pow(2));
-				}
-				outStatistics.stdDev = new BigDecimal(Math.sqrt(outStatistics.stdDev.divide(
-						new BigDecimal(dataList.size() - 1), MathContext.DECIMAL32).doubleValue()));
-			}
-	
-			this.statistics = outStatistics;
+
+			statistics = new ComponentStatistics();
+			statistics.min = BigDecimal.valueOf(stat.getMin());
+			statistics.max = BigDecimal.valueOf(stat.getMax());
+			statistics.mean = BigDecimal.valueOf(stat.getMean());
+			statistics.stdDev = BigDecimal.valueOf(stat.getStandardDeviation());
 		}
 	}
 
