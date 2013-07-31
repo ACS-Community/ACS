@@ -28,5 +28,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/MonitorErr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

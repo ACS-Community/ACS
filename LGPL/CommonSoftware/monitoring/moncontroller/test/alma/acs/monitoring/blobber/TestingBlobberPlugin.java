@@ -88,4 +88,10 @@ public class TestingBlobberPlugin extends BlobberPlugin {
 		return null;
 	}
 
+	@Override
+	public MonitorPointExpert getMonitorPointExpert() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
