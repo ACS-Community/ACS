@@ -266,18 +266,18 @@ install_doc:
 
 install_config:
 	@echo " . . . installing user account configuration files ACSROOT/config"
-	-@gtar -cf - --exclude="CVS" -C ../config .acs  | gtar -xf - -C $(VLTTOP)/config; \
+	-@gtar -cf - --exclude=".svn" -C ../config .acs  | gtar -xf - -C $(VLTTOP)/config; \
 	         chmod -R ug+rw $(VLTTOP)/config/.acs;
 	@echo " . . . copying rc.d configuration files for DHCP"
-	-@gtar -cf - --exclude="CVS" -C ../config rc.d  | gtar -xf - -C $(VLTTOP)/config; \
+	-@gtar -cf - --exclude=".svn" -C ../config rc.d  | gtar -xf - -C $(VLTTOP)/config; \
 	         chmod -R ug+rw $(VLTTOP)/config/rc.d;
 
 install_cdb:
 	@echo " . . . copying default CDB in ACSDATA"
-	-@gtar -cf - --exclude="CVS" -C ../config defaultCDB  | gtar -xf - -C $(ACSDATA)/config; \
+	-@gtar -cf - --exclude=".svn" -C ../config defaultCDB  | gtar -xf - -C $(ACSDATA)/config; \
 	         chmod -R ug+rw $(ACSDATA)/config/defaultCDB;
 	@echo " . . . copying demo CDB in ACSDATA"
-	-@gtar -cf - --exclude="CVS" -C ../config demoCDB  | gtar -xf - -C $(ACSDATA)/config; \
+	-@gtar -cf - --exclude=".svn" -C ../config demoCDB  | gtar -xf - -C $(ACSDATA)/config; \
 	         chmod -R ug+rw $(ACSDATA)/config/demoCDB;
 
 install_svc_conf:
