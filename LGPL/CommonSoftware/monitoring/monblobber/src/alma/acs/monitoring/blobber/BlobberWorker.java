@@ -18,20 +18,16 @@
  */
 package alma.acs.monitoring.blobber;
 
-import java.math.BigDecimal;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.omg.CORBA.Any;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -41,44 +37,6 @@ import alma.TMCDB.MonitorCollector;
 import alma.TMCDB.MonitorCollectorHelper;
 import alma.TMCDB.MonitorCollectorOperations;
 import alma.TMCDB.MonitorDataBlock;
-import alma.TMCDB.anyBlobData;
-import alma.TMCDB.anyBlobDataSeqHelper;
-import alma.TMCDB.booleanBlobData;
-import alma.TMCDB.booleanBlobDataSeqHelper;
-import alma.TMCDB.booleanSeqBlobData;
-import alma.TMCDB.booleanSeqBlobDataSeqHelper;
-import alma.TMCDB.doubleBlobData;
-import alma.TMCDB.doubleBlobDataSeqHelper;
-import alma.TMCDB.doubleSeqBlobData;
-import alma.TMCDB.doubleSeqBlobDataSeqHelper;
-import alma.TMCDB.enumBlobData;
-import alma.TMCDB.enumBlobDataSeqHelper;
-import alma.TMCDB.floatBlobData;
-import alma.TMCDB.floatBlobDataSeqHelper;
-import alma.TMCDB.floatSeqBlobData;
-import alma.TMCDB.floatSeqBlobDataSeqHelper;
-import alma.TMCDB.longBlobData;
-import alma.TMCDB.longBlobDataSeqHelper;
-import alma.TMCDB.longLongBlobData;
-import alma.TMCDB.longLongBlobDataSeqHelper;
-import alma.TMCDB.longLongSeqBlobData;
-import alma.TMCDB.longLongSeqBlobDataSeqHelper;
-import alma.TMCDB.longSeqBlobData;
-import alma.TMCDB.longSeqBlobDataSeqHelper;
-import alma.TMCDB.patternBlobData;
-import alma.TMCDB.patternBlobDataSeqHelper;
-import alma.TMCDB.stringBlobData;
-import alma.TMCDB.stringBlobDataSeqHelper;
-import alma.TMCDB.stringSeqBlobData;
-import alma.TMCDB.stringSeqBlobDataSeqHelper;
-import alma.TMCDB.uLongBlobData;
-import alma.TMCDB.uLongBlobDataSeqHelper;
-import alma.TMCDB.uLongLongBlobData;
-import alma.TMCDB.uLongLongBlobDataSeqHelper;
-import alma.TMCDB.uLongLongSeqBlobData;
-import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
-import alma.TMCDB.uLongSeqBlobData;
-import alma.TMCDB.uLongSeqBlobDataSeqHelper;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
@@ -155,7 +113,9 @@ public class BlobberWorker extends CancelableRunnable {
     private final HashMap<String, MonitorCollectorOperations> collectorName2ComponentReference = 
     												new HashMap<String, MonitorCollectorOperations>();
 
-    private MonitorPointExpert monitorPointExpert;
+    private final MonitorPointExpert monitorPointExpert;
+
+	private final AnyExtractor anyExtractor;
 
     /**
      * @param inContainerServices used for logging and to get references to the collector components.
@@ -170,7 +130,8 @@ public class BlobberWorker extends CancelableRunnable {
         initWorker();
         this.myMonitorDAOList = blobberPlugin.getMonitorDAOs();
 //        this.myWatchDog = blobberPlugin.getBlobberWatchDog();
-        monitorPointExpert = new MonitorPointExpert(myLogger);
+        monitorPointExpert = blobberPlugin.getMonitorPointExpert();
+        anyExtractor = new AnyExtractor(myLogger, monitorPointExpert);
     }
 
     protected void initWorker() {
@@ -285,551 +246,6 @@ public class BlobberWorker extends CancelableRunnable {
         return myCollectorList.contains(inCollectorComponentId);
     }
 
-    /**
-     * HSO TODO: IDL struct MonitorBlob should be defined without using Corba Any (performance!).
-     * Rather use separate fields for the possible data types.
-     * 
-     * @param inSequence The sequence of data from one property (monitor point) from one collector inverval. 
-     * @param propertyName
-     * @return
-     */
-	List<AnyDataContainer> extractData(Any inSequence, String propertyName) {
-		List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
-
-		// doubleBlobDataSeq
-		// Data coming from simple property
-		// For this case, the index, i.e., the position inside the sequence is 0
-		if (inSequence.type().equal(doubleBlobDataSeqHelper.type())) {
-			doubleBlobData[] blobDataArray = doubleBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			for (doubleBlobData blobData : blobDataArray) {
-				populateContainerNumeric(container, blobData.time, blobData.value, 0);
-			}
-			outList.add(container);
-		}
-
-		// doubleSeqBlobDataSeq
-		// Data coming from composite property
-		// For this case, the index, i.e., the position inside the sequence varies
-		else if (inSequence.type().equal(doubleSeqBlobDataSeqHelper.type())) {
-			doubleSeqBlobData[] blobDataMatrix = doubleSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (doubleSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
-					outList.add(container);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (doubleSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Number blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerNumeric(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// floatBlobDataSeq
-		// Data coming from simple property
-		// For this case, the index, i.e., the position inside the sequence is 0
-		else if (inSequence.type().equal(floatBlobDataSeqHelper.type())) {
-			floatBlobData[] blobDataArray = floatBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (floatBlobData blobData : blobDataArray)
-				populateContainerNumeric(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// floatSeqBlobDataSeq
-		// Data coming from composite property
-		// For this case, the index, i.e., the position inside the sequence varies
-		else if (inSequence.type().equal(floatSeqBlobDataSeqHelper.type())) {
-			floatSeqBlobData[] blobDataMatrix = floatSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (floatSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
-					outList.add(container);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (floatSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Number blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerNumeric(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// longBlobDataSeq
-		else if (inSequence.type().equal(longBlobDataSeqHelper.type())) {
-			longBlobData[] blobDataArray = longBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (longBlobData blobData : blobDataArray)
-				populateContainerNumeric(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// longSeqBlobDataSeq
-		else if (inSequence.type().equal(longSeqBlobDataSeqHelper.type())) {
-			longSeqBlobData[] blobDataMatrix = longSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (longSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
-					outList.add(container);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (longSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Number blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerNumeric(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// uLongBlobDataSeq
-		else if (inSequence.type().equal(uLongBlobDataSeqHelper.type())) {
-			uLongBlobData[] blobDataArray = uLongBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (uLongBlobData blobData : blobDataArray)
-				populateContainerNumeric(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// uLongSeqBlobDataSeq
-		else if (inSequence.type().equal(uLongSeqBlobDataSeqHelper.type())) {
-			uLongSeqBlobData[] blobDataMatrix = uLongSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (uLongSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
-					outList.add(container);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (uLongSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Number blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerNumeric(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// longLongBlobDataSeq
-		else if (inSequence.type().equal(longLongBlobDataSeqHelper.type())) {
-			longLongBlobData[] blobDataArray = longLongBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (longLongBlobData blobData : blobDataArray)
-				populateContainerNumeric(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// longLongSeqBlobDataSeq
-		else if (inSequence.type().equal(longLongSeqBlobDataSeqHelper.type())) {
-			longLongSeqBlobData[] blobDataMatrix = longLongSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (longLongSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
-					outList.add(container);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (longLongSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Number blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerNumeric(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// uLongLongBlobDataSeq
-		else if (inSequence.type().equal(uLongLongBlobDataSeqHelper.type())) {
-			uLongLongBlobData[] blobDataArray = uLongLongBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (uLongLongBlobData blobData : blobDataArray)
-				populateContainerNumeric(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// uLongLongSeqBlobDataSeq
-		else if (inSequence.type().equal(uLongLongSeqBlobDataSeqHelper.type())) {
-			uLongLongSeqBlobData[] blobDataMatrix = uLongLongSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (uLongLongSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerNumericArray(container, blobDataArray.time, blobDataArray.value, index);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (uLongLongSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Number blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerNumeric(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// booleanBlobDataSeq
-		else if (inSequence.type().equal(booleanBlobDataSeqHelper.type())) {
-			booleanBlobData[] blobDataArray = booleanBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (booleanBlobData blobData : blobDataArray)
-				populateContainerBoolean(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// booleanSeqBlobDataSeq
-		else if (inSequence.type().equal(booleanSeqBlobDataSeqHelper.type())) {
-			booleanSeqBlobData[] blobDataMatrix = booleanSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (booleanSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerBooleanArray(container, blobDataArray.time, blobDataArray.value, index);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (booleanSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Boolean blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerBoolean(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// patternBlobDataSeq
-		else if (inSequence.type().equal(patternBlobDataSeqHelper.type())) {
-			patternBlobData[] blobDataArray = patternBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (patternBlobData blobData : blobDataArray)
-				populateContainerObject(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// stringBlobDataSeq
-		else if (inSequence.type().equal(stringBlobDataSeqHelper.type())) {
-			stringBlobData[] blobDataArray = stringBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (stringBlobData blobData : blobDataArray)
-				populateContainerObject(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// stringSeqBlobDataSeq
-		else if (inSequence.type().equal(stringSeqBlobDataSeqHelper.type())) {
-			stringSeqBlobData[] blobDataMatrix = stringSeqBlobDataSeqHelper.extract(inSequence);
-			if (blobDataMatrix != null && blobDataMatrix.length > 0) {
-				// If the monitor point is unique
-				if (monitorPointExpert.isUniqueMonitorPoint(propertyName)) {
-					AnyDataContainer container = new AnyDataContainer();
-					int index = 0;
-					for (stringSeqBlobData blobDataArray : blobDataMatrix)
-						populateContainerObjectArray(container, blobDataArray.time, blobDataArray.value, index);
-				}
-				// If the monitor point is not unique
-				else {
-					populateList(outList, blobDataMatrix[0].value.length);
-					for (stringSeqBlobData blobDataArray : blobDataMatrix) {
-						int index = 0;
-						for (Object blobData : blobDataArray.value) {
-							AnyDataContainer container = outList.get(index);
-							populateContainerObject(container, blobDataArray.time, blobData, index);
-							index++;
-						}
-					}
-				}
-			}
-		}
-
-		// enumBlobDataSeq
-		else if (inSequence.type().equal(enumBlobDataSeqHelper.type())) {
-			enumBlobData[] blobDataArray = enumBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (enumBlobData blobData : blobDataArray)
-				populateContainerObject(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		// anyBlobDataSeq
-		else if (inSequence.type().equal(anyBlobDataSeqHelper.type())) {
-			anyBlobData[] blobDataArray = anyBlobDataSeqHelper.extract(inSequence);
-			AnyDataContainer container = new AnyDataContainer();
-			int index = 0;
-			for (anyBlobData blobData : blobDataArray)
-				populateContainerObject(container, blobData.time, blobData.value, index);
-			outList.add(container);
-		}
-
-		else {
-			myLogger.warning("Unknown CORBA data type received by blobber");
-			throw new IllegalStateException("Unknown CORBA data type received, " + inSequence.type());
-		}
-
-		// As the final step we remove the last vertical bar and add end of line
-		// to the clob.
-		for (java.util.Iterator<AnyDataContainer> i = outList.iterator(); i.hasNext();) {
-			AnyDataContainer container = i.next();
-			if (container.clobBuilder.length() == 0) {
-				/*
-				 * If the container is of zero length we remove it from the returned list.
-				 */
-				i.remove();
-			} else {
-				container.clobBuilder.setLength(container.clobBuilder.length() - 1);
-				container.clobBuilder.append("\n");
-			}
-		}
-		return outList;
-	}
-
-	// For float[]
-	public void populateContainerNumericArray(AnyDataContainer inContainer, long inTime, float[] inData, int inIndex) {
-		String numbersString = "";
-		String numberString = "";
-		DecimalFormat df = new DecimalFormat("###.#########");
-		if (inData != null && inData.length > 0) {
-			for (int i = 0; i < inData.length; i++) {
-				numberString = df.format(inData[i]);
-				if (i < inData.length - 1)
-					numbersString += (new BigDecimal(numberString)) + " ";
-				else
-					numbersString += (new BigDecimal(numberString));
-			}
-		}
-
-		inContainer.dataList.add(numbersString);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numbersString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	// For double[]
-	public void populateContainerNumericArray(AnyDataContainer inContainer, long inTime, double[] inData, int inIndex) {
-		String numbersString = "";
-		String numberString = "";
-		DecimalFormat df = new DecimalFormat("###.#########");
-		if (inData != null && inData.length > 0) {
-			for (int i = 0; i < inData.length; i++) {
-				numberString = df.format(inData[i]);
-				if (i < inData.length - 1)
-					numbersString += (new BigDecimal(numberString)) + " ";
-				else
-					numbersString += (new BigDecimal(numberString));
-			}
-		}
-
-		inContainer.dataList.add(numbersString);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numbersString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	// For int[]
-	public void populateContainerNumericArray(AnyDataContainer inContainer, long inTime, int[] inData, int inIndex) {
-		String numbersString = "";
-		String numberString = "";
-		DecimalFormat df = new DecimalFormat("###.#########");
-		if (inData != null && inData.length > 0) {
-			for (int i = 0; i < inData.length; i++) {
-				numberString = df.format(inData[i]);
-				if (i < inData.length - 1)
-					numbersString += (new BigDecimal(numberString)) + " ";
-				else
-					numbersString += (new BigDecimal(numberString));
-			}
-		}
-
-		inContainer.dataList.add(numbersString);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numbersString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	// For long[]
-	public void populateContainerNumericArray(AnyDataContainer inContainer, long inTime, long[] inData, int inIndex) {
-		String numbersString = "";
-		String numberString = "";
-		DecimalFormat df = new DecimalFormat("###.#########");
-		if (inData != null && inData.length > 0) {
-			for (int i = 0; i < inData.length; i++) {
-				numberString = df.format(inData[i]);
-				if (i < inData.length - 1)
-					numbersString += (new BigDecimal(numberString)) + " ";
-				else
-					numbersString += (new BigDecimal(numberString));
-			}
-		}
-
-		inContainer.dataList.add(numbersString);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numbersString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	// For boolean[]
-	public void populateContainerBooleanArray(AnyDataContainer inContainer, long inTime, boolean[] inData, int inIndex) {
-		String numbersString = "";
-		if (inData != null && inData.length > 0) {
-			for (int i = 0; i < inData.length; i++) {
-				if (i < inData.length - 1)
-					numbersString += (new Boolean(inData[i])) + " ";
-				else
-					numbersString += (new Boolean(inData[i]));
-			}
-		}
-
-		inContainer.dataList.add(numbersString);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numbersString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	// For Object[]
-	public void populateContainerObjectArray(AnyDataContainer inContainer, long inTime, Object[] inData, int inIndex) {
-		String numbersString = "";
-		if (inData != null && inData.length > 0) {
-			for (int i = 0; i < inData.length; i++) {
-				if (i < inData.length - 1)
-					numbersString += inData[i] + " ";
-				else
-					numbersString += inData[i];
-			}
-		}
-
-		inContainer.dataList.add(numbersString);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numbersString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	public void populateContainerNumeric(AnyDataContainer inContainer, long inTime, Number inData, int inIndex) {
-		// it would be possible to use populateContainerObject after creating
-		// the BigDecimal but we want to keep
-		// the format of the original data.
-		String numberString = inData.toString();
-		if (numberString.equalsIgnoreCase("nan"))
-			return; // Skip NaN values (COMP-5564)
-
-		try {
-			inContainer.dataList.add(new BigDecimal(numberString));
-		} catch (NumberFormatException e) {
-			myLogger.warning("Unexpected number format. Time: " + inTime + " Data: " + inData);
-			throw e;
-		}
-
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(numberString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	public void populateContainerBoolean(AnyDataContainer inContainer, long inTime, Boolean inData, int inIndex) {
-		String booleanString = (inData ? "1" : "0");
-		inContainer.dataList.add(inData);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(booleanString);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	public void populateContainerObject(AnyDataContainer inContainer, long inTime, Object inData, int inIndex) {
-		inContainer.dataList.add(inData);
-		inContainer.clobBuilder.append(inTime);
-		inContainer.clobBuilder.append("|");
-		inContainer.clobBuilder.append(inData);
-		inContainer.clobBuilder.append("|");
-		inContainer.index = inIndex;
-	}
-
-	/**
-	 * Populate inList with the inCount number of containers.
-	 */
-	private void populateList(List<AnyDataContainer> inList, int inCount) {
-		for (int index = 0; index < inCount; index++) {
-			inList.add(new AnyDataContainer());
-		}
-	}
 
 	/**
 	 * Gets the reference of the {@link MonitorCollector} component that is identified by its name
@@ -992,45 +408,38 @@ public class BlobberWorker extends CancelableRunnable {
 					BlobData blobData = null;
 
 					try {
-						String propertyName = blob.propertyName.substring(blob.propertyName.indexOf(':') + 1);
-						List<AnyDataContainer> containerList = extractData(blob.blobDataSeq, propertyName);
-						int index = 0;
-						for (AnyDataContainer container : containerList) {
+						String propertyNameSimple = blob.propertyName.substring(blob.propertyName.indexOf(':') + 1);
+						
+						List<AnyDataContainer> containerList = anyExtractor.extractData(blob.blobDataSeq, propertyNameSimple);
+
+						// iterate over expanded logical properties
+						for (int index = 0; index < containerList.size(); index++) {
+							AnyDataContainer container = containerList.get(index);
+							
+							// The serial number by default comes from the device, 
+							// but it can be overwritten for a monitor point.
+							// In Alma this is done for correlator properties.
 							String serialNumber = block.deviceSerialNumber;
-							if (blob.propertySerialNumber != null
-									&& blob.propertySerialNumber.length != 0) {
-								// data is coming from correlator, handle serial numbers.
-								// @TODO (hso): Can we delegate this special treatment to the DAO?
-								serialNumber = blob.propertySerialNumber[index];
-								// create unique key by adding the index number.
-								index++;
+							if (blob.propertySerialNumber != null) {
+								if (blob.propertySerialNumber.length == 1) {
+									// One SN per baci property, even if it expands to multiple monitor points.
+									serialNumber = blob.propertySerialNumber[0];
+								}
+								else if (blob.propertySerialNumber.length > index) {
+									serialNumber = blob.propertySerialNumber[index];
+								}
+								else if (blob.propertySerialNumber.length > 0) {
+									this.myLogger.warning("Underspecified MonitorBlob#propertySerialNumber for " + blob.propertyName);
+								}
 							}
 							myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + blob.propertyName);
-							blobData = new BlobData();
-							blobData.componentName = block.componentName;
-							blobData.serialNumber = serialNumber;
-							blobData.propertyName = propertyName;
-							blobData.startTime = block.startTime;
 
-							// Update blob data.
-							blobData.dataList.clear();
-							blobData.dataList.addAll(container.dataList);
-							blobData.clob = container.clobBuilder.toString();
-							blobData.index = container.index;
-							blobData.stopTime = block.stopTime;
-
-							if (blobData.startTime == 0) {
-								/*
-								 * This construction is left from the time when several accesses to the collector were
-								 * made before storing. The construction is left in case this is activated again.
-								 */
-								blobData.startTime = block.startTime;
-							}
+							blobData = createBlobData(block, blob, container, propertyNameSimple, serialNumber);
 
 							if (blobData.dataList.size() > 0) {
-								blobData.calculateStatistics();
-
 								insertCount++;
+								
+								// hand over our blob data to the DAO(s)
 								storeData(blobData);
 							}
 						}
@@ -1085,7 +494,40 @@ public class BlobberWorker extends CancelableRunnable {
 	}
 
 	/**
-	 * Stores the data using the MonitorDAO layer.
+	 * Creates a BlobData object and fills it with data from the given block, blob etc.
+	 * Broken out from {@link #harvestCollector(CollectorData, MonitorCollectorOperations)} 
+	 * to allow fine-grained unit testing. 
+	 */
+	static BlobData createBlobData(MonitorDataBlock block, MonitorBlob blob, AnyDataContainer container, String propertyNameSimple, String serialNumber) {
+
+		BlobData blobData = new BlobData();
+		blobData.componentName = block.componentName;
+		blobData.serialNumber = serialNumber;
+		blobData.propertyName = propertyNameSimple;
+		blobData.startTime = block.startTime;
+
+		// Update blob data.
+		blobData.dataList.addAll(container.dataList);
+		blobData.sampleSize = blobData.dataList.size();
+		blobData.clob = container.clobBuilder.toString();
+		blobData.index = container.index;
+		blobData.stopTime = block.stopTime;
+
+		if (blobData.startTime == 0) {
+			/*
+			 * This construction is left from the time when several accesses to the collector were
+			 * made before storing. The construction is left in case this is activated again.
+			 */
+			blobData.startTime = block.startTime;
+		}
+
+		blobData.calculateStatistics();
+		
+		return blobData;
+	}
+
+	/**
+	 * Stores the data using the MonitorPointExpertImpl layer.
 	 */
 	protected void storeData(BlobData inBlobData) throws Exception {
 		if (myLogger.isLoggable(Level.FINEST)) {
@@ -1094,7 +536,6 @@ public class BlobberWorker extends CancelableRunnable {
 			// which will not log clob data.
 			myLogger.finest("Storing property data for " + inBlobData.componentName + ": " + inBlobData.toString());
 		}
-		inBlobData.sampleSize = inBlobData.dataList.size();
 
 		Exception firstExInDAOStore = null;
 		for (MonitorDAO monitorDAO : myMonitorDAOList) {
@@ -1112,11 +553,15 @@ public class BlobberWorker extends CancelableRunnable {
 		}
 	}
 
+	/**
+	 * Holds the data of one logical monitor point.
+	 * Note that sequence data from one multi-valued monitor point
+	 * can be split into several AnyDataContainer instances.
+	 */
 	protected static class AnyDataContainer
 	{
-
 		/**
-		 * Gets filled homogeneously with BigDecimal, Boolean etc objects, depending on the monitor point type.
+		 * Gets filled homogeneously with Number, Boolean, String etc objects, depending on the monitor point type.
 		 */
 		public List<Object> dataList = new ArrayList<Object>();
 

@@ -18,29 +18,40 @@
  */
 package alma.acs.monitoring.DAO;
 
-import java.math.BigDecimal;
 
-public class ComponentStatistics {
-    public BigDecimal min;
-    public BigDecimal max;
-    public BigDecimal mean;
-    public BigDecimal stdDev;
+/**
+ * Holds and prints the summary statistics of one numerical blob, which is the series of values from one monitor point
+ * over the collector time interval.
+ */
+public class ComponentStatistics
+{
+	public Number min;
+	public Number max;
+	public Number mean;
+	public Number stdDev;
 
-    public ComponentStatistics() {
-    }
+	public ComponentStatistics() {
+		// NumberFormat format = DecimalFormat.getInstance();
+		// format.setRoundingMode(RoundingMode.HALF_UP);
+		// format.setMinimumFractionDigits(0);
+		// format.setMaximumFractionDigits(2);
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("min: ");
-        builder.append(min);
-        builder.append(" max: ");
-        builder.append(max);
-        builder.append(" mean: ");
-        builder.append(mean);
-        builder.append(" stdDev: ");
-        builder.append(stdDev);
-        builder.append("\n");
-        return builder.toString();
-    }
+	/**
+	 * Todo: use formatting mask?
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("min: ");
+		builder.append(min.toString());
+		builder.append(" max: ");
+		builder.append(max.toString());
+		builder.append(" mean: ");
+		builder.append(mean.toString());
+		builder.append(" stdDev: ");
+		builder.append(stdDev.toString());
+		builder.append("\n");
+		return builder.toString();
+	}
 }

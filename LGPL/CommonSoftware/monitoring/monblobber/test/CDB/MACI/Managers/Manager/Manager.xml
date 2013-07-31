@@ -12,17 +12,11 @@
   </Startup>
 
   <ServiceComponents>
-	<cdb:_ string="Log"/>
-	<cdb:_ string="LogFactory"/>
-	<cdb:_ string="NotifyEventChannelFactory"/>
-	<cdb:_ string="InterfaceRepository"/>
 	<cdb:_ string="CDB"/>
-	<cdb:_ string="ACSLogSvc"/>
-	<cdb:_ string="PDB"/>
   </ServiceComponents>
 
   <LoggingConfig
-    	minLogLevel="2"
+    	minLogLevel="4"
     	immediateDispatchLevel="99"
     	dispatchPacketSize="10" />
 

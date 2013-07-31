@@ -27,7 +27,10 @@
 SOURCE TATEnvironment
 PROLOGUE BlobberTATPrologue 
 
-#
-1 MonitorBlobberUnitTest "acsutilTATTestRunner acsStartJava -D archive.configFile=archiveConfig.properties.blobberTest -D 'ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2' alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.BlobberWorkerUnitTest"
+# Tests that do not need a running ACS environment
+1 CorbaAnyExtractionTest "acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.CorbaAnyExtractionTest"
+
+# Tests that need a running ACS environment
+2 MonitorBlobberUnitTest "acsutilTATTestRunner acsStartJava -D archive.configFile=archiveConfig.properties.blobberTest -D 'ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2' alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.BlobberWorkerUnitTest"
 
 EPILOGUE acsutilTATEpilogue

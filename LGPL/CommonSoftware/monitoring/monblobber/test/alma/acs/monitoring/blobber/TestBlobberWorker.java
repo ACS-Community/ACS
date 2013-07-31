@@ -8,6 +8,7 @@ import alma.TMCDB.MonitorCollectorOperations;
 import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.MonitorDAO;
+import alma.acs.monitoring.blobber.TestBlobber.TestMonitorPointExpert;
 
 /**
  * BlobberWorker mock.
@@ -29,13 +30,13 @@ public class TestBlobberWorker extends BlobberWorker {
 
 	/**
 	 * @param inContainerServices
-	 * @param monitorDAO MonitorDAO, either mock or real
+	 * @param blobberPlugin (mock or real)
 	 * @param myBlobDataLock  see {@link #myBlobDataLock}.
 	 * @throws AcsJCouldntCreateObjectEx
 	 */
-	public TestBlobberWorker(ContainerServices inContainerServices, MonitorDAO monitorDAO, DataLock<ComponentData> myBlobDataLock) 
+	public TestBlobberWorker(ContainerServices inContainerServices, BlobberPlugin blobberPlugin, DataLock<ComponentData> myBlobDataLock) 
 			throws AcsJCouldntCreateObjectEx {
-		super(inContainerServices, new TestBlobberPlugin(inContainerServices, monitorDAO));
+		super(inContainerServices, blobberPlugin);
 		this.myBlobDataLock = myBlobDataLock;
 	}
 
@@ -84,9 +85,12 @@ public class TestBlobberWorker extends BlobberWorker {
 
 	public static class TestBlobberPlugin extends BlobberPlugin {
 		private final MonitorDAO monitorDAO;
-		public TestBlobberPlugin(ContainerServices containerServices, MonitorDAO monitorDAO) {
+		private final TestMonitorPointExpert myMonitorPointExpert;
+		
+		public TestBlobberPlugin(ContainerServices containerServices, MonitorDAO monitorDAO, TestMonitorPointExpert myMonitorPointExpert) {
 			super(containerServices);
 			this.monitorDAO = monitorDAO;
+			this.myMonitorPointExpert = myMonitorPointExpert;
 		}
 		@Override
 		public void init() {
@@ -111,6 +115,10 @@ public class TestBlobberWorker extends BlobberWorker {
 		@Override
 		public BlobberWatchDog getBlobberWatchDog() {
 			return null;
+		}
+		@Override
+		public MonitorPointExpert getMonitorPointExpert() {
+			return myMonitorPointExpert;
 		}
 	}
 }

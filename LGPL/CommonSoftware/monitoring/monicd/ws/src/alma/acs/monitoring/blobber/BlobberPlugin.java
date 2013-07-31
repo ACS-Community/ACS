@@ -70,10 +70,12 @@ public abstract class BlobberPlugin
 	 */
 	public abstract void cleanUp();
 	
+	public abstract MonitorPointExpert getMonitorPointExpert();
+	
     /**
      * The entire DAO implementation is in <code>ARCHIVE/TMCDB/DAO/</code>
      * which is why we defer creation of <code>alma.archive.tmcdb.DAO.MonitorDAOImpl</code>
-     * or some mock implementation of the <code>MonitorDAO</code> interface to this plugin. 
+     * or some mock implementation of the <code>MonitorPointExpert</code> interface to this plugin. 
      * <p>
      * Normally only one DAO object should be returned, but for exceptional cases we support running
      * several DAOs in parallel. This allows the Alma OSF to independently write the monitor data to the TMCDB

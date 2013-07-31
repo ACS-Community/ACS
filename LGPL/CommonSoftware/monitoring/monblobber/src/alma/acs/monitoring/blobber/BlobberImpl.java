@@ -121,7 +121,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 			m_logger.finer("Instantiated blobber plugin object.");
 			// Create the blobber runnable (worker)
 			now = System.nanoTime();
-			this.myWorker = createWorker(blobberPlugin);
+			this.myWorker = createWorker();
 			componentActivationTimesNanosMap.put("worker creation", System.nanoTime() - now);
 			m_logger.finer("Instantiated blobber worker object.");
 		} catch (AcsJCouldntCreateObjectEx ex) {
@@ -171,7 +171,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 * Factored out from {@link #initialize(ContainerServices)} for testing with mock BlobberWorker
 	 * @throws AcsJCouldntCreateObjectEx 
 	 */
-	protected BlobberWorker createWorker(BlobberPlugin blobberPlugin) throws AcsJCouldntCreateObjectEx {
+	protected BlobberWorker createWorker() throws AcsJCouldntCreateObjectEx {
 		return new BlobberWorker(m_containerServices, blobberPlugin);
 	}
 

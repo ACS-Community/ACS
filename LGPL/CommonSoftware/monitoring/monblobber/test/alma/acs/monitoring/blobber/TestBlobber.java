@@ -1,8 +1,8 @@
 package alma.acs.monitoring.blobber;
 
-import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
@@ -20,13 +20,8 @@ import alma.acs.monitoring.blobber.TestBlobberWorker.TestBlobberPlugin;
  */
 public class TestBlobber extends BlobberImpl {
 
-	private final ContainerServices containerServices;
-
-	public TestBlobber(ContainerServices containerServices) {
-		this.containerServices = containerServices;
+	public TestBlobber() {
 	}
-	
-	private boolean useDatabase;
 	
 	/**
 	 * Allows a unit test to read all property data via (@link TestBlobberWorker#fetchData()} 
@@ -34,19 +29,23 @@ public class TestBlobber extends BlobberImpl {
 	 */
 	private DataLock<ComponentData> myBlobDataLock;
 
+	private BlobberPlugin myBlobberPlugin;
+	
 	/**
 	 * Call this method instead of the inherited {@link #initialize(ContainerServices)}.
 	 * @param inContainerServices
 	 * @param inName Name of this test component instance, so that we can pass the JUnit test's ContainerServices object and still 
 	 *               use a component name different from that test name.
-	 * @param inUseDatabase see {@link TestBlobberWorker#setUseDatabase(boolean)}.
 	 * @throws ComponentLifecycleException
 	 */
-	public void initialize(ContainerServices inContainerServices, String inName, boolean inUseDatabase) throws ComponentLifecycleException {
-		useDatabase = inUseDatabase;
-		myBlobDataLock = new DataLock<ComponentData>(inContainerServices.getLogger(), "blobberworker");
-		initialize(inContainerServices);
-		this.m_instanceName = inName;
+	public void initialize(ContainerServices inContainerServices, String inName) throws ComponentLifecycleException {
+		Logger tmpLogger = inContainerServices.getLogger();
+		myBlobDataLock = new DataLock<ComponentData>(tmpLogger, "blobberworker");
+		MonitorDAO monitorDAO = new TestMonitorDAO(tmpLogger, myBlobDataLock);
+		TestMonitorPointExpert myMonitorPointExpert = new TestMonitorPointExpert();
+		myBlobberPlugin = new TestBlobberWorker.TestBlobberPlugin(inContainerServices, monitorDAO, myMonitorPointExpert);
+		initialize(inContainerServices); // calls createBlobberPlugin() etc
+		m_instanceName = inName;
 	}
 
 	/**
@@ -55,59 +54,20 @@ public class TestBlobber extends BlobberImpl {
 	 * @see alma.archive.tmcdb.monitor.BlobberImpl#createBlobberPlugin()
 	 */
 	@Override
-	protected BlobberPlugin createBlobberPlugin() throws AcsJCouldntCreateObjectEx {
-		MonitorDAO monitorDAO = null;
-		if (useDatabase) {
-			try {
-				// TODO If "useDatabase==true" is ever needed, then use alma.acs.monitoring.blobber.BlobberPluginAlmaImpl#getMonitorDAOs().
-				// For now we just throw an exception to document that the code is broken.
-				throw new AcsJCouldntCreateObjectEx("Currently not supported.");
-//				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
-//						.asSubclass(MonitorDAO.class);
-//				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
-//				monitorDAO = ctor.newInstance(m_logger);
-			} catch (Exception ex) {
-				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
-				throw new AcsJCouldntCreateObjectEx(ex);
-			}
-		} else {
-			monitorDAO = new TestMonitorDAO(m_logger, myBlobDataLock);
-		}
-		return new TestBlobberWorker.TestBlobberPlugin(containerServices, monitorDAO);
+	protected BlobberPlugin createBlobberPlugin() {
+		return myBlobberPlugin;
 	}
 
 	/**
-	 * Creates a {@link TestBlobberWorker}, or the real one if <code>inUseDatabase == true</code> in
-	 * {@link #initialize(ContainerServices, String, boolean)}.
+	 * Creates a {@link TestBlobberWorker}.
 	 * 
 	 * @see alma.archive.tmcdb.monitor.BlobberImpl#createWorker()
 	 * @throws AcsJCouldntCreateObjectEx
 	 *             if mock objects cannot be created.
 	 */
 	@Override
-	protected BlobberWorker createWorker(BlobberPlugin blobberPlugin) throws AcsJCouldntCreateObjectEx {
-		MonitorDAO monitorDAO = null;
-		if (useDatabase) {
-			try {
-				// TODO If "useDatabase==true" is ever needed, then use alma.acs.monitoring.blobber.BlobberPluginAlmaImpl#getMonitorDAOs().
-				// For now we just throw an exception to document that the code is broken.
-				throw new AcsJCouldntCreateObjectEx("Currently not supported.");
-//				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
-//						.asSubclass(MonitorDAO.class);
-//				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
-//				monitorDAO = ctor.newInstance(containerServices);
-			} catch (Exception ex) {
-				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
-				throw new AcsJCouldntCreateObjectEx(ex);
-			}
-		} else {
-			monitorDAO = new TestMonitorDAO(m_logger, myBlobDataLock);
-		}
-		try {
-			return new TestBlobberWorker(m_containerServices, monitorDAO, myBlobDataLock);
-		} catch (AcsJCouldntCreateObjectEx ex) {
-			throw new IllegalArgumentException(ex);
-		}
+	protected BlobberWorker createWorker() throws AcsJCouldntCreateObjectEx {
+		return new TestBlobberWorker(m_containerServices, myBlobberPlugin, myBlobDataLock);
 	}
 
 	/**
@@ -130,6 +90,7 @@ public class TestBlobber extends BlobberImpl {
 	{
 		private final Logger logger;
 		private final DataLock<ComponentData> myBlobDataLock;
+		
 		public TestMonitorDAO(Logger logger, DataLock<ComponentData> myBlobDataLock) {
 			this.logger = logger;
 			this.myBlobDataLock = myBlobDataLock;
@@ -138,7 +99,6 @@ public class TestBlobber extends BlobberImpl {
 		/**
 		 * Can only store property data once the previous ComponentData has been fetched 
 		 * (see {@link TestBlobberWorker#fetchData()} by the test.
-		 * @see alma.archive.tmcdb.DAO.MonitorDAO#store(alma.archive.tmcdb.DAO.ComponentData)
 		 */
 		@Override
 		public void store(ComponentData inData) throws Exception {
@@ -180,4 +140,22 @@ public class TestBlobber extends BlobberImpl {
 			return outBlob;
 		}
 	}
+	
+	static class TestMonitorPointExpert implements MonitorPointExpert {
+
+		private Map<String, Boolean> isMultivaluedPropertyMap = new HashMap<String, Boolean>();
+		
+		@Override
+		public boolean isMultivaluedMonitorPoint(String propertyName) {
+			Boolean ret = isMultivaluedPropertyMap.get(propertyName);
+//	System.out.println("isMultivaluedMonitorPoint(" + propertyName + "): " + ret);
+			return ( ret != null ? ret.booleanValue() : false );
+		}
+		
+		void setUniqueness(String propertyName, boolean isUnique) {
+			isMultivaluedPropertyMap.put(propertyName, isUnique);
+		}
+	}
+
+
 }

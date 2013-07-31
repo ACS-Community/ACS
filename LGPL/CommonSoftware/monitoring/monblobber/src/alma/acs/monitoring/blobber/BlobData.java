@@ -18,8 +18,6 @@
  */
 package alma.acs.monitoring.blobber;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,26 +46,59 @@ class BlobData extends ComponentData
 
 	/**
 	 * Calculates the statistics and stores it in {@link #statistics}
-	 * if our monitor point data is represented as BigDecimal objects;
+	 * if our monitor point data is represented as Number objects;
 	 * otherwise this call is ignored.
 	 * 
 	 * @param inDataList
 	 */
 	void calculateStatistics() {
-		if (dataList.size() > 0 && dataList.get(0) instanceof BigDecimal) {
+		if (dataList.size() > 0) {
 			
+			// We trust that the dataList is homogeneous and sample only the first value for its data type...
+			Object o = dataList.get(0);
+			if (!(o instanceof Integer || 
+				  o instanceof Long || 
+				  o instanceof Float || 
+				  o instanceof Double)) 
+			{
+				System.out.println("Cannot do statistics on " + o.getClass().getName()); 
+				return;
+			}
+			
+			// apache math statistics lib works only with 'double'
 			SummaryStatistics stat = new SummaryStatistics();
-			
 			for (Object blobData : dataList) {
-				BigDecimal value = (BigDecimal) blobData;
+				Number value = (Number) blobData;
 				stat.addValue(value.doubleValue());
 			}
 
 			statistics = new ComponentStatistics();
-			statistics.min = BigDecimal.valueOf(stat.getMin());
-			statistics.max = BigDecimal.valueOf(stat.getMax());
-			statistics.mean = BigDecimal.valueOf(stat.getMean());
-			statistics.stdDev = BigDecimal.valueOf(stat.getStandardDeviation());
+			
+			// we convert the results to original data types where it makes sense
+			if (o instanceof Integer) {
+				statistics.min = new Integer((int) Math.round(stat.getMin()));
+				statistics.max = new Integer((int) Math.round(stat.getMax()));
+				statistics.mean = new Double(stat.getMean()); // or Float, to indicate lower precision?
+				statistics.stdDev = new Double(stat.getStandardDeviation()); // or Float, to indicate lower precision?
+			}
+			else if (o instanceof Long) {
+				statistics.min = new Long(Math.round(stat.getMin()));
+				statistics.max = new Long(Math.round(stat.getMax()));
+				statistics.mean = new Double(stat.getMean()); 
+				statistics.stdDev = new Double(stat.getStandardDeviation()); 
+			}
+			else if (o instanceof Float) {
+				statistics.min = new Float(stat.getMin());
+				statistics.max = new Float(stat.getMax());
+				statistics.mean = new Float(stat.getMean());
+				statistics.stdDev = new Float(stat.getStandardDeviation());
+			}
+			else if (o instanceof Double) {
+				statistics.min = new Double(stat.getMin());
+				statistics.max = new Double(stat.getMax());
+				statistics.mean = new Double(stat.getMean());
+				statistics.stdDev = new Double(stat.getStandardDeviation());
+			}
 		}
 	}
 
