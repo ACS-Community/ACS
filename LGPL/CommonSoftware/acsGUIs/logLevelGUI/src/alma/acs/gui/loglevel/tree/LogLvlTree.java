@@ -54,6 +54,8 @@ public class LogLvlTree extends JTree {
 	
 	// The panel showing the tabs
 	private LogLevelPanel tabPanel;
+
+	private final Logger logger;
 	
 	/**
 	 * Constructor
@@ -69,7 +71,8 @@ public class LogLvlTree extends JTree {
 			throw new IllegalArgumentException("Invalid null panel of tabs");
 		}
 		tabPanel=panel;
-		model = new LogLvlTreeModel(theOrb,theLogger);
+		this.logger = theLogger;
+		model = new LogLvlTreeModel(theOrb, theLogger);
 		setModel(model);
 		
 		setRootVisible(false);
@@ -82,7 +85,7 @@ public class LogLvlTree extends JTree {
 	 */
 	public void start() throws Exception {
 		model.start();
-		mouseListener = new TreeMouseListener(this);
+		mouseListener = new TreeMouseListener(this, logger);
 		addMouseListener(mouseListener);
 	}
 	

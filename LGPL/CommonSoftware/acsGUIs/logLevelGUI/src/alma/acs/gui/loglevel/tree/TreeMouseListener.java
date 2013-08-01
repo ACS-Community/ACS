@@ -26,6 +26,7 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -68,17 +69,21 @@ public class TreeMouseListener extends MouseAdapter {
 	
 	// The popup menu
 	private TreePopupMenu popupMenu;
+
+	private final Logger logger;
 	
 	/**
 	 * Constructor 
 	 * 
 	 * @param logLevelTree The tree generating events
+	 * @param logger 
 	 */
-	public TreeMouseListener(LogLvlTree logLevelTree) {
+	public TreeMouseListener(LogLvlTree logLevelTree, Logger logger) {
 		if (logLevelTree==null) {
 			throw new IllegalArgumentException("Invalid null LogLvlTree in constructor");
 		}
 		tree=logLevelTree;
+		this.logger = logger;
 		model = (LogLvlTreeModel)tree.getModel();
 		popupMenu= new TreePopupMenu(model);
 		managersNode = model.findNode(null, "Managers", 0);
@@ -189,7 +194,7 @@ public class TreeMouseListener extends MouseAdapter {
 			// The tab with this name does not exist: create and add a new one
 			LogLevelSelectorPanel pnl;
 			try {
-				pnl = new LogLevelSelectorPanel(logConf,targetNode.getUserObject().toString());
+				pnl = new LogLevelSelectorPanel(logConf, targetNode.getUserObject().toString(), logger);
 			//} catch (LogLvlSelNotSupportedException ex) {
 			} catch (Exception t) {
 				JOptionPane.showMessageDialog(

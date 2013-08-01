@@ -27,7 +27,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -39,35 +41,28 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingWorker;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import alma.Logging.LoggingConfigurableOperations;
-import alma.Logging.LoggingConfigurablePackage.LogLevels;
-import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
-import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.level.AcsLogLevelDefinition;
-import alma.Logging.LoggerDoesNotExistEx;
+import org.omg.CORBA.SystemException;
 
 import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.Logging.LoggerDoesNotExistEx;
+import alma.Logging.LoggingConfigurableOperations;
+import alma.Logging.LoggingConfigurablePackage.LogLevels;
+import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
+import alma.acs.logging.level.AcsLogLevelDefinition;
+
 /**
  * The panel to select the log level of the named loggers
  * 
  * @author acaproni
- * 
- * update history:
- * 2011/07/27 -- bhola.panta @ naoj  
- *  JIRA-COMP-4183 related
- *	1. need to catch system exception, when for example. a container is unresponsive
- *  2. a logger is used to log exceptions  
-						
- *
  */
 public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 
@@ -80,7 +75,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	private JButton refreshBtn = new JButton("Refresh");
 	
 	// The LoggingConfigurable
-	private LoggingConfigurableOperations logConf=null;
+	private final LoggingConfigurableOperations logConf;
 	
 	// The table of log levels
 	private LogLevelTable table;
@@ -95,22 +90,27 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	public LogTypeRenderer editorGlobal;
 	
 	private JButton   defaultBtn = new JButton("Reset all loggers to use default levels");
+
+	private final Logger logger;
 	
 	
 	/**
 	 * Constructor 
 	 * 
-	 * @param owner The windo that owns this dialog (it can be null)
+	 * @param owner The window that owns this dialog (it can be null)
 	 * @param configurable The LoggingConfigurable whose log level
 	 *                     the user wants to read or set
+	 * @param logger 
 	 * @param title The name of the configurable to add to the tile
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
 	//public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name) throws LogLvlSelNotSupportedException {
-	public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name) throws Exception {
+	public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name, Logger logger) throws Exception {
 		if (configurable==null) {
 			throw new IllegalArgumentException("Invalid null LoggingConfigurable in constructor");
 		}
+		
+		this.logger = logger;
 		
 		// The editor for local and global log levels
 		String[] descs = new String[LogTypeHelper.values().length];
@@ -131,15 +131,10 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		allLocalCB.addActionListener(al);
 		allGlobalCB.addActionListener(al);
 		
-		logConf=configurable;
+		logConf = configurable;
 		setName(name);
-		initialize(name);
+		initialize();
 	}
-	/**
-	 *  A logger to record exceptions
-	 */
-	//private static Logger logger = Logger.getLogger(LogLevelSelectorPanel.class.getName());
-	private static Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(LogLevelSelectorPanel.class.getName(), true);
 	
 	/**
 	 * Init the GUI
@@ -147,7 +142,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
 	//private void initialize(String name) throws LogLvlSelNotSupportedException {
-	private void initialize(String name) throws Exception {
+	private void initialize() throws Exception {
 		BoxLayout layout = new BoxLayout(this,BoxLayout.Y_AXIS);
 		setLayout(layout);
 		
@@ -185,215 +180,133 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * 
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	//private JComponent initLogLevelsPanel() throws LogLvlSelNotSupportedException {
-	private JComponent initLogLevelsPanel() throws Exception {
-		LogLevelHelper[] levels=null;
-		try {
-			levels = loggersLbl();
-		//} catch (Exception e) {
-		//	throw new LogLvlSelNotSupportedException("Function not yet implemented by "+getName(),e);
-		//}
-		//added to deal with unresponsive CORBA call
-		//2010-02-17 panta@naoj
-		} catch (org.omg.CORBA.SystemException cse) {
-			throw new Exception(cse.toString());
-		
-		} catch (LoggerDoesNotExistEx lde) {
-			System.err.println("LogLevelSelectorPanel:initLogLevelsPanel LoggerDoesNotExistEx "+lde.toString());
-			throw lde;
-		} catch (Exception e) {
-			System.err.println("LogLevelSelectorPanel:initLogLevelsPanel exception "+e.toString());
-			throw e;
-		}
+	private JComponent initLogLevelsPanel() throws AcsJCORBAProblemEx {
+
+		LogLevelHelper[] levels = loggersLbl();
 		
 		model = new LogLevelModel(levels);
-		table = new LogLevelTable(model);
 		model.addTableModelListener(new TableModelListener(){
 			public void tableChanged(TableModelEvent e) {
 				applyBtn.setEnabled(userChangedLogLevels());
 			}
 		});
 		
+		table = new LogLevelTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 		return scrollPane;
 	}
 	
 	/**
-	 * set the labels of the logger names 
+	 * Gets the loggers and their levels.
+	 * <p>
+	 * This method makes remote calls and should not be called in the event thread! 
 	 * 
 	 * @return
+	 * @throws AcsJCORBAProblemEx In case of ORB / network failure or if remote process is unresponsive or unreachable.
 	 */
-	private LogLevelHelper[] loggersLbl() throws Exception {
+	private LogLevelHelper[] loggersLbl() throws AcsJCORBAProblemEx {
 
-		// get the logger names
-		SwingWorker<String[], Void> worker = new SwingWorker<String[], Void>() {
-			protected String[] doInBackground() throws Exception {
-				return logConf.get_logger_names();
-			}
-		};
-		worker.execute();
-
-		final String[] logNames = worker.get();
-		if (logNames==null) {
-			return new LogLevelHelper[0];
-		}
-
-		// get the log levels for each logger
-		SwingWorker<LogLevels[], Void> worker2 = new SwingWorker<LogLevels[], Void>() {
-			protected LogLevels[] doInBackground() throws Exception {
-				LogLevels[] levels = new LogLevels[logNames.length];
-				for (int i=0; i<logNames.length; i++) {
-					levels[i] = logConf.get_logLevels(logNames[i]);
-				}
-				return levels;
-			}
-		};
-		worker2.execute();
+		List<LogLevelHelper> ret = new ArrayList<LogLevelHelper>();
 		
-		LogLevels[] levels = worker2.get();
-		LogLevelHelper[] ret = new LogLevelHelper[logNames.length];
-		for (int t=0; t<logNames.length; t++)
-			ret[t]= new LogLevelHelper(logNames[t],levels[t]);
-
-		return ret;
+		try {
+			// get the logger names
+			final String[] logNames = logConf.get_logger_names();
+			
+			// get the log levels for each logger
+			for (String logName : logNames) {
+				try {
+					LogLevels logLevels = logConf.get_logLevels(logName);
+					ret.add(new LogLevelHelper(logName, logLevels));
+				} catch (LoggerDoesNotExistEx ex) {
+					logger.warning("Failed to retrieve log levels info for logger '" + logName + "'. Will skip this logger.");
+				}
+			}
+			return ret.toArray(new LogLevelHelper[0]);
+			
+		} catch (SystemException ex) {
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(ex);
+			ex2.setInfo("Failed to retrieve logger names or levels.");
+			throw ex2;
+		}
 	}
 	
 	/**
+	 * Apply the changes to the log levels, if any.
+	 * <p>
+	 * TODO: This method makes remote calls and should not be called in the event thread.
+	 *       However this would require more refactoring, because it currently also accesses swing components.
 	 * 
-	 * Apply the changes to the log levels, if any
-	 *
+	 * @throws AcsJCORBAProblemEx In case of ORB / network failure or if remote process is unresponsive or unreachable.
 	 */
-	// JIRA-COMP-4183 related changes made on 2011/07/27
 	private void applyChanges() {
-		final LogLevelHelper[] newLevels = model.getLevels();
 		
-		SwingWorker<Void,Void> worker = new SwingWorker<Void, Void>() {
-			@Override
-			protected Void doInBackground() throws Exception {
-
-				for (LogLevelHelper logLvl: newLevels) {
-					if (logLvl.modified()) {
-						try {
-							System.out.println("Applying new log levels to "+logLvl.getName()+": <"+logLvl.isUsingDefault()+", "+logLvl.getGlobalLevel()+", "+logLvl.getLocalLevel()+">");
-							logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
-						//} catch (Throwable t) {
-						} catch (org.omg.CORBA.SystemException cse) {
-							System.err.println("Exception caught while setting log level "+logLvl.getName()+": "+cse.getMessage());
-							//t.printStackTrace(System.err);
-							logger.info(cse.toString());
-							return null; //if system exception, get out of the loop
-						}
-						catch (Exception e) {
-							logger.info(e.toString());
-							//e.printStackTrace();
-							JOptionPane.showMessageDialog(null,
-									" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
-									"Error", JOptionPane.ERROR_MESSAGE);
-						}
-					}
+		try {
+			for (LogLevelHelper logLvl : model.getLevels()) {
+				if (logLvl.modified()) { // see reset of modification flag in the changesApplied call below
+					System.out.println("Applying new log levels to " + logLvl.getName() + ": <"
+							+ logLvl.isUsingDefault() + ", " + logLvl.getGlobalLevel() + ", " + logLvl.getLocalLevel()
+							+ ">");
+					logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
 				}
-				return null;
 			}
-		};
-		worker.execute();
-
-		try {
-			worker.get();
-		} catch (/*org.omg.CORBA.SystemException*/ExecutionException cse) {
-			logger.info(cse.toString());
-			//t.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null,
-					" Container failed to receive the log level change or refresh request:\n"+cse.toString(), 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return;
-			
-		} catch(Exception e) {
-			logger.info(e.toString());
-			//e.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null,
-					" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		try {
 			int localIndex = allLocalCB.getSelectedIndex();
 			LogTypeHelper local = LogTypeHelper.values()[localIndex];
 			final int localAcs = local.getAcsCoreLevel().value;
-
+			
 			int globalIndex = allGlobalCB.getSelectedIndex();
 			LogTypeHelper global = LogTypeHelper.values()[globalIndex];
 			final int globalAcs = global.getAcsCoreLevel().value;
-
-			SwingWorker<Void,Void> worker2 = new SwingWorker<Void, Void>() {
-				protected Void doInBackground() throws Exception {
-					boolean useDefault = logConf.get_default_logLevels().useDefault;
-					LogLevels toset = new LogLevels(useDefault, (short)globalAcs, (short)localAcs);
-					logConf.set_default_logLevels(toset);
-					return null;
-				}
-			};
-			worker2.execute();
-			worker2.get();
 			
-		} catch (/*org.omg.CORBA.SystemException*/ExecutionException cse) {
-			logger.info(cse.toString());
-			//t.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null,
-					" Container failed to receive the log level change or refresh request:\n"+cse.getClass(), 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return;
+			boolean useDefault = logConf.get_default_logLevels().useDefault;
+			LogLevels toset = new LogLevels(useDefault, (short)globalAcs, (short)localAcs);
+			logConf.set_default_logLevels(toset);
 			
-		} catch (Exception e) {
-			logger.info(e.toString());
-			JOptionPane.showMessageDialog(null,
-					" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return;
+			model.changesApplied();
+			updateMinLevels();
+			
+			applyBtn.setEnabled(false);
+			
+		} catch (SystemException ex) {
+//			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(ex);
+			String msg = "Failed to set log levels for '" + getName() + "' because of Corba errors. Giving up, also for other loggers of the same process.";
+			logger.log(Level.WARNING, msg, ex);
+			JOptionPane.showMessageDialog(null, msg + " \nCheck the logs for details.", "Error", JOptionPane.ERROR_MESSAGE);
+		} catch (Exception ex) {
+//			AcsJUnexpectedExceptionEx ex2 = new AcsJUnexpectedExceptionEx(ex);
+			String msg = "Failed to set log levels for '" + getName() + "'. Giving up, also for other loggers of the same process.";
+			logger.log(Level.WARNING, msg, ex);
+			JOptionPane.showMessageDialog(null, msg + " \nCheck the logs for details.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
-		model.changesApplied();
-		updateMinLevels();
-
-		applyBtn.setEnabled(false);
 	}
 	
 	/**
 	 * Refresh the list, to see changes made by other operators
 	 */
 	public void refresh() {
-    	if (userChangedLogLevels()) {
-			if (JOptionPane.showConfirmDialog(
-					null, 
-					"Do you really want to discard changes?", 
-					"Confirm", 
-					JOptionPane.YES_NO_OPTION)==JOptionPane.NO_OPTION) {
+		
+		if (userChangedLogLevels()) {
+			if (JOptionPane.showConfirmDialog(null, "Do you really want to discard changes?", "Confirm",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
 				return;
 			}
 		}
 		
-		refreshAllLoggersPanel();
-		applyChanges();
-
-		LogLevelHelper[] levels=null;
 		try {
+			refreshAllLoggersPanel();
+			applyChanges();
+	
+			LogLevelHelper[] levels = null;
 			levels = loggersLbl();
-		} 
-		 catch (ExecutionException e) { 
-			//e.printStackTrace();
-			 logger.info(e.toString());
-			return;
-		} catch (Exception e) {
-			System.err.println("Function not yet implemented by "+getName());
-			logger.info(e.toString());
-			//e.printStackTrace(System.err);
-			return;
+	
+			model.setLevels(levels);
+			model.fireTableDataChanged();
+	
+			applyBtn.setEnabled(false);
+		} catch (Exception ex) {
+			String msg = "Failed to read loggers or levels levels for '" + getName() + "'.";
+			logger.log(Level.WARNING, msg, ex);
+			JOptionPane.showMessageDialog(null, msg + " \nCheck the logs for details.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-
-		model.setLevels(levels);
-		model.fireTableDataChanged();
-		
-		applyBtn.setEnabled(false);
 	}
 	
 	/**
@@ -497,8 +410,9 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * Setup the panel with the option for all the named loggers
 	 * 
 	 * @return
+	 * @throws AcsJCORBAProblemEx 
 	 */
-	private JPanel initAllLoggersPanel() {
+	private JPanel initAllLoggersPanel() throws AcsJCORBAProblemEx {
 		TitledBorder border = BorderFactory.createTitledBorder("Process wide default log levels");
 
 		JPanel        mainPnl = new JPanel();
@@ -544,52 +458,42 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		return mainPnl;
 	}
 	
-	private void refreshAllLoggersPanel() {
+	/**
+	 * This method makes remote calls and should not be called in the event thread!
+	 * @throws AcsJCORBAProblemEx In case of ORB / network failure or if remote process is unresponsive or unreachable.
+	 */
+	private void refreshAllLoggersPanel() throws AcsJCORBAProblemEx {
 
-		LogLevels defaultLevels = null;
-
-		SwingWorker<LogLevels,Void> worker = new SwingWorker<LogLevels, Void>() {
-			protected LogLevels doInBackground() throws Exception {
-				return logConf.get_default_logLevels();
+		try {
+			LogLevels defaultLevels = logConf.get_default_logLevels();
+			
+			int acsLevel = defaultLevels.minLogLevelLocal;
+			
+			try {
+				LogTypeHelper logTypeLocal = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(acsLevel));
+				allLocalCB.setSelectedIndex(logTypeLocal.ordinal());
+				model.setCommonLocalLevel(logTypeLocal);
+			} catch (AcsJIllegalArgumentEx e) {
+				logger.warning("Unexpected log level " + acsLevel + " obtained as default minLogLevelLocal.");
 			}
-		};
-		worker.execute();
-
-		try {
-			defaultLevels = worker.get();
-		} catch (/*org.omg.CORBA.SystemException cse*/ExecutionException ee) {
-			System.out.println("refreshAllLoggersPanel.ExecutionException");
-			//e1.printStackTrace();
-			return;
-		}
-		catch (Exception e1) {
-			System.out.println("refreshAllLoggersPanel.Exception");
-			//e1.printStackTrace();
-		}
-		
-		int acsLevel = defaultLevels.minLogLevelLocal;
-		try {
-			LogTypeHelper logTypeLocal  = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(acsLevel));
-			allLocalCB.setSelectedIndex(logTypeLocal.ordinal());
-			model.setCommonLocalLevel(logTypeLocal);
-		} catch (AcsJIllegalArgumentEx e) {
-			System.out.println("Unexpected log level : " + acsLevel);
-			e.printStackTrace(System.err);
-		}
-		
-		acsLevel = defaultLevels.minLogLevel;
-		try {
-			LogTypeHelper logTypeGlobal = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(acsLevel));
-			allGlobalCB.setSelectedIndex(logTypeGlobal.ordinal());
-			model.setCommonGlobalLevel(logTypeGlobal);
-		} catch (AcsJIllegalArgumentEx e) {
-			System.out.println("Unexpected log level : " + acsLevel);
-			e.printStackTrace(System.err);
+			
+			acsLevel = defaultLevels.minLogLevel;
+			try {
+				LogTypeHelper logTypeGlobal = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(acsLevel));
+				allGlobalCB.setSelectedIndex(logTypeGlobal.ordinal());
+				model.setCommonGlobalLevel(logTypeGlobal);
+			} catch (AcsJIllegalArgumentEx e) {
+				logger.warning("Unexpected log level " + acsLevel + " obtained as default minLogLevel.");
+			}
+		} catch (SystemException ex) {
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx(ex);
+			ex2.setInfo("Failed to retrieve logger names or levels.");
+			throw ex2;
 		}
 	}
 
 	/**
-	 * Setup the panel to show mimimum levels
+	 * Setup the panel to show minimum levels
 	 * 
 	 * @return
 	 */
