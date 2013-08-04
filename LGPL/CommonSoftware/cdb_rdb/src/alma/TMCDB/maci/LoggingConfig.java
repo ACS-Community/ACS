@@ -43,7 +43,7 @@ public class LoggingConfig implements java.io.Serializable {
     private Integer maxLogsPerSecond;
     
 	// must be public to be accessible, but should not have getter to be come visible as node
-	public Map<String, NamedLoggerConfig> _;
+	public Map<String, NamedLoggerConfig> MAP_;
     
     /**
      * Default Constructor for LoggingConfig.  Setter methods must be used to insert data.

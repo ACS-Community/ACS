@@ -18,7 +18,7 @@
     <property name="maxLogQueueSize" column="MaxLogQueueSize" />
     <property name="maxLogsPerSecond" column="MaxLogsPerSecond" />
 
-    <map name="_" access="field" lazy="false">
+    <map name="MAP_" access="field" lazy="false">
       <key column="LoggingConfigId" />
       <map-key column="Name" type="string" />
       <one-to-many class="NamedLoggerConfig" />

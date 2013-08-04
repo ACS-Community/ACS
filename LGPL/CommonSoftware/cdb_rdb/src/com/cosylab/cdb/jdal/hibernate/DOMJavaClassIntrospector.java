@@ -48,6 +48,7 @@ public class DOMJavaClassIntrospector {
 
 	public static final char PATH_SEPARATOR = '/';
 	public static final String SUBNODES_MAP_NAME = "_";
+	public static final String SUBNODES_MAP_NAME_ALTERNATIVE = "MAP_";
 
 	public static Object getNode(String path, Object rootNode)
 	{
@@ -256,7 +257,7 @@ public class DOMJavaClassIntrospector {
 				if (field != null)
 				{
 	
-					if (name.equals(SUBNODES_MAP_NAME))
+					if (name.equals(SUBNODES_MAP_NAME) || name.equals(SUBNODES_MAP_NAME_ALTERNATIVE))
 					{
 						// this will work only on public fields
 						try {
@@ -280,7 +281,7 @@ public class DOMJavaClassIntrospector {
 						}
 					}
 				}
-				else if (!name.equals(SUBNODES_MAP_NAME))
+				else if (!name.equals(SUBNODES_MAP_NAME) && !name.equals(SUBNODES_MAP_NAME_ALTERNATIVE))
 				{
 					// check extra data
 					if (node instanceof ExtraDataFeature)
@@ -297,7 +298,21 @@ public class DOMJavaClassIntrospector {
 					// check for subnodesMap map
 					Object subnodesMap = getChild(SUBNODES_MAP_NAME, node);
 					if (subnodesMap instanceof Map)
-						return ((Map)subnodesMap).get(name);
+					{
+						Object obj = ((Map)subnodesMap).get(name);
+						if (obj != null)
+							return obj;
+					}
+					subnodesMap = getChild(SUBNODES_MAP_NAME_ALTERNATIVE, node);
+					if (subnodesMap instanceof Map)
+					{
+						Object obj = ((Map)subnodesMap).get(name);
+						if (obj != null)
+							return obj;
+					}
+					
+					// not in map
+					return null;
 				}
 				
 				// not found
@@ -415,6 +430,13 @@ public class DOMJavaClassIntrospector {
 				for (Object key : keySet)
 					subnodes.add(key.toString());
 			}
+			subnodesMap = getChild(SUBNODES_MAP_NAME_ALTERNATIVE, node);
+			if (subnodesMap instanceof Map)
+			{
+				Set keySet = ((Map)subnodesMap).keySet();
+				for (Object key : keySet)
+					subnodes.add(key.toString());
+			}
 		}
 		
 		return subnodes.toArray(new String[subnodes.size()]);
@@ -452,6 +474,14 @@ public class DOMJavaClassIntrospector {
 				for (Object key : keySet)
 					subnodes.add(new NamedObject(key.toString(), map.get(key)));
 			}
+			subnodesMap = getChild(SUBNODES_MAP_NAME_ALTERNATIVE, node);
+			if (subnodesMap instanceof Map)
+			{
+				Map map = (Map)subnodesMap;
+				Set keySet = map.keySet();
+				for (Object key : keySet)
+					subnodes.add(new NamedObject(key.toString(), map.get(key)));
+			}
 		}
 	}
 
@@ -477,6 +507,13 @@ public class DOMJavaClassIntrospector {
 		}
 		
 		Object subnodesMap = getChild(SUBNODES_MAP_NAME, node);
+		if (subnodesMap instanceof InternalElementsMap)
+		{
+			Set keySet = ((Map)subnodesMap).keySet();
+			for (Object key : keySet)
+				subnodes.add(key.toString());
+		}
+		subnodesMap = getChild(SUBNODES_MAP_NAME_ALTERNATIVE, node);
 		if (subnodesMap instanceof InternalElementsMap)
 		{
 			Set keySet = ((Map)subnodesMap).keySet();
@@ -760,9 +797,14 @@ public class DOMJavaClassIntrospector {
 		{
 			Object subnodesMap = getChild(SUBNODES_MAP_NAME, parentNode);
 			if (subnodesMap instanceof Map)
-				return ((Map)subnodesMap).containsKey(name);
-			else
-				return false;
+				if (((Map)subnodesMap).containsKey(name))
+					return true;
+			subnodesMap = getChild(SUBNODES_MAP_NAME_ALTERNATIVE, parentNode);
+			if (subnodesMap instanceof Map)
+				if (((Map)subnodesMap).containsKey(name))
+					return true;
+			
+			return false;
 		}
 	}
 
@@ -837,6 +879,7 @@ public class DOMJavaClassIntrospector {
 			}
 			boolean dashAsName = false;
 			if (getChild(SUBNODES_MAP_NAME, node) instanceof InternalElementsMap);
+			// TODO SUBNODES_MAP_NAME_ALTERNATIVE
 			else if (isMapSubnode(subnode, node))
 			{
 				dashAsName = true;
@@ -870,12 +913,20 @@ public class DOMJavaClassIntrospector {
 
 			boolean dashAsName = false;
 			if (getChild(SUBNODES_MAP_NAME, node) instanceof InternalElementsMap);
+			else if (getChild(SUBNODES_MAP_NAME_ALTERNATIVE, node) instanceof InternalElementsMap);
 			else if (isMapSubnode(subnode, node))
 			{
 				dashAsName = true;
 				Object subsubMap = getChild(SUBNODES_MAP_NAME, childNode);
 				if (subsubMap instanceof Map && ((Map)subsubMap).size() > 0)
 					dashAsName = false;
+				// check also for alternative
+				if (dashAsName)
+				{
+					subsubMap = getChild(SUBNODES_MAP_NAME_ALTERNATIVE, childNode);
+					if (subsubMap instanceof Map && ((Map)subsubMap).size() > 0)
+						dashAsName = false;
+				}
 			}
 			buffer.append(toXML(getNodeXMLName(dashAsName ? "_" : subnode, childNode), childNode, (nodeName == null) ? null : nodeName + "/" + subnode, log));
 		}
