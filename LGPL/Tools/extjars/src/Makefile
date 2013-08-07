@@ -79,6 +79,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/openorb13Debug.jar \
 	../lib/prevayler-1.02.001.jar \
 	../lib/saxpath.jar \
+	../lib/servlet-api-3.0.jar \
 	../lib/slf4j-api-1.5.8.jar \
 	../lib/sqltool.jar \
 	../lib/tablelayout.jar \
