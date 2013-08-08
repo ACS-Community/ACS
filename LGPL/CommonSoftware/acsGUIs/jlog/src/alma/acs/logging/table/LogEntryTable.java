@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -987,5 +988,25 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		zoomProgressMonitor= new ProgressMonitor(this,"Zoom",null,0,num);
 		System.out.println(""+num+" files to read while zoom");
 	}
+
+	/** 
+	 * Align the text of the table to the top.
+	 * <P>
+	 * By default the vertical alignment of text in the {@link JLabel} used to show text
+	 * in table cells is centered.. This cause a problem when the text is multiline so we have
+	 * to force a TOP alignment of the text.
+	 *   
+	 * @see javax.swing.JTable#getCellRenderer(int, int)
+	 */
+	@Override
+	public TableCellRenderer getCellRenderer(int row, int column) {
+		TableCellRenderer temp=super.getCellRenderer(row, column);
+		if (temp instanceof JLabel) {
+			((JLabel)temp).setVerticalAlignment(JLabel.TOP);
+		}
+		return temp;
+	}
+	
+	
 	
 }
