@@ -21,11 +21,13 @@
  */
 package com.cosylab.logging.settings;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JCheckBox;
 
-import com.cosylab.gui.components.r2.DateTimeChooser;
+import alma.acs.gui.widgets.DateTimeSelector;
+
 import com.cosylab.logging.engine.MinMaxFilter;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.InvalidFilterConstraintException;
@@ -35,8 +37,9 @@ import com.cosylab.logging.engine.InvalidFilterConstraintException;
  * @author: 
  */
 public class FilterDatePanel extends FilterParameterPanel {
-	private DateTimeChooser minimum;
-	private DateTimeChooser maximum;
+	
+	private DateTimeSelector minimum;
+	private DateTimeSelector maximum;
 
 	private JCheckBox minimumCheck;
 	private JCheckBox maximumCheck;
@@ -62,13 +65,13 @@ protected void createComponents() {
 	minimumCheck = new JCheckBox("From");
 	add(minimumCheck, newConstraints(1, 4, 4, 0, 4));
 		
-	minimum = new DateTimeChooser();
+	minimum = new DateTimeSelector();
 	add(minimum, newConstraints(2, 0, 4, 4, 4));
 
 	maximumCheck = new JCheckBox("To");
 	add(maximumCheck, newConstraints(3, 4, 4, 0, 4));
 
-	maximum = new DateTimeChooser();
+	maximum = new DateTimeSelector();
 	add(maximum, newConstraints(4, 0, 4,4,4));
 	
 	
@@ -84,12 +87,13 @@ public Filter getFilter() throws FilterParameterException {
 	Date max = null;
 
 	if (minimumCheck.isSelected()) {
-		min = minimum.getDate();
+		
+		min = minimum.getDate().getTime();
 //		System.out.println(min.toString());
 	}
 
 	if (maximumCheck.isSelected()) {
-		max = maximum.getDate();		
+		max = maximum.getDate().getTime();		
 //		System.out.println(max.toString());
 	}
 
@@ -117,13 +121,17 @@ public void setFilter(Filter f) {
 		return;
 		
 	if ((f.getConstraint() == Filter.Constraint.MINMAX) || (f.getConstraint() == Filter.Constraint.MINIMUM)) {
-		minimum.setDate(new Date((Long)((MinMaxFilter)f).getMinimum()));
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(new Date((Long)((MinMaxFilter)f).getMinimum()));
+		minimum.setDate(cal);
 		minimumCheck.setSelected(true);
 	} else {
 		minimumCheck.setSelected(false);
 	}
 	if ((f.getConstraint() == Filter.Constraint.MINMAX) || (f.getConstraint() == Filter.Constraint.MAXIMUM)) {
-		maximum.setDate(new Date((Long)((MinMaxFilter)f).getMaximum()));
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(new Date((Long)((MinMaxFilter)f).getMaximum()));
+		maximum.setDate(cal);
 		maximumCheck.setSelected(true);
 	} else {
 		maximumCheck.setSelected(false);
