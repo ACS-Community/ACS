@@ -21,4 +21,4 @@ hibernate-commons-annotations.jar - ACS/LGPL/Tools/extjars (added for Hibernate 
 
 ==============
 
-Since hibernate is very hard to build (bugs in the build system, builds only when using Java 1.5), a build from the sources is not made. hibernate3.jar is patched version of the original JAR. Incoporated patch is "hibernateUnderscore.patch".
+Since hibernate is very hard to build (bugs in the build system, builds only when using Java 1.5), a build from the sources is not made.
