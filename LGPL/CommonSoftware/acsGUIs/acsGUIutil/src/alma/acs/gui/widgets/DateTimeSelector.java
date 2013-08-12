@@ -32,6 +32,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
+
 /**
  * A widget to select date and time replacing
  *  <CODE>com.cosylab.gui.components.r2.DateTimeChooser</CODE>.
@@ -81,7 +83,12 @@ public class DateTimeSelector extends JComponent implements ActionListener {
 	 * Constructor
 	 */
 	public DateTimeSelector() {
-		initGUI();
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				initGUI();				
+			}
+		});
 	}
 	
 	/**
