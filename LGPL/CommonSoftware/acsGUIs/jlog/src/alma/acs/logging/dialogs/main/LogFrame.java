@@ -22,6 +22,7 @@
 package alma.acs.logging.dialogs.main;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -116,14 +117,6 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
 		initShutdownHook(); 
 		
 		initialize(discardLevel,unlimited,audienceInfo);
-		// Move the window to the center of the screen 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension windowSize = getSize();
-        setLocation(
-        		Math.max(0,(screenSize.width -windowSize.width)/2), 
-        		Math.max(0,(screenSize.height-windowSize.height)/2));
-        pack();
-		setVisible(true);
 		
 		//	Load the filters in the table (if any)
 		if (filterFile!=null) {
@@ -159,7 +152,6 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
 		
 		// Get events from the main window
 		this.addWindowListener(this);
-		
 	}
 	
 	/**
@@ -194,6 +186,15 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
         this.setRootPane(loggingClient);
         // Enable the exit menu
         loggingClient.hideExitMenu(false);
+        
+     // Move the window to the center of the screen 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension windowSize = getSize();
+        setLocation(
+        		Math.max(0,(screenSize.width -windowSize.width)/2), 
+        		Math.max(0,(screenSize.height-windowSize.height)/2));
+        pack();
+		setVisible(true);
 	}
 	
 	/**
@@ -418,36 +419,50 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
 	}
 	
 	/**
+	 * Set the title of the frame delegating to {@link Frame#setTitle(String)}
+	 * 
+	 * @param title
+	 */
+	private void setFrameTitle(final String title) {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				setTitle(title);
+			}
+		});
+	}
+	
+	/**
 	 * Set the title of the frame online/offline
 	 * 
 	 * @param mode <code>true</code> if running online
 	 */
 	public void voidSetWorkingMode(boolean mode) {
 		if (mode) {
-			setTitle(online);
+			setFrameTitle(online);
 		} else {
-			setTitle(offline);
+			setFrameTitle(offline);
 		}
 	}
 
 	@Override
 	public void acsLogConnConnecting() {
-		setTitle(connecting);
+		setFrameTitle(connecting);
 	}
 
 	@Override
 	public void acsLogConnDisconnected() {
-		setTitle(offline);
+		setFrameTitle(offline);
 	}
 
 	@Override
 	public void acsLogConnEstablished() {
-		setTitle(online);
+		setFrameTitle(online);
 	}
 
 	@Override
 	public void acsLogConnLost() {
-		setTitle(offline);
+		setFrameTitle(offline);
 	}
 
 	@Override
