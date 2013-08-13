@@ -656,7 +656,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 
 		fieldChooser.setVisible(true);
 
-		boolean[] newFields = fieldChooser.getChecked();
+		boolean[] newFields = fieldChooser.getFields();
 
 		for (int i = 0; i < LogField.values().length; i++)
 		{

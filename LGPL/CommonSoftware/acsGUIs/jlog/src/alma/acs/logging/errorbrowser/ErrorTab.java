@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -34,6 +35,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import alma.acs.gui.widgets.CheckList.CheckListTableEntry;
 import alma.acs.logging.table.LogEntryTableModelBase;
 import alma.acs.logging.table.renderer.DateRenderer;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
@@ -227,11 +229,10 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 		fieldChooser.setupFields(colNames, colVisible);
 		fieldChooser.setVisible(true);
 		
-		boolean newFields[] = fieldChooser.getChecked();
-		setupTableCols(newFields);	
+		setupTableCols(fieldChooser.getFields());	
 	}
 	
-	/**
+		/**
 	 * Show or hide the the columns of the table.
 	 * <P>
 	 * The array of boolean has one entry for each column that is

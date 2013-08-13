@@ -35,29 +35,43 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import com.cosylab.gui.components.r2.CheckListModel;
-import com.cosylab.gui.components.r2.JCheckList;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
+import alma.acs.gui.widgets.CheckList;
+
 /**
- * Serves the purpose of selecting the right fields (Timestamp, File, Thread, etc.) 
- * to be displayed in the table according to the user's preferences. Used by LogEntryTable. 
+ * Serves the purpose of selecting the right fields (Timestamp, File, Thread,
+ * etc.) to be displayed in the table according to the user's preferences. Used
+ * by LogEntryTable.
  * <p>
  * Creation date: (1/2/2002 22:53:33)
+ * 
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
 public class FieldChooserDialog extends JDialog {
-	private JCheckList fieldList = null;
-	private JLabel description = null;
-	private JButton buttonOK = null;
-	private JButton buttonCancel = null;
+	
+	/**
+	 * The list with the fields of the logs 
+	 */
+	private final CheckList fieldList = new CheckList();
+	
+	/**
+	 * The OK button
+	 */
+	private final JButton buttonOK =  new JButton("OK");
+	
+	/**
+	 * The button to cancel
+	 */
+	private JButton buttonCancel = new JButton("Cancel");
 
-	private JPanel contentPane = null;
+	//private JPanel contentPane = null;
 
 	private Insets defaultInsets = new Insets(4, 4, 4, 4);
 	private int modalResult = 0;
 
 	// The dialog is positioned over this component when it is made visible
 	// (or at the center of the screen if it is null)
-	private Component displayHelperComponent=null;
+	private Component displayHelperComponent = null;
 
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -69,88 +83,52 @@ public class FieldChooserDialog extends JDialog {
 			FieldChooserDialog.this.setVisible(false);
 		}
 	}
-/**
- * FieldChooserDialog constructor comment.
- * @param displayOverComponent The component over which this dialog will be shown
- */
-public FieldChooserDialog(Component displayOverComponent) {
-	if (displayOverComponent==null) {
-		throw new IllegalArgumentException("Invalid null Component in constructor");
+
+	/**
+	 * FieldChooserDialog constructor comment.
+	 * 
+	 * @param displayOverComponent
+	 *            The component over which this dialog will be shown
+	 */
+	public FieldChooserDialog(Component displayOverComponent) {
+		if (displayOverComponent == null) {
+			throw new IllegalArgumentException(
+					"Invalid null Component in constructor");
+		}
+
+		displayHelperComponent = displayOverComponent;
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				initGUI();
+			}
+		});
 	}
 	
-	displayHelperComponent=displayOverComponent;
-	setTitle("Field chooser");
-	setModal(true);
-	
-	GridBagLayout gb = new GridBagLayout();
-	contentPane = new JPanel();
+	/**
+	 * initialize the GUI
+	 */
+	private void initGUI() {
+		setTitle("Field chooser");
+		setModal(true);
 
-	this.setContentPane(contentPane);
-	contentPane.setLayout(gb);
+		GridBagLayout gb = new GridBagLayout();
+		JPanel contentPane = new JPanel();
 
-	GridBagConstraints constraints = null;
+		this.setContentPane(contentPane);
+		contentPane.setLayout(gb);
 
-	constraints = new GridBagConstraints();
-	
-	constraints.gridx = 0;
-	constraints.gridy = 0;
-	constraints.insets = defaultInsets;
-	constraints.anchor = GridBagConstraints.WEST;
-	constraints.gridheight = 1;
-	constraints.gridwidth = 2;
+		GridBagConstraints constraints = null;
 
-	description = new JLabel("Select fields to display");
-	contentPane.add(description, constraints);
+		constraints = new GridBagConstraints();
 
-	getFieldList();
-
-	ButtonListener buttonListener = new ButtonListener();
-	
-	constraints = new GridBagConstraints();
-	constraints.gridx = 0;
-	constraints.gridy = 2;
-	constraints.insets = defaultInsets;
-	constraints.weightx = 1.0;
-	constraints.gridheight = 1;
-	constraints.gridwidth = 1;
-
-	buttonOK = new JButton("OK");
-	buttonOK.setHorizontalAlignment(SwingConstants.HORIZONTAL);
-	buttonOK.addActionListener(buttonListener);
-	contentPane.add(buttonOK, constraints);
-
-	constraints = new GridBagConstraints();
-	constraints.gridx = 1;
-	constraints.insets = defaultInsets;
-	constraints.gridy = 2;
-	constraints.weightx = 1.0;
-	constraints.gridheight = 1;
-	constraints.gridwidth = 1;
-
-	buttonCancel = new JButton("Cancel");
-	buttonCancel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
-	buttonCancel.addActionListener(buttonListener);
-	contentPane.add(buttonCancel, constraints);
-	
-}
-/**
- * Insert the method's description here.
- * <p>
- * Creation date: (1/2/2002 23:35:37)
- * @return boolean[]
- */
-public boolean[] getChecked() {
-	return getFieldList().getChecked();
-}
-/**
- * Insert the method's description here.
- * <p>
- * Creation date: (1/2/2002 23:19:03)
- * @return com.cosylab.gui.components.JCheckList
- */
-public JCheckList getFieldList() {
-	if (fieldList == null) {
-		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.insets = defaultInsets;
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.gridheight = 1;
+		constraints.gridwidth = 2;
+		contentPane.add(new JLabel("Select fields to display"), constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 1;
@@ -160,47 +138,74 @@ public JCheckList getFieldList() {
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.fill = GridBagConstraints.BOTH;
-
-		fieldList = new JCheckList();
 		contentPane.add(new JScrollPane(fieldList), constraints);
-	}
-	return fieldList;
-}
-/**
- * Insert the method's description here.
- * <p>
- * Creation date: (1/2/2002 23:26:28)
- * @return int
- */
-public int getModalResult() {
-	return modalResult;
-}
 
-/**
- * Insert the method's description here.
- * <p>
- * Creation date: (1/2/2002 23:34:08)
- * @param fieldNames java.lang.String[]
- * @param checked boolean[]
- */
-public void setupFields(String[] fieldNames, boolean[] checked) {
-	CheckListModel clm = (CheckListModel)getFieldList().getModel();
-	clm.clear();
+		ButtonListener buttonListener = new ButtonListener();
+
+		constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		constraints.insets = defaultInsets;
+		constraints.weightx = 1.0;
+		constraints.gridheight = 1;
+		constraints.gridwidth = 1;
+
+		buttonOK.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+		buttonOK.addActionListener(buttonListener);
+		contentPane.add(buttonOK, constraints);
+
+		constraints = new GridBagConstraints();
+		constraints.gridx = 1;
+		constraints.insets = defaultInsets;
+		constraints.gridy = 2;
+		constraints.weightx = 1.0;
+		constraints.gridheight = 1;
+		constraints.gridwidth = 1;
+		buttonCancel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+		buttonCancel.addActionListener(buttonListener);
+		contentPane.add(buttonCancel, constraints);
+	}
+
+	/**
+	 * @return The activation states (check of unchecked) from the widget
+	 */
+	public boolean[] getFields() {
+		return fieldList.getActivationStates();
+	}
 	
-	int n = fieldNames.length;
-
-	for (int i = 0; i < n; i++) {
-		clm.addElement(fieldNames[i]);
-		clm.setChecked(i, checked[i]);
+	/**
+	 * Insert the method's description here.
+	 * <p>
+	 * Creation date: (1/2/2002 23:26:28)
+	 * 
+	 * @return int
+	 */
+	public int getModalResult() {
+		return modalResult;
 	}
 
-}
+	/**
+	 * Insert the method's description here.
+	 * <p>
+	 * Creation date: (1/2/2002 23:34:08)
+	 * 
+	 * @param fieldNames
+	 *            java.lang.String[]
+	 * @param checked
+	 *            boolean[]
+	 */
+	public void setupFields(String[] fieldNames, boolean[] checked) {
+		fieldList.clear();
+		int n = fieldNames.length;
+		for (int i = 0; i < n; i++) {
+			fieldList.addElement(checked[i], fieldNames[i]);
+		}
+	}
 
-
-public void setVisible(boolean visible) {
-	setLocationRelativeTo(displayHelperComponent);
-	pack();
-	super.setVisible(visible);
-	toFront();
-}
+	public void setVisible(boolean visible) {
+		setLocationRelativeTo(displayHelperComponent);
+		pack();
+		super.setVisible(visible);
+		toFront();
+	}
 }
