@@ -151,18 +151,17 @@ public class MinMaxFilter extends Filter {
 		case MINIMUM:
 			type.append("Minimum = ");
 			if (field == LogField.ENTRYTYPE) {
-				type.append(LogTypeHelper.values()[(Integer.parseInt(minimum
-						.toString()))].logEntryType);
+				type.append(((LogTypeHelper)minimum).logEntryType);
 			} else if (field == LogField.TIMESTAMP) {
 				type.append(new Date((Long)minimum).toString());
-			} 
+			}  else {
 				type.append(minimum.toString());
+			}
 			break;
 		case MAXIMUM:
 			type.append("Maximum = ");
 			if (field == LogField.ENTRYTYPE) {
-				type.append(LogTypeHelper.values()[(Integer.parseInt(maximum
-						.toString()))].logEntryType);
+				type.append(((LogTypeHelper)maximum).logEntryType);
 			} else if (field == LogField.TIMESTAMP) {
 				type.append(new Date((Long)maximum).toString());
 			} else {
