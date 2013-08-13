@@ -46,6 +46,7 @@ import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.settings.FieldChooserDialog;
+import com.cosylab.logging.settings.FieldChooserDialog.DialogExitAction;
 
 /**
  * The component in each error tab of the error browser dialog
@@ -229,7 +230,9 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 		fieldChooser.setupFields(colNames, colVisible);
 		fieldChooser.setVisible(true);
 		
-		setupTableCols(fieldChooser.getFields());	
+		if (fieldChooser.getModalResult()==DialogExitAction.OK) {
+			setupTableCols(fieldChooser.getFields());	
+		}
 	}
 	
 		/**

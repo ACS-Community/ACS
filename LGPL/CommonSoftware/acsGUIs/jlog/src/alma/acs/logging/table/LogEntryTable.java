@@ -54,6 +54,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.FieldChooserDialog;
+import com.cosylab.logging.settings.FieldChooserDialog.DialogExitAction;
 import com.cosylab.logging.viewcoordination.ViewCoordinator;
 import com.cosylab.logging.viewcoordination.ViewCoordinator.SingleLogSelectionListener;
 
@@ -656,6 +657,10 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 
 		fieldChooser.setVisible(true);
 
+		if (fieldChooser.getModalResult()==DialogExitAction.CANCEL) {
+			return;
+		}
+		
 		boolean[] newFields = fieldChooser.getFields();
 
 		for (int i = 0; i < LogField.values().length; i++)
