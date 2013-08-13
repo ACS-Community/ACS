@@ -32,6 +32,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -46,12 +47,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
-import com.cosylab.gui.components.r2.CheckListModel;
-import com.cosylab.gui.components.r2.JCheckList;
+import alma.acs.gui.widgets.CheckList;
+import alma.acs.gui.widgets.CheckList.CheckListTableEntry;
+
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
@@ -61,15 +62,21 @@ import com.cosylab.logging.engine.FiltersVector;
  * Serves the purpose of selecting the right filters.
  * Filters are used to display logs in the table according to the user's preferences.
  * They are used by the engine too.
- * 
- * <p>
+ * <P>
+ * The existing filter are set by {@link #setFilters(FiltersVector)} and will be used for restoring
+ * if the user discards the changes.
+ * <BR>
+ * The list of fields defined/edited by the user is in the {@link CheckList} widget that stores
+ * the filter and its activation state.
+ *  
  * Creation date: (1/2/2002 22:53:33)
  * 
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
 public class FilterChooserDialog extends JDialog {
 
-	private JCheckList filterList = null;
+	// The table of filters with their activation state
+	private CheckList filterList;
 
 	private JLabel description = null;
 
@@ -104,13 +111,9 @@ public class FilterChooserDialog extends JDialog {
 	// The Filterable object to apply filters to
 	private Filterable filterable=null;
 	
-	// The filters whose description appears in the
-	// filter list
-	// We instantiate a FiltersVector to use its load/save capabilities
-	private FiltersVector filters=new FiltersVector();
-	
-	// The filters defined at startup (used to implement
-	// the restore)
+	/** 
+	 * The filters defined at startup (used to implement the restore)
+	 */
 	private FiltersVector initialFilters = new FiltersVector();
 	
 	// true if the vector of filters has been modified
@@ -149,7 +152,7 @@ public class FilterChooserDialog extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == buttonClose || e.getSource() == closeMI) { // Close
 				if (modified) {
-					int ret = JOptionPane.showConfirmDialog(null,
+					int ret = JOptionPane.showConfirmDialog(FilterChooserDialog.this,
 							"<HTML>You have modified the filters withouth saving/applying.<BR>Do you really want to close?</HTML>",
 							"Close confimation", JOptionPane.YES_NO_OPTION);
 					if (ret != JOptionPane.YES_OPTION) {
@@ -160,20 +163,9 @@ public class FilterChooserDialog extends JDialog {
 				loggingClient.enableFiltersWidgets(true);
 				return;
 			} else if (e.getSource() == buttonModify) { // Modify/Edit
-				CheckListModel clm = (CheckListModel) fcd.filterList.getModel();
-				int i = fcd.filterList.getSelectedIndex();
-				if (i >= 0) {
-					boolean isItemChecked = clm.isChecked(i);
-
-					if (i > -1) {
-						Filter f = (Filter) clm.get(i);
-						f = editFilter(f);
-						if (f != null) {
-							clm.set(i, f);
-							filters.set(i, f);
-						}
-					}
-					clm.setChecked(i, isItemChecked);
+				CheckListTableEntry selectedEntry=filterList.getSelectedEntry();
+				if (selectedEntry!=null) {
+					editFilter((Filter)selectedEntry.getItem());
 					modified=true;
 				} else {
 					JOptionPane.showMessageDialog(FilterChooserDialog.this,
@@ -183,40 +175,28 @@ public class FilterChooserDialog extends JDialog {
 			} else if (e.getSource() == buttonAdd) { // Add
 				Filter f = editFilter(null);
 				if (f != null) {
-					CheckListModel clm = (CheckListModel) fcd.filterList.getModel();
-					clm.addElement(f);
-					clm.setChecked(clm.getSize() - 1, true);
-					filters.add(f);
+					filterList.addElement(true,f);
 					modified=true;
 				}
 			} else if (e.getSource() == buttonRemove) { // Remove
-				int i = fcd.filterList.getSelectedIndex();
-				if (i > -1)
-					((CheckListModel) (fcd.filterList.getModel())).remove(i);
-					filters.remove(i);
+				CheckListTableEntry removedEntry=filterList.removeSelectedEntry();
+				if (removedEntry!=null) {
+					// An entry has been really removed
 					modified=true;
+				}
 			} else if (e.getSource() == activateAllMI) {
-				CheckListModel clm = (CheckListModel) filterList.getModel();
-				for (int i = 0; i < clm.getSize(); i++) {
-					clm.setChecked(i, true); // Deactivate all the filters
-					modified=true;
-				}
+				filterList.activateAll(true);
+				modified=true;
 			} else if (e.getSource() == deactivateAllMI) { // Deactivate All
-				CheckListModel clm = (CheckListModel) filterList.getModel();
-				for (int i = 0; i < clm.getSize(); i++) {
-					clm.setChecked(i, false); // Deactivate all the filters
-					modified=true;
-				}
+				filterList.activateAll(false);
+				modified=true;
 			} else if (e.getSource() == clearAllMI) { // Delete all
-				CheckListModel clm = (CheckListModel) filterList.getModel();
-				if (clm.getSize() > 0) {
-					// Ask the user for a confirmation
-					int ret = JOptionPane.showConfirmDialog(null,
+				if (filterList.getItemsSize()>0) {
+					int ret = JOptionPane.showConfirmDialog(FilterChooserDialog.this,
 							"Do you really want to delete all the filters?",
 							"Delete all filters", JOptionPane.YES_NO_OPTION);
 					if (ret == JOptionPane.YES_OPTION) {
-						clm.clear();
-						filters.clear();
+						filterList.clear();
 						modified=true;
 					}
 				}
@@ -302,8 +282,7 @@ public class FilterChooserDialog extends JDialog {
 			throw new IllegalArgumentException("Invalid null filter vector");
 		}
 		initialFilters.setFilters(flts);
-		filters.setFilters(flts);
-		setupFields(filters);
+		setupFields(flts,false);
 	}
 
 	/**
@@ -329,9 +308,8 @@ public class FilterChooserDialog extends JDialog {
 		c.gridwidth = 3;
 		c.weighty = 1.0;
 		c.fill = GridBagConstraints.BOTH;
-		filterList = new JCheckList();
+		filterList =new CheckList();
 		panel.add(new JScrollPane(filterList), c);
-		filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		JSeparator sep = new JSeparator();
 		GridBagConstraints constr = newConstraints(0, 2, 4, 4);
@@ -352,34 +330,6 @@ public class FilterChooserDialog extends JDialog {
 		
 		getContentPane().add(panel,BorderLayout.CENTER);
 		pack();
-	}
-
-	/**
-	 * Insert the method's description here.
-	 * <p>
-	 * Creation date: (1/2/2002 23:35:37)
-	 * 
-	 * @return boolean[]
-	 */
-	public boolean[] getChecked() {
-		return filterList.getChecked();
-	}
-
-	/**
-	 * Insert the method's description here. Creation date: (2/6/02 3:34:17 PM)
-	 * 
-	 * @return com.cosylab.logging.engine.Filter[]
-	 */
-	public Filter[] getFilters() {
-		CheckListModel clm = (CheckListModel) (filterList.getModel());
-
-		int l = clm.size();
-		Filter[] returnValue = new Filter[l];
-
-		for (int i = 0; i < l; i++) {
-			returnValue[i] = (Filter) clm.get(i);
-		}
-		return returnValue;
 	}
 
 	/**
@@ -414,26 +364,18 @@ public class FilterChooserDialog extends JDialog {
 	 * (one row per each filter) 
 	 * 
 	 * @param filters The list of filters
+	 * @param append If <code>true</code> the filters are appended to the existing filters 
 	 */
-	private void setupFields(FiltersVector filters) {
+	private void setupFields(FiltersVector filters, boolean append) {
 		if (filters==null) {
 			throw new IllegalArgumentException("The FiltersVector can't be null");
 		}
-		CheckListModel clm = (CheckListModel) filterList.getModel();
-		clm.clear();
+		if (!append) {
+			filterList.clear();
+		}
 
 		for (int i = 0; i < filters.size(); i++) {
-			clm.addElement(filters.get(i));
-			clm.setChecked(i, false); // Deactivate all the filters
-		}
-		// Activate the selected filters
-		if (filters.hasActiveFilters()) {
-			int active[] = filters.getAppliedFiltersIndexes();
-			if (active != null) {
-				for (int i = 0; i < active.length; i++) {
-					clm.setChecked(active[i], true);
-				}
-			}
+			filterList.addElement(filters.isActive(i),filters.get(i));
 		}
 
 		updateButtons();
@@ -445,7 +387,7 @@ public class FilterChooserDialog extends JDialog {
 	 * Creation date: (2/13/2002 18:35:12)
 	 */
 	protected void updateButtons() {
-		boolean hasEntries = (filterList.getModel().getSize() > 0);
+		boolean hasEntries = (filterList.getItemsSize()>0);
 		buttonRemove.setEnabled(hasEntries);
 		buttonModify.setEnabled(hasEntries);
 		activateAllMI.setEnabled(hasEntries);
@@ -462,7 +404,7 @@ public class FilterChooserDialog extends JDialog {
 	private void loadFilters() {
 		boolean eraseOldFilters;
 		// Check if already exists filters
-		if (filters.size() > 0) {
+		if (filterList.getItemsSize()>0) {
 			int ret = JOptionPane.showConfirmDialog(this,
 					"Do you want do discard existing filters?",
 					"Merge filters?", 
@@ -486,12 +428,14 @@ public class FilterChooserDialog extends JDialog {
 			// Load filters from file
 			File fileToLoad = fileChooserDlg.getSelectedFile();
 			if (fileToLoad != null) {
+				FiltersVector filters=new FiltersVector();
 				try {
 					filters.loadFilters(fileToLoad,	eraseOldFilters, null);
 				} catch (Throwable t) {
-					JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
 				}
-				setupFields(filters);
+				setupFields(filters,!eraseOldFilters);
+				modified=true;
 				filterFileName = fileToLoad.getAbsolutePath();
 			}
 		}
@@ -503,7 +447,7 @@ public class FilterChooserDialog extends JDialog {
 	 */
 	private void saveAsFilters() {
 		// Check if there are filters in use
-		if (filters.size() == 0) {
+		if (filterList.getItemsSize()==0) {
 			JOptionPane.showMessageDialog(this, "No filters to save",
 					"Warning", JOptionPane.INFORMATION_MESSAGE);
 			return;
@@ -541,10 +485,10 @@ public class FilterChooserDialog extends JDialog {
 		if (!fileName.toUpperCase().endsWith(".XML")) {
 			fileName = fileName + ".xml";
 		}
-		CheckListModel clm = (CheckListModel) filterList.getModel();
-		for (int t=0; t<clm.getSize(); t++) {
-			Filter f = (Filter)clm.get(t);
-			filters.activateFilter(f,clm.isChecked(t));
+		List<CheckListTableEntry> entries=filterList.getEntries();
+		FiltersVector filters=new FiltersVector();
+		for (CheckListTableEntry entry: entries) {
+			filters.addFilter((Filter)entry.getItem(), entry.isActive());
 		}
 		File f = new File(fileName);
 		try {
@@ -561,19 +505,9 @@ public class FilterChooserDialog extends JDialog {
 	 *
 	 */
 	private void applyFilters() {
-		if (filterList.getModel().getSize()!=filters.size()) {
-			throw new IllegalArgumentException("The filterList and the FiltersVector differ");
-		}
-		Filter[] theFilters = new Filter[filters.size()];
-		filters.toArray(theFilters);
-		boolean actives[] = new boolean[filters.size()];
-		CheckListModel clm = (CheckListModel)filterList.getModel();
-		for (int t=0; t<clm.getSize(); t++) {
-			actives[t]=clm.isChecked(t);
-		}
 		FiltersVector newFilters = new FiltersVector();
-		for (int t=0; t<theFilters.length; t++) {
-			newFilters.addFilter(theFilters[t], actives[t]);
+		for (CheckListTableEntry entry: filterList.getEntries()) {
+			newFilters.addFilter((Filter)entry.getItem(),entry.isActive());
 		}
 		filterable.setFilters(newFilters,false);
 	}
@@ -585,15 +519,14 @@ public class FilterChooserDialog extends JDialog {
 	 */
 	private void restoreFilters() {
 		if (modified) {
-			int ret = JOptionPane.showConfirmDialog(null,
+			int ret = JOptionPane.showConfirmDialog(this,
 				"Do you really want to restore the original filters?",
 				"Restore filters", JOptionPane.YES_NO_OPTION);
 			if (ret != JOptionPane.YES_OPTION) {
 				return;
 			}
 		}
-		filters.setFilters(initialFilters);
-		setupFields(filters);
+		setupFields(initialFilters,false);
 	}
 	
 	/**
