@@ -21,10 +21,8 @@
  */
 package com.cosylab.logging.settings;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,7 +31,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 
 import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acs.gui.widgets.CheckList;
@@ -50,6 +47,18 @@ import alma.acs.gui.widgets.CheckList;
 public class FieldChooserDialog extends JDialog {
 	
 	/**
+	 * The exit code depends on the button pressed by the user: Ok, Cancel.
+	 * 
+	 * @author acaproni
+	 * @since ACS 12.1
+	 *
+	 */
+	public enum DialogExitAction {
+		OK,
+		CANCEL
+	}
+	
+	/**
 	 * The list with the fields of the logs 
 	 */
 	private final CheckList fieldList = new CheckList();
@@ -64,21 +73,23 @@ public class FieldChooserDialog extends JDialog {
 	 */
 	private JButton buttonCancel = new JButton("Cancel");
 
-	//private JPanel contentPane = null;
+	/**
+	 * The result of this dialog i.e. OK/Cancel
+	 */
+	private DialogExitAction modalResult;
 
-	private Insets defaultInsets = new Insets(4, 4, 4, 4);
-	private int modalResult = 0;
-
-	// The dialog is positioned over this component when it is made visible
-	// (or at the center of the screen if it is null)
-	private Component displayHelperComponent = null;
+	/**
+	 *  The dialog is positioned over this component when it is made visible
+	 *  (or at the center of the screen if it is <code>null</code>)
+	 */
+	private final Component displayHelperComponent;
 
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == buttonOK) {
-				modalResult = 1;
+				modalResult = DialogExitAction.OK;
 			} else {
-				modalResult = 0;
+				modalResult = DialogExitAction.CANCEL;
 			}
 			FieldChooserDialog.this.setVisible(false);
 		}
@@ -112,58 +123,21 @@ public class FieldChooserDialog extends JDialog {
 		setTitle("Field chooser");
 		setModal(true);
 
-		GridBagLayout gb = new GridBagLayout();
-		JPanel contentPane = new JPanel();
-
+		JPanel contentPane = new JPanel(new BorderLayout());
 		this.setContentPane(contentPane);
-		contentPane.setLayout(gb);
-
-		GridBagConstraints constraints = null;
-
-		constraints = new GridBagConstraints();
-
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.insets = defaultInsets;
-		constraints.anchor = GridBagConstraints.WEST;
-		constraints.gridheight = 1;
-		constraints.gridwidth = 2;
-		contentPane.add(new JLabel("Select fields to display"), constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 1;
-		constraints.gridheight = 1;
-		constraints.insets = defaultInsets;
-		constraints.gridwidth = 2;
-		constraints.weightx = 1.0;
-		constraints.weighty = 1.0;
-		constraints.fill = GridBagConstraints.BOTH;
-		contentPane.add(new JScrollPane(fieldList), constraints);
+		contentPane.add(new JLabel("Select columns to display"), BorderLayout.NORTH);
+		contentPane.add(new JScrollPane(fieldList), BorderLayout.CENTER);
+		
+		JPanel buttonPnl = new JPanel(new BorderLayout());
 
 		ButtonListener buttonListener = new ButtonListener();
 
-		constraints = new GridBagConstraints();
-		constraints.gridx = 0;
-		constraints.gridy = 2;
-		constraints.insets = defaultInsets;
-		constraints.weightx = 1.0;
-		constraints.gridheight = 1;
-		constraints.gridwidth = 1;
-
-		buttonOK.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 		buttonOK.addActionListener(buttonListener);
-		contentPane.add(buttonOK, constraints);
+		buttonPnl.add(buttonOK, BorderLayout.EAST);
 
-		constraints = new GridBagConstraints();
-		constraints.gridx = 1;
-		constraints.insets = defaultInsets;
-		constraints.gridy = 2;
-		constraints.weightx = 1.0;
-		constraints.gridheight = 1;
-		constraints.gridwidth = 1;
-		buttonCancel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 		buttonCancel.addActionListener(buttonListener);
-		contentPane.add(buttonCancel, constraints);
+		buttonPnl.add(buttonCancel, BorderLayout.WEST);
+		contentPane.add(buttonPnl,BorderLayout.SOUTH);
 	}
 
 	/**
@@ -178,9 +152,9 @@ public class FieldChooserDialog extends JDialog {
 	 * <p>
 	 * Creation date: (1/2/2002 23:26:28)
 	 * 
-	 * @return int
+	 * @return OK or CANCEL depending on the button pressed by the user
 	 */
-	public int getModalResult() {
+	public DialogExitAction getModalResult() {
 		return modalResult;
 	}
 
@@ -202,10 +176,15 @@ public class FieldChooserDialog extends JDialog {
 		}
 	}
 
-	public void setVisible(boolean visible) {
-		setLocationRelativeTo(displayHelperComponent);
-		pack();
-		super.setVisible(visible);
-		toFront();
+	public void setVisible(final boolean visible) {
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				setLocationRelativeTo(displayHelperComponent);
+				pack();
+				FieldChooserDialog.super.setVisible(visible);
+				toFront();
+			}
+		});
 	}
 }
