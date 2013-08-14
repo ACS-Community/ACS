@@ -31,7 +31,7 @@ public class Test extends TestCase {
 		sem.put(se.getName(), se);
 		s.persist(se);
 
-		te.set_(sem);
+		te.setMAP_(sem);
 		s.persist(te);
 		
 		

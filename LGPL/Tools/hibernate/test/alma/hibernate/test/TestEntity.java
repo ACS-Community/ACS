@@ -28,7 +28,7 @@ import org.hibernate.annotations.MapKey;
 public class TestEntity {
 
 	private Integer id;
-	private Map<String, SubEntity> _;
+	private Map<String, SubEntity> MAP_;
 	
 	@Id
 	@GeneratedValue
@@ -46,15 +46,15 @@ public class TestEntity {
 	
 	@OneToMany(mappedBy="parentId",fetch=FetchType.EAGER)
 	@MapKey(columns={@Column(name="name")})
-	public Map<String, SubEntity> get_() {
-		return _;
+	public Map<String, SubEntity> getMAP_() {
+		return MAP_;
 	}
 
 	/**
 	 * @param _ the _ to set
 	 */
-	public void set_(Map<String, SubEntity> _) {
-		this._ = _;
+	public void setMAP_(Map<String, SubEntity> MAP_) {
+		this.MAP_ = MAP_;
 	}
 
 }

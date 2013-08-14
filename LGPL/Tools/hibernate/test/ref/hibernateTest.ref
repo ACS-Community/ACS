@@ -11,9 +11,9 @@
 1 - ----------T--:--:--.--- INFO [hibernate] Hibernate Commons Annotations 3.1.0.GA
 1 - ----------T--:--:--.--- FINE [hibernate] Validator not present in classpath, ignoring event listener registration
 1 - ----------T--:--:--.--- FINE [hibernate] Search not present in classpath, ignoring event listener registration.
-1 - ----------T--:--:--.--- FINE [hibernate] Preparing to build session factory with filters : {}
 1 - ----------T--:--:--.--- INFO [hibernate] Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
 1 - ----------T--:--:--.--- FINE [hibernate] Execute first pass mapping processing
+1 - ----------T--:--:--.--- FINE [hibernate] Preparing to build session factory with filters : {}
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
 1 - ----------T--:--:--.--- FINE [hibernate] Process hbm files
 1 - ----------T--:--:--.--- INFO [hibernate] Binding entity from annotated class: alma.hibernate.test.TestEntity
@@ -26,26 +26,26 @@
 1 - ----------T--:--:--.--- FINE [hibernate] id is an id
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for id
 1 - ----------T--:--:--.--- FINE [hibernate] Building property id
-1 - ----------T--:--:--.--- FINEST [hibernate] Cascading id with null
 1 - ----------T--:--:--.--- FINE [hibernate] Bind @Id on id
-1 - ----------T--:--:--.--- FINE [hibernate] Processing annotations of alma.hibernate.test.TestEntity._
+1 - ----------T--:--:--.--- FINEST [hibernate] Cascading id with null
+1 - ----------T--:--:--.--- FINE [hibernate] Processing annotations of alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINE [hibernate] Binding column MAP_. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column null. Unique false. Nullable true.
-1 - ----------T--:--:--.--- FINE [hibernate] Binding column _. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column null. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column element. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column name. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column null. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column null. Unique false. Nullable false.
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column null. Unique false. Nullable false.
-1 - ----------T--:--:--.--- FINE [hibernate] Collection role: alma.hibernate.test.TestEntity._
-1 - ----------T--:--:--.--- FINE [hibernate] Building property _
-1 - ----------T--:--:--.--- FINEST [hibernate] Cascading _ with none
+1 - ----------T--:--:--.--- FINE [hibernate] Collection role: alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINE [hibernate] Building property MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] Cascading MAP_ with none
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column DTYPE. Unique false. Nullable false.
 1 - ----------T--:--:--.--- FINE [hibernate] Import with entity name SubEntity
-1 - ----------T--:--:--.--- INFO [hibernate] Binding entity from annotated class: alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINE [hibernate] Processing alma.hibernate.test.SubEntity property annotation
 1 - ----------T--:--:--.--- INFO [hibernate] Bind entity alma.hibernate.test.SubEntity on table sub_entity_table
+1 - ----------T--:--:--.--- INFO [hibernate] Binding entity from annotated class: alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column subId. Unique false. Nullable true.
+1 - ----------T--:--:--.--- FINE [hibernate] Processing alma.hibernate.test.SubEntity property annotation
 1 - ----------T--:--:--.--- FINE [hibernate] Processing annotations of alma.hibernate.test.SubEntity.subId
 1 - ----------T--:--:--.--- FINE [hibernate] Building property subId
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for subId
@@ -55,21 +55,21 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column name. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] Processing annotations of alma.hibernate.test.SubEntity.name
 1 - ----------T--:--:--.--- FINE [hibernate] binding property name with lazy=false
-1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for name
 1 - ----------T--:--:--.--- FINE [hibernate] Building property name
-1 - ----------T--:--:--.--- FINE [hibernate] Processing annotations of alma.hibernate.test.SubEntity.parentId
-1 - ----------T--:--:--.--- FINEST [hibernate] Cascading name with null
+1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for name
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column parentId. Unique false. Nullable true.
 1 - ----------T--:--:--.--- FINE [hibernate] binding property parentId with lazy=false
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for parentId
+1 - ----------T--:--:--.--- FINE [hibernate] Processing annotations of alma.hibernate.test.SubEntity.parentId
+1 - ----------T--:--:--.--- FINEST [hibernate] Cascading name with null
 1 - ----------T--:--:--.--- FINE [hibernate] Building property parentId
 1 - ----------T--:--:--.--- FINE [hibernate] processing fk mappings (*ToOne and JoinedSubclass)
 1 - ----------T--:--:--.--- FINEST [hibernate] Cascading parentId with null
-1 - ----------T--:--:--.--- FINE [hibernate] processing extends queue
 1 - ----------T--:--:--.--- FINE [hibernate] processing collection mappings
-1 - ----------T--:--:--.--- FINE [hibernate] Second pass for collection: alma.hibernate.test.TestEntity._
-1 - ----------T--:--:--.--- FINE [hibernate] Binding a OneToMany: alma.hibernate.test.TestEntity._ through a foreign key
-1 - ----------T--:--:--.--- INFO [hibernate] Mapping collection: alma.hibernate.test.TestEntity._ -> sub_entity_table
+1 - ----------T--:--:--.--- FINE [hibernate] processing extends queue
+1 - ----------T--:--:--.--- FINE [hibernate] Second pass for collection: alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINE [hibernate] Binding a OneToMany: alma.hibernate.test.TestEntity.MAP_ through a foreign key
+1 - ----------T--:--:--.--- INFO [hibernate] Mapping collection: alma.hibernate.test.TestEntity.MAP_ -> sub_entity_table
 1 - ----------T--:--:--.--- FINE [hibernate] Retrieving property alma.hibernate.test.SubEntity.parentId
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for null
 1 - ----------T--:--:--.--- FINE [hibernate] Mapped collection key: parentId, index: name, one-to-many: alma.hibernate.test.SubEntity
@@ -81,10 +81,10 @@
 1 - ----------T--:--:--.--- INFO [hibernate] autocommit mode: false
 1 - ----------T--:--:--.--- INFO [hibernate] Hibernate connection pool size: 20
 1 - ----------T--:--:--.--- INFO [hibernate] Using Hibernate built-in connection pool (not for production use!)
-1 - ----------T--:--:--.--- INFO [hibernate] using driver: org.hsqldb.jdbc.JDBCDriver at URL: jdbc:hsqldb:mem:test
-1 - ----------T--:--:--.--- FINE [hibernate] opening new JDBC connection
 1 - ----------T--:--:--.--- FINEST [hibernate] total checked-out connections: 0
 1 - ----------T--:--:--.--- INFO [hibernate] connection properties: {user=sa, password=}
+1 - ----------T--:--:--.--- INFO [hibernate] using driver: org.hsqldb.jdbc.JDBCDriver at URL: jdbc:hsqldb:mem:test
+1 - ----------T--:--:--.--- FINE [hibernate] opening new JDBC connection
 1 - ----------T--:--:--.--- FINE [hibernate] created connection to: jdbc:hsqldb:mem:test, Isolation Level: 2
 1 - ----------T--:--:--.--- FINEST [hibernate] returning connection to pool, pool size: 1
 1 - ----------T--:--:--.--- INFO [hibernate] JDBC driver: HSQL Database Engine Driver, version: 2.0.0
@@ -98,47 +98,47 @@
 1 - ----------T--:--:--.--- INFO [hibernate] JDBC batch updates for versioned data: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Scrollable result sets: enabled
 1 - ----------T--:--:--.--- FINE [hibernate] Wrap result sets: disabled
-1 - ----------T--:--:--.--- INFO [hibernate] JDBC3 getGeneratedKeys(): enabled
 1 - ----------T--:--:--.--- INFO [hibernate] Connection release mode: auto
+1 - ----------T--:--:--.--- INFO [hibernate] JDBC3 getGeneratedKeys(): enabled
 1 - ----------T--:--:--.--- INFO [hibernate] Default batch fetch size: 1
 1 - ----------T--:--:--.--- INFO [hibernate] Generate SQL with comments: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Order SQL inserts for batching: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Order SQL updates by primary key: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
-1 - ----------T--:--:--.--- INFO [hibernate] JPA-QL strict compliance: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Query language substitutions: {}
 1 - ----------T--:--:--.--- INFO [hibernate] Using ASTQueryTranslatorFactory
 1 - ----------T--:--:--.--- INFO [hibernate] Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+1 - ----------T--:--:--.--- INFO [hibernate] JPA-QL strict compliance: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Optimize cache for minimal puts: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Query cache: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Second-level cache: enabled
 1 - ----------T--:--:--.--- INFO [hibernate] Structured second-level cache entries: disabled
 1 - ----------T--:--:--.--- FINEST [hibernate] Using dialect defined converter
 1 - ----------T--:--:--.--- INFO [hibernate] Echoing all SQL to stdout
-1 - ----------T--:--:--.--- INFO [hibernate] Deleted entity synthetic identifier rollback: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Statistics: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Default entity-mode: pojo
+1 - ----------T--:--:--.--- INFO [hibernate] Deleted entity synthetic identifier rollback: disabled
 1 - ----------T--:--:--.--- INFO [hibernate] Named query checking : enabled
 1 - ----------T--:--:--.--- INFO [hibernate] building session factory
 1 - ----------T--:--:--.--- FINE [hibernate] Session factory constructed with filter configurations : {}
 1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for entity: alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINE [hibernate]  Version select: select subId from sub_entity_table where subId =?
 1 - ----------T--:--:--.--- FINE [hibernate]  Delete 0: delete from sub_entity_table where subId=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Insert 0: insert into sub_entity_table (name, parentId, subId) values (?, ?, ?)
 1 - ----------T--:--:--.--- FINE [hibernate]  Snapshot select: select subentity_.subId, subentity_.name as name1_, subentity_.parentId as parentId1_ from sub_entity_table subentity_ where subentity_.subId=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Update 0: update sub_entity_table set name=?, parentId=? where subId=?
+1 - ----------T--:--:--.--- FINE [hibernate]  Version select: select subId from sub_entity_table where subId =?
 1 - ----------T--:--:--.--- FINE [hibernate]  Identity insert: insert into sub_entity_table (subId, name, parentId) values (null, ?, ?)
-1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for entity: alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate]  Insert 0: insert into test_entity_table (id) values (?)
 1 - ----------T--:--:--.--- FINE [hibernate]  Snapshot select: select testentity_.id from test_entity_table testentity_ where testentity_.id=?
-1 - ----------T--:--:--.--- FINE [hibernate]  Update 0: null
+1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for entity: alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate]  Version select: select id from test_entity_table where id =?
 1 - ----------T--:--:--.--- FINE [hibernate]  Delete 0: delete from test_entity_table where id=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Identity insert: insert into test_entity_table (id) values (null)
+1 - ----------T--:--:--.--- FINE [hibernate]  Update 0: null
+1 - ----------T--:--:--.--- FINE [hibernate]  One-shot delete: update sub_entity_table set parentId=null, name=null where parentId=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Row delete: update sub_entity_table set parentId=null, name=null where parentId=? and subId=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Row insert: update sub_entity_table set parentId=?, name=? where subId=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for collection: alma.hibernate.test.TestEntity._
-1 - ----------T--:--:--.--- FINE [hibernate]  One-shot delete: update sub_entity_table set parentId=null, name=null where parentId=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for collection: alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_, subentity0_.name as name1_0_, subentity0_.parentId as parentId1_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_, subentity0_.name as name1_0_, subentity0_.parentId as parentId1_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_, subentity0_.name as name1_0_, subentity0_.parentId as parentId1_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
@@ -146,18 +146,18 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_, subentity0_.name as name1_0_, subentity0_.parentId as parentId1_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_MERGE on entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_, subentity0_.name as name1_0_, subentity0_.parentId as parentId1_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_REFRESH on entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_, subentity0_.name as name1_0_, subentity0_.parentId as parentId1_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_1_, fix_1_.parentId as parentId3_, fix_1_.subId as subId3_, fix_1_.name as name3_, fix_1_.subId as subId1_0_, fix_1_.name as name1_0_, fix_1_.parentId as parentId1_0_ from test_entity_table testentity0_ left outer join sub_entity_table fix_1_ on testentity0_.id=fix_1_.parentId where testentity0_.id=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_1_, map_1_.parentId as parentId3_, map_1_.subId as subId3_, map_1_.name as name3_, map_1_.subId as subId1_0_, map_1_.name as name1_0_, map_1_.parentId as parentId1_0_ from test_entity_table testentity0_ left outer join sub_entity_table map_1_ on testentity0_.id=map_1_.parentId where testentity0_.id=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_0_ from test_entity_table testentity0_ where testentity0_.id=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_0_ from test_entity_table testentity0_ where testentity0_.id=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_1_, fix_1_.parentId as parentId3_, fix_1_.subId as subId3_, fix_1_.name as name3_, fix_1_.subId as subId1_0_, fix_1_.name as name1_0_, fix_1_.parentId as parentId1_0_ from test_entity_table testentity0_ left outer join sub_entity_table fix_1_ on testentity0_.id=fix_1_.parentId where testentity0_.id=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_1_, map_1_.parentId as parentId3_, map_1_.subId as subId3_, map_1_.name as name3_, map_1_.subId as subId1_0_, map_1_.name as name1_0_, map_1_.parentId as parentId1_0_ from test_entity_table testentity0_ left outer join sub_entity_table map_1_ on testentity0_.id=map_1_.parentId where testentity0_.id=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_MERGE on entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_0_ from test_entity_table testentity0_ where testentity0_.id=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_REFRESH on entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_0_ from test_entity_table testentity0_ where testentity0_.id=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_0_ from test_entity_table testentity0_ where testentity0_.id=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for one-to-many alma.hibernate.test.TestEntity._: select fix_0_.parentId as parentId1_, fix_0_.subId as subId1_, fix_0_.name as name1_, fix_0_.subId as subId1_0_, fix_0_.name as name1_0_, fix_0_.parentId as parentId1_0_ from sub_entity_table fix_0_ where fix_0_.parentId=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity: select testentity0_.id as id0_0_ from test_entity_table testentity0_ where testentity0_.id=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for one-to-many alma.hibernate.test.TestEntity.MAP_: select map_0_.parentId as parentId1_, map_0_.subId as subId1_, map_0_.name as name1_, map_0_.subId as subId1_0_, map_0_.name as name1_0_, map_0_.parentId as parentId1_0_ from sub_entity_table map_0_ where map_0_.parentId=?
 1 - ----------T--:--:--.--- FINE [hibernate] initializing class SessionFactoryObjectFactory
 1 - ----------T--:--:--.--- FINE [hibernate] registered: xxxxxxxxxxxxx (unnamed)
-1 - ----------T--:--:--.--- INFO [hibernate] Not binding factory to JNDI, no JNDI name configured
 1 - ----------T--:--:--.--- FINE [hibernate] instantiated session factory
+1 - ----------T--:--:--.--- INFO [hibernate] Not binding factory to JNDI, no JNDI name configured
 1 - ----------T--:--:--.--- FINE [hibernate] Execute first pass mapping processing
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
 1 - ----------T--:--:--.--- FINE [hibernate] Process hbm files
@@ -171,45 +171,45 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Execute first pass mapping processing
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
 1 - ----------T--:--:--.--- FINE [hibernate] Process hbm files
+1 - ----------T--:--:--.--- FINE [hibernate] processing fk mappings (*ToOne and JoinedSubclass)
+1 - ----------T--:--:--.--- FINE [hibernate] processing association property references
 1 - ----------T--:--:--.--- FINE [hibernate] processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] processing extends queue
-1 - ----------T--:--:--.--- FINE [hibernate] processing fk mappings (*ToOne and JoinedSubclass)
-1 - ----------T--:--:--.--- FINE [hibernate] processing native query and ResultSetMapping mappings
-1 - ----------T--:--:--.--- FINE [hibernate] processing association property references
 1 - ----------T--:--:--.--- FINE [hibernate] processing foreign key constraints
+1 - ----------T--:--:--.--- FINE [hibernate] processing native query and ResultSetMapping mappings
 1 - ----------T--:--:--.--- FINE [hibernate] resolving reference to class: alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINE [hibernate] import file not found: /import.sql
 1 - ----------T--:--:--.--- INFO [hibernate] Running hbm2ddl schema export
+1 - ----------T--:--:--.--- FINE [hibernate] import file not found: /import.sql
 1 - ----------T--:--:--.--- FINEST [hibernate] total checked-out connections: 0
 1 - ----------T--:--:--.--- FINEST [hibernate] using pooled JDBC connection, pool size: 0
 1 - ----------T--:--:--.--- INFO [hibernate] exporting generated schema to database
 1 - ----------T--:--:--.--- FINE [hibernate] alter table sub_entity_table drop constraint FK9F8FA0118F74658B
+1 - ----------T--:--:--.--- FINE [hibernate] drop table sub_entity_table if exists
 1 - ----------T--:--:--.--- FINE [hibernate] Unsuccessful: alter table sub_entity_table drop constraint FK9F8FA0118F74658B
 1 - ----------T--:--:--.--- FINE [hibernate] user lacks privilege or object not found: SUB_ENTITY_TABLE
 1 - ----------T--:--:--.--- FINE [hibernate] create table sub_entity_table (subId integer generated by default as identity (start with 1), name varchar(255), parentId integer, primary key (subId))
-1 - ----------T--:--:--.--- FINE [hibernate] drop table sub_entity_table if exists
-1 - ----------T--:--:--.--- FINE [hibernate] drop table test_entity_table if exists
 1 - ----------T--:--:--.--- FINE [hibernate] create table test_entity_table (id integer generated by default as identity (start with 1), primary key (id))
+1 - ----------T--:--:--.--- FINE [hibernate] drop table test_entity_table if exists
 1 - ----------T--:--:--.--- FINE [hibernate] alter table sub_entity_table add constraint FK9F8FA0118F74658B foreign key (parentId) references test_entity_table
 1 - ----------T--:--:--.--- INFO [hibernate] schema export complete
-1 - ----------T--:--:--.--- FINEST [hibernate] returning connection to pool, pool size: 1
 1 - ----------T--:--:--.--- FINE [hibernate] Execute first pass mapping processing
+1 - ----------T--:--:--.--- FINEST [hibernate] returning connection to pool, pool size: 1
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
 1 - ----------T--:--:--.--- FINE [hibernate] Process hbm files
-1 - ----------T--:--:--.--- FINE [hibernate] processing association property references
 1 - ----------T--:--:--.--- FINE [hibernate] processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] processing extends queue
 1 - ----------T--:--:--.--- FINE [hibernate] processing fk mappings (*ToOne and JoinedSubclass)
-1 - ----------T--:--:--.--- FINE [hibernate] processing native query and ResultSetMapping mappings
+1 - ----------T--:--:--.--- FINE [hibernate] processing association property references
 1 - ----------T--:--:--.--- FINE [hibernate] processing foreign key constraints
+1 - ----------T--:--:--.--- FINE [hibernate] processing native query and ResultSetMapping mappings
 1 - ----------T--:--:--.--- FINE [hibernate] resolving reference to class: alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Execute first pass mapping processing
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
 1 - ----------T--:--:--.--- FINE [hibernate] Process hbm files
+1 - ----------T--:--:--.--- FINE [hibernate] processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] processing extends queue
 1 - ----------T--:--:--.--- FINE [hibernate] processing fk mappings (*ToOne and JoinedSubclass)
 1 - ----------T--:--:--.--- FINE [hibernate] processing association property references
-1 - ----------T--:--:--.--- FINE [hibernate] processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] processing foreign key constraints
 1 - ----------T--:--:--.--- FINE [hibernate] processing native query and ResultSetMapping mappings
 1 - ----------T--:--:--.--- FINE [hibernate] resolving reference to class: alma.hibernate.test.TestEntity
@@ -224,8 +224,8 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] after transaction begin
 1 - ----------T--:--:--.--- FINEST [hibernate] saving transient instance
 1 - ----------T--:--:--.--- FINEST [hibernate] transient instance of: alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] saving [alma.hibernate.test.SubEntity#<null>]
 1 - ----------T--:--:--.--- FINEST [hibernate] executing insertions
+1 - ----------T--:--:--.--- FINEST [hibernate] saving [alma.hibernate.test.SubEntity#<null>]
 1 - ----------T--:--:--.--- FINE [hibernate] executing identity-insert immediately
 1 - ----------T--:--:--.--- FINEST [hibernate] Inserting entity: alma.hibernate.test.SubEntity (native id)
 1 - ----------T--:--:--.--- FINE [hibernate] about to open PreparedStatement (open PreparedStatements: 0, globally: 0)
@@ -238,40 +238,41 @@
 1 - ----------T--:--:--.--- FINE [hibernate] about to close PreparedStatement (open PreparedStatements: 1, globally: 1)
 1 - ----------T--:--:--.--- FINE [hibernate] Natively generated identity: 1
 1 - ----------T--:--:--.--- FINEST [hibernate] closing statement
+1 - ----------T--:--:--.--- FINEST [hibernate] executing insertions
 1 - ----------T--:--:--.--- FINEST [hibernate] saving [alma.hibernate.test.TestEntity#<null>]
 1 - ----------T--:--:--.--- FINEST [hibernate] saving transient instance
 1 - ----------T--:--:--.--- FINEST [hibernate] transient instance of: alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] executing insertions
-1 - ----------T--:--:--.--- FINE [hibernate] executing identity-insert immediately
-1 - ----------T--:--:--.--- FINEST [hibernate] Wrapped collection in role: alma.hibernate.test.TestEntity._
 1 - ----------T--:--:--.--- FINE [hibernate] about to open PreparedStatement (open PreparedStatements: 0, globally: 0)
-1 - ----------T--:--:--.--- FINE [hibernateSQL] insert into test_entity_table (id) values (null)
+1 - ----------T--:--:--.--- FINE [hibernate] executing identity-insert immediately
 1 - ----------T--:--:--.--- FINEST [hibernate] Inserting entity: alma.hibernate.test.TestEntity (native id)
-1 - ----------T--:--:--.--- FINE [hibernate] Natively generated identity: 1
+1 - ----------T--:--:--.--- FINEST [hibernate] Wrapped collection in role: alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINE [hibernateSQL] insert into test_entity_table (id) values (null)
 1 - ----------T--:--:--.--- FINEST [hibernate] Dehydrating entity: [alma.hibernate.test.TestEntity#<null>]
 1 - ----------T--:--:--.--- FINEST [hibernate] preparing statement
-1 - Hibernate: insert into test_entity_table (id) values (null)
 1 - ----------T--:--:--.--- FINE [hibernate] about to close PreparedStatement (open PreparedStatements: 1, globally: 1)
 1 - ----------T--:--:--.--- FINE [hibernate] commit
+1 - ----------T--:--:--.--- FINE [hibernate] Natively generated identity: 1
 1 - ----------T--:--:--.--- FINEST [hibernate] closing statement
+1 - Hibernate: insert into test_entity_table (id) values (null)
 1 - ----------T--:--:--.--- FINEST [hibernate] automatically flushing session
 1 - ----------T--:--:--.--- FINEST [hibernate] flushing session
 1 - ----------T--:--:--.--- FINE [hibernate] processing flush-time cascades
 1 - ----------T--:--:--.--- FINE [hibernate] dirty checking collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing entities and processing referenced collections
-1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity._#1], was: [<unreferenced>] (initialized)
+1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity.MAP_#1], was: [<unreferenced>] (initialized)
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing unreferenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 insertions, 0 updates, 0 deletions to 2 objects
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 1 (re)creations, 0 updates, 0 removals to 1 collections
-1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{parentId=null, subId=1, name=frodo}
-1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{id=1}
 1 - ----------T--:--:--.--- FINE [hibernate] listing entities:
+1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{id=1, MAP_=[alma.hibernate.test.SubEntity#1]}
+1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{parentId=null, subId=1, name=frodo}
 1 - ----------T--:--:--.--- FINEST [hibernate] executing flush
-1 - ----------T--:--:--.--- FINEST [hibernate] post flush
 1 - ----------T--:--:--.--- FINEST [hibernate] registering flush begin
 1 - ----------T--:--:--.--- FINEST [hibernate] registering flush end
+1 - ----------T--:--:--.--- FINEST [hibernate] post flush
 1 - ----------T--:--:--.--- FINE [hibernate] committed JDBC Connection
+1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
 1 - ----------T--:--:--.--- FINE [hibernate] aggressively releasing JDBC connection
@@ -279,71 +280,70 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] returning connection to pool, pool size: 1
 1 - ----------T--:--:--.--- FINE [hibernate] begin
-1 - ----------T--:--:--.--- FINE [hibernate] opening JDBC connection
-1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
-1 - ----------T--:--:--.--- FINEST [hibernate] total checked-out connections: 0
 1 - ----------T--:--:--.--- FINE [hibernate] current autocommit status: false
+1 - ----------T--:--:--.--- FINE [hibernate] opening JDBC connection
 1 - ----------T--:--:--.--- FINEST [hibernate] after transaction begin
+1 - ----------T--:--:--.--- FINEST [hibernate] total checked-out connections: 0
 1 - ----------T--:--:--.--- FINEST [hibernate] using pooled JDBC connection, pool size: 0
 1 - ----------T--:--:--.--- FINE [hibernate] processing flush-time cascades
 1 - ----------T--:--:--.--- FINEST [hibernate] flushing session
-1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity._#1], was: [alma.hibernate.test.TestEntity._#1] (initialized)
+1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity.MAP_#1], was: [alma.hibernate.test.TestEntity.MAP_#1] (initialized)
 1 - ----------T--:--:--.--- FINE [hibernate] dirty checking collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing entities and processing referenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing unreferenced collections
+1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{id=1, MAP_=[alma.hibernate.test.SubEntity#1]}
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 insertions, 0 updates, 0 deletions to 2 objects
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 (re)creations, 0 updates, 0 removals to 1 collections
-1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
 1 - ----------T--:--:--.--- FINE [hibernate] listing entities:
+1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
 1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{parentId=null, subId=1, name=frodo}
-1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{id=1}
 1 - ----------T--:--:--.--- FINEST [hibernate] Dont need to execute flush
 1 - ----------T--:--:--.--- FINE [hibernate] about to open PreparedStatement (open PreparedStatements: 0, globally: 0)
-1 - ----------T--:--:--.--- FINE [hibernateSQL] select this_.id as id0_1_, fix_2_.parentId as parentId3_, fix_2_.subId as subId3_, fix_2_.name as name3_, fix_2_.subId as subId1_0_, fix_2_.name as name1_0_, fix_2_.parentId as parentId1_0_ from test_entity_table this_ left outer join sub_entity_table fix_2_ on this_.id=fix_2_.parentId
+1 - ----------T--:--:--.--- FINE [hibernateSQL] select this_.id as id0_1_, map_2_.parentId as parentId3_, map_2_.subId as subId3_, map_2_.name as name3_, map_2_.subId as subId1_0_, map_2_.name as name1_0_, map_2_.parentId as parentId1_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId
 1 - ----------T--:--:--.--- FINEST [hibernate] preparing statement
-1 - Hibernate: select this_.id as id0_1_, fix_2_.parentId as parentId3_, fix_2_.subId as subId3_, fix_2_.name as name3_, fix_2_.subId as subId1_0_, fix_2_.name as name1_0_, fix_2_.parentId as parentId1_0_ from test_entity_table this_ left outer join sub_entity_table fix_2_ on this_.id=fix_2_.parentId
 1 - ----------T--:--:--.--- FINE [hibernate] about to open ResultSet (open ResultSets: 0, globally: 0)
 1 - ----------T--:--:--.--- FINEST [hibernate] processing result set
+1 - Hibernate: select this_.id as id0_1_, map_2_.parentId as parentId3_, map_2_.subId as subId3_, map_2_.name as name3_, map_2_.subId as subId1_0_, map_2_.name as name1_0_, map_2_.parentId as parentId1_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId
+1 - ----------T--:--:--.--- FINE [hibernate] result row: null, EntityKey[alma.hibernate.test.TestEntity#1]
 1 - ----------T--:--:--.--- FINE [hibernate] result set row: 0
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] returning '1' as column: id0_1_
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] returning null as column: subId1_0_
-1 - ----------T--:--:--.--- FINE [hibernate] result row: null, EntityKey[alma.hibernate.test.TestEntity#1]
-1 - ----------T--:--:--.--- FINE [hibernate] result set contains (possibly empty) collection: [alma.hibernate.test.TestEntity._#1]
+1 - ----------T--:--:--.--- FINE [hibernate] result set contains (possibly empty) collection: [alma.hibernate.test.TestEntity.MAP_#1]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] returning null as column: parentId3_
 1 - ----------T--:--:--.--- FINEST [hibernate] constructing collection load context for result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] collection already initialized; ignoring
 1 - ----------T--:--:--.--- FINEST [hibernate] done processing result set (1 rows)
-1 - ----------T--:--:--.--- FINEST [hibernate] starting attempt to find loading collection [[alma.hibernate.test.TestEntity._#1]]
+1 - ----------T--:--:--.--- FINEST [hibernate] starting attempt to find loading collection [[alma.hibernate.test.TestEntity.MAP_#1]]
 1 - ----------T--:--:--.--- FINE [hibernate] about to close PreparedStatement (open PreparedStatements: 1, globally: 1)
 1 - ----------T--:--:--.--- FINE [hibernate] about to close ResultSet (open ResultSets: 1, globally: 1)
 1 - ----------T--:--:--.--- FINEST [hibernate] closing statement
-1 - ----------T--:--:--.--- FINE [hibernate] no collections were found in result set for role: alma.hibernate.test.TestEntity._
-1 - ----------T--:--:--.--- FINEST [hibernate] total objects hydrated: 0
 1 - ----------T--:--:--.--- FINE [hibernate] commit
 1 - ----------T--:--:--.--- FINE [hibernate] initializing non-lazy collections
-1 - ----------T--:--:--.--- FINEST [hibernate] automatically flushing session
-1 - ----------T--:--:--.--- FINEST [hibernate] flushing session
+1 - ----------T--:--:--.--- FINE [hibernate] no collections were found in result set for role: alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] total objects hydrated: 0
 1 - ----------T--:--:--.--- FINE [hibernate] dirty checking collections
 1 - ----------T--:--:--.--- FINE [hibernate] processing flush-time cascades
+1 - ----------T--:--:--.--- FINEST [hibernate] automatically flushing session
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing entities and processing referenced collections
-1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity._#1], was: [alma.hibernate.test.TestEntity._#1] (initialized)
+1 - ----------T--:--:--.--- FINEST [hibernate] flushing session
+1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity.MAP_#1], was: [alma.hibernate.test.TestEntity.MAP_#1] (initialized)
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 insertions, 0 updates, 0 deletions to 2 objects
+1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 (re)creations, 0 updates, 0 removals to 1 collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing unreferenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
 1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{parentId=null, subId=1, name=frodo}
-1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{id=1}
-1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 (re)creations, 0 updates, 0 removals to 1 collections
+1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{id=1, MAP_=[alma.hibernate.test.SubEntity#1]}
 1 - ----------T--:--:--.--- FINE [hibernate] listing entities:
-1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] executing flush
-1 - ----------T--:--:--.--- FINEST [hibernate] post flush
 1 - ----------T--:--:--.--- FINEST [hibernate] registering flush begin
-1 - ----------T--:--:--.--- FINEST [hibernate] registering flush end
 1 - ----------T--:--:--.--- FINE [hibernate] committed JDBC Connection
-1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
+1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
+1 - ----------T--:--:--.--- FINEST [hibernate] post flush
+1 - ----------T--:--:--.--- FINEST [hibernate] registering flush end
 1 - ----------T--:--:--.--- FINE [hibernate] aggressively releasing JDBC connection
 1 - ----------T--:--:--.--- FINE [hibernate] releasing JDBC connection [ (open PreparedStatements: 0, globally: 0) (open ResultSets: 0, globally: 0)]
+1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] returning connection to pool, pool size: 1
 1 - ----------T--:--:--.--- FINEST [hibernate] closing session
