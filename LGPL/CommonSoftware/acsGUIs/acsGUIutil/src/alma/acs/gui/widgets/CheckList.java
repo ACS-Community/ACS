@@ -193,8 +193,23 @@ public class CheckList extends JComponent {
 		 */
 		@Override
 		public Class getColumnClass(int column) {
-			return (column==0)?Boolean.class: String.class;
-		  }
+			return (column == 0) ? Boolean.class : String.class;
+		}
+		
+		/**
+		 *
+		 * @return A array of activation states
+		 */
+		public boolean[] getActivationStates() {
+			boolean[] ret;
+			synchronized (items) {
+				ret = new boolean[items.size()];	
+			}
+			for (int t=0; t<ret.length; t++) {
+				ret[t]=items.get(t).isActive();
+			}
+			return ret;
+		}
 		
 		/**
 		 * @return A array with all the items in the list
@@ -383,6 +398,14 @@ public class CheckList extends JComponent {
 	}
 
 	/**
+	 * 
+	 * @return The activation states of the items in the widget
+	 */
+	public boolean[] getActivationStates() {
+		return model.getActivationStates();
+	}
+
+	/**
 	 * @return The entries in the list
 	 * 
 	 * @see alma.acs.gui.widgets.CheckList.CheckListTableModel#getEntries()
@@ -395,7 +418,7 @@ public class CheckList extends JComponent {
 	 * @return
 	 * @see alma.acs.gui.widgets.CheckList.CheckListTableModel#getCheckedEntries()
 	 */
-	public List getCheckedEntries() {
+	public List<CheckListTableEntry> getCheckedEntries() {
 		return model.getCheckedEntries();
 	}
 
@@ -403,7 +426,7 @@ public class CheckList extends JComponent {
 	 * @return
 	 * @see alma.acs.gui.widgets.CheckList.CheckListTableModel#getUnCheckedEntries()
 	 */
-	public List getUnCheckedEntries() {
+	public List<CheckListTableEntry> getUnCheckedEntries() {
 		return model.getUnCheckedEntries();
 	}
 
