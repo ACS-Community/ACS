@@ -225,4 +225,22 @@ template <class T> class SimpleConsumer : public Consumer
   simpConsumer_p->addSubscription<idlStruct>(handlerFunction, handlerParam);\
 }
 
+/**
+ *  MACRO must be used instead of manually allocating memory for SimpleConsumer
+ *  pointers.  This is done so that consumers/suppliers across the different
+ *  programming languages do not confuse the type_name field of CORBA
+ *  structured events.
+ *  @param simpleConsumer_p A pointer to an unallocated SimpleConsumer.
+ *  @param idlStruct The IDL struct that will be subscribed to (FRIDGE::temperatureDataBlockEvent for example).
+ *  @param channelName Name of the channel events will be published too.
+ *  @param domainname Name of the domain for the NC
+ *  @param handlerFunction A function pointer to a function capable of processing idlStruct events.
+ *  @param handlerParam A single void parameter that will be passed to the handlerFunction in addition to the ICD event.
+ */
+#define ACS_NEW_SIMPLE_CONSUMER_WITH_DOMAIN(simpConsumer_p, idlStruct, channelName, domainname, handlerFunction, handlerParam) \
+{ \
+  simpConsumer_p = new nc::SimpleConsumer<idlStruct>(channelName,domainname); \
+  simpConsumer_p->addSubscription<idlStruct>(handlerFunction, handlerParam);\
+}
+
 #endif
