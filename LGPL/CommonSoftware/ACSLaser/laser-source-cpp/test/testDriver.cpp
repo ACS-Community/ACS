@@ -31,6 +31,7 @@
 #include <acsncSimpleConsumer.h>
 #include <testCppAlarmSourceComponentsC.h>
 #include <AlarmSystemC.h>
+#include <acscommonC.h>
 #include "ACSJMSMessageEntityC.h"
 
 using namespace maci;
@@ -77,9 +78,9 @@ int main(int argc, char *argv[])
 	// set up a consumer to listen to the notification channel for alarms
 	int receivedEvtCount = 0;
 	nc::SimpleConsumer<com::cosylab::acs::jms::ACSJMSMessageEntity> *m_simpConsumer_p = 0;
-   ACS_NEW_SIMPLE_CONSUMER(m_simpConsumer_p, com::cosylab::acs::jms::ACSJMSMessageEntity, 
-		"CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES", myHandlerFunction, (void*) & receivedEvtCount);
-   m_simpConsumer_p->consumerReady();
+	m_simpConsumer_p = new nc::SimpleConsumer<com::cosylab::acs::jms::ACSJMSMessageEntity>("CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES",acscommon::ACS_NC_DOMAIN_ALARMSYSTEM);
+	m_simpConsumer_p->addSubscription<com::cosylab::acs::jms::ACSJMSMessageEntity>(myHandlerFunction, (void*) & receivedEvtCount);
+    m_simpConsumer_p->consumerReady();
 
 	ACE_Time_Value tv(30);
 	client.run(tv);
