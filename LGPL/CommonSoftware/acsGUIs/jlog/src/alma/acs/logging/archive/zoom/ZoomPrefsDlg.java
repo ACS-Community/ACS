@@ -34,8 +34,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JSeparator;
+
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -113,9 +114,14 @@ public class ZoomPrefsDlg extends JDialog implements ActionListener {
 		loggingClient=logCli;
 		zoomManager=manager;
 		folder=zoomManager.getRepository();
-		initialize();
-		pack();
-		setVisible(true);
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				initialize();
+				pack();
+				setVisible(true);
+			}
+		});
 	}
 	
 	/**
@@ -268,8 +274,7 @@ public class ZoomPrefsDlg extends JDialog implements ActionListener {
 		super.setVisible(visible);
 		// Move the statistic win on top of jlog
 		if (visible && isShowing()) {
-			Point loggingPos = loggingClient.getLocationOnScreen();
-			setLocation(loggingPos);
+			setLocationRelativeTo(loggingClient);
 			toFront();
 		}
 	}
