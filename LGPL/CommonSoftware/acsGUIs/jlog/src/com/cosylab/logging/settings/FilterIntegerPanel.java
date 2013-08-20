@@ -62,7 +62,8 @@ public class FilterIntegerPanel extends FilterParameterPanel {
 	private class FormattedIntDocFilter extends DocumentFilter {
 		
 		/**
-		 * The regular expression used to check if the text contains only digits
+		 * The regular expression used to check if the user input
+		 *  contains only digits
 		 */
 		private final Pattern digitsRegExp = Pattern.compile("[0-9]*");
 		
@@ -89,18 +90,47 @@ public class FilterIntegerPanel extends FilterParameterPanel {
 			super.remove(fb, offset, length);
 		}
 
+		/**
+		 * According to {@link DocumentFilter} documentation this method is called prior of
+		 * insertion of a string. 
+		 * <P>
+		 * We override to allow the insertion only at the condition described in the
+		 * documentation of this class
+		 * @see FormattedIntDocFilter
+		 */
 		@Override
 		public void insertString(FilterBypass fb, int offset, String string,
 				AttributeSet attr) throws BadLocationException {
-			if (digitsRegExp.matcher(string).matches()) {
+			if (string==null || string.isEmpty()) {
+				return;
+			}
+			if (
+					digitsRegExp.matcher(string).matches() &&
+					fb.getDocument().getLength()+string.length()<=maxNumOfDigits) {
+				
 				super.insertString(fb, offset, string, attr);
 			}
 		}
 
+		/**
+		 * According to {@link DocumentFilter} documentation this method is called prior of
+		 * replacing a string in the text field with a text. 
+		 * The length of the string to replace is also passed as parameter.
+		 * <P>
+		 * We override to allow the insertion only at the condition described in the
+		 * documentation of this class
+		 * @see FormattedIntDocFilter
+		 */
 		@Override
 		public void replace(FilterBypass fb, int offset, int length,
 				String text, AttributeSet attrs) throws BadLocationException {
-			if (digitsRegExp.matcher(text).matches()) {
+			if (text==null || text.isEmpty()) {
+				return;
+			}
+			if (
+					digitsRegExp.matcher(text).matches() &&
+					fb.getDocument().getLength()+text.length()-length<=maxNumOfDigits) {
+				
 				super.replace(fb, offset, length, text, attrs);
 			} 
 		}
@@ -140,7 +170,7 @@ public class FilterIntegerPanel extends FilterParameterPanel {
 		JTextField ret=new JTextField(""+initialValue);
 		ret.setColumns(10);
 		AbstractDocument document = (AbstractDocument) ret.getDocument();
-		document.setDocumentFilter(new FormattedIntDocFilter(10));
+		document.setDocumentFilter(new FormattedIntDocFilter(9));
 		return ret;
 	}
 
@@ -262,26 +292,29 @@ public class FilterIntegerPanel extends FilterParameterPanel {
 
 		switch (f.getConstraint()) {
 		case EXACT:
-			setField(exactCheck, ((Number)((MinMaxFilter)f).getMinimum()).intValue(),exact);
+			setField(exactCheck, ((Number)((ExactFilter)f).getExact()).intValue(),exact);
 			break;
 		case MINIMUM:
 			setField(minimumCheck, ((Number)((MinMaxFilter)f).getMinimum()).intValue(),minimum);
 			break;
 		case MAXIMUM:
-			setField(maximumCheck, ((Number)((MinMaxFilter)f).getMinimum()).intValue(),maximum);
+			setField(maximumCheck, ((Number)((MinMaxFilter)f).getMaximum()).intValue(),maximum);
 			break;
 		case MINMAX:
 			setField(minimumCheck, ((Number)((MinMaxFilter)f).getMinimum()).intValue(),minimum);
-			setField(maximumCheck, ((Number)((MinMaxFilter)f).getMinimum()).intValue(),maximum);
+			setField(maximumCheck, ((Number)((MinMaxFilter)f).getMaximum()).intValue(),maximum);
 			break;
 		}
 		notCheck.setSelected(f.notPolicyApplyed());
 	}
 	
 	/**
-	 * Select the checkbox and set the value in the text field
+	 * Select the checkbox and set the value in the text field.
+	 * <P>
+	 * The same operation is repeated for the same check box and test field:
+	 * this simple method avoids code repetition.
 	 * 
-	 * @param checkBox The checkbox to select
+	 * @param checkBox The check box to select
 	 * @param val The value to set in the text field
 	 * @param textField The text field to set the value into
 	 */
