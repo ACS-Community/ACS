@@ -35,9 +35,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import alma.acs.gui.util.threadsupport.EDTExecutor;
+import alma.acs.gui.widgets.DateTimeSelector;
 import alma.acs.util.IsoDateFormat;
 
-import com.cosylab.gui.components.r2.DateTimeChooser;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -75,12 +76,12 @@ Runnable {
 	/**
 	 * The widget to get the start date of loading
 	 */
-	private DateTimeChooser fromDTC=new DateTimeChooser();
+	private final DateTimeSelector fromDTC=new DateTimeSelector();
 	
 	/**
 	 * The widget to get the end date of loading
 	 */
-	private DateTimeChooser toDTC=new DateTimeChooser();
+	private final DateTimeSelector toDTC=new DateTimeSelector();
 	
 	/**
 	 * The button to load logs
@@ -132,9 +133,14 @@ Runnable {
 		loggingClient=owner;
 		zoomer=manager;
 		timer.setRepeats(false);
-		initialize();
-		pack();
-		setVisible(true);
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				initialize();
+				pack();
+				setVisible(true);
+			}
+		});
 	}
 	
 	/**
@@ -223,7 +229,7 @@ Runnable {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==doneBtn) {
 			setVisible(false);
-		} if (e.getSource()==loadBtn) {
+		} else if (e.getSource()==loadBtn) {
 			if (thread==null || !thread.isAlive()) {
 				thread = new Thread(this);
 				thread.setDaemon(true);
@@ -266,8 +272,8 @@ Runnable {
 			return;
 		}
 		logsRead=numOfFiles=0;
-		Date from = fromDTC.getDate();
-		Date to = toDTC.getDate();
+		Date from = fromDTC.getDate().getTime();
+		Date to = toDTC.getDate().getTime();
 		String fromStr=IsoDateFormat.formatDate(from);
 		String toStr=IsoDateFormat.formatDate(to);
 		try {
