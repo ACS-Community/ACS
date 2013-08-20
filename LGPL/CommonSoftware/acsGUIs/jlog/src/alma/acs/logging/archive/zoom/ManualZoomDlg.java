@@ -138,6 +138,7 @@ Runnable {
 			public void run() {
 				initialize();
 				pack();
+				setLocationRelativeTo(loggingClient);
 				setVisible(true);
 			}
 		});
