@@ -25,6 +25,7 @@ os     = $(shell uname)
 #
 MODULES_ACSGUIS  = 	acsGUIutil \
                     acsEclipseUtils \
+			abeans \
                     acssampGUI \
                     cdbBrowser \
                     errorBrowser \
