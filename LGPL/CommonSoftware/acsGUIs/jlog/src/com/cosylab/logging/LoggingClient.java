@@ -55,9 +55,10 @@ import org.omg.CORBA.ORB;
 
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.gui.widgets.ExtendedTextArea;
 import alma.acs.logging.archive.ArchiveConnectionManager;
-import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
+import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.archive.zoom.ManualZoomDlg;
 import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.archive.zoom.ZoomPrefsDlg;
@@ -72,15 +73,14 @@ import alma.acs.logging.preferences.UserPreferences;
 import alma.acs.logging.table.LogEntryTable;
 import alma.acs.logging.table.LogTableDataModel;
 
-import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.MessageWidget.MessageType;
 import com.cosylab.logging.MessageWidget.MessageWidgetListener;
 import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.audience.Audience.AudienceInfo;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -209,9 +209,10 @@ MessageWidgetListener
 	private LogEntryTable logEntryTable = null;
 
 	/**
-	 * The status area
+	 * The status area at the bottom where messages are appended
+	 * by {@link #reportStatus(String)}
 	 */
-	private SmartTextArea ivjStatusArea = null;
+	private ExtendedTextArea messageTextArea = null;
 
 	private JPanel ivjJFrameContentPane = null;
     
@@ -987,6 +988,8 @@ MessageWidgetListener
 		{
 			setName("LoggingClientPanel");
 			
+			messageTextArea = new ExtendedTextArea();
+			
 			// Set the glass pane showing errors and messages to be acknowledged
 			glassPane = new TransparentGlassPane(getContentPane());
 			setGlassPane(glassPane);
@@ -1291,7 +1294,7 @@ MessageWidgetListener
 				statusAreaPanel.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 				statusAreaPanel.setPreferredSize(new java.awt.Dimension(50, 50));
 				statusAreaPanel.setMinimumSize(new java.awt.Dimension(50, 50));
-				statusAreaPanel.setViewportView(getStatusArea());
+				statusAreaPanel.setViewportView(messageTextArea);
 				statusAreaPanel.setVisible(false);
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1408,30 +1411,6 @@ MessageWidgetListener
 	{
 
 		return tableModel;
-	}
-
-	/**
-	 * Returns the StatusArea property value.
-	 * @return com.cosylab.gui.components.SmartTextArea
-	 */
-	private SmartTextArea getStatusArea()
-	{
-		if (ivjStatusArea == null)
-		{
-			try
-			{
-				ivjStatusArea = new SmartTextArea();
-				ivjStatusArea.setName("StatusArea");
-				ivjStatusArea.setLocation(0, 0);
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return ivjStatusArea;
 	}
 	
 	/**
@@ -1596,7 +1575,7 @@ MessageWidgetListener
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void reportStatus(String status) {
-    	getStatusArea().append(status);
+    	messageTextArea.append(status);
     }
     
    /**
